@@ -1,0 +1,144 @@
+ <header class="mb-8 flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-slate-800">
+                Liste des Affaires
+            </h1>
+            <button class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                <span>Nouveau Dossier</span>
+            </button>
+        </header>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-cyan-600">
+                <p class="text-sm font-medium text-gray-500">Dossiers Actifs</p>
+                <p class="text-3xl font-extrabold text-slate-900 mt-1">45</p>
+                <p class="text-xs text-gray-500 mt-2">Vue d'ensemble rapide</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500">
+                <p class="text-sm font-medium text-gray-500">Échéances Urgentes</p>
+                <p class="text-3xl font-extrabold text-slate-900 mt-1">7</p>
+                <p class="text-xs text-red-500 mt-2">À traiter cette semaine</p>
+            </div>
+             <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-slate-400">
+                <p class="text-sm font-medium text-gray-500">Heures non facturées</p>
+                <p class="text-3xl font-extrabold text-slate-900 mt-1">124 h</p>
+                <p class="text-xs text-gray-500 mt-2">Prêt pour la facturation</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-slate-600">
+                <p class="text-sm font-medium text-gray-500">Dossiers Clos (30j)</p>
+                <p class="text-3xl font-extrabold text-slate-900 mt-1">11</p>
+                <p class="text-xs text-cyan-600 mt-2">Taux de succès</p>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4 mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+            <div class="relative flex-grow">
+                <input type="text" placeholder="Rechercher par Référence, Client ou Titre..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </div>
+
+            <select class="p-2 border border-gray-300 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500">
+                <option>Statut : Tous</option>
+                <option>En Cours</option>
+                <option>Urgent</option>
+                <option>Clos</option>
+            </select>
+
+            <select class="p-2 border border-gray-300 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500">
+                <option>Avocat : Tous</option>
+                <option>Maitre Dupont</option>
+                <option>Maitre Martin</option>
+            </select>
+        </div>
+
+        <div class="space-y-4">
+
+            <div class="bg-white p-5 rounded-xl shadow-md border-l-4 border-red-500 hover:shadow-lg transition duration-200">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg font-bold text-slate-800">
+                        <a href="#" class="hover:text-cyan-600 transition">PEN-2024-045 - Affaire C. contre Ministère Public</a>
+                    </h3>
+                    <span class="px-3 py-1 text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-700">
+                        Urgent
+                    </span>
+                </div>
+
+                <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <span>Client : M. Charles C.</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span>Avocat Resp. : Maître Martin</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span>Dernière Act. : Aujourd'hui, 09:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-md border-l-4 border-cyan-500 hover:shadow-lg transition duration-200">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg font-bold text-slate-800">
+                        <a href="#" class="hover:text-cyan-600 transition">CIV-2025-001 - Litige Commercial S.A. c/ SARL Beta</a>
+                    </h3>
+                    <span class="px-3 py-1 text-xs leading-5 font-semibold rounded-full bg-cyan-100 text-cyan-700">
+                        En Cours
+                    </span>
+                </div>
+
+                <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <span>Client : S.A. Alpha</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span>Avocat Resp. : Maître Dupont</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span>Dernière Act. : Hier, 14:30</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-md border-l-4 border-yellow-500 hover:shadow-lg transition duration-200">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-lg font-bold text-slate-800">
+                        <a href="#" class="hover:text-cyan-600 transition">FAM-2023-112 - Procédure de Divorce M. et Mme X</a>
+                    </h3>
+                    <span class="px-3 py-1 text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-700">
+                        Suspendu
+                    </span>
+                </div>
+
+                <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                        <span>Client : Mme Julie X.</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span>Avocat Resp. : Maître Dupont</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span>Dernière Act. : 01/08/2025</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 flex justify-between items-center border-t pt-4">
+            <p class="text-sm text-gray-600">Affichage de 1 à 10 sur 45 résultats</p>
+            <div class="flex space-x-1">
+                <button class="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200">Précédent</button>
+                <span class="px-3 py-1 text-sm font-semibold text-white bg-cyan-600 rounded-lg">1</span>
+                <button class="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200">2</button>
+                <button class="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200">Suivant</button>
+            </div>
+        </div>

@@ -1,0 +1,38 @@
+<div class="flex h-screen bg-gray-100">
+
+    <aside class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl">
+        <div class="p-6 border-b border-slate-700">
+            <h2 class="text-xl font-bold text-cyan-400">
+                Cabinet Pro
+            </h2>
+            <p class="text-xs text-gray-400 mt-1">Gestion Avocats</p>
+        </div>
+
+        <nav class="flex-grow p-4 space-y-2">
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg bg-cyan-600/20 text-cyan-400 font-semibold transition duration-150">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                <span>Gestion des Dossiers</span>
+            </a>
+
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-slate-700 transition duration-150">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z"></path></svg>
+                <span>Clients & Contacts</span>
+            </a>
+
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-slate-700 transition duration-150">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span>Temps & Facturation</span>
+            </a>
+
+            <a href="#" class="flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:bg-slate-700 transition duration-150">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618"></path></svg>
+                <span>Conformité (AML)</span>
+            </a>
+
+        </nav>
+    </aside>
+
+    <main class="flex-1 overflow-y-auto p-6 sm:p-10">
+        <router-outlet></router-outlet>
+    </main>
+</div>
