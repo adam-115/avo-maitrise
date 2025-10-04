@@ -1,0 +1,236 @@
+<div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+
+  <div class="flex justify-between items-center mb-4 border-b pb-4">
+    <nav class="text-sm font-medium text-gray-500">
+      <a href="#" class="hover:text-cyan-600">Liste des Affaires</a> /
+      <span class="text-slate-800 font-semibold">PEN-2024-045</span>
+    </nav>
+    <span class="px-3 py-1 text-sm leading-5 font-bold rounded-full bg-red-100 text-red-700 border border-red-300">
+      STATUT : URGENT
+    </span>
+  </div>
+
+  <div class="flex flex-col lg:flex-row justify-between lg:items-center space-y-4 lg:space-y-0 mb-6">
+
+    <div>
+      <h1 class="text-3xl font-bold text-slate-800">
+        Affaire C. contre Ministère Public
+      </h1>
+      <p class="text-lg text-gray-600 mt-1">
+        Client: <span class="font-semibold text-cyan-600">M. Charles C.</span> (Partie Défenderesse)
+      </p>
+    </div>
+
+    <div class="flex space-x-3 flex-shrink-0">
+      <button
+        class="flex items-center space-x-2 px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition duration-150">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>Ajouter Temps</span>
+      </button>
+      <button
+        class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+          </path>
+        </svg>
+        <span>Modifier Dossier</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="bg-red-50 p-4 rounded-xl shadow-inner border border-red-300 flex justify-between items-center mt-4">
+    <div class="flex items-center space-x-3">
+      <svg class="w-7 h-7 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+        </path>
+      </svg>
+      <div>
+        <p class="text-sm font-semibold text-red-700">ÉCHÉANCE CLÉ IMMINENTE :</p>
+        <p class="text-xl font-bold text-red-600">Audience Préparatoire</p>
+        <p class="text-sm text-red-500">Le **05/10/2025** à 09:00 - Tribunal Correctionnel.</p>
+      </div>
+    </div>
+    <button
+      class="text-center py-2 px-4 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition text-sm flex-shrink-0">
+      Détails Échéance
+    </button>
+  </div>
+</div>
+
+<div class="border-b border-gray-200">
+  <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+    <a (click)="updateSelectedTab(DossierTabType.VUE_ENSEMBLE)"
+      [ngClass]="selectedTab== DossierTabType.VUE_ENSEMBLE?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+      class="whitespace-nowrap py-3 px-1 font-semibold text-sm">
+      Vue d'Ensemble
+    </a>
+    <a (click)="updateSelectedTab(DossierTabType.Document)"
+      [ngClass]="selectedTab== DossierTabType.Document?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
+      Documents (12)
+    </a>
+    <a (click)="updateSelectedTab(DossierTabType.TEMP_FACTURATION)"
+      [ngClass]="selectedTab== DossierTabType.TEMP_FACTURATION?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
+      Temps & Facturation (32h)
+    </a>
+    <a (click)="updateSelectedTab(DossierTabType.EVENEMENT)"
+      [ngClass]="selectedTab== DossierTabType.EVENEMENT?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
+      Événements (7)
+    </a>
+    <a (click)="updateSelectedTab(DossierTabType.TACHE)"
+      [ngClass]="selectedTab== DossierTabType.TACHE?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
+      Tâches (7)
+    </a>
+    <a (click)="updateSelectedTab(DossierTabType.NOTE)"
+      [ngClass]="selectedTab== DossierTabType.NOTE ?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
+      Notes (12)
+    </a>
+    <a (click)="updateSelectedTab(DossierTabType.CONTACT)"
+      [ngClass]="selectedTab== DossierTabType.CONTACT ?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
+      Contacts (9)
+    </a>
+    <a (click)="updateSelectedTab(DossierTabType.FACTURE)"
+      [ngClass]="selectedTab== DossierTabType.FACTURE ?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
+      Factures (3)
+    </a>
+  </nav>
+</div>
+
+<div class="mt-6">
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    @if (selectedTab == DossierTabType.Document) {
+    <div class="lg:col-span-3  space-y-8">
+      <app-document></app-document>
+    </div>
+    }
+    @if (selectedTab == DossierTabType.TEMP_FACTURATION) {
+    <div class="lg:col-span-3  space-y-8">
+      <app-temp></app-temp>
+    </div>
+    }
+
+    @if (selectedTab == DossierTabType.EVENEMENT) {
+    <div class="lg:col-span-3  space-y-8">
+      <app-evenement></app-evenement>
+    </div>
+    }
+
+    @if (selectedTab == DossierTabType.TACHE) {
+    <div class="lg:col-span-3  space-y-8">
+      <app-tache></app-tache>
+    </div>
+    }
+
+    @if (selectedTab == DossierTabType.NOTE) {
+    <div class="lg:col-span-3  space-y-8">
+      <app-note></app-note>
+    </div>
+    }
+
+    @if (selectedTab == DossierTabType.CONTACT) {
+    <div class="lg:col-span-3  space-y-8">
+      <app-contact></app-contact>
+    </div>
+    }
+
+    @if (selectedTab == DossierTabType.FACTURE) {
+    <div class="lg:col-span-3  space-y-8">
+      <app-dossier-facture></app-dossier-facture>
+    </div>
+    }
+
+    @if(selectedTab === DossierTabType.VUE_ENSEMBLE){
+    <div class="lg:col-span-2 space-y-8">
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">Résumé Détaillé</h3>
+        <p class="text-gray-700 text-sm leading-relaxed">
+          Le dossier concerne l'accusation du client M. C. par le Ministère Public pour des faits de fraude fiscale
+          présumée. L'affaire est entrée en phase d'instruction le 01/09/2024. Le principal défi est la quantité de
+          preuves électroniques (emails et transactions) à analyser. La défense se concentre sur la preuve de l'absence
+          d'intention frauduleuse et l'application d'une jurisprudence récente.
+        </p>
+        <div class="mt-4">
+          <span class="text-sm font-semibold text-cyan-600">Type : Pénal</span> |
+          <span class="text-sm font-semibold text-cyan-600">Juridiction : Tribunal Correctionnel</span>
+        </div>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Journal d'Activité Récente</h3>
+        <ul class="space-y-4">
+          <li class="flex items-start space-x-3">
+            <div class="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-cyan-600"></div>
+            <div class="flex-1 text-sm">
+              <p class="font-semibold text-slate-800">Maître Dupont</p>
+              <p class="text-gray-700">A ajouté le <span class="font-medium">rapport d'analyse financière</span> (PDF)
+                au dossier.</p>
+              <span class="text-xs text-gray-500">Il y a 2 heures</span>
+            </div>
+          </li>
+          <li class="flex items-start space-x-3">
+            <div class="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-yellow-500"></div>
+            <div class="flex-1 text-sm">
+              <p class="font-semibold text-slate-800">Système</p>
+              <p class="text-gray-700">Événement créé : <span class="font-medium text-red-600">Audience
+                  Préparatoire</span> fixée au 05/10/2025.</p>
+              <span class="text-xs text-gray-500">Hier, 16:00</span>
+            </div>
+          </li>
+          <li class="flex items-start space-x-3">
+            <div class="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-slate-400"></div>
+            <div class="flex-1 text-sm">
+              <p class="font-semibold text-slate-800">Maître Martin</p>
+              <p class="text-gray-700">A passé <span class="font-medium">3,5 heures</span> sur la rédaction des
+                conclusions.</p>
+              <span class="text-xs text-gray-500">Il y a 3 jours</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="lg:col-span-1 space-y-6">
+
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h3 class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">Détails Administratifs</h3>
+        <dl class="space-y-3 text-sm">
+          <div class="flex justify-between">
+            <dt class="font-medium text-gray-500">Avocat Responsable :</dt>
+            <dd class="text-slate-800 font-semibold">Maître J. Dupont</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="font-medium text-gray-500">Avocats Collaborateurs :</dt>
+            <dd class="text-slate-800">M. Martin</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="font-medium text-gray-500">Date d'Ouverture :</dt>
+            <dd class="text-slate-800">01/09/2024</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="font-medium text-gray-500">Mode de Facturation :</dt>
+            <dd class="text-slate-800">Temps Passé (250 €/h)</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt class="font-medium text-gray-500">Total Heures (à facturer) :</dt>
+            <dd class="text-red-600 font-bold">124 h</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+    }
+  </div>
+</div>

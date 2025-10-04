@@ -1,13 +1,20 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { Dossier } from "../dossier/dossier/dossier";
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterOutlet, Dossier],
+  imports: [RouterOutlet],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home {
+
+  constructor(private readonly router: Router) {
+
+  }
+
+  navigateTODossier() {
+    this.router.navigateByUrl('/home/dossier');
+  }
 
 }

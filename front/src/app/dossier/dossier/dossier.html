@@ -2,7 +2,7 @@
             <h1 class="text-3xl font-bold text-slate-800">
                 Liste des Affaires
             </h1>
-            <button class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150">
+            <button (click)="nviagteToDossierForm()" class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                 <span>Nouveau Dossier</span>
             </button>
@@ -60,7 +60,7 @@
                 </div>
 
                 <h3 class="text-lg font-bold text-slate-800 mb-4">
-                    <a href="#" class="hover:text-cyan-600 transition">Affaire C. contre Ministère Public</a>
+                    <a (click)="navigateToDossierDetail()" class="hover:text-cyan-600 transition">Affaire C. contre Ministère Public</a>
                 </h3>
 
                 <div class="space-y-2 text-sm text-gray-700 border-t pt-3">
@@ -78,7 +78,7 @@
                     </div>
                 </div>
 
-                <a href="#" class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition">
+                <a (click)="navigateToDossierDetail()" class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition">
                     Voir la Fiche
                 </a>
             </div>
@@ -92,7 +92,7 @@
                 </div>
 
                 <h3 class="text-lg font-bold text-slate-800 mb-4">
-                    <a href="#" class="hover:text-cyan-600 transition">Litige Commercial S.A. c/ SARL Beta</a>
+                    <a (click)="navigateToDossierDetail()" class="hover:text-cyan-600 transition">Litige Commercial S.A. c/ SARL Beta</a>
                 </h3>
 
                 <div class="space-y-2 text-sm text-gray-700 border-t pt-3">
@@ -110,7 +110,7 @@
                     </div>
                 </div>
 
-                <a href="#" class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition">
+                <a (click)="navigateToDossierDetail()" class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition">
                     Voir la Fiche
                 </a>
             </div>

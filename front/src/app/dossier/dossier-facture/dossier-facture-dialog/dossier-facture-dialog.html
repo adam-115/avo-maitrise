@@ -1,3 +1,5 @@
+
+@if (showDialog) {
 <div id="invoice-creation-modal"
   class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 flex items-center justify-center ">
 
@@ -8,7 +10,7 @@
       <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
         Créer une Nouvelle Facture pour le Dossier PEN-2024-045
       </h3>
-      <button type="button" class="text-gray-400 hover:text-gray-600 transition">
+      <button type="button" (click)="closeDialog()" class="text-gray-400 hover:text-gray-600 transition">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
@@ -187,7 +189,7 @@
     </div>
 
     <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3 rounded-b-xl">
-      <button type="button"
+      <button type="button" (click)="closeDialog()"
         class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
         Annuler
       </button>
@@ -199,3 +201,7 @@
 
   </div>
 </div>
+
+}
+
+

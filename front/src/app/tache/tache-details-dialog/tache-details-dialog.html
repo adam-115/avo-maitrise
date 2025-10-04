@@ -1,0 +1,136 @@
+@if(showModal) {
+<div id="task-edit-modal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 my-8 transform transition-all scale-100 opacity-100" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-yellow-50 rounded-t-xl">
+            <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
+                Modifier la Tâche #0012 : Finaliser la Synthèse
+            </h3>
+            <button type="button" (click)="closeModal()" class="text-gray-400 hover:text-gray-600 transition">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+
+            <div class="lg:col-span-2 space-y-5 border-r pr-6 border-gray-100">
+                <form id="task-edit-form">
+
+                    <div>
+                        <label for="edit_task_title" class="block text-sm font-medium text-gray-700 mb-1">Titre de la Tâche <span class="text-red-500">*</span></label>
+                        <input type="text" name="edit_task_title" id="edit_task_title" value="Finaliser le document de synthèse pour l'audience." required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2.5">
+                    </div>
+
+                    <div>
+                        <label for="edit_task_description" class="block text-sm font-medium text-gray-700 mb-1">Détails</label>
+                        <textarea id="edit_task_description" name="edit_task_description" rows="3"
+                                  class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2.5">Ajouter les références jurisprudentielles récentes et vérifier les citations.</textarea>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="edit_task_assignee" class="block text-sm font-medium text-gray-700 mb-1">Assigné à <span class="text-red-500">*</span></label>
+                            <select id="edit_task_assignee" name="edit_task_assignee" required class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2.5">
+                                <option selected>Maître J. Dupont</option>
+                                <option>Maître M. Martin</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="edit_task_priority" class="block text-sm font-medium text-gray-700 mb-1">Priorité</label>
+                            <select id="edit_task_priority" name="edit_task_priority" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2.5">
+                                <option value="normale">Normale (Cyan)</option>
+                                <option value="haute" selected>Haute (Jaune)</option>
+                                <option value="critique">Critique (Rouge)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="edit_task_due_date" class="block text-sm font-medium text-gray-700 mb-1">Date d'Échéance</label>
+                            <input type="date" name="edit_task_due_date" id="edit_task_due_date" value="2025-10-03" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5 bg-red-50 border-red-300">
+                        </div>
+                        <div>
+                            <label for="edit_task_status" class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                            <select id="edit_task_status" name="edit_task_status" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2.5">
+                                <option selected>À Faire (En retard)</option>
+                                <option>En Cours</option>
+                                <option>Terminée</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </form>
+
+                <div class="mt-6 pt-4 border-t border-dashed border-gray-300">
+                    <h4 class="text-lg font-bold text-slate-800 flex justify-between items-center">
+                        Temps Enregistré (Facturation)
+                        <span class="text-sm font-normal text-cyan-600">Total: 1.50 h (375 €)</span>
+                    </h4>
+
+                    <div class="flex items-center space-x-3 mt-3">
+                        <input type="text" placeholder="Ex: 0h45 ou 0.75" class="w-28 p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-yellow-500 focus:border-yellow-500 text-sm">
+                        <button class="px-3 py-2 bg-yellow-600 text-white font-medium rounded-lg hover:bg-yellow-700 transition duration-150 text-sm flex items-center space-x-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>Log Time</span>
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-gray-500 mt-2">
+                        Cette entrée sera automatiquement liée à la description de la tâche dans l'onglet Facturation.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="lg:col-span-1 space-y-4">
+                <h4 class="text-lg font-bold text-slate-800 border-b pb-2">Commentaires (2)</h4>
+
+                <div class="space-y-2">
+                    <textarea placeholder="Ajouter un commentaire..." rows="2" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5"></textarea>
+                    <button class="w-full px-4 py-2 bg-cyan-600 text-white font-medium rounded-lg hover:bg-cyan-700 transition duration-150 text-sm">
+                        Poster le Commentaire
+                    </button>
+                </div>
+
+                <div class="space-y-4 h-64 overflow-y-auto pr-2">
+
+                    <div class="text-sm">
+                        <p class="font-semibold text-slate-800">Maître J. Dupont <span class="text-xs font-normal text-gray-500 ml-2">il y a 2h</span></p>
+                        <p class="text-gray-700 mt-1 p-2 bg-gray-100 rounded-lg">
+                            J'ai commencé la relecture mais il me manque la pièce "Relevé B" pour finaliser la partie financière. Attente M. Martin.
+                        </p>
+                    </div>
+
+                    <div class="text-sm">
+                        <p class="font-semibold text-slate-800">Système <span class="text-xs font-normal text-gray-500 ml-2">01/10/2025</span></p>
+                        <p class="text-gray-700 mt-1 p-2 bg-gray-100 rounded-lg italic">
+                            Priorité modifiée de "Normale" à "Haute".
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-between space-x-3 rounded-b-xl">
+            <button type="button" class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-red-700 hover:bg-red-100 transition duration-150">
+                Supprimer la Tâche
+            </button>
+
+            <div class="flex space-x-3">
+                <button type="button" (click)="closeModal()" class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
+                    Annuler
+                </button>
+                <button type="submit" form="task-edit-form" class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-yellow-600 shadow-md hover:bg-yellow-700 transition duration-150">
+                    Enregistrer les Modifications
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+}
+
+

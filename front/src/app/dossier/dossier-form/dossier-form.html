@@ -1,0 +1,215 @@
+<header class="mb-8 flex justify-between items-center">
+  <div>
+    <nav class="text-sm font-medium text-gray-500 mb-2">
+      <a href="#" class="hover:text-cyan-600">Dossiers</a> /
+      <span>Créer un Nouveau Dossier</span>
+    </nav>
+    <h1 class="text-3xl font-bold text-slate-800">
+      Nouveau Dossier / Affaire
+    </h1>
+  </div>
+  <button (click)="navigateToDossier()"
+    class="flex items-center space-x-2 px-4 py-2 bg-slate-500 text-white font-semibold rounded-lg shadow-md hover:bg-slate-600 transition duration-150">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+    <span>Annuler</span>
+  </button>
+</header>
+
+<div class="bg-white p-6 rounded-xl shadow-lg">
+
+  <form action="#" method="POST" class="space-y-8" enctype="multipart/form-data">
+
+    <div class="border-b border-gray-200 pb-8">
+      <h2 class="text-xl font-semibold text-slate-800 border-l-4 border-cyan-600 pl-3 mb-4">Informations Générales</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div>
+          <label for="titre_affaire" class="block text-sm font-medium text-gray-700 mb-1">Titre de l'Affaire <span
+              class="text-red-500">*</span></label>
+          <input type="text" name="titre_affaire" id="titre_affaire" required
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+        </div>
+
+        <div>
+          <label for="reference_dossier" class="block text-sm font-medium text-gray-700 mb-1">Référence (Auto-Générée ou
+            Manuelle)</label>
+          <input type="text" name="reference_dossier" id="reference_dossier" value="NEW-2025-001" disabled
+            class="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+        </div>
+
+        <div>
+          <label for="type_dossier" class="block text-sm font-medium text-gray-700 mb-1">Type de Dossier</label>
+          <select id="type_dossier" name="type_dossier"
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+            <option>Sélectionner un type</option>
+            <option>Civil</option>
+            <option>Pénal</option>
+            <option>Commercial</option>
+            <option>Social</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="statut_dossier" class="block text-sm font-medium text-gray-700 mb-1">Statut Initial</label>
+          <select id="statut_dossier" name="statut_dossier"
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+            <option>Ouvert</option>
+            <option>En Cours</option>
+            <option>À l'étude</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="resume_dossier" class="block text-sm font-medium text-gray-700 mb-1">Description / Résumé Détaillé
+            du Litige</label>
+          <textarea id="resume_dossier" name="resume_dossier" rows="6"
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                        </textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-b border-gray-200 pb-8">
+      <h2 class="text-xl font-semibold text-slate-800 border-l-4 border-cyan-600 pl-3 mb-4">Client et Responsabilités
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div>
+          <label for="client_lie" class="block text-sm font-medium text-gray-700 mb-1">Client de l'Affaire <span
+              class="text-red-500">*</span></label>
+          <div class="flex space-x-2">
+            <select id="client_lie" name="client_lie" required
+              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+              <option>-- Rechercher/Sélectionner un Client Existant --</option>
+              <option>S.A. Alpha (ID 120)</option>
+              <option>M. Charles C. (ID 045)</option>
+            </select>
+            <button type="button"
+              class="mt-1 flex items-center justify-center p-2.5 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 transition duration-150 flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a10 10 0 0117.87-2.67M3 20a10 10 0 013.87-4.33">
+                </path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label for="avocat_responsable" class="block text-sm font-medium text-gray-700 mb-1">Avocat Responsable <span
+              class="text-red-500">*</span></label>
+          <select id="avocat_responsable" name="avocat_responsable" required
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+            <option>Maître J. Dupont</option>
+            <option>Maître M. Martin</option>
+            <option>Autre...</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="avocats_collaborateurs" class="block text-sm font-medium text-gray-700 mb-1">Avocats
+            Collaborateurs (Multi-sélection)</label>
+          <input type="text" name="avocats_collaborateurs" id="avocats_collaborateurs"
+            placeholder="Sélectionner les autres avocats ayant accès au dossier..."
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+        </div>
+      </div>
+    </div>
+
+    <div class="border-b border-gray-200 pb-8">
+      <h2 class="text-xl font-semibold text-slate-800 border-l-4 border-cyan-600 pl-3 mb-4">Documents Initiaux (GED)
+      </h2>
+      <p class="text-sm text-gray-500 mb-4">Ajoutez les pièces justificatives ou la convention d'honoraires initiale. Le
+        **Titre du Document** est obligatoire pour la classification.</p>
+
+      <div class="space-y-4 border border-dashed border-gray-300 p-4 rounded-lg bg-gray-50">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="document_title_1" class="block text-sm font-medium text-gray-700 mb-1">Titre du Document <span
+                class="text-red-500">*</span></label>
+            <input type="text" name="document_title_1" id="document_title_1" required
+              placeholder="Ex: Convention d'honoraires signée"
+              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+          </div>
+
+          <div>
+            <label for="document_file_1" class="block text-sm font-medium text-gray-700 mb-1">Fichier à Uploader</label>
+            <input type="file" name="document_file_1" id="document_file_1"
+              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100" />
+          </div>
+        </div>
+
+        <div class="flex space-x-2">
+          <div class="flex-grow">
+            <label for="document_description_1" class="block text-sm font-medium text-gray-700 mb-1">Description
+              Détaillée (Facultatif)</label>
+            <input type="text" name="document_description_1" id="document_description_1"
+              placeholder="Notez ici le contenu pertinent du document ou les annexes..."
+              class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+          </div>
+          <button type="button"
+            class="mt-6 flex items-center justify-center p-2.5 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition duration-150 flex-shrink-0 self-start"
+            title="Supprimer ce document">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+              </path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="button"
+        class="mt-4 flex items-center space-x-2 text-cyan-600 font-semibold hover:text-cyan-800 transition duration-150">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        <span>Ajouter un autre document</span>
+      </button>
+    </div>
+
+    <div class="border-b border-gray-200 pb-8">
+      <h2 class="text-xl font-semibold text-slate-800 border-l-4 border-cyan-600 pl-3 mb-4">Conditions Financières</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <div>
+          <label for="mode_facturation" class="block text-sm font-medium text-gray-700 mb-1">Mode de Facturation
+            Principal</label>
+          <select id="mode_facturation" name="mode_facturation"
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+            <option>Temps Passé (Horaire)</option>
+            <option>Forfaitaire</option>
+            <option>Au Résultat (Success Fee)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="montant_honoraire" class="block text-sm font-medium text-gray-700 mb-1">Taux Horaire ou Montant
+            Forfaitaire (€)</label>
+          <input type="number" name="montant_honoraire" id="montant_honoraire"
+            placeholder="Ex: 250 (pour l'heure) ou 5000 (pour le forfait)"
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+        </div>
+      </div>
+    </div>
+
+    <div class="pt-5">
+      <div class="flex justify-end space-x-3">
+        <button type="button" (click)="navigateToDossier()"
+          class="px-6 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
+          Annuler
+        </button>
+        <button type="submit"
+          class="px-6 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-cyan-600 shadow-md hover:bg-cyan-700 transition duration-150">
+          Enregistrer le Dossier et Continuer
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

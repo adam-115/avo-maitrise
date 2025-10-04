@@ -1,0 +1,103 @@
+<div class="mt-6">
+
+  <div class="flex justify-between items-center gap-4 mb-8">
+
+    <button id="add-note-button" (click)="openNoteCreationModal()"
+      class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150 flex-shrink-0">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+      </svg>
+      <span>Ajouter une Nouvelle Note Privée</span>
+    </button>
+
+    <select
+      class="p-2 border border-gray-300 rounded-lg w-full sm:w-auto max-w-xs focus:ring-cyan-500 focus:border-cyan-500 flex-shrink-0">
+      <option>Filtrer par auteur</option>
+      <option>Maître J. Dupont</option>
+      <option>Maître M. Martin</option>
+    </select>
+  </div>
+
+  <div class="space-y-6">
+
+    <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-cyan-500 hover:shadow-xl transition duration-200">
+      <div class="flex justify-between items-center mb-2 border-b pb-2">
+        <h3 class="text-lg font-bold text-slate-800">
+          Synthèse de la Visioconférence avec le client
+        </h3>
+        <div class="flex space-x-2">
+          <button class="text-gray-400 hover:text-cyan-600 transition p-1" title="Modifier">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+              </path>
+            </svg>
+          </button>
+          <button class="text-gray-400 hover:text-red-600 transition p-1" title="Supprimer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+              </path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <p class="text-gray-700 whitespace-pre-wrap">
+        Le client a confirmé les dates de transfert des fonds. Point sensible : ils souhaitent limiter la communication
+        publique au maximum.
+        * Ne pas mentionner l'action en justice avant le 15/10.
+        * Préparer une communication interne pour les associés.
+      </p>
+
+      <div class="mt-4 text-xs text-gray-500 flex justify-between">
+        <span>Créé par <span class="font-semibold text-slate-800">Maître J. Dupont</span></span>
+        <span><span class="font-semibold">04 Oct. 2025</span> à 14:30</span>
+      </div>
+    </div>
+
+    <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-cyan-500 hover:shadow-xl transition duration-200">
+      <div class="flex justify-between items-center mb-2 border-b pb-2">
+        <h3 class="text-lg font-bold text-slate-800">
+          Points de Stratégie Défense
+        </h3>
+        <div class="flex space-x-2">
+          <button class="text-gray-400 hover:text-cyan-600 transition p-1" title="Modifier">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+              </path>
+            </svg>
+          </button>
+          <button class="text-gray-400 hover:text-red-600 transition p-1" title="Supprimer">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+              </path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <p class="text-gray-700 whitespace-pre-wrap">
+        Revoir l'argumentaire basé sur la bonne foi du client dans les transactions.
+        Ne pas insister sur l'aspect technique des lois mais sur la dimension éthique.
+        À discuter avec M. Martin avant le 10/10.
+      </p>
+
+      <div class="mt-4 text-xs text-gray-500 flex justify-between">
+        <span>Créé par <span class="font-semibold text-slate-800">Maître M. Martin</span></span>
+        <span><span class="font-semibold">29 Sep. 2025</span> à 10:15</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<app-note-dialog></app-note-dialog>

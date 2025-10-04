@@ -1,0 +1,92 @@
+<div class="flex h-screen bg-gray-100">
+    <main class="flex-1 overflow-y-auto p-6 sm:p-10">
+
+        <header class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+            <div>
+                <a href="#" class="text-sm text-cyan-600 hover:text-cyan-800 font-medium">← Retour au Dossier PEN-2024-045</a>
+                <h1 class="text-3xl font-bold text-slate-800 mt-1">
+                    Calendrier du Dossier : Affaire C. c/ Ministère Public
+                </h1>
+            </div>
+            <button class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150 mt-4 sm:mt-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                <span>Ajouter un Événement</span>
+            </button>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <button class="p-2 text-gray-700 hover:bg-gray-100 rounded-full">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                    </button>
+                    <h2 class="text-2xl font-bold text-slate-800">Octobre 2025</h2>
+                     <button class="p-2 text-gray-700 hover:bg-gray-100 rounded-full">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-7 text-center text-sm font-semibold text-gray-500 border-b pb-2 mb-2">
+                    <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span class="text-red-500">Sam</span><span class="text-red-500">Dim</span>
+                </div>
+                <div class="grid grid-cols-7 gap-y-2 text-center text-sm">
+                    <span class="py-2 text-gray-400">29</span><span class="py-2 text-gray-400">30</span>
+
+                    <span class="py-2 text-gray-600 bg-cyan-100 rounded-full font-bold border border-cyan-500 relative">
+                        <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full ring-1 ring-white"></span>
+                        4
+                    </span>
+
+                    <span class="py-2 text-gray-600">5</span>
+
+                    <span class="py-2 text-red-700 font-bold relative">
+                        <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full ring-1 ring-white"></span>
+                        6
+                    </span>
+                    <span class="py-2 text-red-700 font-bold relative">
+                        <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full ring-1 ring-white"></span>
+                        7
+                    </span>
+
+                    <span class="py-2 text-gray-600">8</span>
+                    <span class="py-2 text-gray-600">...</span>
+                    <span class="py-2 text-gray-600 font-bold relative col-span-2">
+                        <span class="absolute top-0 right-0 h-2 w-2 bg-cyan-600 rounded-full ring-1 ring-white"></span>
+                        15
+                    </span>
+                    </div>
+            </div>
+
+            <div class="lg:col-span-1">
+                <h3 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4">
+                    Prochaines Échéances (4)
+                </h3>
+
+                <div class="space-y-4">
+
+                    <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-red-500 cursor-pointer hover:bg-red-50 transition">
+                        <p class="text-xs font-semibold uppercase text-red-600">07 Oct. - 09:30 (J-3)</p>
+                        <h4 class="font-bold text-slate-800">Audience devant le Tribunal Correctionnel</h4>
+                        <p class="text-sm text-gray-600 truncate">Lieu: Salle 3 | Responsable: M. Dupont</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-cyan-600 cursor-pointer hover:bg-cyan-50 transition">
+                        <p class="text-xs font-semibold uppercase text-cyan-600">15 Oct. - 11:00</p>
+                        <h4 class="font-bold text-slate-800">Réunion de stratégie avec le client S.A. Alpha</h4>
+                        <p class="text-sm text-gray-600 truncate">Lieu: Visioconférence | Responsable: M. Martin</p>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-gray-400 cursor-pointer hover:bg-gray-50 transition">
+                        <p class="text-xs font-semibold uppercase text-gray-600">28 Oct.</p>
+                        <h4 class="font-bold text-slate-800">Deadline: Finalisation du mémoire en défense</h4>
+                        <p class="text-sm text-gray-600 truncate">Type: Interne | Responsable: M. Dupont</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+</div>

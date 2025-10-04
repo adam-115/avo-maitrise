@@ -1,0 +1,142 @@
+<div class="mt-6">
+
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
+
+        <button (click)="openTaskCreationModal()" class="flex items-center space-x-2 px-4 py-2 bg-yellow-600 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-700 transition duration-150 w-full sm:w-auto flex-shrink-0 justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            <span>Ajouter une Nouvelle Tâche</span>
+        </button>
+
+        <div class="flex space-x-3 w-full sm:w-auto">
+             <select class="p-2 border border-gray-300 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500 flex-shrink-0">
+                <option>Statut : À Faire</option>
+                <option>Statut : Tous</option>
+                <option>Statut : Terminé</option>
+            </select>
+            <select class="p-2 border border-gray-300 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500 flex-shrink-0">
+                <option>Priorité : Tous</option>
+                <option>Priorité : Haute</option>
+                <option>Priorité : Normale</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mb-6 flex justify-between items-center border-b pb-2">
+        <h2 class="text-xl font-bold text-slate-800">
+            Liste des Tâches Actives (4)
+        </h2>
+        <span class="text-sm font-medium text-red-600 bg-red-100 px-3 py-1 rounded-full">
+            1 Tâche en Retard
+        </span>
+    </div>
+
+    <div class="space-y-4">
+
+        <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-red-600 transition duration-200 flex items-start space-x-4">
+            <input type="checkbox" id="task1" class="mt-1 w-5 h-5 text-red-600 border-red-300 rounded focus:ring-red-500 flex-shrink-0">
+
+            <div class="flex-grow">
+                <h3 class="text-lg font-bold text-slate-800">
+                    Finaliser le document de synthèse pour l'audience.
+                </h3>
+                <p class="text-sm text-gray-700 mt-1">
+                    Ajouter les références jurisprudentielles récentes et vérifier les citations.
+                </p>
+                <div class="mt-2 space-y-1 text-xs">
+                    <p>
+                        <span class="font-semibold text-gray-500">Échéance :</span>
+                        <span class="font-bold text-red-700">Dépassée (Hier 03/10/2025)</span>
+                    </p>
+                    <p>
+                        <span class="font-semibold text-gray-500">Assigné :</span> Maître Dupont
+                    </p>
+                </div>
+            </div>
+
+            <a (click)="openTaskDetailsModal()" class="text-gray-400 hover:text-cyan-600 transition flex-shrink-0 ml-4 p-1 rounded-full hover:bg-gray-100" title="Modifier la tâche">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            </a>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-yellow-600 transition duration-200 flex items-start space-x-4">
+            <input type="checkbox" id="task2" class="mt-1 w-5 h-5 text-yellow-600 border-yellow-300 rounded focus:ring-yellow-500 flex-shrink-0">
+
+            <div class="flex-grow">
+                <h3 class="text-lg font-bold text-slate-800">
+                    Contacter le client pour obtenir la pièce justificative n°4.
+                </h3>
+                <p class="text-sm text-gray-700 mt-1">
+                    Pièce nécessaire pour la réponse à l'assignation de la partie adverse.
+                </p>
+                <div class="mt-2 space-y-1 text-xs">
+                    <p>
+                        <span class="font-semibold text-gray-500">Échéance :</span>
+                        <span class="font-bold text-yellow-700">10/10/2025</span>
+                    </p>
+                    <p>
+                        <span class="font-semibold text-gray-500">Assigné :</span> Maître Martin
+                    </p>
+                </div>
+            </div>
+
+            <a href="#" class="text-gray-400 hover:text-cyan-600 transition flex-shrink-0 ml-4 p-1 rounded-full hover:bg-gray-100" title="Modifier la tâche">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            </a>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-cyan-600 transition duration-200 flex items-start space-x-4">
+            <input type="checkbox" id="task3" class="mt-1 w-5 h-5 text-cyan-600 border-cyan-300 rounded focus:ring-cyan-500 flex-shrink-0">
+
+            <div class="flex-grow">
+                <h3 class="text-lg font-bold text-slate-800">
+                    Enregistrer toutes les heures travaillées la semaine passée.
+                </h3>
+                <p class="text-sm text-gray-700 mt-1">
+                    Mise à jour du temps de travail sur le système de facturation.
+                </p>
+                <div class="mt-2 space-y-1 text-xs">
+                    <p>
+                        <span class="font-semibold text-gray-500">Échéance :</span> 14/10/2025
+                    </p>
+                    <p>
+                        <span class="font-semibold text-gray-500">Assigné :</span> Assistant J. S.
+                    </p>
+                </div>
+            </div>
+
+            <a href="#" class="text-gray-400 hover:text-cyan-600 transition flex-shrink-0 ml-4 p-1 rounded-full hover:bg-gray-100" title="Modifier la tâche">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+            </a>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-gray-400 transition duration-200 flex items-start space-x-4 opacity-70">
+            <input type="checkbox" id="task4" checked class="mt-1 w-5 h-5 text-gray-600 border-gray-300 rounded focus:ring-gray-500 flex-shrink-0">
+
+            <div class="flex-grow line-through">
+                <h3 class="text-lg font-bold text-slate-800">
+                    Ouvrir le dossier dans le système et attribuer la référence.
+                </h3>
+                <p class="text-sm text-gray-700 mt-1">
+                    Action d'onboarding initiale pour le dossier.
+                </p>
+                <div class="mt-2 text-xs">
+                    <p>
+                        <span class="font-semibold text-gray-500">Terminé le :</span> 29/09/2025
+                    </p>
+                </div>
+            </div>
+
+            <a href="#" class="text-gray-400 hover:text-cyan-600 transition flex-shrink-0 ml-4 p-1 rounded-full hover:bg-gray-100" title="Modifier la tâche">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+            </a>
+        </div>
+
+    </div>
+
+    <div class="mt-8 flex justify-end items-center border-t pt-4">
+        <p class="text-sm text-gray-600">Affichage de 1 à 4 sur 12 tâches</p>
+        </div>
+</div>
+
+<app-tache-dialog></app-tache-dialog>
+<app-tache-details-dialog></app-tache-details-dialog>

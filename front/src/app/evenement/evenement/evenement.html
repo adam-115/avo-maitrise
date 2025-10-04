@@ -1,0 +1,116 @@
+<div class="mt-6">
+
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
+
+        <button (click)="openEventCreationModal()" class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150 w-full sm:w-auto flex-shrink-0 justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <span>Ajouter un Nouvel Événement</span>
+        </button>
+
+        <div class="relative w-full sm:w-80">
+            <input type="text" placeholder="Rechercher par date, lieu, ou participant..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+    </div>
+
+
+    <div class="space-y-4">
+
+        <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-red-500 hover:shadow-xl transition duration-200 cursor-pointer">
+            <div class="flex items-start space-x-4">
+                <svg class="w-7 h-7 text-red-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+
+                <div class="flex-grow">
+                    <p class="text-xs font-semibold uppercase text-red-600 mb-1">
+                        Audience Criminelle - J-3
+                    </p>
+                    <h3 class="text-lg font-bold text-slate-800 leading-snug">
+                        Audience devant le Tribunal Correctionnel
+                    </h3>
+
+                    <div class="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-700 border-t pt-3">
+                        <div>
+                            <span class="font-semibold text-gray-600">Date/Heure :</span>
+                            <span class="font-bold text-slate-800">07 Oct. 2025 à 09:30</span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-600">Participant :</span> Maître Dupont
+                        </div>
+                        <div class="col-span-2">
+                            <span class="font-semibold text-gray-600">Lieu :</span> Salle 3, Palais de Justice de Paris
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-cyan-600 hover:shadow-xl transition duration-200 cursor-pointer">
+            <div class="flex items-start space-x-4">
+                <svg class="w-7 h-7 text-cyan-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z"></path></svg>
+
+                <div class="flex-grow">
+                    <p class="text-xs font-semibold uppercase text-cyan-600 mb-1">
+                        Rendez-vous
+                    </p>
+                    <h3 class="text-lg font-bold text-slate-800 leading-snug">
+                        Réunion de stratégie et validation du mémoire en défense
+                    </h3>
+
+                    <div class="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-700 border-t pt-3">
+                        <div>
+                            <span class="font-semibold text-gray-600">Date/Heure :</span>
+                            <span class="font-bold text-slate-800">15 Oct. 2025 à 11:00</span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-600">Participant :</span> Maître Martin
+                        </div>
+                        <div class="col-span-2">
+                            <span class="font-semibold text-gray-600">Lieu :</span> Bureau du Client (Visioconférence)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 border-gray-400 hover:shadow-xl transition duration-200 cursor-pointer">
+             <div class="flex items-start space-x-4">
+                <svg class="w-7 h-7 text-gray-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+
+                <div class="flex-grow">
+                    <p class="text-xs font-semibold uppercase text-gray-600 mb-1">
+                        Deadline Interne
+                    </p>
+                    <h3 class="text-lg font-bold text-slate-800 leading-snug">
+                        Date limite interne pour l'envoi des pièces au confrère
+                    </h3>
+
+                    <div class="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-700 border-t pt-3">
+                        <div>
+                            <span class="font-semibold text-gray-600">Date :</span>
+                            <span class="font-bold text-slate-800">28 Oct. 2025</span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-600">Type :</span> Juridique
+                        </div>
+                        <div class="col-span-2">
+                            <span class="font-semibold text-gray-600">Rappel :</span> Envoyer un rappel à l'équipe 5 jours avant.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mt-8 pt-4 border-t text-center">
+      <!-- TODO after -->
+        <p class="text-sm">
+            <a href="/home/dossier/calendrier" class="text-cyan-600 font-semibold hover:text-cyan-700 flex items-center justify-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                <span>Afficher tous les événements ou voir le Calendrier Complet</span>
+            </a>
+        </p>
+    </div>
+</div>
+
+<app-evenement-dialog></app-evenement-dialog>
