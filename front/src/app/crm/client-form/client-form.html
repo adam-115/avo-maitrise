@@ -1,0 +1,632 @@
+<div class="p-6 sm:p-10 bg-gray-50 min-h-screen">
+    <div class="mb-8 border-b border-gray-200 pb-4">
+        <nav class="text-sm font-medium text-gray-500 mb-2">
+            <a href="/contacts" class="hover:text-cyan-600">Gestion des Contacts</a> /
+            <span class="text-slate-800 font-semibold">Nouveau Client/Contact</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-slate-800">
+            Créer une Nouvelle Fiche Contact
+        </h1>
+        <p class="text-gray-600 mt-1">
+            Sélectionnez le type d'intervenant pour charger le formulaire de conformité adapté.
+        </p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border-l-4 border-cyan-600">
+        <label for="contact_type_switcher" class="block text-lg font-bold text-slate-800 mb-2">
+            Type d'Intervenant à Enregistrer <span class="text-red-500">*</span>
+        </label>
+        <select id="contact_type_switcher" name="contact_type_switcher" required [(ngModel)]="selectedClientType"
+            class="block w-full rounded-lg border-2 border-cyan-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-3 text-lg font-medium bg-white">
+            <option value="" disabled selected>-- Veuillez sélectionner le type de contact --</option>
+            <option [value]="clientType.PESONNE">Personne Physique (Particulier, Avocat Tiers, etc.)</option>
+            <option [value]="clientType.SOCIETE">Entité (Société, Organisation, Association)</option>
+            <option [value]="clientType.INSTITUTION">Institution / Juridiction (Tribunal, Administration)</option>
+        </select>
+    </div>
+
+    @if(selectedClientType === clientType.PESONNE) {
+    <form id="create-contact-form" class="bg-white rounded-xl shadow-lg p-8">
+
+        <div class="bg-red-50 p-4 rounded-lg border border-red-300 flex items-start space-x-3 mb-8">
+            <svg class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="text-sm text-red-700">
+                <span class="font-bold">Obligation de Vigilance :</span> Les champs marqués d'un astérisque (<span
+                    class="text-red-500">*</span>) sont cruciaux pour la conformité au code de déontologie et à la
+                **Lutte contre
+                le Blanchiment (AML)**.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+            <div class="lg:col-span-1 space-y-6">
+                <h4 class="text-xl font-bold text-slate-800 border-b pb-2 text-cyan-700">1. Informations de Base</h4>
+
+                <div>
+                    <label for="contact_type" class="block text-sm font-medium text-gray-700 mb-1">Type de Contact <span
+                            class="text-red-500">*</span></label>
+                    <select id="contact_type" name="contact_type" required
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5 bg-gray-50">
+                        <option>Personne Physique (Particulier)</option>
+                        <option>Entité (Société, Association)</option>
+                        <option>Institution / Juridiction</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="last_name" class="block text-sm font-medium text-gray-700 mb-1">Nom / Dénomination <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" name="last_name" id="last_name" required placeholder="Ex: Dupont ou Société Alpha S.A."
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                </div>
+                <div>
+                    <label for="first_name" class="block text-sm font-medium text-gray-700 mb-1">Prénom (si applicable)</label>
+                    <input type="text" name="first_name" id="first_name" placeholder="Ex: Jean"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Adresse Email <span
+                            class="text-red-500">*</span></label>
+                    <input type="email" name="email" id="email" required placeholder="contact@exemple.com"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                </div>
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone Principal</label>
+                    <input type="tel" name="phone" id="phone" placeholder="+33 XX XX XX XX XX"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                </div>
+
+                <div>
+                    <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Adresse Complète</label>
+                    <textarea id="address" name="address" rows="2" placeholder="Adresse complète..."
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5"></textarea>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 space-y-6">
+                <h4 class="text-xl font-bold text-slate-800 border-b pb-2 text-green-700">2. Identification & Rôle (KYC)</h4>
+
+                <div>
+                    <label for="primary_role" class="block text-sm font-medium text-gray-700 mb-1">Rôle Principal dans le Cabinet
+                        <span class="text-red-500">*</span></label>
+                    <select id="primary_role" name="primary_role" required
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                        <option>Client (Actif)</option>
+                        <option>Prospect</option>
+                        <option>Avocat Tiers / Adverse</option>
+                        <option>Expert / Fournisseur</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="id_doc_number" class="block text-sm font-medium text-gray-700 mb-1">N° Identification
+                        (CNI/Kbis/SIREN) <span class="text-red-500">*</span></label>
+                    <input type="text" name="id_doc_number" id="id_doc_number" required placeholder="N° légal d'enregistrement"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                </div>
+                <div>
+                    <label for="nationality" class="block text-sm font-medium text-gray-700 mb-1">Nationalité / Pays
+                        d'Enregistrement</label>
+                    <input type="text" name="nationality" id="nationality" placeholder="Ex: France ou Luxembourg"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                </div>
+
+                <div>
+                    <label for="birth_date_or_creation" class="block text-sm font-medium text-gray-700 mb-1">Date de Naissance /
+                        Création</label>
+                    <input type="date" name="birth_date_or_creation" id="birth_date_or_creation"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                </div>
+
+                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <label for="id_file" class="block text-sm font-medium text-gray-700 mb-1">Télécharger Pièce d'Identité /
+                        Kbis</label>
+                    <input type="file" name="id_file" id="id_file"
+                        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100">
+                    <p class="text-xs text-gray-500 mt-2">Document essentiel pour la vérification d'identité (KYC).</p>
+                </div>
+
+            </div>
+
+            <div class="lg:col-span-1 space-y-6">
+                <h4 class="text-xl font-bold text-slate-800 border-b pb-2 text-red-700">3. Conformité & Risques (AML)</h4>
+
+                <div>
+                    <label for="is_pep" class="block text-sm font-medium text-gray-700 mb-1">Est-ce une Personne Politiquement
+                        Exposée (PPE) ? <span class="text-red-500">*</span></label>
+                    <select id="is_pep" name="is_pep" required
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                        <option value="NO">Non</option>
+                        <option value="YES" class="bg-red-50 text-red-800">Oui (Vigilance accrue)</option>
+                        <option value="RELATED" class="bg-yellow-50 text-yellow-800">Lié à une PPE</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="funds_origin" class="block text-sm font-medium text-gray-700 mb-1">Origine des Fonds / Patrimoine
+                        <span class="text-red-500">*</span></label>
+                    <select id="funds_origin" name="funds_origin" required
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                        <option>Revenus d'activité professionnelle</option>
+                        <option>Héritage / Donation</option>
+                        <option>Vente d'actifs</option>
+                        <option>Autre (Détail ci-dessous)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="relation_type" class="block text-sm font-medium text-gray-700 mb-1">Type de Relation d'Affaires
+                        <span class="text-red-500">*</span></label>
+                    <select id="relation_type" name="relation_type" required
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                        <option>Occasionnelle (unique)</option>
+                        <option>Régulière (récurrente)</option>
+                        <option>Permanente (contrat annuel)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="aml_risk" class="block text-sm font-medium text-gray-700 mb-1">Évaluation du Risque AML <span
+                            class="text-red-500">*</span></label>
+                    <select id="aml_risk" name="aml_risk" required
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                        <option value="FAIBLE" class="bg-green-50 text-green-800">Faible</option>
+                        <option value="MOYEN" class="bg-yellow-50 text-yellow-800">Moyen</option>
+                        <option value="ELEVEE" class="bg-red-50 text-red-800">Élevée</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="diligence_notes" class="block text-sm font-medium text-gray-700 mb-1">Notes de Diligence Due
+                        (Vérifications effectuées)</label>
+                    <textarea id="diligence_notes" name="diligence_notes" rows="4"
+                        placeholder="Détail des recherches effectuées (Sanctions, Registres Publics)..."
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5"></textarea>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-10 border-t border-gray-200 pt-6">
+            <h4 class="text-xl font-bold text-slate-800 border-b pb-2 text-red-700">4. Validation AML/KYC (Usage Interne)</h4>
+            <p class="text-sm text-gray-600 mt-2 mb-6">À remplir par l'équipe Compliance/Enregistrement après vérification complète des éléments du client.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div class="space-y-4">
+                    <h5 class="text-base font-semibold text-slate-800">1. Vérification Préliminaire</h5>
+                    <div class="flex items-center space-x-3">
+                        <input id="check_authenticity" name="check_authenticity" type="checkbox"
+                            class="h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500">
+                        <label for="check_authenticity" class="text-sm font-medium text-gray-700">
+                            Vérification de l'Authenticité & Cohérence des informations (Nom, Adresse, Pièce d'Identité).
+                        </label>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <input id="check_sanctions_pep" name="check_sanctions_pep" type="checkbox"
+                            class="h-5 w-5 rounded border-gray-300 text-red-600 focus:ring-red-500">
+                        <label for="check_sanctions_pep" class="text-sm font-medium text-gray-700">
+                            Contrôles Réglementaires effectués (Sanctions, Listes Terroristes, PEP).
+                        </label>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h5 class="text-base font-semibold text-slate-800">2. Analyse et Conclusion</h5>
+
+                    <div>
+                        <label for="compliance_risk_scoring" class="block text-sm font-medium text-gray-700 mb-1">Analyse de Risque et Scoring Final</label>
+                        <select id="compliance_risk_scoring" name="compliance_risk_scoring"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                            <option value="" disabled selected>-- Sélectionner le Score --</option>
+                            <option value="LOW" class="bg-green-50 text-green-800">Faible (Accepté)</option>
+                            <option value="MEDIUM" class="bg-yellow-50 text-yellow-800">Moyen (Vigilance Accrue)</option>
+                            <option value="HIGH" class="bg-red-50 text-red-800">Élevé (Escalader / Refuser)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="compliance_approval" class="block text-sm font-medium text-gray-700 mb-1">Validation Finale par le Responsable Compliance <span class="text-red-500">*</span></label>
+                        <input type="text" id="compliance_approval" name="compliance_approval" placeholder="Nom du responsable et date" required
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5 bg-green-50">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-300">
+                 <label for="archiving_status" class="block text-sm font-bold text-gray-700 mb-1">Documentation et Archivage</label>
+                 <p class="text-xs text-gray-600 mb-2">Statut de l'archivage physique et numérique des documents KYC (Pièce d'identité, Justificatifs).</p>
+                 <select id="archiving_status" name="archiving_status"
+                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2.5 bg-white">
+                    <option value="PENDING" selected>En Attente d'Archivage</option>
+                    <option value="COMPLETED">Archivage Complété</option>
+                 </select>
+            </div>
+        </div>
+        <div class="mt-10 pt-6 border-t border-gray-200 flex justify-end space-x-3">
+            <button type="button"
+                class="px-6 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
+                Annuler
+            </button>
+            <button type="submit"
+                class="px-6 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-green-600 shadow-md hover:bg-green-700 transition duration-150">
+                Créer la Fiche Client
+            </button>
+        </div>
+    </form>
+    }
+
+
+    @if (selectedClientType === clientType.SOCIETE) {
+
+    <form id="create-entity-contact-form" class="bg-white rounded-xl shadow-lg p-8">
+
+        <div class="bg-red-50 p-4 rounded-lg border border-red-300 flex items-start space-x-3 mb-8">
+            <svg class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <p class="text-sm text-red-700">
+                <span class="font-bold">Obligation de Vigilance :</span> La vérification du **Bénéficiaire Effectif** et des
+                documents légaux (Kbis) est essentielle pour l'AML d'une entité.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+
+            <div class="lg:col-span-1 space-y-6">
+                <h4 class="text-xl font-bold text-slate-800 border-b pb-2 text-cyan-700">1. Identité et Coordonnées de l'Entité
+                </h4>
+
+                <div>
+                    <label for="contact_type" class="block text-sm font-medium text-gray-700 mb-1">Type de Contact</label>
+                    <select id="contact_type" name="contact_type" disabled
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2.5 bg-gray-200 cursor-not-allowed">
+                        <option selected>Entité (Société, Association)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="entity_name" class="block text-sm font-medium text-gray-700 mb-1">Dénomination Sociale <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" name="entity_name" id="entity_name" required placeholder="Ex: Société Alpha S.A."
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="legal_form" class="block text-sm font-medium text-gray-700 mb-1">Forme Juridique</label>
+                        <input type="text" name="legal_form" id="legal_form" placeholder="Ex: SAS, SARL"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                    </div>
+                    <div>
+                        <label for="share_capital" class="block text-sm font-medium text-gray-700 mb-1">Capital Social (si
+                            applicable)</label>
+                        <input type="number" name="share_capital" id="share_capital" placeholder="50000"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email de Contact <span
+                            class="text-red-500">*</span></label>
+                    <input type="email" name="email" id="email" required placeholder="contact@societe-alpha.com"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                </div>
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone du Siège</label>
+                    <input type="tel" name="phone" id="phone" placeholder="+33 XX XX XX XX XX"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                </div>
+
+                <div>
+                    <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Adresse du Siège Social</label>
+                    <textarea id="address" name="address" rows="2" placeholder="Adresse complète du siège..."
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5"></textarea>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 space-y-6">
+                <h4 class="text-xl font-bold text-slate-800 border-b pb-2 text-green-700">2. Identification Légale &
+                    Représentant</h4>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="siren" class="block text-sm font-medium text-gray-700 mb-1">N° SIREN <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" name="siren" id="siren" required placeholder="Ex: 123 456 789"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                    </div>
+                    <div>
+                        <label for="vat_number" class="block text-sm font-medium text-gray-700 mb-1">N° TVA
+                            Intracommunautaire</label>
+                        <input type="text" name="vat_number" id="vat_number" placeholder="Ex: FR00123456789"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="creation_date" class="block text-sm font-medium text-gray-700 mb-1">Date
+                            d'Immatriculation</label>
+                        <input type="date" name="creation_date" id="creation_date"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                    </div>
+                    <div>
+                        <label for="country" class="block text-sm font-medium text-gray-700 mb-1">Pays d'Enregistrement</label>
+                        <input type="text" name="country" id="country" placeholder="Ex: France"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                    </div>
+                </div>
+
+                <div class="p-4 bg-green-50 rounded-lg border border-green-300">
+                    <label for="legal_rep_name" class="block text-sm font-bold text-gray-700 mb-1">Nom du Représentant Légal <span
+                            class="text-red-500">*</span></label>
+                    <input type="text" name="legal_rep_name" id="legal_rep_name" required
+                        placeholder="Nom et Prénom du Gérant/Président"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5">
+                    <p class="text-xs text-gray-500 mt-2">C'est la personne physique à vérifier pour l'AML.</p>
+                </div>
+
+
+                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <label for="kbis_file" class="block text-sm font-medium text-gray-700 mb-1">Télécharger Extrait Kbis /
+                        Document Légal</label>
+                    <input type="file" name="kbis_file" id="kbis_file"
+                        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100">
+                    <p class="text-xs text-gray-500 mt-2">Document essentiel pour la vérification légale (KYC).</p>
+                </div>
+
+            </div>
+
+            <div class="lg:col-span-1 space-y-6">
+                <h4 class="text-xl font-bold text-slate-800 border-b pb-2 text-red-700">3. Conformité & Risques (AML)</h4>
+
+                <div>
+                    <label for="beneficial_owner" class="block text-sm font-medium text-gray-700 mb-1">Nom du Bénéficiaire(s)
+                        Effectif(s) <span class="text-red-500">*</span></label>
+                    <input type="text" name="beneficial_owner" id="beneficial_owner" required
+                        placeholder="Nom(s) des Personnes Physiques détenant > 25%"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                    <p class="text-xs text-gray-500 mt-2">À vérifier sur le Registre des Bénéficiaires Effectifs (RBE).</p>
+                </div>
+
+                <div>
+                    <label for="is_pep" class="block text-sm font-medium text-gray-700 mb-1">PPE (pour l'entité ou un B.E.) ?
+                        <span class="text-red-500">*</span></label>
+                    <select id="is_pep" name="is_pep" required
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                        <option value="NO">Non</option>
+                        <option value="YES" class="bg-red-50 text-red-800">Oui (Vigilance accrue)</option>
+                        <option value="RELATED" class="bg-yellow-50 text-yellow-800">Lié à une PPE</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="activity_sector" class="block text-sm font-medium text-gray-700 mb-1">Secteur d'Activité</label>
+                        <input type="text" name="activity_sector" id="activity_sector" placeholder="Ex: Immobilier, Finance"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                    </div>
+                    <div>
+                        <label for="aml_risk" class="block text-sm font-medium text-gray-700 mb-1">Évaluation du Risque AML <span
+                                class="text-red-500">*</span></label>
+                        <select id="aml_risk" name="aml_risk" required
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                            <option value="FAIBLE" class="bg-green-50 text-green-800">Faible</option>
+                            <option value="MOYEN" class="bg-yellow-50 text-yellow-800">Moyen</option>
+                            <option value="ELEVEE" class="bg-red-50 text-red-800">Élevée</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="diligence_notes" class="block text-sm font-medium text-gray-700 mb-1">Notes de Diligence Due /
+                        Justifications</label>
+                    <textarea id="diligence_notes" name="diligence_notes" rows="5"
+                        placeholder="Détail des vérifications du Kbis, du B.E. et des recherches de sanctions..."
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5"></textarea>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-10 border-t border-gray-200 pt-6">
+            <h4 class="text-xl font-bold text-slate-800 border-b pb-2 text-red-700">4. Validation AML/KYC & Conformité (Usage Interne)</h4>
+            <p class="text-sm text-gray-600 mt-2 mb-6">À remplir par l'équipe Compliance/Enregistrement après vérification complète des documents légaux et des bénéficiaires effectifs (B.E.).</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div class="space-y-4">
+                    <h5 class="text-base font-semibold text-slate-800">1. Vérification Préliminaire</h5>
+                    <div class="flex items-center space-x-3">
+                        <input id="check_kbis_be" name="check_kbis_be" type="checkbox"
+                            class="h-5 w-5 rounded border-gray-300 text-green-600 focus:ring-green-500">
+                        <label for="check_kbis_be" class="text-sm font-medium text-gray-700">
+                            Vérification de l'Authenticité du Kbis et du Registre des Bénéficiaires Effectifs (RBE).
+                        </label>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <input id="check_sanctions_pep_entity" name="check_sanctions_pep_entity" type="checkbox"
+                            class="h-5 w-5 rounded border-gray-300 text-red-600 focus:ring-red-500">
+                        <label for="check_sanctions_pep_entity" class="text-sm font-medium text-gray-700">
+                            Contrôles Réglementaires effectués sur l'entité, ses dirigeants et B.E. (Sanctions, PEP).
+                        </label>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h5 class="text-base font-semibold text-slate-800">2. Analyse et Conclusion</h5>
+
+                    <div>
+                        <label for="compliance_risk_scoring_entity" class="block text-sm font-medium text-gray-700 mb-1">Analyse de Risque et Scoring Final</label>
+                        <select id="compliance_risk_scoring_entity" name="compliance_risk_scoring_entity"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                            <option value="" disabled selected>-- Sélectionner le Score --</option>
+                            <option value="LOW" class="bg-green-50 text-green-800">Faible (Accepté)</option>
+                            <option value="MEDIUM" class="bg-yellow-50 text-yellow-800">Moyen (Vigilance Accrue)</option>
+                            <option value="HIGH" class="bg-red-50 text-red-800">Élevé (Escalader / Refuser)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="compliance_approval_entity" class="block text-sm font-medium text-gray-700 mb-1">Validation Finale par le Responsable Compliance <span class="text-red-500">*</span></label>
+                        <input type="text" id="compliance_approval_entity" name="compliance_approval_entity" placeholder="Nom du responsable et date" required
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 p-2.5 bg-green-50">
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-300">
+                 <label for="archiving_status_entity" class="block text-sm font-bold text-gray-700 mb-1">Documentation et Archivage</label>
+                 <p class="text-xs text-gray-600 mb-2">Statut de l'archivage physique et numérique des documents légaux (Kbis, Statuts, RBE).</p>
+                 <select id="archiving_status_entity" name="archiving_status_entity"
+                    class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-yellow-500 focus:ring-yellow-500 p-2.5 bg-white">
+                    <option value="PENDING" selected>En Attente d'Archivage</option>
+                    <option value="COMPLETED">Archivage Complété</option>
+                 </select>
+            </div>
+        </div>
+        <div class="mt-10 pt-6 border-t border-gray-200 flex justify-end space-x-3">
+            <button type="button"
+                class="px-6 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
+                Annuler et Revenir
+            </button>
+            <button type="submit"
+                class="px-6 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-green-600 shadow-md hover:bg-green-700 transition duration-150">
+                Créer la Fiche Entité
+            </button>
+        </div>
+
+    </form>
+    }
+
+    @if (selectedClientType === clientType.INSTITUTION) {
+
+    <form id="create-institution-form" class="bg-white rounded-xl shadow-lg p-8">
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+
+            <div class="lg:col-span-1 space-y-6">
+                <h4 class="text-xl font-bold text-slate-800 border-b pb-2 text-cyan-700">1. Identité et Coordonnées Officielles
+                </h4>
+
+                <div>
+                    <label for="institution_name" class="block text-sm font-medium text-gray-700 mb-1">Nom de
+                        l'Institution/Juridiction <span class="text-red-500">*</span></label>
+                    <input type="text" name="institution_name" id="institution_name" required
+                        placeholder="Ex: Tribunal de Commerce de Paris, Cour d'Appel..."
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="institution_category" class="block text-sm font-medium text-gray-700 mb-1">Catégorie <span
+                                class="text-red-500">*</span></label>
+                        <select id="institution_category" name="institution_category" required
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 bg-gray-50">
+                            <option>Tribunal Judiciaire / de Grande Instance</option>
+                            <option>Tribunal de Commerce</option>
+                            <option>Cour d'Appel / Cour de Cassation</option>
+                            <option>Ministère Public / Parquet</option>
+                            <option>Administration (Fisc, URSSAF, etc.)</option>
+                            <option>Autre (Office, Organisme)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="city" class="block text-sm font-medium text-gray-700 mb-1">Ville / Localisation <span
+                                class="text-red-500">*</span></label>
+                        <input type="text" name="city" id="city" required placeholder="Ex: Paris ou Casablanca"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="official_email" class="block text-sm font-medium text-gray-700 mb-1">Email Officiel <span
+                            class="text-red-500">*</span></label>
+                    <input type="email" name="official_email" id="official_email" required
+                        placeholder="greffe.tj-paris@justice.fr"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                </div>
+                <div>
+                    <label for="official_phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone Principal</label>
+                    <input type="tel" name="official_phone" id="official_phone" placeholder="+33 XX XX XX XX XX"
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                </div>
+
+                <div>
+                    <label for="official_address" class="block text-sm font-medium text-gray-700 mb-1">Adresse Complète</label>
+                    <textarea id="official_address" name="official_address" rows="2" placeholder="Adresse complète..."
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5"></textarea>
+                </div>
+            </div>
+
+            <div class="lg:col-span-1 space-y-6">
+                <h4 class="text-xl font-bold text-slate-800 border-b pb-2 text-blue-700">2. Contacts Clés et Informations
+                    Internes</h4>
+
+                <div class="p-4 bg-blue-50 rounded-lg border border-blue-300">
+                    <label for="contact_person_title" class="block text-sm font-bold text-gray-700 mb-1">Contact pour la
+                        Signification/Notification</label>
+                    <input type="text" name="contact_person_title" id="contact_person_title"
+                        placeholder="Ex: Chef de Greffe, Secrétariat du Juge..."
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                    <p class="text-xs text-gray-500 mt-2">Nom du rôle ou du service à contacter directement.</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="postcode" class="block text-sm font-medium text-gray-700 mb-1">Code Postal</label>
+                        <input type="text" name="postcode" id="postcode"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                    </div>
+                    <div>
+                        <label for="fax" class="block text-sm font-medium text-gray-700 mb-1">N° de Fax</label>
+                        <input type="tel" name="fax" id="fax"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="primary_role" class="block text-sm font-medium text-gray-700 mb-1">Rôle Type dans les Affaires
+                        <span class="text-red-500">*</span></label>
+                    <select id="primary_role" name="primary_role" required
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                        <option>Juridiction / Tribunal</option>
+                        <option>Partie Adverse (Administration)</option>
+                        <option>Organisme Officiel (Notaire, Huissier)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="internal_notes" class="block text-sm font-medium text-gray-700 mb-1">Notes Internes sur
+                        l'Institution</label>
+                    <textarea id="internal_notes" name="internal_notes" rows="6"
+                        placeholder="Heures d'ouverture, procédures spécifiques, ou contacts privilégiés..."
+                        class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5"></textarea>
+                </div>
+            </div>
+
+        </div>
+        <div class="mt-10 pt-6 border-t border-gray-200 flex justify-end space-x-3">
+            <button type="button"
+                class="px-6 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
+                Annuler et Revenir
+            </button>
+            <button type="submit"
+                class="px-6 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-cyan-600 shadow-md hover:bg-cyan-700 transition duration-150">
+                Créer la Fiche Institution
+            </button>
+        </div>
+    </form>
+
+    }
+
+</div>

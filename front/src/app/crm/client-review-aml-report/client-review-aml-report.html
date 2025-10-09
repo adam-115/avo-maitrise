@@ -11,7 +11,7 @@
                 Rapport de Revue AML/KYC - <span class="text-cyan-700">15 Février 2025</span>
             </h1>
             <p class="text-gray-600 mt-1">
-                Document de synthèse et conclusions de la procédure de vigilance pour **[Nom & Prénom du Client]**.
+                Document de synthèse et conclusions de la procédure de vigilance.
             </p>
         </div>
         <button onclick="window.print()"
@@ -21,7 +21,7 @@
         </button>
     </div>
 
-    <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border-l-4 border-yellow-600">
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border-l-4 border-red-600">
         <div class="grid grid-cols-3 gap-6 text-center">
 
             <div>
@@ -31,8 +31,8 @@
 
             <div>
                 <p class="text-xs text-gray-500 font-medium uppercase">Niveau de Risque Final</p>
-                <span class="mt-1 px-4 py-1 inline-flex text-xl font-extrabold rounded-lg bg-yellow-100 text-yellow-800">
-                    MOYEN
+                <span class="mt-1 px-4 py-1 inline-flex text-xl font-extrabold rounded-lg bg-red-100 text-red-800">
+                    ÉLEVÉE
                 </span>
             </div>
 
@@ -54,22 +54,22 @@
                 <div class="space-y-4 text-sm">
                     <div>
                         <p class="font-bold text-gray-700">Motif Principal :</p>
-                        <p class="text-slate-800">Mise à jour d'informations (Expiration de la Pièce d'Identité)</p>
+                        <p class="text-slate-800">Détection d'une PPE ou lien familial (Vigilance Renforcée)</p>
                     </div>
                     <div>
                         <p class="font-bold text-gray-700">Réalisé par :</p>
-                        <p class="text-slate-800">E. Dubois (Gestionnaire de Dossier)</p>
+                        <p class="text-slate-800">A. Duchemin (Compliance)</p>
                     </div>
                     <div>
                         <p class="font-bold text-gray-700">Prochaine Revue Requise :</p>
-                        <p class="text-slate-800 font-bold">15/02/2026</p>
+                        <p class="text-red-600 font-bold">15/02/2026</p>
                     </div>
                 </div>
 
                 <div class="mt-6 border-t pt-4">
                     <p class="font-bold text-gray-700 mb-2">Justification Détaillée :</p>
                     <p class="text-sm text-gray-700 italic bg-gray-50 p-3 rounded-lg">
-                        La CNI du client a expiré en janvier 2025. Le client a fourni son nouveau passeport luxembourgeois. La revue a été lancée pour vérifier ce nouveau document et reconfirmer l'origine des fonds suite à une récente donation. Le niveau de risque reste inchangé (MOYEN).
+                        L'actionnaire majoritaire (Sarah Chen) a été identifiée comme ayant des liens familiaux avec une Personne Politiquement Exposée (PPE) étrangère. Le risque a été maintenu à ÉLEVÉE, mais la relation d'affaires a été confirmée comme légitime après vérification complète. Surveillance annuelle obligatoire.
                     </p>
                 </div>
             </div>
@@ -102,39 +102,39 @@
                             <td class="px-6 py-4">
                                 <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">VALIDÉ</span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Aucune correspondance trouvée. Contrôle OK.</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">Aucune correspondance trouvée sur les listes de sanctions.</td>
                         </tr>
 
                         <tr>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">Validité des documents d'identité (CNI/Passeport)</td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">Validité des documents d'identité (Kbis, CNI)</td>
                             <td class="px-6 py-4">
                                 <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">VALIDÉ</span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Nouveau passeport (LUX) fourni et archivé. Date de validité : 2035.</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">Kbis à jour (01/01/2025) vérifié et archivé.</td>
                         </tr>
 
                         <tr>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">Identification d'une Personne Politiquement Exposée (PPE)</td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">Identification d'une PPE ou d'un Lien</td>
                             <td class="px-6 py-4">
-                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">AUCUNE ALERTE</span>
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-red-100 text-red-800">ALERTE</span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Statut PPE confirmé NON. Vigilance simple requise.</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">**Nouveau lien familial PPE étranger** confirmé. Le risque ÉLEVÉE est justifié.</td>
                         </tr>
 
                         <tr>
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">Justificatif de Domicile</td>
+                            <td class="px-6 py-4 text-sm font-medium text-gray-900">Vérification du Registre des B.E. (RBE)</td>
                             <td class="px-6 py-4">
-                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">VALIDÉ</span>
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">MIS À JOUR</span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Facture d'électricité (déc. 2024) fournie. Adresse inchangée.</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">RBE mis à jour suite au changement d'actionnaire. Documentation complète.</td>
                         </tr>
 
                         <tr>
                             <td class="px-6 py-4 text-sm font-medium text-gray-900">Preuve de l'Origine des Fonds/Patrimoine</td>
                             <td class="px-6 py-4">
-                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">CLARIFICATION</span>
+                                <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">VALIDÉ</span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Documentation reçue pour la donation. Jugée conforme au profil.</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">Déclaration sur l'honneur et documents justificatifs jugés suffisants.</td>
                         </tr>
 
                     </tbody>
@@ -151,14 +151,14 @@
                     </div>
                     <div>
                         <p class="font-bold text-gray-700">Signature Électronique :</p>
-                        <p class="text-slate-800 font-mono">HASH-4F7c2bH6-RPT</p>
+                        <p class="text-slate-800 font-mono">HASH-58Gf69hS-RPT</p>
                     </div>
                 </div>
 
-                <div class="mt-6 p-3 bg-green-50 rounded-lg border border-green-300">
-                    <p class="font-bold text-green-800">Décision sur le Risque :</p>
-                    <p class="text-sm text-green-700">
-                        Maintenu au niveau **MOYEN** (en raison de l'origine partielle des fonds par donation). La conformité est à jour.
+                <div class="mt-6 p-3 bg-red-50 rounded-lg border border-red-300">
+                    <p class="font-bold text-red-800">Décision sur le Risque :</p>
+                    <p class="text-sm text-red-700">
+                        Maintenu au niveau **ÉLEVÉE**. Nécessite une surveillance annuelle continue et une validation par le Comité de Surveillance avant toute transaction significative.
                     </p>
                 </div>
             </div>

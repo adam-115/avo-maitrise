@@ -1,3 +1,4 @@
+import { ReviewAml } from './crm/review-aml/review-aml';
 import { Routes } from '@angular/router';
 import { Dossier } from './dossier/dossier/dossier';
 import { Paths } from './paths';
@@ -6,6 +7,11 @@ import { Test } from './test/test';
 import { DossierForm } from './dossier/dossier-form/dossier-form';
 import { DossierDetails } from './dossier/dossier-details/dossier-details';
 import { CalendrierDossier } from './calendrier/calendrier-dossier/calendrier-dossier';
+import { Crm } from './crm/crm/crm';
+import { ClientForm } from './crm/client-form/client-form';
+import { ClientDetails } from './crm/client-details/client-details';
+import { ClientReviewsAml } from './crm/crm/client-reviews-aml/client-reviews-aml';
+import { ClientReviewAmlReport } from './crm/client-review-aml-report/client-review-aml-report';
 
 export const routes: Routes = [
   {
@@ -28,6 +34,40 @@ export const routes: Routes = [
         path: 'dossier/calendrier',
         component: CalendrierDossier
       },
+
+      {
+        path: Paths.CRM,
+        component: Crm,
+      },
+      {
+        path: Paths.CLIENT_FORM,
+        component: ClientForm
+      },
+      {
+        path: Paths.CLIENT_DETAILS,
+        component:ClientDetails
+      },
+      {
+        path: Paths.REVIEW_AML,
+        component: ReviewAml
+      },
+      {
+        path: Paths.CLIENT_REVIEWS_AML,
+        component: ClientReviewsAml
+      },
+      {
+        path: Paths.CLIENT_REVIEWS_AML_REPORT,
+        component: ClientReviewAmlReport
+      },
+      // this for review aml for person type contact
+      {
+        path: Paths.PERSON_REVIEW_AML,
+        component: ReviewAml
+      },
+      {
+       path: Paths.AML_REPORT_PERSON,
+       component: ClientReviewAmlReport
+      }
     ]
   },
 

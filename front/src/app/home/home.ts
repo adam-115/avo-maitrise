@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
+import { Paths } from '../paths';
 
 @Component({
   selector: 'app-home',
@@ -15,6 +16,10 @@ export class Home {
 
   navigateTODossier() {
     this.router.navigateByUrl('/home/dossier');
+  }
+
+  navigateTOClients() {
+    this.router.navigateByUrl(Paths.HOME + '/' + Paths.CRM);
   }
 
 }
