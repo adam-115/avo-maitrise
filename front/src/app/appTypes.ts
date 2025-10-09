@@ -73,3 +73,15 @@ export interface ClientDetail {
   sector: string,
   registrationNumber: string,
 }
+// Interface pour définir la structure d'une Audience Judiciaire
+export  interface Hearing {
+  id: number;
+  title: string;
+  clientCase: string;
+  time: string; // Heure de début "HH:mm"
+  endTime: string; // Heure de fin "HH:mm"
+  location: string;
+  status: 'Urgent' | 'Standard' | 'Reporté';
+  date: Date;
+  style?: any; // Contient les styles calculés: { top: '...', height: '...', width: '...', left: '...' }
+}

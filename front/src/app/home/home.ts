@@ -34,4 +34,8 @@ export class Home {
     this.router.navigateByUrl(Paths.HOME + '/' + Paths.FACTURATION);
   }
 
+  navigateToCalendrierDossier() {
+    this.router.navigateByUrl(Paths.HOME + '/' + Paths.CALENDRIER_DOSSIER);
+  }
+
 }

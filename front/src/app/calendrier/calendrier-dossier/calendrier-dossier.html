@@ -1,92 +1,117 @@
-<div class="flex h-screen bg-gray-100">
-    <main class="flex-1 overflow-y-auto p-6 sm:p-10">
+<div class="p-6 sm:p-8 bg-gray-50 rounded-xl shadow-2xl">
 
-        <header class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center">
-            <div>
-                <a href="#" class="text-sm text-cyan-600 hover:text-cyan-800 font-medium">← Retour au Dossier PEN-2024-045</a>
-                <h1 class="text-3xl font-bold text-slate-800 mt-1">
-                    Calendrier du Dossier : Affaire C. c/ Ministère Public
-                </h1>
-            </div>
-            <button class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150 mt-4 sm:mt-0">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                <span>Ajouter un Événement</span>
-            </button>
-        </header>
+  <div class="mb-6 flex justify-between items-center border-b pb-4">
+    <h2 class="text-3xl font-bold text-slate-800 flex items-center">
+      <svg class="w-8 h-8 mr-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+        </path>
+      </svg>
+      Rôle des Audiences de la Semaine
+    </h2>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="flex space-x-3 items-center">
+      <button (click)="goToCurrentWeek()"
+        class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150 flex items-center">
+        Semaine en Cours
+      </button>
+      <button (click)="changeWeek(-1)"
+        class="px-3 py-2 text-sm font-medium rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 transition duration-150">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      <span class="text-lg font-semibold text-slate-800 whitespace-nowrap">
+        {{ weekStart | date:'dd MMM' }} - {{ getDateForDay(4, weekStart) | date:'dd MMM yyyy' }}
+      </span>
+      <button (click)="changeWeek(1)"
+        class="px-3 py-2 text-sm font-medium rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 transition duration-150">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
 
-            <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                <div class="flex justify-between items-center mb-4">
-                    <button class="p-2 text-gray-700 hover:bg-gray-100 rounded-full">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                    </button>
-                    <h2 class="text-2xl font-bold text-slate-800">Octobre 2025</h2>
-                     <button class="p-2 text-gray-700 hover:bg-gray-100 rounded-full">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </button>
-                </div>
+      <button (click)="openAddHearingDialog()"
+        class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 flex items-center ml-4">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Ajouter
+      </button>
+    </div>
+  </div>
 
-                <div class="grid grid-cols-7 text-center text-sm font-semibold text-gray-500 border-b pb-2 mb-2">
-                    <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span class="text-red-500">Sam</span><span class="text-red-500">Dim</span>
-                </div>
-                <div class="grid grid-cols-7 gap-y-2 text-center text-sm">
-                    <span class="py-2 text-gray-400">29</span><span class="py-2 text-gray-400">30</span>
+  <div class="overflow-x-auto border border-gray-300 rounded-lg shadow-inner flex">
 
-                    <span class="py-2 text-gray-600 bg-cyan-100 rounded-full font-bold border border-cyan-500 relative">
-                        <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full ring-1 ring-white"></span>
-                        4
-                    </span>
+    <div class="flex-shrink-0 w-20 bg-gray-100 border-r border-gray-300">
+      <div class="h-14 text-xs font-semibold text-gray-700 flex items-center justify-center border-b border-gray-300">
+        Heures</div>
 
-                    <span class="py-2 text-gray-600">5</span>
+      <div *ngFor="let hour of hours"
+        class="h-16 text-xs text-gray-500 font-medium flex justify-end pr-2 items-start pt-1 border-b border-dashed border-gray-300">
+        {{ hour }}:00
+      </div>
+    </div>
 
-                    <span class="py-2 text-red-700 font-bold relative">
-                        <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full ring-1 ring-white"></span>
-                        6
-                    </span>
-                    <span class="py-2 text-red-700 font-bold relative">
-                        <span class="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full ring-1 ring-white"></span>
-                        7
-                    </span>
+    <div class="flex-grow grid grid-cols-5 min-w-[800px] divide-x divide-gray-300">
 
-                    <span class="py-2 text-gray-600">8</span>
-                    <span class="py-2 text-gray-600">...</span>
-                    <span class="py-2 text-gray-600 font-bold relative col-span-2">
-                        <span class="absolute top-0 right-0 h-2 w-2 bg-cyan-600 rounded-full ring-1 ring-white"></span>
-                        15
-                    </span>
-                    </div>
-            </div>
+      <div *ngFor="let day of daysOfWeek; let dayIndex = index" class="h-14 p-3 bg-red-100">
+        <p class="text-md font-bold text-red-800">{{ day }}</p>
+        <p class="text-sm font-medium text-gray-600">{{ getFormattedDate(dayIndex) }}</p>
+      </div>
 
-            <div class="lg:col-span-1">
-                <h3 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4">
-                    Prochaines Échéances (4)
-                </h3>
+      <div *ngFor="let day of daysOfWeek; let dayIndex = index" class="bg-white relative min-h-[704px]">
 
-                <div class="space-y-4">
+        <ng-container *ngFor="let hour of hours">
+          <div class="absolute w-full border-b border-solid border-gray-200"
+            [style.top]="((hour - startHour) * 64) + 'px'" [style.height]="'1px'">
 
-                    <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-red-500 cursor-pointer hover:bg-red-50 transition">
-                        <p class="text-xs font-semibold uppercase text-red-600">07 Oct. - 09:30 (J-3)</p>
-                        <h4 class="font-bold text-slate-800">Audience devant le Tribunal Correctionnel</h4>
-                        <p class="text-sm text-gray-600 truncate">Lieu: Salle 3 | Responsable: M. Dupont</p>
-                    </div>
+          </div>
 
-                    <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-cyan-600 cursor-pointer hover:bg-cyan-50 transition">
-                        <p class="text-xs font-semibold uppercase text-cyan-600">15 Oct. - 11:00</p>
-                        <h4 class="font-bold text-slate-800">Réunion de stratégie avec le client S.A. Alpha</h4>
-                        <p class="text-sm text-gray-600 truncate">Lieu: Visioconférence | Responsable: M. Martin</p>
-                    </div>
+          <div class="absolute w-full border-b border-dashed border-gray-100"
+            [style.top]="((hour - startHour) * 64 + 16) + 'px'" [style.height]="'1px'">
+          </div>
 
-                    <div class="bg-white p-4 rounded-xl shadow-md border-l-4 border-gray-400 cursor-pointer hover:bg-gray-50 transition">
-                        <p class="text-xs font-semibold uppercase text-gray-600">28 Oct.</p>
-                        <h4 class="font-bold text-slate-800">Deadline: Finalisation du mémoire en défense</h4>
-                        <p class="text-sm text-gray-600 truncate">Type: Interne | Responsable: M. Dupont</p>
-                    </div>
+          <div class="absolute w-full border-b border-dashed border-gray-100"
+            [style.top]="((hour - startHour) * 64 + 32) + 'px'" [style.height]="'1px'">
+          </div>
 
-                </div>
+          <div class="absolute w-full border-b border-dashed border-gray-100"
+            [style.top]="((hour - startHour) * 64 + 48) + 'px'" [style.height]="'1px'">
+          </div>
+        </ng-container>
 
-            </div>
+        <div *ngFor="let hearing of getHearingsForDay(dayIndex)"
+          class="absolute p-1.5 rounded-lg border-l-4 shadow-md cursor-pointer hover:shadow-lg transition duration-150"
+          [ngClass]="getStatusClass(hearing.status)" [style.top]="hearing.style.top"
+          [style.height]="hearing.style.height" [style.width]="hearing.style.width" [style.left]="hearing.style.left"
+          [style.zIndex]="hearing.style.zIndex">
 
+          <p class="text-[11px] font-bold truncate">{{ hearing.title }}</p>
+          <p class="text-[10px] font-medium mt-0.5 truncate">
+            <span class="font-semibold">Heure :</span> {{ hearing.time }} - {{ hearing.endTime }}
+          </p>
         </div>
-    </main>
+
+        <div *ngIf="getHearingsForDay(dayIndex).length === 0"
+          class="text-center p-8 text-gray-500 italic relative top-0">
+          Aucune audience.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 text-sm text-gray-600">
+    <p class="font-semibold">Légende Statut :</p>
+    <span
+      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-400 mr-2">Urgent</span>
+    <span
+      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-400 mr-2">Standard</span>
+    <span
+      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-400">Reporté</span>
+  </div>
 </div>
+
+<app-calendrier-rdv-dialog></app-calendrier-rdv-dialog>

@@ -20,5 +20,6 @@ export class Paths {
   static readonly FACTURATION = 'facturation';
   static readonly FACTURATION_FORM = 'facturation-form';
   static readonly FACTURATION_DETAIL = 'facturation-detail'
+  static readonly CALENDRIER_DOSSIER = 'calendrier-dossier'
 
 }

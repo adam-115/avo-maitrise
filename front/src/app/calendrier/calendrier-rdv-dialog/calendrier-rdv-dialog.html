@@ -1,0 +1,124 @@
+@if (showDialog) {
+  <div id="add-hearing-modal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300">
+
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border-t-4 border-red-600">
+
+            <div class="bg-white p-6 sm:p-8">
+
+                <div class="flex items-start justify-between border-b pb-4 mb-6">
+                    <h3 class="text-2xl font-bold text-slate-800 flex items-center text-red-700">
+                        <svg class="w-7 h-7 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Ajouter une Nouvelle Audience
+                    </h3>
+                    <button type="button" (click)="closeDialog()" aria-label="Close"
+                        class="text-gray-400 hover:text-gray-500 transition duration-150">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <form id="add-hearing-form" class="space-y-6">
+
+                    <div>
+                        <label for="hearing_title" class="block text-sm font-medium text-gray-700 mb-1">Titre de l'Audience</label>
+                        <input type="text" id="hearing_title" required placeholder="Ex: Audience de Référé, Conférence de ME..."
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label for="hearing_date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <input type="date" id="hearing_date" required [value]="'2025-10-10'"
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                        </div>
+                        <div>
+                            <label for="start_time" class="block text-sm font-medium text-gray-700 mb-1">Heure Début</label>
+                            <input type="time" id="start_time" required [value]="'09:00'"
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                        </div>
+                        <div>
+                            <label for="end_time" class="block text-sm font-medium text-gray-700 mb-1">Heure Fin</label>
+                            <input type="time" id="end_time" required [value]="'10:30'"
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="client_case" class="block text-sm font-medium text-gray-700 mb-1">Dossier / Affaire</label>
+                            <select id="client_case" required
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                                <option value="">Sélectionner un dossier...</option>
+                                <option value="DOS-2025-01-Alpha" selected>DOS-2025-01-Alpha (SARL vs Beta)</option>
+                                <option value="DOS-2025-03-Dupont">DOS-2025-03-Dupont</option>
+                                <option value="New">Ajouter un nouveau dossier...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="client_name" class="block text-sm font-medium text-gray-700 mb-1">Client Principal</label>
+                            <input type="text" id="client_name" required [value]="'SARL Alpha'"
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Lieu</label>
+                            <input type="text" id="location" required placeholder="Ex: Chambre 3, Cabinet, Greffe..."
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5" [value]="'Tribunal de Commerce - Chambre 3'">
+                        </div>
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                            <select id="status" required
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 p-2.5">
+                                <option value="Standard" selected>Standard</option>
+                                <option value="Urgent">Urgent</option>
+                                <option value="Reporté">Reporté</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Couleur de Visualisation</label>
+                        <div class="flex space-x-3">
+                            <input type="radio" id="color-blue" name="custom_color" class="hidden" checked>
+                            <label for="color-blue" class="w-8 h-8 rounded-full border-4 border-white shadow cursor-pointer bg-blue-500 hover:ring-2 hover:ring-blue-400 checked:ring-2 checked:ring-blue-700"></label>
+
+                            <input type="radio" id="color-red" name="custom_color" class="hidden">
+                            <label for="color-red" class="w-8 h-8 rounded-full border-4 border-white shadow cursor-pointer bg-red-500 hover:ring-2 hover:ring-red-400 checked:ring-2 checked:ring-red-700"></label>
+
+                            <input type="radio" id="color-green" name="custom_color" class="hidden">
+                            <label for="color-green" class="w-8 h-8 rounded-full border-4 border-white shadow cursor-pointer bg-green-500 hover:ring-2 hover:ring-green-400 checked:ring-2 checked:ring-green-700"></label>
+
+                            <input type="radio" id="color-purple" name="custom_color" class="hidden">
+                            <label for="color-purple" class="w-8 h-8 rounded-full border-4 border-white shadow cursor-pointer bg-purple-500 hover:ring-2 hover:ring-purple-400 checked:ring-2 checked:ring-purple-700"></label>
+
+                            <div class="flex items-center space-x-2 border border-gray-300 rounded-lg p-1.5 hover:border-red-400">
+                                <input type="color" id="custom_color_picker" name="custom_color" value="#facc15"
+                                    class="w-8 h-8 rounded-full cursor-pointer focus:outline-none">
+                                <span class="text-sm text-gray-600">Personnaliser</span>
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">La couleur personnalisée permet de distinguer facilement les événements dans le calendrier.</p>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="bg-gray-50 px-4 py-4 sm:px-8 sm:flex sm:flex-row-reverse">
+                <button type="submit" form="add-hearing-form"
+                    class="w-full inline-flex justify-center rounded-lg border border-transparent shadow-sm px-6 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm transition duration-150">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    Sauvegarder l'Audience
+                </button>
+                <button type="button" (click)="closeDialog()" aria-label="Cancel"
+                    class="mt-3 w-full inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-6 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:w-auto sm:text-sm transition duration-150">
+                    Annuler
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+}

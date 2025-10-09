@@ -94,6 +94,10 @@ export const routes: Routes = [
       {
         path: Paths.FACTURATION_FORM,
         component: FacturationForm
+      },
+      {
+        path:Paths.CALENDRIER_DOSSIER,
+        component: CalendrierDossier
       }
 
     ]
