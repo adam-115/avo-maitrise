@@ -22,4 +22,12 @@ export class Home {
     this.router.navigateByUrl(Paths.HOME + '/' + Paths.CRM);
   }
 
+  navigateToModel() {
+    this.router.navigateByUrl(Paths.HOME + '/' + Paths.MODEL);
+  }
+
+  navigateToSaisieTemps() {
+    this.router.navigateByUrl(Paths.HOME + '/' + Paths.SAISIE_TEMPS);
+  }
+
 }

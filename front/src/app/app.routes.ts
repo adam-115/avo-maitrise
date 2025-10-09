@@ -12,6 +12,8 @@ import { ClientForm } from './crm/client-form/client-form';
 import { ClientDetails } from './crm/client-details/client-details';
 import { ClientReviewsAml } from './crm/crm/client-reviews-aml/client-reviews-aml';
 import { ClientReviewAmlReport } from './crm/client-review-aml-report/client-review-aml-report';
+import { Model } from './model/model/model';
+import { SaisieTemps } from './saisie-temps/saisie-temps/saisie-temps';
 
 export const routes: Routes = [
   {
@@ -60,6 +62,7 @@ export const routes: Routes = [
         component: ClientReviewAmlReport
       },
       // this for review aml for person type contact
+      // TODO add the same for societe and institution type contact
       {
         path: Paths.PERSON_REVIEW_AML,
         component: ReviewAml
@@ -67,7 +70,21 @@ export const routes: Routes = [
       {
        path: Paths.AML_REPORT_PERSON,
        component: ClientReviewAmlReport
+      },
+
+      // gestion des documents models
+      {
+        path: Paths.MODEL,
+        component: Model
+
+      },
+
+      // gestion de la saisie de temps
+      {
+        path: Paths.SAISIE_TEMPS,
+        component: SaisieTemps
       }
+
     ]
   },
 

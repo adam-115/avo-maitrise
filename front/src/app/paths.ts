@@ -14,5 +14,7 @@ export class Paths {
   static readonly AML_REPORT_PERSON = 'aml-report-person';
   // static readonly SOCIETE_REVIEW_AML = 'societe-new-review-aml';
   // static readonly INSTITUTION_REVIEW_AML = 'institution-new-review-aml';
+  static readonly MODEL = 'model';
+  static readonly SAISIE_TEMPS = 'saisie-temps';
 
 }
