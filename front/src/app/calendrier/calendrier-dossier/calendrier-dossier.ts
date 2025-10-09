@@ -27,6 +27,7 @@ export class CalendrierDossier implements OnInit {
   // Les événements statiques (Audiences) pour la démo (Mise à jour avec endTime)
   public hearings: Hearing[] = [
     // Lundi (Conflit: 09:00 - 10:30 vs 09:00 - 10:00)
+    { id: 101, title: 'Audience Plaidoirie', clientCase: 'SARL Alpha vs Beta', time: '08:00', endTime: '13:30', location: 'Chambre 3', status: 'Standard', date: this.getDateForDay(0, this.weekStart) },
     { id: 101, title: 'Audience Plaidoirie', clientCase: 'SARL Alpha vs Beta', time: '09:00', endTime: '13:30', location: 'Chambre 3', status: 'Standard', date: this.getDateForDay(0, this.weekStart) },
     { id: 107, title: 'Expertise Judiciaire', clientCase: 'Affaire ZYX', time: '09:00', endTime: '13:00', location: 'Bureau Expert', status: 'Urgent', date: this.getDateForDay(0, this.weekStart) },
     { id: 102, title: 'Conférence ME', clientCase: 'Dupont c/ Procureur', time: '11:30', endTime: '12:00', location: 'Greffe', status: 'Standard', date: this.getDateForDay(0, this.weekStart) },
@@ -165,6 +166,42 @@ export class CalendrierDossier implements OnInit {
   }
   closeAddHearingDialog() {
     this.calendrierRdvDialog.closeDialog();
+  }
+
+  showHiringDetails(hearing: Hearing) {
+    alert(`Détails de l'audience:\n\nTitre: ${hearing.title}\nDossier: ${hearing.clientCase}\nHeure: ${hearing.time} - ${hearing.endTime}\nLieu: ${hearing.location}\nStatut: ${hearing.status}`);
+  }
+
+// NOUVELLE MÉTHODE POUR GÉRER LE CLIC SUR LA GRILLE
+  public handleGridClick(event: MouseEvent, dayIndex: number): void {
+
+    // 1. Obtenir la date et le nom du jour
+    const targetDate = this.getDateForDay(dayIndex, this.weekStart);
+    const dayName = this.daysOfWeek[dayIndex];
+
+    // 2. Calculer la position verticale du clic dans le conteneur du jour
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const yPosition = event.clientY - rect.top;
+
+    // 3. Convertir la position Y en heures/minutes (arrondi à 15 minutes)
+    const totalMinutes = (yPosition / this.hourHeightPx) * 60;
+    const hours = this.startHour + Math.floor(totalMinutes / 60);
+
+    // Snap to 15-minute intervals (15, 30, 45, 60)
+    const minutes = Math.round((totalMinutes % 60) / 15) * 15;
+
+    // Gérer l'arrondi qui dépasse 60 (ex: 52 arrondi à 60)
+    const normalizedMinutes = minutes === 60 ? 0 : minutes;
+    const normalizedHours = minutes === 60 ? hours + 1 : hours;
+
+    const formattedTime = `${String(normalizedHours).padStart(2, '0')}:${String(normalizedMinutes).padStart(2, '0')}`;
+
+    // 4. Afficher l'alerte
+    alert(`Nouvelle audience ? \nDate: ${dayName} ${targetDate.toLocaleDateString('fr-FR')} \nHeure suggérée: ${formattedTime}`);
+
+    // OPTIONNEL : Vous pourriez ouvrir la modale d'ajout ici :
+    // this.openModal();
+    // ... et pré-remplir les champs date/heure avec les valeurs calculées ...
   }
 
 }
