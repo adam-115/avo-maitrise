@@ -1,3 +1,4 @@
+import { Facturation } from './facturation/facturation/facturation';
 export class Paths {
   static readonly LOGIN = 'login';
   static readonly HOME = 'home';
@@ -16,5 +17,8 @@ export class Paths {
   // static readonly INSTITUTION_REVIEW_AML = 'institution-new-review-aml';
   static readonly MODEL = 'model';
   static readonly SAISIE_TEMPS = 'saisie-temps';
+  static readonly FACTURATION = 'facturation';
+  static readonly FACTURATION_FORM = 'facturation-form';
+  static readonly FACTURATION_DETAIL = 'facturation-detail'
 
 }

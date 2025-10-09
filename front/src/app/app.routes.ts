@@ -1,3 +1,4 @@
+import { FacturationForm } from './facturation/facturation-form/facturation-form';
 import { ReviewAml } from './crm/review-aml/review-aml';
 import { Routes } from '@angular/router';
 import { Dossier } from './dossier/dossier/dossier';
@@ -14,6 +15,7 @@ import { ClientReviewsAml } from './crm/crm/client-reviews-aml/client-reviews-am
 import { ClientReviewAmlReport } from './crm/client-review-aml-report/client-review-aml-report';
 import { Model } from './model/model/model';
 import { SaisieTemps } from './saisie-temps/saisie-temps/saisie-temps';
+import { Facturation } from './facturation/facturation/facturation';
 
 export const routes: Routes = [
   {
@@ -83,6 +85,15 @@ export const routes: Routes = [
       {
         path: Paths.SAISIE_TEMPS,
         component: SaisieTemps
+      },
+      // gestion de la facturation
+      {
+        path: Paths.FACTURATION,
+        component: Facturation
+      },
+      {
+        path: Paths.FACTURATION_FORM,
+        component: FacturationForm
       }
 
     ]

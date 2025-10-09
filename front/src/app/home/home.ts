@@ -30,4 +30,8 @@ export class Home {
     this.router.navigateByUrl(Paths.HOME + '/' + Paths.SAISIE_TEMPS);
   }
 
+  navigateToFacturation() {
+    this.router.navigateByUrl(Paths.HOME + '/' + Paths.FACTURATION);
+  }
+
 }

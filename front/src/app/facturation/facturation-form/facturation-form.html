@@ -1,0 +1,186 @@
+<div class="p-6 sm:p-10 bg-gray-50 min-h-screen">
+
+    <div class="mb-8 border-b border-gray-200 pb-4">
+        <nav class="text-sm font-medium text-gray-500 mb-2">
+            <span>Facturation</span> /
+            <span class="text-slate-800 font-semibold">Générer une Facture</span>
+        </nav>
+        <h1 class="text-3xl font-bold text-slate-800 flex items-center">
+            <svg class="w-8 h-8 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Créer une Facture
+        </h1>
+        <p class="text-gray-600 mt-1">
+            Définissez les paramètres de la facture et sélectionnez les entrées de temps et frais à inclure.
+        </p>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg p-8">
+
+        <form id="invoice-generation-form" class="space-y-8">
+
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-indigo-700 mb-4">1. Sélection du Client et Période</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                    <div>
+                        <label for="client_select" class="block text-sm font-medium text-gray-700 mb-1">Client Destinataire <span class="text-red-500">*</span></label>
+                        <select id="client_select" name="client_select" required
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2.5">
+                            <option value="" disabled selected>-- Choisir le Client --</option>
+                            <option value="ALPHA">ALPHA Finance SA</option>
+                            <option value="GAMMA">Société GAMMA</option>
+                            <option value="DELTA">Client DELTA</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="period_start" class="block text-sm font-medium text-gray-700 mb-1">Période : Du <span class="text-red-500">*</span></label>
+                        <input type="date" name="period_start" id="period_start" required value="2025-09-01"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2.5">
+                    </div>
+
+                    <div>
+                        <label for="period_end" class="block text-sm font-medium text-gray-700 mb-1">Période : Au <span class="text-red-500">*</span></label>
+                        <input type="date" name="period_end" id="period_end" required value="2025-09-30"
+                            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2.5">
+                    </div>
+                </div>
+
+                <div class="mt-4 flex justify-end">
+                     <button type="button" (click)="openModal()"
+                        class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 shadow-md hover:bg-blue-700 transition duration-150 flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.836 2.582l-3.5 3.5m-14.732 0A13.978 13.978 0 005.732 15h12.536a13.978 13.978 0 002.046-2.582m0 0H20m-3.5 3.5L14.732 17M10 20a10 10 0 100-20 10 10 0 000 20z"></path></svg>
+                        <span>Charger les Activités Facturables</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="border-b border-gray-200 pb-6">
+                <h2 class="text-xl font-bold text-indigo-700 mb-4 flex justify-between items-center">
+                    <span>2. Aperçu des Activités Facturables</span>
+                    <span class="text-base text-gray-600 font-normal">Total Temps Suggéré : <span class="font-semibold text-blue-700">62.0 h</span></span>
+                </h2>
+
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200 bg-white">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">
+                                    <input type="checkbox" checked class="rounded text-indigo-600 focus:ring-indigo-500">
+                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/12">Date</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-4/12">Description de la Tâche</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-2/12">Taux Horaire</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-2/12">Durée (h)</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider w-2/12">Sous-Total (€)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+
+                            <tr class="hover:bg-gray-50 transition duration-150">
+                                <td class="px-4 py-3"><input type="checkbox" checked class="rounded text-indigo-600 focus:ring-indigo-500"></td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">03/09/25</td>
+                                <td class="px-4 py-3 text-sm text-gray-900">Préparation des documents légaux pour le dépôt.</td>
+                                <td class="px-4 py-3 text-sm text-right text-gray-600">250.00 €</td>
+                                <td class="px-4 py-3 text-sm font-medium text-right text-gray-800">4.50</td>
+                                <td class="px-4 py-3 text-sm font-bold text-right text-indigo-700">1 125.00</td>
+                            </tr>
+
+                            <tr class="hover:bg-gray-50 transition duration-150">
+                                <td class="px-4 py-3"><input type="checkbox" checked class="rounded text-indigo-600 focus:ring-indigo-500"></td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">15/09/25</td>
+                                <td class="px-4 py-3 text-sm text-gray-900">Réunion de stratégie avec le client (2h).</td>
+                                <td class="px-4 py-3 text-sm text-right text-gray-600">250.00 €</td>
+                                <td class="px-4 py-3 text-sm font-medium text-right text-gray-800">2.00</td>
+                                <td class="px-4 py-3 text-sm font-bold text-right text-indigo-700">500.00</td>
+                            </tr>
+
+                            <tr class="hover:bg-yellow-50 transition duration-150 border-t-2 border-yellow-200">
+                                <td class="px-4 py-3"><input type="checkbox" checked class="rounded text-indigo-600 focus:ring-indigo-500"></td>
+                                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">10/09/25</td>
+                                <td class="px-4 py-3 text-sm font-semibold text-yellow-800">Frais de Courrier Express (Reçu #F452)</td>
+                                <td class="px-4 py-3 text-sm text-right text-gray-600">1.00 €</td>
+                                <td class="px-4 py-3 text-sm font-medium text-right text-gray-800">1.00</td>
+                                <td class="px-4 py-3 text-sm font-bold text-right text-indigo-700">75.00</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <button type="button" class="mt-4 px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-100 rounded-lg hover:bg-indigo-200 transition">
+                    + Ajouter une Ligne Manuelle (Frais/Débours)
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+
+                <div>
+                    <h3 class="text-lg font-semibold text-indigo-700 mb-3">Options de Facture</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="invoice_ref" class="block text-sm font-medium text-gray-700 mb-1">Numéro de Facture (Prochain)</label>
+                            <input type="text" id="invoice_ref" value="FAC-2025-10-047" disabled
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm p-2.5 bg-gray-100 text-gray-600">
+                        </div>
+                        <div>
+                            <label for="due_date" class="block text-sm font-medium text-gray-700 mb-1">Date d'Échéance <span class="text-red-500">*</span></label>
+                            <input type="date" id="due_date" required value="2025-11-08"
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2.5">
+                        </div>
+                        <div>
+                            <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Notes / Conditions de Paiement</label>
+                            <textarea id="notes" rows="2" placeholder="Ex: Paiement à 30 jours net..."
+                                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2.5"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-6 bg-indigo-50 rounded-xl shadow-inner">
+                    <h3 class="text-lg font-semibold text-indigo-700 mb-3 border-b border-indigo-200 pb-2">Récapitulatif</h3>
+
+                    <div class="space-y-2 text-gray-700">
+                        <div class="flex justify-between">
+                            <span>Sous-Total des Prestations :</span>
+                            <span class="font-medium">1 625.00 €</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Total des Frais/Débours :</span>
+                            <span class="font-medium">75.00 €</span>
+                        </div>
+
+                        <div class="flex justify-between border-t pt-2">
+                            <span>Montant HT :</span>
+                            <span class="font-semibold">1 700.00 €</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>TVA (20%) :</span>
+                            <span class="font-medium text-red-700">340.00 €</span>
+                        </div>
+
+                        <div class="flex justify-between border-t-2 border-indigo-400 pt-3">
+                            <span class="text-xl font-bold text-indigo-800">TOTAL À FACTURER TTC :</span>
+                            <span class="text-xl font-extrabold text-indigo-800">2 040.00 €</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6 border-t flex justify-end space-x-4">
+                <button type="button"
+                    class="px-6 py-3 rounded-lg text-sm font-medium text-gray-700 bg-gray-200 hover:bg-gray-300 transition duration-150">
+                    Enregistrer comme Brouillon
+                </button>
+                <button type="submit"
+                    class="px-6 py-3 rounded-lg text-sm font-medium text-white bg-green-600 shadow-lg hover:bg-green-700 transition duration-150 flex items-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                    <span>Finaliser et Marquer Envoyée</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<app-facturation-activite-dialog></app-facturation-activite-dialog>

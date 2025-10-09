@@ -1,0 +1,155 @@
+@if(showModal){
+<div id="activities-review-modal"
+  class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-75 transition-opacity duration-300">
+
+  <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+    <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+    <div
+      class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full">
+
+      <div class="bg-white p-6 sm:p-8">
+
+        <div class="flex items-start justify-between border-b pb-4 mb-6">
+          <h3 class="text-2xl font-bold text-slate-800 flex items-center text-blue-700">
+            <svg class="w-7 h-7 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+              </path>
+            </svg>
+            Révision des Activités Facturables
+          </h3>
+          <p class="text-lg font-medium text-gray-600 mt-1">
+            **Client ALPHA Finance SA** | Période : 01/09/25 au 30/09/25
+          </p>
+          <button type="button" (click)="closeModal()"
+            class="text-gray-400 hover:text-gray-500 transition duration-150">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <p class="text-gray-600 mb-4">
+          **62.0 heures** et **2 frais** ont été trouvés. Décochez les entrées que vous ne souhaitez **pas** inclure.
+        </p>
+
+        <div class="flex space-x-6 items-center p-3 bg-blue-50 rounded-lg mb-6 border border-blue-200">
+          <p class="text-sm font-semibold text-blue-700">Options de Traitement :</p>
+          <label class="flex items-center space-x-2 text-sm font-medium text-gray-700">
+            <input type="checkbox" checked class="rounded text-blue-600 focus:ring-blue-500">
+            <span>Inclure les Temps (62.0 h)</span>
+          </label>
+          <label class="flex items-center space-x-2 text-sm font-medium text-gray-700">
+            <input type="checkbox" checked class="rounded text-blue-600 focus:ring-blue-500">
+            <span>Inclure les Frais (2 entrées)</span>
+          </label>
+          <div class="flex items-center space-x-2 text-sm font-medium text-gray-700">
+            <span>Arrondi au:</span>
+            <select id="rounding_option_modal"
+              class="rounded-lg border-gray-300 shadow-sm text-sm p-1.5 focus:border-blue-500 focus:ring-blue-500">
+              <option value="0.25">Quart d'heure (0.25h)</option>
+              <option value="0.1" selected>Minute près (0.1h)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-md max-h-96">
+          <table class="min-w-full divide-y divide-gray-200 bg-white">
+            <thead class="bg-blue-100 sticky top-0 z-10">
+              <tr>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider w-1/12">
+                  <input type="checkbox" checked class="rounded text-blue-600 focus:ring-blue-500">
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider w-1/12">Type
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider w-2/12">Date
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider w-4/12">
+                  Description de la Tâche</th>
+                <th class="px-4 py-3 text-center text-xs font-medium text-gray-600 uppercase tracking-wider w-2/12">Taux
+                  Appliqué</th>
+                <th class="px-4 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider w-2/12">Durée
+                  (h) / Montant (€)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+
+              <tr class="hover:bg-blue-50 transition duration-150">
+                <td class="px-4 py-3"><input type="checkbox" checked class="rounded text-blue-600 focus:ring-blue-500">
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap"><span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">Temps</span>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">03/09/25</td>
+                <td class="px-4 py-3 text-sm text-gray-900">Préparation des documents légaux pour le dépôt.</td>
+                <td class="px-4 py-3 text-sm text-center text-gray-600">250.00 € / h</td>
+                <td class="px-4 py-3 text-sm font-medium text-right text-gray-800">
+                  <input type="number" value="4.50" step="0.01"
+                    class="w-20 text-right rounded-lg border-gray-300 text-sm p-1">
+                </td>
+              </tr>
+
+              <tr class="bg-red-50 opacity-70 transition duration-150">
+                <td class="px-4 py-3"><input type="checkbox" class="rounded text-blue-600 focus:ring-blue-500"></td>
+                <td class="px-4 py-3 whitespace-nowrap"><span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">Temps</span>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">05/09/25</td>
+                <td class="px-4 py-3 text-sm text-red-700 font-medium italic">Discussion interne sur la stratégie du
+                  dossier (à exclure).</td>
+                <td class="px-4 py-3 text-sm text-center text-gray-600">250.00 € / h</td>
+                <td class="px-4 py-3 text-sm font-medium text-right text-gray-800">
+                  <input type="number" value="0.75" step="0.01"
+                    class="w-20 text-right rounded-lg border-gray-300 text-sm p-1" disabled>
+                </td>
+              </tr>
+
+              <tr class="hover:bg-blue-50 transition duration-150 border-t border-yellow-300">
+                <td class="px-4 py-3"><input type="checkbox" checked class="rounded text-blue-600 focus:ring-blue-500">
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap"><span
+                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Frais</span>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-600">10/09/25</td>
+                <td class="px-4 py-3 text-sm font-semibold text-yellow-800">Frais de Courrier Express (Reçu #F452).</td>
+                <td class="px-4 py-3 text-sm text-center text-gray-600">Montant Forfaitaire</td>
+                <td class="px-4 py-3 text-sm font-bold text-right text-gray-800">
+                  <input type="number" value="75.00" step="0.01"
+                    class="w-20 text-right rounded-lg border-gray-300 text-sm p-1">
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="bg-gray-50 px-4 py-4 sm:px-8 sm:flex sm:justify-between items-center">
+
+        <p class="text-lg font-medium text-gray-700">
+          <span class="font-bold text-blue-700">Total sélectionné à transférer :</span> 58.0 h de temps et 2 frais.
+        </p>
+
+        <div class="flex space-x-3 mt-3 sm:mt-0">
+          <button type="button" (click)="closeModal()"
+            class="px-5 py-2.5 rounded-lg text-sm font-medium text-gray-700 border border-gray-300 bg-white hover:bg-gray-100 transition duration-150">
+            Annuler et Revenir
+          </button>
+          <button type="button"
+            onclick="document.getElementById('activities-review-modal').classList.add('hidden'); /* Ajouter ici la fonction JS/TS de transfert */"
+            class="px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-green-600 shadow-lg hover:bg-green-700 transition duration-150 flex items-center space-x-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>Confirmer et Ajouter à la Facture</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}
