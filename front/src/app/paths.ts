@@ -1,4 +1,3 @@
-import { Facturation } from './facturation/facturation/facturation';
 export class Paths {
   static readonly LOGIN = 'login';
   static readonly HOME = 'home';
@@ -20,6 +19,16 @@ export class Paths {
   static readonly FACTURATION = 'facturation';
   static readonly FACTURATION_FORM = 'facturation-form';
   static readonly FACTURATION_DETAIL = 'facturation-detail'
-  static readonly CALENDRIER_DOSSIER = 'calendrier-dossier'
+  static readonly CALENDRIER = 'calendrier';
+  // static readonly CALENDRIER_SEMAINE = 'calendrier-semaine';
+  // static readonly CALENDRIER_MOIS = 'calendrier-mois';
+  // static readonly CALENDRIER_JOUR = 'calendrier-jour';
+  // static readonly TEST = 'test';
+ static readonly ADMINSTRATION = 'administration';
+
+ static readonly UTILISATEURS = 'utilisateurs';
+ static readonly PROFILE_CABINET = 'profile-cabinet';
+
+
 
 }

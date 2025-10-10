@@ -1,0 +1,120 @@
+<div class="flex flex-col h-screen bg-gray-100">
+
+    <header class="flex items-center justify-between h-16 bg-white shadow-md px-6 sm:px-8 flex-shrink-0">
+        <div class="flex items-center space-x-6">
+            <h1 class="text-2xl font-extrabold text-slate-800 tracking-wide">
+                Administration
+            </h1>
+            <nav class="hidden md:flex space-x-4">
+                <a href="#" class="text-gray-600 font-medium hover:text-red-600 transition duration-150 border-b-2 border-transparent hover:border-red-600 pb-1">
+                    Tableau de Bord
+                </a>
+                <a href="#" class="text-gray-600 font-medium hover:text-red-600 transition duration-150 border-b-2 border-transparent hover:border-red-600 pb-1">
+                    Utilisateurs
+                </a>
+                <a href="#" class="text-red-600 font-semibold border-b-2 border-red-600 pb-1 transition duration-150">
+                    Configurations
+                </a>
+            </nav>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-sm font-semibold text-white">AP</div>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6 sm:p-8">
+
+        <h2 class="text-3xl font-bold text-slate-800 mb-2">Profil du Cabinet et Identité Visuelle</h2>
+        <p class="text-gray-600 mb-8">Gérez le nom légal de l'entreprise, les coordonnées et le logo affiché dans l'application.</p>
+
+        <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-2xl">
+
+            <form class="space-y-8">
+
+                <div>
+                    <h3 class="text-xl font-semibold text-red-600 mb-4 pb-2 border-b border-gray-200">
+                        Informations Légales et Contact
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">Nom Légal du Cabinet / Entreprise</label>
+                            <input type="text" id="companyName" name="companyName" required
+                                   value="SCP Juris Consultes & Associés"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                            <p class="text-xs text-gray-500 mt-1">Ce nom sera utilisé sur les rapports et en-têtes.</p>
+                        </div>
+
+                        <div>
+                            <label for="siret" class="block text-sm font-medium text-gray-700 mb-1">SIRET / Numéro d'Ordre (Optionnel)</label>
+                            <input type="text" id="siret" name="siret"
+                                   value="502 447 386 00019"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                        </div>
+
+                        <div>
+                            <label for="emailContact" class="block text-sm font-medium text-gray-700 mb-1">Email de Contact Public</label>
+                            <input type="email" id="emailContact" name="emailContact" required
+                                   value="contact@jurisconsultes.fr"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                        </div>
+
+                         <div>
+                            <label for="phoneContact" class="block text-sm font-medium text-gray-700 mb-1">Téléphone de Contact</label>
+                            <input type="tel" id="phoneContact" name="phoneContact"
+                                   value="+33 1 40 12 34 56"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Adresse Complète</label>
+                        <textarea id="address" name="address" rows="3"
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">12 Rue du Barreau
+75001 Paris
+France</textarea>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-red-600 mb-4 pb-2 border-b border-gray-200">
+                        Gestion du Logo
+                    </h3>
+
+                    <div class="flex flex-col sm:flex-row items-start sm:space-x-8 space-y-6 sm:space-y-0 p-4 border border-gray-200 rounded-lg bg-gray-50">
+
+                        <div class="flex flex-col items-center flex-shrink-0 w-32 space-y-2">
+                            <p class="text-xs font-semibold text-gray-600">Logo Actuel</p>
+                            <div class="w-24 h-24 border-2 border-gray-300 rounded-lg flex items-center justify-center p-2 bg-white overflow-hidden shadow-sm">
+
+                            </div>
+                        </div>
+
+                        <div class="flex-grow space-y-4">
+                            <p class="text-sm font-medium text-gray-700">Télécharger un nouveau logo (Formats : PNG, SVG ou JPG)</p>
+
+                            <label class="block">
+                                <span class="sr-only">Choisir un fichier</span>
+                                <input type="file" id="logoFile" name="logoFile" accept=".png, .jpg, .jpeg, .svg"
+                                       class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"/>
+                            </label>
+
+                            <p class="text-xs text-gray-500">Taille recommandée : 200x200 pixels. Max 1 Mo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 border-t border-gray-200 flex justify-end">
+                    <button type="submit"
+                            class="px-6 py-2.5 text-lg font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 shadow-lg">
+                        Sauvegarder les Paramètres
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
+    </main>
+
+</div>

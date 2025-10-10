@@ -1,0 +1,139 @@
+
+@if (showDialog) {
+<div id="user-modal-detailed" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900 bg-opacity-70 transition-opacity duration-300">
+
+    <div class="flex items-center justify-center min-h-screen p-4">
+
+        <div class="w-full max-w-3xl bg-white rounded-xl shadow-2xl transform transition-all duration-300"
+             role="dialog" aria-modal="true" aria-labelledby="modal-title-detailed">
+
+            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-slate-800" id="modal-title-detailed">
+                    Fiche Détaillée de l'Utilisateur
+                </h3>
+                <button type="button" (click)="closeUserForm()"
+                        class="text-gray-400 hover:text-gray-600 transition"
+                        title="Fermer la modale"
+                        onclick="document.getElementById('user-modal-detailed').style.display='none'">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <form class="p-6 space-y-8">
+
+                <div class="border-b border-gray-200 pb-6">
+                    <h4 class="text-lg font-semibold text-red-600 mb-4">Détails Personnels</h4>
+
+                    <div class="flex space-x-6">
+                        <div class="flex flex-col items-center space-y-3 flex-shrink-0 w-32">
+                            <div class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-4xl font-bold text-gray-500 overflow-hidden border-4 border-red-200">
+                                <span class="text-base">Photo</span>
+                            </div>
+                            <button type="button" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">
+                                Changer la photo
+                            </button>
+                            <input type="file" id="photo" class="hidden">
+                        </div>
+
+                        <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="firstName" class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                                <input type="text" id="firstName" name="firstName" required
+                                       placeholder="Prénom"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                            </div>
+                            <div>
+                                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                                <input type="text" id="lastName" name="lastName" required
+                                       placeholder="Nom de famille"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                            </div>
+                            <div>
+                                <label for="dob" class="block text-sm font-medium text-gray-700 mb-1">Date de Naissance</label>
+                                <input type="date" id="dob" name="dob"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                            </div>
+                            <div>
+                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
+                                <input type="tel" id="phone" name="phone"
+                                       placeholder="Ex: +33 6 12 34 56 78"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-b border-gray-200 pb-6">
+                    <h4 class="text-lg font-semibold text-red-600 mb-4">Accès et Authentification</h4>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="sm:col-span-2">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Adresse Email (Identifiant)</label>
+                            <input type="email" id="email" name="email" required
+                                   placeholder="ex: nouvel.utilisateur@cabinet.com"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de Passe</label>
+                            <input type="password" id="password" name="password"
+                                   placeholder="Saisir un mot de passe"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                            <p class="text-xs text-gray-500 mt-1">Laissez vide pour ne pas modifier.</p>
+                        </div>
+
+                        <div>
+                            <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirmer le Mot de Passe</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword"
+                                   placeholder="Confirmer le mot de passe"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold text-red-600 mb-4">Rôles et Statuts</h4>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                        <div>
+                            <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Rôle de l'Utilisateur</label>
+                            <select id="role" name="role" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 bg-white">
+                                <option value="standard">Standard (Avocat/Collaborateur)</option>
+                                <option value="manager">Manager (Gestion d'équipe)</option>
+                                <option value="admin">Administrateur (Tous les droits)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Statut du Compte</label>
+                            <select id="status" name="status" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 bg-white">
+                                <option value="active">Actif</option>
+                                <option value="inactive">Inactif (Compte bloqué)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+
+                    <button type="button" (click)="closeUserForm()"
+                            class="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition duration-150"
+                            onclick="document.getElementById('user-modal-detailed').style.display='none'">
+                        Annuler
+                    </button>
+
+                    <button type="submit"
+                            class="px-5 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 shadow-md">
+                        Enregistrer les Modifications
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+}
+

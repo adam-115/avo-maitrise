@@ -3,8 +3,9 @@ import { ClientDetail, ClientType, Contact } from '../appTypes';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { CalendrierDossier } from "../calendrier/calendrier-dossier/calendrier-dossier";
+
 import { CalendrierJour } from "../calendrier/calendrier-jour/calendrier-jour";
+import { CalendrierSemaine } from "../calendrier/calendrier-semaine/calendrier-semaine";
 
 
 
@@ -27,11 +28,15 @@ interface Hearing {
 @Component({
   selector: 'app-test',
   imports: [CommonModule, FormsModule,
-    RouterModule, CalendrierDossier, CalendrierJour],
+    RouterModule],
   templateUrl: './test.html',
   styleUrl: './test.css'
 })
 export class Test {
+selectedView: 'day' | 'week' = 'day';
+
+
+
   public hours = Array.from({ length: 11 }, (_, i) => 8 + i);
     hourHeightPx = 64;
     startHour = 8;

@@ -1,4 +1,4 @@
-import { CalendrierRdvDialog } from './../calendrier-rdv-dialog/calendrier-rdv-dialog';
+import { CalendrierRdvDialog } from '../calendrier-rdv-dialog/calendrier-rdv-dialog';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Hearing } from '../../appTypes';
 import { CommonModule } from '@angular/common';
@@ -6,13 +6,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-calendrier-dossier',
+  selector: 'app-calendrier-semaine',
   imports: [CommonModule, FormsModule,
     RouterModule, CalendrierRdvDialog],
-  templateUrl: './calendrier-dossier.html',
-  styleUrl: './calendrier-dossier.css'
+  templateUrl: './calendrier-semaine.html',
+  styleUrl: './calendrier-semaine.css'
 })
-export class CalendrierDossier implements OnInit {
+export class CalendrierSemaine implements OnInit {
 
   @ViewChild(CalendrierRdvDialog)
   calendrierRdvDialog!: CalendrierRdvDialog;

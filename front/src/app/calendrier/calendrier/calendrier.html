@@ -1,0 +1,32 @@
+< class="p-6">
+  <!-- En-tête avec titre et sélecteurs de vue -->
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Calendrier Judiciaire</h1>
+
+    <!-- Sélecteurs de vue -->
+    <div class="flex gap-2 bg-white rounded-lg shadow p-1">
+      <button (click)="selectedView = 'day'" [class.bg-cyan-600]="selectedView === 'day'"
+        [class.text-white]="selectedView === 'day'" [class.text-gray-600]="selectedView !== 'day'"
+        class="px-4 py-2 rounded-md font-medium transition duration-150 hover:bg-cyan-500 hover:text-white">
+        Vue Jour
+      </button>
+      <button (click)="selectedView = 'week'" [class.bg-cyan-600]="selectedView === 'week'"
+        [class.text-white]="selectedView === 'week'" [class.text-gray-600]="selectedView !== 'week'"
+        class="px-4 py-2 rounded-md font-medium transition duration-150 hover:bg-cyan-500 hover:text-white">
+        Vue Semaine
+      </button>
+    </div>
+  </div>
+
+  <!-- Affichage conditionnel des composants -->
+
+  @if (selectedView == 'day') {
+  <!-- Ton composant calendrier jour ici -->
+  <app-calendrier-jour></app-calendrier-jour>
+  }
+
+  @if (selectedView == 'week') {
+
+  <!-- Ton composant audiences/plaidoiries ici -->
+  <app-calendrier-semaine></app-calendrier-semaine>
+  }
