@@ -73,6 +73,7 @@ export interface ClientDetail {
   sector: string,
   registrationNumber: string,
 }
+
 // Interface pour définir la structure d'une Audience Judiciaire
 export  interface Hearing {
   id: number;

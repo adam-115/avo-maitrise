@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CalendrierDossier } from "../calendrier/calendrier-dossier/calendrier-dossier";
+import { CalendrierJour } from "../calendrier/calendrier-jour/calendrier-jour";
 
 
 
@@ -26,7 +27,7 @@ interface Hearing {
 @Component({
   selector: 'app-test',
   imports: [CommonModule, FormsModule,
-    RouterModule, CalendrierDossier],
+    RouterModule, CalendrierDossier, CalendrierJour],
   templateUrl: './test.html',
   styleUrl: './test.css'
 })
@@ -48,7 +49,7 @@ export class Test {
     // Mardi (Conflit: 14:00 - 16:00 vs 14:30 - 15:30)
     { id: 103, title: 'Référé Suspension', clientCase: 'Mme Martin', time: '14:00', endTime: '16:00', location: 'Salle 7', status: 'Urgent', date: this.getDateForDay(1, this.weekStart) },
     { id: 108, title: 'Convocation Officier', clientCase: 'Prêt-Bail', time: '14:30', endTime: '15:30', location: 'Cour App. RDC', status: 'Standard', date: this.getDateForDay(1, this.weekStart) },
-    { id: 109, title: 'Consultation', clientCase: 'Nouveau Client', time: '16:00', endTime: '17:00', location: 'Cabinet - Salle A', status: 'Standard', date: this.getDateForDay(1, this.weekStart) },
+    { id: 109, title: 'Consultation', clientCase: 'Nouveau Client', time: '8:00', endTime: '17:00', location: 'Cabinet - Salle A', status: 'Standard', date: this.getDateForDay(1, this.weekStart) },
   ];
 
   ngOnInit() {
