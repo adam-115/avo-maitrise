@@ -1,6 +1,33 @@
 <div class="flex flex-col h-screen bg-gray-100">
 
+    <header class="flex items-center justify-between h-16 bg-white shadow-lg px-6 sm:px-8 flex-shrink-0">
+        <div class="flex items-center space-x-6">
+            <span class="text-2xl font-extrabold text-red-600 tracking-wider">Justice OS</span>
 
+            <nav class="hidden md:flex space-x-6">
+                <a href="#" class="text-red-600 font-semibold border-b-2 border-red-600 pb-1 transition duration-150">
+                    Tableau de Bord
+                </a>
+                <a href="#" class="text-gray-600 font-medium hover:text-cyan-600 transition duration-150 border-b-2 border-transparent hover:border-cyan-600 pb-1">
+                    Agenda
+                </a>
+                <a href="#" class="text-gray-600 font-medium hover:text-cyan-600 transition duration-150 border-b-2 border-transparent hover:border-cyan-600 pb-1">
+                    Dossiers (12)
+                </a>
+                <a href="#" class="text-gray-600 font-medium hover:text-cyan-600 transition duration-150 border-b-2 border-transparent hover:border-cyan-600 pb-1">
+                    Administration
+                </a>
+            </nav>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <button class="flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 shadow-md">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Nouvel Événement
+            </button>
+            <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm font-semibold text-white cursor-pointer">JD</div>
+        </div>
+    </header>
 
     <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6 sm:p-8 space-y-8">
 

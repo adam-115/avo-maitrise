@@ -1,21 +1,29 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
 import { Paths } from '../paths';
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterOutlet, FormsModule,CommonModule],
+  imports: [RouterOutlet, FormsModule, CommonModule],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
 export class Home {
+
+  // Variable d'état pour le contrôle de la barre latérale
+  isSidebarOpen: boolean = false;
   activeRoute: string = 'calendrier';
-  paths= Paths;
+  paths = Paths;
 
   constructor(private readonly router: Router) {
 
+  }
+
+  // Cette fonction peut être appelée par le bouton d'ouverture/fermeture
+  toggleSidebar() {
+    this.isSidebarOpen = !this.isSidebarOpen;
   }
 
   navigateTODossier() {
@@ -52,6 +60,8 @@ export class Home {
     this.router.navigateByUrl(Paths.HOME + '/' + Paths.ADMINSTRATION);
     this.activeRoute = Paths.ADMINSTRATION;
   }
+
+
 
 
 }

@@ -11,6 +11,6 @@ import { CalendrierSemaine } from "../calendrier-semaine/calendrier-semaine";
   styleUrl: './calendrier.css'
 })
 export class Calendrier {
-  selectedView: 'day' | 'week' = 'day';
+  selectedView: 'day' | 'week' = 'week';
 
 }

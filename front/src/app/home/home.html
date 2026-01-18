@@ -1,70 +1,90 @@
 <div class="flex h-screen bg-gray-100">
 
-    <aside class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl">
-        <div class="p-6 border-b border-slate-700">
-            <h2 class="text-xl font-bold text-cyan-400">
-                Cabinet Pro
-            </h2>
-            <p class="text-xs text-gray-400 mt-1">Gestion Avocats</p>
+    <div *ngIf="isSidebarOpen"
+         (click)="isSidebarOpen = false"
+         class="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden">
+    </div>
+
+    <aside [ngClass]="{'translate-x-0 ease-out': isSidebarOpen, '-translate-x-full ease-in': !isSidebarOpen}"
+           class="fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white flex flex-col shadow-2xl
+                  transform transition duration-300 lg:translate-x-0 lg:static lg:flex-shrink-0">
+
+        <div class="p-6 border-b border-slate-700 flex justify-between items-center">
+            <div>
+                <h2 class="text-xl font-bold text-cyan-400">
+                    SI Legal
+                </h2>
+                <p class="text-xs text-gray-400 mt-1">Gestion Avocats</p>
+            </div>
+             <button (click)="isSidebarOpen = false" class="lg:hidden text-gray-400 hover:text-white">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
         </div>
 
-        <nav class="flex-grow p-4 space-y-2">
-           <a (click)="navigateToCalendrier()"
+        <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
+            <a (click)="navigateToCalendrier()"
             [ngClass]="activeRoute === paths.CALENDRIER ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
-           class="flex items-center space-x-3 p-3 cursor-pointer rounded-lg duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            class="flex items-center space-x-3 p-3 cursor-pointer rounded-lg duration-150">
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 <span>Calendrier Judiciaire</span>
             </a>
-
-          <a (click)="navigateTODossier()"
-          [ngClass]="activeRoute === paths.DOSSIER ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-          class="flex items-center space-x-3 p-3 cursor-pointer rounded-lg  transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+            <a (click)="navigateTODossier()"
+            [ngClass]="activeRoute === paths.DOSSIER ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
+            class="flex items-center space-x-3 p-3 cursor-pointer rounded-lg  transition duration-150">
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
                 <span>Gestion des Dossiers</span>
             </a>
-
             <a (click)="navigateTOClients()"
             [ngClass]="activeRoute === paths.CRM ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
             class="flex items-center space-x-3 p-3 rounded-lg transition duration-150 cursor-pointer">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z"></path></svg>
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z"></path></svg>
                 <span>Clients & Contacts</span>
             </a>
-
             <a (click)="navigateToModel()"
-             [ngClass]="activeRoute === paths.MODEL ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-            class="flex items-center space-x-3 p-3 rounded-lg  transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            [ngClass]="activeRoute === paths.MODEL ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
+            class="flex items-center space-x-3 p-3 rounded-lg  transition duration-150">
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 <span>Gestion Documentaire (GED)</span>
             </a>
-
             <a (click)="navigateToSaisieTemps()"
-             [ngClass]="activeRoute === paths.SAISIE_TEMPS ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-               class="flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            [ngClass]="activeRoute === paths.SAISIE_TEMPS ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
+            class="flex items-center space-x-3 cursor-pointer p-3 rounded-lg transition duration-150">
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <span>Temps & Facturation</span>
             </a>
-            <a (click)="navigateToFacturation()"
+             <a (click)="navigateToFacturation()"
             [ngClass]="activeRoute === paths.FACTURATION ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
             class="flex items-center space-x-3 p-3 cursor-pointer transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
                 <span>Facturation</span>
             </a>
-
             <a href="#" class="flex items-center cursor-pointer space-x-3 p-3 rounded-lg text-gray-300 hover:bg-slate-700 transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618"></path></svg>
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618"></path></svg>
                 <span>Conformité (AML)</span>
             </a>
             <a (click)="navigateToAdministration()"
             [ngClass]="activeRoute === paths.ADMINSTRATION ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
             class="flex items-center cursor-pointer space-x-3 p-3 rounded-lg transition duration-150">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                 <span>Administration</span>
             </a>
 
         </nav>
     </aside>
 
-    <main class="flex-1 overflow-y-auto p-6 sm:p-10">
-        <router-outlet></router-outlet>
-    </main>
+    <div class="flex-1 flex flex-col overflow-hidden">
+
+        <header class="h-16 bg-white shadow-md flex items-center px-4 lg:px-6">
+            <button (click)="isSidebarOpen = true" class="text-slate-900 lg:hidden focus:outline-none mr-4">
+                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <h1 class="text-xl font-bold text-slate-800">
+                Tableau de Bord
+            </h1>
+        </header>
+
+        <main class="flex-1 overflow-y-auto p-6 sm:p-10">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
 </div>
