@@ -1,10 +1,9 @@
-<div class="flex flex-col  bg-gray-100">
+<div class="flex flex-col bg-gray-100">
 
     <header class="flex items-center justify-between h-16 bg-white shadow-md px-6 sm:px-8">
         <h1 class="text-2xl font-extrabold text-slate-800 tracking-wide">
             Tableau de Bord Administration
         </h1>
-
     </header>
 
     <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6 sm:p-10">
@@ -25,7 +24,7 @@
             <a href="#" class="block bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
                 <div class="flex items-center space-x-4">
                     <svg class="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
-                    <h3 class="text-xl font-bold text-slate-800">Listes de Référence (Dropdowns)</h3>
+                    <h3 class="text-xl font-bold text-slate-800">Listes de Référence</h3>
                 </div>
                 <p class="text-sm text-gray-500 mt-3">Gérer les types d'audiences, les lieux, les statuts et autres options de listes déroulantes.</p>
             </a>
@@ -43,7 +42,17 @@
                     <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.227.424 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                     <h3 class="text-xl font-bold text-slate-800">Paramètres Généraux</h3>
                 </div>
-                <p class="text-sm text-gray-500 mt-3">Définir les plages horaires par défaut, les règles de sécurité et les options de sauvegarde des données.</p>
+                <p class="text-sm text-gray-500 mt-3">Définir les plages horaires par défaut, les règles de sécurité et les options de sauvegarde.</p>
+            </a>
+
+            <a (click)="navigateToAML()" class="block cursor-pointer bg-white p-6 rounded-xl shadow-lg border-t-4 border-cyan-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
+                <div class="flex items-center space-x-4">
+                    <svg class="w-10 h-10 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    <h3 class="text-xl font-bold text-slate-800">AML & Indulgence</h3>
+                </div>
+                <p class="text-sm text-gray-500 mt-3">Gérer la conformité AML et Indulgence, configurer les seuils de vigilance et les rapports de conformité.</p>
             </a>
 
             <a href="#" class="block bg-white p-6 rounded-xl shadow-lg border-t-4 border-gray-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
@@ -51,7 +60,7 @@
                     <svg class="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     <h3 class="text-xl font-bold text-slate-800">Journal d'Audit</h3>
                 </div>
-                <p class="text-sm text-gray-500 mt-3">Consulter l'historique détaillé des actions, modifications et connexions effectuées par les utilisateurs.</p>
+                <p class="text-sm text-gray-500 mt-3">Consulter l'historique détaillé des actions, modifications et connexions des utilisateurs.</p>
             </a>
 
         </div>
@@ -63,5 +72,4 @@
         </div>
 
     </main>
-
 </div>

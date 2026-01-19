@@ -24,16 +24,16 @@ import { Bord } from './Bord/bord/bord';
 
 export const routes: Routes = [
   {
-    path:'',
-    component:Login
+    path: '',
+    component: Login
   },
   {
     path: Paths.HOME,
     component: Home,
     children: [
       {
-        path:'',
-        component:Bord
+        path: '',
+        component: Bord
       },
       {
         path: Paths.DOSSIER,

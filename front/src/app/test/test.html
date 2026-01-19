@@ -1,139 +1,316 @@
-<div class="flex flex-col h-screen bg-gray-100">
 
-    <header class="flex items-center justify-between h-16 bg-white shadow-lg px-6 sm:px-8 flex-shrink-0">
-        <div class="flex items-center space-x-6">
-            <span class="text-2xl font-extrabold text-red-600 tracking-wider">Justice OS</span>
+<section  class="animate-fadeIn">
+    <h2 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
+        <span class="w-8 h-8 bg-slate-900 text-cyan-400 rounded-full flex items-center justify-center mr-3 text-sm">5</span>
+        Paramètres de Facturation
+    </h2>
 
-            <nav class="hidden md:flex space-x-6">
-                <a href="#" class="text-red-600 font-semibold border-b-2 border-red-600 pb-1 transition duration-150">
-                    Tableau de Bord
-                </a>
-                <a href="#" class="text-gray-600 font-medium hover:text-cyan-600 transition duration-150 border-b-2 border-transparent hover:border-cyan-600 pb-1">
-                    Agenda
-                </a>
-                <a href="#" class="text-gray-600 font-medium hover:text-cyan-600 transition duration-150 border-b-2 border-transparent hover:border-cyan-600 pb-1">
-                    Dossiers (12)
-                </a>
-                <a href="#" class="text-gray-600 font-medium hover:text-cyan-600 transition duration-150 border-b-2 border-transparent hover:border-cyan-600 pb-1">
-                    Administration
-                </a>
-            </nav>
+    <div class="bg-cyan-50/50 border border-cyan-100 rounded-2xl p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <div class="flex flex-col">
+                <label class="text-sm font-semibold text-slate-700 mb-1 text-cyan-800">Identifiant de Facturation (SIRET)</label>
+                <input type="text" placeholder="123 456 789 00012"
+                       class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+            </div>
+
+            <div class="flex flex-col" *ngIf="clientType === 'institution'">
+                <label class="text-sm font-semibold text-slate-700 mb-1 text-cyan-800">Code Service / Code Destinataire</label>
+                <input type="text" placeholder="ex: SERV-JURID-01"
+                       class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-sm font-semibold text-slate-700 mb-1 text-cyan-800">N° d'Engagement / Bon de Commande</label>
+                <input type="text" placeholder="Référence par défaut"
+                       class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-sm font-semibold text-slate-700 mb-1 text-cyan-800">Mode de Règlement</label>
+                <select class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+                    <option value="virement">Virement Bancaire</option>
+                    <option value="prelevement">Prélèvement SEPA</option>
+                    <option value="mandat">Mandat Administratif</option>
+                    <option value="cheque">Chèque</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-sm font-semibold text-slate-700 mb-1 text-cyan-800">Délai de Paiement</label>
+                <select class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+                    <option value="30">30 jours net</option>
+                    <option value="45">45 jours fin de mois</option>
+                    <option value="0">À réception</option>
+                    <option value="custom">Spécifique (Administratif)</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col">
+                <label class="text-sm font-semibold text-slate-700 mb-1 text-cyan-800">Email Facturation (Si différent)</label>
+                <input type="email" placeholder="compta@institution.gouv.fr"
+                       class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white">
+            </div>
         </div>
 
-        <div class="flex items-center space-x-4">
-            <button class="flex items-center px-4 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 shadow-md">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                Nouvel Événement
-            </button>
-            <div class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm font-semibold text-white cursor-pointer">JD</div>
+        <div class="mt-4">
+            <label class="text-xs font-bold text-cyan-700 uppercase">Instructions comptables particulières</label>
+            <textarea rows="2" placeholder="Ex: Mention obligatoire sur facture, procédure Chorus Pro..."
+                      class="w-full mt-1 px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 outline-none bg-white text-sm"></textarea>
         </div>
-    </header>
+    </div>
+</section>
 
-    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6 sm:p-8 space-y-8">
 
-        <h1 class="text-3xl font-bold text-slate-800 mb-4">
-            Tableau de Bord
-        </h1>
 
-        <div class="space-y-4">
-            <h2 class="text-xl font-bold text-red-700 border-b border-red-200 pb-2 flex items-center">
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"></path></svg>
-                Alertes Urgentes & Actions Requises (2)
-            </h2>
+<!-- <app-client-form></app-client-form> -->
 
-            <div class="bg-red-100 border-l-4 border-red-600 text-red-800 p-4 rounded-lg shadow-md flex justify-between items-center">
-                <div>
-                    <p class="font-bold">Audience J-1 : Affaire Société ALPHA c/ BETA (2025/123)</p>
-                    <p class="text-sm">Vérifiez les conclusions et préparez les plaidoiries finales pour demain, 14h00.</p>
+
+
+
+<!--
+
+
+<div class="max-w-5xl mx-auto space-y-6">
+
+  <div class="flex items-center justify-between mb-8">
+    <div>
+      <h1 class="text-3xl font-extrabold text-slate-900">Nouveau Client</h1>
+      <p class="text-slate-500">Enregistrez une nouvelle entité ou personne physique dans votre base légale.</p>
+    </div>
+    <button (click)="goBack()" class="px-4 py-2 text-slate-600 hover:text-slate-900 font-medium transition">
+      Annuler
+    </button>
+  </div>
+
+  <div class="bg-white rounded-xl shadow-xl border-t-4 border-cyan-500 overflow-hidden">
+    <form class="p-8 space-y-8">
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+          <span
+            class="w-8 h-8 bg-slate-900 text-cyan-400 rounded-full flex items-center justify-center mr-3 text-sm">1</span>
+          Classification du Client
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col">
+            <label class="text-sm font-semibold text-slate-700 mb-2">Type de Client *</label>
+            <select [(ngModel)]="clientType" name="clientType"
+              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition">
+              <option value="physique">Personne Physique (Particulier)</option>
+              <option value="morale">Personne Morale (Société / Association)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <hr class="border-slate-100">
+
+      <section>
+        <section>
+          <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+            <span
+              class="w-8 h-8 bg-slate-900 text-cyan-400 rounded-full flex items-center justify-center mr-3 text-sm">2</span>
+            Détails de l'Identité
+          </h2>
+
+          <div *ngIf="clientType === 'physique'"
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fadeIn">
+
+            <div class="flex flex-col">
+              <label class="text-sm font-semibold text-slate-700 mb-1">N° d'Identité (CIN/Passport) *</label>
+              <input type="text" placeholder="ex: AB123456"
+                class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none shadow-sm transition">
+            </div>
+
+            <div class="flex flex-col">
+              <label class="text-sm font-semibold text-slate-700 mb-1">Nom *</label>
+              <input type="text" placeholder="ex: Dupont"
+                class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none shadow-sm transition">
+            </div>
+
+            <div class="flex flex-col">
+              <label class="text-sm font-semibold text-slate-700 mb-1">Prénom *</label>
+              <input type="text" placeholder="ex: Jean"
+                class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none shadow-sm transition">
+            </div>
+
+            <div class="flex flex-col">
+              <label class="text-sm font-semibold text-slate-700 mb-1">Date de Naissance</label>
+              <input type="date"
+                class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none shadow-sm transition">
+            </div>
+          </div>
+
+          <div *ngIf="clientType === 'morale'" class="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fadeIn">
+            <div class="flex flex-col">
+              <label class="text-sm font-semibold text-slate-700 mb-1">Dénomination Sociale *</label>
+              <input type="text" placeholder="ex: SARL Justice Digital"
+                class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none transition">
+            </div>
+            <div class="flex flex-col">
+              <label class="text-sm font-semibold text-slate-700 mb-1">N° SIRET / Registre Commerce</label>
+              <input type="text" placeholder="123 456 789 00012"
+                class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none transition">
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <hr class="border-slate-100">
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+          <span
+            class="w-8 h-8 bg-slate-900 text-cyan-400 rounded-full flex items-center justify-center mr-3 text-sm">3</span>
+          Coordonnées de Contact
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col">
+            <label class="text-sm font-semibold text-slate-700 mb-1">Email Principal</label>
+            <input type="email" placeholder="contact@client.fr"
+              class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+          </div>
+          <div class="flex flex-col">
+            <label class="text-sm font-semibold text-slate-700 mb-1">Téléphone</label>
+            <input type="tel" placeholder="+33 6 00 00 00 00"
+              class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+          </div>
+          <div class="flex flex-col md:col-span-2">
+            <label class="text-sm font-semibold text-slate-700 mb-1">Adresse Postale Complete</label>
+            <textarea rows="2" placeholder="N°, rue, CP, Ville..."
+              class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <hr class="border-slate-100">
+
+      <section>
+        <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+          <span
+            class="w-8 h-8 bg-slate-900 text-cyan-400 rounded-full flex items-center justify-center mr-3 text-sm">4</span>
+          Documents Relatifs au Client
+        </h2>
+
+        <div
+          class="border-2 border-dashed border-slate-300 rounded-xl p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-cyan-50 hover:border-cyan-400 transition cursor-pointer">
+          <svg class="w-12 h-12 text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+          </svg>
+          <p class="text-slate-700 font-medium">Glissez-déposez des fichiers ici</p>
+          <p class="text-xs text-slate-500 mt-1">PDF, PNG, JPG (Max. 10MB)</p>
+          <input type="file" class="hidden" id="fileUpload" multiple>
+          <label for="fileUpload"
+            class="mt-4 px-4 py-2 bg-slate-900 text-white text-sm rounded-lg hover:bg-slate-800 transition shadow-md">Parcourir
+            les fichiers</label>
+        </div>
+
+        <div class="mt-4 space-y-2">
+          <div class="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg shadow-sm">
+            <div class="flex items-center">
+              <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z">
+                </path>
+              </svg>
+              <span class="text-sm font-medium text-slate-700">Piece_Identite.pdf</span>
+            </div>
+            <button class="text-slate-400 hover:text-red-500"><svg class="w-5 h-5" fill="none" stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                </path>
+              </svg></button>
+          </div>
+        </div>
+      </section>
+
+      <section *ngIf="clientType === 'morale'">
+    <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
+        <span class="w-8 h-8 bg-slate-900 text-cyan-400 rounded-full flex items-center justify-center mr-3 text-sm">2</span>
+        Détails de l'Identité Morale
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
+        <div class="flex flex-col">
+            <label class="text-sm font-semibold text-slate-700 mb-1">Dénomination Sociale *</label>
+            <input type="text" placeholder="ex: Justice Digital SAS" class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+        </div>
+
+        <div class="flex flex-col">
+            <label class="text-sm font-semibold text-slate-700 mb-1">Secteur d'Activité</label>
+            <select class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none bg-white">
+                <option value="">Sélectionner un secteur</option>
+                <option value="finance">Banque & Finance</option>
+                <option value="immobilier">Immobilier</option>
+                <option value="tech">Technologie & Digital</option>
+                <option value="btp">BTP & Construction</option>
+                <option value="sante">Santé & Pharma</option>
+                <option value="industrie">Industrie</option>
+            </select>
+        </div>
+
+        <div class="flex flex-col">
+            <label class="text-sm font-semibold text-slate-700 mb-1">N° SIRET / Registre Commerce</label>
+            <input type="text" placeholder="123 456 789 00012" class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+        </div>
+    </div>
+</section>
+
+<hr class="border-slate-100 my-8">
+
+<section *ngIf="clientType === 'morale'">
+    <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-slate-800 flex items-center">
+            <span class="w-8 h-8 bg-slate-900 text-cyan-400 rounded-full flex items-center justify-center mr-3 text-sm">3</span>
+            Points de Contact
+        </h2>
+        <button type="button" (click)="addContact()"
+                class="flex items-center text-sm font-bold text-cyan-600 hover:text-cyan-700 transition">
+            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Ajouter un interlocuteur
+        </button>
+    </div>
+
+    <div class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-slate-50 border border-slate-200 rounded-xl relative group">
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-slate-500 uppercase mb-1">Nom Complet</label>
+                <input type="text" placeholder="Jean Dupont" class="px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-slate-500 uppercase mb-1">Fonction / Poste</label>
+                <input type="text" placeholder="Directeur Juridique" class="px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-slate-500 uppercase mb-1">Email</label>
+                <input type="email" placeholder="j.dupont@entreprise.fr" class="px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+            </div>
+            <div class="flex flex-col">
+                <label class="text-xs font-bold text-slate-500 uppercase mb-1">Téléphone Direct</label>
+                <div class="flex space-x-2">
+                    <input type="tel" placeholder="01 02..." class="flex-1 px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+                    <button class="text-slate-400 hover:text-red-500 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
                 </div>
-                <button class="ml-4 text-sm font-semibold bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition">
-                    Aller au Dossier
-                </button>
-            </div>
-
-            <div class="bg-yellow-100 border-l-4 border-yellow-600 text-yellow-800 p-4 rounded-lg shadow-md flex justify-between items-center">
-                <div>
-                    <p class="font-bold">Tâche en Retard : Appel Client R. Martin</p>
-                    <p class="text-sm">Cette tâche devait être complétée hier. Relancez-le pour le prochain rendez-vous.</p>
-                </div>
-                <button class="ml-4 text-sm font-semibold bg-yellow-600 text-white px-3 py-1 rounded hover:bg-yellow-700 transition">
-                    Marquer Fait
-                </button>
             </div>
         </div>
+    </div>
+</section>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-
-            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-red-600">
-                <p class="text-sm font-medium text-gray-500">Alertes Actives</p>
-                <p class="text-4xl font-extrabold text-red-700 mt-1">2</p>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-cyan-600">
-                <p class="text-sm font-medium text-gray-500">Audiences Semaine</p>
-                <p class="text-4xl font-extrabold text-cyan-700 mt-1">4</p>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-gray-400">
-                <p class="text-sm font-medium text-gray-500">Tâches à Compléter</p>
-                <p class="text-4xl font-extrabold text-gray-700 mt-1">5</p>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-green-600">
-                <p class="text-sm font-medium text-gray-500">Heures Facturables (Mois)</p>
-                <p class="text-4xl font-extrabold text-green-700 mt-1">45.5h</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-            <div class="bg-white p-6 rounded-xl shadow-2xl">
-                <h3 class="text-xl font-bold text-slate-800 mb-4 flex justify-between items-center">
-                    <svg class="w-6 h-6 mr-2 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-4 4V3m0 4h.01M3 21h18M3 7h18m-4 0v14a1 1 0 01-1 1H8a1 1 0 01-1-1V7m0 0h10"></path></svg>
-                    Mon Agenda : Aujourd'hui & Demain
-                    <a href="#" class="text-sm font-medium text-cyan-600 hover:text-cyan-700">Voir le Calendrier</a>
-                </h3>
-
-                <div class="space-y-4">
-                    <div class="border-l-4 border-red-500 pl-4 py-3 bg-red-50 rounded-md hover:bg-red-100 transition duration-150">
-                        <p class="text-xs text-red-700 font-bold">14h00 - TRIBUNAL (Audience de Plaidoirie)</p>
-                        <p class="text-base font-medium text-slate-800">Dossier N°: 2025/123 - Société ALPHA</p>
-                    </div>
-
-                    <div class="border-l-4 border-green-500 pl-4 py-3 bg-white rounded-md hover:bg-gray-50 transition duration-150">
-                        <p class="text-xs text-green-700 font-bold">16h30 - Bureau (Visioconférence)</p>
-                        <p class="text-base font-medium text-slate-800">Nouveau Client: Signature de Mandat</p>
-                    </div>
-
-                     <div class="border-l-4 border-gray-400 pl-4 py-3 bg-white rounded-md hover:bg-gray-50 transition duration-150">
-                        <p class="text-xs text-gray-600 font-bold">09h30 - Cour d'Appel (Mise en État)</p>
-                        <p class="text-base font-medium text-slate-800">Dossier N°: 2024/789 - Litige Martin</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow-2xl">
-                <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
-                    <svg class="w-6 h-6 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2h2m4 0V7a2 2 0 012-2h2m-4 4h.01"></path></svg>
-                    Dossiers Récents
-                </h3>
-
-                <div class="space-y-3">
-                    <div class="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 cursor-pointer">
-                        <a href="#" class="font-medium text-red-600 hover:text-red-700">Affaire Société ALPHA c/ BETA</a>
-                        <p class="text-xs text-gray-500">Réf: 2025/123 - **Statut : Plaidoirie**</p>
-                    </div>
-                    <div class="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 cursor-pointer">
-                        <a href="#" class="font-medium text-cyan-600 hover:text-cyan-700">Litige Familial Martin</a>
-                        <p class="text-xs text-gray-500">Réf: 2024/789 - **Statut : Instruction**</p>
-                    </div>
-                    <div class="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-150 cursor-pointer">
-                        <a href="#" class="font-medium text-gray-600 hover:text-gray-700">Contentieux Fiscal B. Dubois</a>
-                        <p class="text-xs text-gray-500">Réf: 2025/456 - **Statut : Clôturé**</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </main>
-</div>
+      <div class="pt-6 flex justify-end space-x-4">
+        <button type="button"
+          class="px-6 py-2.5 rounded-lg border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition">
+          Sauvegarder en Brouillon
+        </button>
+        <button type="submit"
+          class="px-10 py-2.5 rounded-lg bg-cyan-500 text-slate-900 font-bold hover:bg-cyan-600 shadow-lg shadow-cyan-200 transition">
+          Créer le Client
+        </button>
+      </div>
+    </form>
+  </div>
+</div>  -->

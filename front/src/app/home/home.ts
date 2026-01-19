@@ -1,5 +1,6 @@
+import { NavigationService } from './../services/navigation-service';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
 import { Paths } from '../paths';
@@ -11,6 +12,8 @@ import { Paths } from '../paths';
   styleUrl: './home.css'
 })
 export class Home {
+
+  private readonly navigationService = inject(NavigationService);
 
   // Variable d'état pour le contrôle de la barre latérale
   isSidebarOpen: boolean = false;
@@ -32,7 +35,7 @@ export class Home {
   }
 
   navigateTOClients() {
-    this.router.navigateByUrl(Paths.HOME + '/' + Paths.CRM);
+    this.navigationService.navigateTOClients();
     this.activeRoute = Paths.CRM;
   }
 

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { NavigationService } from './../../services/navigation-service';
+import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Paths } from '../../paths';
 import { Contact } from '../../appTypes';
@@ -7,11 +8,15 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-crm',
-  imports: [RouterModule,CommonModule,FormsModule],
+  imports: [RouterModule, CommonModule, FormsModule],
   templateUrl: './crm.html',
   styleUrl: './crm.css'
 })
 export class Crm {
+
+  private readonly navigationService = inject(NavigationService);
+
+
   // Liste de contacts simulée pour l'exemple
   contacts: Contact[] = [
     { id: 101, type: 'PERSONNE', name: 'Dupont, Jean', role: 'Client', amlRisk: 'MOYEN', complianceStatus: 'PENDING', country: 'FRANCE', lastUpdated: '2024-05-10' },
@@ -22,7 +27,7 @@ export class Crm {
   ];
   searchTerm: string = '';
 
-constructor(private readonly router: Router) {
+  constructor(private readonly router: Router) {
 
   }
 
@@ -37,11 +42,8 @@ constructor(private readonly router: Router) {
     this.router.navigate([Paths.HOME, Paths.CLIENT_DETAILS]);
   }
 
-
-
-
   navigateToClientForm() {
-    this.router.navigate([Paths.HOME, Paths.CLIENT_FORM]);
+    this.navigationService.navigateToClientForm();
   }
 
   navigateToClientDetails(contact: Contact) {

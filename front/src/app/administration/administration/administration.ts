@@ -21,4 +21,8 @@ export class Administration {
     this.router.navigate([Paths.HOME, Paths.PROFILE_CABINET]);
   }
 
+  navigateToAML(){
+    this.router.navigate([Paths.HOME, Paths.AML_COMPLIANCE]);
+  }
+
 }

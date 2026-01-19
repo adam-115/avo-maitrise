@@ -38,7 +38,7 @@
             [ngClass]="activeRoute === paths.CRM ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
             class="flex items-center space-x-3 p-3 rounded-lg transition duration-150 cursor-pointer">
                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z"></path></svg>
-                <span>Clients & Contacts</span>
+                <span>Gestion des Clients</span>
             </a>
             <a (click)="navigateToModel()"
             [ngClass]="activeRoute === paths.MODEL ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
@@ -73,16 +73,6 @@
     </aside>
 
     <div class="flex-1 flex flex-col overflow-hidden">
-
-        <header class="h-16 bg-white shadow-md flex items-center px-4 lg:px-6">
-            <button (click)="isSidebarOpen = true" class="text-slate-900 lg:hidden focus:outline-none mr-4">
-                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-            <h1 class="text-xl font-bold text-slate-800">
-                Tableau de Bord
-            </h1>
-        </header>
-
         <main class="flex-1 overflow-y-auto p-6 sm:p-10">
             <router-outlet></router-outlet>
         </main>

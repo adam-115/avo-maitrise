@@ -28,6 +28,7 @@ export class Paths {
 
  static readonly UTILISATEURS = 'utilisateurs';
  static readonly PROFILE_CABINET = 'profile-cabinet';
+ static readonly AML_COMPLIANCE = 'aml-compliance';
 
 
 
