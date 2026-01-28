@@ -1,0 +1,97 @@
+<div class="min-h-screen bg-gray-100 py-10 px-4 sm:px-6 lg:px-8 font-sans">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Formulaires de Questionnaire AML</h1>
+        <p class="text-sm text-slate-500 mt-1">Gérez les étapes du parcours client et la logique de scoring associée.</p>
+      </div>
+      <button (click)="createNewForm()"
+              class="inline-flex items-center px-6 py-3 bg-cyan-500 border border-transparent rounded-xl text-sm font-extrabold text-slate-900 hover:bg-cyan-600 transition shadow-lg shadow-cyan-200 transform hover:-translate-y-0.5">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        Nouveau Formulaire
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      @for (amlFormConfig of AmlFormConfigs; track amlFormConfig.id) {
+        <div class="bg-white rounded-xl shadow-md border-t-4 border-cyan-600 hover:shadow-xl transition-all duration-300 group flex flex-col transform hover:scale-[1.02]">
+
+          <div class="p-6 flex-1">
+            <div class="flex justify-between items-start mb-4">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-cyan-50 text-cyan-700 border border-cyan-100 uppercase tracking-wider">
+                Ordre: {{ amlFormConfig.order }}
+              </span>
+              <span class="text-xs text-slate-400 font-mono italic">#{{ amlFormConfig.formName }}</span>
+            </div>
+
+            <h3 class="text-xl font-bold text-slate-800 mb-2 group-hover:text-cyan-600 transition">
+              {{ amlFormConfig.formTitle }}
+            </h3>
+
+            <p class="text-sm text-slate-500 leading-relaxed line-clamp-3">
+              {{ amlFormConfig.formDescription }}
+            </p>
+
+            <div class="mt-6 flex items-center space-x-4">
+              <div class="flex items-center text-slate-400 bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">
+                <svg class="w-4 h-4 mr-1.5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <span class="text-xs font-bold text-slate-600">{{ amlFormConfig.inputConfigs.length }} Champs</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 rounded-b-xl flex items-center justify-between">
+            <button (click)="editForm(amlFormConfig)"
+                    class="text-sm font-bold text-slate-700 hover:text-cyan-600 transition flex items-center">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              Modifier
+            </button>
+
+            <div class="flex items-center space-x-1">
+              <button (click)="viewTheForm(amlFormConfig)"
+                      class="p-2 text-slate-400 hover:text-cyan-500 hover:bg-cyan-50 rounded-lg transition"
+                      title="Prévisualiser la page">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+              </button>
+
+              <button class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
+                      title="Supprimer la page">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+
+      @empty {
+        <div class="text-center py-20 col-span-full bg-white rounded-2xl shadow-sm border border-slate-200">
+          <div class="bg-cyan-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-10 h-10 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900">Aucune page configurée</h2>
+          <p class="text-slate-500 mt-2 max-w-sm mx-auto">Commencez par créer votre première étape de collecte de données AML.</p>
+          <button (click)="createNewForm()" class="mt-8 px-8 py-3 bg-cyan-500 text-slate-900 rounded-xl font-bold shadow-lg hover:bg-cyan-600 transition transform hover:scale-105">
+            Créer ma première page
+          </button>
+        </div>
+      }
+
+      <button (click)="createNewForm()"
+              class="border-2 border-dashed border-slate-300 rounded-xl p-6 flex flex-col items-center justify-center text-slate-400 hover:border-cyan-400 hover:text-cyan-600 transition-all bg-white/50 hover:bg-white group h-full min-h-[250px]">
+        <div class="p-4 rounded-full bg-slate-100 group-hover:bg-cyan-50 transition mb-4 text-slate-400 group-hover:text-cyan-500">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </div>
+        <span class="font-bold text-slate-700">Ajouter un nouveau formulaire</span>
+        <span class="text-xs mt-1 text-slate-500">Nouvelle étape de questionnaire</span>
+      </button>
+
+    </div>
+  </div>
+</div>

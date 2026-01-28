@@ -1,3 +1,12 @@
+// for test abstract crud service
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+}
+
+
 // tab dossier type for dossier details component
 export enum DossierTabType {
   VUE_ENSEMBLE = 'VUE_ENSEMBLE',
@@ -16,11 +25,11 @@ export enum ContactTypeCreation {
 }
 
 
-export enum ClientType {
-  PESONNE = 'PERSONNE',
-  SOCIETE = 'SOCIETE',
-  INSTITUTION = 'INSTITUTION'
-}
+// export enum ClientType {
+//   PESONNE = 'PERSONNE',
+//   SOCIETE = 'SOCIETE',
+//   INSTITUTION = 'INSTITUTION'
+// }
 
 // contact interface for crm component
 export interface Contact {
@@ -75,7 +84,7 @@ export interface ClientDetail {
 }
 
 // Interface pour définir la structure d'une Audience Judiciaire
-export  interface Hearing {
+export interface Hearing {
   id: number;
   title: string;
   clientCase: string;
@@ -86,3 +95,107 @@ export  interface Hearing {
   date: Date;
   style?: any; // Contient les styles calculés: { top: '...', height: '...', width: '...', left: '...' }
 }
+
+
+
+// configuration des formulaires AML
+
+export type InputType = 'select' | 'checkbox' | 'radio' | 'uploadFile';
+// icon type for alert service
+export type IconType = "success" | "error" | "warning" | "info" | "question";
+
+// configuration des formulaires AML
+export interface AmlFormConfig {
+  id?: number,
+  formName: string,
+  formTitle: string,
+  formDescription: string,
+  order: number,
+  inputConfigs: AmlInputConfig[],
+}
+
+export interface AmlInputConfig {
+  id?: string;
+  type: InputType;
+  name: string; // Added property for the form control name it must be unique
+  score?: number;// used for upload
+  facteur: number,
+  required: boolean;
+  labelMessage: string;
+  placeholder?: string;
+  options?: AMLInputOption[]; // for select , radio , checkbox
+  errorMessage?: string;
+  customStyle?: string;
+  defaultValue?: any;
+  displayOrer?: number;
+  optionsLayout?: 'block' | 'inline';
+}
+
+// used for the check box
+export interface AMLInputOption {
+  id?: string;
+  name?: string;
+  AmlInputConfigId?: number;
+  value: string;
+  score: number;
+  order?: number;
+}
+
+export interface AmlFormResult {
+  id?: number;
+  amlFormConfigID?: number;
+  totalScore?: number;
+  riskLevel?: 'Faible' | 'Modéré' | 'Élevé';
+  AmlPageConfigValues?: AmlInputValue[];
+}
+
+export interface AmlInputValue {
+  id?: number,
+  amlFormConfig?: number;
+  InputConfigID: string;
+  value: string;
+}
+
+
+// Interface pour le suivi du score par champ (simplifiée pour l'affichage)
+export interface FieldScore {
+  name: string;
+  label: string;
+  facteur: number;
+  scoreObtenu: number;
+}
+
+
+//### partie configuration
+// configuration du type client
+
+export interface TypeClient {
+  id?: number,
+  libelle: string,
+  code?: string,
+  ordre_affichage: number,
+  actif: boolean,
+  created_at: Date,
+}
+
+export interface SecteurActivite {
+  id?: number;
+  code: string;           // ex: 'IMMOBILIER', 'FINTECH'
+  libelle: string;        // ex: 'Promotion Immobilière'
+  ordre_affichage: number;
+  actif: boolean;
+  created_at?: Date;
+}
+
+
+
+
+
+// export interface MappingForm {
+//   id?: number;
+//   typeClient: 'PERSONNE' | 'SOCIETE' | 'INSTITUTION';
+//   secteurActivite: string;
+//   amlFormConfigID: number;
+// }
+
+

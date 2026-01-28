@@ -1,3 +1,4 @@
+import { TypeClient } from './appTypes';
 import { FacturationForm } from './facturation/facturation-form/facturation-form';
 import { ReviewAml } from './crm/review-aml/review-aml';
 import { Routes } from '@angular/router';
@@ -21,6 +22,13 @@ import { Utilisateur } from './administration/utilisateurs/utilisateur/utilisate
 import { ProfileCabinet } from './administration/profile-cabinet/profile-cabinet/profile-cabinet';
 import { Login } from './login/login/login';
 import { Bord } from './Bord/bord/bord';
+import { NavigationService } from './services/navigation-service';
+import { AmlFormListComponent } from './aml-compliance/aml-form-list-component/aml-form-list-component';
+import { AmlFormConfigComponent } from './aml-compliance/aml-form-config-component/aml-form-config-component';
+import { AmlFormViewComponent } from './aml-compliance/aml-form-view-component/aml-form-view-component';
+import { ClientType } from './administration/client-type/client-type';
+import { Preferences } from './administration/preferences/preferences';
+import { SecteurActiviteComponent } from './administration/secteur-activite/secteur-activite';
 
 export const routes: Routes = [
   {
@@ -118,8 +126,36 @@ export const routes: Routes = [
       {
         path: Paths.PROFILE_CABINET,
         component: ProfileCabinet
-      }
-
+      },
+       {
+        path:NavigationService.ADMIN_PREFERENCE,
+        component:Preferences
+      },
+      {
+        path:NavigationService.ADMIN_SECTEUR_ATIVITE,
+        component:SecteurActiviteComponent
+      },
+      {
+        path:NavigationService.TYPE_CLIENT,
+        component:ClientType
+      },
+      // AML Compliance Paths can be found in NavigationService
+      {
+        path: NavigationService.AML_FORM_CONFIG_LIST,
+        component: AmlFormListComponent
+      },
+      {
+        path: NavigationService.FORM_CONFIG_CREATE,
+        component: AmlFormConfigComponent
+      },
+      {
+        path: NavigationService.FORM_CONFIG_EDIT,
+        component: AmlFormConfigComponent
+      },
+      {
+        path: NavigationService.FORM_CONFIG_VIEW,
+        component: AmlFormViewComponent
+      },
     ]
   },
 

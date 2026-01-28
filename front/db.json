@@ -623,6 +623,859 @@
         }
       ],
       "id": "6678"
+    },
+    {
+      "id": "59d6",
+      "formName": "toto aml ",
+      "formTitle": "pays de residence",
+      "formDescription": "pays de residence",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "mks4lxtm-o72j8ao",
+          "type": "select",
+          "name": "toto residnece",
+          "labelMessage": "c est quoi le pays de residence de toto",
+          "facteur": 1,
+          "required": false,
+          "placeholder": "residence toto ",
+          "errorMessage": "toto rah hareb ",
+          "optionsLayout": "block",
+          "displayOrer": 0,
+          "defaultValue": null,
+          "options": [
+            {
+              "id": "mks4lxtm-u8kqsmb",
+              "value": "Afghanistan",
+              "score": 10,
+              "order": 1,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-hoc91ih",
+              "value": "Afrique du Sud",
+              "score": 10,
+              "order": 2,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-buocya6",
+              "value": "Albanie",
+              "score": 10,
+              "order": 3,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-8s4b9wm",
+              "value": "Algérie",
+              "score": 10,
+              "order": 4,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-h1p3g0x",
+              "value": "Allemagne",
+              "score": 10,
+              "order": 5,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-rwavw7u",
+              "value": "Andorre",
+              "score": 10,
+              "order": 6,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-xs1fuah",
+              "value": "Angola",
+              "score": 10,
+              "order": 7,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-vmllkv0",
+              "value": "Arabie Saoudite",
+              "score": 10,
+              "order": 8,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-x62a7fk",
+              "value": "Argentine",
+              "score": 10,
+              "order": 9,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-jayljmw",
+              "value": "Australie",
+              "score": 10,
+              "order": 10,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-auxhq0d",
+              "value": "Autriche",
+              "score": 10,
+              "order": 11,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-joz2wbp",
+              "value": "Bahamas",
+              "score": 10,
+              "order": 12,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-nyl9eoh",
+              "value": "Belgique",
+              "score": 10,
+              "order": 13,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-i65wabi",
+              "value": "Bénin",
+              "score": 10,
+              "order": 14,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-9iz0ula",
+              "value": "Birmanie (Myanmar)",
+              "score": 10,
+              "order": 15,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-m5qo3w4",
+              "value": "Brésil",
+              "score": 10,
+              "order": 16,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-4ceqs5w",
+              "value": "Bulgarie",
+              "score": 10,
+              "order": 17,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-9z2z888",
+              "value": "Burkina Faso",
+              "score": 10,
+              "order": 18,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-6e62xg7",
+              "value": "Cambodge",
+              "score": 10,
+              "order": 19,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-qxskbxn",
+              "value": "Cameroun",
+              "score": 10,
+              "order": 20,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-qxmozvu",
+              "value": "Canada",
+              "score": 10,
+              "order": 21,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-hk4qpaw",
+              "value": "Chili",
+              "score": 10,
+              "order": 22,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-rt8kxjt",
+              "value": "Chine",
+              "score": 10,
+              "order": 23,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-6or74nc",
+              "value": "Chypre",
+              "score": 10,
+              "order": 24,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-4hwvyfp",
+              "value": "Colombie",
+              "score": 10,
+              "order": 25,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-3dogkxh",
+              "value": "Corée du Nord",
+              "score": 10,
+              "order": 26,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-joi8ikt",
+              "value": "Corée du Sud",
+              "score": 10,
+              "order": 27,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-wwjdlth",
+              "value": "Côte d’Ivoire",
+              "score": 10,
+              "order": 28,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-8io9g3g",
+              "value": "Croatie",
+              "score": 10,
+              "order": 29,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-aoh7lli",
+              "value": "Danemark",
+              "score": 5,
+              "order": 30,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-zkxjgo4",
+              "value": "Égypte",
+              "score": 10,
+              "order": 31,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-2td23bj",
+              "value": "Émirats Arabes Unis",
+              "score": 10,
+              "order": 32,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-gx5tjok",
+              "value": "Espagne",
+              "score": 10,
+              "order": 33,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-ednta1i",
+              "value": "Estonie",
+              "score": 8,
+              "order": 34,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-soybxty",
+              "value": "États-Unis",
+              "score": 10,
+              "order": 35,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-yqss7zo",
+              "value": "Finlande",
+              "score": 5,
+              "order": 36,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-rir04kv",
+              "value": "France",
+              "score": 10,
+              "order": 37,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-hgqupw7",
+              "value": "Gabon",
+              "score": 10,
+              "order": 38,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-2mwy9i7",
+              "value": "Ghana",
+              "score": 10,
+              "order": 39,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-ymcdw39",
+              "value": "Grèce",
+              "score": 10,
+              "order": 40,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-hkcwm2s",
+              "value": "Guinée",
+              "score": 10,
+              "order": 41,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-49juxhz",
+              "value": "Haïti",
+              "score": 10,
+              "order": 42,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-gdbd966",
+              "value": "Hong Kong",
+              "score": 10,
+              "order": 43,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-b8146k4",
+              "value": "Hongrie",
+              "score": 10,
+              "order": 44,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-rjfzyrn",
+              "value": "Îles Caïmans",
+              "score": 10,
+              "order": 45,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-h5r4l7x",
+              "value": "Îles Vierges Britanniques",
+              "score": 10,
+              "order": 46,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-6c3p45y",
+              "value": "Inde",
+              "score": 10,
+              "order": 47,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-a46st3y",
+              "value": "Indonésie",
+              "score": 10,
+              "order": 48,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-isxx6o3",
+              "value": "Iran",
+              "score": 10,
+              "order": 49,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-65zta5m",
+              "value": "Irlande",
+              "score": 10,
+              "order": 50,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-eskfzhx",
+              "value": "Islande",
+              "score": 10,
+              "order": 51,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-okd0zh1",
+              "value": "Israël",
+              "score": 10,
+              "order": 52,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-uj2twvv",
+              "value": "Italie",
+              "score": 10,
+              "order": 53,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-l5i2edr",
+              "value": "Japon",
+              "score": 10,
+              "order": 54,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-v4sgbdm",
+              "value": "Jordanie",
+              "score": 10,
+              "order": 55,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-sk6s0tg",
+              "value": "Kazakhstan",
+              "score": 10,
+              "order": 56,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-222rctf",
+              "value": "Kenya",
+              "score": 10,
+              "order": 57,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-1lzimo1",
+              "value": "Koweït",
+              "score": 10,
+              "order": 58,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-h64jfhs",
+              "value": "Liban",
+              "score": 10,
+              "order": 59,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-ma3f7he",
+              "value": "Luxembourg",
+              "score": 10,
+              "order": 60,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-xvbx2l5",
+              "value": "Madagascar",
+              "score": 10,
+              "order": 61,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-3bgt6zz",
+              "value": "Malaisie",
+              "score": 10,
+              "order": 62,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-323bhim",
+              "value": "Mali",
+              "score": 10,
+              "order": 63,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-qnquvqj",
+              "value": "Malte",
+              "score": 10,
+              "order": 64,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-zdo3rey",
+              "value": "Maroc",
+              "score": 10,
+              "order": 65,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-iex2jyr",
+              "value": "Maurice",
+              "score": 10,
+              "order": 66,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-0yqyhxz",
+              "value": "Mexique",
+              "score": 10,
+              "order": 67,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-4qrhvt9",
+              "value": "Monaco",
+              "score": 10,
+              "order": 68,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-vluos23",
+              "value": "Népal",
+              "score": 10,
+              "order": 69,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-iido41v",
+              "value": "Nicaragua",
+              "score": 10,
+              "order": 70,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-1le2elt",
+              "value": "Nigeria",
+              "score": 10,
+              "order": 71,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-pvz2nl8",
+              "value": "Norvège",
+              "score": 5,
+              "order": 72,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-2vtkfu9",
+              "value": "Nouvelle-Zélande",
+              "score": 5,
+              "order": 73,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-p3i71kg",
+              "value": "Oman",
+              "score": 10,
+              "order": 74,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-f0dajdf",
+              "value": "Ouganda",
+              "score": 10,
+              "order": 75,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-99tp9ny",
+              "value": "Ouzbékistan",
+              "score": 10,
+              "order": 76,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-m02p573",
+              "value": "Pakistan",
+              "score": 10,
+              "order": 77,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-tihokes",
+              "value": "Panama",
+              "score": 10,
+              "order": 78,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-9fynxkh",
+              "value": "Pays-Bas",
+              "score": 10,
+              "order": 79,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-aidvbtb",
+              "value": "Pérou",
+              "score": 10,
+              "order": 80,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-lygcsp3",
+              "value": "Philippines",
+              "score": 10,
+              "order": 81,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-47gm545",
+              "value": "Pologne",
+              "score": 10,
+              "order": 82,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-zd5ap7e",
+              "value": "Portugal",
+              "score": 10,
+              "order": 83,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-v0w1l7j",
+              "value": "Qatar",
+              "score": 10,
+              "order": 84,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-86uugvx",
+              "value": "République Démocratique du Congo",
+              "score": 10,
+              "order": 85,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-hz2lm49",
+              "value": "Roumanie",
+              "score": 10,
+              "order": 86,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-deamd4f",
+              "value": "Royaume-Uni",
+              "score": 10,
+              "order": 87,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-8rn3gjm",
+              "value": "Russie",
+              "score": 10,
+              "order": 88,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-01siead",
+              "value": "Sénégal",
+              "score": 10,
+              "order": 89,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-gubtcfs",
+              "value": "Seychelles",
+              "score": 10,
+              "order": 90,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-w09hmxu",
+              "value": "Singapour",
+              "score": 8,
+              "order": 91,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-7h7zl83",
+              "value": "Slovaquie",
+              "score": 10,
+              "order": 92,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-g3cvaei",
+              "value": "Somalie",
+              "score": 10,
+              "order": 93,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-i4o560q",
+              "value": "Soudan",
+              "score": 10,
+              "order": 94,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-rlm6uof",
+              "value": "Suède",
+              "score": 8,
+              "order": 95,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-ydby062",
+              "value": "Suisse",
+              "score": 10,
+              "order": 96,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-29c8rsh",
+              "value": "Syrie",
+              "score": 10,
+              "order": 97,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-ot264bz",
+              "value": "Taïwan",
+              "score": 10,
+              "order": 98,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-rdi9gtn",
+              "value": "Tchad",
+              "score": 10,
+              "order": 99,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-clc3p42",
+              "value": "Thaïlande",
+              "score": 10,
+              "order": 100,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-bz11wh8",
+              "value": "Tunisie",
+              "score": 10,
+              "order": 101,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-11l9ojz",
+              "value": "Turquie",
+              "score": 10,
+              "order": 102,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-xlnc884",
+              "value": "Ukraine",
+              "score": 10,
+              "order": 103,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-ttkuo76",
+              "value": "Uruguay",
+              "score": 10,
+              "order": 104,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-8yut00d",
+              "value": "Venezuela",
+              "score": 10,
+              "order": 105,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-7txd1h0",
+              "value": "Vietnam",
+              "score": 10,
+              "order": 106,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-piagudi",
+              "value": "Yémen",
+              "score": 10,
+              "order": 107,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-zt5domi",
+              "value": "Zimbabwe",
+              "score": 10,
+              "order": 108,
+              "InputTypeConfigId": null
+            }
+          ]
+        },
+        {
+          "id": "mks4lxtm-cq1dpq2",
+          "type": "checkbox",
+          "name": "double nationalité ",
+          "labelMessage": "quelle  nationnalité ",
+          "facteur": 9,
+          "required": true,
+          "placeholder": "",
+          "errorMessage": "",
+          "optionsLayout": "block",
+          "displayOrer": 0,
+          "defaultValue": null,
+          "options": [
+            {
+              "id": "mks4lxtm-6vdfyp5",
+              "value": "maroc",
+              "score": 9,
+              "order": 1,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-lp5bz1f",
+              "value": "luxembourg",
+              "score": 6,
+              "order": 2,
+              "InputTypeConfigId": null
+            }
+          ]
+        },
+        {
+          "id": "mks4lxtm-mf29rve",
+          "type": "radio",
+          "name": "situation famillile",
+          "labelMessage": "situation famillile",
+          "facteur": 1,
+          "required": false,
+          "placeholder": "",
+          "errorMessage": "",
+          "optionsLayout": "block",
+          "displayOrer": 0,
+          "defaultValue": null,
+          "options": [
+            {
+              "id": "mks4lxtm-c1x7k9n",
+              "value": "Oui",
+              "score": 3,
+              "order": 1,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "mks4lxtm-jofx05p",
+              "value": "Non",
+              "score": 6,
+              "order": 2,
+              "InputTypeConfigId": null
+            }
+          ]
+        },
+        {
+          "id": "mks4lxtm-iitsgc9",
+          "type": "uploadFile",
+          "name": "srn",
+          "labelMessage": "srn societé",
+          "facteur": 1,
+          "required": false,
+          "placeholder": "",
+          "errorMessage": "",
+          "optionsLayout": "block",
+          "displayOrer": 0,
+          "defaultValue": null,
+          "score": null,
+          "options": []
+        }
+      ]
     }
   ],
   "AMLInputConfig": [],
@@ -665,6 +1518,163 @@
           "value": "countries - Copie.csv"
         }
       ]
+    },
+    {
+      "id": "c750",
+      "amlFormConfigID": "59d6",
+      "totalScore": 70,
+      "AmlPageConfigValues": [
+        {
+          "amlFormConfig": "59d6",
+          "InputConfigID": "mks4lxtm-o72j8ao",
+          "value": "Angola"
+        },
+        {
+          "amlFormConfig": "59d6",
+          "InputConfigID": "mks4lxtm-cq1dpq2",
+          "value": "luxembourg"
+        },
+        {
+          "amlFormConfig": "59d6",
+          "InputConfigID": "mks4lxtm-mf29rve",
+          "value": "Non"
+        },
+        {
+          "amlFormConfig": "59d6",
+          "InputConfigID": "mks4lxtm-iitsgc9",
+          "value": "countries.csv"
+        }
+      ]
+    },
+    {
+      "id": "d2cf",
+      "libelle": "aaa",
+      "code": "aaa",
+      "ordre_affichage": 0,
+      "actif": true,
+      "created_at": "2026-01-27T10:37:28.033Z"
+    },
+    {
+      "id": "aa9d",
+      "libelle": "aaa",
+      "code": "aaa",
+      "ordre_affichage": 0,
+      "actif": true,
+      "created_at": "2026-01-27T10:37:33.772Z"
+    },
+    {
+      "id": "c777",
+      "libelle": "aaa",
+      "code": "aaa",
+      "ordre_affichage": 0,
+      "actif": true,
+      "created_at": "2026-01-27T10:37:36.711Z"
+    },
+    {
+      "id": "c678",
+      "libelle": "aaa",
+      "code": "aaa",
+      "ordre_affichage": 0,
+      "actif": true,
+      "created_at": "2026-01-27T10:38:52.744Z"
+    }
+  ],
+  "type_client": [
+    {
+      "id": "f153",
+      "libelle": "physique",
+      "code": "physique",
+      "ordre_affichage": 1,
+      "actif": true,
+      "created_at": "2026-01-28T10:03:31.496Z"
+    },
+    {
+      "id": "9506",
+      "libelle": "morale",
+      "code": "morale",
+      "ordre_affichage": 0,
+      "actif": true,
+      "created_at": "2026-01-27T14:39:51.627Z"
+    },
+    {
+      "id": "5af2",
+      "libelle": "institution",
+      "code": "institution",
+      "ordre_affichage": 0,
+      "actif": true,
+      "created_at": "2026-01-27T14:41:13.244Z"
+    }
+  ],
+  "SecteurActivite": [
+    {
+      "id": "ec22",
+      "code": "IMMOBILIER",
+      "libelle": "Promotion et Transaction Immobilière",
+      "ordre_affichage": 1,
+      "actif": true
+    },
+    {
+      "id": "d1e8",
+      "code": "BANQUE",
+      "libelle": "Établissements Bancaires et Financiers",
+      "ordre_affichage": 5,
+      "actif": true
+    },
+    {
+      "id": "1059",
+      "code": "CASINO",
+      "libelle": "Jeux de Hasard et Casinos",
+      "ordre_affichage": 6,
+      "actif": true
+    },
+    {
+      "id": "fc4f",
+      "code": "ASBL",
+      "libelle": "Organisations à but non lucratif",
+      "ordre_affichage": 7,
+      "actif": true
+    },
+    {
+      "id": "b19a",
+      "code": "ART",
+      "libelle": "Négoce d'Œuvres d'Art et Antiquités",
+      "ordre_affichage": 8,
+      "actif": true
+    },
+    {
+      "id": "60de",
+      "code": "COMMERCE",
+      "libelle": "Commerce de Gros et de Détail",
+      "ordre_affichage": 9,
+      "actif": true
+    },
+    {
+      "id": "8f8e",
+      "code": "EXPERTISE_COMPTABLE",
+      "libelle": "Expertise Comptable et Audit",
+      "ordre_affichage": 10,
+      "actif": true
+    },
+    {
+      "id": "2d69",
+      "code": "AVOCATS",
+      "libelle": "Professions Juridiques et Avocats",
+      "ordre_affichage": 2,
+      "actif": true
+    },
+    {
+      "id": "a95a",
+      "code": "LUXE",
+      "libelle": "Commerce d'Articles de Luxe",
+      "ordre_affichage": 3,
+      "actif": true
+    },
+    {
+      "id": "0db8",
+      "code": "CRYPTO",
+      "libelle": "Prestataires d'Actifs Numériques (PSAN)",
+      "ordre_affichage": 4,
+      "actif": true
     }
   ]
 }

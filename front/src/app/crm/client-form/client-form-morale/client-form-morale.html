@@ -14,17 +14,19 @@
             class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none">
         </div>
 
-        <div class="flex flex-col">
+        <div class="flex flex-col" [formGroup]="clientMoralForm">
           <label class="text-sm font-semibold text-slate-700 mb-1">Secteur d'Activité</label>
-          <select
+
+          <select formControlName="selectedSecteurActivite"
             class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none bg-white">
-            <option value="">Sélectionner un secteur</option>
-            <option value="finance">Banque & Finance</option>
-            <option value="immobilier">Immobilier</option>
-            <option value="tech">Technologie & Digital</option>
-            <option value="btp">BTP & Construction</option>
-            <option value="sante">Santé & Pharma</option>
-            <option value="industrie">Industrie</option>
+
+            <option [ngValue]="null">Sélectionner un secteur</option>
+
+            @for (secteur of SecteurActivites; track secteur.id) {
+            <option [ngValue]="secteur">
+              {{ secteur.libelle }}
+            </option>
+            }
           </select>
         </div>
 

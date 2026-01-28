@@ -1,0 +1,183 @@
+<div class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-sm flex items-start justify-center pt-10 px-4">
+  <div class="relative mx-auto p-0 border-none w-full md:w-3/4 lg:w-3/5 xl:w-1/2 shadow-2xl rounded-2xl bg-white transform transition-all overflow-hidden animate-slideUp">
+
+    <div class="flex justify-between items-center px-8 py-5 bg-white border-b border-slate-100">
+      <div>
+        <h3 class="text-2xl font-extrabold text-slate-900">
+          {{ amlForm.get('id')?.value ? 'Modifier le Champ AML' : 'Nouveau Champ AML' }}
+        </h3>
+        <p class="text-sm text-slate-500 font-medium">Paramétrage des règles de scoring et de conformité.</p>
+      </div>
+      <button (click)="onClose()" class="text-slate-400 hover:text-slate-600 transition p-2 hover:bg-slate-100 rounded-xl">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <form [formGroup]="amlForm" (ngSubmit)="onSubmit()" class="p-8 space-y-8">
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Type de Champ (*)</label>
+          <select formControlName="type" (change)="onTypeChange()"
+            class="w-full rounded-xl border-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-3 border font-bold text-slate-700 bg-slate-50/50 outline-none transition">
+            @for (type of availableTypes; track type) {
+              <option [value]="type">{{ type | uppercase }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Nom Technique (ID) (*)</label>
+          <input type="text" formControlName="name" placeholder="ex: revenu_annuel_client"
+            class="w-full rounded-xl border-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-3 border font-mono text-sm outline-none transition"
+            [ngClass]="{'border-red-500 ring-1 ring-red-100': amlForm.get('name')?.invalid && amlForm.get('name')?.touched}">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Question affichée au client (*)</label>
+        <input type="text" formControlName="labelMessage" placeholder="Quelle est l'origine de vos fonds ?"
+          class="w-full rounded-xl border-slate-200 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-3 border text-slate-800 font-bold outline-none transition">
+      </div>
+
+      @if (amlForm.get('type')?.value === 'uploadFile') {
+        <div class="bg-amber-50 border border-amber-200 p-5 rounded-2xl flex items-center justify-between shadow-sm">
+          <div class="flex items-center">
+            <div class="p-3 bg-amber-100 rounded-xl mr-4 text-amber-600">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-extrabold text-amber-900">Pénalité de Risque Documentaire</p>
+              <p class="text-xs text-amber-700 font-medium">Score appliqué automatiquement si le document est manquant.</p>
+            </div>
+          </div>
+          <div class="w-24">
+            <input type="number" formControlName="score" min="0" max="10"
+              class="w-full rounded-xl border-amber-300 p-3 border text-center font-black text-amber-900 shadow-inner outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+        </div>
+      }
+
+      @if (amlForm.get('type')?.value !== 'uploadFile') {
+        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-200 shadow-inner">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
+            <h4 class="font-bold text-slate-800 flex items-center">
+              <span class="w-2 h-2 bg-cyan-500 rounded-full mr-2"></span>
+              Réponses & Barème de Scoring
+            </h4>
+            <div class="flex items-center space-x-2">
+              @if (amlForm.get('type')?.value === 'select') {
+                <label class="cursor-pointer text-xs px-4 py-2 bg-white border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 transition shadow-sm flex items-center font-bold">
+                  <svg class="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                  Importer CSV
+                  <input type="file" class="hidden" (change)="onFileUploaded($event)" accept=".csv">
+                </label>
+              }
+              @if (['select','checkbox'].includes(amlForm.get('type')?.value)) {
+                <button type="button" (click)="addOption()"
+                  class="text-xs px-4 py-2 bg-slate-900 text-cyan-400 rounded-xl hover:bg-slate-800 transition shadow-md flex items-center font-bold">
+                  <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                  Ajouter
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-2 mb-3 px-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+            <div class="col-span-8">Libellé de la réponse</div>
+            <div class="col-span-3 text-center">Score (0-10)</div>
+            <div class="col-span-1"></div>
+          </div>
+
+          <div class="space-y-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar" formArrayName="options">
+            @for (opt of options.controls; track opt; let i = $index) {
+              <div [formGroupName]="i" class="grid grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+                <div class="col-span-8">
+                  <input type="text" formControlName="value" [readonly]="amlForm.get('type')?.value === 'radio'"
+                    [class.bg-slate-50]="amlForm.get('type')?.value === 'radio'" placeholder="Ex: Risque élevé, France, Particulier..."
+                    class="w-full text-sm border-none focus:ring-0 p-1 font-bold text-slate-700 outline-none">
+                </div>
+                <div class="col-span-3">
+                  <input type="number" formControlName="score" min="0" max="10"
+                    class="w-full text-sm border-slate-100 bg-slate-50 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 p-2 text-center font-black text-cyan-700">
+                </div>
+                <div class="col-span-1 text-right">
+                  @if (['select','checkbox'].includes(amlForm.get('type')?.value)) {
+                    <button type="button" (click)="removeOption(i)" class="text-slate-300 hover:text-red-500 p-1 transition">
+                      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+            @if (options.length === 0) {
+              <div class="text-center py-8 border-2 border-dashed border-slate-200 rounded-2xl bg-white/50">
+                <p class="text-sm font-bold text-slate-400">Aucun barème défini pour ce type de champ</p>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-cyan-50 rounded-2xl border border-cyan-100 shadow-sm">
+        <div>
+          <label class="block text-xs font-black text-cyan-900 uppercase tracking-wider mb-2">Facteur de Risque Global (*)</label>
+          <div class="flex items-center space-x-4">
+            <input type="number" formControlName="facteur"
+              class="w-24 rounded-xl border-cyan-200 focus:ring-cyan-500 focus:border-cyan-500 p-3 border text-center font-black text-xl text-slate-900 shadow-sm outline-none">
+            <span class="text-[10px] font-bold text-cyan-700 uppercase leading-tight tracking-tight max-w-[150px]">Poids multiplicateur appliqué au score final</span>
+          </div>
+        </div>
+
+        <div class="flex items-center md:justify-end">
+          <label class="relative inline-flex items-center cursor-pointer group">
+            <input type="checkbox" formControlName="required" class="sr-only peer">
+            <div class="w-14 h-7 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500 shadow-inner"></div>
+            <span class="ml-4 text-sm font-black text-slate-700 group-hover:text-cyan-600 transition">Champ Obligatoire</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Aide à la saisie (Placeholder)</label>
+          <input type="text" formControlName="placeholder" class="w-full rounded-xl border-slate-200 text-sm p-3 border outline-none focus:border-cyan-500 transition">
+        </div>
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Message en cas d'erreur</label>
+          <input type="text" formControlName="errorMessage" class="w-full rounded-xl border-slate-200 text-sm p-3 border outline-none focus:border-cyan-500 transition">
+        </div>
+      </div>
+
+      @if (['radio','checkbox'].includes(amlForm.get('type')?.value)) {
+        <div class="flex items-center space-x-6 py-2 px-4 bg-slate-50 rounded-xl border border-slate-100 w-fit">
+          <span class="text-xs font-black text-slate-500 uppercase">Affichage :</span>
+          <label class="inline-flex items-center cursor-pointer">
+            <input type="radio" formControlName="optionsLayout" value="block" class="text-cyan-500 focus:ring-cyan-500">
+            <span class="ml-2 text-sm font-bold text-slate-700">Vertical</span>
+          </label>
+          <label class="inline-flex items-center cursor-pointer">
+            <input type="radio" formControlName="optionsLayout" value="inline" class="text-cyan-500 focus:ring-cyan-500">
+            <span class="ml-2 text-sm font-bold text-slate-700">Horizontal</span>
+          </label>
+        </div>
+      }
+
+      <div class="flex justify-end space-x-4 pt-6 border-t border-slate-100">
+        <button type="button" (click)="onClose()"
+          class="px-8 py-3 rounded-xl border border-slate-200 text-sm font-bold text-slate-500 hover:bg-slate-50 transition uppercase tracking-wider">
+          Annuler
+        </button>
+        <button type="submit" [disabled]="amlForm.invalid"
+          class="px-10 py-3 rounded-xl bg-cyan-500 text-slate-900 text-sm font-black shadow-lg shadow-cyan-200 hover:bg-cyan-600 disabled:opacity-50 disabled:shadow-none transition transform hover:-translate-y-0.5 uppercase tracking-wider">
+          {{ selectedAmlInputConfig? 'Mettre à jour' : 'Créer le Champ' }}
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>
