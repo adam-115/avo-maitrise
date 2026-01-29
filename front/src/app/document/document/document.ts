@@ -8,15 +8,21 @@ import { Component, ViewChild } from '@angular/core';
   styleUrl: './document.css'
 })
 export class Document {
-  @ViewChild(DocumentDialog)
-  documentDialog!: DocumentDialog;
+
+  showAddDocumentDialog = false ;
+
+
+
+  // @ViewChild(DocumentDialog)
+  // documentDialog!: DocumentDialog;
 
   openDocumentDialog() {
-    this.documentDialog.openModal();
+    // this.documentDialog.openModal();
+    this.showAddDocumentDialog = true;
   }
 
   closeDocumentDialog() {
-    this.documentDialog.closeModal();
+    this.showAddDocumentDialog = false ;
   }
 
 }

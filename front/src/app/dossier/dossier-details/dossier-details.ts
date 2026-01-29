@@ -19,6 +19,8 @@ export class DossierDetails implements OnInit {
   DossierTabType = DossierTabType;
   selectedTab: DossierTabType = DossierTabType.VUE_ENSEMBLE;
 
+  shwoDocumentDialog = false;
+
   // Example: You might fetch dossier details here
   dossierDetails: any;
 
@@ -29,5 +31,13 @@ export class DossierDetails implements OnInit {
 
   updateSelectedTab(tab: DossierTabType) {
     this.selectedTab = tab;
+  }
+
+  openDocumentDilog() {
+    this.shwoDocumentDialog = true;
+  }
+
+  closeDocumentDialog() {
+    this.shwoDocumentDialog = false;
   }
 }

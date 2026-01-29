@@ -110,6 +110,7 @@
         <p>Affichage de 1 à 12 sur 12 documents.</p>
     </div>
 </div>
-
-<app-document-dialog></app-document-dialog>
+@if(showAddDocumentDialog){
+  <app-document-dialog (closeDialogEvent)="closeDocumentDialog()"></app-document-dialog>
+}
 

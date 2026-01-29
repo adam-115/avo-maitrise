@@ -188,6 +188,17 @@ export interface SecteurActivite {
 }
 
 
+export interface Document{
+  id?:number ,
+  title: string,
+  name:string,
+  description?:string,
+  tags?:string,
+  file:File,
+}
+
+
+
 
 
 
