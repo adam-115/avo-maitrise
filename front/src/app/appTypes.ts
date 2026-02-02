@@ -189,6 +189,15 @@ export interface SecteurActivite {
   created_at?: Date;
 }
 
+export interface TypeOrganisme {
+  id?: number;
+  code: string;
+  libelle: string;
+  ordre_affichage: number;
+  actif: boolean;
+  created_at?: Date;
+}
+
 
 export interface Document {
   id?: number,

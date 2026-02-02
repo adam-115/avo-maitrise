@@ -1,7 +1,7 @@
 import { FacturationRelanceDailog } from './../facturation-relance-dailog/facturation-relance-dailog';
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { Paths } from '../../paths';
+import { NavigationService } from '../../services/navigation-service';
 
 @Component({
   selector: 'app-facturation',
@@ -26,7 +26,7 @@ export class Facturation {
   }
 
   navigateToFacturationForm() {
-    this.router.navigate([Paths.HOME, Paths.FACTURATION_FORM]);
+    this.router.navigate([NavigationService.HOME, NavigationService.FACTURATION_FORM]);
   }
 
 

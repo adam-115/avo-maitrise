@@ -138,47 +138,7 @@
 
     <hr class="border-slate-100 my-8">
 
-    <section>
-      <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
-        <span
-          class="w-8 h-8 bg-slate-900 text-cyan-400 rounded-full flex items-center justify-center mr-3 text-sm">4</span>
-        Documents Relatifs au Client
-      </h2>
-
-      <div
-        class="border-2 border-dashed border-slate-300 rounded-xl p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-cyan-50 hover:border-cyan-400 transition cursor-pointer">
-        <svg class="w-12 h-12 text-slate-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-        </svg>
-        <p class="text-slate-700 font-medium">Glissez-déposez des fichiers ici</p>
-        <p class="text-xs text-slate-500 mt-1">PDF, PNG, JPG (Max. 10MB)</p>
-        <input type="file" class="hidden" id="fileUpload" multiple>
-        <label for="fileUpload"
-          class="mt-4 px-4 py-2 bg-slate-900 text-white text-sm rounded-lg hover:bg-slate-800 transition shadow-md">Parcourir
-          les fichiers</label>
-      </div>
-
-      <div class="mt-4 space-y-2">
-        <div class="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg shadow-sm">
-          <div class="flex items-center">
-            <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z">
-              </path>
-            </svg>
-            <span class="text-sm font-medium text-slate-700">Piece_Identite.pdf</span>
-          </div>
-          <button class="text-slate-400 hover:text-red-500"><svg class="w-5 h-5" fill="none" stroke="currentColor"
-              viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-              </path>
-            </svg></button>
-        </div>
-      </div>
-    </section>
+    <app-client-documents [(documents)]="documents"></app-client-documents>
     <hr class="border-slate-100 my-8">
     <div class="pt-6 flex justify-end space-x-4">
       <button type="button"

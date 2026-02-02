@@ -21,6 +21,43 @@
       "name": "Bob"
     }
   ],
+  "TypeOrganisme": [
+    {
+      "id": 1,
+      "code": "MINISTERE",
+      "libelle": "Ministère / Administration Centrale",
+      "ordre_affichage": 1,
+      "actif": true
+    },
+    {
+      "id": 2,
+      "code": "COLLECTIVITE",
+      "libelle": "Collectivité Territoriale",
+      "ordre_affichage": 2,
+      "actif": true
+    },
+    {
+      "id": 3,
+      "code": "ETABLISSEMENT",
+      "libelle": "Établissement Public (EPA/EPIC)",
+      "ordre_affichage": 3,
+      "actif": true
+    },
+    {
+      "id": 4,
+      "code": "AMBASSADE",
+      "libelle": "Ambassade / Consulat",
+      "ordre_affichage": 4,
+      "actif": true
+    },
+    {
+      "id": 5,
+      "code": "ONG",
+      "libelle": "Organisation Non Gouvernementale (ONG)",
+      "ordre_affichage": 5,
+      "actif": true
+    }
+  ],
   "AmlFormConfig": [
     {
       "formName": "FORM 1",

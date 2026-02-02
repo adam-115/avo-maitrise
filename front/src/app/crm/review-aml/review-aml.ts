@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Paths } from '../../paths';
+import { NavigationService } from '../../services/navigation-service';
 
 @Component({
   selector: 'app-review-aml',
@@ -10,12 +10,12 @@ import { Paths } from '../../paths';
 })
 export class ReviewAml {
 
-   constructor(private readonly router: Router) {
+  constructor(private readonly router: Router) {
 
   }
 
   nvigateToClientDetails() {
-    this.router.navigate([Paths.HOME, Paths.CLIENT_DETAILS]);
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS]);
   }
 
 }

@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Paths } from '../paths';
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +7,32 @@ import { Paths } from '../paths';
 export class NavigationService {
 
   private readonly router = inject(Router);
+
+  // AML Compliance Navigation
+  // Constants migrated from Paths
+  static readonly LOGIN = 'login';
+  static readonly HOME = 'home';
+  static readonly DOSSIER = 'dossier';
+  static readonly DOSSIER_FORM = 'dossier-form';
+  static readonly DOSSIER_DETAIL = 'dossier-detail';
+  static readonly CRM = 'crm';
+  static readonly CLIENT_FORM = 'client-form';
+  static readonly CLIENT_DETAILS = 'client-details';
+  static readonly CLIENT_REVIEWS_AML = 'client-reviews-aml';
+  static readonly REVIEW_AML = 'review-aml';
+  static readonly CLIENT_REVIEWS_AML_REPORT = 'client-reviews-aml-report';
+  static readonly PERSON_REVIEW_AML = 'person-new-review-aml';
+  static readonly AML_REPORT_PERSON = 'aml-report-person';
+  static readonly MODEL = 'model';
+  static readonly SAISIE_TEMPS = 'saisie-temps';
+  static readonly FACTURATION = 'facturation';
+  static readonly FACTURATION_FORM = 'facturation-form';
+  static readonly FACTURATION_DETAIL = 'facturation-detail';
+  static readonly CALENDRIER = 'calendrier';
+  static readonly ADMINSTRATION = 'administration';
+  static readonly UTILISATEURS = 'utilisateurs';
+  static readonly PROFILE_CABINET = 'profile-cabinet';
+  static readonly AML_COMPLIANCE = 'aml-compliance';
 
   // AML Compliance Navigation
   public static readonly AML_FORM_CONFIG_LIST = "aml-form-config-list";
@@ -49,23 +74,23 @@ export class NavigationService {
 
 
   navigateTOClients(): void {
-    this.router.navigateByUrl(Paths.HOME + '/' + Paths.CRM);
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.CRM);
   }
 
   navigateToClientForm() {
-    this.router.navigate([Paths.HOME, Paths.CLIENT_FORM]);
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_FORM]);
   }
 
   navigateToAdminPrefences() {
-    this.router.navigate([Paths.HOME, NavigationService.ADMIN_PREFERENCE]);
+    this.router.navigate([NavigationService.HOME, NavigationService.ADMIN_PREFERENCE]);
   }
 
   navigateToPrefrenceTypeClient() {
-    this.router.navigate([Paths.HOME, NavigationService.TYPE_CLIENT]);
+    this.router.navigate([NavigationService.HOME, NavigationService.TYPE_CLIENT]);
   }
 
   navigateToAdminSecteurActivite() {
-    this.router.navigate([Paths.HOME, NavigationService.ADMIN_SECTEUR_ATIVITE]);
+    this.router.navigate([NavigationService.HOME, NavigationService.ADMIN_SECTEUR_ATIVITE]);
   }
 
 

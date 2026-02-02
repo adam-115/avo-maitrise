@@ -1,7 +1,7 @@
 import { NavigationService } from './../../services/navigation-service';
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { Paths } from '../../paths';
+
 import { Contact } from '../../appTypes';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -39,7 +39,7 @@ export class Crm {
   viewAmlDetails(contact: Contact) {
     // Logique pour afficher les détails AML du contact
     // console.log('Afficher les détails AML pour:', contact);
-    this.router.navigate([Paths.HOME, Paths.CLIENT_DETAILS]);
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS]);
   }
 
   navigateToClientForm() {
@@ -47,10 +47,10 @@ export class Crm {
   }
 
   navigateToClientDetails(contact: Contact) {
-    this.router.navigate([Paths.HOME, Paths.CLIENT_DETAILS]);
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS]);
   }
 
   navigateToReviewsAml() {
-    this.router.navigate([Paths.HOME, Paths.CLIENT_REVIEWS_AML]);
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_REVIEWS_AML]);
   }
 }

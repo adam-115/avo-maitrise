@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Paths } from '../../../paths';
+import { NavigationService } from '../../../services/navigation-service';
 
 @Component({
   selector: 'app-client-reviews-aml',
@@ -14,12 +14,12 @@ export class ClientReviewsAml {
   }
 
   navigateToReport() {
-    this.router.navigate([ Paths.HOME, Paths.CLIENT_REVIEWS_AML_REPORT]);
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_REVIEWS_AML_REPORT]);
   }
 
 
   navigateToNewReview() {
-    this.router.navigate([ Paths.HOME, Paths.REVIEW_AML]);
+    this.router.navigate([NavigationService.HOME, NavigationService.REVIEW_AML]);
   }
 
 }

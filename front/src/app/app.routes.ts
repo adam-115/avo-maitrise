@@ -24,7 +24,7 @@ import { Facturation } from './facturation/facturation/facturation';
 import { Home } from './home/home';
 import { Login } from './login/login/login';
 import { Model } from './model/model/model';
-import { Paths } from './paths';
+
 import { SaisieTemps } from './saisie-temps/saisie-temps/saisie-temps';
 import { NavigationService } from './services/navigation-service';
 import { Test } from './test/test';
@@ -35,7 +35,7 @@ export const routes: Routes = [
     component: Login
   },
   {
-    path: Paths.HOME,
+    path: NavigationService.HOME,
     component: Home,
     children: [
       {
@@ -43,87 +43,87 @@ export const routes: Routes = [
         component: Bord
       },
       {
-        path: Paths.DOSSIER,
+        path: NavigationService.DOSSIER,
         component: Dossier
       },
       {
-        path: Paths.DOSSIER_FORM,
+        path: NavigationService.DOSSIER_FORM,
         component: DossierForm
       },
       {
-        path: Paths.DOSSIER_DETAIL,
+        path: NavigationService.DOSSIER_DETAIL,
         component: DossierDetails
       },
       {
-        path: Paths.CRM,
+        path: NavigationService.CRM,
         component: Crm,
       },
       {
-        path: Paths.CLIENT_FORM,
+        path: NavigationService.CLIENT_FORM,
         component: ClientForm
       },
       {
-        path: Paths.CLIENT_DETAILS,
+        path: NavigationService.CLIENT_DETAILS,
         component: ClientDetails
       },
       {
-        path: Paths.REVIEW_AML,
+        path: NavigationService.REVIEW_AML,
         component: ReviewAml
       },
       {
-        path: Paths.CLIENT_REVIEWS_AML,
+        path: NavigationService.CLIENT_REVIEWS_AML,
         component: ClientReviewsAml
       },
       {
-        path: Paths.CLIENT_REVIEWS_AML_REPORT,
+        path: NavigationService.CLIENT_REVIEWS_AML_REPORT,
         component: ClientReviewAmlReport
       },
       // this for review aml for person type contact
       // TODO add the same for societe and institution type contact
       {
-        path: Paths.PERSON_REVIEW_AML,
+        path: NavigationService.PERSON_REVIEW_AML,
         component: ReviewAml
       },
       {
-        path: Paths.AML_REPORT_PERSON,
+        path: NavigationService.AML_REPORT_PERSON,
         component: ClientReviewAmlReport
       },
 
       // gestion des documents models
       {
-        path: Paths.MODEL,
+        path: NavigationService.MODEL,
         component: Model
 
       },
 
       // gestion de la saisie de temps
       {
-        path: Paths.SAISIE_TEMPS,
+        path: NavigationService.SAISIE_TEMPS,
         component: SaisieTemps
       },
       // gestion de la facturation
       {
-        path: Paths.FACTURATION,
+        path: NavigationService.FACTURATION,
         component: Facturation
       },
       {
-        path: Paths.FACTURATION_FORM,
+        path: NavigationService.FACTURATION_FORM,
         component: FacturationForm
       },
       {
-        path: Paths.CALENDRIER,
+        path: NavigationService.CALENDRIER,
         component: Calendrier
       },
       {
-        path: Paths.ADMINSTRATION,
+        path: NavigationService.ADMINSTRATION,
         component: Administration
       },
       {
-        path: Paths.UTILISATEURS,
+        path: NavigationService.UTILISATEURS,
         component: Utilisateur
       },
       {
-        path: Paths.PROFILE_CABINET,
+        path: NavigationService.PROFILE_CABINET,
         component: ProfileCabinet
       },
       {

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationService } from '../../services/navigation-service';
-import { Paths } from './../../paths';
+
 
 @Component({
   selector: 'app-administration',
@@ -17,10 +17,10 @@ export class Administration {
   }
 
   navigateToUserManagement() {
-    this.router.navigate([Paths.HOME, Paths.UTILISATEURS]);
+    this.router.navigate([NavigationService.HOME, NavigationService.UTILISATEURS]);
   }
   navigateToProfileCabinet() {
-    this.router.navigate([Paths.HOME, Paths.PROFILE_CABINET]);
+    this.router.navigate([NavigationService.HOME, NavigationService.PROFILE_CABINET]);
   }
 
   navigateToAML() {

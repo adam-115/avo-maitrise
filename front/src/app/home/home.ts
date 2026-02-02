@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
-import { Paths } from '../paths';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +17,7 @@ export class Home {
   // Variable d'état pour le contrôle de la barre latérale
   isSidebarOpen: boolean = false;
   activeRoute: string = 'calendrier';
-  paths = Paths;
+  paths = NavigationService;
 
   constructor(private readonly router: Router) {
 
@@ -30,38 +29,38 @@ export class Home {
   }
 
   navigateTODossier() {
-    this.router.navigateByUrl(Paths.HOME + '/' + Paths.DOSSIER);
-    this.activeRoute = Paths.DOSSIER;
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.DOSSIER);
+    this.activeRoute = NavigationService.DOSSIER;
   }
 
   navigateTOClients() {
     this.navigationService.navigateTOClients();
-    this.activeRoute = Paths.CRM;
+    this.activeRoute = NavigationService.CRM;
   }
 
   navigateToModel() {
-    this.router.navigateByUrl(Paths.HOME + '/' + Paths.MODEL);
-    this.activeRoute = Paths.MODEL;
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.MODEL);
+    this.activeRoute = NavigationService.MODEL;
   }
 
   navigateToSaisieTemps() {
-    this.router.navigateByUrl(Paths.HOME + '/' + Paths.SAISIE_TEMPS);
-    this.activeRoute = Paths.SAISIE_TEMPS;
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.SAISIE_TEMPS);
+    this.activeRoute = NavigationService.SAISIE_TEMPS;
   }
 
   navigateToFacturation() {
-    this.router.navigateByUrl(Paths.HOME + '/' + Paths.FACTURATION);
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.FACTURATION);
     this.activeRoute = 'facturation';
   }
 
   navigateToCalendrier() {
-    this.router.navigateByUrl(Paths.HOME + '/' + Paths.CALENDRIER);
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.CALENDRIER);
     this.activeRoute = 'calendrier';
   }
 
   navigateToAdministration() {
-    this.router.navigateByUrl(Paths.HOME + '/' + Paths.ADMINSTRATION);
-    this.activeRoute = Paths.ADMINSTRATION;
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.ADMINSTRATION);
+    this.activeRoute = NavigationService.ADMINSTRATION;
   }
 
 

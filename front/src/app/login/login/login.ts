@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Paths } from '../../paths';
+import { NavigationService } from '../../services/navigation-service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +14,7 @@ export class Login {
   }
 
   navigateToHomePage() {
-    this.router.navigate([Paths.HOME,]);
+    this.router.navigate([NavigationService.HOME,]);
   }
 
 }
