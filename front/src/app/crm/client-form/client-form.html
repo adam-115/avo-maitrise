@@ -35,11 +35,11 @@
 
       <hr class="border-slate-100">
 
-      @if (selectedClientType?.code === 'physique') {
+      @if (selectedClientType?.code === 'PERSONNE') {
       <app-client-form-physique></app-client-form-physique>
-      } @else if (selectedClientType?.code === 'morale') {
+      } @else if (selectedClientType?.code === 'SOCIETE') {
       <app-client-form-morale></app-client-form-morale>
-      } @else if (selectedClientType?.code === 'institution') {
+      } @else if (selectedClientType?.code === 'INSTITUTION') {
       <app-client-form-instution></app-client-form-instution>
       }
 

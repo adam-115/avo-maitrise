@@ -7,9 +7,8 @@
                 <span class="text-slate-800 font-semibold">{{ client.name }}</span>
             </nav>
             <h1 class="text-3xl font-bold text-slate-800 flex items-center">
-                {{ client.name }} <span *ngIf="client.firstName">, {{ client.firstName }}</span>
-                <span class="ml-4 px-3 py-1 text-sm font-semibold rounded-full"
-                    [ngClass]="{
+                {{ client.name }} <span *ngIf="client.type === 'PERSONNE'">, {{ client.firstName }}</span>
+                <span class="ml-4 px-3 py-1 text-sm font-semibold rounded-full" [ngClass]="{
                       'bg-purple-100 text-purple-800': client.type === 'SOCIETE',
                       'bg-blue-100 text-blue-800': client.type === 'PERSONNE',
                       'bg-gray-100 text-gray-800': client.type === 'INSTITUTION'
@@ -34,16 +33,30 @@
         </div>
     </div>
 
-    <div class="p-4 rounded-xl border-l-4 mb-8"
-         [ngClass]="{
+    <div class="p-4 rounded-xl border-l-4 mb-8" [ngClass]="{
            'bg-red-50 border-red-600': client.amlRisk === 'ELEVEE',
            'bg-yellow-50 border-yellow-600': client.amlRisk === 'MOYEN',
            'bg-green-50 border-green-600': client.amlRisk === 'FAIBLE' || client.amlRisk === 'NUL'
          }">
         <div class="flex items-center space-x-3">
-            <svg *ngIf="client.amlRisk === 'ELEVEE'" class="w-6 h-6 text-red-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
-            <svg *ngIf="client.amlRisk === 'MOYEN'" class="w-6 h-6 text-yellow-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.345A4.004 4.004 0 0111.743 3.345c1.458 1.458 1.458 3.824 0 5.282l-3.232 3.232a4.004 4.004 0 01-5.282-5.282c1.458-1.458 3.824-1.458 5.282 0l3.232 3.232a2.002 2.002 0 002.83 0l-1.414-1.414a.5.5 0 00-.707 0L9.423 7.618a.5.5 0 010 .707L8.71 9.043a2.002 2.002 0 00-2.83 0l-3.232-3.232a2.002 2.002 0 012.83-2.83l3.232 3.232a.5.5 0 00.707 0l1.414-1.414a4.004 4.004 0 010-5.657z" clip-rule="evenodd"></path></svg>
-            <svg *ngIf="client.amlRisk === 'FAIBLE' || client.amlRisk === 'NUL'" class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <svg *ngIf="client.amlRisk === 'ELEVEE'" class="w-6 h-6 text-red-600" fill="currentColor"
+                viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <svg *ngIf="client.amlRisk === 'MOYEN'" class="w-6 h-6 text-yellow-600" fill="currentColor"
+                viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                    d="M8.257 3.345A4.004 4.004 0 0111.743 3.345c1.458 1.458 1.458 3.824 0 5.282l-3.232 3.232a4.004 4.004 0 01-5.282-5.282c1.458-1.458 3.824-1.458 5.282 0l3.232 3.232a2.002 2.002 0 002.83 0l-1.414-1.414a.5.5 0 00-.707 0L9.423 7.618a.5.5 0 010 .707L8.71 9.043a2.002 2.002 0 00-2.83 0l-3.232-3.232a2.002 2.002 0 012.83-2.83l3.232 3.232a.5.5 0 00.707 0l1.414-1.414a4.004 4.004 0 010-5.657z"
+                    clip-rule="evenodd"></path>
+            </svg>
+            <svg *ngIf="client.amlRisk === 'FAIBLE' || client.amlRisk === 'NUL'" class="w-6 h-6 text-green-600"
+                fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"></path>
+            </svg>
 
             <h3 class="text-xl font-bold">Risque AML Global :
                 <span [ngClass]="{
@@ -51,17 +64,17 @@
                     'text-yellow-700': client.amlRisk === 'MOYEN',
                     'text-green-700': client.amlRisk === 'FAIBLE' || client.amlRisk === 'NUL'
                 }">
-                {{ client.amlRisk }}
+                    {{ client.amlRisk }}
                 </span>
             </h3>
         </div>
-        <p class="mt-2 text-sm"
-           [ngClass]="{
+        <p class="mt-2 text-sm" [ngClass]="{
              'text-red-700': client.amlRisk === 'ELEVEE',
              'text-yellow-700': client.amlRisk === 'MOYEN',
              'text-green-700': client.amlRisk === 'FAIBLE' || client.amlRisk === 'NUL'
            }">
-            Statut de Conformité KYC : **{{ client.complianceStatus }}** (Dernière validation : {{ client.validationDate | date: 'dd/MM/yyyy' }})
+            Statut de Conformité KYC : **{{ client.complianceStatus }}** (Dernière validation : {{ client.validationDate
+            | date: 'dd/MM/yyyy' }})
         </p>
     </div>
 
@@ -69,11 +82,13 @@
 
         <div class="lg:col-span-1 space-y-8">
             <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-cyan-700">1. Coordonnées & Identification</h2>
+                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-cyan-700">1. Coordonnées &
+                    Identification</h2>
 
                 <div *ngIf="client.type === 'PERSONNE'" class="space-y-3 text-sm">
                     <p><strong>Nom Complet :</strong> {{ client.name }} {{ client.firstName }}</p>
                     <p><strong>Pays :</strong> {{ client.country }}</p>
+                    <p *ngIf="client.sector"><strong>Secteur :</strong> {{ client.sector }}</p>
                     <p><strong>N° CNI/Passeport :</strong> [DONNÉE MASQUÉE]</p>
                 </div>
 
@@ -91,7 +106,8 @@
                 </div>
 
                 <div class="mt-4 border-t pt-4 space-y-3 text-sm">
-                    <p><strong>Email :</strong> <a href="mailto:{{ client.email }}" class="text-blue-600 hover:underline">{{ client.email }}</a></p>
+                    <p><strong>Email :</strong> <a href="mailto:{{ client.email }}"
+                            class="text-blue-600 hover:underline">{{ client.email }}</a></p>
                     <p><strong>Téléphone :</strong> {{ client.phone }}</p>
                     <p><strong>Adresse :</strong> {{ client.address }}</p>
                 </div>
@@ -112,7 +128,8 @@
                 </div>
 
                 <div class="mt-4 border-t pt-4">
-                    <p class="text-xs text-gray-500">Un total de **{{ client.totalFiles }}** documents/communications archivés pour ce contact.</p>
+                    <p class="text-xs text-gray-500">Un total de **{{ client.totalFiles }}** documents/communications
+                        archivés pour ce contact.</p>
                 </div>
             </div>
 
@@ -129,13 +146,15 @@
                         <p class="text-sm text-blue-700 mt-1">Collaborateurs Impliqués 👥</p>
                     </div>
                 </div>
-                <button class="mt-4 w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium">Voir la liste des contacts liés →</button>
+                <button class="mt-4 w-full text-center text-sm text-blue-600 hover:text-blue-800 font-medium">Voir la
+                    liste des contacts liés →</button>
             </div>
         </div>
 
         <div class="lg:col-span-2 space-y-8">
             <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-red-500">
-                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-red-700">3. Analyse Détaillée AML/KYC</h2>
+                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-red-700">3. Analyse Détaillée
+                    AML/KYC</h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center mb-6">
                     <div class="p-4 rounded-lg border">
@@ -144,11 +163,10 @@
                     </div>
 
                     <div class="p-4 rounded-lg border"
-                         [ngClass]="client.isPEP ? 'bg-red-50 border-red-400' : 'bg-green-50 border-green-400'">
+                        [ngClass]="client.isPEP ? 'bg-red-50 border-red-400' : 'bg-green-50 border-green-400'">
                         <p class="text-xs text-gray-500 font-medium uppercase">Personne Politiquement Exposée (PPE)</p>
-                        <p class="mt-1 font-bold text-lg"
-                           [ngClass]="client.isPEP ? 'text-red-700' : 'text-green-700'">
-                           {{ client.isPEP ? 'OUI / LIÉ' : 'NON' }}
+                        <p class="mt-1 font-bold text-lg" [ngClass]="client.isPEP ? 'text-red-700' : 'text-green-700'">
+                            {{ client.isPEP ? 'OUI / LIÉ' : 'NON' }}
                         </p>
                     </div>
 
@@ -164,31 +182,40 @@
                 </div>
 
                 <div>
-                    <h3 class="font-bold text-lg text-slate-800 mt-4 mb-2">Notes de Diligence Due (Vérification Compliance)</h3>
-                    <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 text-sm italic text-gray-700 whitespace-pre-line">
+                    <h3 class="font-bold text-lg text-slate-800 mt-4 mb-2">Notes de Diligence Due (Vérification
+                        Compliance)</h3>
+                    <div
+                        class="bg-gray-100 p-4 rounded-lg border border-gray-200 text-sm italic text-gray-700 whitespace-pre-line">
                         {{ client.complianceNotes || 'Aucune note de diligence spécifique enregistrée.' }}
                     </div>
 
                     <p class="text-xs text-gray-500 mt-3">
-                        **Validé par :** [Nom de l'Agent/Responsable Compliance] le {{ client.validationDate | date: 'dd/MM/yyyy' }}
+                        **Validé par :** [Nom de l'Agent/Responsable Compliance] le {{ client.validationDate | date:
+                        'dd/MM/yyyy' }}
                     </p>
                 </div>
             </div>
 
             <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-green-700">2. Accès Documents & Archivage</h2>
+                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-green-700">2. Accès Documents &
+                    Archivage</h2>
 
                 <div class="space-y-3 text-sm">
                     <div class="flex justify-between items-center py-2 border-b">
                         <span class="font-medium">Dossier Numérique Complet</span>
-                        <a href="/dossier/{{ client.id }}" target="_blank" class="text-cyan-600 hover:text-cyan-800 font-semibold flex items-center">
+                        <a href="/dossier/{{ client.id }}" target="_blank"
+                            class="text-cyan-600 hover:text-cyan-800 font-semibold flex items-center">
                             Accéder au Dossier ({{ client.totalFiles }} Fichiers)
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14">
+                                </path>
+                            </svg>
                         </a>
                     </div>
 
                     <div class="flex justify-between items-center py-2 border-b"
-                         [ngClass]="client.documentsToReview > 0 ? 'bg-red-50 p-2 -mx-2 rounded' : ''">
+                        [ngClass]="client.documentsToReview > 0 ? 'bg-red-50 p-2 -mx-2 rounded' : ''">
                         <span class="font-medium text-slate-700">Documents à Réviser/Valider</span>
                         <span *ngIf="client.documentsToReview > 0" class="text-red-600 font-bold flex items-center">
                             🚨 {{ client.documentsToReview }} document(s)
@@ -200,8 +227,7 @@
 
                     <div class="flex justify-between items-center py-2">
                         <span class="font-medium">Statut d'Archivage Physique</span>
-                        <span class="px-3 py-1 text-xs font-semibold rounded-full"
-                            [ngClass]="{
+                        <span class="px-3 py-1 text-xs font-semibold rounded-full" [ngClass]="{
                                 'bg-green-100 text-green-800': client.archivingStatus === 'COMPLETED',
                                 'bg-yellow-100 text-yellow-800': client.archivingStatus === 'PENDING'
                             }">
@@ -216,22 +242,24 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-lg p-6">
-                 <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-blue-700">4. Historique des Revues AML</h2>
-                 <ul class="space-y-3 text-sm">
-                     <li class="flex justify-between items-center p-2 rounded-lg hover:bg-blue-50">
-                         <span class="font-medium text-slate-700">Revue Annuelle (2024) - **ALERTE**</span>
-                         <span class="text-xs text-gray-500">Motif : Lien PPE Vérifié.</span>
-                         <span class="text-blue-600 font-medium">Consulter le Rapport (PDF)</span>
-                     </li>
-                     <li class="flex justify-between items-center p-2 rounded-lg hover:bg-blue-50">
-                         <span class="font-medium text-slate-700">Revue Initiale (2022) - **MOYEN**</span>
-                         <span class="text-xs text-gray-500">Motif : KYC incomplet.</span>
-                         <span class="text-blue-600 font-medium">Consulter le Rapport (PDF)</span>
-                     </li>
-                 </ul>
-                 <p class="text-sm text-gray-500 mt-4">
-                    La prochaine revue de vigilance est prévue pour le **{{ client.validationDate | date: 'longDate' }}**.
-                 </p>
+                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-blue-700">4. Historique des Revues
+                    AML</h2>
+                <ul class="space-y-3 text-sm">
+                    <li class="flex justify-between items-center p-2 rounded-lg hover:bg-blue-50">
+                        <span class="font-medium text-slate-700">Revue Annuelle (2024) - **ALERTE**</span>
+                        <span class="text-xs text-gray-500">Motif : Lien PPE Vérifié.</span>
+                        <span class="text-blue-600 font-medium">Consulter le Rapport (PDF)</span>
+                    </li>
+                    <li class="flex justify-between items-center p-2 rounded-lg hover:bg-blue-50">
+                        <span class="font-medium text-slate-700">Revue Initiale (2022) - **MOYEN**</span>
+                        <span class="text-xs text-gray-500">Motif : KYC incomplet.</span>
+                        <span class="text-blue-600 font-medium">Consulter le Rapport (PDF)</span>
+                    </li>
+                </ul>
+                <p class="text-sm text-gray-500 mt-4">
+                    La prochaine revue de vigilance est prévue pour le **{{ client.validationDate | date: 'longDate'
+                    }}**.
+                </p>
             </div>
         </div>
 

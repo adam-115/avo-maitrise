@@ -1,6 +1,6 @@
 <div class="max-w-5xl mx-auto space-y-6">
 
-  <form>
+  <form [formGroup]="physiqueForm" (ngSubmit)="saveClient()">
     <section>
       <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center">
         <span
@@ -12,26 +12,40 @@
 
         <div class="flex flex-col">
           <label class="text-sm font-semibold text-slate-700 mb-1">N° d'Identité (CIN/Passport) *</label>
-          <input type="text" placeholder="ex: AB123456"
+          <input type="text" formControlName="identityNumber" placeholder="ex: AB123456"
+            [class.border-red-500]="physiqueForm.get('identityNumber')?.invalid && physiqueForm.get('identityNumber')?.touched"
             class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none shadow-sm transition">
         </div>
 
         <div class="flex flex-col">
           <label class="text-sm font-semibold text-slate-700 mb-1">Nom *</label>
-          <input type="text" placeholder="ex: Dupont"
+          <input type="text" formControlName="lastName" placeholder="ex: Dupont"
+            [class.border-red-500]="physiqueForm.get('lastName')?.invalid && physiqueForm.get('lastName')?.touched"
             class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none shadow-sm transition">
         </div>
 
         <div class="flex flex-col">
           <label class="text-sm font-semibold text-slate-700 mb-1">Prénom *</label>
-          <input type="text" placeholder="ex: Jean"
+          <input type="text" formControlName="firstName" placeholder="ex: Jean"
+            [class.border-red-500]="physiqueForm.get('firstName')?.invalid && physiqueForm.get('firstName')?.touched"
             class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none shadow-sm transition">
         </div>
 
         <div class="flex flex-col">
           <label class="text-sm font-semibold text-slate-700 mb-1">Date de Naissance</label>
-          <input type="date"
+          <input type="date" formControlName="birthDate"
             class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none shadow-sm transition">
+        </div>
+
+        <div class="flex flex-col">
+          <label class="text-sm font-semibold text-slate-700 mb-1">Secteur d'Activité</label>
+          <select formControlName="selectedSecteurActivite"
+            class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none shadow-sm transition bg-white">
+            <option [ngValue]="null" disabled selected>-- Choisir un secteur --</option>
+            <option *ngFor="let secteur of SecteurActivites" [ngValue]="secteur">
+              {{ secteur.libelle }}
+            </option>
+          </select>
         </div>
       </div>
     </section>
@@ -47,17 +61,18 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="flex flex-col">
           <label class="text-sm font-semibold text-slate-700 mb-1">Email Principal</label>
-          <input type="email" placeholder="contact@client.fr"
-            class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none">
+          <input type="email" formControlName="email" placeholder="contact@client.fr"
+            [class.border-red-500]="physiqueForm.get('email')?.invalid && physiqueForm.get('email')?.touched"
+            class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none">
         </div>
         <div class="flex flex-col">
           <label class="text-sm font-semibold text-slate-700 mb-1">Téléphone</label>
-          <input type="tel" placeholder="+33 6 00 00 00 00"
+          <input type="tel" formControlName="phone" placeholder="+33 6 00 00 00 00"
             class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none">
         </div>
         <div class="flex flex-col md:col-span-2">
           <label class="text-sm font-semibold text-slate-700 mb-1">Adresse Postale Complete</label>
-          <textarea rows="2" placeholder="N°, rue, CP, Ville..."
+          <textarea rows="2" formControlName="address" placeholder="N°, rue, CP, Ville..."
             class="px-4 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 outline-none"></textarea>
         </div>
       </div>
@@ -88,26 +103,28 @@
 
           <div class="flex flex-col">
             <label class="text-xs font-bold text-slate-500 uppercase mb-1">Nom Complet</label>
-            <input type="text" [(ngModel)]="c.nom" [name]="'nom'+i" placeholder="Jean Dupont"
+            <input type="text" [(ngModel)]="c.nom" [ngModelOptions]="{standalone: true}" placeholder="Jean Dupont"
               class="px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:ring-cyan-500 focus:border-cyan-500 outline-none">
           </div>
 
           <div class="flex flex-col">
             <label class="text-xs font-bold text-slate-500 uppercase mb-1">Fonction / Poste</label>
-            <input type="text" [(ngModel)]="c.fonction" [name]="'poste'+i" placeholder="Directeur Juridique"
+            <input type="text" [(ngModel)]="c.fonction" [ngModelOptions]="{standalone: true}"
+              placeholder="Directeur Juridique"
               class="px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:ring-cyan-500 focus:border-cyan-500 outline-none">
           </div>
 
           <div class="flex flex-col">
             <label class="text-xs font-bold text-slate-500 uppercase mb-1">Email</label>
-            <input type="email" [(ngModel)]="c.email" [name]="'email'+i" placeholder="j.dupont@entreprise.fr"
+            <input type="email" [(ngModel)]="c.email" [ngModelOptions]="{standalone: true}"
+              placeholder="j.dupont@entreprise.fr"
               class="px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:ring-cyan-500 focus:border-cyan-500 outline-none">
           </div>
 
           <div class="flex flex-col">
             <label class="text-xs font-bold text-slate-500 uppercase mb-1">Téléphone Direct</label>
             <div class="flex items-center space-x-2">
-              <input type="tel" [(ngModel)]="c.tel" [name]="'tel'+i" placeholder="01 02..."
+              <input type="tel" [(ngModel)]="c.tel" [ngModelOptions]="{standalone: true}" placeholder="01 02..."
                 class="flex-1 px-3 py-1.5 border border-slate-300 rounded-md text-sm focus:ring-cyan-500 focus:border-cyan-500 outline-none" />
 
               <button type="button" (click)="addContact()"
@@ -139,12 +156,9 @@
     <hr class="border-slate-100 my-8">
 
     <div class="pt-6 flex justify-end space-x-4">
-      <button type="button"
-        class="px-6 py-2.5 rounded-lg border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition">
-        Sauvegarder en Brouillon
-      </button>
-      <button type="submit"
-        class="px-10 py-2.5 rounded-lg bg-cyan-500 text-slate-900 font-bold hover:bg-cyan-600 shadow-lg shadow-cyan-200 transition">
+      <!--   -->
+      <button type="submit" [disabled]="physiqueForm.invalid"
+        class="px-10 py-2.5 rounded-lg bg-cyan-500 text-slate-900 font-bold hover:bg-cyan-600 shadow-lg shadow-cyan-200 transition disabled:opacity-50 disabled:cursor-not-allowed">
         Créer le Client
       </button>
     </div>

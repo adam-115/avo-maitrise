@@ -37,7 +37,7 @@ export class ClientForm implements OnInit {
 
   private selectPhysiqueAsDefaultClientType() {
     this.clientTypes.forEach(ct => {
-      if (ct.code === "physique") {
+      if (ct.code === "PERSONNE") {
         this.selectedClientType = ct;
       }
     });

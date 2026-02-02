@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
   templateUrl: './client-details.html',
   styleUrl: './client-details.css'
 })
-export class ClientDetails  implements OnInit{
+export class ClientDetails implements OnInit {
 
 
   // Client factice pour l'exemple
@@ -22,7 +22,6 @@ export class ClientDetails  implements OnInit{
     id: 102,
     type: 'SOCIETE',
     name: 'ALPHA Finance SA',
-    firstName: '',
     legalForm: 'Société Anonyme (SA)',
     siren: '123 456 789',
     role: 'Client Actif - Principal',
@@ -48,13 +47,9 @@ export class ClientDetails  implements OnInit{
     history: [],
     isActive: true,
     sector: 'Finance', // Ajouté pour correspondre au type ClientDetail
-    registrationNumber: 'FR-ALPHA-2024', // Ajouté pour correspondre au type ClientDetail
-    // Remplacez les deux propriétés suivantes par des valeurs appropriées selon votre type ClientDetail
-    // extraField1: null,
-    // extraField2: null,
   };
 
-  constructor(private readonly router:Router) {}
+  constructor(private readonly router: Router) { }
 
   ngOnInit(): void {
     // Ici, vous récupéreriez l'ID du client depuis la route et chargeriez les données.

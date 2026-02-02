@@ -76,7 +76,7 @@ export class AmlFormConfigComponent implements OnInit {
         });
         // Charger le mapping existant
         this.mappingFormService.getAll().subscribe(mappings => {
-          const mapping = mappings.find(m => m.amlFormConfigID === Number(id));
+          const mapping = mappings.find(m => String(m.amlFormConfigID) === String(id));
           if (mapping) {
             this.pageForm.patchValue({
               typeClient: mapping.typeClient,
@@ -266,15 +266,12 @@ export class AmlFormConfigComponent implements OnInit {
 
   // Initialize form when creating component or loading data
   private initializeFormWithAmlPageConfig(pageConfig: AmlFormConfig): void {
-    this.pageForm = this.fb.group({
-      pageName: [{ value: pageConfig.formName || '', disabled: true }, Validators.required],
-      pageTitle: [pageConfig.formTitle || '', Validators.required],
-      pageDescription: [pageConfig.formDescription || ''],
-      typeClient: [''],
-      secteurActivite: [''],
+    this.pageForm.patchValue({
+      pageName: pageConfig.formName || '',
+      pageTitle: pageConfig.formTitle || '',
+      pageDescription: pageConfig.formDescription || ''
     });
     this.amlInputConfigs = pageConfig.inputConfigs;
-
   }
 
 
