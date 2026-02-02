@@ -1,34 +1,33 @@
-import { TypeClient } from './appTypes';
-import { FacturationForm } from './facturation/facturation-form/facturation-form';
-import { ReviewAml } from './crm/review-aml/review-aml';
 import { Routes } from '@angular/router';
-import { Dossier } from './dossier/dossier/dossier';
-import { Paths } from './paths';
-import { Home } from './home/home';
-import { Test } from './test/test';
-import { DossierForm } from './dossier/dossier-form/dossier-form';
-import { DossierDetails } from './dossier/dossier-details/dossier-details';
-import { Crm } from './crm/crm/crm';
-import { ClientForm } from './crm/client-form/client-form';
-import { ClientDetails } from './crm/client-details/client-details';
-import { ClientReviewsAml } from './crm/crm/client-reviews-aml/client-reviews-aml';
-import { ClientReviewAmlReport } from './crm/client-review-aml-report/client-review-aml-report';
-import { Model } from './model/model/model';
-import { SaisieTemps } from './saisie-temps/saisie-temps/saisie-temps';
-import { Facturation } from './facturation/facturation/facturation';
-import { Calendrier } from './calendrier/calendrier/calendrier';
 import { Administration } from './administration/administration/administration';
-import { Utilisateur } from './administration/utilisateurs/utilisateur/utilisateur';
-import { ProfileCabinet } from './administration/profile-cabinet/profile-cabinet/profile-cabinet';
-import { Login } from './login/login/login';
-import { Bord } from './Bord/bord/bord';
-import { NavigationService } from './services/navigation-service';
-import { AmlFormListComponent } from './aml-compliance/aml-form-list-component/aml-form-list-component';
-import { AmlFormConfigComponent } from './aml-compliance/aml-form-config-component/aml-form-config-component';
-import { AmlFormViewComponent } from './aml-compliance/aml-form-view-component/aml-form-view-component';
 import { ClientType } from './administration/client-type/client-type';
 import { Preferences } from './administration/preferences/preferences';
+import { ProfileCabinet } from './administration/profile-cabinet/profile-cabinet/profile-cabinet';
 import { SecteurActiviteComponent } from './administration/secteur-activite/secteur-activite';
+import { Utilisateur } from './administration/utilisateurs/utilisateur/utilisateur';
+import { AmlFormConfigComponent } from './aml-compliance/aml-form-config-component/aml-form-config-component';
+import { AmlFormListComponent } from './aml-compliance/aml-form-list-component/aml-form-list-component';
+import { AmlFormViewComponent } from './aml-compliance/aml-form-view-component/aml-form-view-component';
+import { Bord } from './Bord/bord/bord';
+import { Calendrier } from './calendrier/calendrier/calendrier';
+import { ClientDetails } from './crm/client-details/client-details';
+import { ClientForm } from './crm/client-form/client-form';
+import { ClientReviewAmlReport } from './crm/client-review-aml-report/client-review-aml-report';
+import { ClientReviewsAml } from './crm/crm/client-reviews-aml/client-reviews-aml';
+import { Crm } from './crm/crm/crm';
+import { ReviewAml } from './crm/review-aml/review-aml';
+import { DossierDetails } from './dossier/dossier-details/dossier-details';
+import { DossierForm } from './dossier/dossier-form/dossier-form';
+import { Dossier } from './dossier/dossier/dossier';
+import { FacturationForm } from './facturation/facturation-form/facturation-form';
+import { Facturation } from './facturation/facturation/facturation';
+import { Home } from './home/home';
+import { Login } from './login/login/login';
+import { Model } from './model/model/model';
+import { Paths } from './paths';
+import { SaisieTemps } from './saisie-temps/saisie-temps/saisie-temps';
+import { NavigationService } from './services/navigation-service';
+import { Test } from './test/test';
 
 export const routes: Routes = [
   {
@@ -127,17 +126,17 @@ export const routes: Routes = [
         path: Paths.PROFILE_CABINET,
         component: ProfileCabinet
       },
-       {
-        path:NavigationService.ADMIN_PREFERENCE,
-        component:Preferences
+      {
+        path: NavigationService.ADMIN_PREFERENCE,
+        component: Preferences
       },
       {
-        path:NavigationService.ADMIN_SECTEUR_ATIVITE,
-        component:SecteurActiviteComponent
+        path: NavigationService.ADMIN_SECTEUR_ATIVITE,
+        component: SecteurActiviteComponent
       },
       {
-        path:NavigationService.TYPE_CLIENT,
-        component:ClientType
+        path: NavigationService.TYPE_CLIENT,
+        component: ClientType
       },
       // AML Compliance Paths can be found in NavigationService
       {

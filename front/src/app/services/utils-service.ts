@@ -12,4 +12,9 @@ export class UtilsService {
     return `${timestamp}-${random}`;
   }
 
+  // to compare two objects in dropdown lists
+  compareFn(item1: any, item2: any): boolean {
+  return item1 && item2 ? item1.id === item2.id : item1 === item2;
+}
+
 }

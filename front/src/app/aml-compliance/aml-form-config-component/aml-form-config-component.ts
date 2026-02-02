@@ -1,13 +1,15 @@
-
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AmlFormConfigService } from '../../services/AmlFormConfigService';
-import { NavigationService } from '../../services/navigation-service';
-import { AmlInputConfigComponent } from "../aml-input-config-component/aml-input-config";
 import { AlertService } from '../../services/alert-service';
+import { AmlFormConfigService } from '../../services/AmlFormConfigService';
+import { MappingFormService } from '../../services/mapping-form-service';
+import { NavigationService } from '../../services/navigation-service';
+import { SecteurActiviteService } from './../../services/secteur-activite-service';
+import { TypeClientService } from '../../services/type-client-service';
 import { UtilsService } from '../../services/utils-service';
-import { AmlFormConfig, AmlInputConfig } from '../../appTypes';
+import { AmlInputConfigComponent } from "../aml-input-config-component/aml-input-config";
+import { AmlFormConfig, AmlInputConfig, MappingForm, SecteurActivite, TypeClient } from '../../appTypes';
 
 @Component({
   selector: 'app-aml-form-config-component',
@@ -23,9 +25,13 @@ export class AmlFormConfigComponent implements OnInit {
   alertService = inject(AlertService);
   activatedRoute = inject(ActivatedRoute);
   utilsService = inject(UtilsService);
+  secteurActiviteService = inject(SecteurActiviteService);
+  typeClientService = inject(TypeClientService);
+  mappingFormService = inject(MappingFormService);
 
   amlInputConfigs: AmlInputConfig[] = [];
-
+  secteurs: SecteurActivite[] = [];
+  typeClients: TypeClient[] = [];
   // if is on edit mode
   isEditeMode = false;
   editedFormConfig: AmlFormConfig | null = null;
@@ -53,6 +59,8 @@ export class AmlFormConfigComponent implements OnInit {
     this.buildForm();
     // check if is update a init data if the case
     this.isItUpdateMode();
+    this.loadSecteurs();
+    this.loadTypeClients();
   }
 
   // load config to update
@@ -65,7 +73,17 @@ export class AmlFormConfigComponent implements OnInit {
         this.amlFormConfigService.findById(id).subscribe(data => {
           this.editedFormConfig = data;
           this.initializeFormWithAmlPageConfig(this.editedFormConfig);
-        })
+        });
+        // Charger le mapping existant
+        this.mappingFormService.getAll().subscribe(mappings => {
+          const mapping = mappings.find(m => m.amlFormConfigID === Number(id));
+          if (mapping) {
+            this.pageForm.patchValue({
+              typeClient: mapping.typeClient,
+              secteurActivite: mapping.secteurActivite
+            });
+          }
+        });
       }
     });
   }
@@ -73,13 +91,27 @@ export class AmlFormConfigComponent implements OnInit {
   // build dynamic form for the page
   private buildForm(): void {
     this.pageForm = this.fb.group({
-      pageName: [this.pageConfig.formName, Validators.required],
+      pageName: [{ value: this.utilsService.generateTimestampId(), disabled: true }, Validators.required],
       pageTitle: [this.pageConfig.formTitle, Validators.required],
       pageDescription: [this.pageConfig.formDescription],
-      pageOrder: [this.pageConfig.order],
+      // Nouveaux champs pour le Mapping
+      typeClient: ["PERSONNE", Validators.required],
+      secteurActivite: ["TOUT", Validators.required]
+
     });
   }
 
+  private loadSecteurs() {
+    this.secteurActiviteService.getAll().subscribe(data => {
+      this.secteurs = data.filter(s => s.actif);
+    });
+  }
+
+  private loadTypeClients() {
+    this.typeClientService.getAll().subscribe(data => {
+      this.typeClients = data.filter(t => t.actif);
+    });
+  }
 
   openInputFieldDialogForEdit(inputTypeConfig: AmlInputConfig): void {
     this.selectedAmlInputConfig = inputTypeConfig;
@@ -95,8 +127,16 @@ export class AmlFormConfigComponent implements OnInit {
         if (result) {
           this.amlFormConfigService.create(this.pageConfig).subscribe({
             next: (response) => {
-              this.alertService.displayMessage("nouvelle page ", "la nouvelle page est bien ajouter ", 'success');
-              this.navigationService.navigateToFormConfigList();
+              // Créer le mapping
+              const mapping: MappingForm = {
+                typeClient: this.pageForm.get('typeClient')?.value,
+                secteurActivite: this.pageForm.get('secteurActivite')?.value,
+                amlFormConfigID: response.id!
+              };
+              this.mappingFormService.create(mapping).subscribe(() => {
+                this.alertService.displayMessage("nouvelle page ", "la nouvelle page est bien ajouter ", 'success');
+                this.navigationService.navigateToFormConfigList();
+              });
             },
             error: (err) => {
               this.alertService.displayMessage("Error... ", "Error ajout de la page merci de contacter le support ", 'error');
@@ -116,8 +156,27 @@ export class AmlFormConfigComponent implements OnInit {
         if (result) {
           this.amlFormConfigService.update(this.editedFormConfig?.id, this.pageConfig).subscribe({
             next: (response) => {
-              this.alertService.displayMessage("Page mis  a jour  ", "la nouvelle page est bien ajouter ", 'success');
-              this.navigationService.navigateToFormConfigList();
+              // Mettre à jour le mapping
+              this.mappingFormService.getAll().subscribe(mappings => {
+                const existingMapping = mappings.find(m => m.amlFormConfigID == this.editedFormConfig?.id);
+                const newMappingData = {
+                  typeClient: this.pageForm.get('typeClient')?.value,
+                  secteurActivite: this.pageForm.get('secteurActivite')?.value,
+                  amlFormConfigID: this.editedFormConfig!.id!
+                };
+
+                if (existingMapping) {
+                  this.mappingFormService.update(existingMapping.id, newMappingData).subscribe(() => {
+                    this.alertService.displayMessage("Page mis  a jour  ", "la nouvelle page est bien ajouter ", 'success');
+                    this.navigationService.navigateToFormConfigList();
+                  });
+                } else {
+                  this.mappingFormService.create(newMappingData).subscribe(() => {
+                    this.alertService.displayMessage("Page mis  a jour  ", "la nouvelle page est bien ajouter ", 'success');
+                    this.navigationService.navigateToFormConfigList();
+                  });
+                }
+              });
             },
             error: (err) => {
               this.alertService.displayMessage("Error... ", "Error de la mise a jour de la page, merci de contacter le support ", 'error');
@@ -185,7 +244,7 @@ export class AmlFormConfigComponent implements OnInit {
       formName: formValue.pageName,
       formTitle: formValue.pageTitle,
       formDescription: formValue.pageDescription || '', // Handle optional field
-      order: formValue.pageOrder || 0, // Assuming order is number, provide default
+      order: 0, // removed from UI, default to 0
       inputConfigs: this.amlInputConfigs,
     };
 
@@ -208,10 +267,11 @@ export class AmlFormConfigComponent implements OnInit {
   // Initialize form when creating component or loading data
   private initializeFormWithAmlPageConfig(pageConfig: AmlFormConfig): void {
     this.pageForm = this.fb.group({
-      pageName: [pageConfig.formName || '', Validators.required],
+      pageName: [{ value: pageConfig.formName || '', disabled: true }, Validators.required],
       pageTitle: [pageConfig.formTitle || '', Validators.required],
       pageDescription: [pageConfig.formDescription || ''],
-      pageOrder: [pageConfig.order || 0],
+      typeClient: [''],
+      secteurActivite: [''],
     });
     this.amlInputConfigs = pageConfig.inputConfigs;
 

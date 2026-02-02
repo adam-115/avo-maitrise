@@ -112,6 +112,8 @@ export interface AmlFormConfig {
   formDescription: string,
   order: number,
   inputConfigs: AmlInputConfig[],
+  typeClient?: string;
+  secteurActivite?: string;
 }
 
 export interface AmlInputConfig {
@@ -188,25 +190,22 @@ export interface SecteurActivite {
 }
 
 
-export interface Document{
-  id?:number ,
+export interface Document {
+  id?: number,
   title: string,
-  name:string,
-  description?:string,
-  tags?:string,
-  file:File,
+  name: string,
+  description?: string,
+  tags?: string,
+  file: File,
 }
 
 
 
-
-
-
-// export interface MappingForm {
-//   id?: number;
-//   typeClient: 'PERSONNE' | 'SOCIETE' | 'INSTITUTION';
-//   secteurActivite: string;
-//   amlFormConfigID: number;
-// }
+export interface MappingForm {
+  id?: number;
+  typeClient: 'PERSONNE' | 'SOCIETE' | 'INSTITUTION';
+  secteurActivite: string;
+  amlFormConfigID: number;
+}
 
 

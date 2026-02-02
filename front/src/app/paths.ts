@@ -1,3 +1,4 @@
+
 export class Paths {
   static readonly LOGIN = 'login';
   static readonly HOME = 'home';
@@ -24,11 +25,11 @@ export class Paths {
   // static readonly CALENDRIER_MOIS = 'calendrier-mois';
   // static readonly CALENDRIER_JOUR = 'calendrier-jour';
   // static readonly TEST = 'test';
- static readonly ADMINSTRATION = 'administration';
+  static readonly ADMINSTRATION = 'administration';
 
- static readonly UTILISATEURS = 'utilisateurs';
- static readonly PROFILE_CABINET = 'profile-cabinet';
- static readonly AML_COMPLIANCE = 'aml-compliance';
+  static readonly UTILISATEURS = 'utilisateurs';
+  static readonly PROFILE_CABINET = 'profile-cabinet';
+  static readonly AML_COMPLIANCE = 'aml-compliance';
 
 
 
