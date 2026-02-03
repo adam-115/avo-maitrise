@@ -11,10 +11,11 @@ import { UtilsService } from '../../services/utils-service';
 import { TypeOrganismeService } from '../../services/type-organisme-service';
 import { AmlInputConfigComponent } from "../aml-input-config-component/aml-input-config";
 import { AmlFormConfig, AmlInputConfig, MappingForm, SecteurActivite, TypeClient, TypeOrganisme } from '../../appTypes';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-aml-form-config-component',
-  imports: [ReactiveFormsModule, AmlInputConfigComponent],
+  imports: [ReactiveFormsModule, AmlInputConfigComponent, FormsModule],
   templateUrl: './aml-form-config-component.html',
   styleUrl: './aml-form-config-component.css',
 })
@@ -40,6 +41,11 @@ export class AmlFormConfigComponent implements OnInit {
   editedFormConfig: AmlFormConfig | null = null;
   selectedAmlInputConfig: AmlInputConfig | null = null;
   showDialogNewInputAmlConfig = false;
+
+  // Assignments Management
+  assignments: MappingForm[] = [];
+  selectedTypeClient: string = "";
+  selectedSecteur: string = "";
 
   // showDialogPreview: boolean = false;
 
@@ -78,17 +84,15 @@ export class AmlFormConfigComponent implements OnInit {
           this.editedFormConfig = data;
           this.initializeFormWithAmlPageConfig(this.editedFormConfig);
         });
-        // Charger le mapping existant
-        this.mappingFormService.getAll().subscribe(mappings => {
-          const mapping = mappings.find(m => String(m.amlFormConfigID) === String(id));
-          if (mapping) {
-            this.pageForm.patchValue({
-              typeClient: mapping.typeClient,
-              secteurActivite: mapping.secteurActivite
-            });
-          }
-        });
+        // Charger les mappings existants
+        this.loadMappings(id);
       }
+    });
+  }
+
+  private loadMappings(formConfigID: any) {
+    this.mappingFormService.getAll().subscribe(mappings => {
+      this.assignments = mappings.filter(m => String(m.amlFormConfigID) === String(formConfigID));
     });
   }
 
@@ -98,10 +102,6 @@ export class AmlFormConfigComponent implements OnInit {
       pageName: [{ value: this.utilsService.generateTimestampId(), disabled: true }, Validators.required],
       pageTitle: [this.pageConfig.formTitle, Validators.required],
       pageDescription: [this.pageConfig.formDescription],
-      // Nouveaux champs pour le Mapping
-      typeClient: ["PERSONNE", Validators.required],
-      secteurActivite: ["TOUT", Validators.required]
-
     });
   }
 
@@ -128,6 +128,35 @@ export class AmlFormConfigComponent implements OnInit {
     this.showDialogNewInputAmlConfig = true;
   }
 
+  addAssignment() {
+    if (!this.selectedTypeClient || !this.selectedSecteur) return;
+
+    // Check duplicate
+    const exists = this.assignments.some(a =>
+      a.typeClient === this.selectedTypeClient &&
+      a.secteurActivite === this.selectedSecteur
+    );
+
+    if (exists) {
+      this.alertService.displayMessage("Doublon", "Cette assignation existe déjà.", "warning");
+      return;
+    }
+
+    const newAssignment: MappingForm = {
+      typeClient: this.selectedTypeClient as any,
+      secteurActivite: this.selectedSecteur,
+      amlFormConfigID: 0 // Will be set on save
+    };
+
+    this.assignments.push(newAssignment);
+    this.selectedTypeClient = "";
+    this.selectedSecteur = "";
+  }
+
+  removeAssignment(index: number) {
+    this.assignments.splice(index, 1);
+  }
+
   // SAUVEGARDE GLOBALE DE LA PAGE
   private saveNewPage(): void {
     if (this.pageForm.valid && this.amlInputConfigs.length > 0) {
@@ -137,13 +166,7 @@ export class AmlFormConfigComponent implements OnInit {
         if (result) {
           this.amlFormConfigService.create(this.pageConfig).subscribe({
             next: (response) => {
-              // Créer le mapping
-              const mapping: MappingForm = {
-                typeClient: this.pageForm.get('typeClient')?.value,
-                secteurActivite: this.pageForm.get('secteurActivite')?.value,
-                amlFormConfigID: response.id!
-              };
-              this.mappingFormService.create(mapping).subscribe(() => {
+              this.saveMappings(response.id!, () => {
                 this.alertService.displayMessage("nouvelle page ", "la nouvelle page est bien ajouter ", 'success');
                 this.navigationService.navigateToFormConfigList();
               });
@@ -166,26 +189,9 @@ export class AmlFormConfigComponent implements OnInit {
         if (result) {
           this.amlFormConfigService.update(this.editedFormConfig?.id, this.pageConfig).subscribe({
             next: (response) => {
-              // Mettre à jour le mapping
-              this.mappingFormService.getAll().subscribe(mappings => {
-                const existingMapping = mappings.find(m => m.amlFormConfigID == this.editedFormConfig?.id);
-                const newMappingData = {
-                  typeClient: this.pageForm.get('typeClient')?.value,
-                  secteurActivite: this.pageForm.get('secteurActivite')?.value,
-                  amlFormConfigID: this.editedFormConfig!.id!
-                };
-
-                if (existingMapping) {
-                  this.mappingFormService.update(existingMapping.id, newMappingData).subscribe(() => {
-                    this.alertService.displayMessage("Page mis  a jour  ", "la nouvelle page est bien ajouter ", 'success');
-                    this.navigationService.navigateToFormConfigList();
-                  });
-                } else {
-                  this.mappingFormService.create(newMappingData).subscribe(() => {
-                    this.alertService.displayMessage("Page mis  a jour  ", "la nouvelle page est bien ajouter ", 'success');
-                    this.navigationService.navigateToFormConfigList();
-                  });
-                }
+              this.saveMappings(this.editedFormConfig!.id!, () => {
+                this.alertService.displayMessage("Page mis  a jour  ", "la nouvelle page est bien ajouter ", 'success');
+                this.navigationService.navigateToFormConfigList();
               });
             },
             error: (err) => {
@@ -195,6 +201,36 @@ export class AmlFormConfigComponent implements OnInit {
         }
       })
     }
+  }
+
+  private saveMappings(configId: number, callback: () => void) {
+    // First delete all existing mappings for this config (simplest approach for clean state)
+    // In a real optimized backend we might diff, but for json-server or simple logic, delete-all-insert-all is robust
+    this.mappingFormService.getAll().subscribe(allMappings => {
+      const toDelete = allMappings.filter(m => String(m.amlFormConfigID) === String(configId));
+
+      const deletePromises = toDelete.map(m =>
+        new Promise<void>((resolve) => {
+          this.mappingFormService.delete(m.id).subscribe(() => resolve());
+        })
+      );
+
+      Promise.all(deletePromises).then(() => {
+        // Now create new ones
+        const createPromises = this.assignments.map(assign => {
+          return new Promise<void>((resolve) => {
+            const mappingToCreate = { ...assign, amlFormConfigID: configId };
+            // Remove id if present to ensure new creation
+            delete mappingToCreate.id;
+            this.mappingFormService.create(mappingToCreate).subscribe(() => resolve());
+          });
+        });
+
+        Promise.all(createPromises).then(() => {
+          callback();
+        });
+      });
+    });
   }
 
 

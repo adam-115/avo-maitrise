@@ -947,6 +947,3586 @@
           ]
         }
       ]
+    },
+    {
+      "id": "7854",
+      "formName": "ml6hpwh3-40v1tbm",
+      "formTitle": "test one ",
+      "formDescription": "test one ",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml5q61gm-y3pz5po",
+          "type": "select",
+          "name": "pays de résidence ",
+          "labelMessage": "pays de résidence ",
+          "facteur": 1,
+          "required": true,
+          "placeholder": "",
+          "errorMessage": "",
+          "optionsLayout": "block",
+          "displayOrer": 0,
+          "defaultValue": null,
+          "options": [
+            {
+              "id": "ml5q61gm-mjfxed3",
+              "value": "Afghanistan",
+              "score": 10,
+              "order": 1,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-ufd6cfo",
+              "value": "Afrique du Sud",
+              "score": 10,
+              "order": 2,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-6p4nmvn",
+              "value": "Albanie",
+              "score": 10,
+              "order": 3,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-wwclb4l",
+              "value": "Algérie",
+              "score": 10,
+              "order": 4,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-p01cejz",
+              "value": "Allemagne",
+              "score": 10,
+              "order": 5,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-6vzkig9",
+              "value": "Andorre",
+              "score": 10,
+              "order": 6,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-l6myq53",
+              "value": "Angola",
+              "score": 10,
+              "order": 7,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-nxamq6c",
+              "value": "Arabie Saoudite",
+              "score": 10,
+              "order": 8,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-dz7bj8b",
+              "value": "Argentine",
+              "score": 10,
+              "order": 9,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-nr8jjbj",
+              "value": "Australie",
+              "score": 10,
+              "order": 10,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-9pdyndw",
+              "value": "Autriche",
+              "score": 10,
+              "order": 11,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-91mjcbj",
+              "value": "Bahamas",
+              "score": 10,
+              "order": 12,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-jk33kil",
+              "value": "Belgique",
+              "score": 10,
+              "order": 13,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-60ux5wf",
+              "value": "Bénin",
+              "score": 10,
+              "order": 14,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-3j8ow25",
+              "value": "Birmanie (Myanmar)",
+              "score": 10,
+              "order": 15,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-61jqce8",
+              "value": "Brésil",
+              "score": 10,
+              "order": 16,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-hhi891p",
+              "value": "Bulgarie",
+              "score": 10,
+              "order": 17,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-9b0f3hd",
+              "value": "Burkina Faso",
+              "score": 10,
+              "order": 18,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-x57cw41",
+              "value": "Cambodge",
+              "score": 10,
+              "order": 19,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-jzbg7no",
+              "value": "Cameroun",
+              "score": 10,
+              "order": 20,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-wnf8ahi",
+              "value": "Canada",
+              "score": 10,
+              "order": 21,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-g1f3nd9",
+              "value": "Chili",
+              "score": 10,
+              "order": 22,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-njkop46",
+              "value": "Chine",
+              "score": 10,
+              "order": 23,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-5qe5ocp",
+              "value": "Chypre",
+              "score": 10,
+              "order": 24,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-g8tju2r",
+              "value": "Colombie",
+              "score": 10,
+              "order": 25,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-0h53wwp",
+              "value": "Corée du Nord",
+              "score": 10,
+              "order": 26,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-ogj49r1",
+              "value": "Corée du Sud",
+              "score": 10,
+              "order": 27,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-22xn7ek",
+              "value": "Côte d’Ivoire",
+              "score": 10,
+              "order": 28,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-b7ie29o",
+              "value": "Croatie",
+              "score": 10,
+              "order": 29,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-xfuslkj",
+              "value": "Danemark",
+              "score": 5,
+              "order": 30,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-ihs3rhi",
+              "value": "Égypte",
+              "score": 10,
+              "order": 31,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-m1kedfv",
+              "value": "Émirats Arabes Unis",
+              "score": 10,
+              "order": 32,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-8w2eom2",
+              "value": "Espagne",
+              "score": 10,
+              "order": 33,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-6o34mst",
+              "value": "Estonie",
+              "score": 8,
+              "order": 34,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-q6zwn86",
+              "value": "États-Unis",
+              "score": 10,
+              "order": 35,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-zxk1pv6",
+              "value": "Finlande",
+              "score": 5,
+              "order": 36,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-12bl2ba",
+              "value": "France",
+              "score": 10,
+              "order": 37,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-vbpusbf",
+              "value": "Gabon",
+              "score": 10,
+              "order": 38,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-f02r2uh",
+              "value": "Ghana",
+              "score": 10,
+              "order": 39,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-bh1a469",
+              "value": "Grèce",
+              "score": 10,
+              "order": 40,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-c7a7kq5",
+              "value": "Guinée",
+              "score": 10,
+              "order": 41,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-xf3bcvc",
+              "value": "Haïti",
+              "score": 10,
+              "order": 42,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-xy46of9",
+              "value": "Hong Kong",
+              "score": 10,
+              "order": 43,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-fci6oyp",
+              "value": "Hongrie",
+              "score": 10,
+              "order": 44,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-cy5x67o",
+              "value": "Îles Caïmans",
+              "score": 10,
+              "order": 45,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-oztpjhy",
+              "value": "Îles Vierges Britanniques",
+              "score": 10,
+              "order": 46,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-w2o34fq",
+              "value": "Inde",
+              "score": 10,
+              "order": 47,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-bb2cg14",
+              "value": "Indonésie",
+              "score": 10,
+              "order": 48,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-b08kikm",
+              "value": "Iran",
+              "score": 10,
+              "order": 49,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-ezfp5gs",
+              "value": "Irlande",
+              "score": 10,
+              "order": 50,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-twm9haf",
+              "value": "Islande",
+              "score": 10,
+              "order": 51,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-g3hlnto",
+              "value": "Israël",
+              "score": 10,
+              "order": 52,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-3knxrxi",
+              "value": "Italie",
+              "score": 10,
+              "order": 53,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-dvn7wc2",
+              "value": "Japon",
+              "score": 10,
+              "order": 54,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-071y6he",
+              "value": "Jordanie",
+              "score": 10,
+              "order": 55,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-qbwy5y8",
+              "value": "Kazakhstan",
+              "score": 10,
+              "order": 56,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-yrzsxd3",
+              "value": "Kenya",
+              "score": 10,
+              "order": 57,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-iijr2h4",
+              "value": "Koweït",
+              "score": 10,
+              "order": 58,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-3uaw8qt",
+              "value": "Liban",
+              "score": 10,
+              "order": 59,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-5wnaw39",
+              "value": "Luxembourg",
+              "score": 10,
+              "order": 60,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-o2p5yvn",
+              "value": "Madagascar",
+              "score": 10,
+              "order": 61,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-ayualc3",
+              "value": "Malaisie",
+              "score": 10,
+              "order": 62,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-v1ggtn7",
+              "value": "Mali",
+              "score": 10,
+              "order": 63,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-2rm13d9",
+              "value": "Malte",
+              "score": 10,
+              "order": 64,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-i4jq032",
+              "value": "Maroc",
+              "score": 10,
+              "order": 65,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-uer4y41",
+              "value": "Maurice",
+              "score": 10,
+              "order": 66,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-of0ra80",
+              "value": "Mexique",
+              "score": 10,
+              "order": 67,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-db9oojh",
+              "value": "Monaco",
+              "score": 10,
+              "order": 68,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-cebed3w",
+              "value": "Népal",
+              "score": 10,
+              "order": 69,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-4283d1j",
+              "value": "Nicaragua",
+              "score": 10,
+              "order": 70,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-stdvr8y",
+              "value": "Nigeria",
+              "score": 10,
+              "order": 71,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-4xkqgl8",
+              "value": "Norvège",
+              "score": 5,
+              "order": 72,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-j5cj951",
+              "value": "Nouvelle-Zélande",
+              "score": 5,
+              "order": 73,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-4uomkvn",
+              "value": "Oman",
+              "score": 10,
+              "order": 74,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-wsmf8ft",
+              "value": "Ouganda",
+              "score": 10,
+              "order": 75,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-tl2luzu",
+              "value": "Ouzbékistan",
+              "score": 10,
+              "order": 76,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-jfn0en3",
+              "value": "Pakistan",
+              "score": 10,
+              "order": 77,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-qaw62bd",
+              "value": "Panama",
+              "score": 10,
+              "order": 78,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-7sjauxx",
+              "value": "Pays-Bas",
+              "score": 10,
+              "order": 79,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-buy788e",
+              "value": "Pérou",
+              "score": 10,
+              "order": 80,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-vpfc9r5",
+              "value": "Philippines",
+              "score": 10,
+              "order": 81,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-cf855w3",
+              "value": "Pologne",
+              "score": 10,
+              "order": 82,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-d7xq2m2",
+              "value": "Portugal",
+              "score": 10,
+              "order": 83,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-dcifv0v",
+              "value": "Qatar",
+              "score": 10,
+              "order": 84,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-8yaognh",
+              "value": "République Démocratique du Congo",
+              "score": 10,
+              "order": 85,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-g0ntpjw",
+              "value": "Roumanie",
+              "score": 10,
+              "order": 86,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-2qcnl92",
+              "value": "Royaume-Uni",
+              "score": 10,
+              "order": 87,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-ag3uhxn",
+              "value": "Russie",
+              "score": 10,
+              "order": 88,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-3kttjmq",
+              "value": "Sénégal",
+              "score": 10,
+              "order": 89,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-obrvyyw",
+              "value": "Seychelles",
+              "score": 10,
+              "order": 90,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-hmyaaml",
+              "value": "Singapour",
+              "score": 8,
+              "order": 91,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-58yqqqq",
+              "value": "Slovaquie",
+              "score": 10,
+              "order": 92,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-r3taaid",
+              "value": "Somalie",
+              "score": 10,
+              "order": 93,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-pfp2ogf",
+              "value": "Soudan",
+              "score": 10,
+              "order": 94,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-lvfvozg",
+              "value": "Suède",
+              "score": 8,
+              "order": 95,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-i0c2b3i",
+              "value": "Suisse",
+              "score": 10,
+              "order": 96,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-kazs6hq",
+              "value": "Syrie",
+              "score": 10,
+              "order": 97,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-5bg909j",
+              "value": "Taïwan",
+              "score": 10,
+              "order": 98,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-02olkus",
+              "value": "Tchad",
+              "score": 10,
+              "order": 99,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-t3k396v",
+              "value": "Thaïlande",
+              "score": 10,
+              "order": 100,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-f5losok",
+              "value": "Tunisie",
+              "score": 10,
+              "order": 101,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-egs572b",
+              "value": "Turquie",
+              "score": 10,
+              "order": 102,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-5j9bouc",
+              "value": "Ukraine",
+              "score": 10,
+              "order": 103,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-bz801ri",
+              "value": "Uruguay",
+              "score": 10,
+              "order": 104,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-621lq4e",
+              "value": "Venezuela",
+              "score": 10,
+              "order": 105,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-dfemj40",
+              "value": "Vietnam",
+              "score": 10,
+              "order": 106,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-t72ap3c",
+              "value": "Yémen",
+              "score": 10,
+              "order": 107,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-bmpk9id",
+              "value": "Zimbabwe",
+              "score": 10,
+              "order": 108,
+              "InputTypeConfigId": null
+            }
+          ]
+        },
+        {
+          "id": "ml5q61gm-n7avgdm",
+          "type": "checkbox",
+          "name": "nationalité ",
+          "labelMessage": "quelle nationalité ",
+          "facteur": 1,
+          "required": false,
+          "placeholder": "",
+          "errorMessage": "",
+          "optionsLayout": "block",
+          "displayOrer": 0,
+          "defaultValue": null,
+          "options": [
+            {
+              "id": "ml5q61gm-51tpbad",
+              "value": "aiffricaine ",
+              "score": 2,
+              "order": 1,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-pjkkrzo",
+              "value": "européenne ",
+              "score": 1,
+              "order": 2,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-v53adm2",
+              "value": "américaine ",
+              "score": 5,
+              "order": 3,
+              "InputTypeConfigId": null
+            }
+          ]
+        },
+        {
+          "id": "ml5q61gm-43porbf",
+          "type": "radio",
+          "name": "situation familiale ",
+          "labelMessage": "est ce la personne est marié ? ",
+          "facteur": 1,
+          "required": true,
+          "placeholder": "",
+          "errorMessage": "",
+          "optionsLayout": "block",
+          "displayOrer": 0,
+          "defaultValue": null,
+          "options": [
+            {
+              "id": "ml5q61gm-8ka02du",
+              "value": "Oui",
+              "score": 4,
+              "order": 1,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-4ofv0k4",
+              "value": "Non",
+              "score": 9,
+              "order": 2,
+              "InputTypeConfigId": null
+            }
+          ]
+        },
+        {
+          "id": "ml5q61gm-mdcp3xw",
+          "type": "uploadFile",
+          "name": "CIN de la personne ",
+          "labelMessage": "CIN de la personne ",
+          "facteur": 1,
+          "required": false,
+          "placeholder": "",
+          "errorMessage": "",
+          "optionsLayout": "block",
+          "displayOrer": 0,
+          "defaultValue": null,
+          "score": 6,
+          "options": []
+        },
+        {
+          "id": "ml5q61gm-5qfag9e",
+          "type": "radio",
+          "name": "CIN vérification ",
+          "labelMessage": "vérification CIN ",
+          "facteur": 1,
+          "required": false,
+          "placeholder": "",
+          "errorMessage": "",
+          "optionsLayout": "block",
+          "displayOrer": 0,
+          "defaultValue": null,
+          "options": [
+            {
+              "id": "ml5q61gm-5a8f6xb",
+              "value": "Oui",
+              "score": 0,
+              "order": 1,
+              "InputTypeConfigId": null
+            },
+            {
+              "id": "ml5q61gm-al6n867",
+              "value": "Non",
+              "score": 4,
+              "order": 2,
+              "InputTypeConfigId": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "43324",
+      "formName": "aml_default_personne_banque",
+      "formTitle": "KYC Standard - PERSONNE",
+      "formDescription": "Formulaire de conformité standard pour le secteur BANQUE",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gceew7uwiz938c",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcefm89iamjnh9",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gceou943iisx5m",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcedxd9t8mjtjq",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gced226ev2cui",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcei6mftw88xcl",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gceckky97isc9a",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcegzsi766hdb8",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcehi9dxyiecej",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcewcgghwcces",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gceq9f4ruahwjj",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcephm8ovak5v",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gce0vw382fqyzfi",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gceiqncsn720ok",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcecbsuhe31bw",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "67058",
+      "formName": "aml_default_personne_casino",
+      "formTitle": "KYC Standard - PERSONNE",
+      "formDescription": "Formulaire de conformité standard pour le secteur CASINO",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcfkekgnllwinn",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcfcba48pfho64",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcfbfzsxxy8i27",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcfght92zm3o2q",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcfji6qccn316",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcfoofwq1vkrh",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcfjxn7qe5r89",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcf7xw7irm4xd9",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcfgxkeky57bj",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcfy4beszt64jd",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcfdmss75ee1ei",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcf55baf5jrchy",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcfdmuc3v17id8",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcfiphczyzxdob",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcfigtt2tbd83",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "27782",
+      "formName": "aml_default_personne_asbl",
+      "formTitle": "KYC Standard - PERSONNE",
+      "formDescription": "Formulaire de conformité standard pour le secteur ASBL",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcf5pxq014s3ma",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcfmv893itmgz",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcfdkehallmpha",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcflsphwf50h4",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcff3iedm5rvyq",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcfjg9l3ef6fa",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcfrcmja7cxxoj",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcf71j2abpqa5k",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcf7f9x1czdvjj",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcfqw043pfottn",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcfc8ilhkri1pw",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcf30eu2esdktw",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcft0271k0ifu8",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcfgkirade24nr",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcfp4ip62z3h2k",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "85839",
+      "formName": "aml_default_personne_art",
+      "formTitle": "KYC Standard - PERSONNE",
+      "formDescription": "Formulaire de conformité standard pour le secteur ART",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcfbll30lmewaa",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcf7i4xtbp543",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcfrf65pef2ii",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcf7cfxan9qiwb",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcfh6ppwhqedll",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcf7qhnddox113",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcf5awhxgq4r7e",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcf7stjpocdek",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcfv4ptjo7tsi",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcfucjrnp9js",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcfa4wr1u7tfkt",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcfyonioa0stz",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcff8qzxaeww6v",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcf7p6qq6m4dr",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcffezhhbu9xm5",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "19249",
+      "formName": "aml_default_personne_commerce",
+      "formTitle": "KYC Standard - PERSONNE",
+      "formDescription": "Formulaire de conformité standard pour le secteur COMMERCE",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcf55ajocg2ftd",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcfiwv2co7jgoi",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcfgwub4riz8uq",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcfil27ojag7ob",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcf1bzdbu6uuht",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcfzr4mx828w3h",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcf441ysravtvu",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcfzqf50q4yukp",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcf8q302sbwm",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcfsdqqbfq6o0e",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcf39dajcv81sq",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcfg3anwphvzdn",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcf9t0k8ldco0f",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcfynqqt90qfgk",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcfsetckmwynq8",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "36184",
+      "formName": "aml_default_personne_expertise_comptable",
+      "formTitle": "KYC Standard - PERSONNE",
+      "formDescription": "Formulaire de conformité standard pour le secteur EXPERTISE_COMPTABLE",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcgms5cmqrul8i",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcg7qte40hcf0x",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcgagqa9284ewk",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcgrskdasnv5t8",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcgah885r2lwf",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcgqhzz4lwmr5k",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcgsc3cjqyfxt",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcg72zwlc0yil5",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcgdowqf4jol2",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcg79hcw39xsl6",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcggrn2l6qsyza",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcgv15m3ibr8wo",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcgco2vnj9gohm",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcg3j23ndt4eo5",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcgm1gjzww4ug",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "15378",
+      "formName": "aml_default_personne_avocats",
+      "formTitle": "KYC Standard - PERSONNE",
+      "formDescription": "Formulaire de conformité standard pour le secteur AVOCATS",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcg7txuowifaq",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcgz4wax2e35h",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcg2mn544lt6qk",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcgfbzsrr3o35l",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcgqr54ejjnat",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcglsgtxp6d0ta",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcgmjbo1f08o1r",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcgudb3wlkj2ro",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcgrp401n91ycj",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcgnqced6kjjl",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcg0sel7bhw1xc",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcgg3j83fzzm6n",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcged5l5k0ll8b",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcgx44jyq0c1fi",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcg5p8v56evoqd",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "8435",
+      "formName": "aml_default_personne_luxe",
+      "formTitle": "KYC Standard - PERSONNE",
+      "formDescription": "Formulaire de conformité standard pour le secteur LUXE",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gchpqdwx5rie2",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gch4rfow7odpmo",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gchljp7o9ukpg8",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gchgy7hpio21k9",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gchr5wq29f9gn",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gch7bcw2gyrgc8",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gchwkow65j8pfk",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gchh81auuv03ka",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gchpme8h1lnwpi",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gchz9cci3d91p9",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gchaj7micjnsw8",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gchsf6zxeggrm",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gch5sav0h59ayj",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gch3t7mcyogzy2",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gchq9fdnxmaayr",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "91451",
+      "formName": "aml_default_personne_crypto",
+      "formTitle": "KYC Standard - PERSONNE",
+      "formDescription": "Formulaire de conformité standard pour le secteur CRYPTO",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gchxw1m6fy5y3",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gchptu7i9wya2e",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gchbn7q70j65a",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gchclcaeqrw5q",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gchostzfbab4c9",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gchmex7slpq7h",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gchu9om0jueukk",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gchop3nt159v9m",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gchpign3puo7v",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcho3zz491w5n",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gchl19f7x57h7",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gchz4bkumdzu9",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gch7t1mols8wv",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gch8r4r0w77lge",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gch1v0nkdem0j4",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "37828",
+      "formName": "aml_default_societe_immobilier",
+      "formTitle": "KYC Standard - SOCIETE",
+      "formDescription": "Formulaire de conformité standard pour le secteur IMMOBILIER",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gchfqmz8jfrti7",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gch68z2vnbh85",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gch0djs98qbqk8",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gchq6n7lumi29l",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gch2kwpqo1gl6h",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gch73aqp3l592w",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gch9ozm081tpoj",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gch3h0ff3pwiox",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gchu44uthc7l7e",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gch72f8am97c6b",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gchrfq3tejbwll",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gchu2b79uhz6",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gch9rl5l9x10p4",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gch7ds1tq4jqne",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gch62qkt158dbf",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "74126",
+      "formName": "aml_default_societe_banque",
+      "formTitle": "KYC Standard - SOCIETE",
+      "formDescription": "Formulaire de conformité standard pour le secteur BANQUE",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gchvi05tpjyt3i",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gch91x716f2hqp",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gchtvle481od5o",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gch5wh74siidum",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gchym5bc6oxgcq",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gch2hr4yg7z5lj",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gchabr9qts56fk",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gchs25dvzywod",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gch6hyq49cw6ij",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gchof5mxvzjml9",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gchn67705my4m",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gchv93lcwpcgz8",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gchah10y8qfkwm",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gchpm10kxwbajg",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gchc01fgfzng54",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "26130",
+      "formName": "aml_default_societe_casino",
+      "formTitle": "KYC Standard - SOCIETE",
+      "formDescription": "Formulaire de conformité standard pour le secteur CASINO",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gchj8p7fhpkszi",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gchrsv90c5xybf",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gchxxoci7rzs5g",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gchm0ffnapee7",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gchmkntbnhxzd",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gchadsgooebyns",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gch6ydm5jbmdsb",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcixd7gk0bv1xs",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gci3vzckkmres9",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcid86wsmpzsn6",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcimqh1riighqb",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcit6hjrjid0er",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gciuoaiprvq9hb",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcij5p22kkfwx",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gci8l7oh0jxjzx",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "91129",
+      "formName": "aml_default_societe_asbl",
+      "formTitle": "KYC Standard - SOCIETE",
+      "formDescription": "Formulaire de conformité standard pour le secteur ASBL",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gci27764p8p35y",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gci2ruhqo7gaax",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcissy1p28dwj",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gciuof2d3q4qc",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gci14fk43y6lm2",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcihzsptwxp1rv",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcikd8wl9787zl",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcilmc3epci89",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gciqi65haa232h",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gciywoaw2ts0rg",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcieywx6kshsga",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gciiowif3cv4j",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gci43q34gayrb",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gci1esgcuzbuyy",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gci8s8joodwtuw",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "38996",
+      "formName": "aml_default_societe_art",
+      "formTitle": "KYC Standard - SOCIETE",
+      "formDescription": "Formulaire de conformité standard pour le secteur ART",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gciqjruaj45enj",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gci57xub961iga",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcip385wmpbo1",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcinuzo266hm8n",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gciraxyyt3n49h",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gciqu6bgawmvb",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gci3qsnbbw8cib",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcifg850bo4e9",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcip1mnhooyxlb",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcit9bkvrsz4le",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcikelrzdohi7m",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcihw5u8li5fij",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gciolhoebv1bxr",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gci3mhwb2rvra7",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcic7pr4cs27ip",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "88933",
+      "formName": "aml_default_societe_commerce",
+      "formTitle": "KYC Standard - SOCIETE",
+      "formDescription": "Formulaire de conformité standard pour le secteur COMMERCE",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gci3n0mf8voyfh",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcizti4wp0x89",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcissq9unjqffh",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcihnaqam9c1yq",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcipcs01d4mm8",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gci1dzotom09xo",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcip8w55yjg22n",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gci8xjmil1e69i",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gci22h7rophm2mj",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gci4bdcqwfpgfu",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gciiwlbyiw4pgk",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gci63whkt53ibq",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gciw7odzmr4woj",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gci3xh1rgl4mhs",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gciqzogkynaikb",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "10351",
+      "formName": "aml_default_societe_expertise_comptable",
+      "formTitle": "KYC Standard - SOCIETE",
+      "formDescription": "Formulaire de conformité standard pour le secteur EXPERTISE_COMPTABLE",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcidddyq128bbs",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcimacqztf7is",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gciudu542c7kmg",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gci6zbzh2dp9ng",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcifjq29pxc1mg",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcitq6dtgel34",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gci319bmzhqlgv",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcig0l3jzmse7q",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gci4ydyerdlzh5",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gciy1noay7h2d",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gci6fbrxnfd83r",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcil5uj9tlitk",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcihiyxv2z7f6",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gciqlkgkncezhr",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gciuuqvfi6jk2j",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "53088",
+      "formName": "aml_default_societe_avocats",
+      "formTitle": "KYC Standard - SOCIETE",
+      "formDescription": "Formulaire de conformité standard pour le secteur AVOCATS",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gciv9gwxemzwqe",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gciifuej4fvy8",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcivlbzmbxlkwb",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcih8r2e1p6tyh",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gciiqoo8bsqaub",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcieg4qt7edle7",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcihacx1erldo6",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcidt8dx24a9g",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcilml66o197ha",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcix7cp3l6kq27",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcixs6qu8yc8uf",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcig9sgycs1bt8",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gciv3ewjwusx2",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gci4ajuulpc5i3",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gciz551c4aefl9",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "45524",
+      "formName": "aml_default_societe_luxe",
+      "formTitle": "KYC Standard - SOCIETE",
+      "formDescription": "Formulaire de conformité standard pour le secteur LUXE",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcijbim6313un",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcijawq9cfkr6",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gciqi1khzo9vcq",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gciiaxciimytxb",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gciwyj0qxeex0p",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcik9jaz7as17r",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcivy9ti7y8eh",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gciz3dttz9mtw",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcizxptuc1r7",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcijlr9xppi5bc",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gciy9yotpov8f",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcin6qmxnv3n7",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcifmatz3upja7",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gciy51i64b8rfo",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gciyqqj4d4aqde",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "31959",
+      "formName": "aml_default_societe_crypto",
+      "formTitle": "KYC Standard - SOCIETE",
+      "formDescription": "Formulaire de conformité standard pour le secteur CRYPTO",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcirxe88jblhvp",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gciuehbwa14c6",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gciv2pyf1tddzd",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcit2i2nrb5j7l",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gciz9nl9tn6kn8",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcifanwzod8ui",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gci8nddvi2nvmn",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcirnuarm7za8",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gci7qhvuipyeu7",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gci3acn6c8wwam",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcim09lfbdud7",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gciwb6ociroaeg",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcifq3li2erb7v",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gci4906nv786h7",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gci8nj92gxg0jp",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "73953",
+      "formName": "aml_default_institution_collectivit__territoriale",
+      "formTitle": "KYC Standard - INSTITUTION",
+      "formDescription": "Formulaire de conformité standard pour le secteur Collectivité Territoriale",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gci3m4pfhrcm26",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcifr9fy6vtvh",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcivcxoqnv5mv",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gci2x1e308mlqo",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcjjo0edd14gs",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcjug18cz8k2u",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcjo3d78xu968j",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcj3wg3ks3v469",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcjma1iejflvoj",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcj5akca2gtqo5",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcjcv4iqm6se1a",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcj47emzqryxy",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcjbuo9p2lkclv",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcjfpc373glkj",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcj18iwq2134w4",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "23531",
+      "formName": "aml_default_institution__tablissement_public__epa_epic_",
+      "formTitle": "KYC Standard - INSTITUTION",
+      "formDescription": "Formulaire de conformité standard pour le secteur Établissement Public (EPA/EPIC)",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcjgssetifz4qi",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcjb7xz9cmua3p",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcj67yrzrmuybc",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcj1w0kpgnb5in",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcjcc2m7fos2iq",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcj53iscw144gw",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcja55x7ung5cq",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcjidhq3wx7h69",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcjac39ljwg7eb",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcjt840i5pbrd",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcjnp1a54lkwa",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcjgvs3u1zexy8",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcjhbalmd4xfq4",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcjs7dgk5jndb",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcjns4g1gugis",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "87074",
+      "formName": "aml_default_institution_ambassade___consulat",
+      "formTitle": "KYC Standard - INSTITUTION",
+      "formDescription": "Formulaire de conformité standard pour le secteur Ambassade / Consulat",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcjtfenx0o6pc8",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcjwuf65pul6k",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcjbmqudip3yyd",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcjf9c6r2vlfbc",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcjxnbm6s5csak",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcj4unzn2hnlhh",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcj67m4fuj3kgr",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcjsfhhm0vp33k",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcjw1szcr35hc8",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcjg3jczy363v9",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcjzag1bvtf02q",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcjgy0va03cwfv",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcjsyiycoznf7p",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcjen6frk1v2o",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcj5glk2r5ime9",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
+    },
+    {
+      "id": "98112",
+      "formName": "aml_default_institution_organisation_non_gouvernementale__ong_",
+      "formTitle": "KYC Standard - INSTITUTION",
+      "formDescription": "Formulaire de conformité standard pour le secteur Organisation Non Gouvernementale (ONG)",
+      "order": 0,
+      "inputConfigs": [
+        {
+          "id": "ml6w9gcj9dwdpg4pjk",
+          "type": "select",
+          "name": "Origine des fonds",
+          "labelMessage": "Quelle est l'origine principale des fonds ?",
+          "facteur": 5,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcj8rn8akqijnu",
+              "value": "Salaire / Revenus professionnels",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcjb4umdi7fvuh",
+              "value": "Épargne personnelle",
+              "score": 1,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcjmi9ukaddpwd",
+              "value": "Vente immobilière",
+              "score": 2,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcjc77cxxvqchk",
+              "value": "Héritage / Donation",
+              "score": 3,
+              "order": 3
+            },
+            {
+              "id": "ml6w9gcjl7jc5q4663",
+              "value": "Investissements crypto",
+              "score": 8,
+              "order": 4
+            },
+            {
+              "id": "ml6w9gcja1js6y77zya",
+              "value": "Inconnue / Non justifiée",
+              "score": 10,
+              "order": 5
+            }
+          ],
+          "displayOrer": 0
+        },
+        {
+          "id": "ml6w9gcj34nftkph4bb",
+          "type": "radio",
+          "name": "PPE",
+          "labelMessage": "Le client est-il une Personne Politiquement Exposée (PPE) ?",
+          "facteur": 10,
+          "required": true,
+          "optionsLayout": "inline",
+          "options": [
+            {
+              "id": "ml6w9gcj3vtb88hvrrg",
+              "value": "Non",
+              "score": 0,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcjjfhf6ff7e1a",
+              "value": "Oui",
+              "score": 10,
+              "order": 1
+            }
+          ],
+          "displayOrer": 1
+        },
+        {
+          "id": "ml6w9gcjrcd4ibig4r",
+          "type": "select",
+          "name": "Montant de la transaction",
+          "labelMessage": "Montant estimé des transactions annuelles",
+          "facteur": 3,
+          "required": true,
+          "optionsLayout": "block",
+          "options": [
+            {
+              "id": "ml6w9gcjxdpswupl6kn",
+              "value": "< 10 000 €",
+              "score": 1,
+              "order": 0
+            },
+            {
+              "id": "ml6w9gcjnuw0kgck7eh",
+              "value": "10 000 € - 50 000 €",
+              "score": 2,
+              "order": 1
+            },
+            {
+              "id": "ml6w9gcj2xteqkrss7v",
+              "value": "50 000 € - 150 000 €",
+              "score": 5,
+              "order": 2
+            },
+            {
+              "id": "ml6w9gcjcgh6j4ubkbq",
+              "value": "> 150 000 €",
+              "score": 8,
+              "order": 3
+            }
+          ],
+          "displayOrer": 2
+        }
+      ]
     }
   ],
   "AMLInputConfig": [],
@@ -1202,6 +4782,150 @@
       "typeClient": "PERSONNE",
       "secteurActivite": "IMMOBILIER",
       "amlFormConfigID": "5657"
+    },
+    {
+      "id": "8739",
+      "typeClient": "INSTITUTION",
+      "secteurActivite": "Ministère / Administration Centrale",
+      "amlFormConfigID": "7854"
+    },
+    {
+      "id": "68062",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "BANQUE",
+      "amlFormConfigID": "43324"
+    },
+    {
+      "id": "55186",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "CASINO",
+      "amlFormConfigID": "67058"
+    },
+    {
+      "id": "56515",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "ASBL",
+      "amlFormConfigID": "27782"
+    },
+    {
+      "id": "19499",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "ART",
+      "amlFormConfigID": "85839"
+    },
+    {
+      "id": "1102",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "COMMERCE",
+      "amlFormConfigID": "19249"
+    },
+    {
+      "id": "79488",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "EXPERTISE_COMPTABLE",
+      "amlFormConfigID": "36184"
+    },
+    {
+      "id": "34779",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "AVOCATS",
+      "amlFormConfigID": "15378"
+    },
+    {
+      "id": "11295",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "LUXE",
+      "amlFormConfigID": "8435"
+    },
+    {
+      "id": "85683",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "CRYPTO",
+      "amlFormConfigID": "91451"
+    },
+    {
+      "id": "28984",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "IMMOBILIER",
+      "amlFormConfigID": "37828"
+    },
+    {
+      "id": "74238",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "BANQUE",
+      "amlFormConfigID": "74126"
+    },
+    {
+      "id": "21256",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "CASINO",
+      "amlFormConfigID": "26130"
+    },
+    {
+      "id": "81922",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "ASBL",
+      "amlFormConfigID": "91129"
+    },
+    {
+      "id": "45837",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "ART",
+      "amlFormConfigID": "38996"
+    },
+    {
+      "id": "26769",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "COMMERCE",
+      "amlFormConfigID": "88933"
+    },
+    {
+      "id": "63460",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "EXPERTISE_COMPTABLE",
+      "amlFormConfigID": "10351"
+    },
+    {
+      "id": "44857",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "AVOCATS",
+      "amlFormConfigID": "53088"
+    },
+    {
+      "id": "54621",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "LUXE",
+      "amlFormConfigID": "45524"
+    },
+    {
+      "id": "71215",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "CRYPTO",
+      "amlFormConfigID": "31959"
+    },
+    {
+      "id": "63460",
+      "typeClient": "INSTITUTION",
+      "secteurActivite": "Collectivité Territoriale",
+      "amlFormConfigID": "73953"
+    },
+    {
+      "id": "80633",
+      "typeClient": "INSTITUTION",
+      "secteurActivite": "Établissement Public (EPA/EPIC)",
+      "amlFormConfigID": "23531"
+    },
+    {
+      "id": "29363",
+      "typeClient": "INSTITUTION",
+      "secteurActivite": "Ambassade / Consulat",
+      "amlFormConfigID": "87074"
+    },
+    {
+      "id": "72041",
+      "typeClient": "INSTITUTION",
+      "secteurActivite": "Organisation Non Gouvernementale (ONG)",
+      "amlFormConfigID": "98112"
     }
   ],
   "clients": [

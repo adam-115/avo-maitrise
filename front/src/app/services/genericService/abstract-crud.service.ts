@@ -47,7 +47,7 @@ export abstract class AbstractCrudService<T> {
    * Injects the HttpClient.
    * @param http The Angular HttpClient instance.
    */
-  constructor(protected http: HttpClient) {}
+  constructor(protected http: HttpClient) { }
 
   /**
    * Creates a new item on the backend.
@@ -118,6 +118,15 @@ export abstract class AbstractCrudService<T> {
 
   getAll(): Observable<T[]> {
     return this.http.get<T[]>(this.apiUrl);
+  }
+
+  /**
+   * Deletes an item by its ID.
+   * @param id The ID of the item to delete.
+   * @returns An Observable of the response.
+   */
+  delete(id: any): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
 }

@@ -3,9 +3,11 @@ import { ActivatedRoute } from '@angular/router';
 import { AmlFormConfigService } from '../../services/AmlFormConfigService';
 import { AlertService } from '../../services/alert-service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, FieldScore } from '../../appTypes';
+import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, ClientDetail, ClientInstitution, ClientPhysique, ClientSociete, FieldScore } from '../../appTypes';
 import { AmlFormResultService } from '../../services/aml-form-result-result-service';
 import { CommonModule } from '@angular/common';
+import { ClientService } from '../../services/client-service';
+import { MappingFormService } from '../../services/mapping-form-service';
 
 @Component({
   selector: 'app-aml-form-view-component',
@@ -19,6 +21,8 @@ export class AmlFormViewComponent implements OnInit {
   amlFormConfigService = inject(AmlFormConfigService);
   amlPageConfigResultService = inject(AmlFormResultService);
   alertService = inject(AlertService);
+  clientService = inject(ClientService);
+  mappingFormService = inject(MappingFormService);
   fb = inject(FormBuilder);
   selectedFormConfig: AmlFormConfig | null = null;
   dynamicForm: FormGroup;
@@ -40,24 +44,27 @@ export class AmlFormViewComponent implements OnInit {
 
   private loadPageConfig(): void {
     this.activatedRoute.paramMap.subscribe(params => {
-      const id = params.get("id");
-      if (id) {
-        this.amlFormConfigService.findById(id).subscribe(data => {
-          this.selectedFormConfig = data;
-          this.AmlInpuConfigs = this.selectedFormConfig.inputConfigs;
-          // Reconstruire le formulaire dynamique avec la nouvelle configuration
-          this.buildDynamicForm();
-          this.subscribeToFormChanges();
-        })
+      const configId = params.get("id");
+      // Check query params for optional clientId context
+      this.clientId = this.activatedRoute.snapshot.queryParamMap.get('clientId');
+
+      if (configId) {
+        this.loadFormConfig(configId);
+      } else {
+        this.alertService.displayMessage('Erreur', 'Aucun ID de configuration fourni.', 'error');
       }
     });
+  }
 
-    this.activatedRoute.queryParams.subscribe(params => {
-      if (params['clientId']) {
-        this.clientId = params['clientId'];
-      }
+  private loadFormConfig(configId: number | any) {
+    if (!configId) return;
+    this.amlFormConfigService.findById(configId).subscribe(data => {
+      this.selectedFormConfig = data;
+      this.AmlInpuConfigs = this.selectedFormConfig.inputConfigs;
+      // Reconstruire le formulaire dynamique avec la nouvelle configuration
+      this.buildDynamicForm();
+      this.subscribeToFormChanges();
     });
-
   }
   // Construction dynamique des FormControls
   private buildDynamicForm(): void {
