@@ -99,25 +99,15 @@ export class ClientFormMorale implements OnInit {
     this.clientService.create(clientData).subscribe({
       next: (createdClient: ClientDetail) => {
         console.log('Client saved', createdClient);
-        this.navigateToAmlForm(formValues.selectedSecteurActivite);
+        if (createdClient.id) {
+          this.navigateToAmlForm(createdClient.id.toString());
+        }
       },
       error: (err) => console.error('Error saving client', err)
     });
   }
 
-  navigateToAmlForm(secteur: any) {
-    this.mappingFormService.getAll().subscribe(mappings => {
-      // Find mapping for SOCIETE and specific sector, or fallback to default if needed
-      // Logic from requirement: "afficher le formulaire de assosié ce type de client"
-      // We look for MappingForm where typeClient == 'SOCIETE' and secteurActivite match
-      const mapping = mappings.find(m => m.typeClient === 'SOCIETE' && m.secteurActivite === secteur?.code);
-
-      if (mapping) {
-        console.log('Navigating to form', mapping.amlFormConfigID);
-        // this.router.navigate(['/aml-form', mapping.amlFormConfigID]);
-      } else {
-        console.warn('No AML form mapping found for SOCIETE - ' + secteur?.code);
-      }
-    });
+  navigateToAmlForm(clientId: string) {
+    this.navigationService.navigateToViewFormConfig_2(clientId);
   }
 }

@@ -51,15 +51,34 @@
               </div>
 
               <div>
-                <label class="block text-sm font-bold text-slate-700 mb-1">Cible : Secteur d'Activité *</label>
+                <label class="block text-sm font-bold text-slate-700 mb-1">
+                  @if (pageForm.get('typeClient')?.value === 'INSTITUTION') {
+                  TypeOrganisme *
+                  } @else {
+                  Cible : Secteur d'Activité *
+                  }
+                </label>
                 <select formControlName="secteurActivite"
                   class="w-full rounded-lg border-slate-300 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 border p-2.5 outline-none transition shadow-sm bg-white">
+                  @if (pageForm.get('typeClient')?.value === 'INSTITUTION') {
+                  <option value="TOUT">Tous les types (Standard)</option>
+                  @for (organisme of typeOrganismes; track organisme.id) {
+                  <option [value]="organisme.libelle">{{ organisme.libelle }}</option>
+                  }
+                  } @else {
                   <option value="TOUT">Tous les secteurs (Standard)</option>
                   @for (secteur of secteurs; track secteur.id) {
                   <option [value]="secteur.code">{{ secteur.libelle }}</option>
                   }
+                  }
                 </select>
-                <p class="text-[10px] text-slate-400 mt-1 italic">Définit quel secteur déclenchera ce questionnaire.</p>
+                <p class="text-[10px] text-slate-400 mt-1 italic">
+                  @if (pageForm.get('typeClient')?.value === 'INSTITUTION') {
+                  Définit quel type d'organisme déclenchera ce questionnaire.
+                  } @else {
+                  Définit quel secteur déclenchera ce questionnaire.
+                  }
+                </p>
               </div>
 
               <div>

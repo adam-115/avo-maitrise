@@ -135,6 +135,7 @@ export interface AmlFormConfig {
   inputConfigs: AmlInputConfig[],
   typeClient?: string;
   secteurActivite?: string;
+  typeOrganisme?: string;
 }
 
 export interface AmlInputConfig {
@@ -170,6 +171,7 @@ export interface AmlFormResult {
   totalScore?: number;
   riskLevel?: 'Faible' | 'Modéré' | 'Élevé';
   AmlPageConfigValues?: AmlInputValue[];
+  clientId?: string;
 }
 
 export interface AmlInputValue {

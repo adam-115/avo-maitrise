@@ -25,7 +25,7 @@ export class ClientFormPhysique implements OnInit {
     identityNumber: ['', Validators.required],
     lastName: ['', Validators.required],
     firstName: ['', Validators.required],
-    birthDate: [''],
+    birthDate: ['',],
     email: ['', [Validators.required, Validators.email]],
     phone: [''],
     address: [''],
@@ -100,24 +100,15 @@ export class ClientFormPhysique implements OnInit {
     this.clientService.create(clientData).subscribe({
       next: (createdClient) => {
         console.log('Client saved', createdClient);
-        this.navigateToAmlForm(formValues.selectedSecteurActivite);
+        if (createdClient.id) {
+          this.navigateToAmlForm(createdClient.id.toString());
+        }
       },
       error: (err) => console.error('Error saving client', err)
     });
   }
 
-  navigateToAmlForm(secteur?: any) {
-    this.mappingFormService.getAll().subscribe(mappings => {
-      // Find mapping for PERSONNE and specific sector if available
-      const mapping = mappings.find(m => m.typeClient === 'PERSONNE' &&
-        (secteur ? m.secteurActivite === secteur.code : (m.secteurActivite === 'TOUT' || !m.secteurActivite)));
-
-      if (mapping) {
-        console.log('Navigating to form', mapping.amlFormConfigID);
-        // this.router.navigate(['/aml-form', mapping.amlFormConfigID]);
-      } else {
-        console.warn('No AML form mapping found for PERSONNE' + (secteur ? ' - ' + secteur.code : ''));
-      }
-    });
+  private navigateToAmlForm(clientId: string) {
+    this.navigationService.navigateToViewFormConfig_2(clientId);
   }
 }

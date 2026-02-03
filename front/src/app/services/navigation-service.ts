@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { SecteurActivite } from '../appTypes';
 
 @Injectable({
   providedIn: 'root',
@@ -62,10 +63,16 @@ export class NavigationService {
 
   }
 
-  public navigateToViewFormConfig(id: number): void {
+  public navigateToViewFormConfig(id: number, queryParams?: any): void {
     let targetUrl = NavigationService.FORM_CONFIG_VIEW.replace(":id", id.toString());
+    this.router.navigate(['/home/', ...targetUrl.split("/")], { queryParams: queryParams });
+  }
+
+  public navigateToViewFormConfig_2(clientId: string): void {
+    let targetUrl = NavigationService.FORM_CONFIG_VIEW.replace(":id", clientId);
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
+
 
 
   public navigateToTypeClient(): void {

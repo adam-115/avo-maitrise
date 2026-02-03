@@ -8,8 +8,9 @@ import { NavigationService } from '../../services/navigation-service';
 import { SecteurActiviteService } from './../../services/secteur-activite-service';
 import { TypeClientService } from '../../services/type-client-service';
 import { UtilsService } from '../../services/utils-service';
+import { TypeOrganismeService } from '../../services/type-organisme-service';
 import { AmlInputConfigComponent } from "../aml-input-config-component/aml-input-config";
-import { AmlFormConfig, AmlInputConfig, MappingForm, SecteurActivite, TypeClient } from '../../appTypes';
+import { AmlFormConfig, AmlInputConfig, MappingForm, SecteurActivite, TypeClient, TypeOrganisme } from '../../appTypes';
 
 @Component({
   selector: 'app-aml-form-config-component',
@@ -27,11 +28,13 @@ export class AmlFormConfigComponent implements OnInit {
   utilsService = inject(UtilsService);
   secteurActiviteService = inject(SecteurActiviteService);
   typeClientService = inject(TypeClientService);
+  typeOrganismeService = inject(TypeOrganismeService);
   mappingFormService = inject(MappingFormService);
 
   amlInputConfigs: AmlInputConfig[] = [];
   secteurs: SecteurActivite[] = [];
   typeClients: TypeClient[] = [];
+  typeOrganismes: TypeOrganisme[] = [];
   // if is on edit mode
   isEditeMode = false;
   editedFormConfig: AmlFormConfig | null = null;
@@ -61,6 +64,7 @@ export class AmlFormConfigComponent implements OnInit {
     this.isItUpdateMode();
     this.loadSecteurs();
     this.loadTypeClients();
+    this.loadTypeOrganismes();
   }
 
   // load config to update
@@ -110,6 +114,12 @@ export class AmlFormConfigComponent implements OnInit {
   private loadTypeClients() {
     this.typeClientService.getAll().subscribe(data => {
       this.typeClients = data.filter(t => t.actif);
+    });
+  }
+
+  private loadTypeOrganismes() {
+    this.typeOrganismeService.getAll().subscribe(data => {
+      this.typeOrganismes = data.filter(t => t.actif);
     });
   }
 
@@ -255,14 +265,6 @@ export class AmlFormConfigComponent implements OnInit {
     this.navigationService.navigateToFormConfigList();
   }
 
-  // openPreviewDialog(): void {
-  //   this.amlPagePreviewConfig = this.convertFormToAmlPageConfig();
-  //   this.showDialogPreview = true;
-  // }
-
-  // closePreviewDialog(): void {
-  //   this.showDialogPreview = false;
-  // }
 
   // Initialize form when creating component or loading data
   private initializeFormWithAmlPageConfig(pageConfig: AmlFormConfig): void {

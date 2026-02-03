@@ -95,16 +95,16 @@ export class ClientFormInstution {
     this.clientService.create(clientData).subscribe({
       next: (createdClient: ClientDetail) => {
         console.log('Client saved', createdClient);
-        this.navigateToAmlForm();
+        if (createdClient.id) {
+          this.navigateToAmlForm(createdClient.id.toString());
+        }
       },
       error: (err) => console.error('Error saving client', err)
     });
   }
 
-  navigateToAmlForm() {
-    // Similar logic to others, assuming generic mapping for INSTITUTION or specific if needed
-    // Placeholder logic
-    console.log('Navigate to AML Form');
+  navigateToAmlForm(clientId: string) {
+    this.navigationService.navigateToViewFormConfig_2(clientId);
   }
 
   goBack() {

@@ -25,6 +25,7 @@ export class AmlFormViewComponent implements OnInit {
   totalRiskScore: number = 0;
   fieldScores: FieldScore[] = [];
   AmlInpuConfigs: AmlInputConfig[] = [];
+  clientId: string | number | null = null;
 
 
 
@@ -48,6 +49,12 @@ export class AmlFormViewComponent implements OnInit {
           this.buildDynamicForm();
           this.subscribeToFormChanges();
         })
+      }
+    });
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      if (params['clientId']) {
+        this.clientId = params['clientId'];
       }
     });
 
@@ -169,6 +176,7 @@ export class AmlFormViewComponent implements OnInit {
     let error = false;
     //TODO add efter params to identify the user who submit the form
     const amlPageConfigResult = this.convertFomValueToAmlPageConfigValues();
+
     this.amlPageConfigResultService.create(amlPageConfigResult).subscribe({
       next: (response) => {
         this.alertService.displayMessage("Succès", "Le formulaire a été soumis avec succès !", 'success');
@@ -258,7 +266,7 @@ export class AmlFormViewComponent implements OnInit {
       amlFormConfigID: this.selectedFormConfig?.id,
       totalScore: this.totalRiskScore,
       AmlPageConfigValues: amlPageConfigValues,
-
+      clientId: this.clientId?.toString()
     }
 
 
