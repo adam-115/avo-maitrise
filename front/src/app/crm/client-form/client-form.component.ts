@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ClientTypeEnum, SecteurActivite } from '../../appTypes';
+import { ClientTypeEnum, Document, SecteurActivite } from '../../appTypes';
+import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { AlertService } from '../../services/alert-service';
 import { ClientService } from '../../services/client-service';
 import { SecteurActiviteService } from '../../services/secteur-activite-service';
@@ -10,7 +11,7 @@ import { SecteurActiviteService } from '../../services/secteur-activite-service'
 @Component({
     selector: 'app-client-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, DocumentDialog],
     templateUrl: './client-form.component.html',
     styleUrls: ['./client-form.component.css']
 })
@@ -24,6 +25,9 @@ export class ClientFormComponent implements OnInit {
     clientForm: FormGroup;
     secteurs: SecteurActivite[] = [];
     ClientTypeEnum = ClientTypeEnum;
+
+    documents: Document[] = [];
+    showAddDocumentDialog: boolean = false;
 
     // Helper for template access
     get clientTypes(): string[] {
@@ -69,6 +73,37 @@ export class ClientFormComponent implements OnInit {
     removeUbo(index: number): void {
         this.ubos.removeAt(index);
     }
+
+    // Document Management
+    openAddDocumentDialog() {
+        this.showAddDocumentDialog = true;
+    }
+
+    closeAddDocumentDialog() {
+        this.showAddDocumentDialog = false;
+    }
+
+    onAddDocument(doc: Document) {
+        // Assign a temporary ID if missing (for tracking in UI)
+        if (!doc.id) {
+            doc.id = new Date().getTime();
+        }
+        this.documents.push(doc);
+        this.closeAddDocumentDialog();
+    }
+
+    deleteDocument(id: number | undefined) {
+        if (!id) return;
+        this.documents = this.documents.filter(d => d.id !== id);
+    }
+
+    downloadDoc(doc: Document) {
+        console.log('Downloading document:', doc.name);
+        // Implement actual download logic or mock
+        this.alertService.success(`Téléchargement de ${doc.name} lancé`);
+    }
+
+
 
     private loadSecteurs(): void {
         this.secteurService.getAll().subscribe(data => {

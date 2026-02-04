@@ -181,6 +181,75 @@
             </div>
             }
 
+            <!-- Documents Section -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
+                        Documents Relatifs au Client
+                    </h2>
+                    <button type="button" (click)="openAddDocumentDialog()"
+                        class="text-[10px] uppercase font-black tracking-widest text-cyan-500 hover:text-cyan-600 transition-colors flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-width="3" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        Ajouter un document
+                    </button>
+                </div>
+
+                <!-- Empty State / Upload Placeholder -->
+                @if (documents.length === 0) {
+                <div (click)="openAddDocumentDialog()"
+                    class="border-2 border-dashed border-slate-200 rounded-xl p-8 flex flex-col items-center justify-center bg-slate-50 hover:bg-cyan-50 hover:border-cyan-300 transition-all cursor-pointer group">
+                    <div
+                        class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm mb-3 group-hover:scale-110 transition-transform">
+                        <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                            </path>
+                        </svg>
+                    </div>
+                    <p class="text-slate-500 font-bold text-xs uppercase tracking-wide">Ajouter un fichier</p>
+                </div>
+                }
+
+                <!-- Document List -->
+                @if (documents.length > 0) {
+                <div class="space-y-3">
+                    @for (doc of documents; track doc.id) {
+                    <div
+                        class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-cyan-200 transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <div
+                                class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-red-500">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path
+                                        d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z">
+                                    </path>
+                                </svg>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold text-slate-800">{{ doc.title }}</span>
+                                <span class="text-[9px] text-slate-400 font-black uppercase">{{ doc.name }}</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button type="button" (click)="deleteDocument(doc.id)"
+                                class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
             <!-- Actions -->
             <div class="flex justify-end gap-4 pt-6">
                 <button type="button" (click)="cancel()"
@@ -196,3 +265,8 @@
         </form>
     </div>
 </div>
+
+@if (showAddDocumentDialog) {
+<app-document-dialog [selectedDocument]="null" (addDocumentEvent)="onAddDocument($event)"
+    (closeDialogEvent)="closeAddDocumentDialog()"></app-document-dialog>
+}
