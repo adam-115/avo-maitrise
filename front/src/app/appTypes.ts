@@ -25,11 +25,7 @@ export enum ContactTypeCreation {
 }
 
 
-// export enum ClientType {
-//   PESONNE = 'PERSONNE',
-//   SOCIETE = 'SOCIETE',
-//   INSTITUTION = 'INSTITUTION'
-// }
+
 
 // contact interface for crm component
 export interface Contact {
@@ -43,66 +39,7 @@ export interface Contact {
   lastUpdated: string; // Date
 }
 
-// detailed client interface for client details component
 
-export interface BaseClientDetail {
-  id?: number;
-  email: string;
-  phone: string;
-  address: string;
-  country: string;
-
-  // Role & Compliance
-  role: string;
-  amlRisk: 'FAIBLE' | 'MOYEN' | 'ELEVEE' | 'NUL';
-  complianceStatus: 'OK' | 'PENDING' | 'ALERT';
-  complianceNotes: string;
-  isPEP: boolean;
-  fundsOrigin: string;
-  validationDate: string;
-  archivingStatus: 'COMPLETED' | 'PENDING';
-
-  // Metadata
-  totalFiles: number;
-  activeCases: number;
-  internalContactsCount: number;
-  clientContactsCount: number;
-  documentsToReview: number;
-
-  createdAt: Date;
-  updatedAt: Date;
-  isActive: boolean;
-  notes: string;
-  history: any[];
-  contacts: any[];
-}
-
-export interface ClientPhysique extends BaseClientDetail {
-  type: 'PERSONNE';
-  name: string; // Full name or display name
-  firstName: string;
-  lastName: string;
-  birthDate?: string;
-  identityNumber?: string;
-  sector?: string;
-}
-
-export interface ClientSociete extends BaseClientDetail {
-  type: 'SOCIETE';
-  name: string; // Denomination
-  siren: string;
-  legalForm?: string;
-  sector?: string;
-  beneficialOwners?: string;
-}
-
-export interface ClientInstitution extends BaseClientDetail {
-  type: 'INSTITUTION';
-  name: string; // Name of institution
-  typeOrganisme?: string; // e.g. 'Mairie', 'Tribunal'
-}
-
-export type ClientDetail = ClientPhysique | ClientSociete | ClientInstitution;
 
 // Interface pour définir la structure d'une Audience Judiciaire
 export interface Hearing {
@@ -203,13 +140,36 @@ export interface TypeClient {
   created_at: Date,
 }
 
+export enum ClientTypeEnum {
+  PERSONNE = 'PERSONNE',
+  SOCIETE = 'SOCIETE',
+  INSTITUTION = 'INSTITUTION',
+  ASSOCIATION = 'ASSOCIATION'
+}
+
 export interface SecteurActivite {
   id?: number;
   code: string;           // ex: 'IMMOBILIER', 'FINTECH'
   libelle: string;        // ex: 'Promotion Immobilière'
   ordre_affichage: number;
   actif: boolean;
+  riskNaturel: 'FAIBLE' | 'MOYEN' | 'ELEVE' | 'CRITIQUE';
   created_at?: Date;
+}
+
+export interface UBO {
+  nom: string;
+  partDetention: number; // Percentage
+  isPPE: boolean; // Personne Politiquement Exposée
+}
+
+export interface Client {
+  id: string | number;
+  type: ClientTypeEnum;
+  secteurActivite: string; // Could be ID or Code
+  paysResidance: string;
+  riskScore: number;
+  ubos?: UBO[]; // Optional, mostly for legal entities
 }
 
 export interface TypeOrganisme {
@@ -235,7 +195,7 @@ export interface Document {
 
 export interface MappingForm {
   id?: number;
-  typeClient: 'PERSONNE' | 'SOCIETE' | 'INSTITUTION';
+  typeClient: ClientTypeEnum | 'PERSONNE' | 'SOCIETE' | 'INSTITUTION' | 'ASSOCIATION'; // Keeping string literal union for backward compatibility if needed, or switch to Enum
   secteurActivite: string;
   amlFormConfigID: number;
 }

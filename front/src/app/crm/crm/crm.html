@@ -11,14 +11,7 @@
                 Vue d'ensemble et statut de conformité AML/KYC de tous les intervenants enregistrés.
             </p>
         </div>
-        <a (click)="navigateToClientForm()"
-            class="px-5 py-2.5 border border-transparent rounded-lg text-sm font-medium text-white bg-cyan-600 shadow-md hover:bg-cyan-700 transition duration-150 flex items-center space-x-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            <span class="hover:cursor-pointer">Nouveau Client</span>
-        </a>
+
     </div>
 
     <div class="bg-white rounded-xl shadow-lg p-6 mb-8 flex justify-between items-center space-x-6">
@@ -32,21 +25,21 @@
                             clip-rule="evenodd"></path>
                     </svg>
                 </div>
-                <input id="search" name="search" [(ngModel)]="searchTerm" (input)="filterContacts()"
+                <input id="search" name="search" [(ngModel)]="searchTerm" (input)="filterClients()"
                     class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
                     placeholder="Rechercher par nom, rôle ou pays..." type="search">
             </div>
         </div>
 
         <div class="flex space-x-4">
-            <select
+            <select [(ngModel)]="selectedType" (change)="filterClients()"
                 class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 sm:text-sm">
                 <option value="">Type (Tous)</option>
                 <option value="PERSONNE">Personne Physique</option>
                 <option value="SOCIETE">Entité / Société</option>
                 <option value="INSTITUTION">Institution</option>
             </select>
-            <select
+            <select [(ngModel)]="selectedRisk" (change)="filterClients()"
                 class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 sm:text-sm">
                 <option value="">Risque AML (Tous)</option>
                 <option value="ELEVEE">Élevée</option>
@@ -90,60 +83,57 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                @for (contact of contacts; track contact.id) {
+                @for (client of filteredClients; track client.id) {
                 <tr class="hover:bg-cyan-50 transition duration-150 cursor-pointer">
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-slate-900">{{ contact.name }}</div>
-                        <div class="text-xs text-gray-500">ID: {{ contact.id }}</div>
+                        <div class="text-sm font-medium text-slate-900">{{ client.name }}</div>
+                        <div class="text-xs text-gray-500">ID: {{ client.id }}</div>
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{ contact.role }}</div>
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                              [ngClass]="{
-                                'bg-blue-100 text-blue-800': contact.type === 'PERSONNE',
-                                'bg-purple-100 text-purple-800': contact.type === 'SOCIETE',
-                                'bg-gray-100 text-gray-800': contact.type === 'INSTITUTION'
+                        <div class="text-sm text-gray-900">{{ client.role }}</div>
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" [ngClass]="{
+                                'bg-blue-100 text-blue-800': client.type === 'PERSONNE',
+                                'bg-purple-100 text-purple-800': client.type === 'SOCIETE',
+                                'bg-gray-100 text-gray-800': client.type === 'INSTITUTION'
                               }">
-                            {{ contact.type }}
+                            {{ client.type }}
                         </span>
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full"
-                              [ngClass]="{
-                                'bg-red-100 text-red-800': contact.amlRisk === 'ELEVEE',
-                                'bg-yellow-100 text-yellow-800': contact.amlRisk === 'MOYEN',
-                                'bg-green-100 text-green-800': contact.amlRisk === 'FAIBLE',
-                                'bg-gray-100 text-gray-800': contact.amlRisk === 'NUL'
+                        <span class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full" [ngClass]="{
+                                'bg-red-100 text-red-800': client.amlRisk === 'ELEVEE',
+                                'bg-yellow-100 text-yellow-800': client.amlRisk === 'MOYEN',
+                                'bg-green-100 text-green-800': client.amlRisk === 'FAIBLE',
+                                'bg-gray-100 text-gray-800': client.amlRisk === 'NUL'
                               }">
-                            {{ contact.amlRisk }}
+                            {{ client.amlRisk }}
                         </span>
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                              [ngClass]="{
-                                'bg-green-100 text-green-800': contact.complianceStatus === 'OK',
-                                'bg-yellow-100 text-yellow-800': contact.complianceStatus === 'PENDING',
-                                'bg-red-100 text-red-800': contact.complianceStatus === 'ALERT'
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" [ngClass]="{
+                                'bg-green-100 text-green-800': client.complianceStatus === 'OK',
+                                'bg-yellow-100 text-yellow-800': client.complianceStatus === 'PENDING',
+                                'bg-red-100 text-red-800': client.complianceStatus === 'ALERT'
                               }">
-                            {{ contact.complianceStatus }}
+                            {{ client.complianceStatus }}
                         </span>
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ contact.country }}
+                        {{ client.country }}
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ contact.lastUpdated | date: 'dd/MM/yyyy' }}
+                        {{ client.updatedAt | date: 'dd/MM/yyyy' }}
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a (click)="navigateToClientDetails(contact)" class="text-cyan-600 hover:text-cyan-900 mr-4">Voir</a>
-                        <button (click)="navigateToReviewsAml()"
-                            class="text-red-600 hover:text-red-900">AML</button>
+                        <a (click)="navigateToClientDetails(client)"
+                            class="text-cyan-600 hover:text-cyan-900 mr-4">Voir</a>
+                        <button (click)="viewAmlDetails(client)" class="text-red-600 hover:text-red-900">AML</button>
                     </td>
                 </tr>
                 }
@@ -151,7 +141,8 @@
                 <tr>
                     <td colspan="7" class="px-6 py-4 text-center text-gray-500">
                         Aucun contact trouvé.
-                        <a routerLink="/contacts/new" class="text-cyan-600 hover:underline ml-2">Créer un nouveau contact</a>.
+                        <a routerLink="/contacts/new" class="text-cyan-600 hover:underline ml-2">Créer un nouveau
+                            contact</a>.
                     </td>
                 </tr>
                 }
@@ -162,7 +153,9 @@
     <div class="mt-8 p-4 bg-yellow-50 rounded-xl border border-yellow-300">
         <h4 class="text-lg font-bold text-yellow-800 mb-2">Alerte de Conformité Rapide</h4>
         <p class="text-sm text-yellow-700">
-            <span class="font-bold">Attention :</span> **100** contacts nécessitent une revue immédiate (Statut KYC : ALERTE). Le risque AML *Élevée*
+            <span class="font-bold">Attention :</span> **{{ alertCount }}** contacts nécessitent une revue immédiate
+            (Statut KYC :
+            ALERTE). Le risque AML *Élevée*
             doit être justifié dans le dossier client.
         </p>
     </div>

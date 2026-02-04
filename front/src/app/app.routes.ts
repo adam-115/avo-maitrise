@@ -8,10 +8,15 @@ import { Utilisateur } from './administration/utilisateurs/utilisateur/utilisate
 import { AmlFormConfigComponent } from './aml-compliance/aml-form-config-component/aml-form-config-component';
 import { AmlFormListComponent } from './aml-compliance/aml-form-list-component/aml-form-list-component';
 import { AmlFormViewComponent } from './aml-compliance/aml-form-view-component/aml-form-view-component';
+import { ClientAmlContextComponent } from './aml-compliance/client-aml-context/client-aml-context.component';
+
+// ... existing imports ...
+
 import { Bord } from './Bord/bord/bord';
 import { Calendrier } from './calendrier/calendrier/calendrier';
 import { ClientDetails } from './crm/client-details/client-details';
-import { ClientForm } from './crm/client-form/client-form';
+import { ClientFormComponent } from './crm/client-form/client-form.component';
+
 import { ClientReviewAmlReport } from './crm/client-review-aml-report/client-review-aml-report';
 import { ClientReviewsAml } from './crm/crm/client-reviews-aml/client-reviews-aml';
 import { Crm } from './crm/crm/crm';
@@ -59,9 +64,10 @@ export const routes: Routes = [
         component: Crm,
       },
       {
-        path: NavigationService.CLIENT_FORM,
-        component: ClientForm
+        path: NavigationService.NEW_CLIENT,
+        component: ClientFormComponent,
       },
+
       {
         path: NavigationService.CLIENT_DETAILS,
         component: ClientDetails
@@ -154,6 +160,10 @@ export const routes: Routes = [
       {
         path: NavigationService.FORM_CONFIG_VIEW,
         component: AmlFormViewComponent
+      },
+      {
+        path: 'client-aml-context/:id',
+        component: ClientAmlContextComponent
       },
     ]
   },

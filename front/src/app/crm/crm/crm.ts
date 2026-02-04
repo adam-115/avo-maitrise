@@ -1,10 +1,11 @@
 import { NavigationService } from './../../services/navigation-service';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
 import { Contact } from '../../appTypes';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-crm',
@@ -12,42 +13,66 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './crm.html',
   styleUrl: './crm.css'
 })
-export class Crm {
+export class Crm implements OnInit {
 
   private readonly navigationService = inject(NavigationService);
 
 
-  // Liste de contacts simulée pour l'exemple
-  contacts: Contact[] = [
-    { id: 101, type: 'PERSONNE', name: 'Dupont, Jean', role: 'Client', amlRisk: 'MOYEN', complianceStatus: 'PENDING', country: 'FRANCE', lastUpdated: '2024-05-10' },
-    { id: 102, type: 'SOCIETE', name: 'ALPHA Finance SA', role: 'Client', amlRisk: 'ELEVEE', complianceStatus: 'ALERT', country: 'LUXEMBOURG', lastUpdated: '2024-05-01' },
-    { id: 103, type: 'INSTITUTION', name: 'Tribunal de Paris', role: 'Juridiction', amlRisk: 'NUL', complianceStatus: 'OK', country: 'FRANCE', lastUpdated: '2023-11-15' },
-    { id: 104, type: 'PERSONNE', name: 'Smith, Alice', role: 'Avocat Tiers', amlRisk: 'FAIBLE', complianceStatus: 'OK', country: 'USA', lastUpdated: '2024-04-20' },
-    // ... plus de contacts
-  ];
+
+  // Liste de contacts récupérée depuis le service
+  clients: any[] = [];
+  filteredClients: any[] = [];
+
   searchTerm: string = '';
+  selectedType: string = '';
+  selectedRisk: string = '';
+
+  get alertCount(): number {
+    return this.clients.filter(c => c.complianceStatus === 'ALERT').length;
+  }
 
   constructor(private readonly router: Router) {
 
   }
 
-  filterContacts() {
+  ngOnInit(): void {
+    this.loadClients();
+  }
 
+  loadClients() {
+    // ClientService removed
+    this.clients = [];
+    this.filteredClients = [];
+  }
+
+  filterClients() {
+    this.filteredClients = this.clients.filter(client => {
+      const matchesSearch = !this.searchTerm ||
+        (client.name && client.name.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
+        (client.email && client.email.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
+        (client.country && client.country.toLowerCase().includes(this.searchTerm.toLowerCase()));
+
+      const matchesType = !this.selectedType || client.type === this.selectedType;
+
+      const matchesRisk = !this.selectedRisk || client.amlRisk === this.selectedRisk;
+
+      return matchesSearch && matchesType && matchesRisk;
+    });
   }
 
 
-  viewAmlDetails(contact: Contact) {
-    // Logique pour afficher les détails AML du contact
-    // console.log('Afficher les détails AML pour:', contact);
-    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS]);
+  viewAmlDetails(client: any) {
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS], { queryParams: { id: client.id } });
   }
 
-  navigateToClientForm() {
-    this.navigationService.navigateToClientForm();
-  }
 
-  navigateToClientDetails(contact: Contact) {
-    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS]);
+
+  navigateToClientDetails(client: any) {
+    // Assuming simple navigation for now, passing ID via state or query params might be better in real app
+    // For now keeping existing pattern but usually we'd pass ID
+    // this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS]);
+    // Better implementation:
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS], { queryParams: { id: client.id } });
   }
 
   navigateToReviewsAml() {

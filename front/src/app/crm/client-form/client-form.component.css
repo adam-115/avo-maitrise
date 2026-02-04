@@ -1,0 +1,4 @@
+/* Custom transitions if needed, most handled by Tailwind */
+:host {
+    display: block;
+}

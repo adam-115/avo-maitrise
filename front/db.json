@@ -1838,7 +1838,6 @@
       ]
     },
     {
-      "id": "43324",
       "formName": "aml_default_personne_banque",
       "formTitle": "KYC Standard - PERSONNE",
       "formDescription": "Formulaire de conformité standard pour le secteur BANQUE",
@@ -1952,7 +1951,8 @@
           ],
           "displayOrer": 2
         }
-      ]
+      ],
+      "id": "43324"
     },
     {
       "id": "67058",
@@ -4670,6 +4670,52 @@
           "value": "Oui"
         }
       ]
+    },
+    {
+      "id": "9f7e",
+      "amlFormConfigID": "43324",
+      "totalScore": 108,
+      "AmlPageConfigValues": [
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceew7uwiz938c",
+          "value": "Salaire / Revenus professionnels"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gcegzsi766hdb8",
+          "value": "Oui"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceq9f4ruahwjj",
+          "value": "< 10 000 €"
+        }
+      ],
+      "clientId": "1864"
+    },
+    {
+      "id": "5839",
+      "amlFormConfigID": "43324",
+      "totalScore": 111,
+      "AmlPageConfigValues": [
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceew7uwiz938c",
+          "value": "Épargne personnelle"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gcegzsi766hdb8",
+          "value": "Oui"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceq9f4ruahwjj",
+          "value": "10 000 € - 50 000 €"
+        }
+      ],
+      "clientId": "2353"
     }
   ],
   "type_client": [
@@ -4774,26 +4820,14 @@
     {
       "typeClient": "PERSONNE",
       "secteurActivite": "IMMOBILIER",
-      "amlFormConfigID": "0085",
-      "id": "4acb"
-    },
-    {
-      "id": "790f",
-      "typeClient": "PERSONNE",
-      "secteurActivite": "IMMOBILIER",
-      "amlFormConfigID": "5657"
+      "amlFormConfigID": "43324",
+      "id": "map-fix-manual-1"
     },
     {
       "id": "8739",
       "typeClient": "INSTITUTION",
       "secteurActivite": "Ministère / Administration Centrale",
       "amlFormConfigID": "7854"
-    },
-    {
-      "id": "68062",
-      "typeClient": "PERSONNE",
-      "secteurActivite": "BANQUE",
-      "amlFormConfigID": "43324"
     },
     {
       "id": "55186",
@@ -4926,56 +4960,28 @@
       "typeClient": "INSTITUTION",
       "secteurActivite": "Organisation Non Gouvernementale (ONG)",
       "amlFormConfigID": "98112"
+    },
+    {
+      "id": "162a",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "BANQUE",
+      "amlFormConfigID": "43324"
+    },
+    {
+      "id": "958a",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "IMMOBILIER",
+      "amlFormConfigID": "43324"
     }
   ],
   "clients": [
     {
-      "id": "25d2",
+      "id": "2353",
       "type": "PERSONNE",
       "name": "aaa aaa",
       "firstName": "aaa",
       "lastName": "aaa",
-      "identityNumber": "aaaa",
-      "birthDate": "2026-02-02",
-      "role": "Client",
-      "amlRisk": "FAIBLE",
-      "complianceStatus": "OK",
-      "email": "adam.laftimi@gmail.com",
-      "phone": "+352691209800",
-      "address": "GD charlotte, 79, Gd Charlotte\nGd Charlotte",
-      "country": "Luxembourg",
-      "contacts": [
-        {
-          "nom": "adam",
-          "fonction": "manager",
-          "email": "adam.laftimi@company.com",
-          "tel": "+352691209800"
-        }
-      ],
-      "totalFiles": 0,
-      "activeCases": 0,
-      "internalContactsCount": 0,
-      "clientContactsCount": 1,
-      "documentsToReview": 0,
-      "isPEP": false,
-      "fundsOrigin": "",
-      "complianceNotes": "",
-      "validationDate": "2026-02-02T22:12:33.861Z",
-      "archivingStatus": "PENDING",
-      "createdAt": "2026-02-02T22:12:33.861Z",
-      "updatedAt": "2026-02-02T22:12:33.861Z",
-      "isActive": true,
-      "notes": "",
-      "history": [],
-      "sector": "Promotion et Transaction Immobilière"
-    },
-    {
-      "id": "8793",
-      "type": "PERSONNE",
-      "name": "aaa aaa",
-      "firstName": "aaa",
-      "lastName": "aaa",
-      "identityNumber": "aa",
+      "identityNumber": "aaa",
       "birthDate": "2026-02-03",
       "role": "Client",
       "amlRisk": "FAIBLE",
@@ -4986,24 +4992,48 @@
       "country": "Luxembourg",
       "contacts": [
         {
-          "nom": "adam",
+          "nom": "adama",
           "fonction": "manager",
           "email": "adam.laftimi@company.com",
           "tel": "+352691209800"
+        },
+        {
+          "nom": "",
+          "fonction": "",
+          "email": "",
+          "tel": ""
+        },
+        {
+          "nom": "",
+          "fonction": "",
+          "email": "",
+          "tel": ""
+        },
+        {
+          "nom": "",
+          "fonction": "",
+          "email": "",
+          "tel": ""
+        },
+        {
+          "nom": "",
+          "fonction": "",
+          "email": "",
+          "tel": ""
         }
       ],
       "totalFiles": 0,
       "activeCases": 0,
       "internalContactsCount": 0,
-      "clientContactsCount": 1,
+      "clientContactsCount": 5,
       "documentsToReview": 0,
       "isPEP": false,
       "fundsOrigin": "",
       "complianceNotes": "",
-      "validationDate": "2026-02-03T09:06:56.142Z",
+      "validationDate": "2026-02-03T21:13:39.566Z",
       "archivingStatus": "PENDING",
-      "createdAt": "2026-02-03T09:06:56.142Z",
-      "updatedAt": "2026-02-03T09:06:56.142Z",
+      "createdAt": "2026-02-03T21:13:39.566Z",
+      "updatedAt": "2026-02-03T21:13:39.566Z",
       "isActive": true,
       "notes": "",
       "history": [],

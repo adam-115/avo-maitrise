@@ -24,7 +24,8 @@ export class SecteurActiviteComponent implements OnInit {
       code: ["", Validators.required],
       libelle: ["", Validators.required],
       ordre_affichage: [0, Validators.required],
-      actif: [true]
+      actif: [true],
+      riskNaturel: ['FAIBLE', Validators.required]
     });
     this.lodAllSeteurActivite();
   }
@@ -47,6 +48,7 @@ export class SecteurActiviteComponent implements OnInit {
       libelle: formValues.libelle,
       ordre_affichage: Number(formValues.ordre_affichage),
       actif: Boolean(formValues.actif),
+      riskNaturel: formValues.riskNaturel,
       // created_at est généralement géré par le backend
     };
   }
@@ -57,7 +59,8 @@ export class SecteurActiviteComponent implements OnInit {
       code: secteur.code,
       libelle: secteur.libelle,
       ordre_affichage: secteur.ordre_affichage,
-      actif: secteur.actif
+      actif: secteur.actif,
+      riskNaturel: secteur.riskNaturel || 'FAIBLE'
     });
   }
 
@@ -68,65 +71,75 @@ export class SecteurActiviteComponent implements OnInit {
 
   resetForm() {
     this.selectedSecteurActivite = null;
-    this.secteurForm.reset();
+    this.secteurForm.reset({
+      ordre_affichage: 0,
+      actif: true,
+      riskNaturel: 'FAIBLE'
+    });
   }
 
 
   // Ajoutez cette méthode dans votre classe SecteurActiviteComponent
 
-onFileSelected(event: any) {
-  const file: File = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (e: any) => {
-      const content = e.target.result;
-      this.parseCSV(content);
-    };
-    reader.readAsText(file);
-  }
-}
-
-private parseCSV(csvText: string) {
-  const lines = csvText.split('\n');
-  const result: SecteurActivite[] = [];
-
-  // On suppose que le CSV a une ligne d'entête : code,libelle,ordre,actif
-  // Exemple : IMMO,Immobilier,1,true
-  for (let i = 1; i < lines.length; i++) {
-    const currentLine = lines[i].split(',');
-    if (currentLine.length >= 2) {
-      const secteur: SecteurActivite = {
-        code: currentLine[0].trim(),
-        libelle: currentLine[1].trim(),
-        ordre_affichage: currentLine[2] ? Number(currentLine[2]) : 0,
-        actif: currentLine[3] ? currentLine[3].trim().toLowerCase() === 'true' : true
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        const content = e.target.result;
+        this.parseCSV(content);
       };
-      result.push(secteur);
+      reader.readAsText(file);
     }
   }
 
-  if (result.length > 0) {
-    this.importSecteurs(result);
-  }
-}
+  private parseCSV(csvText: string) {
+    const lines = csvText.split('\n');
+    const result: SecteurActivite[] = [];
 
-private importSecteurs(secteurs: SecteurActivite[]) {
-  // Ici, vous pouvez soit faire un appel API "bulk" (si votre backend le supporte)
-  // Soit boucler sur les créations. Exemple simple par boucle :
-  let completed = 0;
-  secteurs.forEach(s => {
-    this.secteurActiviteService.create(s).subscribe({
-      next: () => {
-        completed++;
-        if (completed === secteurs.length) {
-          this.lodAllSeteurActivite();
-          this.alertService.success(`${secteurs.length} secteurs importés avec succès`);
-        }
-      },
-      error: () => this.alertService.displayMessage('Error',`Erreur lors de l'import du code ${s.code}`,'error')
+    // On suppose que le CSV a une ligne d'entête : code,libelle,ordre,actif,risque
+    // Exemple : IMMO,Immobilier,1,true,FAIBLE
+    for (let i = 1; i < lines.length; i++) {
+      const currentLine = lines[i].split(',');
+      if (currentLine.length >= 2) {
+        const risqueVal = currentLine[4] ? currentLine[4].trim().toUpperCase() : 'FAIBLE';
+        // validate risk value
+        const validRisks = ['FAIBLE', 'MOYEN', 'ELEVE', 'CRITIQUE'];
+        const riskNaturel = validRisks.includes(risqueVal) ? risqueVal : 'FAIBLE';
+
+        const secteur: SecteurActivite = {
+          code: currentLine[0].trim(),
+          libelle: currentLine[1].trim(),
+          ordre_affichage: currentLine[2] ? Number(currentLine[2]) : 0,
+          actif: currentLine[3] ? currentLine[3].trim().toLowerCase() === 'true' : true,
+          riskNaturel: riskNaturel as any
+        };
+        result.push(secteur);
+      }
+    }
+
+    if (result.length > 0) {
+      this.importSecteurs(result);
+    }
+  }
+
+  private importSecteurs(secteurs: SecteurActivite[]) {
+    // Ici, vous pouvez soit faire un appel API "bulk" (si votre backend le supporte)
+    // Soit boucler sur les créations. Exemple simple par boucle :
+    let completed = 0;
+    secteurs.forEach(s => {
+      this.secteurActiviteService.create(s).subscribe({
+        next: () => {
+          completed++;
+          if (completed === secteurs.length) {
+            this.lodAllSeteurActivite();
+            this.alertService.success(`${secteurs.length} secteurs importés avec succès`);
+          }
+        },
+        error: () => this.alertService.displayMessage('Error', `Erreur lors de l'import du code ${s.code}`, 'error')
+      });
     });
-  });
-}
+  }
 
   submit() {
     if (this.secteurForm.valid) {

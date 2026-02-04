@@ -1,27 +1,31 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AmlFormConfigService } from '../../services/AmlFormConfigService';
 import { AlertService } from '../../services/alert-service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, ClientDetail, ClientInstitution, ClientPhysique, ClientSociete, FieldScore } from '../../appTypes';
+import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, FieldScore } from '../../appTypes';
 import { AmlFormResultService } from '../../services/aml-form-result-result-service';
 import { CommonModule } from '@angular/common';
-import { ClientService } from '../../services/client-service';
+
 import { MappingFormService } from '../../services/mapping-form-service';
 
 @Component({
   selector: 'app-aml-form-view-component',
+  standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './aml-form-view-component.html',
   styleUrl: './aml-form-view-component.css',
 })
-export class AmlFormViewComponent implements OnInit {
+export class AmlFormViewComponent implements OnInit, OnChanges {
+
+  @Input() formConfigId: string | number | null = null;
+  @Input() clientIdInput: string | null = null;
 
   activatedRoute = inject(ActivatedRoute);
   amlFormConfigService = inject(AmlFormConfigService);
   amlPageConfigResultService = inject(AmlFormResultService);
   alertService = inject(AlertService);
-  clientService = inject(ClientService);
+
   mappingFormService = inject(MappingFormService);
   fb = inject(FormBuilder);
   selectedFormConfig: AmlFormConfig | null = null;
@@ -39,7 +43,24 @@ export class AmlFormViewComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadPageConfig();
+    this.initComponent();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['formConfigId'] || changes['clientIdInput']) {
+      this.initComponent();
+    }
+  }
+
+  private initComponent(): void {
+    if (this.formConfigId) {
+      if (this.clientIdInput) {
+        this.clientId = this.clientIdInput;
+      }
+      this.loadFormConfig(this.formConfigId);
+    } else {
+      this.loadPageConfig();
+    }
   }
 
   private loadPageConfig(): void {
@@ -51,7 +72,10 @@ export class AmlFormViewComponent implements OnInit {
       if (configId) {
         this.loadFormConfig(configId);
       } else {
-        this.alertService.displayMessage('Erreur', 'Aucun ID de configuration fourni.', 'error');
+        // Only show error if we are NOT waiting for input
+        if (!this.formConfigId) {
+          this.alertService.displayMessage('Erreur', 'Aucun ID de configuration fourni.', 'error');
+        }
       }
     });
   }

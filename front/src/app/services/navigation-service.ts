@@ -17,7 +17,8 @@ export class NavigationService {
   static readonly DOSSIER_FORM = 'dossier-form';
   static readonly DOSSIER_DETAIL = 'dossier-detail';
   static readonly CRM = 'crm';
-  static readonly CLIENT_FORM = 'client-form';
+  static readonly NEW_CLIENT = 'crm/client/new';
+
   static readonly CLIENT_DETAILS = 'client-details';
   static readonly CLIENT_REVIEWS_AML = 'client-reviews-aml';
   static readonly REVIEW_AML = 'review-aml';
@@ -41,6 +42,7 @@ export class NavigationService {
   public static readonly FORM_CONFIG_EDIT = "form-config/edit/:id";
   public static readonly FORM_CONFIG_VIEW = "form-config/view/:id";
   public static readonly FORM_RESULT_VIEW = "form-result/view/:id";
+  public static readonly CLIENT_AML_CONTEXT = "client-aml-context/:id";
   public static readonly TYPE_CLIENT = "type_client";
   public static readonly ADMIN_PREFERENCE = "admin_preference";
   public static readonly ADMIN_SECTEUR_ATIVITE = "admin_secteur_activite";
@@ -69,7 +71,7 @@ export class NavigationService {
   }
 
   public navigateToViewFormConfig_2(clientId: string): void {
-    let targetUrl = NavigationService.FORM_CONFIG_VIEW.replace(":id", clientId);
+    let targetUrl = NavigationService.CLIENT_AML_CONTEXT.replace(":id", clientId);
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
 
@@ -84,9 +86,7 @@ export class NavigationService {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.CRM);
   }
 
-  navigateToClientForm() {
-    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_FORM]);
-  }
+
 
   navigateToAdminPrefences() {
     this.router.navigate([NavigationService.HOME, NavigationService.ADMIN_PREFERENCE]);
@@ -98,6 +98,10 @@ export class NavigationService {
 
   navigateToAdminSecteurActivite() {
     this.router.navigate([NavigationService.HOME, NavigationService.ADMIN_SECTEUR_ATIVITE]);
+  }
+
+  navigateToNewClient() {
+    this.router.navigate(['/home/', ...NavigationService.NEW_CLIENT.split('/')]);
   }
 
 
