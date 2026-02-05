@@ -4976,68 +4976,26 @@
   ],
   "clients": [
     {
-      "id": "2353",
+      "id": "01a0",
       "type": "PERSONNE",
-      "name": "aaa aaa",
-      "firstName": "aaa",
-      "lastName": "aaa",
-      "identityNumber": "aaa",
-      "birthDate": "2026-02-03",
-      "role": "Client",
-      "amlRisk": "FAIBLE",
-      "complianceStatus": "OK",
+      "nom": "laftimi",
+      "prenom": "adam",
       "email": "adam.laftimi@gmail.com",
-      "phone": "+352691209800",
-      "address": "GD charlotte, 79, Gd Charlotte\nGd Charlotte",
-      "country": "Luxembourg",
+      "telephone": "691209800",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "BANQUE",
+      "riskScore": 0,
+      "ubos": [],
       "contacts": [
         {
-          "nom": "adama",
-          "fonction": "manager",
-          "email": "adam.laftimi@company.com",
-          "tel": "+352691209800"
-        },
-        {
-          "nom": "",
-          "fonction": "",
-          "email": "",
-          "tel": ""
-        },
-        {
-          "nom": "",
-          "fonction": "",
-          "email": "",
-          "tel": ""
-        },
-        {
-          "nom": "",
-          "fonction": "",
-          "email": "",
-          "tel": ""
-        },
-        {
-          "nom": "",
-          "fonction": "",
-          "email": "",
-          "tel": ""
+          "id": null,
+          "nom": "laftimi",
+          "prenom": "adam",
+          "email": "adam.laftimi@gmail.com",
+          "telephone": "691209800",
+          "occupation": "engeener"
         }
-      ],
-      "totalFiles": 0,
-      "activeCases": 0,
-      "internalContactsCount": 0,
-      "clientContactsCount": 5,
-      "documentsToReview": 0,
-      "isPEP": false,
-      "fundsOrigin": "",
-      "complianceNotes": "",
-      "validationDate": "2026-02-03T21:13:39.566Z",
-      "archivingStatus": "PENDING",
-      "createdAt": "2026-02-03T21:13:39.566Z",
-      "updatedAt": "2026-02-03T21:13:39.566Z",
-      "isActive": true,
-      "notes": "",
-      "history": [],
-      "sector": "Promotion et Transaction Immobilière"
+      ]
     }
   ],
   "AmlPageConfigResult": []

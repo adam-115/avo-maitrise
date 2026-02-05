@@ -8,7 +8,7 @@ import { AbstractCrudService } from './genericService/abstract-crud.service';
     providedIn: 'root'
 })
 export class ClientService extends AbstractCrudService<Client> {
-    protected override apiUrl = environment.apiUrl + 'Client';
+    protected override apiUrl = environment.apiUrl + 'clients';
 
     constructor(http: HttpClient) {
         super(http);

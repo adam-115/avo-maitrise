@@ -163,6 +163,15 @@ export interface UBO {
   isPPE: boolean; // Personne Politiquement Exposée
 }
 
+export interface ContactPoint {
+  id?: number;
+  nom: string;
+  prenom: string;
+  email: string;
+  telephone: string;
+  occupation: string;
+}
+
 export interface Client {
   id: string | number;
   type: ClientTypeEnum;
@@ -170,6 +179,7 @@ export interface Client {
   paysResidance: string;
   riskScore: number;
   ubos?: UBO[]; // Optional, mostly for legal entities
+  contacts?: ContactPoint[];
 }
 
 export interface TypeOrganisme {

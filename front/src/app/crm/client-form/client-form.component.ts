@@ -44,7 +44,8 @@ export class ClientFormComponent implements OnInit {
             paysResidance: ['', Validators.required],
             secteurActivite: ['', Validators.required],
             riskScore: [0], // Auto-calculated or manual override
-            ubos: this.fb.array([])
+            ubos: this.fb.array([]),
+            contacts: this.fb.array([])
         });
     }
 
@@ -61,6 +62,10 @@ export class ClientFormComponent implements OnInit {
         return this.clientForm.get('ubos') as FormArray;
     }
 
+    get contacts(): FormArray {
+        return this.clientForm.get('contacts') as FormArray;
+    }
+
     addUbo(): void {
         const uboGroup = this.fb.group({
             nom: ['', Validators.required],
@@ -72,6 +77,22 @@ export class ClientFormComponent implements OnInit {
 
     removeUbo(index: number): void {
         this.ubos.removeAt(index);
+    }
+
+    addContact(): void {
+        const contactGroup = this.fb.group({
+            id: [null],
+            nom: ['', Validators.required],
+            prenom: ['', Validators.required],
+            email: ['', [Validators.required, Validators.email]],
+            telephone: ['', Validators.required],
+            occupation: ['', Validators.required]
+        });
+        this.contacts.push(contactGroup);
+    }
+
+    removeContact(index: number): void {
+        this.contacts.removeAt(index);
     }
 
     // Document Management
