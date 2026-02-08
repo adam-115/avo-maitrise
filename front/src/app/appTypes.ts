@@ -70,7 +70,7 @@ export interface AmlFormConfig {
   formDescription: string,
   order: number,
   inputConfigs: AmlInputConfig[],
-  typeClient?: string;
+  typeClient?: ClientTypeEnum;
   secteurActivite?: string;
   typeOrganisme?: string;
 }
@@ -90,6 +90,8 @@ export interface AmlInputConfig {
   defaultValue?: any;
   displayOrer?: number;
   optionsLayout?: 'block' | 'inline';
+  creationDate?: Date;
+  lastUpdateDate?: Date;
 }
 
 // used for the check box
@@ -159,6 +161,7 @@ export interface SecteurActivite {
 
 export interface UBO {
   nom: string;
+  prenom?: string;
   partDetention: number; // Percentage
   isPPE: boolean; // Personne Politiquement Exposée
 }
@@ -175,11 +178,17 @@ export interface ContactPoint {
 export interface Client {
   id: string | number;
   type: ClientTypeEnum;
+  nom?: string;
+  prenom?: string;
+  email?: string;
+  telephone?: string;
   secteurActivite: string; // Could be ID or Code
   paysResidance: string;
   riskScore: number;
   ubos?: UBO[]; // Optional, mostly for legal entities
   contacts?: ContactPoint[];
+  clientStatus?: ClientStatus;
+  documents?: Document[];
 }
 
 export interface TypeOrganisme {
@@ -193,12 +202,15 @@ export interface TypeOrganisme {
 
 
 export interface Document {
-  id?: number,
-  title: string,
-  name: string,
-  description?: string,
-  tags?: string,
-  file: File,
+  id?: number;
+  title?: string;
+  name?: string;
+  description?: string;
+  tags?: string;
+  file?: File;
+  label?: string;
+  filename?: string;
+  date?: Date;
 }
 
 
@@ -208,6 +220,23 @@ export interface MappingForm {
   typeClient: ClientTypeEnum | 'PERSONNE' | 'SOCIETE' | 'INSTITUTION' | 'ASSOCIATION'; // Keeping string literal union for backward compatibility if needed, or switch to Enum
   secteurActivite: string;
   amlFormConfigID: number;
+}
+
+export enum ClientStatus {
+  // Phase de Création
+  AML_REQUIRED = 'AML_REQUIRED', // Client créé, mais questionnaire AML non rempli.
+
+  // Phase de Traitement AML
+  VERIFICATION_REQUIRED = 'VERIFICATION_REQUIRED', // Formulaire rempli, score calculé, en attente de revue.
+  AML_VALIDATED = 'AML_VALIDATED',               // Conformité validée (standard).
+
+  // Phase d'Indulgence (Dérogation)
+  INDULGENCE_REQUIRED = 'INDULGENCE_REQUIRED',   // Le client nécessite une validation spéciale (ex: risque élevé).
+  INDULGENCE_VALIDATED = 'INDULGENCE_VALIDATED', // L'associé a accepté de prendre le client malgré le risque.
+
+  // Phase Finale
+  VALIDATED = 'VALIDATED',                       // Dossier complet et accepté. Le client est opérationnel.
+  BLOCKED = 'BLOCKED'                            // Client rejeté ou gelé pour non-conformité majeure.
 }
 
 

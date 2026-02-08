@@ -1,8 +1,9 @@
-import { NavigationService } from './../../services/navigation-service';
 import { Component, inject, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { NavigationService } from './../../services/navigation-service';
+import { Client, ClientStatus } from '../../appTypes';
+import { ClientService } from '../../services/client-service';
 
-import { Contact } from '../../appTypes';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -16,19 +17,19 @@ import { FormsModule } from '@angular/forms';
 export class Crm implements OnInit {
 
   private readonly navigationService = inject(NavigationService);
-
+  private readonly clientService = inject(ClientService);
 
 
   // Liste de contacts récupérée depuis le service
-  clients: any[] = [];
-  filteredClients: any[] = [];
+  clients: Client[] = [];
+  filteredClients: Client[] = [];
 
   searchTerm: string = '';
   selectedType: string = '';
   selectedRisk: string = '';
 
   get alertCount(): number {
-    return this.clients.filter(c => c.complianceStatus === 'ALERT').length;
+    return this.clients.filter(c => c.clientStatus === ClientStatus.AML_REQUIRED).length;
   }
 
   constructor(private readonly router: Router) {
@@ -40,23 +41,30 @@ export class Crm implements OnInit {
   }
 
   loadClients() {
-    // ClientService removed
-    this.clients = [];
-    this.filteredClients = [];
+    this.clientService.getAll().subscribe({
+      next: (data) => {
+        this.clients = data;
+        this.filteredClients = data;
+        this.filterClients();
+      },
+      error: (err) => {
+        console.error('Error loading clients', err);
+      }
+    });
   }
 
   filterClients() {
     this.filteredClients = this.clients.filter(client => {
       const matchesSearch = !this.searchTerm ||
-        (client.name && client.name.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
-        (client.email && client.email.toLowerCase().includes(this.searchTerm.toLowerCase())) ||
-        (client.country && client.country.toLowerCase().includes(this.searchTerm.toLowerCase()));
+        (client.contacts && client.contacts.some(c => (c.nom + ' ' + c.prenom).toLowerCase().includes(this.searchTerm.toLowerCase()))) ||
+        (client.paysResidance && client.paysResidance.toLowerCase().includes(this.searchTerm.toLowerCase()));
 
       const matchesType = !this.selectedType || client.type === this.selectedType;
 
-      const matchesRisk = !this.selectedRisk || client.amlRisk === this.selectedRisk;
+      // TODO: Implement risk filter once mapping is clear. Currently riskScore is a number.
+      // const matchesRisk = !this.selectedRisk || client.riskScore === this.selectedRisk;
 
-      return matchesSearch && matchesType && matchesRisk;
+      return matchesSearch && matchesType;
     });
   }
 
@@ -77,5 +85,9 @@ export class Crm implements OnInit {
 
   navigateToReviewsAml() {
     this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_REVIEWS_AML]);
+  }
+
+  navigateToNewClient() {
+    this.navigationService.navigateToNewClient();
   }
 }

@@ -1,13 +1,14 @@
-import { Component, inject, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, FieldScore } from '../../appTypes';
 import { AmlFormConfigService } from '../../services/AmlFormConfigService';
 import { AlertService } from '../../services/alert-service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, FieldScore } from '../../appTypes';
 import { AmlFormResultService } from '../../services/aml-form-result-result-service';
-import { CommonModule } from '@angular/common';
 
 import { MappingFormService } from '../../services/mapping-form-service';
+import { NavigationService } from '../../services/navigation-service';
 
 @Component({
   selector: 'app-aml-form-view-component',
@@ -25,6 +26,7 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
   amlFormConfigService = inject(AmlFormConfigService);
   amlPageConfigResultService = inject(AmlFormResultService);
   alertService = inject(AlertService);
+  navigationServcie = inject(NavigationService);
 
   mappingFormService = inject(MappingFormService);
   fb = inject(FormBuilder);
@@ -211,6 +213,7 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
     this.amlPageConfigResultService.create(amlPageConfigResult).subscribe({
       next: (response) => {
         this.alertService.displayMessage("Succès", "Le formulaire a été soumis avec succès !", 'success');
+        this.navigationServcie.navigateTOClients();
       },
       error: (err) => {
         error = true;
@@ -224,7 +227,7 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
   }
 
   goBack(): void {
-    window.history.back();
+    this.navigationServcie.navigateTOClients();
   }
 
   isFormValid(): boolean {

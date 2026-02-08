@@ -28,11 +28,16 @@ export class ClientDocumentsComponent {
     }
 
     downloadDoc(doc: Document) {
-        const url = window.URL.createObjectURL(doc.file);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = doc.name;
-        a.click();
+        if (doc.file) {
+            const url = window.URL.createObjectURL(doc.file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = doc.name || doc.filename || 'document';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        } else {
+            console.error('Document content not found');
+        }
     }
 
     onAddDocument(document: Document) {

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ClientTypeEnum, Document, SecteurActivite } from '../../appTypes';
+import { ClientStatus, ClientTypeEnum, Document, SecteurActivite } from '../../appTypes';
 import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { AlertService } from '../../services/alert-service';
 import { ClientService } from '../../services/client-service';
@@ -150,7 +150,8 @@ export class ClientFormComponent implements OnInit {
         if (this.clientForm.valid) {
             // Logic to calculate initial risk score based on sector could go here
             const formValue = this.clientForm.getRawValue();
-
+            formValue.clientStatus = ClientStatus.AML_REQUIRED;
+            formValue.documents = this.documents;
             this.clientService.create(formValue).subscribe({
                 next: () => {
                     this.alertService.success('Client créé avec succès');

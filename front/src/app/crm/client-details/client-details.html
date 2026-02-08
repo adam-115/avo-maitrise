@@ -1,13 +1,14 @@
-<div class="p-6 sm:p-10 bg-gray-50 min-h-screen" *ngIf="client">
+@if (client) {
+<div class="p-6 sm:p-10 bg-gray-50 min-h-screen">
 
     <div class="mb-8 border-b border-gray-200 pb-4 flex justify-between items-end">
         <div>
             <nav class="text-sm font-medium text-gray-500 mb-2">
                 <a routerLink="/contacts" class="hover:text-cyan-600">Gestion des Contacts</a> /
-                <span class="text-slate-800 font-semibold">{{ client.name }}</span>
+                <span class="text-slate-800 font-semibold">{{ client.nom }} {{ client.prenom }}</span>
             </nav>
             <h1 class="text-3xl font-bold text-slate-800 flex items-center">
-                {{ client.name }} <span *ngIf="client.type === 'PERSONNE'">, {{ client.firstName }}</span>
+                {{ client.nom }} {{ client.prenom }}
                 <span class="ml-4 px-3 py-1 text-sm font-semibold rounded-full" [ngClass]="{
                       'bg-purple-100 text-purple-800': client.type === 'SOCIETE',
                       'bg-blue-100 text-blue-800': client.type === 'PERSONNE',
@@ -17,7 +18,7 @@
                 </span>
             </h1>
             <p class="text-gray-600 mt-1">
-                Rôle Principal : <span class="font-semibold text-slate-800">{{ client.role }}</span>
+                Secteur : <span class="font-semibold text-slate-800">{{ client.secteurActivite }}</span>
             </p>
         </div>
 
@@ -33,49 +34,80 @@
         </div>
     </div>
 
-    <div class="p-4 rounded-xl border-l-4 mb-8" [ngClass]="{
-           'bg-red-50 border-red-600': client.amlRisk === 'ELEVEE',
-           'bg-yellow-50 border-yellow-600': client.amlRisk === 'MOYEN',
-           'bg-green-50 border-green-600': client.amlRisk === 'FAIBLE' || client.amlRisk === 'NUL'
+    <!-- Status and Risk Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- AML Risk Score -->
+        <div class="p-4 rounded-xl border-l-4 bg-white shadow-sm" [ngClass]="{
+           'border-red-600': client.riskScore >= 75,
+           'border-yellow-600': client.riskScore >= 25 && client.riskScore < 75,
+           'border-green-600': client.riskScore < 25
          }">
-        <div class="flex items-center space-x-3">
-            <svg *ngIf="client.amlRisk === 'ELEVEE'" class="w-6 h-6 text-red-600" fill="currentColor"
-                viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                    clip-rule="evenodd"></path>
-            </svg>
-            <svg *ngIf="client.amlRisk === 'MOYEN'" class="w-6 h-6 text-yellow-600" fill="currentColor"
-                viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                    d="M8.257 3.345A4.004 4.004 0 0111.743 3.345c1.458 1.458 1.458 3.824 0 5.282l-3.232 3.232a4.004 4.004 0 01-5.282-5.282c1.458-1.458 3.824-1.458 5.282 0l3.232 3.232a2.002 2.002 0 002.83 0l-1.414-1.414a.5.5 0 00-.707 0L9.423 7.618a.5.5 0 010 .707L8.71 9.043a2.002 2.002 0 00-2.83 0l-3.232-3.232a2.002 2.002 0 012.83-2.83l3.232 3.232a.5.5 0 00.707 0l1.414-1.414a4.004 4.004 0 010-5.657z"
-                    clip-rule="evenodd"></path>
-            </svg>
-            <svg *ngIf="client.amlRisk === 'FAIBLE' || client.amlRisk === 'NUL'" class="w-6 h-6 text-green-600"
-                fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clip-rule="evenodd"></path>
-            </svg>
-
-            <h3 class="text-xl font-bold">Risque AML Global :
-                <span [ngClass]="{
-                    'text-red-700': client.amlRisk === 'ELEVEE',
-                    'text-yellow-700': client.amlRisk === 'MOYEN',
-                    'text-green-700': client.amlRisk === 'FAIBLE' || client.amlRisk === 'NUL'
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase">Score de Risque</h3>
+                    <div class="mt-1 flex items-baseline">
+                        <span class="text-2xl font-bold text-slate-900">{{ client.riskScore }}</span>
+                        <span class="ml-1 text-sm text-gray-500">/ 100</span>
+                    </div>
+                </div>
+                <div class="p-2 rounded-full" [ngClass]="{
+                    'bg-red-100 text-red-600': client.riskScore >= 75,
+                    'bg-yellow-100 text-yellow-600': client.riskScore >= 25 && client.riskScore < 75,
+                    'bg-green-100 text-green-600': client.riskScore < 25
                 }">
-                    {{ client.amlRisk }}
-                </span>
-            </h3>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+            </div>
+            <p class="mt-2 text-sm text-gray-600">
+                Calculé sur la base des formulaires AML.
+            </p>
         </div>
-        <p class="mt-2 text-sm" [ngClass]="{
-             'text-red-700': client.amlRisk === 'ELEVEE',
-             'text-yellow-700': client.amlRisk === 'MOYEN',
-             'text-green-700': client.amlRisk === 'FAIBLE' || client.amlRisk === 'NUL'
-           }">
-            Statut de Conformité KYC : **{{ client.complianceStatus }}** (Dernière validation : {{ client.validationDate
-            | date: 'dd/MM/yyyy' }})
-        </p>
+
+        <!-- Client Status -->
+        <div class="p-4 rounded-xl border-l-4 bg-white shadow-sm border-blue-500">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase">Statut Client</h3>
+                    <div class="mt-1">
+                        <span class="px-2 py-1 text-sm font-bold rounded-full" [ngClass]="{
+                            'bg-green-100 text-green-800': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
+                            'bg-yellow-100 text-yellow-800': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_REQUIRED',
+                            'bg-red-100 text-red-800': client.clientStatus === 'BLOCKED'
+                          }">
+                            {{ client.clientStatus }}
+                        </span>
+                    </div>
+                </div>
+                <div class="p-2 rounded-full bg-blue-100 text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+            <p class="mt-2 text-sm text-gray-600">
+                État actuel du dossier de conformité.
+            </p>
+        </div>
+
+        <!-- Location -->
+        <div class="p-4 rounded-xl border-l-4 bg-white shadow-sm border-gray-400">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 uppercase">Résidence / Siège</h3>
+                    <p class="mt-1 text-xl font-bold text-slate-900">{{ client.paysResidance }}</p>
+                </div>
+                <div class="p-2 rounded-full bg-gray-100 text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -85,30 +117,34 @@
                 <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-cyan-700">1. Coordonnées &
                     Identification</h2>
 
-                <div *ngIf="client.type === 'PERSONNE'" class="space-y-3 text-sm">
-                    <p><strong>Nom Complet :</strong> {{ client.name }} {{ client.firstName }}</p>
-                    <p><strong>Pays :</strong> {{ client.country }}</p>
-                    <p *ngIf="client.sector"><strong>Secteur :</strong> {{ client.sector }}</p>
-                </div>
+                <div class="space-y-3 text-sm">
+                    @if (client.type === 'PERSONNE') {
+                    <p><strong>Nom :</strong> {{ client.nom }}</p>
+                    <p><strong>Prénom :</strong> {{ client.prenom }}</p>
+                    }
+                    @if (client.type === 'SOCIETE') {
+                    <p><strong>Raison Sociale :</strong> {{ client.nom }}</p>
+                    }
+                    <p><strong>Pays :</strong> {{ client.paysResidance }}</p>
+                    <p><strong>Secteur :</strong> {{ client.secteurActivite }}</p>
 
-                <div *ngIf="client.type === 'SOCIETE'" class="space-y-3 text-sm">
-                    <p><strong>Dénomination :</strong> {{ client.name }}</p>
-                    <p><strong>Forme Juridique :</strong> {{ client.legalForm }}</p>
-                    <p><strong>N° SIREN/Identifiant :</strong> {{ client.siren }}</p>
-                    <p><strong>Pays d'Enregistrement :</strong> {{ client.country }}</p>
-                </div>
-
-                <div *ngIf="client.type === 'INSTITUTION'" class="space-y-3 text-sm">
-                    <p><strong>Nom de l'Institution :</strong> {{ client.name }}</p>
-                    <p><strong>Catégorie :</strong> {{ client.role }}</p>
-                    <p><strong>Localisation :</strong> {{ client.country }}</p>
-                </div>
-
-                <div class="mt-4 border-t pt-4 space-y-3 text-sm">
-                    <p><strong>Email :</strong> <a href="mailto:{{ client.email }}"
-                            class="text-blue-600 hover:underline">{{ client.email }}</a></p>
-                    <p><strong>Téléphone :</strong> {{ client.phone }}</p>
-                    <p><strong>Adresse :</strong> {{ client.address }}</p>
+                    <div class="mt-4 border-t pt-4 space-y-3">
+                        <p><strong>Email :</strong>
+                            @if (client.email) {
+                            <a href="mailto:{{ client.email }}" class="text-blue-600 hover:underline">{{ client.email
+                                }}</a>
+                            } @else {
+                            <span class="text-gray-400 italic">Non renseigné</span>
+                            }
+                        </p>
+                        <p><strong>Téléphone :</strong>
+                            @if (client.telephone) {
+                            <a href="tel:{{ client.telephone }}" class="text-slate-600">{{ client.telephone }}</a>
+                            } @else {
+                            <span class="text-gray-400 italic">Non renseigné</span>
+                            }
+                        </p>
+                    </div>
                 </div>
             </div>
 
@@ -116,114 +152,76 @@
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-blue-700">Points de Contact</h2>
 
-                <div *ngIf="client.contacts && client.contacts.length > 0; else noContacts">
-                    <ul class="space-y-4">
-                        <li *ngFor="let contact of client.contacts"
-                            class="flex items-start space-x-3 p-3 bg-slate-50 rounded-lg">
-                            <div class="flex-shrink-0">
-                                <span
-                                    class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-700 font-bold">
-                                    {{ contact.nom?.charAt(0) || 'C' }}
-                                </span>
+                @if (client.contacts && client.contacts.length > 0) {
+                <ul class="space-y-4">
+                    @for (contact of client.contacts; track contact.email) {
+                    <li class="flex items-start space-x-3 p-3 bg-slate-50 rounded-lg">
+                        <div class="flex-shrink-0">
+                            <span
+                                class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-700 font-bold">
+                                {{ contact.nom.charAt(0) || 'C' }}
+                            </span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-slate-900 truncate">{{ contact.nom }} {{ contact.prenom
+                                }}</p>
+                            <p class="text-xs text-slate-500 truncate">{{ contact.occupation }}</p>
+                            <div class="mt-1 flex flex-col space-y-1">
+                                @if (contact.email) {
+                                <a href="mailto:{{ contact.email }}"
+                                    class="text-xs text-blue-600 hover:underline truncate">{{ contact.email }}</a>
+                                }
+                                @if (contact.telephone) {
+                                <a href="tel:{{ contact.telephone }}" class="text-xs text-slate-600 truncate">{{
+                                    contact.telephone }}</a>
+                                }
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-slate-900 truncate">{{ contact.nom }}</p>
-                                <p class="text-xs text-slate-500 truncate">{{ contact.fonction }}</p>
-                                <div class="mt-1 flex flex-col space-y-1">
-                                    <a *ngIf="contact.email" href="mailto:{{ contact.email }}"
-                                        class="text-xs text-blue-600 hover:underline truncate">{{ contact.email }}</a>
-                                    <a *ngIf="contact.tel" href="tel:{{ contact.tel }}"
-                                        class="text-xs text-slate-600 truncate">{{ contact.tel }}</a>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <ng-template #noContacts>
-                    <p class="text-sm text-gray-500 italic text-center py-4">Aucun contact associé.</p>
-                </ng-template>
+                        </div>
+                    </li>
+                    }
+                </ul>
+                } @else {
+                <p class="text-sm text-gray-500 italic text-center py-4">Aucun contact associé.</p>
+                }
             </div>
+
+            <!-- UBOs SECTION (For SOCIETE) -->
+            @if (client.type === 'SOCIETE') {
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-purple-700">Bénéficiaires Effectifs
+                    (UBO)</h2>
+
+                @if (client.ubos && client.ubos.length > 0) {
+                <ul class="space-y-3">
+                    @for (ubo of client.ubos; track ubo.nom) {
+                    <li class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border-l-4"
+                        [ngClass]="ubo.isPPE ? 'border-red-400' : 'border-green-400'">
+                        <div>
+                            <p class="text-sm font-medium text-slate-900">{{ ubo.nom }} {{ ubo.prenom }}</p>
+                            <p class="text-xs text-gray-500">Part: {{ ubo.partDetention }}%</p>
+                        </div>
+                        @if (ubo.isPPE) {
+                        <span class="px-2 py-0.5 text-xs font-bold text-red-700 bg-red-100 rounded">PPE</span>
+                        }
+                    </li>
+                    }
+                </ul>
+                } @else {
+                <p class="text-sm text-gray-500 italic text-center py-4">Aucun UBO renseigné.</p>
+                }
+            </div>
+            }
         </div>
 
         <div class="lg:col-span-2 space-y-8">
-            <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-red-500">
-                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-red-700">3. Analyse Détaillée
-                    AML/KYC</h2>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center mb-6">
-                    <div class="p-4 rounded-lg border">
-                        <p class="text-xs text-gray-500 font-medium uppercase">Origine des Fonds</p>
-                        <p class="mt-1 font-bold text-lg text-slate-800">{{ client.fundsOrigin || 'Non renseigné' }}</p>
-                    </div>
-
-                    <div class="p-4 rounded-lg border"
-                        [ngClass]="client.isPEP ? 'bg-red-50 border-red-400' : 'bg-green-50 border-green-400'">
-                        <p class="text-xs text-gray-500 font-medium uppercase">Personne Politiquement Exposée (PPE)</p>
-                        <p class="mt-1 font-bold text-lg" [ngClass]="client.isPEP ? 'text-red-700' : 'text-green-700'">
-                            {{ client.isPEP ? 'OUI / LIÉ' : 'NON' }}
-                        </p>
-                    </div>
-
-                    <div *ngIf="client.type === 'SOCIETE'" class="p-4 rounded-lg border">
-                        <p class="text-xs text-gray-500 font-medium uppercase">Bénéficiaires Effectifs</p>
-                        <p class="mt-1 text-sm font-bold text-slate-800 line-clamp-2">{{ client.beneficialOwners || 'Non
-                            renseigné' }}</p>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="font-bold text-lg text-slate-800 mt-4 mb-2">Notes de Conformité</h3>
-                    <div
-                        class="bg-gray-100 p-4 rounded-lg border border-gray-200 text-sm italic text-gray-700 whitespace-pre-line">
-                        {{ client.complianceNotes || 'Aucune note de diligence spécifique enregistrée.' }}
-                    </div>
-                </div>
-            </div>
-
-            <!-- DOCUMENTS SECTION -->
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-green-700">2. Documents &
-                    Justificatifs</h2>
-
-                <div *ngIf="documents.length > 0; else noDocs">
-                    <ul class="divide-y divide-gray-100">
-                        <li *ngFor="let doc of documents"
-                            class="py-3 flex justify-between items-center hover:bg-slate-50 px-2 rounded">
-                            <div class="flex items-center space-x-3">
-                                <div class="flex-shrink-0 h-10 w-10 text-slate-400">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                        </path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium text-slate-900">{{ doc.label }}</p>
-                                    <p class="text-xs text-slate-500 truncate max-w-xs" title="{{ doc.filename }}">{{
-                                        doc.filename }}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-4">
-                                <span class="text-xs text-gray-400">{{ doc.date | date:'shortDate' }}</span>
-                                <a href="#"
-                                    class="text-cyan-600 hover:text-cyan-900 text-sm font-medium">Télécharger</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <ng-template #noDocs>
-                    <div class="text-center py-6 bg-slate-50 rounded-lg border border-dashed border-slate-300">
-                        <p class="text-gray-500 text-sm">Aucun document chargé pour ce dossier.</p>
-                    </div>
-                </ng-template>
-            </div>
 
             <!-- AML RESULTS HISTORY -->
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-blue-700">4. Résultats Formulaires
                     AML</h2>
 
-                <div *ngIf="amlResults.length > 0; else noResults">
+                @if (amlResults.length > 0) {
+                <div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-slate-50">
@@ -243,7 +241,8 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <tr *ngFor="let result of amlResults">
+                                @for (result of amlResults; track result.id) {
+                                <tr>
                                     <td class="px-3 py-3 whitespace-nowrap text-sm text-gray-900">{{
                                         result.amlFormConfigID }}</td>
                                     <td class="px-3 py-3 whitespace-nowrap text-sm font-bold text-slate-700">{{
@@ -262,17 +261,61 @@
                                         <a href="#" class="text-cyan-600 hover:text-cyan-900">Détails</a>
                                     </td>
                                 </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <ng-template #noResults>
-                    <p class="text-sm text-gray-500 italic text-center py-4">Aucun résultat de formulaire AML
-                        disponible.</p>
-                </ng-template>
+                } @else {
+                <p class="text-sm text-gray-500 italic text-center py-4">Aucun résultat de formulaire AML
+                    disponible.</p>
+                }
+            </div>
+
+            <!-- DOCUMENTS SECTION -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-green-700">2. Documents &
+                    Justificatifs</h2>
+
+                @if (client.documents && client.documents.length > 0) {
+                <div>
+                    <ul class="divide-y divide-gray-100">
+                        @for (doc of client.documents; track doc.filename) {
+                        <li class="py-3 flex justify-between items-center hover:bg-slate-50 px-2 rounded">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex-shrink-0 h-10 w-10 text-slate-400">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-slate-900">{{ doc.label }}</p>
+                                    <p class="text-xs text-slate-500 truncate max-w-xs" title="{{ doc.filename }}">{{
+                                        doc.filename }}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <span class="text-xs text-gray-400">{{ doc.date | date:'shortDate' }}</span>
+
+                                <a (click)="downloadDocument(doc)"
+                                    class="text-cyan-600 hover:text-cyan-900 text-sm font-medium cursor-pointer">Télécharger</a>
+
+                            </div>
+                        </li>
+                        }
+                    </ul>
+                </div>
+                } @else {
+                <div class="text-center py-6 bg-slate-50 rounded-lg border border-dashed border-slate-300">
+                    <p class="text-gray-500 text-sm">Aucun document chargé pour ce dossier.</p>
+                </div>
+                }
             </div>
         </div>
 
     </div>
 
 </div>
+}

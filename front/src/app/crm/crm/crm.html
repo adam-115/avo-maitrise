@@ -11,7 +11,17 @@
                 Vue d'ensemble et statut de conformité AML/KYC de tous les intervenants enregistrés.
             </p>
         </div>
-
+        <div>
+            <button (click)="navigateToNewClient()"
+                class="inline-flex items-center px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-medium rounded-lg shadow transition-colors duration-200">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                    </path>
+                </svg>
+                Nouveau Client
+            </button>
+        </div>
     </div>
 
     <div class="bg-white rounded-xl shadow-lg p-6 mb-8 flex justify-between items-center space-x-6">
@@ -86,12 +96,12 @@
                 @for (client of filteredClients; track client.id) {
                 <tr class="hover:bg-cyan-50 transition duration-150 cursor-pointer">
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-slate-900">{{ client.name }}</div>
+                        <div class="text-sm font-medium text-slate-900">{{ client.nom }} {{ client.prenom }}</div>
                         <div class="text-xs text-gray-500">ID: {{ client.id }}</div>
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{ client.role }}</div>
+                        <div class="text-sm text-gray-900">{{ client.secteurActivite }}</div>
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" [ngClass]="{
                                 'bg-blue-100 text-blue-800': client.type === 'PERSONNE',
                                 'bg-purple-100 text-purple-800': client.type === 'SOCIETE',
@@ -102,32 +112,30 @@
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full" [ngClass]="{
-                                'bg-red-100 text-red-800': client.amlRisk === 'ELEVEE',
-                                'bg-yellow-100 text-yellow-800': client.amlRisk === 'MOYEN',
-                                'bg-green-100 text-green-800': client.amlRisk === 'FAIBLE',
-                                'bg-gray-100 text-gray-800': client.amlRisk === 'NUL'
-                              }">
-                            {{ client.amlRisk }}
+                        <!-- Placeholder for risk score display -->
+                        <span
+                            class="px-2 inline-flex text-sm leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                            {{ client.riskScore }}
                         </span>
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" [ngClass]="{
-                                'bg-green-100 text-green-800': client.complianceStatus === 'OK',
-                                'bg-yellow-100 text-yellow-800': client.complianceStatus === 'PENDING',
-                                'bg-red-100 text-red-800': client.complianceStatus === 'ALERT'
+                                'bg-green-100 text-green-800': client.clientStatus === 'VALIDATED',
+                                'bg-yellow-100 text-yellow-800': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_REQUIRED',
+                                'bg-red-100 text-red-800': client.clientStatus === 'BLOCKED'
                               }">
-                            {{ client.complianceStatus }}
+                            {{ client.clientStatus }}
                         </span>
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ client.country }}
+                        {{ client.paysResidance }}
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ client.updatedAt | date: 'dd/MM/yyyy' }}
+                        <!-- Date removed as not available in interface -->
+                        -
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
