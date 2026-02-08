@@ -4532,192 +4532,7 @@
   "AMLInputConfig": [],
   "AMLInputOption": [],
   "AmlInputValue": [],
-  "AmlFormResult": [
-    {
-      "id": "3913",
-      "amlFormConfigID": "6678",
-      "totalScore": 38,
-      "AmlPageConfigValues": [
-        {
-          "amlFormConfig": "6678",
-          "InputConfigID": "mk0znw0z-dqf1u0b",
-          "value": "Albanie"
-        },
-        {
-          "amlFormConfig": "6678",
-          "InputConfigID": "mk0znw0z-n9g0yf0",
-          "value": "adresse de residence"
-        },
-        {
-          "amlFormConfig": "6678",
-          "InputConfigID": "mk0znw0z-n9g0yf0",
-          "value": "ID carte "
-        },
-        {
-          "amlFormConfig": "6678",
-          "InputConfigID": "mk0znw0z-n9g0yf0",
-          "value": "passport "
-        },
-        {
-          "amlFormConfig": "6678",
-          "InputConfigID": "mk0znw0z-ywo2iiz",
-          "value": "Non"
-        },
-        {
-          "amlFormConfig": "6678",
-          "InputConfigID": "mk0znw0z-rq5njrb",
-          "value": "countries - Copie.csv"
-        }
-      ]
-    },
-    {
-      "id": "c750",
-      "amlFormConfigID": "59d6",
-      "totalScore": 70,
-      "AmlPageConfigValues": [
-        {
-          "amlFormConfig": "59d6",
-          "InputConfigID": "mks4lxtm-o72j8ao",
-          "value": "Angola"
-        },
-        {
-          "amlFormConfig": "59d6",
-          "InputConfigID": "mks4lxtm-cq1dpq2",
-          "value": "luxembourg"
-        },
-        {
-          "amlFormConfig": "59d6",
-          "InputConfigID": "mks4lxtm-mf29rve",
-          "value": "Non"
-        },
-        {
-          "amlFormConfig": "59d6",
-          "InputConfigID": "mks4lxtm-iitsgc9",
-          "value": "countries.csv"
-        }
-      ]
-    },
-    {
-      "id": "d2cf",
-      "libelle": "aaa",
-      "code": "aaa",
-      "ordre_affichage": 0,
-      "actif": true,
-      "created_at": "2026-01-27T10:37:28.033Z"
-    },
-    {
-      "id": "aa9d",
-      "libelle": "aaa",
-      "code": "aaa",
-      "ordre_affichage": 0,
-      "actif": true,
-      "created_at": "2026-01-27T10:37:33.772Z"
-    },
-    {
-      "id": "c777",
-      "libelle": "aaa",
-      "code": "aaa",
-      "ordre_affichage": 0,
-      "actif": true,
-      "created_at": "2026-01-27T10:37:36.711Z"
-    },
-    {
-      "id": "c678",
-      "libelle": "aaa",
-      "code": "aaa",
-      "ordre_affichage": 0,
-      "actif": true,
-      "created_at": "2026-01-27T10:38:52.744Z"
-    },
-    {
-      "id": "585e",
-      "amlFormConfigID": "5657",
-      "totalScore": 22,
-      "AmlPageConfigValues": [
-        {
-          "amlFormConfig": "5657",
-          "InputConfigID": "ml5q61gm-y3pz5po",
-          "value": "Afghanistan"
-        },
-        {
-          "amlFormConfig": "5657",
-          "InputConfigID": "ml5q61gm-n7avgdm",
-          "value": "aiffricaine "
-        },
-        {
-          "amlFormConfig": "5657",
-          "InputConfigID": "ml5q61gm-n7avgdm",
-          "value": "européenne "
-        },
-        {
-          "amlFormConfig": "5657",
-          "InputConfigID": "ml5q61gm-n7avgdm",
-          "value": "américaine "
-        },
-        {
-          "amlFormConfig": "5657",
-          "InputConfigID": "ml5q61gm-43porbf",
-          "value": "Oui"
-        },
-        {
-          "amlFormConfig": "5657",
-          "InputConfigID": "ml5q61gm-mdcp3xw",
-          "value": "countries.csv"
-        },
-        {
-          "amlFormConfig": "5657",
-          "InputConfigID": "ml5q61gm-5qfag9e",
-          "value": "Oui"
-        }
-      ]
-    },
-    {
-      "id": "9f7e",
-      "amlFormConfigID": "43324",
-      "totalScore": 108,
-      "AmlPageConfigValues": [
-        {
-          "amlFormConfig": "43324",
-          "InputConfigID": "ml6w9gceew7uwiz938c",
-          "value": "Salaire / Revenus professionnels"
-        },
-        {
-          "amlFormConfig": "43324",
-          "InputConfigID": "ml6w9gcegzsi766hdb8",
-          "value": "Oui"
-        },
-        {
-          "amlFormConfig": "43324",
-          "InputConfigID": "ml6w9gceq9f4ruahwjj",
-          "value": "< 10 000 €"
-        }
-      ],
-      "clientId": "1864"
-    },
-    {
-      "id": "5839",
-      "amlFormConfigID": "43324",
-      "totalScore": 111,
-      "AmlPageConfigValues": [
-        {
-          "amlFormConfig": "43324",
-          "InputConfigID": "ml6w9gceew7uwiz938c",
-          "value": "Épargne personnelle"
-        },
-        {
-          "amlFormConfig": "43324",
-          "InputConfigID": "ml6w9gcegzsi766hdb8",
-          "value": "Oui"
-        },
-        {
-          "amlFormConfig": "43324",
-          "InputConfigID": "ml6w9gceq9f4ruahwjj",
-          "value": "10 000 € - 50 000 €"
-        }
-      ],
-      "clientId": "2353"
-    }
-  ],
+  "AmlFormResult": [],
   "type_client": [
     {
       "id": "f153",
@@ -4976,24 +4791,67 @@
   ],
   "clients": [
     {
-      "id": "01a0",
+      "id": "9808",
       "type": "PERSONNE",
       "nom": "laftimi",
       "prenom": "adam",
       "email": "adam.laftimi@gmail.com",
       "telephone": "691209800",
       "paysResidance": "Luxembourg",
-      "secteurActivite": "BANQUE",
+      "secteurActivite": "IMMOBILIER",
       "riskScore": 0,
       "ubos": [],
       "contacts": [
         {
           "id": null,
-          "nom": "laftimi",
-          "prenom": "adam",
+          "nom": "aa",
+          "prenom": "aa",
           "email": "adam.laftimi@gmail.com",
           "telephone": "691209800",
-          "occupation": "engeener"
+          "occupation": "aa"
+        }
+      ],
+      "clientStatus": "AML_REQUIRED",
+      "documents": [
+        {
+          "title": "aaa",
+          "description": "aaa",
+          "name": "secteur activite.csv",
+          "file": {},
+          "tags": "",
+          "id": 1770553014844
+        },
+        {
+          "title": "ddd",
+          "description": "ddd",
+          "name": "favicon.ico",
+          "file": {},
+          "tags": "",
+          "id": 1770553022196
+        }
+      ]
+    },
+    {
+      "id": "7334",
+      "type": "SOCIETE",
+      "nom": "aa",
+      "prenom": "",
+      "email": "adam.laftimi@gmail.com",
+      "telephone": "aaa",
+      "paysResidance": "aaa",
+      "secteurActivite": "BANQUE",
+      "riskScore": 0,
+      "ubos": [],
+      "contacts": [],
+      "clientStatus": "AML_REQUIRED",
+      "documents": [
+        {
+          "title": "aaa",
+          "description": "aaa",
+          "name": "secteur activite.csv",
+          "file": {},
+          "tags": "",
+          "id": 1770582126497
         }
       ]
     }
