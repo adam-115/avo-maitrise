@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AmlFormResultService } from '../../services/aml-form-result-result-service';
 import { AmlFormConfigService } from '../../services/AmlFormConfigService';
 import { ClientService } from '../../services/client-service';
+import { NavigationService } from '../../services/navigation-service';
 
 @Component({
   selector: 'app-client-details',
@@ -24,6 +25,7 @@ export class ClientDetails implements OnInit {
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly navigationService = inject(NavigationService);
 
   private readonly amlFormResultService = inject(AmlFormResultService);
   private readonly amlFormConfigService = inject(AmlFormConfigService);
@@ -139,6 +141,7 @@ export class ClientDetails implements OnInit {
 
   editClient() {
     console.log('Edit client', this.client?.id);
+    this.navigationService.navigateToClientEdit(String(this.client?.id));
   }
 
   downloadDocument(doc: Document) {

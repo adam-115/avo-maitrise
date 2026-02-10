@@ -67,7 +67,10 @@ export const routes: Routes = [
         path: NavigationService.NEW_CLIENT,
         component: ClientFormComponent,
       },
-
+      {
+        path: NavigationService.CLIENT_EDIT,
+        component: ClientFormComponent,
+      },
       {
         path: NavigationService.CLIENT_DETAILS,
         component: ClientDetails

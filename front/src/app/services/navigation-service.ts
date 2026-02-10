@@ -18,6 +18,7 @@ export class NavigationService {
   static readonly DOSSIER_DETAIL = 'dossier-detail';
   static readonly CRM = 'crm';
   static readonly NEW_CLIENT = 'crm/client/new';
+  static readonly CLIENT_EDIT = 'crm/client/edit/:id';
 
   static readonly CLIENT_DETAILS = 'client-details';
   static readonly CLIENT_REVIEWS_AML = 'client-reviews-aml';
@@ -102,6 +103,16 @@ export class NavigationService {
 
   navigateToNewClient() {
     this.router.navigate(['/home/', ...NavigationService.NEW_CLIENT.split('/')]);
+  }
+  navigateToClientDetails(id: string) {
+    // let targetUrl = NavigationService.CLIENT_DETAILS.replace(":id", id);
+    // this.router.navigate(['/home/', ...targetUrl.split("/")]);
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS], { queryParams: { id: id } });
+  }
+
+  navigateToClientEdit(id: string) {
+    let targetUrl = NavigationService.CLIENT_EDIT.replace(":id", id);
+    this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
 
 

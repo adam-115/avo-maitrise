@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ClientStatus, ClientTypeEnum, Document, SecteurActivite } from '../../appTypes';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Client, ClientStatus, ClientTypeEnum, ContactPoint, Document, SecteurActivite, UBO } from '../../appTypes';
 import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { AlertService } from '../../services/alert-service';
 import { ClientService } from '../../services/client-service';
+import { NavigationService } from '../../services/navigation-service';
 import { SecteurActiviteService } from '../../services/secteur-activite-service';
 
 @Component({
@@ -21,6 +22,11 @@ export class ClientFormComponent implements OnInit {
     private secteurService = inject(SecteurActiviteService);
     private router = inject(Router);
     private alertService = inject(AlertService);
+    private route = inject(ActivatedRoute);
+    private navigationService = inject(NavigationService);
+
+    selectedClient: Client | null = null;
+    isEditMode = false;
 
     clientForm: FormGroup;
     secteurs: SecteurActivite[] = [];
@@ -28,6 +34,14 @@ export class ClientFormComponent implements OnInit {
 
     documents: Document[] = [];
     showAddDocumentDialog: boolean = false;
+
+    get ubos(): FormArray {
+        return this.clientForm.get('ubos') as FormArray;
+    }
+
+    get contacts(): FormArray {
+        return this.clientForm.get('contacts') as FormArray;
+    }
 
     // Helper for template access
     get clientTypes(): string[] {
@@ -51,28 +65,66 @@ export class ClientFormComponent implements OnInit {
 
     ngOnInit(): void {
         this.loadSecteurs();
-
         // React to type changes
         this.clientForm.get('type')?.valueChanges.subscribe(type => {
             this.updateValidators(type);
         });
+
+        // in edit mode load existing client 
+        this.isInEditMode();
     }
 
-    get ubos(): FormArray {
-        return this.clientForm.get('ubos') as FormArray;
+    private isInEditMode() {
+        this.route.params.subscribe(params => {
+            let id = params['id'];
+            this.isEditMode = !!params['id'];
+            if (this.isEditMode) {
+                this.clientForm.get('type')?.disable();
+                this.clientService.findById(id as number).subscribe(client => {
+                    this.selectedClient = client;
+                    this.clientForm.patchValue(client);
+                    this.documents = client.documents ?? [];
+                    this.ubos.clear();
+                    client.ubos?.forEach(ubo => {
+                        this.ubos.push(this.createUboGroup(ubo));
+                    });
+                    this.contacts.clear();
+                    client.contacts?.forEach(contact => {
+                        this.contacts.push(this.createContactGroup(contact));
+                    });
+
+                })
+            }
+        });
     }
 
-    get contacts(): FormArray {
-        return this.clientForm.get('contacts') as FormArray;
+    isClientTypeDisabled(type: any): boolean {
+        return this.isEditMode;
     }
+
+    private createUboGroup(data?: UBO): FormGroup {
+        return this.fb.group({
+            nom: [data?.nom || '', Validators.required],
+            partDetention: [data?.partDetention || 0, [Validators.required, Validators.min(0), Validators.max(100)]],
+            isPPE: [data?.isPPE || false]
+        });
+    }
+
+    private createContactGroup(data?: ContactPoint): FormGroup {
+        return this.fb.group({
+            id: [data?.id || null],
+            nom: [data?.nom || '', Validators.required],
+            prenom: [data?.prenom || '', Validators.required],
+            email: [data?.email || '', [Validators.required, Validators.email]],
+            telephone: [data?.telephone || '', Validators.required],
+            occupation: [data?.occupation || '', Validators.required]
+        });
+    }
+
+
 
     addUbo(): void {
-        const uboGroup = this.fb.group({
-            nom: ['', Validators.required],
-            partDetention: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
-            isPPE: [false]
-        });
-        this.ubos.push(uboGroup);
+        this.ubos.push(this.createUboGroup());
     }
 
     removeUbo(index: number): void {
@@ -80,15 +132,7 @@ export class ClientFormComponent implements OnInit {
     }
 
     addContact(): void {
-        const contactGroup = this.fb.group({
-            id: [null],
-            nom: ['', Validators.required],
-            prenom: ['', Validators.required],
-            email: ['', [Validators.required, Validators.email]],
-            telephone: ['', Validators.required],
-            occupation: ['', Validators.required]
-        });
-        this.contacts.push(contactGroup);
+        this.contacts.push(this.createContactGroup());
     }
 
     removeContact(index: number): void {
@@ -152,10 +196,10 @@ export class ClientFormComponent implements OnInit {
             const formValue = this.clientForm.getRawValue();
             formValue.clientStatus = ClientStatus.AML_REQUIRED;
             formValue.documents = this.documents;
+
             this.clientService.create(formValue).subscribe({
-                next: () => {
-                    this.alertService.success('Client créé avec succès');
-                    this.router.navigate(['/home/crm']);
+                next: (newClient: Client) => {
+                    this.navigationService.navigateToClientDetails(newClient.id);
                 },
                 error: (err: any) => {
                     console.error(err);
@@ -167,7 +211,30 @@ export class ClientFormComponent implements OnInit {
         }
     }
 
+    editClient(): void {
+        if (this.clientForm.valid) {
+            const formValue = this.clientForm.getRawValue();
+            formValue.clientStatus = ClientStatus.AML_REQUIRED;
+            formValue.documents = this.documents;
+            this.clientService.update(this.selectedClient?.id, formValue).subscribe({
+                next: () => {
+                    this.alertService.success('Client modifié avec succès');
+                    this.navigationService.navigateToClientDetails(this.selectedClient?.id ?? '');
+                },
+                error: (err: any) => {
+                    console.error(err);
+                    this.alertService.displayMessage('Erreur', 'Impossible de modifier le client', 'error');
+                }
+            });
+        } else {
+            this.clientForm.markAllAsTouched();
+        }
+
+    }
+
     cancel(): void {
         this.router.navigate(['/home/crm']);
     }
+
+
 }

@@ -80,7 +80,8 @@ export class Crm implements OnInit {
     // For now keeping existing pattern but usually we'd pass ID
     // this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS]);
     // Better implementation:
-    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS], { queryParams: { id: client.id } });
+    this.navigationService.navigateToClientDetails(client.id);
+    // this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS], { queryParams: { id: client.id } });
   }
 
   navigateToReviewsAml() {

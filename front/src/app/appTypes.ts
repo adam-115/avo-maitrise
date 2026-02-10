@@ -176,7 +176,7 @@ export interface ContactPoint {
 }
 
 export interface Client {
-  id: string | number;
+  id: string;
   type: ClientTypeEnum;
   nom?: string;
   prenom?: string;

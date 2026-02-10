@@ -4854,6 +4854,198 @@
           "id": 1770582126497
         }
       ]
+    },
+    {
+      "id": "e466",
+      "type": "PERSONNE",
+      "nom": "laftimi",
+      "prenom": "adam",
+      "email": "adam.laftimi@gmail.com",
+      "telephone": "691209800",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "IMMOBILIER",
+      "riskScore": 0,
+      "ubos": [],
+      "contacts": [],
+      "clientStatus": "AML_REQUIRED",
+      "documents": [
+        {
+          "title": "aaa",
+          "description": "aaa",
+          "name": "secteur activite.csv",
+          "file": {},
+          "tags": "",
+          "id": 1770553014844
+        },
+        {
+          "title": "ddd",
+          "description": "ddd",
+          "name": "favicon.ico",
+          "file": {},
+          "tags": "",
+          "id": 1770553022196
+        }
+      ]
+    },
+    {
+      "id": "112e",
+      "type": "PERSONNE",
+      "nom": "laftimi",
+      "prenom": "adam",
+      "email": "adam.laftimi@gmail.com",
+      "telephone": "691209800",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "IMMOBILIER",
+      "riskScore": 0,
+      "ubos": [],
+      "contacts": [
+        {
+          "id": null,
+          "nom": "laftimi",
+          "prenom": "adam",
+          "email": "adam.laftimi@gmail.com",
+          "telephone": "691209800",
+          "occupation": "122"
+        }
+      ],
+      "clientStatus": "AML_REQUIRED",
+      "documents": [
+        {
+          "title": "aaa",
+          "description": "aaa",
+          "name": "secteur activite.csv",
+          "file": {},
+          "tags": "",
+          "id": 1770553014844
+        },
+        {
+          "title": "ddd",
+          "description": "ddd",
+          "name": "favicon.ico",
+          "file": {},
+          "tags": "",
+          "id": 1770553022196
+        }
+      ]
+    },
+    {
+      "id": "17ac",
+      "type": "PERSONNE",
+      "nom": "nono",
+      "prenom": "adam",
+      "email": "adam.laftimi@gmail.com",
+      "telephone": "691209800",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "IMMOBILIER",
+      "riskScore": 0,
+      "ubos": [],
+      "contacts": [
+        {
+          "id": null,
+          "nom": "aa",
+          "prenom": "aa",
+          "email": "adam.laftimi@gmail.com",
+          "telephone": "691209800",
+          "occupation": "aa"
+        }
+      ],
+      "clientStatus": "AML_REQUIRED",
+      "documents": [
+        {
+          "title": "aaa",
+          "description": "aaa",
+          "name": "secteur activite.csv",
+          "file": {},
+          "tags": "",
+          "id": 1770553014844
+        },
+        {
+          "title": "ddd",
+          "description": "ddd",
+          "name": "favicon.ico",
+          "file": {},
+          "tags": "",
+          "id": 1770553022196
+        }
+      ]
+    },
+    {
+      "id": "4b48",
+      "type": "PERSONNE",
+      "nom": "nono",
+      "prenom": "adam",
+      "email": "adam.laftimi@gmail.com",
+      "telephone": "691209800",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "IMMOBILIER",
+      "riskScore": 0,
+      "ubos": [],
+      "contacts": [
+        {
+          "id": null,
+          "nom": "aa",
+          "prenom": "aa",
+          "email": "adam.laftimi@gmail.com",
+          "telephone": "691209800",
+          "occupation": "aa"
+        }
+      ],
+      "clientStatus": "AML_REQUIRED",
+      "documents": [
+        {
+          "title": "aaa",
+          "description": "aaa",
+          "name": "secteur activite.csv",
+          "file": {},
+          "tags": "",
+          "id": 1770553014844
+        }
+      ]
+    },
+    {
+      "id": "bea6",
+      "type": "INSTITUTION",
+      "nom": "qqqq",
+      "prenom": "",
+      "email": "adam.laftimi@gmail.com",
+      "telephone": "sss",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "CASINO",
+      "riskScore": 0,
+      "ubos": [],
+      "contacts": [],
+      "clientStatus": "AML_REQUIRED",
+      "documents": []
+    },
+    {
+      "id": "0022",
+      "type": "ASSOCIATION",
+      "nom": "adam laftimi",
+      "prenom": "",
+      "email": "adam.laftimi@gmail.com",
+      "telephone": "691209800",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "BANQUE",
+      "riskScore": 0,
+      "ubos": [],
+      "contacts": [],
+      "clientStatus": "AML_REQUIRED",
+      "documents": []
+    },
+    {
+      "id": "ba0d",
+      "type": "INSTITUTION",
+      "nom": "sss",
+      "prenom": "",
+      "email": "adam.laftimi@gmail.com",
+      "telephone": "691209800",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "CASINO",
+      "riskScore": 0,
+      "ubos": [],
+      "contacts": [],
+      "clientStatus": "AML_REQUIRED",
+      "documents": []
     }
   ],
   "AmlPageConfigResult": []
