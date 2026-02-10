@@ -2072,7 +2072,6 @@
       ]
     },
     {
-      "id": "27782",
       "formName": "aml_default_personne_asbl",
       "formTitle": "KYC Standard - PERSONNE",
       "formDescription": "Formulaire de conformité standard pour le secteur ASBL",
@@ -2186,7 +2185,8 @@
           ],
           "displayOrer": 2
         }
-      ]
+      ],
+      "id": "27782"
     },
     {
       "id": "85839",
@@ -3710,7 +3710,6 @@
       ]
     },
     {
-      "id": "53088",
       "formName": "aml_default_societe_avocats",
       "formTitle": "KYC Standard - SOCIETE",
       "formDescription": "Formulaire de conformité standard pour le secteur AVOCATS",
@@ -3824,7 +3823,8 @@
           ],
           "displayOrer": 2
         }
-      ]
+      ],
+      "id": "53088"
     },
     {
       "id": "45524",
@@ -4412,7 +4412,6 @@
       ]
     },
     {
-      "id": "98112",
       "formName": "aml_default_institution_organisation_non_gouvernementale__ong_",
       "formTitle": "KYC Standard - INSTITUTION",
       "formDescription": "Formulaire de conformité standard pour le secteur Organisation Non Gouvernementale (ONG)",
@@ -4526,7 +4525,8 @@
           ],
           "displayOrer": 2
         }
-      ]
+      ],
+      "id": "98112"
     }
   ],
   "AMLInputConfig": [],
@@ -4557,6 +4557,14 @@
       "ordre_affichage": 0,
       "actif": true,
       "created_at": "2026-01-27T14:41:13.244Z"
+    },
+    {
+      "id": "4cc3",
+      "libelle": "ASSOCIATION",
+      "code": "ASSOCIATION",
+      "ordre_affichage": 0,
+      "actif": true,
+      "created_at": "2026-02-10T15:10:55.351Z"
     }
   ],
   "SecteurActivite": [
@@ -4651,12 +4659,6 @@
       "amlFormConfigID": "67058"
     },
     {
-      "id": "56515",
-      "typeClient": "PERSONNE",
-      "secteurActivite": "ASBL",
-      "amlFormConfigID": "27782"
-    },
-    {
       "id": "19499",
       "typeClient": "PERSONNE",
       "secteurActivite": "ART",
@@ -4735,12 +4737,6 @@
       "amlFormConfigID": "10351"
     },
     {
-      "id": "44857",
-      "typeClient": "SOCIETE",
-      "secteurActivite": "AVOCATS",
-      "amlFormConfigID": "53088"
-    },
-    {
       "id": "54621",
       "typeClient": "SOCIETE",
       "secteurActivite": "LUXE",
@@ -4771,12 +4767,6 @@
       "amlFormConfigID": "87074"
     },
     {
-      "id": "72041",
-      "typeClient": "INSTITUTION",
-      "secteurActivite": "Organisation Non Gouvernementale (ONG)",
-      "amlFormConfigID": "98112"
-    },
-    {
       "id": "162a",
       "typeClient": "PERSONNE",
       "secteurActivite": "BANQUE",
@@ -4787,6 +4777,42 @@
       "typeClient": "PERSONNE",
       "secteurActivite": "IMMOBILIER",
       "amlFormConfigID": "43324"
+    },
+    {
+      "id": "aadc",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "ASBL",
+      "amlFormConfigID": "27782"
+    },
+    {
+      "id": "828c",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "TOUT",
+      "amlFormConfigID": "27782"
+    },
+    {
+      "id": "4ce4",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "IMMOBILIER",
+      "amlFormConfigID": "27782"
+    },
+    {
+      "id": "9d3d",
+      "typeClient": "SOCIETE",
+      "secteurActivite": "AVOCATS",
+      "amlFormConfigID": "53088"
+    },
+    {
+      "id": "ede7",
+      "typeClient": "INSTITUTION",
+      "secteurActivite": "Organisation Non Gouvernementale (ONG)",
+      "amlFormConfigID": "98112"
+    },
+    {
+      "id": "6b62",
+      "typeClient": "ASSOCIATION",
+      "secteurActivite": "BANQUE",
+      "amlFormConfigID": "98112"
     }
   ],
   "clients": [

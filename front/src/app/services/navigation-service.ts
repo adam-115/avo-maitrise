@@ -71,7 +71,7 @@ export class NavigationService {
     this.router.navigate(['/home/', ...targetUrl.split("/")], { queryParams: queryParams });
   }
 
-  public navigateToViewFormConfig_2(clientId: string): void {
+  public navigateToAMLContext(clientId: string): void {
     let targetUrl = NavigationService.CLIENT_AML_CONTEXT.replace(":id", clientId);
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
@@ -86,7 +86,6 @@ export class NavigationService {
   navigateTOClients(): void {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.CRM);
   }
-
 
 
   navigateToAdminPrefences() {
@@ -114,6 +113,7 @@ export class NavigationService {
     let targetUrl = NavigationService.CLIENT_EDIT.replace(":id", id);
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
+
 
 
 

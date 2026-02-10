@@ -91,4 +91,8 @@ export class Crm implements OnInit {
   navigateToNewClient() {
     this.navigationService.navigateToNewClient();
   }
+
+  navigateToAMLReview(clientid: string) {
+    this.navigationService.navigateToAMLContext(clientid);
+  }
 }

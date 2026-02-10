@@ -76,24 +76,29 @@ export const routes: Routes = [
         component: ClientDetails
       },
       {
+        // TODO: remove this route
         path: NavigationService.REVIEW_AML,
         component: ReviewAml
       },
       {
+        // show all aml reviews for a client
         path: NavigationService.CLIENT_REVIEWS_AML,
         component: ClientReviewsAml
       },
       {
+        //TODO remove this one too 
         path: NavigationService.CLIENT_REVIEWS_AML_REPORT,
         component: ClientReviewAmlReport
       },
       // this for review aml for person type contact
       // TODO add the same for societe and institution type contact
       {
+        //TODO remove this one too 
         path: NavigationService.PERSON_REVIEW_AML,
         component: ReviewAml
       },
       {
+        //TODO remove this one too 
         path: NavigationService.AML_REPORT_PERSON,
         component: ClientReviewAmlReport
       },
