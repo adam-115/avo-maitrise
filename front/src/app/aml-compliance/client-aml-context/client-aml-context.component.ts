@@ -9,6 +9,7 @@ import { AmlFormViewComponent } from '../aml-form-view-component/aml-form-view-c
 import { AmlFormConfig, Client, ClientStatus, MappingForm } from '../../appTypes';
 import { ClientService } from '../../services/client-service';
 import { SecteurActiviteService } from '../../services/secteur-activite-service';
+import { NavigationService } from '../../services/navigation-service';
 
 @Component({
     selector: 'app-client-aml-context',
@@ -25,7 +26,7 @@ export class ClientAmlContextComponent implements OnInit {
     private readonly clientService = inject(ClientService);
     private readonly mappingFormService = inject(MappingFormService);
     private readonly alertService = inject(AlertService);
-    private readonly secteurService = inject(SecteurActiviteService);
+    private readonly navigationService = inject(NavigationService);
 
     clientId: string | null = null;
     selectedClient: Client | null = null;
@@ -74,6 +75,12 @@ export class ClientAmlContextComponent implements OnInit {
     private loadClientAmlFormsConfig() {
         this.mappingFormService.findMappingByClientTypeAndSector(this.selectedClient?.type!, this.selectedClient?.secteurActivite!).subscribe({
             next: (amlFormConfigs: AmlFormConfig[]) => {
+                if (amlFormConfigs.length == 0) {
+                    this.alertService.displayMessage('Attention', 'Aucune configuration AML trouvée pour le type ' + this.selectedClient?.type + ' / ' + this.selectedClient?.secteurActivite + '.', 'warning');
+                    this.navigationService.navigateTOClients();
+                    this.isLoading = false;
+                    return;
+                }
                 this.isLoading = false;
                 console.log(amlFormConfigs);
                 this.resolvedFormId = amlFormConfigs[0].id ?? null;

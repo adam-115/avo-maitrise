@@ -949,7 +949,6 @@
       ]
     },
     {
-      "id": "7854",
       "formName": "ml6hpwh3-40v1tbm",
       "formTitle": "test one ",
       "formDescription": "test one ",
@@ -1835,7 +1834,8 @@
             }
           ]
         }
-      ]
+      ],
+      "id": "7854"
     },
     {
       "formName": "aml_default_personne_banque",
@@ -2184,6 +2184,20 @@
             }
           ],
           "displayOrer": 2
+        },
+        {
+          "id": null,
+          "type": "select",
+          "name": "test test ",
+          "labelMessage": "test test ",
+          "facteur": 1,
+          "required": false,
+          "placeholder": "ddd",
+          "errorMessage": "dd",
+          "optionsLayout": "block",
+          "displayOrer": 0,
+          "defaultValue": null,
+          "options": []
         }
       ],
       "id": "27782"
@@ -4647,12 +4661,6 @@
       "id": "map-fix-manual-1"
     },
     {
-      "id": "8739",
-      "typeClient": "INSTITUTION",
-      "secteurActivite": "Ministère / Administration Centrale",
-      "amlFormConfigID": "7854"
-    },
-    {
       "id": "55186",
       "typeClient": "PERSONNE",
       "secteurActivite": "CASINO",
@@ -4779,24 +4787,6 @@
       "amlFormConfigID": "43324"
     },
     {
-      "id": "aadc",
-      "typeClient": "PERSONNE",
-      "secteurActivite": "ASBL",
-      "amlFormConfigID": "27782"
-    },
-    {
-      "id": "828c",
-      "typeClient": "PERSONNE",
-      "secteurActivite": "TOUT",
-      "amlFormConfigID": "27782"
-    },
-    {
-      "id": "4ce4",
-      "typeClient": "PERSONNE",
-      "secteurActivite": "IMMOBILIER",
-      "amlFormConfigID": "27782"
-    },
-    {
       "id": "9d3d",
       "typeClient": "SOCIETE",
       "secteurActivite": "AVOCATS",
@@ -4813,6 +4803,36 @@
       "typeClient": "ASSOCIATION",
       "secteurActivite": "BANQUE",
       "amlFormConfigID": "98112"
+    },
+    {
+      "id": "2e70",
+      "typeClient": "INSTITUTION",
+      "secteurActivite": "Ministère / Administration Centrale",
+      "amlFormConfigID": "7854"
+    },
+    {
+      "id": "168c",
+      "typeClient": "ASSOCIATION",
+      "secteurActivite": "TOUT",
+      "amlFormConfigID": "7854"
+    },
+    {
+      "id": "bba5",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "ASBL",
+      "amlFormConfigID": "27782"
+    },
+    {
+      "id": "c816",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "TOUT",
+      "amlFormConfigID": "27782"
+    },
+    {
+      "id": "ffb1",
+      "typeClient": "PERSONNE",
+      "secteurActivite": "IMMOBILIER",
+      "amlFormConfigID": "27782"
     }
   ],
   "clients": [

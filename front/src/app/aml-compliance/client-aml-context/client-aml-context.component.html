@@ -23,7 +23,7 @@
     </div>
     } @else if (resolvedFormId) {
     <!-- Render the Form View Component with Resolved ID -->
-    <app-aml-form-view-component [formConfigId]="resolvedFormId" [clientIdInput]="clientId">
+    <app-aml-form-view-component [formConfigId]="resolvedFormId" [clientIdInput]="clientId" [client]="selectedClient">
     </app-aml-form-view-component>
     }
 </div>

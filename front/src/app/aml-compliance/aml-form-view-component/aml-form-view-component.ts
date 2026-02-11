@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, FieldScore } from '../../appTypes';
+import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, Client, FieldScore } from '../../appTypes';
 import { AmlFormConfigService } from '../../services/AmlFormConfigService';
 import { AlertService } from '../../services/alert-service';
 import { AmlFormResultService } from '../../services/aml-form-result-result-service';
@@ -21,6 +21,7 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
 
   @Input() formConfigId: string | number | null = null;
   @Input() clientIdInput: string | null = null;
+  @Input() client: Client | null = null;
 
   activatedRoute = inject(ActivatedRoute);
   amlFormConfigService = inject(AmlFormConfigService);
@@ -31,6 +32,7 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
   mappingFormService = inject(MappingFormService);
   fb = inject(FormBuilder);
   selectedFormConfig: AmlFormConfig | null = null;
+  availableFormConfigs: AmlFormConfig[] = [];
   dynamicForm: FormGroup;
   totalRiskScore: number = 0;
   fieldScores: FieldScore[] = [];
@@ -49,12 +51,16 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['formConfigId'] || changes['clientIdInput']) {
+    if (changes['formConfigId'] || changes['clientIdInput'] || changes['client']) {
       this.initComponent();
     }
   }
 
   private initComponent(): void {
+    if (this.client) {
+      this.loadAvailableConfigs();
+    }
+
     if (this.formConfigId) {
       if (this.clientIdInput) {
         this.clientId = this.clientIdInput;
@@ -64,6 +70,37 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
       this.loadPageConfig();
     }
   }
+
+  private loadAvailableConfigs(): void {
+    if (!this.client) return;
+
+    // Determine the sector or type for mapping
+    // Note: This logic mirrors what might be in the backend or service, using 'secteurActivite' field
+    const sectorOrType = this.client.secteurActivite || '';
+
+    this.mappingFormService.findMappingByClientTypeAndSector(this.client.type, sectorOrType).subscribe({
+      next: (configs) => {
+        this.availableFormConfigs = configs;
+
+        // If no specific form ID is provided, or if we want to ensure we're showing *one* of them
+        // we could auto-select here. But typically initComponent handles the initial selection via formConfigId.
+        // However, if formConfigId is null, we might want to select the first available one as a fallback?
+        if (!this.formConfigId && !this.selectedFormConfig && configs.length > 0) {
+          this.loadFormConfig(configs[0].id);
+        }
+      },
+      error: (err) => console.error('Error loading available configs', err)
+    });
+  }
+
+  onConfigChange(event: Event): void {
+    const selectElement = event.target as HTMLSelectElement;
+    const configId = selectElement.value;
+    if (configId) {
+      this.loadFormConfig(configId);
+    }
+  }
+
 
   private loadPageConfig(): void {
     this.activatedRoute.paramMap.subscribe(params => {
@@ -75,8 +112,14 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
         this.loadFormConfig(configId);
       } else {
         // Only show error if we are NOT waiting for input
-        if (!this.formConfigId) {
-          this.alertService.displayMessage('Erreur', 'Aucun ID de configuration fourni.', 'error');
+        // BUT if we have client and available configs, configId might be null initially?
+        // Let's rely on initComponent logic.
+        if (!this.formConfigId && !this.client) {
+          // Wait, if client is present, we might be loading async.
+          // But existing logic shows error immediately if no ID.
+          // Let's keep it safe.
+          if (!this.availableFormConfigs.length)
+            this.alertService.displayMessage('Erreur', 'Aucun ID de configuration fourni.', 'error');
         }
       }
     });
@@ -94,6 +137,7 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
   }
   // Construction dynamique des FormControls
   private buildDynamicForm(): void {
+    this.dynamicForm = this.fb.group({}); // Reset form
     this.AmlInpuConfigs.forEach(config => {
       const validators = config.required ? [Validators.required] : [];
 
@@ -117,6 +161,7 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
         ));
       }
     });
+    this.subscribeToFormChanges(); // Re-subscribe after rebuild
   }
 
   // Abonnement aux changements pour déclencher le scoring
