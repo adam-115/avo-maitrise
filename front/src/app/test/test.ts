@@ -10,7 +10,7 @@ import { ClientAmlReview } from "../aml-compliance/client-aml-review/client-aml-
 @Component({
   selector: 'app-test',
   imports: [CommonModule, FormsModule, ReactiveFormsModule,
-    RouterModule, Contact],
+    RouterModule],
   templateUrl: './test.html',
   styleUrl: './test.css'
 })

@@ -48,6 +48,7 @@ export class NavigationService {
   public static readonly ADMIN_PREFERENCE = "admin_preference";
   public static readonly ADMIN_SECTEUR_ATIVITE = "admin_secteur_activite";
   public static readonly CLIENT_AML_REVIEW = "client-aml-review/:id";
+  public static readonly CLIENT_AML_RESULT = "client-aml-result/:id";
 
 
 
@@ -117,6 +118,11 @@ export class NavigationService {
 
   navigateToClientAMLReview(id: string) {
     let targetUrl = NavigationService.CLIENT_AML_REVIEW.replace(":id", id);
+    this.router.navigate(['/home/', ...targetUrl.split("/")]);
+  }
+
+  navigateToClientAMLResult(id: string) {
+    let targetUrl = NavigationService.CLIENT_AML_RESULT.replace(":id", id);
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
 

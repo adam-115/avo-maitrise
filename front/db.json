@@ -4546,7 +4546,31 @@
   "AMLInputConfig": [],
   "AMLInputOption": [],
   "AmlInputValue": [],
-  "AmlFormResult": [],
+  "AmlFormResult": [
+    {
+      "id": "61b3",
+      "amlFormConfigID": "43324",
+      "totalScore": 11,
+      "AmlPageConfigValues": [
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceew7uwiz938c",
+          "value": "Salaire / Revenus professionnels"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gcegzsi766hdb8",
+          "value": "Non"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceq9f4ruahwjj",
+          "value": "10 000 € - 50 000 €"
+        }
+      ],
+      "clientId": "e466"
+    }
+  ],
   "type_client": [
     {
       "id": "f153",

@@ -7,13 +7,17 @@ import { AmlFormResult } from '../appTypes';
 @Injectable({
   providedIn: 'root',
 })
-export class AmlFormResultService extends AbstractCrudService<AmlFormResult>{
-  protected apiUrl = environment.apiUrl+'AmlFormResult'; // Provide your API URL
+export class AmlFormResultService extends AbstractCrudService<AmlFormResult> {
+  protected apiUrl = environment.apiUrl + 'AmlFormResult'; // Provide your API URL
 
 
 
   constructor(http: HttpClient) {
     super(http);
+  }
+
+  findByClientId(clientId: string) {
+    return this.http.get<AmlFormResult[]>(`${this.apiUrl}?clientId=${clientId}`);
   }
 
 }
