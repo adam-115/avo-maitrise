@@ -9,6 +9,7 @@ import { AmlFormResultService } from '../../services/aml-form-result-result-serv
 
 import { MappingFormService } from '../../services/mapping-form-service';
 import { NavigationService } from '../../services/navigation-service';
+import { ClientService } from '../../services/client-service';
 
 @Component({
   selector: 'app-aml-form-view-component',
@@ -17,7 +18,7 @@ import { NavigationService } from '../../services/navigation-service';
   templateUrl: './aml-form-view-component.html',
   styleUrl: './aml-form-view-component.css',
 })
-export class AmlFormViewComponent implements OnInit, OnChanges {
+export class AmlFormViewComponent implements OnInit {
 
   @Input() formConfigId: string | number | null = null;
   @Input() clientIdInput: string | null = null;
@@ -28,16 +29,52 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
   amlPageConfigResultService = inject(AmlFormResultService);
   alertService = inject(AlertService);
   navigationServcie = inject(NavigationService);
+  clientService = inject(ClientService);
+
 
   mappingFormService = inject(MappingFormService);
   fb = inject(FormBuilder);
   selectedFormConfig: AmlFormConfig | null = null;
   availableFormConfigs: AmlFormConfig[] = [];
+  clientFormConfigs: AmlFormConfig[] = [];
   dynamicForm: FormGroup;
   totalRiskScore: number = 0;
   fieldScores: FieldScore[] = [];
   AmlInpuConfigs: AmlInputConfig[] = [];
   clientId: string | number | null = null;
+
+
+
+  private loadClientFromPath() {
+    // teh start part , loading client id from the link parameter
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.clientId = params.get("clientId");
+      //load the client from the db 
+      this.loadClient(this.clientId ?? "");
+
+    });
+
+
+  }
+
+  private loadClient(clientId: string) {
+    this.clientService.findById(clientId).subscribe(client => {
+      if (client == undefined) {
+        console.log("no client found with id " + clientId);
+        this.navigationServcie.navigateToClients();
+      } else {
+        this.client = client;
+        this.loadFomrConfigByclient(client);
+      }
+    });
+  }
+
+
+  private loadFomrConfigByclient(client: Client) {
+    this.mappingFormService.findMappingByClientTypeAndSector(client.type, client.secteurActivite).subscribe(configs => {
+      this.clientFormConfigs = configs;
+    });
+  }
 
 
 
@@ -50,11 +87,6 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
     this.initComponent();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['formConfigId'] || changes['clientIdInput'] || changes['client']) {
-      this.initComponent();
-    }
-  }
 
   private initComponent(): void {
     if (this.client) {
@@ -258,7 +290,7 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
     this.amlPageConfigResultService.create(amlPageConfigResult).subscribe({
       next: (response) => {
         this.alertService.displayMessage("Succès", "Le formulaire a été soumis avec succès !", 'success');
-        this.navigationServcie.navigateTOClients();
+        this.navigationServcie.navigateToClients();
       },
       error: (err) => {
         error = true;
@@ -272,7 +304,7 @@ export class AmlFormViewComponent implements OnInit, OnChanges {
   }
 
   goBack(): void {
-    this.navigationServcie.navigateTOClients();
+    this.navigationServcie.navigateToClients();
   }
 
   isFormValid(): boolean {

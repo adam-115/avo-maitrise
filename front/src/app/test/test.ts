@@ -4,6 +4,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TypeClient } from '../appTypes';
 import { Contact } from "../contact/contact/contact";
+import { ClientAmlReview } from "../aml-compliance/client-aml-review/client-aml-review";
 
 
 @Component({

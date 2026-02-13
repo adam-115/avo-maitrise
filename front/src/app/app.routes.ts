@@ -33,6 +33,7 @@ import { Model } from './model/model/model';
 import { SaisieTemps } from './saisie-temps/saisie-temps/saisie-temps';
 import { NavigationService } from './services/navigation-service';
 import { Test } from './test/test';
+import { ClientAmlReview } from './aml-compliance/client-aml-review/client-aml-review';
 
 export const routes: Routes = [
   {
@@ -173,6 +174,10 @@ export const routes: Routes = [
         path: 'client-aml-context/:id',
         component: ClientAmlContextComponent
       },
+      {
+        path: NavigationService.CLIENT_AML_REVIEW,
+        component: ClientAmlReview
+      }
     ]
   },
 

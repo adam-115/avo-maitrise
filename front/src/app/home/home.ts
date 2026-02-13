@@ -34,7 +34,7 @@ export class Home {
   }
 
   navigateTOClients() {
-    this.navigationService.navigateTOClients();
+    this.navigationService.navigateToClients();
     this.activeRoute = NavigationService.CRM;
   }
 

@@ -17,7 +17,7 @@ export class AmlFormConfigService extends AbstractCrudService<AmlFormConfig> {
   }
 
 
-  getFormConfigByClientTypeAndSector(typeClient: string, secteurActivite: string): Observable<AmlFormConfig> {
+  findFormConfigByClientTypeAndSector(typeClient: string, secteurActivite: string): Observable<AmlFormConfig> {
     return this.http.get<AmlFormConfig>(`${this.apiUrl}/by-client-type-and-sector/${typeClient}/${secteurActivite}`);
   }
 

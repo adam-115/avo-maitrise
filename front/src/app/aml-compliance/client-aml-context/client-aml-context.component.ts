@@ -21,8 +21,6 @@ export class ClientAmlContextComponent implements OnInit {
 
     private readonly activatedRoute = inject(ActivatedRoute);
     private readonly router = inject(Router);
-
-
     private readonly clientService = inject(ClientService);
     private readonly mappingFormService = inject(MappingFormService);
     private readonly alertService = inject(AlertService);
@@ -77,7 +75,7 @@ export class ClientAmlContextComponent implements OnInit {
             next: (amlFormConfigs: AmlFormConfig[]) => {
                 if (amlFormConfigs.length == 0) {
                     this.alertService.displayMessage('Attention', 'Aucune configuration AML trouvée pour le type ' + this.selectedClient?.type + ' / ' + this.selectedClient?.secteurActivite + '.', 'warning');
-                    this.navigationService.navigateTOClients();
+                    this.navigationService.navigateToClients();
                     this.isLoading = false;
                     return;
                 }
