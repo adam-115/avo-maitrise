@@ -2,8 +2,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AmlFormResult, Client } from '../../appTypes';
+import { AmlFormConfig, AmlFormResult, Client } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
+import { AmlFormConfigService } from '../../services/AmlFormConfigService';
 import { AmlFormResultService } from '../../services/aml-form-result-result-service';
 import { ClientService } from '../../services/client-service';
 import { NavigationService } from '../../services/navigation-service';
@@ -20,11 +21,13 @@ export class ClientAmlResult implements OnInit {
     private readonly amlResultService = inject(AmlFormResultService);
     private readonly alertService = inject(AlertService);
     private readonly navigationService = inject(NavigationService);
+    private readonly amlFormConfigService = inject(AmlFormConfigService);
 
 
     client: Client | null = null;
     amlResults: AmlFormResult[] = [];
     isLoading = true;
+    formConfigs: Map<number, AmlFormConfig> = new Map();
 
     ngOnInit(): void {
         this.loadData();
@@ -54,6 +57,7 @@ export class ClientAmlResult implements OnInit {
         this.amlResultService.findByClientId(clientId).subscribe({
             next: (results) => {
                 this.amlResults = results;
+                this.loadFormConfigs(results);
                 this.isLoading = false;
             },
             error: (err) => {
@@ -63,6 +67,31 @@ export class ClientAmlResult implements OnInit {
                 this.alertService.displayMessage('error', 'Failed to load AML results', 'error');
             }
         });
+    }
+
+    private loadFormConfigs(results: AmlFormResult[]): void {
+        const configIds = new Set(results.map(r => r.amlFormConfigID).filter(id => id !== undefined) as number[]);
+
+        configIds.forEach(id => {
+            if (!this.formConfigs.has(id)) {
+                this.amlFormConfigService.findById(id).subscribe({
+                    next: (config) => {
+                        this.formConfigs.set(id, config);
+                    },
+                    error: (err) => console.error(`Error loading config ${id}`, err)
+                });
+            }
+        });
+    }
+
+    getQuestionLabel(configId: number | undefined, inputConfigId: string): string {
+        if (!configId) return inputConfigId;
+
+        const config = this.formConfigs.get(configId);
+        if (!config) return inputConfigId;
+
+        const inputConfig = config.inputConfigs.find(ic => ic.id === inputConfigId || ic.name === inputConfigId);
+        return inputConfig ? inputConfig.labelMessage : inputConfigId;
     }
 
     private handleError(message: string): void {

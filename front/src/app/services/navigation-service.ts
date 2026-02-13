@@ -121,7 +121,7 @@ export class NavigationService {
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
 
-  navigateToClientAMLResult(id: string) {
+  navigateToClientAMLReviewResult(id: string) {
     let targetUrl = NavigationService.CLIENT_AML_RESULT.replace(":id", id);
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }

@@ -4569,6 +4569,52 @@
         }
       ],
       "clientId": "e466"
+    },
+    {
+      "id": "d19d",
+      "amlFormConfigID": "43324",
+      "totalScore": 111,
+      "AmlPageConfigValues": [
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceew7uwiz938c",
+          "value": "Épargne personnelle"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gcegzsi766hdb8",
+          "value": "Oui"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceq9f4ruahwjj",
+          "value": "10 000 € - 50 000 €"
+        }
+      ],
+      "clientId": "9808"
+    },
+    {
+      "id": "fb62",
+      "amlFormConfigID": "43324",
+      "totalScore": 74,
+      "AmlPageConfigValues": [
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceew7uwiz938c",
+          "value": "Inconnue / Non justifiée"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gcegzsi766hdb8",
+          "value": "Non"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceq9f4ruahwjj",
+          "value": "> 150 000 €"
+        }
+      ],
+      "clientId": "9808"
     }
   ],
   "type_client": [

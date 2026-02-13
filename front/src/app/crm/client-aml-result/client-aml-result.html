@@ -146,7 +146,7 @@
                         <div class="bg-white p-4 rounded-xl border border-slate-100">
                             <p class="text-[10px] uppercase tracking-wider font-bold text-slate-400 mb-1">
                                 <!-- Ideally, fetch the label from config using InputConfigID, but for now displaying ID or Value -->
-                                Question ID: {{ val.InputConfigID }}
+                                {{ getQuestionLabel(val.amlFormConfig, val.InputConfigID) }}
                             </p>
                             <p class="font-medium text-slate-700 text-sm break-words">{{ val.value }}</p>
                         </div>
