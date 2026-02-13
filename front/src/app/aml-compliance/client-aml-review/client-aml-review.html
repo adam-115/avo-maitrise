@@ -20,15 +20,15 @@
                         réglementaire.</p>
                 </div>
 
-                <!-- @if (clientFormConfigs?.length > 1) {
+                @if (clientFormConfigs && clientFormConfigs.length > 0) {
                 <div class="w-full md:w-auto min-w-[250px]">
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Type de
-                        Formulaire</label>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Apply an other
+                        aml config</label>
                     <div class="relative">
-                        <select (change)="onConfigChange($event)" [value]="selectedFormConfig?.id"
+                        <select [(ngModel)]="selectedAMlFomConfig" (ngModelChange)="onConfigChange()"
                             class="appearance-none w-full bg-white border border-slate-300 text-slate-700 py-2 pl-4 pr-8 rounded-lg font-bold focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent cursor-pointer shadow-sm">
-                            @for (config of availableFormConfigs; track config.id) {
-                            <option [value]="config.id">
+                            @for (config of clientFormConfigs; track config.id) {
+                            <option [ngValue]="config">
                                 {{ config.formName }}
                             </option>
                             }
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                 </div>
-                } -->
+                }
             </div>
         </div>
 

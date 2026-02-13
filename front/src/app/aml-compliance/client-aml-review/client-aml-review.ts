@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, Client, FieldScore } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
@@ -11,7 +11,7 @@ import { AmlFormResultService } from '../../services/aml-form-result-result-serv
 
 @Component({
   selector: 'app-client-aml-review',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './client-aml-review.html',
   styleUrl: './client-aml-review.css',
 })
@@ -32,6 +32,7 @@ export class ClientAmlReview implements OnInit {
   client: Client | null = null;
   clientFormConfigs: AmlFormConfig[] = [];
   fieldScores: FieldScore[] = [];
+
 
   constructor() {
     this.dynamicForm = this.fb.group({});
@@ -94,6 +95,15 @@ export class ClientAmlReview implements OnInit {
         this.alertService.displayMessage("error", "no form config found for client with id " + client.id, "error");
       }
     });
+  }
+
+
+
+  onConfigChange(): void {
+    if (this.selectedAMlFomConfig) {
+      this.buildDynamicForm();
+      this.calculateRiskScore();
+    }
   }
 
 
