@@ -240,3 +240,62 @@ export enum ClientStatus {
 }
 
 
+//****** Indilgence part  ******/
+// export interface FormElement {
+//   id: string;
+//   type: 'text' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'label';
+//   label: string;
+//   placeholder?: string;
+//   options?: string[]; // Pour select/radio
+//   value?: any;
+//   required?: boolean;
+// }
+
+
+export enum FormType {
+  AML = 'AML',
+  INDULGENCE = 'INDULGENCE',
+}
+
+
+export interface FormConfig {
+  id?: string;
+  type: FormType;
+  name: string;
+  title: string;
+  description: string;
+  fields: FieldConfig[];
+  creationDate: Date;
+  lastUpdateDate: Date;
+}
+
+
+
+// field-config.model.ts
+export interface FieldConfig {
+  id?: string;
+  name?: string;
+  type: 'text' | 'number' | 'textarea' | 'select' | 'radio' | 'checkbox';
+  label: string;
+  required: boolean;
+  errorMessage: string;
+  placeholder?: string;
+  options?: FieldOption[]; // Pour select et radio
+}
+
+
+export interface FieldOption {
+  id?: string;
+  name?: string;
+  fieldConfigId?: number;
+  value: any;
+}
+
+export interface FieldResult {
+  id?: number;
+  fieldConfigId: string;
+  fieldOptionId?: string;
+  value: any;
+}
+
+
