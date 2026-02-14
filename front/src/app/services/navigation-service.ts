@@ -49,7 +49,7 @@ export class NavigationService {
   public static readonly ADMIN_SECTEUR_ATIVITE = "admin_secteur_activite";
   public static readonly CLIENT_AML_REVIEW = "client-aml-review/:id";
   public static readonly CLIENT_AML_RESULT = "client-aml-result/:id";
-  public static readonly DILIGENCE_FORM_BUILDER = "diligence-form-builder";
+  public static readonly DILIGENCE_FORM_BUILDER = "diligence-form-builder/:id";
 
 
 

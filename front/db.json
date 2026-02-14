@@ -5164,5 +5164,27 @@
       "documents": []
     }
   ],
-  "AmlPageConfigResult": []
+  "AmlPageConfigResult": [],
+  "formConfig": [
+    {
+      "id": "0a1d",
+      "name": "ddd",
+      "title": "ddd",
+      "description": "ddd",
+      "type": "AML",
+      "clientId": "0022",
+      "fields": [
+        {
+          "name": "sss",
+          "type": "text",
+          "label": "sss",
+          "required": false,
+          "errorMessage": "Ce champ est obligatoire",
+          "id": "mlml6mae-ffia59r"
+        }
+      ],
+      "creationDate": "2026-02-14T17:24:47.741Z",
+      "lastUpdateDate": "2026-02-14T17:24:47.741Z"
+    }
+  ]
 }
