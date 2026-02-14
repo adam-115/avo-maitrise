@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NewDiligenceField } from "../new-diligence-field/new-diligence-field";
 import { UtilsService } from '../../services/utils-service';
-import { FieldConfig } from '../../appTypes';
+import { FieldConfig, FormConfig, FormType } from '../../appTypes';
 
 
 
@@ -15,7 +15,12 @@ import { FieldConfig } from '../../appTypes';
 })
 export class DiligenceFormBuilderComponent implements OnInit {
 
+  configForm!: FormGroup;
   diligenceForm!: FormGroup;
+
+  // Expose FormType for the template
+  FormType = FormType;
+  formTypeOptions = Object.values(FormType);
   fb = inject(FormBuilder);
   utilsService = inject(UtilsService);
 
@@ -24,6 +29,17 @@ export class DiligenceFormBuilderComponent implements OnInit {
 
 
   ngOnInit(): void {
+    const generatedId = this.utilsService.generateTimestampId();
+    // Initialize the form configuration form
+    this.configForm = this.fb.group({
+      id: [{ value: generatedId, disabled: true }],
+      name: ['', [Validators.required, Validators.minLength(3)]],
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      description: ['', [Validators.required]],
+      type: [FormType.AML, [Validators.required]]
+    });
+
+    // Initialize the fields form (will be dynamic)
     this.diligenceForm = this.fb.group({});
 
   }
@@ -79,9 +95,46 @@ export class DiligenceFormBuilderComponent implements OnInit {
     return fied;
   }
 
+  onRemoveField(index: number, field: FieldConfig) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer ce champ ?')) {
+      // Remove form controls
+      if (field.type === 'checkbox' && field.options) {
+        field.options.forEach(opt => {
+          if (opt.id) this.diligenceForm.removeControl(opt.id);
+        });
+      } else {
+        if (field.id) this.diligenceForm.removeControl(field.id);
+      }
+
+      // Remove from list
+      this.formFields.splice(index, 1);
+    }
+  }
+
   onSubmit() {
+    if (this.configForm.invalid) {
+      this.configForm.markAllAsTouched();
+      alert('Veuillez remplir les informations du formulaire.');
+      return;
+    }
+
+    if (this.diligenceForm.invalid) {
+      this.diligenceForm.markAllAsTouched();
+      alert('Veuillez vérifier les champs du formulaire.');
+      return;
+    }
+
+    const formConfig: FormConfig = {
+      ...this.configForm.value,
+      fields: this.formFields,
+      creationDate: new Date(),
+      lastUpdateDate: new Date()
+    };
+
+    console.log('Form Configuration:', formConfig);
+    console.log('Form Values:', this.diligenceForm.value);
+
     alert('Form submitted! Check console for values.');
-    console.log(this.diligenceForm.value);
   }
 
 

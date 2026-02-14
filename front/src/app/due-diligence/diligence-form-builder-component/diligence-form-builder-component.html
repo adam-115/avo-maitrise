@@ -28,109 +28,228 @@
       </button>
     </div>
 
-    <app-new-diligence-field *ngIf="showDialog" (close)="showDialog = false" (fieldAdded)="onAddField($event)">
-    </app-new-diligence-field>
+  </div>
 
-    <form [formGroup]="diligenceForm" (ngSubmit)="onSubmit()"
-      class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+  <!-- Configuration du Formulaire (Méta-données) -->
+  <form [formGroup]="configForm" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+    <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-500" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      Paramètres Généraux
+    </h2>
 
-      <div class="p-6 md:p-8 space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <div *ngIf="formFields.length === 0"
-          class="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 group hover:border-cyan-300 hover:bg-cyan-50/30 transition-all cursor-pointer"
-          (click)="showDialog = true">
-          <div
-            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white shadow-sm mb-4 group-hover:scale-110 transition-transform duration-300">
-            <svg class="w-8 h-8 text-slate-300 group-hover:text-cyan-500 transition-colors" fill="none"
-              stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Identifiant (Lecture seule) -->
+      <div class="md:col-span-2">
+        <label class="block text-sm font-bold text-slate-700 mb-2">Identifiant Unique</label>
+        <div class="relative">
+          <input type="text" formControlName="id" readonly
+            class="w-full px-4 py-3 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 font-mono text-sm shadow-inner cursor-not-allowed">
+          <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-              </path>
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h3 class="text-lg font-bold text-slate-900 mb-1">Formulaire vide</h3>
-          <p class="text-slate-500 font-medium">Commencez par ajouter votre premier champ.</p>
         </div>
-
-        @for (field of formFields; track field.id) {
-        <div class="relative group animate-in fade-in slide-in-from-bottom-3 duration-500">
-
-          <label
-            class="block text-sm font-bold text-slate-700 mb-2.5 px-1 group-focus-within:text-cyan-600 transition-colors">
-            {{ field.label }}
-            <span *ngIf="field.required" class="text-cyan-500 ml-1" title="Obligatoire">*</span>
-          </label>
-
-          <ng-container [ngSwitch]="field.type">
-
-            <input *ngSwitchCase="'text'" type="text" [formControlName]="field.id!" [placeholder]="field.label"
-              class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-700">
-
-            <textarea *ngSwitchCase="'textarea'" [formControlName]="field.id!" [placeholder]="field.label" rows="3"
-              class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-700"></textarea>
-
-            <div *ngSwitchCase="'select'" class="relative">
-              <select [formControlName]="field.id!"
-                class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none appearance-none font-medium text-slate-700 cursor-pointer">
-                <option [ngValue]="null" disabled>Sélectionnez une option</option>
-                <option *ngFor="let opt of field.options" [value]="opt.id">{{ opt.value }}</option>
-              </select>
-              <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-
-            <div *ngSwitchCase="'radio'" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label *ngFor="let opt of field.options"
-                class="flex items-center p-3.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-300 hover:bg-cyan-50/30 transition-all group/opt">
-                <div class="relative flex items-center justify-center">
-                  <input type="radio" [formControlName]="field.id!" [value]="opt.id"
-                    class="peer h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 checked:border-cyan-500 transition-all">
-                  <div
-                    class="absolute w-2.5 h-2.5 rounded-full bg-cyan-500 opacity-0 peer-checked:opacity-100 transition-opacity">
-                  </div>
-                </div>
-                <span class="ml-3 text-sm text-slate-700 font-bold group-hover/opt:text-cyan-700">{{ opt.value }}</span>
-              </label>
-            </div>
-
-            <div *ngSwitchCase="'checkbox'" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label *ngFor="let opt of field.options"
-                class="flex items-center p-3.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-300 hover:bg-cyan-50/30 transition-all group/opt">
-                <input type="checkbox" [formControlName]="opt.id!"
-                  class="h-5 w-5 rounded border-slate-300 text-cyan-500 focus:ring-cyan-500 transition-all cursor-pointer">
-                <span class="ml-3 text-sm text-slate-700 font-bold group-hover/opt:text-cyan-700">{{ opt.value }}</span>
-              </label>
-            </div>
-
-          </ng-container>
-
-          <p *ngIf="diligenceForm.get(field.id!)?.touched && diligenceForm.get(field.id!)?.invalid"
-            class="mt-2 text-xs text-red-500 font-medium flex items-center gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd"
-                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                clip-rule="evenodd" />
-            </svg>
-            {{ field.errorMessage || 'Ce champ est requis' }}
-          </p>
-        </div>
+      </div>
+      <!-- Nom Technique -->
+      <div>
+        <label class="block text-sm font-bold text-slate-700 mb-2">Nom Technique <span
+            class="text-cyan-500">*</span></label>
+        <input type="text" formControlName="name" placeholder="ex: form_kyc_v1"
+          class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-700">
+        @if (configForm.get('name')?.touched && configForm.get('name')?.invalid) {
+        <p class="mt-1 text-xs text-red-500 font-medium">Le nom technique est requis (min 3 chars).</p>
         }
       </div>
 
-      <div *ngIf="formFields.length > 0" class="bg-slate-50 p-6 border-t border-slate-100 flex justify-end">
-        <button type="submit" [disabled]="diligenceForm.invalid"
-          class="w-full md:w-auto px-8 py-3.5 bg-slate-900 text-cyan-400 font-black rounded-xl hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all disabled:opacity-30 disabled:shadow-none flex justify-center items-center gap-3 transform hover:-translate-y-0.5 active:translate-y-0 text-sm uppercase tracking-wider">
-          Validation du formulaire
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        </button>
+      <!-- Titre Affiché -->
+      <div>
+        <label class="block text-sm font-bold text-slate-700 mb-2">Titre du Formulaire <span
+            class="text-cyan-500">*</span></label>
+        <input type="text" formControlName="title" placeholder="ex: Formulaire KYC Standard"
+          class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-700">
+        @if (configForm.get('title')?.touched && configForm.get('title')?.invalid) {
+        <p class="mt-1 text-xs text-red-500 font-medium">Le titre est requis.</p>
+        }
       </div>
 
-    </form>
-  </div>
+      <!-- Type de Formulaire -->
+      <div>
+        <label class="block text-sm font-bold text-slate-700 mb-2">Type de Formulaire <span
+            class="text-cyan-500">*</span></label>
+        <div class="relative">
+          <select formControlName="type"
+            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none appearance-none font-medium text-slate-700 cursor-pointer">
+            @for (type of formTypeOptions; track type) {
+            <option [value]="type">{{ type }}</option>
+            }
+          </select>
+          <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="md:col-span-2">
+        <label class="block text-sm font-bold text-slate-700 mb-2">Description <span
+            class="text-cyan-500">*</span></label>
+        <textarea formControlName="description" rows="3" placeholder="Description de l'usage de ce formulaire..."
+          class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-700"></textarea>
+        @if (configForm.get('description')?.touched && configForm.get('description')?.invalid) {
+        <p class="mt-1 text-xs text-red-500 font-medium">La description est requise.</p>
+        }
+      </div>
+    </div>
+  </form>
+
+
+  @if (showDialog) {
+  <app-new-diligence-field (close)="showDialog = false" (fieldAdded)="onAddField($event)">
+  </app-new-diligence-field>
+  }
+
+  <form [formGroup]="diligenceForm" (ngSubmit)="onSubmit()"
+    class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+
+    <div class="p-6 md:p-8 space-y-8">
+
+      @if (formFields.length === 0) {
+      <div
+        class="text-center py-16 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50 group hover:border-cyan-300 hover:bg-cyan-50/30 transition-all cursor-pointer"
+        (click)="showDialog = true">
+        <div
+          class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white shadow-sm mb-4 group-hover:scale-110 transition-transform duration-300">
+          <svg class="w-8 h-8 text-slate-300 group-hover:text-cyan-500 transition-colors" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+            </path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-bold text-slate-900 mb-1">Formulaire vide</h3>
+        <p class="text-slate-500 font-medium">Commencez par ajouter votre premier champ.</p>
+      </div>
+      }
+
+      @for (field of formFields; track field.id) {
+      <div class="relative group animate-in fade-in slide-in-from-bottom-3 duration-500">
+
+        <div class="flex justify-between items-center mb-2.5">
+          <label class="block text-sm font-bold text-slate-700 px-1 group-focus-within:text-cyan-600 transition-colors">
+            {{ field.label }}
+            @if (field.required) {
+            <span class="text-cyan-500 ml-1" title="Obligatoire">*</span>
+            }
+          </label>
+          <button (click)="onRemoveField($index, field)" type="button"
+            class="text-slate-400 hover:text-red-500 transition-colors p-1 rounded-full hover:bg-red-50"
+            title="Supprimer ce champ">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+
+        @switch (field.type) {
+        @case ('text') {
+        <input type="text" [formControlName]="field.id!" [placeholder]="field.label"
+          class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-700">
+        }
+
+        @case ('textarea') {
+        <textarea [formControlName]="field.id!" [placeholder]="field.label" rows="3"
+          class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-700"></textarea>
+        }
+
+        @case ('select') {
+        <div class="relative">
+          <select [formControlName]="field.id!"
+            class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none appearance-none font-medium text-slate-700 cursor-pointer">
+            <option [ngValue]="null" disabled>Sélectionnez une option</option>
+            @for (opt of field.options; track opt.id) {
+            <option [value]="opt.id">{{ opt.value }}</option>
+            }
+          </select>
+          <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
+        }
+
+        @case ('radio') {
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          @for (opt of field.options; track opt.id) {
+          <label
+            class="flex items-center p-3.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-300 hover:bg-cyan-50/30 transition-all group/opt">
+            <div class="relative flex items-center justify-center">
+              <input type="radio" [formControlName]="field.id!" [value]="opt.id"
+                class="peer h-5 w-5 cursor-pointer appearance-none rounded-full border border-slate-300 checked:border-cyan-500 transition-all">
+              <div
+                class="absolute w-2.5 h-2.5 rounded-full bg-cyan-500 opacity-0 peer-checked:opacity-100 transition-opacity">
+              </div>
+            </div>
+            <span class="ml-3 text-sm text-slate-700 font-bold group-hover/opt:text-cyan-700">{{ opt.value }}</span>
+          </label>
+          }
+        </div>
+        }
+
+        @case ('checkbox') {
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          @for (opt of field.options; track opt.id) {
+          <label
+            class="flex items-center p-3.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-300 hover:bg-cyan-50/30 transition-all group/opt">
+            <input type="checkbox" [formControlName]="opt.id!"
+              class="h-5 w-5 rounded border-slate-300 text-cyan-500 focus:ring-cyan-500 transition-all cursor-pointer">
+            <span class="ml-3 text-sm text-slate-700 font-bold group-hover/opt:text-cyan-700">{{ opt.value }}</span>
+          </label>
+          }
+        </div>
+        }
+
+        }
+
+        @if (diligenceForm.get(field.id!)?.touched && diligenceForm.get(field.id!)?.invalid) {
+        <p class="mt-2 text-xs text-red-500 font-medium flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clip-rule="evenodd" />
+          </svg>
+          {{ field.errorMessage || 'Ce champ est requis' }}
+        </p>
+        }
+      </div>
+      }
+    </div>
+
+    @if (formFields.length > 0) {
+    <div class="bg-slate-50 p-6 border-t border-slate-100 flex justify-end">
+      <button type="submit" [disabled]="diligenceForm.invalid"
+        class="w-full md:w-auto px-8 py-3.5 bg-slate-900 text-cyan-400 font-black rounded-xl hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all disabled:opacity-30 disabled:shadow-none flex justify-center items-center gap-3 transform hover:-translate-y-0.5 active:translate-y-0 text-sm uppercase tracking-wider">
+        Validation du formulaire
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </button>
+    </div>
+    }
+
+  </form>
 </div>
