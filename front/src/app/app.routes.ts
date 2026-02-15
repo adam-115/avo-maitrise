@@ -175,10 +175,10 @@ export const routes: Routes = [
         path: NavigationService.FORM_CONFIG_VIEW,
         component: AmlFormViewComponent
       },
-      {
-        path: 'client-aml-context/:id',
-        component: ClientAmlContextComponent
-      },
+      // {
+      //   path: 'client-aml-context/:id',
+      //   component: ClientAmlContextComponent
+      // },
       {
         path: NavigationService.CLIENT_AML_REVIEW,
         component: ClientAmlReview

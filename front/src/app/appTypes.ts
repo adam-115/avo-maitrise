@@ -227,7 +227,7 @@ export enum ClientStatus {
   AML_REQUIRED = 'AML_REQUIRED', // Client créé, mais questionnaire AML non rempli.
 
   // Phase de Traitement AML
-  VERIFICATION_REQUIRED = 'VERIFICATION_REQUIRED', // Formulaire rempli, score calculé, en attente de revue.
+  VERIFICATION_AML_REQUIRED = 'VERIFICATION_AML_REQUIRED', // Formulaire rempli, score calculé, en attente de revue.
   AML_VALIDATED = 'AML_VALIDATED',               // Conformité validée (standard).
 
   // Phase d'Indulgence (Dérogation)

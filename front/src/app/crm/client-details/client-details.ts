@@ -135,8 +135,8 @@ export class ClientDetails implements OnInit {
     });
   }
 
-  startComplianceReview() {
-    this.router.navigate(['home', 'client-aml-context', this.client?.id]);
+  startAmlReview() {
+    this.navigationService.navigateToClientAMLReview(this.client?.id!);
   }
 
   editClient() {

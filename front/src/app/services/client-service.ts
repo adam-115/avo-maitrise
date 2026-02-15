@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Client } from '../appTypes';
+import { Observable } from 'rxjs';
+import { Client, ClientStatus } from '../appTypes';
 import { AbstractCrudService } from './genericService/abstract-crud.service';
 
 @Injectable({
@@ -12,5 +13,9 @@ export class ClientService extends AbstractCrudService<Client> {
 
     constructor(http: HttpClient) {
         super(http);
+    }
+
+    updateClientStatus(id: string, status: ClientStatus): Observable<Client> {
+        return this.http.patch<Client>(`${this.apiUrl}/${id}`, { clientStatus: status });
     }
 }

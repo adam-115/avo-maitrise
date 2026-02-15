@@ -196,7 +196,6 @@ export class ClientFormComponent implements OnInit {
             const formValue = this.clientForm.getRawValue();
             formValue.clientStatus = ClientStatus.AML_REQUIRED;
             formValue.documents = this.documents;
-
             this.clientService.create(formValue).subscribe({
                 next: (newClient: Client) => {
                     this.navigationService.navigateToClientDetails(newClient.id);

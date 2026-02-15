@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, Client, FieldScore } from '../../appTypes';
+import { AmlFormConfig, AmlFormResult, AmlInputConfig, AMLInputOption, AmlInputValue, Client, ClientStatus, FieldScore } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
 import { ClientService } from '../../services/client-service';
 import { MappingFormService } from '../../services/mapping-form-service';
@@ -243,8 +243,23 @@ export class ClientAmlReview implements OnInit {
 
     this.amlResultService.create(amlPageConfigResult).subscribe({
       next: (response) => {
-        this.alertService.displayMessage("Succès", "Le formulaire a été soumis avec succès !", 'success');
-        this.navigationService.navigateToClients();
+        this.clientService.updateClientStatus(this.client?.id!, ClientStatus.VERIFICATION_AML_REQUIRED).subscribe({
+          next: (response) => {
+            this.clientService.updateClientStatus(this.client?.id!, ClientStatus.AML_VALIDATED).subscribe({
+              next: (response) => {
+                this.alertService.displayMessage("Succès", "Le formulaire a été soumis avec succès !", 'success');
+                this.navigationService.navigateToClients();
+              },
+              error: (err) => {
+                error = true;
+              }
+            });
+
+          },
+          error: (err) => {
+            error = true;
+          }
+        });
       },
       error: (err) => {
         error = true;

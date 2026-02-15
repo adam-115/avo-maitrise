@@ -4615,6 +4615,29 @@
         }
       ],
       "clientId": "9808"
+    },
+    {
+      "id": "679a",
+      "amlFormConfigID": "98112",
+      "totalScore": 111,
+      "AmlPageConfigValues": [
+        {
+          "amlFormConfig": "98112",
+          "InputConfigID": "ml6w9gcj9dwdpg4pjk",
+          "value": "Épargne personnelle"
+        },
+        {
+          "amlFormConfig": "98112",
+          "InputConfigID": "ml6w9gcj34nftkph4bb",
+          "value": "Oui"
+        },
+        {
+          "amlFormConfig": "98112",
+          "InputConfigID": "ml6w9gcjrcd4ibig4r",
+          "value": "10 000 € - 50 000 €"
+        }
+      ],
+      "clientId": "15a9"
     }
   ],
   "type_client": [
@@ -5162,6 +5185,37 @@
       "contacts": [],
       "clientStatus": "AML_REQUIRED",
       "documents": []
+    },
+    {
+      "id": "15a9",
+      "type": "ASSOCIATION",
+      "nom": "zzz",
+      "prenom": "",
+      "email": "adam.laftimi@gmail.com",
+      "telephone": "691209800",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "BANQUE",
+      "riskScore": 0,
+      "ubos": [
+        {
+          "nom": "adam laftimi",
+          "partDetention": 15,
+          "isPPE": false
+        },
+        {
+          "nom": "ddd",
+          "partDetention": 15,
+          "isPPE": false
+        },
+        {
+          "nom": "ccc",
+          "partDetention": 0,
+          "isPPE": false
+        }
+      ],
+      "contacts": [],
+      "clientStatus": "AML_VALIDATED",
+      "documents": []
     }
   ],
   "AmlPageConfigResult": [],
@@ -5237,6 +5291,19 @@
         {
           "fieldConfigId": "mlml6mae-ffia59r",
           "value": "fff"
+        }
+      ]
+    },
+    {
+      "id": "933a",
+      "formConfigId": "0a1d",
+      "clientId": "9808",
+      "creationDate": "2026-02-15T20:46:47.943Z",
+      "lastUpdateDate": "2026-02-15T20:46:47.943Z",
+      "fieldResults": [
+        {
+          "fieldConfigId": "mlml6mae-ffia59r",
+          "value": ""
         }
       ]
     }

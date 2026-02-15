@@ -23,7 +23,7 @@
         </div>
 
         <div class="flex space-x-3">
-            <button (click)="startComplianceReview()"
+            <button (click)="startAmlReview()"
                 class="px-5 py-2.5 rounded-lg text-sm font-medium text-red-700 bg-red-100 hover:bg-red-200 transition duration-150 border border-red-300">
                 Lancer une Nouvelle Revue AML
             </button>
@@ -74,7 +74,7 @@
                     <div class="mt-1">
                         <span class="px-2 py-1 text-sm font-bold rounded-full" [ngClass]="{
                             'bg-green-100 text-green-800': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
-                            'bg-yellow-100 text-yellow-800': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_REQUIRED',
+                            'bg-yellow-100 text-yellow-800': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
                             'bg-red-100 text-red-800': client.clientStatus === 'BLOCKED'
                           }">
                             {{ client.clientStatus }}
