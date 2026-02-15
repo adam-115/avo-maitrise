@@ -50,6 +50,7 @@ export class NavigationService {
   public static readonly CLIENT_AML_REVIEW = "client-aml-review/:id";
   public static readonly CLIENT_AML_RESULT = "client-aml-result/:id";
   public static readonly DILIGENCE_FORM_BUILDER = "diligence-form-builder/:id";
+  public static readonly DILIGENCE_FORM_VIEWER = "diligence-form-viewer/:id";
 
 
 
@@ -129,6 +130,11 @@ export class NavigationService {
 
   navigateToDiligenceFormBuilder() {
     this.router.navigate(['/home/', NavigationService.DILIGENCE_FORM_BUILDER]);
+  }
+
+  navigateToDiligenceFormViewer(id: string) {
+    let targetUrl = NavigationService.DILIGENCE_FORM_VIEWER.replace(":id", id);
+    this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
 
 

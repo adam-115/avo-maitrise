@@ -36,6 +36,7 @@ import { Test } from './test/test';
 import { ClientAmlReview } from './aml-compliance/client-aml-review/client-aml-review';
 import { ClientAmlResult } from './crm/client-aml-result/client-aml-result';
 import { DiligenceFormBuilderComponent } from './due-diligence/diligence-form-builder-component/diligence-form-builder-component';
+import { DiligenceFormViewerComponent } from './due-diligence/diligence-form-viewer/diligence-form-viewer.component';
 
 export const routes: Routes = [
   {
@@ -187,6 +188,10 @@ export const routes: Routes = [
       {
         path: NavigationService.DILIGENCE_FORM_BUILDER,
         component: DiligenceFormBuilderComponent
+      },
+      {
+        path: NavigationService.DILIGENCE_FORM_VIEWER,
+        component: DiligenceFormViewerComponent
       }
     ]
 
