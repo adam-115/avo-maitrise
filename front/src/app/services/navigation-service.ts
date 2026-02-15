@@ -51,6 +51,8 @@ export class NavigationService {
   public static readonly CLIENT_AML_RESULT = "client-aml-result/:id";
   public static readonly DILIGENCE_FORM_BUILDER = "diligence-form-builder/:id";
   public static readonly DILIGENCE_FORM_VIEWER = "diligence-form-viewer/:id";
+  public static readonly CLIENT_DILIGENCE_RESULTS = "client-diligence-results/:id";
+  public static readonly DILIGENCE_FORM_RESULT_VIEWER = "diligence-form-result-viewer/:id";
 
 
 
@@ -134,6 +136,16 @@ export class NavigationService {
 
   navigateToDiligenceFormViewer(id: string) {
     let targetUrl = NavigationService.DILIGENCE_FORM_VIEWER.replace(":id", id);
+    this.router.navigate(['/home/', ...targetUrl.split("/")]);
+  }
+
+  navigateToClientDiligenceResults(id: string) {
+    let targetUrl = NavigationService.CLIENT_DILIGENCE_RESULTS.replace(":id", id);
+    this.router.navigate(['/home/', ...targetUrl.split("/")]);
+  }
+
+  navigateToDiligenceFormResultViewer(id: string) {
+    let targetUrl = NavigationService.DILIGENCE_FORM_RESULT_VIEWER.replace(":id", id);
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
 

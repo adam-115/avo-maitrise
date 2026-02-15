@@ -1,0 +1,123 @@
+<div class="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8 font-sans">
+    <div class="max-w-4xl mx-auto">
+
+        @if (loading) {
+        <div class="flex flex-col items-center justify-center py-20">
+            <div class="spinner border-4 border-slate-200 border-t-cyan-500 rounded-full w-12 h-12 animate-spin mb-4">
+            </div>
+            <p class="text-slate-500 font-medium">Chargement des résultats...</p>
+        </div>
+        } @else if (result && formConfig) {
+
+        <!-- En-tête avec Navigation -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <button (click)="goBack()"
+                class="inline-flex items-center text-slate-500 hover:text-slate-800 font-bold transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Retour
+            </button>
+
+            <div class="text-right">
+                <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-cyan-100 text-cyan-800">
+                    Soumis le : {{ result.creationDate | date:'dd/MM/yyyy HH:mm' }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Titre du Formulaire -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight mb-2">
+                {{ formConfig.title }}
+            </h1>
+            <p class="text-slate-500 font-medium max-w-2xl mx-auto">
+                {{ formConfig.description }}
+            </p>
+        </div>
+
+        <!-- Informations Client (si disponible) -->
+        @if (client) {
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8">
+            <div class="flex items-center gap-3 mb-4 border-b border-slate-100 pb-4">
+                <div class="p-2 bg-slate-100 rounded-lg text-slate-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                </div>
+                <h2 class="text-lg font-bold text-slate-800">Client : {{ client.nom }} {{ client.prenom }}</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <span class="text-slate-400 font-bold uppercase text-xs">Email</span>
+                    <p class="font-medium text-slate-700">{{ client.email || '-' }}</p>
+                </div>
+                <div>
+                    <span class="text-slate-400 font-bold uppercase text-xs">Téléphone</span>
+                    <p class="font-medium text-slate-700">{{ client.telephone || '-' }}</p>
+                </div>
+            </div>
+        </div>
+        }
+
+        <!-- Réponses du Formulaire -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 md:p-8 space-y-8">
+
+                @for (field of formConfig.fields; track field.id) {
+                <div class="pb-6 border-b border-slate-100 last:border-0 last:pb-0">
+                    <h3 class="text-base font-bold text-slate-800 mb-2">{{ field.label }}</h3>
+
+                    <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                        @switch (field.type) {
+                        @case ('checkbox') {
+                        <!-- Checkbox logic: display stored checks -->
+                        <div class="space-y-2">
+                            @for (opt of field.options; track opt.id) {
+                            <div class="flex items-center">
+                                <div class="h-5 w-5 rounded border flex items-center justify-center mr-3"
+                                    [ngClass]="getFieldOptionResult(field.id!, opt.id!) ? 'bg-cyan-500 border-cyan-500 text-white' : 'border-slate-300 bg-white'">
+                                    @if (getFieldOptionResult(field.id!, opt.id!)) {
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    }
+                                </div>
+                                <span class="text-sm font-medium"
+                                    [ngClass]="getFieldOptionResult(field.id!, opt.id!) ? 'text-slate-800' : 'text-slate-500'">
+                                    {{ opt.value }}
+                                </span>
+                            </div>
+                            }
+                        </div>
+                        }
+                        @default {
+                        <p class="text-slate-700 font-medium">
+                            {{ getDisplayValue(field) }}
+                        </p>
+                        }
+                        }
+                    </div>
+                </div>
+                }
+
+            </div>
+        </div>
+
+        } @else {
+        <div class="text-center py-20">
+            <h3 class="text-xl font-bold text-slate-700">Résultat introuvable</h3>
+            <button (click)="goBack()" class="mt-4 text-cyan-600 font-bold hover:underline">Retour</button>
+        </div>
+        }
+
+    </div>
+</div>

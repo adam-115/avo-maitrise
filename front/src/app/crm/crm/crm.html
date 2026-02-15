@@ -140,9 +140,11 @@
 
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <a (click)="navigateToClientDetails(client)"
-                            class="text-cyan-600 hover:text-cyan-900 mr-4">Voir</a>
+                            class="text-cyan-600 hover:text-cyan-900 mr-4 cursor-pointer">Voir</a>
                         <button (click)="navigateToAMLReview(client.id)"
-                            class="text-red-600 hover:text-red-900">AML</button>
+                            class="text-red-600 hover:text-red-900 mr-4">AML</button>
+                        <button (click)="navigateToClientDiligenceResults(client.id)"
+                            class="text-slate-600 hover:text-slate-900">Due Diligence</button>
                     </td>
                 </tr>
                 }

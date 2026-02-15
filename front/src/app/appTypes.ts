@@ -300,3 +300,12 @@ export interface FieldResult {
 }
 
 
+
+export interface DiligenceFormResult {
+  id?: string;
+  formConfigId: string;
+  clientId?: string;
+  creationDate: Date;
+  lastUpdateDate: Date;
+  fieldResults: FieldResult[];
+}

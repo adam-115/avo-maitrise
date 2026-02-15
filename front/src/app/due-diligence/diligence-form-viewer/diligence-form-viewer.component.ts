@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { FieldConfig, FormConfig } from '../../appTypes';
+import { Client, DiligenceFormResult, FieldConfig, FieldResult, FormConfig } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
 import { FormConfigService } from '../../services/form-config-service';
 import { NavigationService } from '../../services/navigation-service';
+import { ClientService } from '../../services/client-service';
+import { FormResultService } from '../../services/form-result-service';
 
 @Component({
     selector: 'app-diligence-form-viewer',
@@ -16,12 +18,16 @@ import { NavigationService } from '../../services/navigation-service';
 export class DiligenceFormViewerComponent implements OnInit {
     formConfig: FormConfig | null = null;
     diligenceForm: FormGroup = new FormGroup({});
+    selectedClient: Client | null = null;
 
     private route = inject(ActivatedRoute);
     private fb = inject(FormBuilder);
     private formConfigService = inject(FormConfigService);
     private alertService = inject(AlertService);
     private navigationService = inject(NavigationService);
+    private clientService = inject(ClientService);
+    private formResultService = inject(FormResultService);
+
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(params => {
@@ -39,12 +45,26 @@ export class DiligenceFormViewerComponent implements OnInit {
         this.formConfigService.findById(id).subscribe({
             next: (config) => {
                 this.formConfig = config;
+                if (config.clientId) {
+                    this.loadClient(config.clientId);
+                }
                 this.buildForm(config.fields);
             },
             error: (err) => {
                 console.error('Error loading form config', err);
                 this.alertService.displayMessage('Erreur', 'Impossible de charger le formulaire', 'error');
                 this.navigationService.navigateToFormConfigList();
+            }
+        });
+    }
+
+    private loadClient(clientId: string) {
+        this.clientService.findById(clientId).subscribe({
+            next: (client) => {
+                this.selectedClient = client;
+            },
+            error: (err) => {
+                console.error('Error loading client', err);
             }
         });
     }
@@ -98,8 +118,55 @@ export class DiligenceFormViewerComponent implements OnInit {
             return;
         }
 
-        console.log('Form Values:', this.diligenceForm.value);
-        this.alertService.displayMessage('Succès', 'Formulaire soumis avec succès (voir console)', 'success');
-        // Implement actual submission logic here
+        const fieldResults: FieldResult[] = this.mapToFieldResults();
+
+        const result: DiligenceFormResult = {
+            formConfigId: this.formConfig!.id!,
+            clientId: this.selectedClient?.id,
+            creationDate: new Date(),
+            lastUpdateDate: new Date(),
+            fieldResults: fieldResults
+        };
+
+        this.formResultService.create(result).subscribe({
+            next: (res) => {
+                this.alertService.displayMessage('Succès', 'Formulaire soumis avec succès', 'success');
+                this.navigationService.navigateToFormConfigList();
+            },
+            error: (err) => {
+                console.error('Error saving result', err);
+                this.alertService.displayMessage('Erreur', 'Erreur lors de l\'enregistrement', 'error');
+            }
+        });
+    }
+
+    private mapToFieldResults(): FieldResult[] {
+        const results: FieldResult[] = [];
+        const formValue = this.diligenceForm.value;
+
+        if (!this.formConfig) return [];
+
+        this.formConfig.fields.forEach(field => {
+            if (field.id && formValue.hasOwnProperty(field.id)) {
+                // Handle standard fields (text, textarea, select, radio)
+                results.push({
+                    fieldConfigId: field.id,
+                    value: formValue[field.id]
+                });
+            } else if (field.type === 'checkbox' && field.options) {
+                // Handle checkboxes (multiple options)
+                field.options.forEach(opt => {
+                    if (opt.id && formValue.hasOwnProperty(opt.id)) {
+                        results.push({
+                            fieldConfigId: field.id!,
+                            fieldOptionId: opt.id,
+                            value: formValue[opt.id]
+                        });
+                    }
+                });
+            }
+        });
+
+        return results;
     }
 }
