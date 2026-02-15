@@ -31,6 +31,59 @@
         </div>
         } @else {
 
+        <!-- Section: Formulaires à remplir (Assignments) -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-slate-800">Actions Requises</h2>
+                <button (click)="openAssignDialog()"
+                    class="inline-flex items-center px-4 py-2 bg-slate-900 text-cyan-400 rounded-lg hover:bg-slate-800 transition-colors text-sm font-bold shadow-md shadow-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Assigner un formulaire
+                </button>
+            </div>
+
+            @if (assignments.length === 0) {
+            <div class="bg-white rounded-xl p-6 border border-slate-200 text-center">
+                <p class="text-slate-500 text-sm">Aucune action requise pour ce client.</p>
+            </div>
+            } @else {
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @for (assignment of assignments; track assignment.id) {
+                @if (assignment.status === 'PENDING') {
+                <div
+                    class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-cyan-300 transition-all group">
+                    <div class="flex justify-between items-start mb-3">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
+                            À FAIRE
+                        </span>
+                        <!-- <button class="text-slate-400 hover:text-red-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button> -->
+                    </div>
+                    <h3 class="font-bold text-slate-800 mb-1 group-hover:text-cyan-600 transition-colors">
+                        {{ getFormTitle(assignment.formConfigId) }}
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-4">Assigné le: -</p> <!-- Date implementation if needed -->
+                    <button (click)="fillForm(assignment)"
+                        class="w-full py-2 bg-slate-50 hover:bg-cyan-50 text-slate-700 hover:text-cyan-700 font-bold rounded-lg text-sm transition-colors border border-slate-200 hover:border-cyan-200">
+                        Remplir maintenant
+                    </button>
+                </div>
+                }
+                }
+            </div>
+            }
+        </div>
+
+        <!-- Section: Historique (Results) -->
+        <h2 class="text-xl font-bold text-slate-800 mb-4">Historique des Soumissions</h2>
+
         @if (results.length === 0) {
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
             <div
@@ -60,7 +113,7 @@
                     <tbody class="divide-y divide-slate-100">
                         @for (result of results; track result.id) {
                         <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer"
-                            (click)="viewResult(result)">
+                            (click)="viewResult(result.id!)">
                             <td class="px-6 py-4">
                                 <div class="font-bold text-slate-800 group-hover:text-cyan-600 transition-colors">
                                     {{ getFormTitle(result.formConfigId) }}
@@ -73,16 +126,6 @@
                             <td class="px-6 py-4 text-sm font-medium text-slate-600">
                                 {{ result.lastUpdateDate | date:'dd/MM/yyyy HH:mm' }}
                             </td>
-                            <!--
-                          <td class="px-6 py-4 text-right">
-                            <button class="p-2 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-lg transition-all" title="Voir les détails">
-                              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                              </svg>
-                            </button>
-                          </td>
-                          -->
                         </tr>
                         }
                     </tbody>
@@ -94,4 +137,59 @@
         }
 
     </div>
+
+    <!-- Modal d'assignation -->
+    @if (showAssignDialog) {
+    <div class="fixed inset-0 z-[9999] overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500/75 transition-opacity" (click)="closeAssignDialog()"
+                aria-hidden="true"></div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <div
+                class="relative inline-block align-bottom bg-white rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div
+                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-cyan-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <svg class="h-6 w-6 text-cyan-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                Assigner un formulaire
+                            </h3>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-500 mb-4">
+                                    Sélectionnez le formulaire de Due Diligence que le client doit compléter.
+                                </p>
+                                <select [(ngModel)]="selectedFormIdToAssign"
+                                    class="block w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
+                                    <option [ngValue]="null" disabled selected>Choisir un formulaire...</option>
+                                    @for (form of availableForms; track form.id) {
+                                    <option [value]="form.id">{{ form.title }}</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" (click)="assignForm()" [disabled]="!selectedFormIdToAssign"
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-cyan-600 text-base font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                        Assigner
+                    </button>
+                    <button type="button" (click)="closeAssignDialog()"
+                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Annuler
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
 </div>

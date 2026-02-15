@@ -3,9 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NewDiligenceField } from "../new-diligence-field/new-diligence-field";
 import { UtilsService } from '../../services/utils-service';
-import { Client, FieldConfig, FormConfig, FormType } from '../../appTypes';
-import { ActivatedRoute } from '@angular/router';
-import { ClientService } from '../../services/client-service';
+import { FieldConfig, FormConfig, FormType } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
 import { NavigationService } from '../../services/navigation-service';
 import { FormConfigService } from '../../services/form-config-service';
@@ -28,28 +26,14 @@ export class DiligenceFormBuilderComponent implements OnInit {
   formTypeOptions = Object.values(FormType);
   fb = inject(FormBuilder);
   utilsService = inject(UtilsService);
-  activatedRoute = inject(ActivatedRoute);
-  clientService = inject(ClientService);
   alertService = inject(AlertService);
   navigationService = inject(NavigationService);
   formService = inject(FormConfigService);
-  selectedClient: Client | null = null;
   showDialog = false;
   formFields: FieldConfig[] = [];
 
 
   ngOnInit(): void {
-
-
-    this.activatedRoute.paramMap.subscribe(params => {
-      const id = params.get("id");
-      if (id) {
-        this.getClient(id);
-      } else {
-        this.alertService.displayMessage("Erreur", "Aucun client trouvé", "error");
-        this.navigationService.navigateToClients();
-      }
-    });
 
     const generatedId = this.utilsService.generateTimestampId();
     // Initialize the form configuration form
@@ -64,20 +48,6 @@ export class DiligenceFormBuilderComponent implements OnInit {
     // Initialize the fields form (will be dynamic)
     this.diligenceForm = this.fb.group({});
 
-  }
-
-  private getClient(id: string) {
-    if (id) {
-      this.clientService.findById(id).subscribe({
-        next: (client) => {
-          this.selectedClient = client;
-        },
-        error: (error) => {
-          this.alertService.displayMessage("Erreur", "Aucun client trouvé", "error");
-          this.navigationService.navigateToClients();
-        }
-      });
-    }
   }
 
 
@@ -155,15 +125,8 @@ export class DiligenceFormBuilderComponent implements OnInit {
       return;
     }
 
-    // if (this.diligenceForm.invalid) {
-    //   this.diligenceForm.markAllAsTouched();
-    //   alert('Veuillez vérifier les champs du formulaire.');
-    //   return;
-    // }
-
     const formConfig: FormConfig = {
       ...this.configForm.value,
-      clientId: this.selectedClient?.id,
       fields: this.formFields,
       creationDate: new Date(),
       lastUpdateDate: new Date()
@@ -180,9 +143,6 @@ export class DiligenceFormBuilderComponent implements OnInit {
     });
 
     console.log('Form Configuration:', formConfig);
-    console.log('Form Values:', this.diligenceForm.value);
-
-    alert('Form submitted! Check console for values.');
   }
 
 

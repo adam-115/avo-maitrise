@@ -260,7 +260,6 @@ export enum FormType {
 
 export interface FormConfig {
   id?: string;
-  clientId?: string;
   type: FormType;
   name: string;
   title: string;
@@ -308,4 +307,12 @@ export interface DiligenceFormResult {
   creationDate: Date;
   lastUpdateDate: Date;
   fieldResults: FieldResult[];
+}
+
+export interface ClientDiligenceStatus {
+  id?: string;
+  clientId: string;
+  formConfigId: string;
+  status: 'PENDING' | 'SUBMITTED' | 'VALIDATED';
+  resultId?: string; // Optional, link to the submission
 }

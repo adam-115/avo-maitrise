@@ -8,6 +8,7 @@ import { FormConfigService } from '../../services/form-config-service';
 import { NavigationService } from '../../services/navigation-service';
 import { ClientService } from '../../services/client-service';
 import { FormResultService } from '../../services/form-result-service';
+import { ClientDiligenceStatusService } from '../../services/client-diligence-status-service';
 
 @Component({
     selector: 'app-diligence-form-viewer',
@@ -27,6 +28,7 @@ export class DiligenceFormViewerComponent implements OnInit {
     private navigationService = inject(NavigationService);
     private clientService = inject(ClientService);
     private formResultService = inject(FormResultService);
+    private statusService = inject(ClientDiligenceStatusService);
 
 
     ngOnInit(): void {
@@ -39,15 +41,20 @@ export class DiligenceFormViewerComponent implements OnInit {
                 this.navigationService.navigateToFormConfigList();
             }
         });
+
+        // Get clientId from query params
+        this.route.queryParams.subscribe(params => {
+            const clientId = params['clientId'];
+            if (clientId) {
+                this.loadClient(clientId);
+            }
+        });
     }
 
     private loadFormConfig(id: string) {
         this.formConfigService.findById(id).subscribe({
             next: (config) => {
                 this.formConfig = config;
-                if (config.clientId) {
-                    this.loadClient(config.clientId);
-                }
                 this.buildForm(config.fields);
             },
             error: (err) => {
@@ -129,15 +136,37 @@ export class DiligenceFormViewerComponent implements OnInit {
         };
 
         this.formResultService.create(result).subscribe({
-            next: (res) => {
+            next: (createdResult) => {
+                this.updateAssignmentStatus(createdResult);
                 this.alertService.displayMessage('Succès', 'Formulaire soumis avec succès', 'success');
-                this.navigationService.navigateToFormConfigList();
+                // Optional: Navigate back to client details if we have a client, otherwise list
+                // For now, keep existing behavior but maybe improve later
+                if (this.selectedClient) {
+                    this.navigationService.navigateToClientDiligenceResults(this.selectedClient.id!);
+                } else {
+                    this.navigationService.navigateToFormConfigList();
+                }
             },
             error: (err) => {
                 console.error('Error saving result', err);
                 this.alertService.displayMessage('Erreur', 'Erreur lors de l\'enregistrement', 'error');
             }
         });
+    }
+
+    private updateAssignmentStatus(result: DiligenceFormResult) {
+        if (this.selectedClient?.id && this.formConfig?.id) {
+            this.statusService.findByClientId(this.selectedClient.id).subscribe(statuses => {
+                const assignment = statuses.find(s => s.formConfigId === this.formConfig?.id && s.status === 'PENDING');
+                if (assignment) {
+                    assignment.status = 'SUBMITTED';
+                    assignment.resultId = result.id;
+                    this.statusService.update(assignment.id, assignment).subscribe({
+                        error: (err) => console.error('Error updating assignment status', err)
+                    });
+                }
+            });
+        }
     }
 
     private mapToFieldResults(): FieldResult[] {

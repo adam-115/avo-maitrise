@@ -134,9 +134,13 @@ export class NavigationService {
     this.router.navigate(['/home/', NavigationService.DILIGENCE_FORM_BUILDER]);
   }
 
-  navigateToDiligenceFormViewer(id: string) {
-    let targetUrl = NavigationService.DILIGENCE_FORM_VIEWER.replace(":id", id);
-    this.router.navigate(['/home/', ...targetUrl.split("/")]);
+  navigateToDiligenceFormViewer(id: string, clientId?: string) {
+    if (clientId) {
+      this.router.navigate(['/home/', ...NavigationService.DILIGENCE_FORM_VIEWER.replace(":id", id).split("/")], { queryParams: { clientId: clientId } });
+    } else {
+      let targetUrl = NavigationService.DILIGENCE_FORM_VIEWER.replace(":id", id);
+      this.router.navigate(['/home/', ...targetUrl.split("/")]);
+    }
   }
 
   navigateToClientDiligenceResults(id: string) {
