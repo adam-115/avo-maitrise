@@ -180,7 +180,7 @@
             </div>
 
             <div class="bg-slate-50 p-6 border-t border-slate-100 flex justify-end">
-                <button type="submit" [disabled]="diligenceForm.invalid"
+                <button type="submit" [disabled]="diligenceForm.invalid || selectedClient === null"
                     class="w-full md:w-auto px-8 py-3.5 bg-slate-900 text-cyan-400 font-black rounded-xl hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all disabled:opacity-30 disabled:shadow-none flex justify-center items-center gap-3 transform hover:-translate-y-0.5 active:translate-y-0 text-sm uppercase tracking-wider">
                     Soumettre
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"

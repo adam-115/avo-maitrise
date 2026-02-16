@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NewDiligenceField } from "../new-diligence-field/new-diligence-field";
 import { UtilsService } from '../../services/utils-service';
@@ -29,6 +30,7 @@ export class DiligenceFormBuilderComponent implements OnInit {
   alertService = inject(AlertService);
   navigationService = inject(NavigationService);
   formService = inject(FormConfigService);
+  route = inject(ActivatedRoute);
   showDialog = false;
   formFields: FieldConfig[] = [];
 
@@ -48,6 +50,32 @@ export class DiligenceFormBuilderComponent implements OnInit {
     // Initialize the fields form (will be dynamic)
     this.diligenceForm = this.fb.group({});
 
+    // Check for edit mode
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.loadForm(id);
+    }
+
+  }
+
+  loadForm(id: string) {
+    this.formService.findById(id).subscribe({
+      next: (config) => {
+        if (config) {
+          this.configForm.patchValue(config);
+          if (config.fields) {
+            config.fields.forEach(field => {
+              this.formFields.push(field);
+              this.createFormControl(field);
+            });
+          }
+        }
+      },
+      error: (err) => {
+        this.alertService.displayMessage("Erreur", "Impossible de charger le formulaire", "error");
+        this.navigationService.navigateToDiligenceFormList();
+      }
+    });
   }
 
 
@@ -132,17 +160,37 @@ export class DiligenceFormBuilderComponent implements OnInit {
       lastUpdateDate: new Date()
     };
 
-    this.formService.create(formConfig).subscribe({
-      next: (response) => {
-        this.alertService.displayMessage("Succès", "Formulaire créé avec succès", "success");
-        this.navigationService.navigateToFormConfigList();
-      },
-      error: (error) => {
-        this.alertService.displayMessage("Erreur", "Erreur lors de la création du formulaire", "error");
-      }
-    });
-
     console.log('Form Configuration:', formConfig);
+
+    const id = this.configForm.get('id')?.value;
+    // If we loaded an existing form, we should likely update it.
+    // However, the ID field is disabled. `getRawValue()` might include it.
+    // Let's check if we are in edit mode based on route or existing ID in global state?
+    // Or just check if `formConfig.id` matches the route param ID.
+
+    const routeId = this.route.snapshot.paramMap.get('id');
+
+    if (routeId) {
+      this.formService.update(routeId, formConfig).subscribe({
+        next: (response) => {
+          this.alertService.displayMessage("Succès", "Formulaire mis à jour avec succès", "success");
+          this.navigationService.navigateToDiligenceFormList();
+        },
+        error: (error) => {
+          this.alertService.displayMessage("Erreur", "Erreur lors de la mise à jour du formulaire", "error");
+        }
+      });
+    } else {
+      this.formService.create(formConfig).subscribe({
+        next: (response) => {
+          this.alertService.displayMessage("Succès", "Formulaire créé avec succès", "success");
+          this.navigationService.navigateToDiligenceFormList();
+        },
+        error: (error) => {
+          this.alertService.displayMessage("Erreur", "Erreur lors de la création du formulaire", "error");
+        }
+      });
+    }
   }
 
 

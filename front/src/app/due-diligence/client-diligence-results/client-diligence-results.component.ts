@@ -6,7 +6,7 @@ import { ClientService } from '../../services/client-service';
 import { FormConfigService } from '../../services/form-config-service';
 import { NavigationService } from '../../services/navigation-service';
 import { ClientDiligenceStatusService } from '../../services/client-diligence-status-service';
-import { Client, DiligenceFormResult, FormConfig, ClientDiligenceStatus } from '../../appTypes';
+import { Client, DiligenceFormResult, FormConfig, ClientDiligenceStatus, ClientStatus } from '../../appTypes';
 import { forkJoin, map, switchMap, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alert-service';
@@ -150,8 +150,16 @@ export class ClientDiligenceResultsComponent implements OnInit {
                         this.formConfigs.set(config.id!, config);
                     });
                 }
-                this.alertService.displayMessage('Succès', 'Formulaire assigné avec succès', 'success');
-                this.closeAssignDialog();
+                this.clientService.updateClientStatus(this.client?.id!, ClientStatus.INDULGENCE_REQUIRED).subscribe({
+                    next: () => {
+                        this.alertService.displayMessage('Succès', 'Formulaire assigné avec succès', 'success');
+                        this.closeAssignDialog();
+                    },
+                    error: (err) => {
+                        console.error('Error assigning form', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de l\'assignation', 'error');
+                    }
+                });
             },
             error: (err) => {
                 console.error('Error assigning form', err);

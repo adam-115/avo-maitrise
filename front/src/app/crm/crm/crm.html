@@ -120,11 +120,8 @@
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" [ngClass]="{
-                                'bg-green-100 text-green-800': client.clientStatus === 'VALIDATED',
-                                'bg-yellow-100 text-yellow-800': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
-                                'bg-red-100 text-red-800': client.clientStatus === 'BLOCKED'
-                              }">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                            [ngClass]="getStatusColor(client.clientStatus)">
                             {{ client.clientStatus }}
                         </span>
                     </td>

@@ -99,4 +99,25 @@ export class Crm implements OnInit {
   navigateToClientDiligenceResults(clientId: string) {
     this.navigationService.navigateToClientDiligenceResults(clientId);
   }
+
+  getStatusColor(status: string | undefined): string {
+    switch (status) {
+      case ClientStatus.AML_REQUIRED:
+        return 'bg-yellow-100 text-yellow-800';
+      case ClientStatus.VERIFICATION_AML_REQUIRED:
+        return 'bg-amber-100 text-amber-800';
+      case ClientStatus.AML_VALIDATED:
+        return 'bg-blue-100 text-blue-800';
+      case ClientStatus.INDULGENCE_REQUIRED:
+        return 'bg-orange-100 text-orange-800';
+      case ClientStatus.INDULGENCE_VALIDATED:
+        return 'bg-indigo-100 text-indigo-800';
+      case ClientStatus.VALIDATED:
+        return 'bg-green-100 text-green-800';
+      case ClientStatus.BLOCKED:
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  }
 }

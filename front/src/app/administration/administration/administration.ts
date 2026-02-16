@@ -27,6 +27,10 @@ export class Administration {
     this.navigationService.navigateToFormConfigList();
   }
 
+  navigateToIndulgence() {
+    this.navigationService.navigateToDiligenceFormList();
+  }
+
   navigateToAdministrationPrefrences(): void {
     this.navigationService.navigateToAdminPrefences();
   }

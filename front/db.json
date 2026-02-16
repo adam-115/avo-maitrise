@@ -4638,6 +4638,29 @@
         }
       ],
       "clientId": "15a9"
+    },
+    {
+      "id": "5b8a",
+      "amlFormConfigID": "43324",
+      "totalScore": 111,
+      "AmlPageConfigValues": [
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceew7uwiz938c",
+          "value": "Salaire / Revenus professionnels"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gcegzsi766hdb8",
+          "value": "Oui"
+        },
+        {
+          "amlFormConfig": "43324",
+          "InputConfigID": "ml6w9gceq9f4ruahwjj",
+          "value": "10 000 € - 50 000 €"
+        }
+      ],
+      "clientId": "17ac"
     }
   ],
   "type_client": [
@@ -4950,7 +4973,7 @@
           "occupation": "aa"
         }
       ],
-      "clientStatus": "AML_REQUIRED",
+      "clientStatus": "BLOCKED",
       "documents": [
         {
           "title": "aaa",
@@ -5088,7 +5111,7 @@
           "occupation": "aa"
         }
       ],
-      "clientStatus": "AML_REQUIRED",
+      "clientStatus": "AML_VALIDATED",
       "documents": [
         {
           "title": "aaa",
@@ -5214,37 +5237,287 @@
         }
       ],
       "contacts": [],
-      "clientStatus": "AML_VALIDATED",
+      "clientStatus": "INDULGENCE_VALIDATED",
       "documents": []
     }
   ],
   "AmlPageConfigResult": [],
   "formConfig": [
     {
-      "id": "0a1d",
-      "name": "ddd",
-      "title": "ddd",
-      "description": "ddd",
+      "id": "fc-aml-001",
       "type": "AML",
-      "clientId": "0022",
+      "name": "Questionnaire Standard AML",
+      "title": "Déclaration AML Standard",
+      "description": "Formulaire standard pour la vérification AML des nouveaux clients.",
+      "creationDate": "2026-02-15T10:00:00.000Z",
+      "lastUpdateDate": "2026-02-15T10:00:00.000Z",
       "fields": [
         {
-          "name": "sss",
-          "type": "text",
-          "label": "sss",
+          "id": "field-001",
+          "name": "source_fonds",
+          "type": "select",
+          "label": "Origine des fonds",
+          "required": true,
+          "errorMessage": "Ce champ est requis",
+          "options": [
+            {
+              "id": "opt-001",
+              "value": "Revenus professionnels",
+              "fieldConfigId": "field-001"
+            },
+            {
+              "id": "opt-002",
+              "value": "Héritage",
+              "fieldConfigId": "field-001"
+            },
+            {
+              "id": "opt-003",
+              "value": "Vente immobilière",
+              "fieldConfigId": "field-001"
+            },
+            {
+              "id": "opt-004",
+              "value": "Autre",
+              "fieldConfigId": "field-001"
+            }
+          ]
+        },
+        {
+          "id": "field-002",
+          "name": "ppe_status",
+          "type": "radio",
+          "label": "Êtes-vous une Personne Politiquement Exposée (PPE) ?",
+          "required": true,
+          "errorMessage": "Veuillez répondre par oui ou non",
+          "options": [
+            {
+              "id": "opt-005",
+              "value": "Oui",
+              "fieldConfigId": "field-002"
+            },
+            {
+              "id": "opt-006",
+              "value": "Non",
+              "fieldConfigId": "field-002"
+            }
+          ]
+        },
+        {
+          "id": "field-003",
+          "name": "details_transaction",
+          "type": "textarea",
+          "label": "Détails de la transaction",
           "required": false,
-          "errorMessage": "Ce champ est obligatoire",
-          "id": "mlml6mae-ffia59r"
+          "errorMessage": "",
+          "placeholder": "Décrivez brièvement la transaction..."
         }
-      ],
-      "creationDate": "2026-02-14T17:24:47.741Z",
-      "lastUpdateDate": "2026-02-14T17:24:47.741Z"
+      ]
+    },
+    {
+      "id": "fc-ind-001",
+      "type": "INDULGENCE",
+      "name": "Demande de Dérogation",
+      "title": "Formulaire de Dérogation",
+      "description": "À remplir pour les dossiers nécessitant une exception à la politique standard.",
+      "creationDate": "2026-02-15T11:30:00.000Z",
+      "lastUpdateDate": "2026-02-15T11:30:00.000Z",
+      "fields": [
+        {
+          "id": "field-004",
+          "name": "raison_derogation",
+          "type": "textarea",
+          "label": "Motif de la demande de dérogation",
+          "required": true,
+          "errorMessage": "Le motif est obligatoire"
+        },
+        {
+          "id": "field-005",
+          "name": "validateur",
+          "type": "text",
+          "label": "Nom du validateur (Associé)",
+          "required": true,
+          "errorMessage": "Nom du validateur requis"
+        },
+        {
+          "id": "field-006",
+          "name": "urgence",
+          "type": "select",
+          "label": "Niveau d'urgence",
+          "required": true,
+          "errorMessage": "",
+          "options": [
+            {
+              "id": "opt-007",
+              "value": "Faible",
+              "fieldConfigId": "field-006"
+            },
+            {
+              "id": "opt-008",
+              "value": "Moyenne",
+              "fieldConfigId": "field-006"
+            },
+            {
+              "id": "opt-009",
+              "value": "Haute",
+              "fieldConfigId": "field-006"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fc-aml-002",
+      "type": "AML",
+      "name": "AML - Investissement Immobilier",
+      "title": "Vérification AML - Transaction Immobilière",
+      "description": "Questionnaire spécifique pour les investisseurs immobiliers.",
+      "creationDate": "2026-02-15T14:00:00.000Z",
+      "lastUpdateDate": "2026-02-15T14:00:00.000Z",
+      "fields": [
+        {
+          "id": "field-007",
+          "name": "type_bien",
+          "type": "select",
+          "label": "Type de bien concerné",
+          "required": true,
+          "errorMessage": "Requis",
+          "options": [
+            {
+              "id": "opt-010",
+              "value": "Résidentiel",
+              "fieldConfigId": "field-007"
+            },
+            {
+              "id": "opt-011",
+              "value": "Commercial",
+              "fieldConfigId": "field-007"
+            },
+            {
+              "id": "opt-012",
+              "value": "Terrain",
+              "fieldConfigId": "field-007"
+            }
+          ]
+        },
+        {
+          "id": "field-008",
+          "name": "montant_investissement",
+          "type": "text",
+          "label": "Montant de l'investissement (EUR)",
+          "required": true,
+          "errorMessage": "Requis"
+        },
+        {
+          "id": "field-009",
+          "name": "origine_fonds_details",
+          "type": "textarea",
+          "label": "Détails sur l'origine des fonds",
+          "required": true,
+          "errorMessage": "Détails requis"
+        }
+      ]
+    },
+    {
+      "id": "fc-aml-003",
+      "type": "AML",
+      "name": "AML - Société Holding",
+      "title": "AML pour Holding",
+      "description": "Questionnaire pour structures complexes.",
+      "creationDate": "2026-02-15T15:00:00.000Z",
+      "lastUpdateDate": "2026-02-15T15:00:00.000Z",
+      "fields": [
+        {
+          "id": "field-010",
+          "name": "structure_actionnariat",
+          "type": "textarea",
+          "label": "Décrivez la structure de l'actionnariat",
+          "required": true,
+          "errorMessage": "Requis"
+        },
+        {
+          "id": "field-011",
+          "name": "pays_implantations",
+          "type": "text",
+          "label": "Pays d'implantation des filiales",
+          "required": false,
+          "errorMessage": ""
+        }
+      ]
+    },
+    {
+      "id": "fc-ind-002",
+      "type": "INDULGENCE",
+      "name": "Dérogation - Conflit d'Intérêts",
+      "title": "Déclaration Conflit d'Intérêts Potentiel",
+      "description": "À utiliser lorsqu'un lien personnel ou professionnel existe avec la partie adverse.",
+      "creationDate": "2026-02-15T16:00:00.000Z",
+      "lastUpdateDate": "2026-02-15T16:00:00.000Z",
+      "fields": [
+        {
+          "id": "field-012",
+          "name": "nature_relation",
+          "type": "textarea",
+          "label": "Nature de la relation avec la partie adverse",
+          "required": true,
+          "errorMessage": "Requis"
+        },
+        {
+          "id": "field-013",
+          "name": "mesures_attenuation",
+          "type": "textarea",
+          "label": "Mesures prises pour éviter le conflit",
+          "required": true,
+          "errorMessage": "Requis"
+        },
+        {
+          "id": "field-014",
+          "name": "accord_client",
+          "type": "checkbox",
+          "label": "Accord écrit du client obtenu ?",
+          "required": true,
+          "errorMessage": "Requis",
+          "options": [
+            {
+              "id": "opt-013",
+              "value": "Oui",
+              "fieldConfigId": "field-014"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fc-ind-003",
+      "type": "INDULGENCE",
+      "name": "Dérogation - Risque Pays Élevé",
+      "title": "Validation Client Pays à Risque",
+      "description": "Pour les clients ou transactions liés à des juridictions à haut risque.",
+      "creationDate": "2026-02-15T16:30:00.000Z",
+      "lastUpdateDate": "2026-02-15T16:30:00.000Z",
+      "fields": [
+        {
+          "id": "field-015",
+          "name": "pays_concerne",
+          "type": "text",
+          "label": "Pays concerné",
+          "required": true,
+          "errorMessage": "Requis"
+        },
+        {
+          "id": "field-016",
+          "name": "justification_economique",
+          "type": "textarea",
+          "label": "Justification économique de la transaction",
+          "required": true,
+          "errorMessage": "Requis"
+        }
+      ]
     }
   ],
   "DiligenceFormResult": [
     {
       "id": "7bea",
-      "formConfigId": "0a1d",
+      "formConfigId": null,
       "clientId": "0022",
       "creationDate": "2026-02-15T12:37:55.815Z",
       "lastUpdateDate": "2026-02-15T12:37:55.815Z",
@@ -5257,7 +5530,7 @@
     },
     {
       "id": "134d",
-      "formConfigId": "0a1d",
+      "formConfigId": null,
       "clientId": "9808",
       "creationDate": "2026-02-15T16:35:23.795Z",
       "lastUpdateDate": "2026-02-15T16:35:23.795Z",
@@ -5270,7 +5543,7 @@
     },
     {
       "id": "8b2c",
-      "formConfigId": "0a1d",
+      "formConfigId": null,
       "clientId": "9808",
       "creationDate": "2026-02-15T16:35:43.436Z",
       "lastUpdateDate": "2026-02-15T16:35:43.436Z",
@@ -5283,7 +5556,7 @@
     },
     {
       "id": "a73e",
-      "formConfigId": "0a1d",
+      "formConfigId": null,
       "clientId": "9808",
       "creationDate": "2026-02-15T16:44:07.472Z",
       "lastUpdateDate": "2026-02-15T16:44:07.472Z",
@@ -5296,7 +5569,7 @@
     },
     {
       "id": "933a",
-      "formConfigId": "0a1d",
+      "formConfigId": null,
       "clientId": "9808",
       "creationDate": "2026-02-15T20:46:47.943Z",
       "lastUpdateDate": "2026-02-15T20:46:47.943Z",
@@ -5306,15 +5579,102 @@
           "value": ""
         }
       ]
+    },
+    {
+      "id": "7178",
+      "formConfigId": "fc-aml-003",
+      "clientId": "9808",
+      "creationDate": "2026-02-15T22:12:09.170Z",
+      "lastUpdateDate": "2026-02-15T22:12:09.170Z",
+      "fieldResults": [
+        {
+          "fieldConfigId": "field-010",
+          "value": "adam"
+        },
+        {
+          "fieldConfigId": "field-011",
+          "value": "adam"
+        }
+      ]
+    },
+    {
+      "id": "b507",
+      "formConfigId": "fc-ind-001",
+      "clientId": "15a9",
+      "creationDate": "2026-02-16T09:12:45.289Z",
+      "lastUpdateDate": "2026-02-16T09:12:45.289Z",
+      "fieldResults": [
+        {
+          "fieldConfigId": "field-004",
+          "value": "fff"
+        },
+        {
+          "fieldConfigId": "field-005",
+          "value": "ffff"
+        },
+        {
+          "fieldConfigId": "field-006",
+          "value": "opt-007"
+        }
+      ]
+    },
+    {
+      "id": "4a79",
+      "formConfigId": "fc-ind-002",
+      "clientId": "15a9",
+      "creationDate": "2026-02-16T09:13:17.058Z",
+      "lastUpdateDate": "2026-02-16T09:13:17.058Z",
+      "fieldResults": [
+        {
+          "fieldConfigId": "field-012",
+          "value": "ggg"
+        },
+        {
+          "fieldConfigId": "field-013",
+          "value": "ggg"
+        },
+        {
+          "fieldConfigId": "field-014",
+          "fieldOptionId": "opt-013",
+          "value": true
+        }
+      ]
     }
   ],
   "ClientDiligenceStatus": [
     {
       "id": "54c9",
       "clientId": "9808",
-      "formConfigId": "0a1d",
+      "formConfigId": null,
       "status": "SUBMITTED",
       "resultId": "a73e"
+    },
+    {
+      "id": "be2b",
+      "clientId": "9808",
+      "formConfigId": "fc-aml-003",
+      "status": "SUBMITTED",
+      "resultId": "7178"
+    },
+    {
+      "id": "cb45",
+      "clientId": "15a9",
+      "formConfigId": "fc-ind-001",
+      "status": "SUBMITTED",
+      "resultId": "b507"
+    },
+    {
+      "id": "f39f",
+      "clientId": "7334",
+      "formConfigId": "fc-aml-003",
+      "status": "PENDING"
+    },
+    {
+      "id": "9b4c",
+      "clientId": "15a9",
+      "formConfigId": "fc-ind-002",
+      "status": "SUBMITTED",
+      "resultId": "4a79"
     }
   ]
 }

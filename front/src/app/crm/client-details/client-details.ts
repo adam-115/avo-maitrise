@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { AmlFormResult, AmlFormConfig, Document, Client } from '../../appTypes';
+import { AmlFormResult, AmlFormConfig, Document, Client, ClientStatus } from '../../appTypes';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -7,10 +7,12 @@ import { AmlFormResultService } from '../../services/aml-form-result-result-serv
 import { AmlFormConfigService } from '../../services/AmlFormConfigService';
 import { ClientService } from '../../services/client-service';
 import { NavigationService } from '../../services/navigation-service';
+import { AlertService } from '../../services/alert-service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-client-details',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './client-details.html',
   styleUrl: './client-details.css'
 })
@@ -26,9 +28,15 @@ export class ClientDetails implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly navigationService = inject(NavigationService);
+  private readonly alertService = inject(AlertService);
 
   private readonly amlFormResultService = inject(AmlFormResultService);
   private readonly amlFormConfigService = inject(AmlFormConfigService);
+
+  // Expose ClientStatus enum for the template
+  public ClientStatus = ClientStatus;
+  // Get all values from the enum
+  public clientStatuses = Object.values(ClientStatus);
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -158,6 +166,95 @@ export class ClientDetails implements OnInit {
       URL.revokeObjectURL(url);
     } else {
       console.log('Download document', doc);
+    }
+  }
+
+  async onStatusChange(newStatus: string) {
+    if (!this.client) return;
+
+    const previousStatus = this.client.clientStatus;
+    // If undefined/null, previousStatus might be undefined, handle gracefully logic if needed
+
+    const confirmed = await this.alertService.confirmMessage(
+      'Confirmation de changement de statut',
+      `Êtes-vous sûr de vouloir changer le statut du client de "${previousStatus}" vers "${newStatus}" ?`,
+      'warning'
+    );
+
+    if (confirmed) {
+      this.clientService.updateClientStatus(this.client.id!, newStatus as ClientStatus).subscribe({
+        next: (updatedClient) => {
+          this.client = updatedClient;
+          this.alertService.success('Statut du client mis à jour avec succès');
+        },
+        error: (err) => {
+          console.error('Error updating status', err);
+          this.alertService.displayMessage('Erreur', 'Impossible de mettre à jour le statut.', 'error');
+          // Revert on error
+          if (this.client) this.client.clientStatus = previousStatus;
+        }
+      });
+    } else {
+      // Revert change if cancelled (because ngModel updated it essentially)
+      // Actually with (ngModelChange) the model is updated unless we split binding. 
+      // But here I'll use simple (change) on select and [ngModel] without () maybe?
+      // Or just revert:
+      this.client.clientStatus = previousStatus;
+      // Force angular detection or reload? Since it's primitive string, it should work if UI bound.
+      // However, often select needs a tick to revert visually if we prevent the change. 
+      // Let's rely on standard revert.
+
+      // Creating a new reference to trigger change detection if needed, or just assigning back.
+      // If using [(ngModel)], the value in UI corresponds to `client.clientStatus`.
+      // When user selects new item, `client.clientStatus` Becomes `newStatus`.
+      // Then we enter this function. `previousStatus` we can't get from `this.client.clientStatus` anymore since it's already updated!
+      // WAIT. The logic above "const previousStatus = this.client.clientStatus" gets the NEW status if [(ngModel)] updated it already.
+
+      // CORRECT APPROACH: Split [(ngModel)] into [ngModel] and (ngModelChange).
+      // OR store previous status somewhere? No.
+      // I'll use (change) event on the select and manually handle the update logic instead of two-way binding for the confirmation flow.
+      // But wait, `(change)` passes the event.
+    }
+  }
+
+  // Better approach for confirmation flow:
+  // We use [ngModel]="client.clientStatus" (one way)
+  // And (ngModelChange)="onStatusChange($event)"
+  // In onStatusChange(newVal), `this.client.clientStatus` is STILL the OLD value because we didn't use [()]. 
+  // We only update it if confirmed.
+
+  async handleStatusChange(newStatus: any) {
+    if (!this.client) return;
+    const currentStatus = this.client.clientStatus;
+
+    if (newStatus === currentStatus) return;
+
+    const confirmed = await this.alertService.confirmMessage(
+      'Changement de statut',
+      `Voulez-vous passer ce dossier au statut : ${newStatus} ?`,
+      'question'
+    );
+
+    if (confirmed) {
+      this.clientService.updateClientStatus(this.client.id!, newStatus).subscribe({
+        next: (updated) => {
+          this.client = updated;
+          this.alertService.success('Statut mis à jour.');
+        },
+        error: (err) => {
+          console.error(err);
+          this.alertService.displayMessage('Erreur', 'Echec de la mise à jour', 'error');
+        }
+      });
+    } else {
+      // Since we verify before applying, we don't need to revert the model technically,
+      // BUT the UI select might have visually changed to the selected option even if we didn't update the model?
+      // No, with [ngModel] (one-way), if we don't update the variable, Angular should keep/revert the select to the bound value.
+      // Sometimes strictly need to force update to same value to trigger change detection if it got out of sync.
+      // A simple trick is `this.client.clientStatus = currentStatus` (reassign self)
+      const temp = this.client.clientStatus;
+      this.client.clientStatus = undefined; // Hack to force change detection
+      setTimeout(() => { if (this.client) this.client.clientStatus = temp; }, 0);
     }
   }
 }

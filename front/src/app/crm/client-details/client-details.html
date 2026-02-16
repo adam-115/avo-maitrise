@@ -72,13 +72,19 @@
                 <div>
                     <h3 class="text-sm font-medium text-gray-500 uppercase">Statut Client</h3>
                     <div class="mt-1">
-                        <span class="px-2 py-1 text-sm font-bold rounded-full" [ngClass]="{
+                        <select [ngModel]="client.clientStatus" (ngModelChange)="onStatusChange($event)"
+                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm font-bold"
+                            [ngClass]="{
                             'bg-green-100 text-green-800': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
                             'bg-yellow-100 text-yellow-800': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
-                            'bg-red-100 text-red-800': client.clientStatus === 'BLOCKED'
+                            'bg-red-100 text-red-800': client.clientStatus === 'BLOCKED',
+                            'bg-orange-100 text-orange-800': client.clientStatus === 'INDULGENCE_REQUIRED',
+                            'bg-indigo-100 text-indigo-800': client.clientStatus === 'INDULGENCE_VALIDATED'
                           }">
-                            {{ client.clientStatus }}
-                        </span>
+                            @for (status of clientStatuses; track status) {
+                            <option [value]="status" class="bg-white text-gray-900">{{ status }}</option>
+                            }
+                        </select>
                     </div>
                 </div>
                 <div class="p-2 rounded-full bg-blue-100 text-blue-600">

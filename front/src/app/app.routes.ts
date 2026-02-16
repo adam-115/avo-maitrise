@@ -39,6 +39,7 @@ import { DiligenceFormBuilderComponent } from './due-diligence/diligence-form-bu
 import { DiligenceFormViewerComponent } from './due-diligence/diligence-form-viewer/diligence-form-viewer.component';
 import { ClientDiligenceResultsComponent } from './due-diligence/client-diligence-results/client-diligence-results.component';
 import { DiligenceFormResultViewerComponent } from './due-diligence/diligence-form-result-viewer/diligence-form-result-viewer.component';
+import { DiligenceFormListComponent } from './due-diligence/diligence-form-list/diligence-form-list.component';
 
 export const routes: Routes = [
   {
@@ -192,6 +193,10 @@ export const routes: Routes = [
         component: DiligenceFormBuilderComponent
       },
       {
+        path: NavigationService.DILIGENCE_FORM_BUILDER_EDIT,
+        component: DiligenceFormBuilderComponent
+      },
+      {
         path: NavigationService.DILIGENCE_FORM_VIEWER,
         component: DiligenceFormViewerComponent
       },
@@ -199,9 +204,14 @@ export const routes: Routes = [
         path: NavigationService.CLIENT_DILIGENCE_RESULTS,
         component: ClientDiligenceResultsComponent
       },
+
       {
         path: NavigationService.DILIGENCE_FORM_RESULT_VIEWER,
         component: DiligenceFormResultViewerComponent
+      },
+      {
+        path: NavigationService.DILIGENCE_FORM_LIST,
+        component: DiligenceFormListComponent
       }
     ]
 

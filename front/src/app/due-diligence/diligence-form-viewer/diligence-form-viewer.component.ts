@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Client, DiligenceFormResult, FieldConfig, FieldResult, FormConfig } from '../../appTypes';
+import { Client, ClientStatus, DiligenceFormResult, FieldConfig, FieldResult, FormConfig } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
 import { FormConfigService } from '../../services/form-config-service';
 import { NavigationService } from '../../services/navigation-service';
@@ -165,9 +165,22 @@ export class DiligenceFormViewerComponent implements OnInit {
                         error: (err) => console.error('Error updating assignment status', err)
                     });
                 }
+                if (statuses.filter(s => s.status === 'PENDING').length === 0) {
+                    this.selectedClient!.clientStatus = ClientStatus.INDULGENCE_VALIDATED;
+                    this.clientService.update(this.selectedClient!.id!, this.selectedClient!).subscribe({
+                        error: (err) => console.error('Error updating client status', err)
+                    });
+                } else {
+                    this.selectedClient!.clientStatus = ClientStatus.INDULGENCE_REQUIRED;
+                    this.clientService.update(this.selectedClient!.id!, this.selectedClient!).subscribe({
+                        error: (err) => console.error('Error updating client status', err)
+                    });
+                }
             });
         }
     }
+
+
 
     private mapToFieldResults(): FieldResult[] {
         const results: FieldResult[] = [];
