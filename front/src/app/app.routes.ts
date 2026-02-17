@@ -217,6 +217,10 @@ export const routes: Routes = [
       {
         path: NavigationService.DOSSIER_STATUS_FORM,
         component: DossierStatusFormComponent
+      },
+      {
+        path: NavigationService.DOSSIER_PRIORITE,
+        loadComponent: () => import('./administration/dossier-priorite/dossier-priorite.component').then(m => m.DossierPrioriteComponent)
       }
     ]
 

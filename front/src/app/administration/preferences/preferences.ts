@@ -30,4 +30,8 @@ export class Preferences {
     this.navigationService.navigateToDossierStatusForm();
   }
 
+  navigateToDossierPriorite() {
+    this.navigationService.navigateToDossierPriorite();
+  }
+
 }

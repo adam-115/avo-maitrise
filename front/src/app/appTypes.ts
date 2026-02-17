@@ -329,11 +329,14 @@ export interface StatutDossier {
   order: number;
 }
 
-export enum MatterPriority {
-  BASSE = 'BASSE',
-  NORMALE = 'NORMALE',
-  HAUTE = 'HAUTE',
-  URGENTE = 'URGENTE'
+
+export interface DossierPriorite {
+  id: string;
+  label: string;
+  code: string;
+  color?: string;
+  active: boolean;
+  order: number;
 }
 
 export interface Dossier {
@@ -349,7 +352,7 @@ export interface Dossier {
 
   // Classification
   domaineJuridique: string;    // Ex: Droit des Affaires, Droit Social, Immobilier
-  priorite: MatterPriority;
+  priorite: string; // Relies on DossierPriorite.code or DossierPriorite.id
   statut: string; // Relies on MatterStatus.code or MatterStatus.id
 
   // Compliance AML
