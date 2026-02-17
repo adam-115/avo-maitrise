@@ -14,16 +14,20 @@ export class Preferences {
 
 
 
-    navigateBackToAdmin() {
-  throw ("not yet implemented");
-}
+  navigateBackToAdmin() {
+    throw ("not yet implemented");
+  }
 
-navigateToClientTypesPreferences() {
-  this.navigationService.navigateToPrefrenceTypeClient();
-}
+  navigateToClientTypesPreferences() {
+    this.navigationService.navigateToPrefrenceTypeClient();
+  }
 
-navigateToAdminSecteurActivite(){
-  this.navigationService.navigateToAdminSecteurActivite();
-}
+  navigateToAdminSecteurActivite() {
+    this.navigationService.navigateToAdminSecteurActivite();
+  }
+
+  navigateToDossierStatusForm() {
+    this.navigationService.navigateToDossierStatusForm();
+  }
 
 }

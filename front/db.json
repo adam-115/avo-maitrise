@@ -5676,5 +5676,39 @@
       "status": "SUBMITTED",
       "resultId": "4a79"
     }
+  ],
+  "StatutDossier": [
+    {
+      "id": "1",
+      "label": "Ouvert",
+      "code": "OUVERT",
+      "active": true,
+      "order": 1,
+      "color": "#28a745"
+    },
+    {
+      "id": "2",
+      "label": "En Cours",
+      "code": "EN_COURS",
+      "active": true,
+      "order": 2,
+      "color": "#007bff"
+    },
+    {
+      "id": "4",
+      "label": "Clôturé",
+      "code": "CLOTURE",
+      "active": true,
+      "order": 4,
+      "color": "#6c757d"
+    },
+    {
+      "id": "5",
+      "label": "Archivé",
+      "code": "ARCHIVE",
+      "active": false,
+      "order": 5,
+      "color": "#343a40"
+    }
   ]
 }

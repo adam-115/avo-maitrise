@@ -49,15 +49,17 @@ export class NavigationService {
   public static readonly ADMIN_SECTEUR_ATIVITE = "admin_secteur_activite";
   public static readonly CLIENT_AML_REVIEW = "client-aml-review/:id";
 
+  //Aml & dueDiligence
   public static readonly CLIENT_AML_RESULT = "client-aml-result/:id";
   public static readonly DILIGENCE_FORM_BUILDER = "diligence-form-builder";
   public static readonly DILIGENCE_FORM_BUILDER_EDIT = "diligence-form-builder/:id";
   public static readonly DILIGENCE_FORM_VIEWER = "diligence-form-viewer/:id";
   public static readonly CLIENT_DILIGENCE_RESULTS = "client-diligence-results/:id";
-
-
   public static readonly DILIGENCE_FORM_RESULT_VIEWER = "diligence-form-result-viewer/:id";
   public static readonly DILIGENCE_FORM_LIST = "diligence-form-list";
+
+  //statut de dossier preference 
+  public static readonly DOSSIER_STATUS_FORM = "dossier-status-form";
 
 
 
@@ -170,6 +172,10 @@ export class NavigationService {
   navigateToDiligenceFormBuilderEdit(id: string) {
     let targetUrl = NavigationService.DILIGENCE_FORM_BUILDER_EDIT.replace(":id", id);
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
+  }
+
+  navigateToDossierStatusForm() {
+    this.router.navigate([NavigationService.HOME, NavigationService.DOSSIER_STATUS_FORM]);
   }
 
 }

@@ -316,3 +316,58 @@ export interface ClientDiligenceStatus {
   status: 'PENDING' | 'SUBMITTED' | 'VALIDATED';
   resultId?: string; // Optional, link to the submission
 }
+
+
+// gestion ds dossier
+
+export interface StatutDossier {
+  id: string;
+  label: string;
+  code: string;   // OUVERT, EN_COURS, etc.
+  color?: string; // Optional for UI display
+  active: boolean;
+  order: number;
+}
+
+export enum MatterPriority {
+  BASSE = 'BASSE',
+  NORMALE = 'NORMALE',
+  HAUTE = 'HAUTE',
+  URGENTE = 'URGENTE'
+}
+
+export interface Dossier {
+  id?: number;
+  referenceInterne: string;    // Ex: 2026-0045 (Généré automatiquement)
+  titre: string;               // Nom du dossier (ex: Litige Commercial Dupont vs Durand)
+  description?: string;
+
+  // Relations
+  clientId: string | number;   // ID du client rattaché
+  responsableId: string;       // ID de l'avocat responsable (associé)
+  intervenantsIds: string[];   // Liste des collaborateurs travaillant sur le dossier
+
+  // Classification
+  domaineJuridique: string;    // Ex: Droit des Affaires, Droit Social, Immobilier
+  priorite: MatterPriority;
+  statut: string; // Relies on MatterStatus.code or MatterStatus.id
+
+  // Compliance AML
+  amlValidated: boolean;       // Indique si le KYC client a été validé pour ce dossier
+  riskLevel: 'FAIBLE' | 'MODERE' | 'ELEVE'; // Hérité du score client ou spécifique au dossier
+
+  documents: Document[]; // les documents du dossier
+
+  // Dates
+  dateOuverture: Date;
+  dateCloture?: Date;
+  updated_at: Date;
+
+  // Données Financières (Optionnel)
+  budgetEstime?: number;
+  tauxHoraireApplique?: number;
+  methodeFacturation: 'HORAIRE' | 'FORFAIT' | 'RESULTAT';
+
+  // Métadonnées
+  tags?: string[];             // Pour la recherche rapide
+}
