@@ -60,7 +60,6 @@ export class DossierForm implements OnInit {
       prioriteID: ['', Validators.required],
       statutID: ['', Validators.required],
       dateOuverture: [new Date().toISOString().substring(0, 10), Validators.required],
-      dateCloture: [''],
       methodeFacturation: ['HORAIRE', Validators.required],
       budgetEstime: [0],
       tauxHoraireApplique: [0],
@@ -94,7 +93,6 @@ export class DossierForm implements OnInit {
       this.dossierForm.patchValue({
         ...dossier,
         dateOuverture: dossier.dateOuverture ? new Date(dossier.dateOuverture).toISOString().substring(0, 10) : '',
-        dateCloture: dossier.dateCloture ? new Date(dossier.dateCloture).toISOString().substring(0, 10) : ''
       });
     });
   }
@@ -270,6 +268,10 @@ export class DossierForm implements OnInit {
         this.navigateToDossier();
       });
     }
+  }
+
+  onCancel(): void {
+    this.navigateToDossier();
   }
 
   navigateToDossier() {
