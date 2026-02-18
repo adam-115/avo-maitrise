@@ -61,6 +61,7 @@ export class NavigationService {
   //statut de dossier preference 
   public static readonly DOSSIER_STATUS_FORM = "dossier-status-form";
   public static readonly DOSSIER_PRIORITE = "dossier-priorite";
+  public static readonly DOMAINE_JURIDIQUE = "domaine-juridique";
 
 
 
@@ -181,6 +182,10 @@ export class NavigationService {
 
   navigateToDossierPriorite() {
     this.router.navigate([NavigationService.HOME, NavigationService.DOSSIER_PRIORITE]);
+  }
+
+  navigateToDomaineJuridique() {
+    this.router.navigate([NavigationService.HOME, NavigationService.DOMAINE_JURIDIQUE]);
   }
 
 }

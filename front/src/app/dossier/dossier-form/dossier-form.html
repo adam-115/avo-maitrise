@@ -1,215 +1,288 @@
-<header class="mb-8 flex justify-between items-center">
-  <div>
-    <nav class="text-sm font-medium text-gray-500 mb-2">
-      <a href="#" class="hover:text-cyan-600">Dossiers</a> /
-      <span>Créer un Nouveau Dossier</span>
-    </nav>
-    <h1 class="text-3xl font-bold text-slate-800">
-      Nouveau Dossier / Affaire
-    </h1>
-  </div>
-  <button (click)="navigateToDossier()"
-    class="flex items-center space-x-2 px-4 py-2 bg-slate-500 text-white font-semibold rounded-lg shadow-md hover:bg-slate-600 transition duration-150">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-    </svg>
-    <span>Annuler</span>
-  </button>
-</header>
+<div class="container mx-auto p-6 bg-white shadow-lg rounded-lg">
+  <h2 class="text-2xl font-bold mb-6 text-gray-800">{{ isEditMode ? 'Modifier le Dossier' : 'Nouveau Dossier' }}</h2>
 
-<div class="bg-white p-6 rounded-xl shadow-lg">
+  <form [formGroup]="dossierForm" (ngSubmit)="onSubmit()">
 
-  <form action="#" method="POST" class="space-y-8" enctype="multipart/form-data">
-
-    <div class="border-b border-gray-200 pb-8">
-      <h2 class="text-xl font-semibold text-slate-800 border-l-4 border-cyan-600 pl-3 mb-4">Informations Générales</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <div>
-          <label for="titre_affaire" class="block text-sm font-medium text-gray-700 mb-1">Titre de l'Affaire <span
-              class="text-red-500">*</span></label>
-          <input type="text" name="titre_affaire" id="titre_affaire" required
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-        </div>
-
-        <div>
-          <label for="reference_dossier" class="block text-sm font-medium text-gray-700 mb-1">Référence (Auto-Générée ou
-            Manuelle)</label>
-          <input type="text" name="reference_dossier" id="reference_dossier" value="NEW-2025-001" disabled
-            class="mt-1 block w-full rounded-lg border-gray-300 bg-gray-50 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-        </div>
-
-        <div>
-          <label for="type_dossier" class="block text-sm font-medium text-gray-700 mb-1">Type de Dossier</label>
-          <select id="type_dossier" name="type_dossier"
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-            <option>Sélectionner un type</option>
-            <option>Civil</option>
-            <option>Pénal</option>
-            <option>Commercial</option>
-            <option>Social</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="statut_dossier" class="block text-sm font-medium text-gray-700 mb-1">Statut Initial</label>
-          <select id="statut_dossier" name="statut_dossier"
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-            <option>Ouvert</option>
-            <option>En Cours</option>
-            <option>À l'étude</option>
-          </select>
-        </div>
-
-        <div class="md:col-span-2">
-          <label for="resume_dossier" class="block text-sm font-medium text-gray-700 mb-1">Description / Résumé Détaillé
-            du Litige</label>
-          <textarea id="resume_dossier" name="resume_dossier" rows="6"
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-                        </textarea>
-        </div>
+    <!-- Informations Générales -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Référence Interne</label>
+        <input type="text" formControlName="referenceInterne"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Titre</label>
+        <input type="text" formControlName="titre"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
       </div>
     </div>
 
-    <div class="border-b border-gray-200 pb-8">
-      <h2 class="text-xl font-semibold text-slate-800 border-l-4 border-cyan-600 pl-3 mb-4">Client et Responsabilités
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        <div>
-          <label for="client_lie" class="block text-sm font-medium text-gray-700 mb-1">Client de l'Affaire <span
-              class="text-red-500">*</span></label>
-          <div class="flex space-x-2">
-            <select id="client_lie" name="client_lie" required
-              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-              <option>-- Rechercher/Sélectionner un Client Existant --</option>
-              <option>S.A. Alpha (ID 120)</option>
-              <option>M. Charles C. (ID 045)</option>
-            </select>
-            <button type="button"
-              class="mt-1 flex items-center justify-center p-2.5 rounded-lg bg-cyan-600 text-white hover:bg-cyan-700 transition duration-150 flex-shrink-0">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a10 10 0 0117.87-2.67M3 20a10 10 0 013.87-4.33">
-                </path>
+
+
+    <!-- Tags -->
+    <div class="mb-6">
+      <label class="block text-sm font-medium text-gray-700">Tags</label>
+      <div class="flex items-center mt-1 mb-2">
+        <input type="text" (keydown.enter)="$event.preventDefault(); addTag($event)"
+          placeholder="Ajouter un tag et appuyer sur Entrée"
+          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+      </div>
+      <div class="flex flex-wrap gap-2">
+        @for (tag of tags; track tag; let i = $index) {
+        <span class="inline-flex items-center bg-gray-100 text-gray-800 rounded-full px-3 py-1 text-sm font-medium">
+          {{ tag }}
+          <button type="button" (click)="removeTag(i)"
+            class="ml-2 text-gray-500 hover:text-gray-700 focus:outline-none">
+            <span class="sr-only">Retirer</span>
+            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                clip-rule="evenodd" />
+            </svg>
+          </button>
+        </span>
+        }
+      </div>
+    </div>
+
+    <!-- Relations -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Client</label>
+
+        <div *ngIf="getSelectedClientName()"
+          class="flex items-center justify-between p-2 border rounded-md bg-gray-50 mb-2">
+          <div>
+            <p class="text-sm font-medium text-gray-900">{{ getSelectedClientName() }}</p>
+            <p class="text-xs text-gray-500">Client #{{ dossierForm.get('clientId')?.value }}</p>
+          </div>
+          <button type="button" (click)="openClientDialog()"
+            class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+            Changer
+          </button>
+        </div>
+
+        <button *ngIf="!getSelectedClientName()" type="button" (click)="openClientDialog()"
+          class="input-trigger w-full flex items-center justify-between p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <span>Sélectionner un client</span>
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <app-client-selection-dialog *ngIf="showClientDialog" [clients]="clients"
+          [initialSelection]="dossierForm.get('clientId')?.value" (confirmSelection)="onClientSelected($event)"
+          (closeDialog)="closeClientDialog()">
+        </app-client-selection-dialog>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Responsable</label>
+
+        <div *ngIf="getSelectedResponsableName()"
+          class="flex items-center justify-between p-2 border rounded-md bg-gray-50 mb-2">
+          <div>
+            <p class="text-sm font-medium text-gray-900">{{ getSelectedResponsableName() }}</p>
+          </div>
+          <button type="button" (click)="openResponsableDialog()"
+            class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+            Changer
+          </button>
+        </div>
+
+        <button *ngIf="!getSelectedResponsableName()" type="button" (click)="openResponsableDialog()"
+          class="input-trigger w-full flex items-center justify-between p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <span>Sélectionner un responsable</span>
+          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <app-user-selection-dialog *ngIf="showResponsableDialog" [users]="users"
+          [initialSelection]="dossierForm.get('responsableId')?.value ? [dossierForm.get('responsableId')?.value] : []"
+          [singleSelection]="true" (confirmSelection)="onResponsableSelected($event)"
+          (closeDialog)="closeResponsableDialog()">
+        </app-user-selection-dialog>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium text-gray-700 mb-2">Intervenants</label>
+
+        <div class="flex flex-wrap gap-2 mb-2">
+          <div *ngFor="let user of getSelectedIntervenants()"
+            class="inline-flex items-center bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-medium">
+            {{ user.name }}
+            <button type="button" (click)="removeIntervenant(user.id)"
+              class="ml-2 text-blue-600 hover:text-blue-800 focus:outline-none">
+              <span class="sr-only">Retirer</span>
+              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                  clip-rule="evenodd" />
               </svg>
             </button>
           </div>
         </div>
 
-        <div>
-          <label for="avocat_responsable" class="block text-sm font-medium text-gray-700 mb-1">Avocat Responsable <span
-              class="text-red-500">*</span></label>
-          <select id="avocat_responsable" name="avocat_responsable" required
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-            <option>Maître J. Dupont</option>
-            <option>Maître M. Martin</option>
-            <option>Autre...</option>
-          </select>
-        </div>
-
-        <div class="md:col-span-2">
-          <label for="avocats_collaborateurs" class="block text-sm font-medium text-gray-700 mb-1">Avocats
-            Collaborateurs (Multi-sélection)</label>
-          <input type="text" name="avocats_collaborateurs" id="avocats_collaborateurs"
-            placeholder="Sélectionner les autres avocats ayant accès au dossier..."
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-        </div>
+        <button type="button" (click)="openUserDialog()"
+          class="inline-flex items-center px-4 py-2 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          Gérer les intervenants
+        </button>
       </div>
+
+      <app-user-selection-dialog *ngIf="showUserDialog" [users]="users"
+        [initialSelection]="dossierForm.get('intervenantsIds')?.value || []"
+        (confirmSelection)="onUsersSelected($event)" (closeDialog)="closeUserDialog()">
+      </app-user-selection-dialog>
     </div>
 
-    <div class="border-b border-gray-200 pb-8">
-      <h2 class="text-xl font-semibold text-slate-800 border-l-4 border-cyan-600 pl-3 mb-4">Documents Initiaux (GED)
-      </h2>
-      <p class="text-sm text-gray-500 mb-4">Ajoutez les pièces justificatives ou la convention d'honoraires initiale. Le
-        **Titre du Document** est obligatoire pour la classification.</p>
-
-      <div class="space-y-4 border border-dashed border-gray-300 p-4 rounded-lg bg-gray-50">
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label for="document_title_1" class="block text-sm font-medium text-gray-700 mb-1">Titre du Document <span
-                class="text-red-500">*</span></label>
-            <input type="text" name="document_title_1" id="document_title_1" required
-              placeholder="Ex: Convention d'honoraires signée"
-              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+    <!-- Classification -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Domaine Juridique</label>
+        <div class="flex items-center">
+          <div *ngIf="dossierForm.get('domaineJuridique')?.value"
+            class="flex-1 flex items-center p-2 bg-gray-50 border rounded-l-md border-r-0 border-gray-300">
+            <div [style.background-color]="getSelectedDomaineColor()" class="w-3 h-3 rounded-full mr-2"></div>
+            <span class="text-gray-900 font-medium">{{ getSelectedDomaineLabel() }}</span>
           </div>
-
-          <div>
-            <label for="document_file_1" class="block text-sm font-medium text-gray-700 mb-1">Fichier à Uploader</label>
-            <input type="file" name="document_file_1" id="document_file_1"
-              class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-cyan-50 file:text-cyan-700 hover:file:bg-cyan-100" />
-          </div>
-        </div>
-
-        <div class="flex space-x-2">
-          <div class="flex-grow">
-            <label for="document_description_1" class="block text-sm font-medium text-gray-700 mb-1">Description
-              Détaillée (Facultatif)</label>
-            <input type="text" name="document_description_1" id="document_description_1"
-              placeholder="Notez ici le contenu pertinent du document ou les annexes..."
-              class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-          </div>
-          <button type="button"
-            class="mt-6 flex items-center justify-center p-2.5 rounded-lg bg-red-100 text-red-600 hover:bg-red-200 transition duration-150 flex-shrink-0 self-start"
-            title="Supprimer ce document">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg">
+          <button type="button" (click)="openDomaineDialog()"
+            [class.rounded-l-md]="!dossierForm.get('domaineJuridique')?.value"
+            class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-r-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            [ngClass]="{'w-full': !dossierForm.get('domaineJuridique')?.value}">
+            <svg *ngIf="!dossierForm.get('domaineJuridique')?.value" class="-ml-1 mr-2 h-5 w-5 text-gray-400"
+              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-              </path>
+                d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
             </svg>
+            {{ dossierForm.get('domaineJuridique')?.value ? 'Changer' : 'Sélectionner un domaine' }}
           </button>
         </div>
-      </div>
+        <input type="hidden" formControlName="domaineJuridique">
 
-      <button type="button"
-        class="mt-4 flex items-center space-x-2 text-cyan-600 font-semibold hover:text-cyan-800 transition duration-150">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        <app-domaine-juridique-selection-dialog *ngIf="showDomaineDialog" [domaines]="domaines"
+          [initialSelection]="dossierForm.get('domaineJuridique')?.value" (confirmSelection)="onDomaineSelected($event)"
+          (closeDialog)="closeDomaineDialog()">
+        </app-domaine-juridique-selection-dialog>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Priorité</label>
+        <select formControlName="prioriteID"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          <option value="">Sélectionner une priorité</option>
+          <option *ngFor="let priority of priorities" [value]="priority.id">{{ priority.label }}</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Statut</label>
+        <select formControlName="statutID"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          <option value="">Sélectionner un statut</option>
+          <option *ngFor="let status of statuses" [value]="status.id">{{ status.label }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Dates -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Date d'Ouverture</label>
+        <input type="date" formControlName="dateOuverture"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Date de Clôture</label>
+        <input type="date" formControlName="dateCloture"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+      </div>
+    </div>
+
+    <!-- Facturation -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Méthode de Facturation</label>
+        <select formControlName="methodeFacturation"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          <option value="HORAIRE">Horaire</option>
+          <option value="FORFAIT">Forfait</option>
+          <option value="RESULTAT">Résultat</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Budget Estimé (€)</label>
+        <input type="number" formControlName="budgetEstime"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Taux Horaire (€/h)</label>
+        <input type="number" formControlName="tauxHoraireApplique"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+      </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="mb-6">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Documents</label>
+
+      <button type="button" (click)="openDocumentDialog()"
+        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
         </svg>
-        <span>Ajouter un autre document</span>
+        Ajouter un document
       </button>
+
+      <app-document-dialog *ngIf="showDocumentDialog" [dialogTitle]="'Ajouter un document'"
+        (addDocumentEvent)="onDocumentAdded($event)" (closeDialogEvent)="closeDocumentDialog()">
+      </app-document-dialog>
+
+      @if (documents.length > 0) {
+      <div class="mt-4">
+        <h4 class="text-sm font-medium text-gray-700 mb-2">Fichiers sélectionnés</h4>
+        <ul class="divide-y divide-gray-200 border border-gray-200 rounded-md">
+          @for (doc of documents; track doc.name; let i = $index) {
+          <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+            <div class="w-0 flex-1 flex items-center">
+              <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd"
+                  d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
+                  clip-rule="evenodd" />
+              </svg>
+              <div class="ml-2 flex-1 w-0 truncate">
+                <div class="flex items-center">
+                  <span class="font-medium text-gray-900 truncate">{{ doc.title }}</span>
+                  <span *ngIf="doc.name" class="ml-2 text-xs text-gray-500 truncate">({{ doc.name }})</span>
+                </div>
+                <p *ngIf="doc.description" class="text-xs text-gray-500 truncate">{{ doc.description }}</p>
+              </div>
+            </div>
+            <div class="ml-4 flex-shrink-0">
+              <button type="button" (click)="removeDocument(i)" class="font-medium text-red-600 hover:text-red-500">
+                Retirer
+              </button>
+            </div>
+          </li>
+          }
+        </ul>
+      </div>
+      }
     </div>
 
-    <div class="border-b border-gray-200 pb-8">
-      <h2 class="text-xl font-semibold text-slate-800 border-l-4 border-cyan-600 pl-3 mb-4">Conditions Financières</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        <div>
-          <label for="mode_facturation" class="block text-sm font-medium text-gray-700 mb-1">Mode de Facturation
-            Principal</label>
-          <select id="mode_facturation" name="mode_facturation"
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-            <option>Temps Passé (Horaire)</option>
-            <option>Forfaitaire</option>
-            <option>Au Résultat (Success Fee)</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="montant_honoraire" class="block text-sm font-medium text-gray-700 mb-1">Taux Horaire ou Montant
-            Forfaitaire (€)</label>
-          <input type="number" name="montant_honoraire" id="montant_honoraire"
-            placeholder="Ex: 250 (pour l'heure) ou 5000 (pour le forfait)"
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
-        </div>
-      </div>
-    </div>
-
-    <div class="pt-5">
-      <div class="flex justify-end space-x-3">
-        <button type="button" (click)="navigateToDossier()"
-          class="px-6 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition duration-150">
-          Annuler
-        </button>
-        <button type="submit"
-          class="px-6 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-cyan-600 shadow-md hover:bg-cyan-700 transition duration-150">
-          Enregistrer le Dossier et Continuer
-        </button>
-      </div>
+    <!-- Actions -->
+    <div class="flex justify-end gap-4 mt-6">
+      <button type="button" (click)="navigateToDossier()"
+        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
+        Annuler
+      </button>
+      <button type="submit" [disabled]="dossierForm.invalid"
+        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50">
+        {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+      </button>
     </div>
   </form>
 </div>

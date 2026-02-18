@@ -5744,5 +5744,39 @@
       "order": 4,
       "color": "#dc3545"
     }
+  ],
+  "DomaineJuridique": [
+    {
+      "id": "1",
+      "label": "Droit des Affaires",
+      "code": "DROIT_AFFAIRES",
+      "active": true,
+      "order": 1,
+      "color": "#4e73df"
+    },
+    {
+      "id": "2",
+      "label": "Droit Social",
+      "code": "DROIT_SOCIAL",
+      "active": true,
+      "order": 2,
+      "color": "#1cc88a"
+    },
+    {
+      "id": "3",
+      "label": "Droit Pénal",
+      "code": "DROIT_PENAL",
+      "active": true,
+      "order": 3,
+      "color": "#36b9cc"
+    },
+    {
+      "id": "4",
+      "label": "Droit Immobilier",
+      "code": "DROIT_IMMOBILIER",
+      "active": true,
+      "order": 4,
+      "color": "#f6c23e"
+    }
   ]
 }

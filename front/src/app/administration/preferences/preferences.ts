@@ -34,4 +34,8 @@ export class Preferences {
     this.navigationService.navigateToDossierPriorite();
   }
 
+  navigateToDomaineJuridique() {
+    this.navigationService.navigateToDomaineJuridique();
+  }
+
 }

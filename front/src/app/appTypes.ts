@@ -339,6 +339,17 @@ export interface DossierPriorite {
   order: number;
 }
 
+
+export interface DomaineJuridique {
+  id: string;
+  label: string;
+  code: string;
+  color?: string;
+  active: boolean;
+  order: number;
+}
+
+
 export interface Dossier {
   id?: number;
   referenceInterne: string;    // Ex: 2026-0045 (Généré automatiquement)
@@ -352,8 +363,8 @@ export interface Dossier {
 
   // Classification
   domaineJuridique: string;    // Ex: Droit des Affaires, Droit Social, Immobilier
-  priorite: string; // Relies on DossierPriorite.code or DossierPriorite.id
-  statut: string; // Relies on MatterStatus.code or MatterStatus.id
+  prioriteID: string; // Relies on DossierPriorite.code or DossierPriorite.id
+  statutID: string; // Relies on StatutDossier.code or StatutDossier.id
 
   // Compliance AML
   amlValidated: boolean;       // Indique si le KYC client a été validé pour ce dossier

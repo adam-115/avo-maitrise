@@ -1,0 +1,94 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-transparent">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 flex flex-col max-h-[90vh]">
+
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 rounded-t-lg">
+            <h3 class="text-lg font-semibold text-gray-900">Sélectionner un Client</h3>
+            <button (click)="onCancel()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                <span class="sr-only">Fermer</span>
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Search -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="relative">
+                <input type="text" [(ngModel)]="searchTerm" (input)="filterClients()"
+                    placeholder="Rechercher par nom, prénom ou email..."
+                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- List -->
+        <div class="flex-1 overflow-y-auto p-2">
+            <ul class="divide-y divide-gray-100">
+                @for (client of filteredClients; track client.id) {
+                <li (click)="selectClient(client.id)"
+                    class="flex items-center p-3 hover:bg-gray-50 cursor-pointer rounded-md transition-colors duration-150"
+                    [class.bg-blue-50]="isSelected(client.id)">
+
+                    <div class="flex-shrink-0 mr-4">
+                        <div [class.border-blue-600]="isSelected(client.id)"
+                            [class.border-gray-300]="!isSelected(client.id)"
+                            class="h-5 w-5 border rounded-full flex items-center justify-center transition-colors duration-200 relative">
+                            @if (isSelected(client.id)) {
+                            <div class="h-3 w-3 bg-blue-600 rounded-full"></div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate">
+                            {{ client.nom }} {{ client.prenom }}
+                            <span
+                                class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
+                                {{ client.type }}
+                            </span>
+                        </p>
+                        <div class="mt-1 flex items-center text-sm text-gray-500">
+                            @if (client.email) { <span class="truncate block">{{ client.email }}</span> }
+                            @if (client.email && client.telephone) { <span class="mx-2">&bull;</span> }
+                            @if (client.telephone) { <span class="truncate block font-medium text-gray-600">{{
+                                client.telephone }}</span> }
+                        </div>
+                        <div class="mt-1 flex items-center text-xs">
+                            @if (client.paysResidance) { <span class="text-green-600 font-medium">{{
+                                client.paysResidance }}</span> }
+                            @if (client.paysResidance && client.secteurActivite) { <span
+                                class="mx-2 text-gray-400">&bull;</span> }
+                            @if (client.secteurActivite) { <span class="text-purple-600 font-medium">{{
+                                client.secteurActivite }}</span> }
+                        </div>
+                    </div>
+                </li>
+                }
+                @if (filteredClients.length === 0) {
+                <li class="p-4 text-center text-gray-500 italic">
+                    Aucun client trouvé.
+                </li>
+                }
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+            <button (click)="onCancel()"
+                class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                Annuler
+            </button>
+            <button (click)="onConfirm()" [disabled]="!selectedClientId"
+                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                Confirmer
+            </button>
+        </div>
+
+    </div>
+</div>

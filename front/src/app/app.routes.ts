@@ -221,6 +221,10 @@ export const routes: Routes = [
       {
         path: NavigationService.DOSSIER_PRIORITE,
         loadComponent: () => import('./administration/dossier-priorite/dossier-priorite.component').then(m => m.DossierPrioriteComponent)
+      },
+      {
+        path: NavigationService.DOMAINE_JURIDIQUE,
+        loadComponent: () => import('./administration/domaine-juridique-form/domaine-juridique-form.component').then(m => m.DomaineJuridiqueFormComponent)
       }
     ]
 
