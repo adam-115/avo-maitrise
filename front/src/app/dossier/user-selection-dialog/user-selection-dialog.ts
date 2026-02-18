@@ -33,13 +33,13 @@ export class UserSelectionDialog implements OnInit {
         } else {
             const lowerTerm = this.searchTerm.toLowerCase();
             this.filteredUsers = this.users.filter(user =>
-                user.name.toLowerCase().includes(lowerTerm) ||
+                user.username.toLowerCase().includes(lowerTerm) ||
                 user.email.toLowerCase().includes(lowerTerm)
             );
         }
     }
 
-    toggleSelection(userId: number): void {
+    toggleSelection(userId: string | number): void {
         const idStr = String(userId);
         if (this.singleSelection) {
             this.selectedUserIds.clear();
@@ -53,7 +53,7 @@ export class UserSelectionDialog implements OnInit {
         }
     }
 
-    isSelected(userId: number): boolean {
+    isSelected(userId: string | number): boolean {
         return this.selectedUserIds.has(String(userId));
     }
 

@@ -137,7 +137,7 @@ export class DossierForm implements OnInit {
     return this.users.filter(user => selectedIds.includes(String(user.id)));
   }
 
-  removeIntervenant(userId: number): void {
+  removeIntervenant(userId: string | number): void {
     const currentIds = this.dossierForm.get('intervenantsIds')?.value || [];
     const newIds = currentIds.filter((id: string | number) => String(id) !== String(userId));
     this.dossierForm.patchValue({ intervenantsIds: newIds });
@@ -192,7 +192,7 @@ export class DossierForm implements OnInit {
     const userId = this.dossierForm.get('responsableId')?.value;
     if (!userId) return '';
     const user = this.users.find(u => u.id == userId);
-    return user ? user.name : '';
+    return user ? user.username : '';
   }
 
   // Tags Management

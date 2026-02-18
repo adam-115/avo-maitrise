@@ -13,12 +13,78 @@
   ],
   "users": [
     {
-      "id": "1",
-      "name": "Alice"
+      "id": 1,
+      "email": "jean.dupont@cabinet-avocats.fr",
+      "username": "jdupont",
+      "firstName": "Jean",
+      "lastName": "Dupont",
+      "role": "ADMIN",
+      "barreauId": "75001",
+      "specialite": [
+        "Droit des affaires",
+        "Fiscalité"
+      ],
+      "isPartner": true,
+      "isActive": true,
+      "twoFactorEnabled": true,
+      "createdAt": "2023-01-15T09:00:00Z"
     },
     {
-      "id": "2",
-      "name": "Bob"
+      "id": 2,
+      "email": "marie.curie@cabinet-avocats.fr",
+      "username": "mcurie",
+      "firstName": "Marie",
+      "lastName": "Curie",
+      "role": "AVOCAT",
+      "barreauId": "75002",
+      "specialite": [
+        "Propriété intellectuelle"
+      ],
+      "isPartner": false,
+      "isActive": true,
+      "twoFactorEnabled": false,
+      "createdAt": "2023-03-20T14:30:00Z"
+    },
+    {
+      "id": 3,
+      "email": "sophie.martin@cabinet-avocats.fr",
+      "username": "smartin",
+      "firstName": "Sophie",
+      "lastName": "Martin",
+      "role": "COLLABORATEUR",
+      "barreauId": "75003",
+      "specialite": [
+        "Droit social"
+      ],
+      "isPartner": false,
+      "isActive": true,
+      "twoFactorEnabled": false,
+      "createdAt": "2023-06-10T10:15:00Z"
+    },
+    {
+      "id": 4,
+      "email": "luc.bertrand@cabinet-avocats.fr",
+      "username": "lbertrand",
+      "firstName": "Luc",
+      "lastName": "Bertrand",
+      "role": "SECRETARIAT",
+      "isPartner": false,
+      "isActive": true,
+      "twoFactorEnabled": false,
+      "createdAt": "2023-09-01T08:45:00Z"
+    },
+    {
+      "id": "5501",
+      "firstName": "adam",
+      "lastName": "laftimi",
+      "email": "adam.laftimi@gmail.com",
+      "username": "adam.laftimi@gmail.com",
+      "role": "ADMIN",
+      "isActive": true,
+      "isPartner": true,
+      "barreauId": "test",
+      "createdAt": "2026-02-18T20:48:53.495Z",
+      "twoFactorEnabled": false
     }
   ],
   "TypeOrganisme": [
@@ -5779,5 +5845,43 @@
       "color": "#f6c23e"
     }
   ],
-  "dossiers": []
+  "dossiers": [
+    {
+      "id": "76ad",
+      "referenceInterne": "eee",
+      "titre": "eee",
+      "description": "",
+      "clientId": "e466",
+      "responsableId": "5501",
+      "intervenantsIds": [
+        "2",
+        "4"
+      ],
+      "domaineJuridique": "2",
+      "prioriteID": "1",
+      "statutID": "1",
+      "dateOuverture": "2026-02-18",
+      "methodeFacturation": "HORAIRE",
+      "budgetEstime": 18000,
+      "tauxHoraireApplique": 0,
+      "tags": [],
+      "documents": [
+        {
+          "title": "zzz",
+          "description": "dddd",
+          "name": "8604973_04-T-312196-04-_P_.pdf",
+          "file": {},
+          "tags": ""
+        },
+        {
+          "title": "wwww",
+          "description": "wwww",
+          "name": "secteur activite.csv",
+          "file": {},
+          "tags": ""
+        }
+      ],
+      "updated_at": "2026-02-18T20:53:21.164Z"
+    }
+  ]
 }

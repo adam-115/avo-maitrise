@@ -1,11 +1,36 @@
-// for test abstract crud service
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
+export enum UserRole {
+  ADMIN = 'ADMIN',             // Accès complet : configuration AML, gestion utilisateurs
+  ASSOCIE = 'ASSOCIE',         // Accès total aux dossiers, validation des indilgences
+  AVOCAT = 'AVOCAT',           // Gestion de ses propres dossiers et dossiers partagés
+  COLLABORATEUR = 'COLLABORATEUR', // Travail sur les dossiers assignés
+  SECRETARIAT = 'SECRETARIAT', // Création clients, upload documents, pas d'accès AML critique
+  COMPLIANCE_OFFICER = 'COMPLIANCE_OFFICER' // Focus exclusif sur le scoring et les risques
 }
 
+export interface User {
+  id: string | number;
+  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  role: UserRole;
+
+  image?: Document;
+
+  // Spécificités Cabinet
+  barreauId?: string;          // Numéro de toque ou identifiant au barreau
+  specialite?: string[];       // Ex: ['Droit des sociétés', 'Fiscalité']
+  isPartner: boolean;          // Indique si l'utilisateur est associé
+
+  // Paramètres Système
+  isActive: boolean;
+  avatarUrl?: string;
+  lastLogin?: Date;
+
+  // Sécurité
+  twoFactorEnabled: boolean;
+  createdAt: Date;
+}
 
 // tab dossier type for dossier details component
 export enum DossierTabType {
