@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { DossierTabType } from '../../appTypes';
 import { Document } from "../../document/document/document";
 import { CommonModule } from '@angular/common';
@@ -8,17 +8,28 @@ import { Note } from "../../note/note/note";
 import { Contact } from "../../contact/contact/contact";
 import { Temp } from "../../temp/temp/temp";
 import { DossierFacture } from "../dossier-facture/dossier-facture";
+import { ActivatedRoute, Router } from '@angular/router';
+import { DossierService } from '../../services/dossier.service';
+import { Dossier } from '../../appTypes';
+import { DossierInfo } from "../dossier-info/dossier-info";
 
 @Component({
   selector: 'app-dossier-details',
-  imports: [Document, CommonModule, Evenement, Tache, Note, Contact, Temp, DossierFacture],
+  imports: [Document, CommonModule, Evenement, Tache, Note, Contact, Temp, DossierFacture, DossierInfo],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })
 export class DossierDetails implements OnInit {
+
+  private activatedRoute = inject(ActivatedRoute);
+  private dossierService = inject(DossierService);
+  private router = inject(Router);
+
+  selectedDossier: Dossier | null = null;
+
+
   DossierTabType = DossierTabType;
   selectedTab: DossierTabType = DossierTabType.VUE_ENSEMBLE;
-
   shwoDocumentDialog = false;
 
   // Example: You might fetch dossier details here
@@ -26,8 +37,20 @@ export class DossierDetails implements OnInit {
 
   ngOnInit(): void {
     this.selectedTab = DossierTabType.VUE_ENSEMBLE;
-
+    this.getDossierById();
   }
+
+  public getDossierById() {
+    this.activatedRoute.params.subscribe((params: any) => {
+      this.dossierService.findById(params['id']).subscribe((res: any) => {
+        this.selectedDossier = res;
+        console.log("selectedDossier", this.selectedDossier);
+
+      });
+    });
+  }
+
+
 
   updateSelectedTab(tab: DossierTabType) {
     this.selectedTab = tab;

@@ -376,7 +376,7 @@ export interface DomaineJuridique {
 
 
 export interface Dossier {
-  id?: number;
+  id?: string;
   referenceInterne: string;    // Ex: 2026-0045 (Généré automatiquement)
   titre: string;               // Nom du dossier (ex: Litige Commercial Dupont vs Durand)
   description?: string;

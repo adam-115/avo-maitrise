@@ -154,83 +154,10 @@
     }
 
     @if(selectedTab === DossierTabType.VUE_ENSEMBLE){
-    <div class="lg:col-span-2 space-y-8">
-      <div class="bg-white p-6 rounded-xl shadow-md">
-        <h3 class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">Résumé Détaillé</h3>
-        <p class="text-gray-700 text-sm leading-relaxed">
-          Le dossier concerne l'accusation du client M. C. par le Ministère Public pour des faits de fraude fiscale
-          présumée. L'affaire est entrée en phase d'instruction le 01/09/2024. Le principal défi est la quantité de
-          preuves électroniques (emails et transactions) à analyser. La défense se concentre sur la preuve de l'absence
-          d'intention frauduleuse et l'application d'une jurisprudence récente.
-        </p>
-        <div class="mt-4">
-          <span class="text-sm font-semibold text-cyan-600">Type : Pénal</span> |
-          <span class="text-sm font-semibold text-cyan-600">Juridiction : Tribunal Correctionnel</span>
-        </div>
-      </div>
-      <div class="bg-white p-6 rounded-xl shadow-md">
-        <h3 class="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Journal d'Activité Récente</h3>
-        <ul class="space-y-4">
-          <li class="flex items-start space-x-3">
-            <div class="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-cyan-600"></div>
-            <div class="flex-1 text-sm">
-              <p class="font-semibold text-slate-800">Maître Dupont</p>
-              <p class="text-gray-700">A ajouté le <span class="font-medium">rapport d'analyse financière</span> (PDF)
-                au dossier.</p>
-              <span class="text-xs text-gray-500">Il y a 2 heures</span>
-            </div>
-          </li>
-          <li class="flex items-start space-x-3">
-            <div class="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-yellow-500"></div>
-            <div class="flex-1 text-sm">
-              <p class="font-semibold text-slate-800">Système</p>
-              <p class="text-gray-700">Événement créé : <span class="font-medium text-red-600">Audience
-                  Préparatoire</span> fixée au 05/10/2025.</p>
-              <span class="text-xs text-gray-500">Hier, 16:00</span>
-            </div>
-          </li>
-          <li class="flex items-start space-x-3">
-            <div class="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-slate-400"></div>
-            <div class="flex-1 text-sm">
-              <p class="font-semibold text-slate-800">Maître Martin</p>
-              <p class="text-gray-700">A passé <span class="font-medium">3,5 heures</span> sur la rédaction des
-                conclusions.</p>
-              <span class="text-xs text-gray-500">Il y a 3 jours</span>
-            </div>
-          </li>
-        </ul>
-      </div>
-
+    <div class="lg:col-span-3  space-y-8">
+      <app-dossier-info [dossier]="selectedDossier"></app-dossier-info>
     </div>
 
-    <div class="lg:col-span-1 space-y-6">
-
-      <div class="bg-white p-6 rounded-xl shadow-md">
-        <h3 class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">Détails Administratifs</h3>
-        <dl class="space-y-3 text-sm">
-          <div class="flex justify-between">
-            <dt class="font-medium text-gray-500">Avocat Responsable :</dt>
-            <dd class="text-slate-800 font-semibold">Maître J. Dupont</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt class="font-medium text-gray-500">Avocats Collaborateurs :</dt>
-            <dd class="text-slate-800">M. Martin</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt class="font-medium text-gray-500">Date d'Ouverture :</dt>
-            <dd class="text-slate-800">01/09/2024</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt class="font-medium text-gray-500">Mode de Facturation :</dt>
-            <dd class="text-slate-800">Temps Passé (250 €/h)</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt class="font-medium text-gray-500">Total Heures (à facturer) :</dt>
-            <dd class="text-red-600 font-bold">124 h</dd>
-          </div>
-        </dl>
-      </div>
-    </div>
     }
   </div>
 </div>

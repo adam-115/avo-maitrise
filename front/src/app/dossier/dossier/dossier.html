@@ -1,160 +1,109 @@
 <header class="mb-8 flex justify-between items-center">
-            <h1 class="text-3xl font-bold text-slate-800">
-                Liste des Affaires
-            </h1>
-            <button (click)="nviagteToDossierForm()" class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                <span>Nouveau Dossier</span>
-            </button>
-        </header>
+    <h1 class="text-3xl font-bold text-slate-800">
+        Liste des Affaires
+    </h1>
+    <button (click)="nviagteToDossierForm()"
+        class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+        </svg>
+        <span>Nouveau Dossier</span>
+    </button>
+</header>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-cyan-600">
-                <p class="text-sm font-medium text-gray-500">Dossiers Actifs</p>
-                <p class="text-3xl font-extrabold text-slate-900 mt-1">45</p>
-                <p class="text-xs text-gray-500 mt-2">Vue d'ensemble rapide</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-cyan-600">
+        <p class="text-sm font-medium text-gray-500">Dossiers Actifs</p>
+        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ activeDossiersCount }}</p>
+        <p class="text-xs text-gray-500 mt-2">Vue d'ensemble rapide</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500">
+        <p class="text-sm font-medium text-gray-500">Dossiers Urgents</p>
+        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ urgentDossiersCount }}</p>
+        <p class="text-xs text-red-500 mt-2">À traiter cette semaine</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-slate-400">
+        <p class="text-sm font-medium text-gray-500">Heures non facturées</p>
+        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ unbilledHours }} h</p>
+        <p class="text-xs text-gray-500 mt-2">Prêt pour la facturation</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-slate-600">
+        <p class="text-sm font-medium text-gray-500">Dossiers Clos (30j)</p>
+        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ successRate }}</p>
+        <p class="text-xs text-cyan-600 mt-2">Taux de succès</p>
+    </div>
+</div>
+
+<div class="flex flex-col sm:flex-row gap-4 mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
+    <div class="relative flex-grow">
+        <input type="text" [(ngModel)]="searchTerm" placeholder="Rechercher par Référence, Client ou Titre..."
+            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
+            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+    </div>
+    <select [(ngModel)]="statusFilter"
+        class="p-2 border border-gray-300 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500">
+        <option value="Tous">Statut : Tous</option>
+        <option *ngFor="let s of statuses" [value]="s.id">{{ s.label }}</option>
+    </select>
+    <select [(ngModel)]="lawyerFilter"
+        class="p-2 border border-gray-300 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500">
+        <option value="Tous">Avocat : Tous</option>
+        <option *ngFor="let u of users" [value]="u.id">{{ u.username }}</option>
+    </select>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <div *ngFor="let dossier of dossiers"
+        class="bg-white p-5 rounded-xl shadow-lg border-t-8 hover:shadow-xl transition duration-200"
+        [style.border-color]="getPriority(dossier.prioriteID)?.color || '#ccc'">
+        <div class="flex justify-between items-start mb-3">
+            <h4 class="text-sm font-semibold text-gray-500">{{ dossier.referenceInterne }}</h4>
+            <span class="px-3 py-1 text-xs leading-5 font-bold rounded-full"
+                [style.background-color]="getStatus(dossier.statutID)?.color + '20'"
+                [style.color]="getStatus(dossier.statutID)?.color">
+                {{ getStatus(dossier.statutID)?.label }}
+            </span>
+        </div>
+
+        <h3 class="text-lg font-bold text-slate-800 mb-4">
+            <a (click)="navigateToDossierDetail(dossier.id!)" class="hover:text-cyan-600 transition cursor-pointer">{{
+                dossier.titre }}</a>
+        </h3>
+
+        <div class="space-y-2 text-sm text-gray-700 border-t pt-3">
+            <div class="flex items-center justify-between">
+                <span class="text-gray-500">Client :</span>
+                <span class="font-medium truncate max-w-[150px]">{{ getClientName(dossier.clientId) }}</span>
             </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500">
-                <p class="text-sm font-medium text-gray-500">Échéances Urgentes</p>
-                <p class="text-3xl font-extrabold text-slate-900 mt-1">7</p>
-                <p class="text-xs text-red-500 mt-2">À traiter cette semaine</p>
+            <div class="flex items-center justify-between">
+                <span class="text-gray-500">Avocat Resp. :</span>
+                <span class="font-medium">{{ getResponsableName(dossier.responsableId) }}</span>
             </div>
-             <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-slate-400">
-                <p class="text-sm font-medium text-gray-500">Heures non facturées</p>
-                <p class="text-3xl font-extrabold text-slate-900 mt-1">124 h</p>
-                <p class="text-xs text-gray-500 mt-2">Prêt pour la facturation</p>
-            </div>
-            <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-slate-600">
-                <p class="text-sm font-medium text-gray-500">Dossiers Clos (30j)</p>
-                <p class="text-3xl font-extrabold text-slate-900 mt-1">11</p>
-                <p class="text-xs text-cyan-600 mt-2">Taux de succès</p>
+            <div class="flex items-center justify-between">
+                <span class="text-gray-500">Ouverture :</span>
+                <span class="font-medium">{{ dossier.dateOuverture | date:'dd/MM/yyyy' }}</span>
             </div>
         </div>
 
-        <div class="flex flex-col sm:flex-row gap-4 mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
-            <div class="relative flex-grow">
-                <input type="text" placeholder="Rechercher par Référence, Client ou Titre..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
-                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            </div>
-            <select class="p-2 border border-gray-300 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500">
-                <option>Statut : Tous</option>
-                <option>En Cours</option>
-                <option>Urgent</option>
-                <option>Clos</option>
-            </select>
-            <select class="p-2 border border-gray-300 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500">
-                <option>Avocat : Tous</option>
-                <option>Maitre Dupont</option>
-                <option>Maitre Martin</option>
-            </select>
-        </div>
+        <a (click)="navigateToDossierDetail(dossier.id!)"
+            class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition cursor-pointer">
+            Voir la Fiche
+        </a>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+</div>
 
-            <div class="bg-white p-5 rounded-xl shadow-lg border-t-8 border-red-500 hover:shadow-xl transition duration-200">
-                <div class="flex justify-between items-start mb-3">
-                    <h4 class="text-sm font-semibold text-gray-500">PEN-2024-045</h4>
-                    <span class="px-3 py-1 text-xs leading-5 font-bold rounded-full bg-red-100 text-red-700">
-                        URGENT
-                    </span>
-                </div>
-
-                <h3 class="text-lg font-bold text-slate-800 mb-4">
-                    <a (click)="navigateToDossierDetail()" class="hover:text-cyan-600 transition">Affaire C. contre Ministère Public</a>
-                </h3>
-
-                <div class="space-y-2 text-sm text-gray-700 border-t pt-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Client :</span>
-                        <span class="font-medium">M. Charles C.</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Avocat Resp. :</span>
-                        <span class="font-medium">Maître Martin</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Prochaine Échéance :</span>
-                        <span class="font-bold text-red-600">05/10/2025 (Audience)</span>
-                    </div>
-                </div>
-
-                <a (click)="navigateToDossierDetail()" class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition">
-                    Voir la Fiche
-                </a>
-            </div>
-
-            <div class="bg-white p-5 rounded-xl shadow-lg border-t-8 border-cyan-500 hover:shadow-xl transition duration-200">
-                <div class="flex justify-between items-start mb-3">
-                    <h4 class="text-sm font-semibold text-gray-500">CIV-2025-001</h4>
-                    <span class="px-3 py-1 text-xs leading-5 font-semibold rounded-full bg-cyan-100 text-cyan-700">
-                        EN COURS
-                    </span>
-                </div>
-
-                <h3 class="text-lg font-bold text-slate-800 mb-4">
-                    <a (click)="navigateToDossierDetail()" class="hover:text-cyan-600 transition">Litige Commercial S.A. c/ SARL Beta</a>
-                </h3>
-
-                <div class="space-y-2 text-sm text-gray-700 border-t pt-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Client :</span>
-                        <span class="font-medium">S.A. Alpha</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Avocat Resp. :</span>
-                        <span class="font-medium">Maître Dupont</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Dernière Act. :</span>
-                        <span class="font-medium">Hier, 14:30</span>
-                    </div>
-                </div>
-
-                <a (click)="navigateToDossierDetail()" class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition">
-                    Voir la Fiche
-                </a>
-            </div>
-
-            <div class="bg-white p-5 rounded-xl shadow-lg border-t-8 border-yellow-500 hover:shadow-xl transition duration-200">
-                <div class="flex justify-between items-start mb-3">
-                    <h4 class="text-sm font-semibold text-gray-500">FAM-2023-112</h4>
-                    <span class="px-3 py-1 text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-700">
-                        SUSPENDU
-                    </span>
-                </div>
-
-                <h3 class="text-lg font-bold text-slate-800 mb-4">
-                    <a href="#" class="hover:text-cyan-600 transition">Procédure de Divorce M. et Mme X</a>
-                </h3>
-
-                <div class="space-y-2 text-sm text-gray-700 border-t pt-3">
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Client :</span>
-                        <span class="font-medium">Mme Julie X.</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Avocat Resp. :</span>
-                        <span class="font-medium">Maître Dupont</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <span class="text-gray-500">Prochaine Échéance :</span>
-                        <span class="font-medium">N/A</span>
-                    </div>
-                </div>
-
-                <a href="#" class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition">
-                    Voir la Fiche
-                </a>
-            </div>
-
-        </div>
-
-        <div class="mt-8 flex justify-between items-center border-t pt-4">
-            <p class="text-sm text-gray-600">Affichage de 1 à 10 sur 45 résultats</p>
-            <div class="flex space-x-1">
-                <button class="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200">Précédent</button>
-                <span class="px-3 py-1 text-sm font-semibold text-white bg-cyan-600 rounded-lg">1</span>
-                <button class="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200">2</button>
-                <button class="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200">Suivant</button>
-            </div>
-        </div>
+<div class="mt-8 flex justify-between items-center border-t pt-4">
+    <p class="text-sm text-gray-600">Affichage de 1 à 10 sur 45 résultats</p>
+    <div class="flex space-x-1">
+        <button class="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200">Précédent</button>
+        <span class="px-3 py-1 text-sm font-semibold text-white bg-cyan-600 rounded-lg">1</span>
+        <button class="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200">2</button>
+        <button class="px-3 py-1 text-sm text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200">Suivant</button>
+    </div>
+</div>

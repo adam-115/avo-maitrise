@@ -15,7 +15,7 @@ export class NavigationService {
   static readonly HOME = 'home';
   static readonly DOSSIER = 'dossier';
   static readonly DOSSIER_FORM = 'dossier-form';
-  static readonly DOSSIER_DETAIL = 'dossier-detail';
+  static readonly DOSSIER_DETAIL = 'dossier-detail/:id';
   static readonly CRM = 'crm';
   static readonly NEW_CLIENT = 'crm/client/new';
   static readonly CLIENT_EDIT = 'crm/client/edit/:id';
@@ -186,6 +186,11 @@ export class NavigationService {
 
   navigateToDomaineJuridique() {
     this.router.navigate([NavigationService.HOME, NavigationService.DOMAINE_JURIDIQUE]);
+  }
+
+  navigateToDossierDetails(id: string) {
+    let targetUrl = NavigationService.DOSSIER_DETAIL.replace(":id", id);
+    this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
 
 }

@@ -1,0 +1,70 @@
+<div *ngIf="dossier" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+    <div class="lg:col-span-2 space-y-8">
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">Résumé Détaillé</h3>
+            <p class="text-gray-700 text-sm leading-relaxed">
+                {{ dossier.description || 'Aucune description disponible pour ce dossier.' }}
+            </p>
+            <div class="mt-4">
+                <span class="text-sm font-semibold text-cyan-600">Type : {{ getDomaineLabel(dossier.domaineJuridique)
+                    }}</span> |
+                <span class="text-sm font-semibold text-cyan-600">Juridiction : Tribunal Correctionnel</span>
+            </div>
+        </div>
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Journal d'Activité Récente</h3>
+            <ul class="space-y-4">
+                <li *ngFor="let activity of activities" class="flex items-start space-x-3">
+                    <div [class]="'flex-shrink-0 w-2 h-2 mt-2 rounded-full ' + (activity.color || 'bg-cyan-600')">
+                    </div>
+                    <div class="flex-1 text-sm">
+                        <p class="font-semibold text-slate-800">{{ activity.author }}</p>
+                        <p class="text-gray-700">
+                            {{ activity.action }}
+                            <span *ngIf="activity.target" [class.font-medium]="true"
+                                [class.text-red-600]="activity.highlight">{{ activity.target }}</span>
+                            {{ activity.description }}
+                        </p>
+                        <span class="text-xs text-gray-500">{{ activity.time }}</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="lg:col-span-1 space-y-6">
+
+        <div class="bg-white p-6 rounded-xl shadow-md">
+            <h3 class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">Détails Administratifs</h3>
+            <dl class="space-y-3 text-sm">
+                <div class="flex justify-between">
+                    <dt class="font-medium text-gray-500">Avocat Responsable :</dt>
+                    <dd class="text-slate-800 font-semibold">{{ getResponsableName(dossier.responsableId) }}</dd>
+                </div>
+                <div class="flex justify-between">
+                    <dt class="font-medium text-gray-500">Avocats Collaborateurs :</dt>
+                    <dd class="text-slate-800">{{ getCollaborateursNames(dossier.intervenantsIds) }}</dd>
+                </div>
+                <div class="flex justify-between">
+                    <dt class="font-medium text-gray-500">Date d'Ouverture :</dt>
+                    <dd class="text-slate-800">{{ dossier.dateOuverture | date:'dd/MM/yyyy' }}</dd>
+                </div>
+                <div class="flex justify-between">
+                    <dt class="font-medium text-gray-500">Mode de Facturation :</dt>
+                    <dd class="text-slate-800">{{ getBillingInfo(dossier) }}</dd>
+                </div>
+                <!-- Placeholder for billing data -->
+                <div class="flex justify-between">
+                    <dt class="font-medium text-gray-500">Total Heures (à facturer) :</dt>
+                    <dd class="text-red-600 font-bold">124 h</dd>
+                </div>
+            </dl>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!dossier" class="text-center p-6 text-gray-500">
+    Aucun dossier sélectionné.
+</div>
