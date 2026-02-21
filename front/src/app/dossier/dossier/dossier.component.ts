@@ -15,10 +15,10 @@ import { NavigationService } from '../../services/navigation-service';
   selector: 'app-dossier',
   standalone: true,
   imports: [CommonModule, FormsModule],
-  templateUrl: './dossier.html',
-  styleUrl: './dossier.css'
+  templateUrl: './dossier.component.html',
+  styleUrl: './dossier.component.css'
 })
-export class Dossier implements OnInit {
+export class DossierComponent implements OnInit {
   dossiers: DossierModel[] = [];
   clients: Client[] = [];
   statuses: StatutDossier[] = [];

@@ -23,7 +23,7 @@ import { Crm } from './crm/crm/crm';
 import { ReviewAml } from './crm/review-aml/review-aml';
 import { DossierDetails } from './dossier/dossier-details/dossier-details';
 import { DossierForm } from './dossier/dossier-form/dossier-form';
-import { Dossier } from './dossier/dossier/dossier';
+import { DossierComponent } from './dossier/dossier/dossier.component';
 import { FacturationForm } from './facturation/facturation-form/facturation-form';
 import { Facturation } from './facturation/facturation/facturation';
 import { Home } from './home/home';
@@ -57,7 +57,7 @@ export const routes: Routes = [
       },
       {
         path: NavigationService.DOSSIER,
-        component: Dossier
+        component: DossierComponent
       },
       {
         path: NavigationService.DOSSIER_FORM,

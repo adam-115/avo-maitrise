@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { DossierTabType } from '../../appTypes';
-import { Document } from "../../document/document/document";
+import { DocumentComponent } from "../../document/document/document.component";
 import { CommonModule } from '@angular/common';
 import { Evenement } from "../../evenement/evenement/evenement";
 import { Tache } from "../../tache/tache/tache";
@@ -15,7 +15,7 @@ import { DossierInfo } from "../dossier-info/dossier-info";
 
 @Component({
   selector: 'app-dossier-details',
-  imports: [Document, CommonModule, Evenement, Tache, Note, Contact, Temp, DossierFacture, DossierInfo],
+  imports: [DocumentComponent, CommonModule, Evenement, Tache, Note, Contact, Temp, DossierFacture, DossierInfo],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })

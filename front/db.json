@@ -13,7 +13,7 @@
   ],
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "email": "jean.dupont@cabinet-avocats.fr",
       "username": "jdupont",
       "firstName": "Jean",
@@ -30,7 +30,7 @@
       "createdAt": "2023-01-15T09:00:00Z"
     },
     {
-      "id": 2,
+      "id": "2",
       "email": "marie.curie@cabinet-avocats.fr",
       "username": "mcurie",
       "firstName": "Marie",
@@ -46,7 +46,7 @@
       "createdAt": "2023-03-20T14:30:00Z"
     },
     {
-      "id": 3,
+      "id": "3",
       "email": "sophie.martin@cabinet-avocats.fr",
       "username": "smartin",
       "firstName": "Sophie",
@@ -62,7 +62,7 @@
       "createdAt": "2023-06-10T10:15:00Z"
     },
     {
-      "id": 4,
+      "id": "4",
       "email": "luc.bertrand@cabinet-avocats.fr",
       "username": "lbertrand",
       "firstName": "Luc",
@@ -5879,6 +5879,21 @@
           "name": "secteur activite.csv",
           "file": {},
           "tags": ""
+        },
+        {
+          "title": "fff",
+          "description": "qsdqd",
+          "name": "8604973_04-T-312196-04-_P_.pdf",
+          "file": {},
+          "tags": ""
+        },
+        {
+          "title": "eee",
+          "description": "eee",
+          "name": "secteur activite.csv",
+          "file": {},
+          "tags": "",
+          "date": "2026-02-21T15:07:01.563Z"
         }
       ],
       "updated_at": "2026-02-18T20:53:21.164Z"

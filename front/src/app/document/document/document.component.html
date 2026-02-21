@@ -1,0 +1,108 @@
+<div class="mt-6">
+    <div
+        class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+
+        <button (click)="openDocumentDialog()"
+            class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150 w-full sm:w-auto flex-shrink-0">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+            </svg>
+            <span>Uploader un Nouveau Document</span>
+        </button>
+
+        <div class="flex flex-grow space-x-3 w-full sm:w-auto">
+            <div class="relative flex-grow">
+                <input type="text" placeholder="Rechercher par Titre ou Contenu..."
+                    class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <select
+                class="p-2 border border-gray-300 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500 flex-shrink-0">
+                <option>Filtrer par Type</option>
+                <option>Contrats</option>
+                <option>Actes de procédure</option>
+                <option>Pièces adverses</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+
+        <div
+            class="hidden md:grid grid-cols-12 text-xs font-semibold uppercase text-gray-500 bg-gray-100 p-4 border-b border-gray-200">
+            <div class="col-span-4">Titre du Document</div>
+            <div class="col-span-2">Type</div>
+            <div class="col-span-2">Ajouté par</div>
+            <div class="col-span-2">Date d'Upload</div>
+            <div class="col-span-1 text-center">Taille</div>
+            <div class="col-span-1 text-right">Actions</div>
+        </div>
+
+        @if(documents && documents.length > 0) {
+        @for (doc of documents; track doc) {
+        <div
+            class="grid grid-cols-1 md:grid-cols-12 items-center border-b border-gray-100 hover:bg-cyan-50 p-4 transition duration-100">
+
+            <div class="col-span-4 flex items-center space-x-3">
+                <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12h6m-3-3v6m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a10 10 0 0117.87-2.67M3 20a10 10 0 013.87-4.33">
+                    </path>
+                </svg>
+                <div>
+                    <p class="font-semibold text-slate-800">{{ doc.title || doc.name || 'Document Sans Titre' }}</p>
+                    <p class="text-xs text-gray-500 truncate md:hidden">
+                        {{ doc.label || 'Inconnu' }} · {{ (doc.date | date:'dd/MM/yyyy') || 'N/A' }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-span-2 text-sm text-gray-700 hidden md:block">{{ doc.label || '-' }}</div>
+            <div class="col-span-2 text-sm text-gray-700 hidden md:block">-</div>
+            <div class="col-span-2 text-sm font-medium text-cyan-600 hidden md:block">
+                {{ doc.date ? (doc.date | date:'dd/MM/yyyy') : 'N/A' }}
+            </div>
+            <div class="col-span-1 text-sm text-gray-700 text-center hidden md:block">-</div>
+
+            <div class="col-span-1 flex justify-end space-x-2">
+                <button title="Télécharger" class="p-1 text-gray-500 hover:text-cyan-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                    </svg>
+                </button>
+                <button title="Détails" class="p-1 text-gray-500 hover:text-cyan-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 010 1.414l-3.414 3.414a1 1 0 01-.707.293H15m-1.5-6.5h-5.836a2 2 0 00-1.414.586L4 16l-1.414 1.414">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        }
+        } @else {
+        <div class="p-8 text-center text-gray-500">
+            <p>Aucun document disponible pour le moment.</p>
+        </div>
+        }
+    </div>
+
+    <div class="mt-4 flex justify-between items-center text-sm text-gray-600">
+        <p>Affichage de {{ documents.length > 0 ? 1 : 0 }} à {{ documents.length }} sur {{ documents.length }}
+            documents.</p>
+    </div>
+</div>
+@if(showAddDocumentDialog){
+<app-document-dialog (closeDialogEvent)="closeDocumentDialog()"
+    (addDocumentEvent)="addDocument($event)"></app-document-dialog>
+}

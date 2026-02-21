@@ -114,7 +114,7 @@
 
     @if (selectedTab == DossierTabType.Document) {
     <div class="lg:col-span-3  space-y-8">
-      <app-document></app-document>
+      <app-document [selectedDossier]="selectedDossier"></app-document>
     </div>
     }
     @if (selectedTab == DossierTabType.TEMP_FACTURATION) {
