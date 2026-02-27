@@ -62,6 +62,8 @@ export class NavigationService {
   public static readonly DOSSIER_STATUS_FORM = "dossier-status-form";
   public static readonly DOSSIER_PRIORITE = "dossier-priorite";
   public static readonly DOMAINE_JURIDIQUE = "domaine-juridique";
+  public static readonly TASK_CATEGORY = "task-category";
+  public static readonly TASK_STATUS = "task-status";
 
 
 
@@ -186,6 +188,14 @@ export class NavigationService {
 
   navigateToDomaineJuridique() {
     this.router.navigate([NavigationService.HOME, NavigationService.DOMAINE_JURIDIQUE]);
+  }
+
+  navigateToTaskCategory() {
+    this.router.navigate([NavigationService.HOME, NavigationService.TASK_CATEGORY]);
+  }
+
+  navigateToTaskStatus() {
+    this.router.navigate([NavigationService.HOME, NavigationService.TASK_STATUS]);
   }
 
   navigateToDossierDetails(id: string) {

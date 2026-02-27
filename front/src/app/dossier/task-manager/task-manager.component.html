@@ -1,0 +1,393 @@
+<div class="bg-slate-50 min-h-full p-6 font-sans">
+
+    <!-- Header & Progress -->
+    <div class="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div>
+                <h2 class="text-2xl font-extrabold text-slate-800">Gestion des Tâches</h2>
+                <p class="text-slate-500 text-sm mt-1">Suivez l'avancement des actions liées à ce dossier.</p>
+            </div>
+            <div>
+                <button (click)="openForm()"
+                    class="bg-cyan-600 hover:bg-cyan-700 text-white px-5 py-2.5 rounded-xl font-bold shadow-md shadow-cyan-200 transition-all flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Nouvelle Tâche
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="mt-6">
+            <div class="flex justify-between items-end mb-2">
+                <span class="text-sm font-bold text-slate-700 uppercase tracking-wider">Taux de complétion</span>
+                <span class="text-sm font-bold text-cyan-700 bg-cyan-50 px-3 py-1 rounded-full">{{ completedCount }} /
+                    {{ tasks.length }} Terminées ({{ completionRate }}%)</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-full h-3 border border-slate-200 overflow-hidden">
+                <div class="bg-cyan-500 h-3 rounded-full transition-all duration-1000 ease-out"
+                    [style.width.%]="completionRate"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Toolbar -->
+    <div class="flex flex-col lg:flex-row gap-4 mb-8">
+        <div class="flex-1 relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+            <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
+                placeholder="Rechercher une tâche par titre..."
+                class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-700 shadow-sm transition-all placeholder:text-slate-400">
+        </div>
+
+        <div class="flex gap-4 overflow-x-auto pb-2 lg:pb-0">
+            <select [(ngModel)]="selectedCategoryId" (ngModelChange)="applyFilters()"
+                class="bg-white border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block p-3 shadow-sm min-w-[150px]">
+                <option value="">Toutes les Catégories</option>
+                <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</option>
+            </select>
+
+            <select [(ngModel)]="selectedStatusId" (ngModelChange)="applyFilters()"
+                class="bg-white border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block p-3 shadow-sm min-w-[150px]">
+                <option value="">Tous les Statuts</option>
+                <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
+            </select>
+
+            <button (click)="toggleUrgentFilter()"
+                [ngClass]="showUrgentOnly ? 'bg-red-50 text-red-600 border-red-200 ring-1 ring-red-500' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'"
+                class="whitespace-nowrap px-4 py-3 rounded-xl border text-sm font-semibold transition-all shadow-sm flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                    </path>
+                </svg>
+                Mes Tâches Urgentes
+            </button>
+        </div>
+    </div>
+
+    <!-- Form Area (Hidden by default) -->
+    <div *ngIf="showForm"
+        class="mb-8 bg-white p-6 rounded-2xl shadow-lg border-t-4 border-cyan-500 animate-fade-in-down">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-xl font-bold text-slate-800">{{ isEditing ? 'Modifier la Tâche' : 'Nouvelle Tâche' }}</h3>
+            <button (click)="closeForm()"
+                class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <form [formGroup]="taskForm" (ngSubmit)="saveTask()">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Titre de la tâche</label>
+                    <input type="text" formControlName="titre"
+                        class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800"
+                        placeholder="Ex: Rédaction des conclusions...">
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Description</label>
+                    <textarea formControlName="description" rows="3"
+                        class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800"
+                        placeholder="Détails supplémentaires..."></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Catégorie</label>
+                    <select formControlName="categoryId"
+                        class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800">
+                        <option value="" disabled selected>Sélectionner une catégorie</option>
+                        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Statut initial</label>
+                    <select formControlName="statusId"
+                        class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800">
+                        <option value="" disabled selected>Sélectionner un statut</option>
+                        <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Priorité</label>
+                    <select formControlName="priorite"
+                        class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800">
+                        <option value="BASSE">Basse</option>
+                        <option value="NORMALE">Normale</option>
+                        <option value="HAUTE">Haute</option>
+                        <option value="URGENTE">Urgente</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Date d'échéance</label>
+                    <input type="date" formControlName="dateEcheance"
+                        class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800">
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                <button type="button" (click)="closeForm()"
+                    class="px-6 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition-colors">Annuler</button>
+                <button type="submit" [disabled]="taskForm.invalid"
+                    class="px-6 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                    {{ isEditing ? 'Mettre à jour' : 'Enregistrer' }}
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Cards Grid -->
+    <div *ngIf="filteredTasks.length === 0"
+        class="text-center py-20 bg-white rounded-2xl border border-slate-200 border-dashed">
+        <div class="bg-slate-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
+                </path>
+            </svg>
+        </div>
+        <h3 class="text-lg font-bold text-slate-800 mb-1">Aucune tâche trouvée</h3>
+        <p class="text-slate-500 text-sm">Modifiez vos filtres ou créez une nouvelle tâche.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div *ngFor="let task of filteredTasks" [ngClass]="{
+                'opacity-60 grayscale-[50%]': isClosed(task), 
+                'border-red-400 ring-2 ring-red-100': isOverdue(task) && !isClosed(task), 
+                'border-slate-200': !isOverdue(task) || isClosed(task),
+                'border-l-red-500': task.priorite === 'URGENTE',
+                'border-l-orange-500': task.priorite === 'HAUTE',
+                'border-l-slate-300': task.priorite === 'NORMALE',
+                'border-l-blue-400': task.priorite === 'BASSE'
+            }"
+            class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-l-[6px] flex flex-col relative group overflow-hidden">
+
+            <!-- Overdue Alert Ribbon -->
+            <div *ngIf="isOverdue(task) && !isClosed(task)"
+                class="absolute top-0 right-0 bg-gradient-to-r from-red-600 to-red-500 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-bl-2xl z-20 shadow-md flex items-center gap-1.5 animate-pulse">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                En Retard
+            </div>
+
+            <!-- Card Header -->
+            <div class="p-5 pb-4 flex-1 flex flex-col relative bg-clip-padding">
+                <div class="flex items-start justify-between mb-3">
+                    <div class="flex items-center gap-2 max-w-[75%]">
+                        <span *ngIf="getCategory(task.categoryId)"
+                            [style.backgroundColor]="getCategory(task.categoryId)?.couleur + '15'"
+                            [style.color]="getCategory(task.categoryId)?.couleur"
+                            [style.borderColor]="getCategory(task.categoryId)?.couleur + '30'"
+                            class="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 border whitespace-nowrap overflow-hidden text-ellipsis shadow-sm">
+                            <i *ngIf="getCategory(task.categoryId)?.icone"
+                                [class]="getCategory(task.categoryId)?.icone"></i>
+                            {{ getCategory(task.categoryId)?.libelle }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-start gap-2 mb-2">
+                    <h4 [ngClass]="{'line-through text-slate-400 decoration-slate-400': isClosed(task), 'text-slate-800': !isClosed(task)}"
+                        class="text-[17px] font-extrabold leading-tight tracking-tight">
+                        {{ task.titre }}
+                    </h4>
+                </div>
+
+                <p *ngIf="task.description" class="text-sm text-slate-500 line-clamp-2 leading-relaxed flex-1 mb-4">
+                    {{ task.description }}
+                </p>
+
+                <div class="flex items-center justify-between mt-auto pt-2">
+                    <span [ngClass]="{
+                          'bg-red-50 text-red-700': task.priorite === 'URGENTE',
+                          'bg-orange-50 text-orange-700': task.priorite === 'HAUTE',
+                          'bg-slate-100 text-slate-600': task.priorite === 'NORMALE',
+                          'bg-blue-50 text-blue-600': task.priorite === 'BASSE'
+                        }" class="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">
+                        {{ task.priorite }}
+                    </span>
+
+                    <div class="flex items-center gap-1">
+                        <button *ngIf="!isClosed(task)" (click)="openForm(task)"
+                            class="text-slate-400 hover:text-cyan-600 transition-all cursor-pointer p-1.5 bg-slate-50 hover:bg-cyan-50 rounded-lg"
+                            title="Modifier">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                                </path>
+                            </svg>
+                        </button>
+                        <button (click)="toggleComments(task.id)"
+                            class="text-slate-400 hover:text-indigo-600 transition-all cursor-pointer p-1.5 bg-slate-50 hover:bg-indigo-50 rounded-lg"
+                            title="Détails (Commentaires & Temps)">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Footer -->
+            <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                <div class="flex items-center text-[11px] font-bold"
+                    [ngClass]="{'text-red-500 bg-red-50 px-2 py-0.5 rounded': isOverdue(task) && !isClosed(task), 'text-slate-500': !isOverdue(task) || isClosed(task)}">
+                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    {{ task.dateEcheance | date:'dd/MM/yyyy' }}
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <div class="relative flex items-center group/select">
+                        <div class="absolute left-2 w-2 h-2 rounded-full shadow-sm pointer-events-none"
+                            [ngClass]="isClosed(task) ? 'bg-slate-400' : 'bg-emerald-500'"></div>
+                        <select [ngModel]="task.statusId" (change)="onStatusChange(task, $event)"
+                            class="text-[11px] font-bold bg-white border border-slate-200 rounded-md py-1.5 pl-6 pr-6 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 cursor-pointer text-slate-700 shadow-sm appearance-none min-w-[120px]">
+                            <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
+                        </select>
+                        <div
+                            class="absolute right-2 text-slate-400 pointer-events-none group-hover/select:text-slate-600 transition-colors">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expanded Interactive Section (Comments / Time logs) -->
+            <div *ngIf="showCommentsForTaskId === task.id"
+                class="bg-indigo-50/50 border-t border-slate-100 flex flex-col">
+                <!-- Tabs Header -->
+                <div class="flex border-b border-slate-200">
+                    <button (click)="switchTab('COMMENTS')"
+                        [ngClass]="activeTabForTaskId === 'COMMENTS' ? 'border-b-2 border-indigo-600 text-indigo-700 bg-white/60' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'"
+                        class="flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider flex items-center justify-center transition-colors">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                            </path>
+                        </svg>
+                        Commentaires
+                    </button>
+                    <button (click)="switchTab('TIME')"
+                        [ngClass]="activeTabForTaskId === 'TIME' ? 'border-b-2 border-indigo-600 text-indigo-700 bg-white/60' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'"
+                        class="flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider flex items-center justify-center transition-colors border-l border-slate-200">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Temps Passé
+                    </button>
+                </div>
+
+                <!-- Tab Panel: COMMENTS -->
+                <div *ngIf="activeTabForTaskId === 'COMMENTS'" class="p-4">
+                    <div class="space-y-3 max-h-48 overflow-y-auto pr-2 mb-4 scrollbar-thin scrollbar-thumb-slate-300">
+                        <div *ngIf="currentTaskLogs.length === 0"
+                            class="text-xs text-center text-slate-400 italic py-2">
+                            Aucun commentaire pour cette tâche.
+                        </div>
+                        <div *ngFor="let log of currentTaskLogs"
+                            class="bg-white p-3 rounded-lg shadow-sm border border-slate-100">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="text-xs font-bold text-slate-800">{{ log.createdBy?.firstName || 'Moi
+                                    (Avocat)' }}</span>
+                                <span class="text-[10px] text-slate-400 font-medium">{{ log.createdAt | date:'dd/MM/yyyy
+                                    HH:mm' }}</span>
+                            </div>
+                            <p class="text-sm text-slate-600 leading-relaxed">{{ log.description }}</p>
+                        </div>
+                    </div>
+                    <div class="relative mt-2">
+                        <textarea [(ngModel)]="commentText" rows="2" placeholder="Ajouter un commentaire..."
+                            class="w-full text-sm p-3 pr-12 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all resize-none"></textarea>
+                        <button (click)="addComment(task.id)" [disabled]="!commentText.trim()"
+                            class="absolute bottom-2 right-2 p-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Panel: TIME -->
+                <div *ngIf="activeTabForTaskId === 'TIME'" class="p-4 bg-slate-100/50">
+                    <div
+                        class="flex justify-between items-center bg-white p-3 rounded-xl border border-indigo-100 shadow-sm mb-4">
+                        <span class="text-xs font-bold text-slate-600 uppercase">Total Cumulé :</span>
+                        <span
+                            class="text-sm font-black text-indigo-700 px-3 py-1 bg-indigo-50 rounded-lg border border-indigo-100">
+                            {{ formatMinutesToHours(getTotalTimeSpent()) }}
+                        </span>
+                    </div>
+
+                    <div class="space-y-3 max-h-40 overflow-y-auto pr-2 mb-4 scrollbar-thin scrollbar-thumb-slate-300">
+                        <div *ngIf="currentTimeLogs.length === 0"
+                            class="text-xs text-center text-slate-400 italic py-2">
+                            Aucun temps n'a encore été saisi.
+                        </div>
+                        <div *ngFor="let tLog of currentTimeLogs"
+                            class="bg-white p-3 rounded-lg shadow-sm border border-slate-100 flex items-start gap-3">
+                            <div
+                                class="bg-indigo-50 text-indigo-700 text-xs font-bold px-2.5 py-1.5 rounded-md border border-indigo-100 whitespace-nowrap">
+                                + {{ tLog.timeSpentMinutes }} min
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-[10px] text-slate-400 font-medium mb-0.5">{{ tLog.createdAt |
+                                    date:'dd/MM/yyyy' }} par Moi</p>
+                                <p class="text-xs text-slate-700 font-medium line-clamp-2" [title]="tLog.description">{{
+                                    tLog.description || 'Temps de travail sans description' }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-2 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                        <h6 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Ajouter du Temps
+                        </h6>
+                        <div class="flex gap-2">
+                            <input type="number" min="1" [(ngModel)]="timeSpentInput" placeholder="Min."
+                                class="w-20 text-sm p-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-slate-400">
+                            <input type="text" [(ngModel)]="timeCommentInput" placeholder="Titre / Explication..."
+                                class="flex-1 text-sm p-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 placeholder:text-slate-400">
+                        </div>
+                        <div class="flex justify-end mt-2">
+                            <button (click)="addTimeLog(task.id)" [disabled]="!timeSpentInput || timeSpentInput <= 0"
+                                class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg shadow-sm disabled:opacity-50 transition-colors flex items-center gap-1.5 cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                </svg>
+                                Enregistrer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

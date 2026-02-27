@@ -1,0 +1,118 @@
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-4">Gestion des Catégories de Tâches</h2>
+
+    <!-- Formulaire d'ajout/édition -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h3 class="text-xl font-semibold mb-2">{{ isEditing ? 'Modifier' : 'Ajouter' }} une Catégorie de Tâches</h3>
+
+        <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+            <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="libelle">Libellé</label>
+                    <input id="libelle" type="text" formControlName="libelle"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        placeholder="Ex: Procédure" />
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="code">Code</label>
+                    <input id="code" type="text" formControlName="code"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        placeholder="Ex: PROCEDURE" />
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="couleur">Couleur</label>
+                    <input id="couleur" type="color" formControlName="couleur"
+                        class="h-10 w-full border rounded cursor-pointer" />
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="icone">Icône (optionnel)</label>
+                    <input id="icone" type="text" formControlName="icone"
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        placeholder="Ex: fas fa-file" />
+                </div>
+
+                <div class="flex items-center mt-6">
+                    <input id="actif" type="checkbox" formControlName="actif"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
+                    <label for="actif" class="ml-2 block text-sm text-gray-900">Actif</label>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer disabled:opacity-50"
+                    type="submit" [disabled]="categoryForm.invalid">
+                    {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+                </button>
+                <button *ngIf="isEditing" type="button" (click)="cancelEdit()"
+                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer">
+                    Annuler
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Liste des catégories -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <h3 class="text-xl font-semibold mb-4">Liste des Catégories de Tâches</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full leading-normal">
+                <thead>
+                    <tr>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Couleur
+                        </th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Libellé
+                        </th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Code
+                        </th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Icône
+                        </th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Statut
+                        </th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let category of categories">
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <div [style.background-color]="category.couleur"
+                                class="w-6 h-6 rounded-full border border-gray-300"></div>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm font-medium">{{ category.libelle
+                            }}</td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ category.code }}</td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ category.icone || '-' }}</td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                [ngClass]="category.actif ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                                {{ category.actif ? 'Actif' : 'Inactif' }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <button (click)="editCategory(category)"
+                                class="text-blue-600 hover:text-blue-900 mr-4 cursor-pointer">Éditer</button>
+                            <button (click)="deleteCategory(category.id)"
+                                class="text-red-600 hover:text-red-900 cursor-pointer">Désactiver</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

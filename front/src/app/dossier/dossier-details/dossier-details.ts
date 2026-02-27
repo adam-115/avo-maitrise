@@ -3,7 +3,7 @@ import { DossierTabType } from '../../appTypes';
 import { DocumentComponent } from "../../document/document/document.component";
 import { CommonModule } from '@angular/common';
 import { Evenement } from "../../evenement/evenement/evenement";
-import { Tache } from "../../tache/tache/tache";
+import { TaskManagerComponent } from "../task-manager/task-manager.component";
 import { Note } from "../../note/note/note";
 import { Contact } from "../../contact/contact/contact";
 import { Temp } from "../../temp/temp/temp";
@@ -15,7 +15,7 @@ import { DossierInfo } from "../dossier-info/dossier-info";
 
 @Component({
   selector: 'app-dossier-details',
-  imports: [DocumentComponent, CommonModule, Evenement, Tache, Note, Contact, Temp, DossierFacture, DossierInfo],
+  imports: [DocumentComponent, CommonModule, Evenement, TaskManagerComponent, Note, Contact, Temp, DossierFacture, DossierInfo],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })

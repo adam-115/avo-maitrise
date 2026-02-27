@@ -131,7 +131,7 @@
 
     @if (selectedTab == DossierTabType.TACHE) {
     <div class="lg:col-span-3  space-y-8">
-      <app-tache></app-tache>
+      <app-task-manager [dossierId]="selectedDossier?.id || ''"></app-task-manager>
     </div>
     }
 

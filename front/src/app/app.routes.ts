@@ -225,6 +225,14 @@ export const routes: Routes = [
       {
         path: NavigationService.DOMAINE_JURIDIQUE,
         loadComponent: () => import('./administration/domaine-juridique-form/domaine-juridique-form.component').then(m => m.DomaineJuridiqueFormComponent)
+      },
+      {
+        path: NavigationService.TASK_CATEGORY,
+        loadComponent: () => import('./administration/task-category-form/task-category-form.component').then(m => m.TaskCategoryFormComponent)
+      },
+      {
+        path: NavigationService.TASK_STATUS,
+        loadComponent: () => import('./administration/task-status-form/task-status-form.component').then(m => m.TaskStatusFormComponent)
       }
     ]
 

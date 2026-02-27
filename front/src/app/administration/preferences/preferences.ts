@@ -38,4 +38,12 @@ export class Preferences {
     this.navigationService.navigateToDomaineJuridique();
   }
 
+  navigateToTaskCategory() {
+    this.navigationService.navigateToTaskCategory();
+  }
+
+  navigateToTaskStatus() {
+    this.navigationService.navigateToTaskStatus();
+  }
+
 }

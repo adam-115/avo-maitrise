@@ -5894,9 +5894,138 @@
           "file": {},
           "tags": "",
           "date": "2026-02-21T15:07:01.563Z"
+        },
+        {
+          "title": "mehdi",
+          "description": "mehdi ",
+          "name": "8604973_04-T-312196-04-_P_.pdf",
+          "file": {},
+          "tags": "",
+          "date": "2026-02-26T17:38:32.637Z"
         }
       ],
       "updated_at": "2026-02-18T20:53:21.164Z"
+    }
+  ],
+  "TaskCategory": [
+    {
+      "id": "1",
+      "code": "PROCEDURE",
+      "libelle": "Actes et Procédures",
+      "couleur": "#3b82f6",
+      "icone": "fas fa-gavel",
+      "actif": true
+    },
+    {
+      "id": "2",
+      "code": "RECHERCHE",
+      "libelle": "Recherche et Analyse",
+      "couleur": "#8b5cf6",
+      "icone": "fas fa-search",
+      "actif": true
+    },
+    {
+      "id": "3",
+      "code": "CLIENT",
+      "libelle": "Relation Client",
+      "couleur": "#10b981",
+      "icone": "fas fa-user",
+      "actif": true
+    }
+  ],
+  "TaskStatus": [
+    {
+      "id": "1",
+      "code": "A_FAIRE",
+      "libelle": "À Faire",
+      "ordre_affichage": 1,
+      "isClosingStatus": false
+    },
+    {
+      "id": "2",
+      "code": "EN_COURS",
+      "libelle": "En Cours",
+      "ordre_affichage": 2,
+      "isClosingStatus": false
+    },
+    {
+      "id": "3",
+      "code": "TERMINE",
+      "libelle": "Terminé",
+      "ordre_affichage": 3,
+      "isClosingStatus": true
+    },
+    {
+      "id": "4",
+      "code": "ANNULE",
+      "libelle": "Annulé",
+      "ordre_affichage": 4,
+      "isClosingStatus": true
+    }
+  ],
+  "Task": [
+    {
+      "id": "f2fa",
+      "titre": "aaaa",
+      "description": "aaaa",
+      "categoryId": "1",
+      "statusId": "2",
+      "priorite": "NORMALE",
+      "dateEcheance": "2026-02-21",
+      "dossierId": "76ad",
+      "isCompleted": false,
+      "createdAt": "2026-02-21T17:46:21.465Z"
+    },
+    {
+      "id": "0df4",
+      "titre": "test two ",
+      "description": "description detaillé de la tache ",
+      "categoryId": "1",
+      "statusId": "2",
+      "priorite": "HAUTE",
+      "dateEcheance": "2026-04-01",
+      "dossierId": "76ad",
+      "isCompleted": false,
+      "createdAt": "2026-02-27T12:44:23.787Z"
+    }
+  ],
+  "TaskLog": [
+    {
+      "id": "83b8",
+      "taskId": "f2fa",
+      "action": "COMMENT",
+      "description": "c est un test",
+      "createdAt": "2026-02-21T17:55:32.505Z"
+    },
+    {
+      "id": "c4a8",
+      "taskId": "f2fa",
+      "action": "COMMENT",
+      "description": "test 2",
+      "createdAt": "2026-02-26T17:48:54.312Z"
+    },
+    {
+      "id": "0b51",
+      "taskId": "f2fa",
+      "action": "COMMENT",
+      "description": "test 3",
+      "createdAt": "2026-02-26T17:48:58.225Z"
+    }
+  ],
+  "TaskTimeLog": [
+    {
+      "id": "402a",
+      "taskId": "f2fa",
+      "timeSpentMinutes": 4,
+      "description": "ddd",
+      "createdAt": "2026-02-21T18:29:47.774Z"
+    },
+    {
+      "id": "eee3",
+      "taskId": "f2fa",
+      "timeSpentMinutes": 3,
+      "description": "one",
+      "createdAt": "2026-02-26T17:48:06.366Z"
     }
   ]
 }

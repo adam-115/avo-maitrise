@@ -410,3 +410,61 @@ export interface Dossier {
   // Métadonnées
   tags?: string[];             // Pour la recherche rapide
 }
+
+
+// gestion des taches
+
+// Représente une catégorie de tâche (ex: Procédure, Recherche)
+export interface TaskCategory {
+  id: number | string;
+  code: 'PROCEDURE' | 'RECHERCHE' | 'CLIENT' | 'ADMIN' | 'AUDIENCE';
+  libelle: string;      // Ex: "Actes et Procédures"
+  couleur: string;      // Code Hexa ou classe Tailwind pour l'UI
+  icone?: string;       // Nom de l'icône (Lucide, Heroicons...)
+  actif: boolean;
+}
+
+// Représente l'état d'avancement d'une tâche
+export interface TaskStatus {
+  id: number | string;
+  code: 'A_FAIRE' | 'EN_COURS' | 'TERMINE' | 'ANNULE';
+  libelle: string;      // Ex: "En attente"
+  ordre_affichage: number;
+  isClosingStatus: boolean; // Si vrai, la tâche est considérée comme finie
+}
+
+export interface Task {
+  id?: number;
+  dossierId: number | string;
+  titre: string;
+  description?: string;
+
+  // Relations par ID
+  categoryId: number | string;
+  statusId: number | string;
+
+  priorite: 'BASSE' | 'NORMALE' | 'HAUTE' | 'URGENTE';
+  assigneA?: User[];
+  dateEcheance: Date;
+  isCompleted: boolean;
+  createdAt: Date;
+  createdBy?: User;
+
+}
+export interface TaskLog {
+  id?: number;
+  taskId?: string;
+  action: string;
+  description?: string;
+  createdAt: Date;
+  createdBy?: User;
+}
+
+export interface TaskTimeLog {
+  id?: number;
+  taskId: string | number;
+  timeSpentMinutes: number;
+  description?: string;
+  createdAt: Date;
+  createdBy?: User;
+}
