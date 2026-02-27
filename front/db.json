@@ -5977,16 +5977,31 @@
       "createdAt": "2026-02-21T17:46:21.465Z"
     },
     {
-      "id": "0df4",
       "titre": "test two ",
       "description": "description detaillé de la tache ",
       "categoryId": "1",
       "statusId": "2",
       "priorite": "HAUTE",
       "dateEcheance": "2026-04-01",
+      "assigneA": [
+        {
+          "id": "5501",
+          "firstName": "adam",
+          "lastName": "laftimi",
+          "email": "adam.laftimi@gmail.com",
+          "username": "adam.laftimi@gmail.com",
+          "role": "ADMIN",
+          "isActive": true,
+          "isPartner": true,
+          "barreauId": "test",
+          "createdAt": "2026-02-18T20:48:53.495Z",
+          "twoFactorEnabled": false
+        }
+      ],
       "dossierId": "76ad",
       "isCompleted": false,
-      "createdAt": "2026-02-27T12:44:23.787Z"
+      "createdAt": "2026-02-27T12:44:23.787Z",
+      "id": "0df4"
     }
   ],
   "TaskLog": [

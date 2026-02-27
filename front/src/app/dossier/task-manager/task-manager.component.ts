@@ -1,17 +1,19 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
-import { Task, TaskCategory, TaskStatus, TaskLog, TaskTimeLog } from '../../appTypes';
+import { Task, TaskCategory, TaskStatus, TaskLog, TaskTimeLog, User } from '../../appTypes';
 import { TaskService } from '../../services/task.service';
 import { TaskCategoryService } from '../../services/task-category.service';
 import { TaskStatusService } from '../../services/task-status.service';
 import { TaskLogService } from '../../services/task-log.service';
 import { TaskTimeLogService } from '../../services/task-time-log.service';
+import { UserService } from '../../services/user.service';
+import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
 
 @Component({
     selector: 'app-task-manager',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, UserSelectionDialog],
     templateUrl: './task-manager.component.html',
     styleUrls: ['./task-manager.component.css']
 })
@@ -22,11 +24,14 @@ export class TaskManagerComponent implements OnInit {
     filteredTasks: Task[] = [];
     categories: TaskCategory[] = [];
     statuses: TaskStatus[] = [];
+    users: User[] = [];
 
     taskForm!: FormGroup;
     showForm: boolean = false;
     isEditing: boolean = false;
     selectedTaskId: number | undefined = undefined;
+
+    showUserDialog: boolean = false;
 
     // Filters
     searchTerm: string = '';
@@ -50,6 +55,7 @@ export class TaskManagerComponent implements OnInit {
     statusService = inject(TaskStatusService);
     taskLogService = inject(TaskLogService);
     taskTimeLogService = inject(TaskTimeLogService);
+    userService = inject(UserService);
     fb = inject(FormBuilder);
 
     ngOnInit() {
@@ -64,11 +70,16 @@ export class TaskManagerComponent implements OnInit {
             categoryId: ['', Validators.required],
             statusId: ['', Validators.required],
             priorite: ['NORMALE', Validators.required],
+            assigneAIds: [[]], // Array of assigned user IDs
             dateEcheance: [new Date().toISOString().split('T')[0], Validators.required]
         });
     }
 
     loadData() {
+        this.userService.getAll().subscribe(usersList => {
+            this.users = usersList;
+        });
+
         this.categoryService.getAll().subscribe(cats => {
             this.categories = cats;
             this.statusService.getAll().subscribe(stats => {
@@ -125,6 +136,7 @@ export class TaskManagerComponent implements OnInit {
                 categoryId: task.categoryId,
                 statusId: task.statusId,
                 priorite: task.priorite,
+                assigneAIds: (task.assigneA || []).map(u => String(u.id)),
                 dateEcheance: new Date(task.dateEcheance).toISOString().split('T')[0]
             });
         } else {
@@ -134,9 +146,34 @@ export class TaskManagerComponent implements OnInit {
             this.taskForm.reset({
                 priorite: 'NORMALE',
                 statusId: defaultStatus,
+                assigneAIds: [],
                 dateEcheance: new Date().toISOString().split('T')[0]
             });
         }
+    }
+
+    openUserDialog(): void {
+        this.showUserDialog = true;
+    }
+
+    closeUserDialog(): void {
+        this.showUserDialog = false;
+    }
+
+    onUsersSelected(selectedIds: string[]): void {
+        this.taskForm.patchValue({ assigneAIds: selectedIds });
+        this.closeUserDialog();
+    }
+
+    getSelectedAssignees(): User[] {
+        const selectedIds = this.taskForm.get('assigneAIds')?.value || [];
+        return this.users.filter(user => selectedIds.includes(String(user.id)));
+    }
+
+    removeAssignee(userId: string | number): void {
+        const currentIds = this.taskForm.get('assigneAIds')?.value || [];
+        const newIds = currentIds.filter((id: string | number) => String(id) !== String(userId));
+        this.taskForm.patchValue({ assigneAIds: newIds });
     }
 
     closeForm() {
@@ -147,8 +184,18 @@ export class TaskManagerComponent implements OnInit {
     saveTask() {
         if (this.taskForm.invalid) return;
         const formVals = this.taskForm.value;
+
+        // Map assigned IDs back to User objects
+        const assignedUsers = this.users.filter(u =>
+            (formVals.assigneAIds || []).includes(String(u.id))
+        );
+
+        // Omit assigneAIds from the final object, since Task uses assigneA
+        const { assigneAIds, ...restFormVals } = formVals;
+
         const taskData: Task = {
-            ...formVals,
+            ...restFormVals,
+            assigneA: assignedUsers,
             dossierId: this.dossierId,
             isCompleted: false,
             createdAt: this.isEditing ? this.tasks.find(t => t.id === this.selectedTaskId)?.createdAt || new Date() : new Date()
