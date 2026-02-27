@@ -137,7 +137,7 @@
 
     @if (selectedTab == DossierTabType.NOTE) {
     <div class="lg:col-span-3  space-y-8">
-      <app-note></app-note>
+      <app-note [dossierID]="selectedDossier?.id || ''" [userId]="userid"></app-note>
     </div>
     }
 

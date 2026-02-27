@@ -468,3 +468,31 @@ export interface TaskTimeLog {
   createdAt: Date;
   createdBy?: User;
 }
+
+// note par 
+export interface NoteCategory {
+  id: string | number;
+  label: string;
+  code: string;
+  color?: string;
+  active: boolean;
+  order: number;
+}
+
+export interface Note {
+  id?: number;
+  dossierId: number | string;  // Le dossier auquel la note est liée
+  auteurId: number | string;   // L'utilisateur (avocat/collaborateur) qui a écrit la note        // Pour l'affichage rapide (ex: "Me. Dupont")
+
+  title: string;
+  description: string;             // Le corps de la note (peut supporter du Markdown)
+
+  categoryId: string | number;
+
+  // Temporalité
+  createdAt: Date;
+  updatedAt: Date;
+
+  // Pièces jointes (optionnel)
+  attachmentIds?: string[];    // Si la note est liée à des documents spécifiques
+}

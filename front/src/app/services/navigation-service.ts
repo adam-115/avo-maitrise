@@ -64,8 +64,7 @@ export class NavigationService {
   public static readonly DOMAINE_JURIDIQUE = "domaine-juridique";
   public static readonly TASK_CATEGORY = "task-category";
   public static readonly TASK_STATUS = "task-status";
-
-
+  public static readonly NOTE_CATEGORY = "note-category";
 
 
 
@@ -196,6 +195,10 @@ export class NavigationService {
 
   navigateToTaskStatus() {
     this.router.navigate([NavigationService.HOME, NavigationService.TASK_STATUS]);
+  }
+
+  navigateToNoteCategory() {
+    this.router.navigate([NavigationService.HOME, NavigationService.NOTE_CATEGORY]);
   }
 
   navigateToDossierDetails(id: string) {

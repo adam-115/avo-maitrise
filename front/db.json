@@ -6042,5 +6042,99 @@
       "description": "one",
       "createdAt": "2026-02-26T17:48:06.366Z"
     }
+  ],
+  "NoteCategory": [
+    {
+      "id": "1",
+      "label": "Stratégie",
+      "code": "STRATEGIE",
+      "color": "#4f46e5",
+      "active": true,
+      "order": 1
+    },
+    {
+      "id": "2",
+      "label": "Appel",
+      "code": "APPEL",
+      "color": "#10b981",
+      "active": true,
+      "order": 2
+    },
+    {
+      "id": "3",
+      "label": "Réunion",
+      "code": "REUNION",
+      "color": "#f59e0b",
+      "active": true,
+      "order": 3
+    },
+    {
+      "id": "4",
+      "label": "Interne",
+      "code": "INTERNE",
+      "color": "#64748b",
+      "active": true,
+      "order": 4
+    },
+    {
+      "id": "5",
+      "label": "AML Compliance",
+      "code": "COMPLIANCE",
+      "color": "#ef4444",
+      "active": true,
+      "order": 5
+    }
+  ],
+  "Note": [
+    {
+      "id": "4b24",
+      "title": "aaa",
+      "description": "aaaa",
+      "categoryId": "1",
+      "dossierId": "1",
+      "auteurId": "2",
+      "createdAt": "2026-02-27T17:34:46.771Z",
+      "updatedAt": "2026-02-27T17:34:46.771Z"
+    },
+    {
+      "id": "2c9c",
+      "title": "ffff",
+      "description": "fffff",
+      "categoryId": "1",
+      "dossierId": "1",
+      "auteurId": "2",
+      "createdAt": "2026-02-27T17:35:23.435Z",
+      "updatedAt": "2026-02-27T17:35:23.435Z"
+    },
+    {
+      "id": "f20d",
+      "title": "dddddd",
+      "description": "fffff",
+      "categoryId": "3",
+      "dossierId": "1",
+      "auteurId": "2",
+      "createdAt": "2026-02-27T17:35:36.464Z",
+      "updatedAt": "2026-02-27T17:35:36.464Z"
+    },
+    {
+      "id": "8a39",
+      "title": "ddd",
+      "description": "dddd",
+      "categoryId": "2",
+      "dossierId": "76ad",
+      "auteurId": "",
+      "createdAt": "2026-02-27T17:39:29.249Z",
+      "updatedAt": "2026-02-27T17:39:29.249Z"
+    },
+    {
+      "id": "bff8",
+      "title": "wxcwxcxwx",
+      "description": "wxcwcwx",
+      "categoryId": "5",
+      "dossierId": "76ad",
+      "auteurId": "",
+      "createdAt": "2026-02-27T17:49:36.786Z",
+      "updatedAt": "2026-02-27T17:49:36.786Z"
+    }
   ]
 }

@@ -46,4 +46,8 @@ export class Preferences {
     this.navigationService.navigateToTaskStatus();
   }
 
+  navigateToNoteCategory() {
+    this.navigationService.navigateToNoteCategory();
+  }
+
 }

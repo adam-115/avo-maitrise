@@ -233,6 +233,10 @@ export const routes: Routes = [
       {
         path: NavigationService.TASK_STATUS,
         loadComponent: () => import('./administration/task-status-form/task-status-form.component').then(m => m.TaskStatusFormComponent)
+      },
+      {
+        path: NavigationService.NOTE_CATEGORY,
+        loadComponent: () => import('./administration/note-category/note-category.component').then(m => m.NoteCategoryComponent)
       }
     ]
 

@@ -4,7 +4,7 @@ import { DocumentComponent } from "../../document/document/document.component";
 import { CommonModule } from '@angular/common';
 import { Evenement } from "../../evenement/evenement/evenement";
 import { TaskManagerComponent } from "../task-manager/task-manager.component";
-import { Note } from "../../note/note/note";
+import { NoteComponent } from "../../note/note/note.component";
 import { Contact } from "../../contact/contact/contact";
 import { Temp } from "../../temp/temp/temp";
 import { DossierFacture } from "../dossier-facture/dossier-facture";
@@ -15,7 +15,7 @@ import { DossierInfo } from "../dossier-info/dossier-info";
 
 @Component({
   selector: 'app-dossier-details',
-  imports: [DocumentComponent, CommonModule, Evenement, TaskManagerComponent, Note, Contact, Temp, DossierFacture, DossierInfo],
+  imports: [DocumentComponent, CommonModule, Evenement, TaskManagerComponent, NoteComponent, Contact, Temp, DossierFacture, DossierInfo],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })
@@ -24,6 +24,7 @@ export class DossierDetails implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private dossierService = inject(DossierService);
   private router = inject(Router);
+  userid = "";
 
   selectedDossier: Dossier | null = null;
 
