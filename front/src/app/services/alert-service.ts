@@ -23,9 +23,9 @@ export class AlertService {
   }
 
   // Alerte de succès rapide
-  displayMessage(title:string,message: string, icon:IconType ) {
+  displayMessage(title: string, message: string, icon: IconType) {
     Swal.fire({
-      titleText:title,
+      titleText: title,
       position: "top-end",
       text: message,
       icon: icon,
@@ -37,7 +37,7 @@ export class AlertService {
   }
 
   // Confirmation de suppression stylée
-  async confirmMessage(title:string,message:string , iconType:IconType): Promise<boolean> {
+  async confirmMessage(title: string, message: string, iconType: IconType): Promise<boolean> {
     const result = await Swal.fire({
       title: title,
       text: message,

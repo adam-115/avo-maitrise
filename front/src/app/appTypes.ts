@@ -52,17 +52,17 @@ export enum ContactTypeCreation {
 
 
 
-// contact interface for crm component
-export interface Contact {
-  id: number;
-  type: 'PERSONNE' | 'SOCIETE' | 'INSTITUTION';
-  name: string;
-  role: string; // Ex: Client, Avocat Tiers, Juge
-  amlRisk: 'FAIBLE' | 'MOYEN' | 'ELEVEE' | 'NUL';
-  complianceStatus: 'OK' | 'PENDING' | 'ALERT';
-  country: string;
-  lastUpdated: string; // Date
-}
+// // contact interface for crm component
+// export interface Contact {
+//   id: number;
+//   type: 'PERSONNE' | 'SOCIETE' | 'INSTITUTION';
+//   name: string;
+//   role: string; // Ex: Client, Avocat Tiers, Juge
+//   amlRisk: 'FAIBLE' | 'MOYEN' | 'ELEVEE' | 'NUL';
+//   complianceStatus: 'OK' | 'PENDING' | 'ALERT';
+//   country: string;
+//   lastUpdated: string; // Date
+// }
 
 
 
@@ -495,4 +495,43 @@ export interface Note {
 
   // Pièces jointes (optionnel)
   attachmentIds?: string[];    // Si la note est liée à des documents spécifiques
+}
+
+export enum ContactRole {
+  AVOCAT_ADVERSE = 'AVOCAT_ADVERSE',
+  NOTAIRE = 'NOTAIRE',
+  EXPERT = 'EXPERT',
+  HUISSIER = 'HUISSIER',
+  TEMOIN = 'TEMOIN',
+  JUGE = 'JUGE',
+  PARTIE_ADVERSE = 'PARTIE_ADVERSE',
+  CONSEIL_JURIDIQUE = 'CONSEIL_JURIDIQUE',
+  AUTRE = 'AUTRE'
+}
+
+export interface DossierContact {
+  id?: number | string;
+  dossierId: number | string; // Relation avec le dossier
+
+  // Identité
+  civilite?: 'M.' | 'Mme' | 'Me';
+  nom: string;
+  prenom: string;
+
+  entreprise?: string;         // Nom du cabinet ou de l'étude
+
+  // Coordonnées
+  email: string;
+  telephoneFixe?: string;
+  telephoneMobile?: string;
+  adresse?: string;
+
+  // Précisions métiers
+  numToque?: string;           // Pour les avocats (Toque au barreau)
+  siteWeb?: string;
+
+  // Métadonnées
+  notes?: string;              // Commentaire libre sur ce contact
+  createdAt: Date;
+  updatedAt: Date;
 }

@@ -6136,5 +6136,63 @@
       "createdAt": "2026-02-27T17:49:36.786Z",
       "updatedAt": "2026-02-27T17:49:36.786Z"
     }
+  ],
+  "DossierContact": [
+    {
+      "id": "5e2f",
+      "dossierId": "",
+      "civilite": "M.",
+      "nom": "aaa",
+      "prenom": "aaa",
+      "email": "adam.laftimi@gmail.com",
+      "telephoneMobile": "+352661425524",
+      "telephoneFixe": null,
+      "entreprise": "aaa",
+      "notes": "Expert / Tiers",
+      "createdAt": "2026-02-27T20:19:58.299Z",
+      "updatedAt": "2026-02-27T20:19:58.299Z"
+    },
+    {
+      "id": "78a3",
+      "dossierId": "",
+      "civilite": "Mme",
+      "nom": "bbbb",
+      "prenom": "bbb",
+      "email": "adam.laftimi@gmail.com",
+      "telephoneMobile": "+352691209800",
+      "telephoneFixe": null,
+      "entreprise": "bbb",
+      "notes": "Avocat Adverse",
+      "createdAt": "2026-02-27T20:20:44.514Z",
+      "updatedAt": "2026-02-27T20:20:44.514Z"
+    },
+    {
+      "id": "eefa",
+      "dossierId": "",
+      "civilite": "M.",
+      "nom": "ddd",
+      "prenom": "ddd",
+      "email": "adam.laftimi@gmail.com",
+      "telephoneMobile": "+352691209800",
+      "telephoneFixe": null,
+      "entreprise": "dddd",
+      "notes": "Juridiction / Tribunal",
+      "createdAt": "2026-02-27T20:29:44.458Z",
+      "updatedAt": "2026-02-27T20:29:44.458Z"
+    },
+    {
+      "id": "29fb",
+      "dossierId": "76ad",
+      "civilite": "M.",
+      "nom": "laftimi",
+      "prenom": "adam",
+      "email": "adam.laftimi@gmail.com",
+      "telephoneMobile": "+352691209800",
+      "telephoneFixe": "",
+      "entreprise": "ssssdd",
+      "notes": "Juridiction / Tribunal",
+      "createdAt": "2026-02-27T23:21:20.128Z",
+      "updatedAt": "2026-02-27T23:21:20.128Z"
+    }
   ]
 }
