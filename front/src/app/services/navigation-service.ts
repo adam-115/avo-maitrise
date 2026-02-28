@@ -65,6 +65,7 @@ export class NavigationService {
   public static readonly TASK_CATEGORY = "task-category";
   public static readonly TASK_STATUS = "task-status";
   public static readonly NOTE_CATEGORY = "note-category";
+  public static readonly EVENT_TYPE = "event-type";
 
 
 
@@ -199,6 +200,10 @@ export class NavigationService {
 
   navigateToNoteCategory() {
     this.router.navigate([NavigationService.HOME, NavigationService.NOTE_CATEGORY]);
+  }
+
+  navigateToEventType() {
+    this.router.navigate([NavigationService.HOME, NavigationService.EVENT_TYPE]);
   }
 
   navigateToDossierDetails(id: string) {

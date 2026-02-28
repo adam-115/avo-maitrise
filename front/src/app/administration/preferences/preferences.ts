@@ -50,4 +50,8 @@ export class Preferences {
     this.navigationService.navigateToNoteCategory();
   }
 
+  navigateToEventType() {
+    this.navigationService.navigateToEventType();
+  }
+
 }

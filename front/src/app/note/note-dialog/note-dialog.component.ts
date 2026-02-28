@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, Output, output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, OnChanges, SimpleChanges, Output, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Note, NoteCategory } from '../../appTypes';
@@ -10,7 +10,7 @@ import { NoteCategoryService } from '../../services/note-category.service';
   templateUrl: './note-dialog.component.html',
   styleUrl: './note-dialog.component.css'
 })
-export class NoteDialogComponent implements OnInit {
+export class NoteDialogComponent implements OnInit, OnChanges {
   noteCategoryService = inject(NoteCategoryService);
   noteCategories: NoteCategory[] = [];
   @Output()
@@ -21,6 +21,10 @@ export class NoteDialogComponent implements OnInit {
   dossierId: string = '';
   @Input({ required: true })
   auteurId: string = '';
+  @Input()
+  noteToEdit: Note | null = null;
+  @Output()
+  noteUpdated = new EventEmitter<Note>();
   noteForm: FormGroup;
 
   constructor() {
@@ -38,14 +42,29 @@ export class NoteDialogComponent implements OnInit {
     });
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['noteToEdit'] && this.noteToEdit) {
+      this.noteForm.patchValue({
+        titre: this.noteToEdit.title,
+        description: this.noteToEdit.description,
+        categoryId: this.noteToEdit.categoryId
+      });
+    } else if (changes['noteToEdit'] && !this.noteToEdit) {
+      this.noteForm.reset({
+        categoryId: ''
+      });
+    }
+  }
+
   private mapFormToNote(): Note {
     return {
+      id: this.noteToEdit?.id,
       title: this.noteForm.get('titre')?.value,
       description: this.noteForm.get('description')?.value,
       categoryId: this.noteForm.get('categoryId')?.value,
       dossierId: this.dossierId,
       auteurId: this.auteurId,
-      createdAt: new Date(),
+      createdAt: this.noteToEdit ? this.noteToEdit.createdAt : new Date(),
       updatedAt: new Date(),
     };
   }
@@ -57,7 +76,11 @@ export class NoteDialogComponent implements OnInit {
   submitForm() {
     if (this.noteForm.valid) {
       const note = this.mapFormToNote();
-      this.noteCreated.emit(note);
+      if (this.noteToEdit) {
+        this.noteUpdated.emit(note);
+      } else {
+        this.noteCreated.emit(note);
+      }
       this.closeModalEvent.emit();
     }
   }

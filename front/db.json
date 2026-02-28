@@ -6118,23 +6118,57 @@
     },
     {
       "id": "8a39",
-      "title": "ddd",
-      "description": "dddd",
+      "title": "ttt",
+      "description": "tttt",
       "categoryId": "2",
       "dossierId": "76ad",
       "auteurId": "",
       "createdAt": "2026-02-27T17:39:29.249Z",
-      "updatedAt": "2026-02-27T17:39:29.249Z"
+      "updatedAt": "2026-02-28T22:04:23.257Z"
     },
     {
-      "id": "bff8",
-      "title": "wxcwxcxwx",
-      "description": "wxcwcwx",
+      "id": "7b34",
+      "title": "fff",
+      "description": "qdqsdq",
       "categoryId": "5",
       "dossierId": "76ad",
       "auteurId": "",
-      "createdAt": "2026-02-27T17:49:36.786Z",
-      "updatedAt": "2026-02-27T17:49:36.786Z"
+      "createdAt": "2026-02-28T22:04:41.503Z",
+      "updatedAt": "2026-02-28T22:04:41.503Z"
+    }
+  ],
+  "EventType": [
+    {
+      "id": "1",
+      "label": "Audience de plaidoirie",
+      "code": "AUDIENCE",
+      "color": "#eab308",
+      "active": true,
+      "order": 1
+    },
+    {
+      "id": "2",
+      "label": "Expertise",
+      "code": "EXPERTISE",
+      "color": "#3b82f6",
+      "active": true,
+      "order": 2
+    },
+    {
+      "id": "3",
+      "label": "Réunion Client",
+      "code": "REUNION_CLIENT",
+      "color": "#10b981",
+      "active": true,
+      "order": 3
+    },
+    {
+      "id": "4",
+      "label": "Date limite de procédure",
+      "code": "DELAI_PROCEDURE",
+      "color": "#ef4444",
+      "active": true,
+      "order": 4
     }
   ],
   "DossierContact": [

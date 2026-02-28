@@ -237,6 +237,10 @@ export const routes: Routes = [
       {
         path: NavigationService.NOTE_CATEGORY,
         loadComponent: () => import('./administration/note-category/note-category.component').then(m => m.NoteCategoryComponent)
+      },
+      {
+        path: NavigationService.EVENT_TYPE,
+        loadComponent: () => import('./administration/event-type/event-type.component').then(m => m.EventTypeComponent)
       }
     ]
 

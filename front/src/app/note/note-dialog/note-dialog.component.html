@@ -6,7 +6,7 @@
 
     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-cyan-50 rounded-t-xl">
       <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
-        Créer une Nouvelle Note
+        {{ noteToEdit ? 'Modifier la Note' : 'Créer une Nouvelle Note' }}
       </h3>
       <button type="button" (click)="closeNoteDialog()" class="text-gray-400 hover:text-gray-600 transition">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -88,7 +88,7 @@
       <button type="button" (click)="submitForm()" [disabled]="!noteForm.valid"
         class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white shadow-md transition duration-150"
         [ngClass]="noteForm.valid ? 'bg-cyan-600 hover:bg-cyan-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'">
-        Enregistrer la Note
+        {{ noteToEdit ? 'Mettre à jour la Note' : 'Enregistrer la Note' }}
       </button>
     </div>
 

@@ -52,20 +52,6 @@ export enum ContactTypeCreation {
 
 
 
-// // contact interface for crm component
-// export interface Contact {
-//   id: number;
-//   type: 'PERSONNE' | 'SOCIETE' | 'INSTITUTION';
-//   name: string;
-//   role: string; // Ex: Client, Avocat Tiers, Juge
-//   amlRisk: 'FAIBLE' | 'MOYEN' | 'ELEVEE' | 'NUL';
-//   complianceStatus: 'OK' | 'PENDING' | 'ALERT';
-//   country: string;
-//   lastUpdated: string; // Date
-// }
-
-
-
 // Interface pour définir la structure d'une Audience Judiciaire
 export interface Hearing {
   id: number;
@@ -532,6 +518,48 @@ export interface DossierContact {
 
   // Métadonnées
   notes?: string;              // Commentaire libre sur ce contact
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+
+export interface EventType {
+  id: string | number;
+  label: string;
+  code: string;
+  color?: string;
+  active: boolean;
+  order: number;
+}
+
+export interface MatterEvent {
+  id?: number | string;
+  dossierId: number | string;      // Référence au dossier
+  titre: string;                   // Ex: "Audience de plaidoirie - JAF"
+  description?: string;
+
+  typeId: string | number;         // Identifiant de l'EventType
+
+  // Temps
+  startDate: Date;                 // Date et heure de début
+  endDate: Date;                   // Date et heure de fin
+  isAllDay: boolean;               // Pour les événements sur toute la journée
+
+  // Lieu
+  lieu?: string;                   // Adresse ou nom du Tribunal/Salle
+  isVirtual: boolean;              // Si c'est une visio (Lien Teams/Zoom)
+  meetingLink?: string;
+
+  // Participants
+  organisateurId: string;          // L'avocat qui crée l'événement
+  participantsIds: string[];       // Liste des IDs (Collaborateurs ou Contacts)
+
+  // Rappels & Alertes
+  reminderMinutesBefore?: number;  // Notification (ex: 30, 60, 1440)
+
+  // État
+  statut: 'CONFIRME' | 'ANNULE' | 'REPORTE' | 'TERMINE';
+
   createdAt: Date;
   updatedAt: Date;
 }
