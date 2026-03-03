@@ -4,19 +4,26 @@ import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } fr
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BillingService } from '../../services/billing.service';
 import { Invoice, InvoiceLineItem, InvoiceStatus } from '../../models/invoice.model';
+import { ClientSelectionDialog } from '../../../../dossier/client-selection-dialog/client-selection-dialog';
+import { ClientService } from '../../../../services/client-service';
+import { Client } from '../../../../appTypes';
 
 @Component({
     selector: 'app-invoice-editor',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, RouterModule],
+    imports: [CommonModule, ReactiveFormsModule, RouterModule, ClientSelectionDialog],
     templateUrl: './invoice-editor.component.html'
 })
 export class InvoiceEditorComponent implements OnInit {
     private route = inject(ActivatedRoute);
     private router = inject(Router);
     private billingService = inject(BillingService);
+    private clientService = inject(ClientService);
 
     invoiceId = signal<string | null>(null);
+
+    clients: Client[] = [];
+    showClientDialog = false;
 
     invoiceForm = new FormGroup({
         invoiceNumber: new FormControl('', Validators.required),
@@ -33,6 +40,8 @@ export class InvoiceEditorComponent implements OnInit {
     totalTTC = signal(0);
 
     ngOnInit(): void {
+        this.clientService.getAll().subscribe(data => this.clients = data || []);
+
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
             this.invoiceId.set(id);
@@ -91,6 +100,27 @@ export class InvoiceEditorComponent implements OnInit {
         this.totalHT.set(ht);
         this.totalVAT.set(vat);
         this.totalTTC.set(ht + vat + disbursements);
+    }
+
+    // Gestion Client
+    openClientDialog(): void {
+        this.showClientDialog = true;
+    }
+
+    closeClientDialog(): void {
+        this.showClientDialog = false;
+    }
+
+    onClientSelected(clientId: string | number): void {
+        this.invoiceForm.patchValue({ clientId: clientId.toString() });
+        this.closeClientDialog();
+    }
+
+    getSelectedClientName(): string {
+        const clientId = this.invoiceForm.get('clientId')?.value;
+        if (!clientId) return '';
+        const client = this.clients.find(c => String(c.id) === String(clientId));
+        return client ? `${client.nom || ''} ${client.prenom || ''}`.trim() : '';
     }
 
     loadInvoice(id: string) {
