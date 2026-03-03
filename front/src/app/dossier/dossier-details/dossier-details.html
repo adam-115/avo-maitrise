@@ -125,7 +125,7 @@
 
     @if (selectedTab == DossierTabType.EVENEMENT) {
     <div class="lg:col-span-3  space-y-8">
-      <app-evenement></app-evenement>
+      <app-evenement [dossierId]="selectedDossier?.id || ''"></app-evenement>
     </div>
     }
 

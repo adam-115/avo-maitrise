@@ -43,7 +43,6 @@ export class ContactDialog {
   submitForm() {
     if (this.contactForm.valid) {
       const value = this.contactForm.value;
-      alert(this.dossierId);
       const newContact: DossierContact = {
         dossierId: this.dossierId,
         civilite: value.civilite,

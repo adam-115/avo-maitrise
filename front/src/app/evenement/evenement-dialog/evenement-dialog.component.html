@@ -1,0 +1,125 @@
+<div id="event-creation-modal"
+  class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 flex items-center justify-center ">
+
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 my-8 transform transition-all scale-100 opacity-100"
+    role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-cyan-50 rounded-t-xl">
+      <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
+        Planifier un Nouvel Événement / Délai
+      </h3>
+      <button type="button" (click)="onCloseModal()" class="text-gray-400 hover:text-gray-600 transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="p-6">
+      <form id="event-form" class="space-y-5" [formGroup]="eventForm" (ngSubmit)="submitForm()">
+
+        <div>
+          <label for="event_title" class="block text-sm font-medium text-gray-700 mb-1">Objet de l'Événement <span
+              class="text-red-500">*</span></label>
+          <input type="text" formControlName="titre" id="event_title" required
+            placeholder="Ex: Audience Juge d'Instruction, Réunion client M. C., Délai de réponse..."
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+        </div>
+
+        <div>
+          <label for="event_type" class="block text-sm font-medium text-gray-700 mb-1">Catégorie <span
+              class="text-red-500">*</span></label>
+          <select id="event_type" formControlName="typeId" required
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+            <option value="" disabled selected>Sélectionner une catégorie</option>
+            <option value="AUDIENCE">Audience / Procédure</option>
+            <option value="RDV">Rendez-vous Client</option>
+            <option value="DELAI">Délai Légal / Échéance</option>
+            <option value="REUNION">Réunion Interne Dossier</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+          <div class="col-span-2">
+            <label for="event_date" class="block text-sm font-medium text-gray-700 mb-1">Date <span
+                class="text-red-500">*</span></label>
+            <input type="date" formControlName="startDate" id="event_date" required
+              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+          </div>
+          <div>
+            <label for="event_time" class="block text-sm font-medium text-gray-700 mb-1">Heure (Facultatif)</label>
+            <input type="time" formControlName="startTime" id="event_time"
+              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Intervenants (Responsable / Participants) <span
+              class="text-red-500">*</span></label>
+
+          <div class="flex flex-wrap gap-2 mb-2">
+            <div *ngFor="let user of getSelectedIntervenants()"
+              class="inline-flex items-center bg-cyan-100 text-cyan-800 rounded-full px-3 py-1 text-sm font-medium">
+              {{ user.username }}
+              <button type="button" (click)="removeIntervenant(user.id!)"
+                class="ml-2 text-cyan-600 hover:text-cyan-800 focus:outline-none">
+                <span class="sr-only">Retirer</span>
+                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clip-rule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button type="button" (click)="openUserDialog()"
+            class="input-trigger w-full flex items-center justify-between p-2 border border-gray-300 rounded-lg text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            <span>Sélectionner ou gérer les intervenants</span>
+            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </button>
+
+          <!-- Contrôle invisible pour la validation du form -->
+          <input type="hidden" formControlName="participantsIds">
+        </div>
+
+        <div>
+          <label for="event_location" class="block text-sm font-medium text-gray-700 mb-1">Lieu (Physique ou
+            Visioconférence)</label>
+          <input type="text" formControlName="lieu" id="event_location"
+            placeholder="Ex: Palais de Justice - Salle 3, Teams Link, Bureau..."
+            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+        </div>
+
+        <div class="flex items-center pt-2">
+          <input id="event_reminder" formControlName="reminder" type="checkbox"
+            class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
+          <label for="event_reminder" class="ml-2 block text-sm text-gray-900">
+            Définir un **Rappel Critique** (24h et 4h avant)
+          </label>
+        </div>
+      </form>
+    </div>
+
+    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3 rounded-b-xl">
+      <button type="button" (click)="onCloseModal()"
+        class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
+        Annuler
+      </button>
+      <button type="submit" form="event-form" [disabled]="!eventForm.valid || getSelectedIntervenants().length === 0"
+        class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white shadow-md transition duration-150"
+        [ngClass]="(eventForm.valid && getSelectedIntervenants().length > 0) ? 'bg-cyan-600 hover:bg-cyan-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'">
+        Enregistrer l'Événement
+      </button>
+    </div>
+
+  </div>
+
+  <app-user-selection-dialog *ngIf="showUserDialog" [users]="users"
+    [initialSelection]="eventForm.get('participantsIds')?.value || []" (confirmSelection)="onUsersSelected($event)"
+    (closeDialog)="closeUserDialog()">
+  </app-user-selection-dialog>
+
+</div>

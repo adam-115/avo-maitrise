@@ -1,0 +1,261 @@
+<div class="mt-6">
+
+    <div
+        class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8 p-4 bg-gray-50 rounded-xl border border-gray-200">
+
+        <button (click)="openModal()"
+            class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150 w-full sm:w-auto flex-shrink-0 justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <span>Ajouter un Nouvel Événement</span>
+        </button>
+
+        <div class="relative w-full sm:w-80">
+            <input type="text" placeholder="Rechercher par date, lieu, ou participant..."
+                class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500">
+            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
+                stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
+    </div>
+
+
+    <div class="space-y-4">
+        @for (event of events; track event.id) {
+        <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 hover:shadow-xl transition duration-200 cursor-pointer"
+            [ngClass]="getEventTheme(event.typeId).border" (click)="viewEventDetails(event)">
+            <div class="flex items-start space-x-4">
+                <svg class="w-7 h-7 flex-shrink-0 mt-1" [ngClass]="getEventTheme(event.typeId).text" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        [attr.d]="getEventTheme(event.typeId).icon"></path>
+                </svg>
+
+                <div class="flex-grow">
+                    <div class="flex justify-between items-start">
+                        <p class="text-xs font-semibold uppercase mb-1" [ngClass]="getEventTheme(event.typeId).text">
+                            {{ getEventTheme(event.typeId).label }}
+                        </p>
+                        <div class="flex space-x-2">
+                            <button (click)="$event.stopPropagation(); editEvent(event)"
+                                class="text-blue-500 hover:text-blue-700 transition" title="Éditer">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                                    </path>
+                                </svg>
+                            </button>
+                            <button (click)="$event.stopPropagation(); deleteEvent(event.id!.toString())"
+                                class="text-red-500 hover:text-red-700 transition" title="Supprimer">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 leading-snug">
+                        {{ event.titre }}
+                    </h3>
+
+                    <div class="mt-3 grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-700 border-t pt-3">
+                        <div>
+                            <span class="font-semibold text-gray-600">Date/Heure :</span>
+                            <span class="font-bold text-slate-800">{{ event.startDate | date:'dd MMM yyyy à HH:mm'
+                                }}</span>
+                        </div>
+                        <div>
+                            <span class="font-semibold text-gray-600">Responsable :</span> {{
+                            getUserName(event.organisateurId) }}
+                        </div>
+                        <div class="col-span-2" *ngIf="event.lieu">
+                            <span class="font-semibold text-gray-600">Lieu :</span> {{ event.lieu }}
+                        </div>
+                        <div class="col-span-2 mt-1" *ngIf="event.participantsIds && event.participantsIds.length > 1">
+                            <span class="font-semibold text-gray-600">Autres intervenants :</span>
+                            <span class="text-gray-600 ml-1">
+                                + {{ event.participantsIds.length - 1 }} personne(s)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        } @empty {
+        <div class="text-center text-gray-500 mt-8 w-full p-6 border-2 border-dashed rounded-lg">Aucun événement
+            planifié pour ce dossier.</div>
+        }
+    </div>
+
+    <div class="mt-8 pt-4 border-t text-center">
+        <!-- TODO after -->
+        <p class="text-sm">
+            <a href="/home/dossier/calendrier"
+                class="text-cyan-600 font-semibold hover:text-cyan-700 flex items-center justify-center space-x-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                </svg>
+                <span>Afficher tous les événements ou voir le Calendrier Complet</span>
+            </a>
+        </p>
+    </div>
+</div>
+
+
+@if (showDialog) {
+<app-evenement-dialog [dossierId]="dossierId" [eventToEdit]="selectedEvent" (closeModalEvent)="closeModal()"
+    (eventCreated)="addMatterEvent($event)" (eventUpdated)="updateMatterEvent($event)"></app-evenement-dialog>
+}
+
+@if (viewedEvent) {
+<div class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 flex flex-col items-center justify-center p-4">
+    <div
+        class="bg-white rounded-xl shadow-2xl w-full max-w-2xl transform transition-all scale-100 opacity-100 flex flex-col max-h-[90vh]">
+        <!-- Header -->
+        <div class="px-6 py-4 flex justify-between items-center rounded-t-xl"
+            [ngClass]="getEventTheme(viewedEvent.typeId).border" style="border-bottom-width: 4px;">
+            <div class="flex items-center space-x-3">
+                <svg class="w-8 h-8 flex-shrink-0" [ngClass]="getEventTheme(viewedEvent.typeId).text" fill="none"
+                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        [attr.d]="getEventTheme(viewedEvent.typeId).icon"></path>
+                </svg>
+                <div>
+                    <h3 class="text-xl font-bold text-slate-800 leading-tight">
+                        {{ viewedEvent.titre }}
+                    </h3>
+                    <span class="text-sm font-medium uppercase tracking-wider"
+                        [ngClass]="getEventTheme(viewedEvent.typeId).text">
+                        {{ getEventTheme(viewedEvent.typeId).label }}
+                    </span>
+                </div>
+            </div>
+            <button type="button" (click)="closeViewModal()" class="text-gray-400 hover:text-gray-600 transition -mt-6">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Body -->
+        <div class="p-6 overflow-y-auto flex-grow bg-gray-50 space-y-6">
+
+            <!-- Dates & Lieux -->
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                        </path>
+                    </svg>
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Date & Heure</p>
+                        <p class="text-gray-800 font-semibold">{{ viewedEvent.startDate | date:'longDate' }}</p>
+                        <p class="text-gray-600 font-medium" *ngIf="!viewedEvent.isAllDay">{{ viewedEvent.startDate |
+                            date:'HH:mm' }}</p>
+                        <span *ngIf="viewedEvent.isAllDay"
+                            class="inline-block mt-1 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">Toute
+                            la journée</span>
+                    </div>
+                </div>
+
+                <div class="flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-gray-400 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <div>
+                        <p class="text-sm text-gray-500 font-medium">Lieu</p>
+                        <p class="text-gray-800 font-semibold">{{ viewedEvent.lieu || 'Non spécifié' }}</p>
+                        <span *ngIf="viewedEvent.isVirtual"
+                            class="inline-flex items-center mt-1 px-2 py-0.5 bg-purple-100 text-purple-800 text-xs font-semibold rounded-full">
+                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            Visioconférence
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Intervenants -->
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <h4 class="text-sm text-gray-500 font-medium mb-3 flex items-center">
+                    <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                        </path>
+                    </svg>
+                    Intervenants
+                </h4>
+
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Responsable</p>
+                        <div
+                            class="inline-flex items-center px-4 py-2 border border-blue-200 bg-blue-50 text-blue-800 rounded-md shadow-sm">
+                            <span class="font-bold">{{ getUserName(viewedEvent.organisateurId) }}</span>
+                            <span
+                                class="ml-2 bg-blue-200 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Leader</span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="viewedEvent.participantsIds && viewedEvent.participantsIds.length > 1">
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Autres Participants
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <ng-container *ngFor="let pid of viewedEvent.participantsIds">
+                                <div *ngIf="pid !== viewedEvent.organisateurId"
+                                    class="inline-flex items-center px-3 py-1.5 border border-gray-200 bg-gray-50 text-gray-700 rounded-md text-sm">
+                                    {{ getUserName(pid) }}
+                                </div>
+                            </ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metadonnées -->
+            <div class="grid grid-cols-2 gap-4 text-xs text-gray-500 border-t border-gray-200 pt-4 mt-4">
+                <div>
+                    <span class="font-semibold block mb-1">Statut actuel</span>
+                    <span class="px-2 py-1 rounded inline-block font-medium" [ngClass]="{
+                          'bg-green-100 text-green-800': viewedEvent.statut === 'CONFIRME',
+                          'bg-yellow-100 text-yellow-800': viewedEvent.statut === 'REPORTE',
+                          'bg-gray-100 text-gray-800': viewedEvent.statut === 'TERMINE',
+                          'bg-red-100 text-red-800': viewedEvent.statut === 'ANNULE'
+                      }">
+                        {{ viewedEvent.statut }}
+                    </span>
+                </div>
+                <div class="text-right">
+                    <p>Créé le : {{ viewedEvent.createdAt | date:'short' }}</p>
+                    <p>Dernière maj : {{ viewedEvent.updatedAt | date:'short' }}</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+}

@@ -6215,7 +6215,7 @@
       "updatedAt": "2026-02-27T20:29:44.458Z"
     },
     {
-      "id": "29fb",
+      "id": "e8ce",
       "dossierId": "76ad",
       "civilite": "M.",
       "nom": "laftimi",
@@ -6223,10 +6223,83 @@
       "email": "adam.laftimi@gmail.com",
       "telephoneMobile": "+352691209800",
       "telephoneFixe": "",
-      "entreprise": "ssssdd",
-      "notes": "Juridiction / Tribunal",
-      "createdAt": "2026-02-27T23:21:20.128Z",
-      "updatedAt": "2026-02-27T23:21:20.128Z"
+      "entreprise": "ddd",
+      "notes": "Expert / Tiers",
+      "createdAt": "2026-03-02T16:39:23.117Z",
+      "updatedAt": "2026-03-02T16:39:23.117Z"
+    },
+    {
+      "id": "97ae",
+      "dossierId": "76ad",
+      "civilite": "Mme",
+      "nom": "ddd",
+      "prenom": "adam",
+      "email": "adam.laftimi@gmail.com",
+      "telephoneMobile": "+352691209800",
+      "telephoneFixe": "",
+      "entreprise": "ddd",
+      "notes": "Avocat Adverse",
+      "createdAt": "2026-03-02T16:40:47.981Z",
+      "updatedAt": "2026-03-02T16:40:47.981Z"
+    }
+  ],
+  "MatterEvent": [
+    {
+      "id": "1",
+      "dossierId": "1",
+      "titre": "Audience de plaidoirie",
+      "typeId": "1",
+      "startDate": "2026-02-27T10:00:00.000Z",
+      "endDate": "2026-02-27T11:00:00.000Z",
+      "isAllDay": false,
+      "lieu": "Palais de Justice",
+      "isVirtual": false,
+      "organisateurId": "1",
+      "participantsIds": [
+        "2",
+        "3"
+      ],
+      "reminderMinutesBefore": 60,
+      "statut": "CONFIRME",
+      "createdAt": "2026-02-27T10:00:00.000Z",
+      "updatedAt": "2026-02-27T10:00:00.000Z"
+    },
+    {
+      "dossierId": "76ad",
+      "titre": "aaa",
+      "typeId": "RDV",
+      "startDate": "2026-03-02T17:56:00.000Z",
+      "endDate": "2026-03-02T17:56:00.000Z",
+      "isAllDay": false,
+      "lieu": "ddd",
+      "isVirtual": false,
+      "organisateurId": "1",
+      "participantsIds": [
+        "1",
+        "5501"
+      ],
+      "reminderMinutesBefore": 1440,
+      "statut": "CONFIRME",
+      "createdAt": "2026-03-02T15:56:22.624Z",
+      "updatedAt": "2026-03-03T15:40:44.076Z",
+      "id": "0ead"
+    },
+    {
+      "id": "3bbe",
+      "dossierId": "76ad",
+      "titre": "ffff",
+      "typeId": "AUDIENCE",
+      "startDate": "2026-03-05T21:02:00.000Z",
+      "endDate": "2026-03-05T21:02:00.000Z",
+      "isAllDay": false,
+      "lieu": "ffff",
+      "isVirtual": false,
+      "organisateurId": "1",
+      "participantsIds": [],
+      "reminderMinutesBefore": 1440,
+      "statut": "CONFIRME",
+      "createdAt": "2026-03-02T17:00:44.485Z",
+      "updatedAt": "2026-03-02T17:00:44.485Z"
     }
   ]
 }
