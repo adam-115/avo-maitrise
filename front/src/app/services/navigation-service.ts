@@ -58,6 +58,12 @@ export class NavigationService {
   public static readonly DILIGENCE_FORM_RESULT_VIEWER = "diligence-form-result-viewer/:id";
   public static readonly DILIGENCE_FORM_LIST = "diligence-form-list";
 
+  // Nouvelle Facturation
+  public static readonly BILLING = "billing";
+  public static readonly BILLING_EDITOR = "billing/editor";
+  public static readonly BILLING_EDITOR_EDIT = "billing/editor/:id";
+  public static readonly BILLING_PREVIEW = "billing/preview/:id";
+
   //statut de dossier preference 
   public static readonly DOSSIER_STATUS_FORM = "dossier-status-form";
   public static readonly DOSSIER_PRIORITE = "dossier-priorite";

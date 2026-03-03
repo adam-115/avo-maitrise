@@ -11,6 +11,56 @@
       "author": "Bob"
     }
   ],
+  "invoices": [
+    {
+      "id": "1",
+      "invoiceNumber": "FAC-2026-001",
+      "date": "2026-03-01T00:00:00Z",
+      "clientId": "Client Corp A",
+      "status": "PAID",
+      "lineItems": [
+        {
+          "id": "1",
+          "description": "Consultation juridique",
+          "quantity": 2,
+          "hourlyRate": 150,
+          "vatRate": 20,
+          "totalHT": 300,
+          "totalTTC": 360
+        }
+      ],
+      "disbursements": 0,
+      "totalHT": 300,
+      "totalVAT": 60,
+      "totalTTC": 360,
+      "createdAt": "2026-03-01T00:00:00Z",
+      "updatedAt": "2026-03-01T00:00:00Z"
+    },
+    {
+      "id": "2",
+      "invoiceNumber": "FAC-2026-002",
+      "date": "2026-03-02T00:00:00Z",
+      "clientId": "Dossier Smith",
+      "status": "DRAFT",
+      "lineItems": [
+        {
+          "id": "1",
+          "description": "Rédaction de contrat",
+          "quantity": 5,
+          "hourlyRate": 200,
+          "vatRate": 20,
+          "totalHT": 1000,
+          "totalTTC": 1200
+        }
+      ],
+      "disbursements": 50,
+      "totalHT": 1000,
+      "totalVAT": 200,
+      "totalTTC": 1250,
+      "createdAt": "2026-03-02T00:00:00Z",
+      "updatedAt": "2026-03-02T00:00:00Z"
+    }
+  ],
   "users": [
     {
       "id": "1",

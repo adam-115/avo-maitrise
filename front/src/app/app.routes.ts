@@ -241,6 +241,23 @@ export const routes: Routes = [
       {
         path: NavigationService.EVENT_TYPE,
         loadComponent: () => import('./administration/event-type/event-type.component').then(m => m.EventTypeComponent)
+      },
+      // Routes Nouveau Module Facturation
+      {
+        path: NavigationService.BILLING,
+        loadComponent: () => import('./features/billing/components/invoice-list/invoice-list.component').then(m => m.InvoiceListComponent)
+      },
+      {
+        path: NavigationService.BILLING_EDITOR,
+        loadComponent: () => import('./features/billing/components/invoice-editor/invoice-editor.component').then(m => m.InvoiceEditorComponent)
+      },
+      {
+        path: NavigationService.BILLING_EDITOR_EDIT,
+        loadComponent: () => import('./features/billing/components/invoice-editor/invoice-editor.component').then(m => m.InvoiceEditorComponent)
+      },
+      {
+        path: NavigationService.BILLING_PREVIEW,
+        loadComponent: () => import('./features/billing/components/invoice-preview/invoice-preview.component').then(m => m.InvoicePreviewComponent)
       }
     ]
 

@@ -1,0 +1,136 @@
+<!-- Menu d'actions (Ne sera pas imprimé) -->
+<div class="print:hidden max-w-4xl mx-auto mb-6 flex justify-between items-center px-4 sm:px-0">
+    <a routerLink="/home/billing"
+        class="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700">
+        <svg class="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        Retour aux factures
+    </a>
+    <div class="space-x-4">
+        <a *ngIf="invoice()" [routerLink]="['/home/billing/editor', invoice()?.id]"
+            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            Modifier
+        </a>
+        <button (click)="printInvoice()"
+            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+            </svg>
+            Imprimer / PDF
+        </button>
+    </div>
+</div>
+
+<!-- Zone de la feuille A4 -->
+<div *ngIf="invoice() as inv"
+    class="max-w-4xl mx-auto bg-white shadow-lg print:shadow-none print:w-full sm:rounded-lg overflow-hidden my-8 print:my-0">
+    <div class="px-8 py-10 sm:px-12 sm:py-16">
+
+        <!-- En-tête de facture -->
+        <div class="flex justify-between items-start border-b-2 border-gray-800 pb-8 mb-8">
+            <div>
+                <h1 class="text-4xl font-extrabold text-gray-900 tracking-wider">FACTURE</h1>
+                <p class="text-gray-500 mt-2 font-medium">N° {{ inv.invoiceNumber }}</p>
+            </div>
+            <div class="text-right">
+                <!-- Logo simulé / Nom du cabinet -->
+                <h2 class="text-2xl font-bold text-indigo-700">CABINET D'AVOCATS</h2>
+                <p class="text-sm text-gray-500 mt-1">123 Avenue de la Justice</p>
+                <p class="text-sm text-gray-500">75000 PARIS</p>
+                <p class="text-sm text-gray-500 mt-1">TVA : FR 12 3456789</p>
+            </div>
+        </div>
+
+        <!-- Informations Client et Date -->
+        <div class="flex justify-between items-start mb-10">
+            <div class="w-1/2 pr-4">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Adressez à :</h3>
+                <p class="text-lg font-bold text-gray-800">{{ inv.clientId }}</p>
+                <!-- On pourrait rajouter l'adresse complète ici -->
+                <p class="text-sm text-gray-600 mt-1">Adresse client...</p>
+            </div>
+            <div class="w-1/2 text-right">
+                <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Détails :</h3>
+                <p class="text-sm text-gray-800"><span class="font-semibold">Date d'émission :</span> {{ inv.date |
+                    date:'longDate' }}</p>
+                <p class="text-sm text-gray-800 mt-1"><span class="font-semibold">Statut :</span>
+                    <span class="inline-flex px-2 py-0.5 ml-2 border rounded text-xs font-medium uppercase" [ngClass]="{
+                   'bg-gray-100 text-gray-800': inv.status === 'DRAFT',
+                   'bg-blue-100 text-blue-800': inv.status === 'SENT',
+                   'bg-green-100 text-green-800': inv.status === 'PAID'
+                 }">
+                        {{ inv.status === 'DRAFT' ? 'Brouillon' : inv.status === 'SENT' ? 'Envoyée' : 'Payée' }}
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Tableau des prestations -->
+        <div class="mb-10">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b-2 border-gray-200">
+                        <th class="py-3 text-sm font-semibold text-gray-600 uppercase tracking-wider">Description</th>
+                        <th class="py-3 text-sm font-semibold text-gray-600 uppercase tracking-wider text-center">Qté /
+                            H</th>
+                        <th class="py-3 text-sm font-semibold text-gray-600 uppercase tracking-wider text-right">Taux U.
+                        </th>
+                        <th class="py-3 text-sm font-semibold text-gray-600 uppercase tracking-wider text-right">TVA (%)
+                        </th>
+                        <th class="py-3 text-sm font-semibold text-gray-900 uppercase tracking-wider text-right">Total
+                            HT</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @for (item of inv.lineItems; track item.id) {
+                    <tr>
+                        <td class="py-4 text-sm text-gray-800">{{ item.description }}</td>
+                        <td class="py-4 text-sm text-gray-600 text-center">{{ item.quantity }}</td>
+                        <td class="py-4 text-sm text-gray-600 text-right">{{ item.hourlyRate |
+                            currency:'EUR':'symbol':'1.2-2':'fr' }}</td>
+                        <td class="py-4 text-sm text-gray-600 text-right">{{ item.vatRate }} %</td>
+                        <td class="py-4 text-sm font-medium text-gray-900 text-right">{{ item.totalHT |
+                            currency:'EUR':'symbol':'1.2-2':'fr' }}</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Bloc des Totaux -->
+        <div class="flex justify-end mb-12">
+            <div class="w-full sm:w-1/2 p-4 bg-gray-50 rounded-lg">
+                <div class="flex justify-between py-2 text-sm text-gray-600">
+                    <span>Total HT</span>
+                    <span class="font-medium text-gray-900">{{ inv.totalHT | currency:'EUR':'symbol':'1.2-2':'fr'
+                        }}</span>
+                </div>
+                <div class="flex justify-between py-2 text-sm text-gray-600">
+                    <span>TVA</span>
+                    <span class="font-medium text-gray-900">{{ inv.totalVAT | currency:'EUR':'symbol':'1.2-2':'fr'
+                        }}</span>
+                </div>
+                <div class="flex justify-between py-2 text-sm text-gray-600 border-b border-gray-200 pb-3 mb-3"
+                    *ngIf="inv.disbursements > 0">
+                    <span>Débours & Frais (Net)</span>
+                    <span class="font-medium text-gray-900">{{ inv.disbursements | currency:'EUR':'symbol':'1.2-2':'fr'
+                        }}</span>
+                </div>
+                <div class="flex justify-between items-center text-lg font-bold text-indigo-700">
+                    <span>NET À PAYER</span>
+                    <span class="text-2xl">{{ inv.totalTTC | currency:'EUR':'symbol':'1.2-2':'fr' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer d'impression -->
+        <div class="border-t border-gray-200 pt-8 text-center text-xs text-gray-500">
+            <p class="font-semibold text-gray-700 mb-1">Merci de votre confiance.</p>
+            <p>Paiement attendu sous 30 jours à réception de la facture.</p>
+            <p class="mt-2">IBAN : FR14 1234 5678 9012 3456 7890 123 | BIC : BKRPFRPP</p>
+        </div>
+
+    </div>
+</div>

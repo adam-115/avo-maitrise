@@ -1,21 +1,18 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { DossierTabType } from '../../appTypes';
-import { DocumentComponent } from "../../document/document/document.component";
 import { CommonModule } from '@angular/common';
-import { EvenementComponent } from "../../evenement/evenement/evenement.component";
-import { TaskManagerComponent } from "../task-manager/task-manager.component";
-import { NoteComponent } from "../../note/note/note.component";
-import { ContactComponent } from "../../contact/contact/contact.component";
-import { Temp } from "../../temp/temp/temp";
-import { DossierFacture } from "../dossier-facture/dossier-facture";
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Dossier, DossierTabType } from '../../appTypes';
+import { ContactComponent } from "../../contact/contact/contact.component";
+import { DocumentComponent } from "../../document/document/document.component";
+import { EvenementComponent } from "../../evenement/evenement/evenement.component";
+import { NoteComponent } from "../../note/note/note.component";
 import { DossierService } from '../../services/dossier.service';
-import { Dossier } from '../../appTypes';
 import { DossierInfo } from "../dossier-info/dossier-info";
+import { TaskManagerComponent } from "../task-manager/task-manager.component";
 
 @Component({
   selector: 'app-dossier-details',
-  imports: [DocumentComponent, CommonModule, EvenementComponent, TaskManagerComponent, NoteComponent, ContactComponent, Temp, DossierFacture, DossierInfo],
+  imports: [DocumentComponent, CommonModule, EvenementComponent, TaskManagerComponent, NoteComponent, ContactComponent, DossierInfo],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })

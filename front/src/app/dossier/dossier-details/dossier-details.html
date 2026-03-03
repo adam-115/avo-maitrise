@@ -75,11 +75,11 @@
       class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
       Documents (12)
     </a>
-    <a (click)="updateSelectedTab(DossierTabType.TEMP_FACTURATION)"
+    <!-- <a (click)="updateSelectedTab(DossierTabType.TEMP_FACTURATION)"
       [ngClass]="selectedTab== DossierTabType.TEMP_FACTURATION?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
       class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
       Temps & Facturation (32h)
-    </a>
+    </a> -->
     <a (click)="updateSelectedTab(DossierTabType.EVENEMENT)"
       [ngClass]="selectedTab== DossierTabType.EVENEMENT?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
       class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
@@ -100,11 +100,11 @@
       class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
       Contacts (9)
     </a>
-    <a (click)="updateSelectedTab(DossierTabType.FACTURE)"
+    <!-- <a (click)="updateSelectedTab(DossierTabType.FACTURE)"
       [ngClass]="selectedTab== DossierTabType.FACTURE ?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
       class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
       Factures (3)
-    </a>
+    </a> -->
   </nav>
 </div>
 
@@ -117,11 +117,11 @@
       <app-document [selectedDossier]="selectedDossier"></app-document>
     </div>
     }
-    @if (selectedTab == DossierTabType.TEMP_FACTURATION) {
+    <!-- @if (selectedTab == DossierTabType.TEMP_FACTURATION) {
     <div class="lg:col-span-3  space-y-8">
       <app-temp></app-temp>
     </div>
-    }
+    } -->
 
     @if (selectedTab == DossierTabType.EVENEMENT) {
     <div class="lg:col-span-3  space-y-8">
@@ -147,11 +147,11 @@
     </div>
     }
 
-    @if (selectedTab == DossierTabType.FACTURE) {
+    <!-- @if (selectedTab == DossierTabType.FACTURE) {
     <div class="lg:col-span-3  space-y-8">
       <app-dossier-facture></app-dossier-facture>
     </div>
-    }
+    } -->
 
     @if(selectedTab === DossierTabType.VUE_ENSEMBLE){
     <div class="lg:col-span-3  space-y-8">
