@@ -3,10 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { BillingService } from '../../services/billing.service';
-import { Invoice, InvoiceLineItem, InvoiceStatus } from '../../models/invoice.model';
 import { ClientSelectionDialog } from '../../../../dossier/client-selection-dialog/client-selection-dialog';
 import { ClientService } from '../../../../services/client-service';
-import { Client } from '../../../../appTypes';
+import { Client, Invoice, InvoiceLineItem, InvoiceStatus } from '../../../../appTypes';
 
 @Component({
     selector: 'app-invoice-editor',

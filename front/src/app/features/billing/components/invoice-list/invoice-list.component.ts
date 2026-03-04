@@ -2,7 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BillingService } from '../../services/billing.service';
-import { InvoiceStatus } from '../../models/invoice.model';
+import { Invoice, InvoiceStatus } from '../../../../appTypes';
 import { Router } from '@angular/router';
 
 @Component({

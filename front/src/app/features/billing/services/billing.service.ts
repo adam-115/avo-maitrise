@@ -1,6 +1,6 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Invoice, InvoiceStatus } from '../models/invoice.model';
+import { Invoice, InvoiceStatus } from '../../../appTypes';
 import { AbstractCrudService } from '../../../services/genericService/abstract-crud.service';
 import { environment } from '../../../../environments/environment';
 
