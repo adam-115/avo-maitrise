@@ -27,7 +27,6 @@ export class NavigationService {
   static readonly PERSON_REVIEW_AML = 'person-new-review-aml';
   static readonly AML_REPORT_PERSON = 'aml-report-person';
   static readonly MODEL = 'model';
-  static readonly SAISIE_TEMPS = 'saisie-temps';
   static readonly FACTURATION = 'facturation';
   static readonly FACTURATION_DETAIL = 'facturation-detail';
   static readonly CALENDRIER = 'calendrier';

@@ -39,12 +39,12 @@
     {
       "id": "2",
       "invoiceNumber": "FAC-2026-002",
-      "date": "2026-03-02T00:00:00Z",
+      "date": "2026-03-02T00:00:00.000Z",
       "clientId": "Dossier Smith",
-      "status": "DRAFT",
+      "status": "SENT",
       "lineItems": [
         {
-          "id": "1",
+          "id": "0",
           "description": "Rédaction de contrat",
           "quantity": 5,
           "hourlyRate": 200,
@@ -58,7 +58,7 @@
       "totalVAT": 200,
       "totalTTC": 1250,
       "createdAt": "2026-03-02T00:00:00Z",
-      "updatedAt": "2026-03-02T00:00:00Z"
+      "updatedAt": "2026-03-04T23:28:53.845Z"
     }
   ],
   "users": [

@@ -43,11 +43,6 @@ export class Home {
     this.activeRoute = NavigationService.MODEL;
   }
 
-  navigateToSaisieTemps() {
-    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.SAISIE_TEMPS);
-    this.activeRoute = NavigationService.SAISIE_TEMPS;
-  }
-
   navigateToFacturation() {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.BILLING);
     this.activeRoute = NavigationService.BILLING;

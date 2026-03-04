@@ -28,7 +28,6 @@ import { Home } from './home/home';
 import { Login } from './login/login/login';
 import { Model } from './model/model/model';
 
-import { SaisieTemps } from './saisie-temps/saisie-temps/saisie-temps';
 import { NavigationService } from './services/navigation-service';
 import { Test } from './test/test';
 import { ClientAmlReview } from './aml-compliance/client-aml-review/client-aml-review';
@@ -116,11 +115,6 @@ export const routes: Routes = [
 
       },
 
-      // gestion de la saisie de temps
-      {
-        path: NavigationService.SAISIE_TEMPS,
-        component: SaisieTemps
-      },
       // gestion de la facturation
       {
         path: NavigationService.CALENDRIER,
