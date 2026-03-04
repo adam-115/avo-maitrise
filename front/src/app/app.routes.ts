@@ -24,8 +24,6 @@ import { ReviewAml } from './crm/review-aml/review-aml';
 import { DossierDetails } from './dossier/dossier-details/dossier-details';
 import { DossierForm } from './dossier/dossier-form/dossier-form';
 import { DossierComponent } from './dossier/dossier/dossier.component';
-import { FacturationForm } from './facturation/facturation-form/facturation-form';
-import { Facturation } from './facturation/facturation/facturation';
 import { Home } from './home/home';
 import { Login } from './login/login/login';
 import { Model } from './model/model/model';
@@ -124,14 +122,6 @@ export const routes: Routes = [
         component: SaisieTemps
       },
       // gestion de la facturation
-      {
-        path: NavigationService.FACTURATION,
-        component: Facturation
-      },
-      {
-        path: NavigationService.FACTURATION_FORM,
-        component: FacturationForm
-      },
       {
         path: NavigationService.CALENDRIER,
         component: Calendrier

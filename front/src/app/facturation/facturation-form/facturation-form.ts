@@ -16,7 +16,7 @@ export class FacturationForm {
     this.facturationActiviteDialog.openModal();
   }
 
-   closeModal() {
+  closeModal() {
     this.facturationActiviteDialog.closeModal();
   }
 

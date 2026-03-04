@@ -49,8 +49,8 @@ export class Home {
   }
 
   navigateToFacturation() {
-    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.FACTURATION);
-    this.activeRoute = 'facturation';
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.BILLING);
+    this.activeRoute = NavigationService.BILLING;
   }
 
   navigateToCalendrier() {

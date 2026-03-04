@@ -29,7 +29,6 @@ export class NavigationService {
   static readonly MODEL = 'model';
   static readonly SAISIE_TEMPS = 'saisie-temps';
   static readonly FACTURATION = 'facturation';
-  static readonly FACTURATION_FORM = 'facturation-form';
   static readonly FACTURATION_DETAIL = 'facturation-detail';
   static readonly CALENDRIER = 'calendrier';
   static readonly ADMINSTRATION = 'administration';
