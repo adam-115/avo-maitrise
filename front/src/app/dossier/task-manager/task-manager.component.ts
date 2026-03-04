@@ -41,7 +41,7 @@ export class TaskManagerComponent implements OnInit {
 
     // Comments / Logs
     showCommentsForTaskId: number | undefined = undefined;
-    activeTabForTaskId: 'COMMENTS' | 'TIME' = 'COMMENTS';
+    activeTabForTaskId: 'COMMENTS' | 'TIME' | 'DETAILS' = 'DETAILS';
     currentTaskLogs: TaskLog[] = [];
     commentText: string = '';
 
@@ -253,13 +253,13 @@ export class TaskManagerComponent implements OnInit {
             this.currentTimeLogs = [];
         } else {
             this.showCommentsForTaskId = taskId;
-            this.activeTabForTaskId = 'COMMENTS';
+            this.activeTabForTaskId = 'DETAILS';
             this.loadLogsForTask(taskId);
             this.loadTimeLogsForTask(taskId);
         }
     }
 
-    switchTab(tab: 'COMMENTS' | 'TIME') {
+    switchTab(tab: 'COMMENTS' | 'TIME' | 'DETAILS') {
         this.activeTabForTaskId = tab;
     }
 
