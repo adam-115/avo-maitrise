@@ -8,7 +8,6 @@ import { Utilisateur } from './administration/utilisateurs/utilisateur/utilisate
 import { AmlFormConfigComponent } from './aml-compliance/aml-form-config-component/aml-form-config-component';
 import { AmlFormListComponent } from './aml-compliance/aml-form-list-component/aml-form-list-component';
 import { AmlFormViewComponent } from './aml-compliance/aml-form-view-component/aml-form-view-component';
-import { ClientAmlContextComponent } from './aml-compliance/client-aml-context/client-aml-context.component';
 
 // ... existing imports ...
 
@@ -17,10 +16,8 @@ import { Calendrier } from './calendrier/calendrier/calendrier';
 import { ClientDetails } from './crm/client-details/client-details';
 import { ClientFormComponent } from './crm/client-form/client-form.component';
 
-import { ClientReviewAmlReport } from './crm/client-review-aml-report/client-review-aml-report';
 import { ClientReviewsAml } from './crm/crm/client-reviews-aml/client-reviews-aml';
 import { Crm } from './crm/crm/crm';
-import { ReviewAml } from './crm/review-aml/review-aml';
 import { DossierDetails } from './dossier/dossier-details/dossier-details';
 import { DossierForm } from './dossier/dossier-form/dossier-form';
 import { DossierComponent } from './dossier/dossier/dossier.component';
@@ -81,31 +78,17 @@ export const routes: Routes = [
         component: ClientDetails
       },
       {
-        // TODO: remove this route
-        path: NavigationService.REVIEW_AML,
-        component: ReviewAml
-      },
-      {
-        // show all aml reviews for a client
         path: NavigationService.CLIENT_REVIEWS_AML,
         component: ClientReviewsAml
       },
       {
-        //TODO remove this one too 
-        path: NavigationService.CLIENT_REVIEWS_AML_REPORT,
-        component: ClientReviewAmlReport
+        // path: 'client-aml-context/:id',
+        // component: ClientAmlContextComponent
       },
       // this for review aml for person type contact
       // TODO add the same for societe and institution type contact
       {
         //TODO remove this one too 
-        path: NavigationService.PERSON_REVIEW_AML,
-        component: ReviewAml
-      },
-      {
-        //TODO remove this one too 
-        path: NavigationService.AML_REPORT_PERSON,
-        component: ClientReviewAmlReport
       },
 
       // gestion des documents models
