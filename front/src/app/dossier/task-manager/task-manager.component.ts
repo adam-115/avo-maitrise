@@ -25,6 +25,7 @@ export class TaskManagerComponent implements OnInit {
     categories: TaskCategory[] = [];
     statuses: TaskStatus[] = [];
     users: User[] = [];
+    taskTimeSpentMap: Map<number | string, number> = new Map();
 
     taskForm!: FormGroup;
     showForm: boolean = false;
@@ -71,7 +72,8 @@ export class TaskManagerComponent implements OnInit {
             statusId: ['', Validators.required],
             priorite: ['NORMALE', Validators.required],
             assigneAIds: [[]], // Array of assigned user IDs
-            dateEcheance: [new Date().toISOString().split('T')[0], Validators.required]
+            dateEcheance: [new Date().toISOString().split('T')[0], Validators.required],
+            estimatedTimeMinutes: [null]
         });
     }
 
@@ -95,6 +97,19 @@ export class TaskManagerComponent implements OnInit {
         this.taskService.getAll().subscribe(allTasks => {
             this.tasks = allTasks.filter(t => t.dossierId == this.dossierId);
             this.applyFilters();
+            this.loadAllTimeLogs();
+        });
+    }
+
+    loadAllTimeLogs() {
+        this.taskTimeLogService.getAll().subscribe(allLogs => {
+            const map = new Map<number | string, number>();
+            allLogs.forEach(log => {
+                const taskId = log.taskId;
+                const current = map.get(taskId) || 0;
+                map.set(taskId, current + (log.timeSpentMinutes || 0));
+            });
+            this.taskTimeSpentMap = map;
         });
     }
 
@@ -137,7 +152,8 @@ export class TaskManagerComponent implements OnInit {
                 statusId: task.statusId,
                 priorite: task.priorite,
                 assigneAIds: (task.assigneA || []).map(u => String(u.id)),
-                dateEcheance: new Date(task.dateEcheance).toISOString().split('T')[0]
+                dateEcheance: new Date(task.dateEcheance).toISOString().split('T')[0],
+                estimatedTimeMinutes: task.estimatedTimeMinutes || null
             });
         } else {
             this.isEditing = false;
@@ -147,7 +163,8 @@ export class TaskManagerComponent implements OnInit {
                 priorite: 'NORMALE',
                 statusId: defaultStatus,
                 assigneAIds: [],
-                dateEcheance: new Date().toISOString().split('T')[0]
+                dateEcheance: new Date().toISOString().split('T')[0],
+                estimatedTimeMinutes: null
             });
         }
     }
@@ -310,6 +327,11 @@ export class TaskManagerComponent implements OnInit {
 
     getTotalTimeSpent(): number {
         return this.currentTimeLogs.reduce((acc, log) => acc + (log.timeSpentMinutes || 0), 0);
+    }
+
+    getTimeSpent(taskId: number | string | undefined): number {
+        if (!taskId) return 0;
+        return this.taskTimeSpentMap.get(taskId) || 0;
     }
 
     formatMinutesToHours(minutes: number): string {

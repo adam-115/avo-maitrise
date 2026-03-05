@@ -48,6 +48,24 @@
                     </app-client-selection-dialog>
                 </div>
 
+                <div class="sm:col-span-2 lg:col-span-3">
+                    <label class="block text-sm font-medium text-gray-700">Adresse de Facturation</label>
+                    <textarea formControlName="clientAddress" rows="2"
+                        placeholder="Adresse complète du client pour cette facture..."
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                </div>
+
+                <div *ngIf="invoiceForm.get('clientId')?.value">
+                    <label class="block text-sm font-medium text-gray-700">Dossier Associé (Optionnel)</label>
+                    <select formControlName="dossierId"
+                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <option value="">Aucun Dossier Spécifique</option>
+                        <option *ngFor="let dossier of clientDossiers" [value]="dossier.id">
+                            {{ dossier.referenceInterne }} - {{ dossier.titre }}
+                        </option>
+                    </select>
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Numéro de Facture</label>
                     <input type="text" formControlName="invoiceNumber"
@@ -68,6 +86,125 @@
                         <option value="SENT">Envoyée</option>
                         <option value="PAID">Payée</option>
                     </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prestations non facturées (Tâches & Evénements) -->
+        <div *ngIf="invoiceForm.get('dossierId')?.value && (unbilledTasks.length > 0 || unbilledEvents.length > 0)"
+            class="bg-indigo-50 p-6 rounded-xl shadow-sm border border-indigo-100">
+            <h2 class="text-lg font-bold text-indigo-900 mb-4 border-b border-indigo-200 pb-2">Prestations du dossier à
+                facturer</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Tâches -->
+                <div *ngIf="unbilledTasks.length > 0">
+                    <h3 class="text-sm font-semibold text-indigo-800 mb-3 flex items-center">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        </svg>
+                        Tâches Terminé/En cours
+                    </h3>
+                    <ul class="space-y-3">
+                        <li *ngFor="let task of unbilledTasks"
+                            class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm flex items-center justify-between group">
+                            <div class="flex flex-col pr-4 flex-grow">
+                                <span class="text-sm font-medium text-gray-900">{{ task.titre }}</span>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span *ngIf="task.categoryId"
+                                        class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                                        {{ getTaskCategoryLabel(task.categoryId) }}
+                                    </span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                                        [ngClass]="{
+                                              'bg-green-100 text-green-800': task.statusId === 'TERMINE' || getTaskStatusLabel(task.statusId).toLowerCase() === 'terminé',
+                                              'bg-blue-100 text-blue-800': task.statusId === 'EN_COURS' || getTaskStatusLabel(task.statusId).toLowerCase() === 'en cours',
+                                              'bg-gray-100 text-gray-800': task.statusId !== 'TERMINE' && task.statusId !== 'EN_COURS' && getTaskStatusLabel(task.statusId).toLowerCase() !== 'terminé' && getTaskStatusLabel(task.statusId).toLowerCase() !== 'en cours'
+                                          }">
+                                        {{ getTaskStatusLabel(task.statusId) }}
+                                    </span>
+                                    <span *ngIf="task.estimatedTimeMinutes"
+                                        class="bg-indigo-50 text-indigo-700 border-indigo-100 px-2.5 py-1 rounded-full text-[11px] font-bold inline-flex items-center gap-1.5 border shadow-sm">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        {{ formatMinutesToHours(task.estimatedTimeMinutes) }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <button type="button" (click)="openTaskDetails(task)"
+                                    class="shrink-0 p-1.5 text-gray-400 hover:text-indigo-600 transition-colors"
+                                    title="Voir les détails">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </button>
+                                <div class="flex items-center h-5">
+                                    <input type="checkbox" [checked]="selectedTaskIds.has(task.id!)"
+                                        (change)="toggleTaskSelection(task.id, $event)"
+                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Événements -->
+                <div *ngIf="unbilledEvents.length > 0">
+                    <h3 class="text-sm font-semibold text-indigo-800 mb-3 flex items-center">
+                        <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        Événements / Audiences
+                    </h3>
+                    <ul class="space-y-3">
+                        <li *ngFor="let event of unbilledEvents"
+                            class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm flex items-center justify-between group">
+                            <div class="flex flex-col pr-4 flex-grow">
+                                <span class="text-sm font-medium text-gray-900">{{ event.titre }}</span>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <span class="text-xs text-gray-500">{{ event.startDate | date:'dd/MM/yyyy' }}</span>
+                                    <span *ngIf="event.typeId"
+                                        class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                                        {{ getEventTypeLabel(event.typeId) }}
+                                    </span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                                        [ngClass]="{
+                                              'bg-green-100 text-green-800': event.statut === 'TERMINE',
+                                              'bg-blue-100 text-blue-800': event.statut === 'CONFIRME',
+                                              'bg-red-100 text-red-800': event.statut === 'ANNULE',
+                                              'bg-yellow-100 text-yellow-800': event.statut === 'REPORTE'
+                                          }">
+                                        {{ event.statut }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <button type="button" (click)="openEventDetails(event)"
+                                    class="shrink-0 p-1.5 text-gray-400 hover:text-indigo-600 transition-colors"
+                                    title="Voir les détails">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </button>
+                                <div class="flex items-center h-5">
+                                    <input type="checkbox" [checked]="selectedEventIds.has(event.id!)"
+                                        (change)="toggleEventSelection(event.id, $event)"
+                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -206,5 +343,18 @@
             </button>
         </div>
     </form>
+
+    <!-- Task Details Modal -->
+    @if(showTaskDialog){
+    <app-task-details-dialog [task]="detailTask" [categoryLabel]="getTaskCategoryLabel(detailTask?.categoryId)"
+        [statusLabel]="getTaskStatusLabel(detailTask!.statusId)" (closeDialog)="closeTaskDetails()">
+    </app-task-details-dialog>
+    }
+    <!-- Event Details Modal -->
+    @if(showEventDialog){
+    <app-event-details-dialog [event]="detailEvent" [typeLabel]="getEventTypeLabel(detailEvent!.typeId)"
+        [statusLabel]="detailEvent!.statut" (closeDialog)="closeEventDetails()">
+    </app-event-details-dialog>
+    }
 
 </div>

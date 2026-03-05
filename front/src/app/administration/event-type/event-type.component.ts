@@ -15,7 +15,7 @@ export class EventTypeComponent implements OnInit {
     eventTypes: EventType[] = [];
     eventForm: FormGroup;
     isEditing = false;
-    selectedEventTypeId: string | number | null = null;
+    selectedEventTypeId: string = "";
     errorMessage: string = '';
 
     constructor(
@@ -83,7 +83,7 @@ export class EventTypeComponent implements OnInit {
 
     editEventType(eventType: EventType): void {
         this.isEditing = true;
-        this.selectedEventTypeId = eventType.id;
+        this.selectedEventTypeId = eventType.id!;
         this.eventForm.patchValue({
             label: eventType.label,
             code: eventType.code,
@@ -110,7 +110,7 @@ export class EventTypeComponent implements OnInit {
 
     resetForm(): void {
         this.isEditing = false;
-        this.selectedEventTypeId = null;
+        this.selectedEventTypeId = "";
         this.eventForm.reset({
             active: true,
             color: '#000000',

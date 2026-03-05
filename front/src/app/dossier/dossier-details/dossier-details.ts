@@ -12,7 +12,8 @@ import { TaskManagerComponent } from "../task-manager/task-manager.component";
 
 @Component({
   selector: 'app-dossier-details',
-  imports: [DocumentComponent, CommonModule, EvenementComponent, TaskManagerComponent, NoteComponent, ContactComponent, DossierInfo],
+  imports: [DocumentComponent, CommonModule, EvenementComponent, TaskManagerComponent, NoteComponent, ContactComponent
+    , DossierInfo],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })

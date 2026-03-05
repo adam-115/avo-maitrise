@@ -200,6 +200,7 @@ export interface Client {
   contacts?: ContactPoint[];
   clientStatus?: ClientStatus;
   documents?: Document[];
+  adresse?: string;
 }
 
 export interface TypeOrganisme {
@@ -412,7 +413,7 @@ export interface TaskCategory {
 
 // Représente l'état d'avancement d'une tâche
 export interface TaskStatus {
-  id: number | string;
+  id: string;
   code: 'A_FAIRE' | 'EN_COURS' | 'TERMINE' | 'ANNULE';
   libelle: string;      // Ex: "En attente"
   ordre_affichage: number;
@@ -427,7 +428,7 @@ export interface Task {
 
   // Relations par ID
   categoryId: number | string;
-  statusId: number | string;
+  statusId: string;
 
   priorite: 'BASSE' | 'NORMALE' | 'HAUTE' | 'URGENTE';
   assigneA?: User[];
@@ -435,6 +436,12 @@ export interface Task {
   isCompleted: boolean;
   createdAt: Date;
   createdBy?: User;
+
+  // Facturation
+  isBilled?: boolean;
+  invoiceId?: string;
+
+  estimatedTimeMinutes?: number;
 
 }
 export interface TaskLog {
@@ -524,7 +531,7 @@ export interface DossierContact {
 
 
 export interface EventType {
-  id: string | number;
+  id?: string;
   label: string;
   code: string;
   color?: string;
@@ -538,7 +545,7 @@ export interface MatterEvent {
   titre: string;                   // Ex: "Audience de plaidoirie - JAF"
   description?: string;
 
-  typeId: string | number;         // Identifiant de l'EventType
+  typeId: string;         // Identifiant de l'EventType
 
   // Temps
   startDate: Date;                 // Date et heure de début
@@ -562,6 +569,10 @@ export interface MatterEvent {
 
   createdAt: Date;
   updatedAt: Date;
+
+  // Facturation
+  isBilled?: boolean;
+  invoiceId?: string;
 }
 
 // Modèles de Facturation
@@ -575,6 +586,10 @@ export interface InvoiceLineItem {
   vatRate: number;       // TVA (ex: 20)
   totalHT: number;
   totalTTC: number;
+
+  // Liens avec les prestations
+  relatedTaskId?: number | string;
+  relatedEventId?: number | string;
 }
 
 export interface Invoice {
@@ -582,6 +597,8 @@ export interface Invoice {
   invoiceNumber: string; // N° facture
   date: Date;
   clientId: string;      // Référence au client
+  clientAddress?: string; // Adresse du client au moment de la facture
+  dossierId?: string;    // Référence au dossier (optionnel pour rétrocompatibilité)
 
   status: InvoiceStatus;
 
