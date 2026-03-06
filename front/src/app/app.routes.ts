@@ -1,148 +1,109 @@
 import { Routes } from '@angular/router';
-import { Administration } from './administration/administration/administration';
-import { ClientType } from './administration/client-type/client-type';
-import { Preferences } from './administration/preferences/preferences';
-import { ProfileCabinet } from './administration/profile-cabinet/profile-cabinet/profile-cabinet';
-import { SecteurActiviteComponent } from './administration/secteur-activite/secteur-activite';
-import { Utilisateur } from './administration/utilisateurs/utilisateur/utilisateur';
-import { AmlFormConfigComponent } from './aml-compliance/aml-form-config-component/aml-form-config-component';
-import { AmlFormListComponent } from './aml-compliance/aml-form-list-component/aml-form-list-component';
-import { AmlFormViewComponent } from './aml-compliance/aml-form-view-component/aml-form-view-component';
 
 // ... existing imports ...
 
-import { Bord } from './Bord/bord/bord';
-import { Calendrier } from './calendrier/calendrier/calendrier';
-import { ClientDetails } from './crm/client-details/client-details';
-import { ClientFormComponent } from './crm/client-form/client-form.component';
 
-import { ClientReviewsAml } from './crm/crm/client-reviews-aml/client-reviews-aml';
-import { Crm } from './crm/crm/crm';
-import { DossierDetails } from './dossier/dossier-details/dossier-details';
-import { DossierForm } from './dossier/dossier-form/dossier-form';
-import { DossierComponent } from './dossier/dossier/dossier.component';
-import { Home } from './home/home';
-import { Login } from './login/login/login';
-import { Model } from './model/model/model';
 
 import { NavigationService } from './services/navigation-service';
-import { Test } from './test/test';
-import { ClientAmlReview } from './aml-compliance/client-aml-review/client-aml-review';
-import { ClientAmlResult } from './crm/client-aml-result/client-aml-result';
-import { DiligenceFormBuilderComponent } from './due-diligence/diligence-form-builder-component/diligence-form-builder-component';
-import { DiligenceFormViewerComponent } from './due-diligence/diligence-form-viewer/diligence-form-viewer.component';
-import { ClientDiligenceResultsComponent } from './due-diligence/client-diligence-results/client-diligence-results.component';
-import { DiligenceFormResultViewerComponent } from './due-diligence/diligence-form-result-viewer/diligence-form-result-viewer.component';
-import { DiligenceFormListComponent } from './due-diligence/diligence-form-list/diligence-form-list.component';
-import { DossierStatusFormComponent } from './administration/dossier-status-form/dossier-status-form.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: Login
+    loadComponent: () => import('./login/login/login').then(m => m.Login)
   },
   {
     path: NavigationService.HOME,
-    component: Home,
+    loadComponent: () => import('./home/home').then(m => m.Home),
     children: [
       {
         path: '',
-        component: Bord
+        loadComponent: () => import('./Bord/bord/bord').then(m => m.Bord)
       },
       {
         path: NavigationService.DOSSIER,
-        component: DossierComponent
+        loadComponent: () => import('./dossier/dossier/dossier.component').then(m => m.DossierComponent)
       },
       {
         path: NavigationService.DOSSIER_FORM,
-        component: DossierForm
+        loadComponent: () => import('./dossier/dossier-form/dossier-form').then(m => m.DossierForm)
       },
       {
         path: NavigationService.DOSSIER_DETAIL,
-        component: DossierDetails
+        loadComponent: () => import('./dossier/dossier-details/dossier-details').then(m => m.DossierDetails)
       },
       {
         path: NavigationService.CRM,
-        component: Crm,
+        loadComponent: () => import('./crm/crm/crm').then(m => m.Crm),
       },
       {
         path: NavigationService.NEW_CLIENT,
-        component: ClientFormComponent,
+        loadComponent: () => import('./crm/client-form/client-form.component').then(m => m.ClientFormComponent),
       },
       {
         path: NavigationService.CLIENT_EDIT,
-        component: ClientFormComponent,
+        loadComponent: () => import('./crm/client-form/client-form.component').then(m => m.ClientFormComponent),
       },
       {
         path: NavigationService.CLIENT_DETAILS,
-        component: ClientDetails
+        loadComponent: () => import('./crm/client-details/client-details').then(m => m.ClientDetails)
       },
       {
         path: NavigationService.CLIENT_REVIEWS_AML,
-        component: ClientReviewsAml
-      },
-      {
-        // path: 'client-aml-context/:id',
-        // component: ClientAmlContextComponent
-      },
-      // this for review aml for person type contact
-      // TODO add the same for societe and institution type contact
-      {
-        //TODO remove this one too 
+        loadComponent: () => import('./crm/crm/client-reviews-aml/client-reviews-aml').then(m => m.ClientReviewsAml)
       },
 
       // gestion des documents models
       {
         path: NavigationService.MODEL,
-        component: Model
+        loadComponent: () => import('./model/model/model').then(m => m.Model)
 
       },
 
       // gestion de la facturation
       {
         path: NavigationService.CALENDRIER,
-        component: Calendrier
+        loadComponent: () => import('./calendrier/calendrier/calendrier').then(m => m.Calendrier)
       },
       {
         path: NavigationService.ADMINSTRATION,
-        component: Administration
+        loadComponent: () => import('./administration/administration/administration').then(m => m.Administration)
       },
       {
         path: NavigationService.UTILISATEURS,
-        component: Utilisateur
+        loadComponent: () => import('./administration/utilisateurs/utilisateur/utilisateur').then(m => m.Utilisateur)
       },
       {
         path: NavigationService.PROFILE_CABINET,
-        component: ProfileCabinet
+        loadComponent: () => import('./administration/profile-cabinet/profile-cabinet/profile-cabinet').then(m => m.ProfileCabinet)
       },
       {
         path: NavigationService.ADMIN_PREFERENCE,
-        component: Preferences
+        loadComponent: () => import('./administration/preferences/preferences').then(m => m.Preferences)
       },
       {
         path: NavigationService.ADMIN_SECTEUR_ATIVITE,
-        component: SecteurActiviteComponent
+        loadComponent: () => import('./administration/secteur-activite/secteur-activite').then(m => m.SecteurActiviteComponent)
       },
       {
         path: NavigationService.TYPE_CLIENT,
-        component: ClientType
+        loadComponent: () => import('./administration/client-type/client-type').then(m => m.ClientType)
       },
       // AML Compliance Paths can be found in NavigationService
       {
         path: NavigationService.AML_FORM_CONFIG_LIST,
-        component: AmlFormListComponent
+        loadComponent: () => import('./aml-compliance/aml-form-list-component/aml-form-list-component').then(m => m.AmlFormListComponent)
       },
       {
         path: NavigationService.FORM_CONFIG_CREATE,
-        component: AmlFormConfigComponent
+        loadComponent: () => import('./aml-compliance/aml-form-config-component/aml-form-config-component').then(m => m.AmlFormConfigComponent)
       },
       {
         path: NavigationService.FORM_CONFIG_EDIT,
-        component: AmlFormConfigComponent
+        loadComponent: () => import('./aml-compliance/aml-form-config-component/aml-form-config-component').then(m => m.AmlFormConfigComponent)
       },
       {
         path: NavigationService.FORM_CONFIG_VIEW,
-        component: AmlFormViewComponent
+        loadComponent: () => import('./aml-compliance/aml-form-view-component/aml-form-view-component').then(m => m.AmlFormViewComponent)
       },
       // {
       //   path: 'client-aml-context/:id',
@@ -150,40 +111,40 @@ export const routes: Routes = [
       // },
       {
         path: NavigationService.CLIENT_AML_REVIEW,
-        component: ClientAmlReview
+        loadComponent: () => import('./aml-compliance/client-aml-review/client-aml-review').then(m => m.ClientAmlReview)
       },
       {
         path: NavigationService.CLIENT_AML_RESULT,
-        component: ClientAmlResult
+        loadComponent: () => import('./crm/client-aml-result/client-aml-result').then(m => m.ClientAmlResult)
       },
       {
         path: NavigationService.DILIGENCE_FORM_BUILDER,
-        component: DiligenceFormBuilderComponent
+        loadComponent: () => import('./due-diligence/diligence-form-builder-component/diligence-form-builder-component').then(m => m.DiligenceFormBuilderComponent)
       },
       {
         path: NavigationService.DILIGENCE_FORM_BUILDER_EDIT,
-        component: DiligenceFormBuilderComponent
+        loadComponent: () => import('./due-diligence/diligence-form-builder-component/diligence-form-builder-component').then(m => m.DiligenceFormBuilderComponent)
       },
       {
         path: NavigationService.DILIGENCE_FORM_VIEWER,
-        component: DiligenceFormViewerComponent
+        loadComponent: () => import('./due-diligence/diligence-form-viewer/diligence-form-viewer.component').then(m => m.DiligenceFormViewerComponent)
       },
       {
         path: NavigationService.CLIENT_DILIGENCE_RESULTS,
-        component: ClientDiligenceResultsComponent
+        loadComponent: () => import('./due-diligence/client-diligence-results/client-diligence-results.component').then(m => m.ClientDiligenceResultsComponent)
       },
 
       {
         path: NavigationService.DILIGENCE_FORM_RESULT_VIEWER,
-        component: DiligenceFormResultViewerComponent
+        loadComponent: () => import('./due-diligence/diligence-form-result-viewer/diligence-form-result-viewer.component').then(m => m.DiligenceFormResultViewerComponent)
       },
       {
         path: NavigationService.DILIGENCE_FORM_LIST,
-        component: DiligenceFormListComponent
+        loadComponent: () => import('./due-diligence/diligence-form-list/diligence-form-list.component').then(m => m.DiligenceFormListComponent)
       },
       {
         path: NavigationService.DOSSIER_STATUS_FORM,
-        component: DossierStatusFormComponent
+        loadComponent: () => import('./administration/dossier-status-form/dossier-status-form.component').then(m => m.DossierStatusFormComponent)
       },
       {
         path: NavigationService.DOSSIER_PRIORITE,
@@ -233,6 +194,6 @@ export const routes: Routes = [
 
   {
     path: 'test',
-    component: Test,
+    loadComponent: () => import('./test/test').then(m => m.Test),
   }
 ];

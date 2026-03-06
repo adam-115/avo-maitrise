@@ -21,6 +21,8 @@ export class UtilisateursFormDialog {
   currentUserId: string | number | null = null;
 
   userRoles = Object.values(UserRole);
+  photoData: any | null = null;
+  photoPreviewUrl: string | null = null;
 
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
@@ -46,6 +48,8 @@ export class UtilisateursFormDialog {
 
     if (user) {
       this.currentUserId = user.id;
+      this.photoData = user.photo || null;
+      this.photoPreviewUrl = user.avatarUrl || null;
       this.userForm.patchValue({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -58,6 +62,8 @@ export class UtilisateursFormDialog {
       });
     } else {
       this.currentUserId = null;
+      this.photoData = null;
+      this.photoPreviewUrl = null;
       this.userForm.reset({
         role: UserRole.COLLABORATEUR,
         isActive: true,
@@ -70,12 +76,31 @@ export class UtilisateursFormDialog {
     this.showDialog = false;
   }
 
+  onFileSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.photoData = {
+        name: file.name,
+        filename: file.name,
+        date: new Date()
+      };
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.photoPreviewUrl = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   onSubmit() {
     if (this.userForm.invalid) return;
 
     const formValue = this.userForm.value;
     const userData: Partial<User> = {
-      ...formValue
+      ...formValue,
+      photo: this.photoData || undefined,
+      avatarUrl: this.photoPreviewUrl || undefined
     };
 
     if (this.isEditMode && this.currentUserId) {

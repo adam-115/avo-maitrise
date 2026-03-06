@@ -190,6 +190,19 @@
       "barreauId": "test",
       "createdAt": "2026-02-18T20:48:53.495Z",
       "twoFactorEnabled": false
+    },
+    {
+      "id": "39f5",
+      "firstName": "mehdi",
+      "lastName": "laftimi",
+      "email": "adam.laftimi@gmail.com",
+      "username": "mehdilaftimi",
+      "role": "ADMIN",
+      "isActive": true,
+      "isPartner": false,
+      "barreauId": "1",
+      "createdAt": "2026-03-05T23:43:13.726Z",
+      "twoFactorEnabled": false
     }
   ],
   "TypeOrganisme": [

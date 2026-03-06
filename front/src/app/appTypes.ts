@@ -15,7 +15,7 @@ export interface User {
   lastName: string;
   role: UserRole;
 
-  image?: Document;
+  photo?: Document;
 
   // Spécificités Cabinet
   barreauId?: string;          // Numéro de toque ou identifiant au barreau
