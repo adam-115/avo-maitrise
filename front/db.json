@@ -6481,5 +6481,77 @@
       "isBilled": true,
       "invoiceId": "FAC-2026-686"
     }
+  ],
+  "appointements": [
+    {
+      "id": 101,
+      "title": "Audience Plaidoirie",
+      "clientCase": "SARL Alpha vs Beta",
+      "time": "08:00",
+      "endTime": "13:30",
+      "location": "Chambre 3",
+      "status": "Standard",
+      "date": "2026-03-02T00:00:00.000Z"
+    },
+    {
+      "id": 101,
+      "title": "Audience Plaidoirie",
+      "clientCase": "SARL Alpha vs Beta",
+      "time": "09:00",
+      "endTime": "13:30",
+      "location": "Chambre 3",
+      "status": "Standard",
+      "date": "2026-03-02T00:00:00.000Z"
+    },
+    {
+      "id": 107,
+      "title": "Expertise Judiciaire",
+      "clientCase": "Affaire ZYX",
+      "time": "09:00",
+      "endTime": "13:00",
+      "location": "Bureau Expert",
+      "status": "Urgent",
+      "date": "2026-03-02T00:00:00.000Z"
+    },
+    {
+      "id": 102,
+      "title": "Conférence ME",
+      "clientCase": "Dupont c/ Procureur",
+      "time": "11:30",
+      "endTime": "12:00",
+      "location": "Greffe",
+      "status": "Standard",
+      "date": "2026-03-02T00:00:00.000Z"
+    },
+    {
+      "id": 103,
+      "title": "Référé Suspension",
+      "clientCase": "Mme Martin",
+      "time": "14:00",
+      "endTime": "16:00",
+      "location": "Salle 7",
+      "status": "Urgent",
+      "date": "2026-03-03T00:00:00.000Z"
+    },
+    {
+      "id": 108,
+      "title": "Convocation Officier",
+      "clientCase": "Prêt-Bail",
+      "time": "14:30",
+      "endTime": "15:30",
+      "location": "Cour App. RDC",
+      "status": "Standard",
+      "date": "2026-03-03T00:00:00.000Z"
+    },
+    {
+      "id": 109,
+      "title": "Consultation",
+      "clientCase": "Nouveau Client",
+      "time": "16:00",
+      "endTime": "17:00",
+      "location": "Cabinet - Salle A",
+      "status": "Standard",
+      "date": "2026-03-03T00:00:00.000Z"
+    }
   ]
 }

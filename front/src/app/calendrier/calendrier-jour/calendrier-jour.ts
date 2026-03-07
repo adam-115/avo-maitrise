@@ -1,11 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { Hearing } from '../../appTypes';
+import { Appointement } from '../../appTypes';
+import { AppointementService } from '../../services/appointement.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-calendrier-jour',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './calendrier-jour.html',
   styleUrl: './calendrier-jour.css'
 })
@@ -17,24 +18,28 @@ export class CalendrierJour {
   // Paramètres de la grille (inchangés)
   public hours = Array.from({ length: 11 }, (_, i) => 8 + i);
   hourHeightPx = 64;
-   startHour = 8;
+  startHour = 8;
 
-  // Événements pour la journée (simulés)
-  public hearings: Hearing[] = [
-    // Simuler des données pour une date spécifique, par exemple 10 Octobre 2025
-    { id: 101, title: 'Audience PlaidoirieAudience PlaidoirieAudience Plaidoirie', clientCase: 'SARL Alpha vs Beta', time: '09:00', endTime: '10:30', location: 'Chambre 3', status: 'Standard', date: new Date(2025, 9, 10) },
-    { id: 107, title: 'Expertise Judiciaire', clientCase: 'Affaire ZYX', time: '09:00', endTime: '10:00', location: 'Bureau Expert', status: 'Urgent', date: new Date(2025, 9, 10) },
-    { id: 102, title: 'Conférence ME', clientCase: 'Dupont c/ Procureur', time: '11:30', endTime: '12:00', location: 'Greffe', status: 'Standard', date: new Date(2025, 9, 10) },
-    { id: 110, title: 'Déjeuner Affaire', clientCase: 'Cabinet & Assoc.', time: '12:30', endTime: '13:30', location: 'Restaurant Tiers', status: 'Standard', date: new Date(2025, 9, 10) },
-    { id: 103, title: 'Référé Suspension', clientCase: 'Mme Martin', time: '14:00', endTime: '16:00', location: 'Salle 7', status: 'Urgent', date: new Date(2025, 9, 10) },
-    // Ajouter un événement pour un autre jour pour tester la navigation
-    { id: 104, title: 'Réunion Cabinet', clientCase: 'Interne', time: '10:00', endTime: '11:00', location: 'Salle de Conf.', status: 'Standard', date: new Date(2025, 9, 11) }, // 11 Octobre 2025
-  ];
+  public hearings: Appointement[] = [];
+  public dayHearings: Appointement[] = [];
 
-  public dayHearings: Hearing[] = [];
+  constructor(private appointementService: AppointementService) { }
 
   ngOnInit() {
-    this.filterAndCalculateEvents(this.date);
+    this.loadAppointements();
+  }
+
+  loadAppointements(): void {
+    this.appointementService.getAll().subscribe({
+      next: (data) => {
+        this.hearings = data.map(app => ({
+          ...app,
+          date: new Date(app.date)
+        }));
+        this.filterAndCalculateEvents(this.date);
+      },
+      error: (error) => console.error('Error loading appointements:', error)
+    });
   }
 
   // --- NOUVELLES FONCTIONS DE NAVIGATION ET D'INITIALISATION ---
@@ -63,9 +68,9 @@ export class CalendrierJour {
    * @param targetDate La date à filtrer.
    */
   private filterAndCalculateEvents(targetDate: Date): void {
-    this.dayHearings = this.hearings.filter(hearing =>
-      hearing.date.toDateString() === targetDate.toDateString()
-    ).sort((a, b) => a.time.localeCompare(b.time));
+    this.dayHearings = this.hearings.filter(appointement =>
+      appointement.date.toDateString() === targetDate.toDateString()
+    ).sort((a: Appointement, b: Appointement) => a.time.localeCompare(b.time));
 
     this.calculateEventStyles();
   }
@@ -83,41 +88,41 @@ export class CalendrierJour {
     const dayEvents = this.dayHearings;
 
     // 1. Calcul du TOP et de la HEIGHT
-    dayEvents.forEach(event => {
-        const startMinutes = this.timeToMinutes(event.time);
-        const endMinutes = this.timeToMinutes(event.endTime);
+    dayEvents.forEach((event: Appointement) => {
+      const startMinutes = this.timeToMinutes(event.time);
+      const endMinutes = this.timeToMinutes(event.endTime);
 
-        const minutesFromStart = startMinutes - (this.startHour * 60);
-        const durationMinutes = endMinutes - startMinutes;
+      const minutesFromStart = startMinutes - (this.startHour * 60);
+      const durationMinutes = endMinutes - startMinutes;
 
-        const topPx = (minutesFromStart / 60) * this.hourHeightPx;
-        const heightPx = (durationMinutes / 60) * this.hourHeightPx;
+      const topPx = (minutesFromStart / 60) * this.hourHeightPx;
+      const heightPx = (durationMinutes / 60) * this.hourHeightPx;
 
-        event.style = { top: `${topPx}px`, height: `${heightPx}px`, };
+      event.style = { top: `${topPx}px`, height: `${heightPx}px`, };
     });
 
     // 2. Gestion des CONFLITS
-    dayEvents.forEach(event => {
-        const overlappingEvents = dayEvents.filter(other =>
-            (other.time < event.endTime && other.endTime > event.time) ||
-            (other.id === event.id)
-        ).sort((a, b) => a.time.localeCompare(b.time));
+    dayEvents.forEach((event: Appointement) => {
+      const overlappingEvents = dayEvents.filter((other: Appointement) =>
+        (other.time < event.endTime && other.endTime > event.time) ||
+        (other.id === event.id)
+      ).sort((a: Appointement, b: Appointement) => a.time.localeCompare(b.time));
 
-        if (overlappingEvents.length > 1) {
-            const groupSize = overlappingEvents.length;
-            const eventIndexInGroup = overlappingEvents.findIndex(e => e.id === event.id);
+      if (overlappingEvents.length > 1) {
+        const groupSize = overlappingEvents.length;
+        const eventIndexInGroup = overlappingEvents.findIndex((e: Appointement) => e.id === event.id);
 
-            const widthPercent = (100 / groupSize);
-            const leftPercent = eventIndexInGroup * widthPercent;
+        const widthPercent = (100 / groupSize);
+        const leftPercent = eventIndexInGroup * widthPercent;
 
-            event.style.width = `${widthPercent}%`;
-            event.style.left = `${leftPercent}%`;
-            event.style.zIndex = eventIndexInGroup + 10;
-        } else {
-            event.style.width = '100%';
-            event.style.left = '0%';
-            event.style.zIndex = 1;
-        }
+        event.style.width = `${widthPercent}%`;
+        event.style.left = `${leftPercent}%`;
+        event.style.zIndex = eventIndexInGroup + 10;
+      } else {
+        event.style.width = '100%';
+        event.style.left = '0%';
+        event.style.zIndex = 1;
+      }
     });
   }
 
@@ -131,19 +136,19 @@ export class CalendrierJour {
   }
 
   public handleGridClick(event: MouseEvent): void {
-      // ... (logique du clic sur la grille inchangée) ...
-      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
-      const yPosition = event.clientY - rect.top;
-      const totalMinutes = (yPosition / this.hourHeightPx) * 60;
-      const hours = this.startHour + Math.floor(totalMinutes / 60);
-      const minutes = Math.round((totalMinutes % 60) / 15) * 15;
+    // ... (logique du clic sur la grille inchangée) ...
+    const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const yPosition = event.clientY - rect.top;
+    const totalMinutes = (yPosition / this.hourHeightPx) * 60;
+    const hours = this.startHour + Math.floor(totalMinutes / 60);
+    const minutes = Math.round((totalMinutes % 60) / 15) * 15;
 
-      const normalizedMinutes = minutes === 60 ? 0 : minutes;
-      const normalizedHours = minutes === 60 ? hours + 1 : hours;
+    const normalizedMinutes = minutes === 60 ? 0 : minutes;
+    const normalizedHours = minutes === 60 ? hours + 1 : hours;
 
-      const formattedTime = `${String(normalizedHours).padStart(2, '0')}:${String(normalizedMinutes).padStart(2, '0')}`;
+    const formattedTime = `${String(normalizedHours).padStart(2, '0')}:${String(normalizedMinutes).padStart(2, '0')}`;
 
-      alert(`Journée: Clic à ${formattedTime}. Prêt à ajouter un Hearing.`);
+    alert(`Journée: Clic à ${formattedTime}. Prêt à ajouter un Appointement.`);
   }
 
 

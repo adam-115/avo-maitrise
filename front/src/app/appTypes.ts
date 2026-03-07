@@ -53,7 +53,7 @@ export enum ContactTypeCreation {
 
 
 // Interface pour définir la structure d'une Audience Judiciaire
-export interface Hearing {
+export interface Appointement {
   id: number;
   title: string;
   clientCase: string;
