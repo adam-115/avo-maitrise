@@ -105,6 +105,10 @@ export class NavigationService {
   }
 
 
+  navigateToHome(): void {
+    this.router.navigate(['/' + NavigationService.HOME]);
+  }
+
   navigateToClients(): void {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.CRM);
   }
