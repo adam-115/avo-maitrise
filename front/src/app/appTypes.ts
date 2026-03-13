@@ -56,7 +56,9 @@ export enum ContactTypeCreation {
 export interface Appointement {
   id: number;
   title: string;
-  clientCase: string;
+  clientCase: string; // Keep for backward compatibility or simple display
+  clientId?: string;      // ID of the related client
+  dossierId?: string | number; // ID of the related dossier
   time: string; // Heure de début "HH:mm"
   endTime: string; // Heure de fin "HH:mm"
   location: string;

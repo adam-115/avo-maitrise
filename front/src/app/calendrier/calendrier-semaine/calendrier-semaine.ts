@@ -1,22 +1,18 @@
-import { CalendrierRdvDialog } from '../calendrier-rdv-dialog/calendrier-rdv-dialog';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Appointement } from '../../appTypes';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AppointementService } from '../../services/appointement.service';
+import { AppointementDialogComponent } from '../appointement-dialog/appointement-dialog';
 
 @Component({
   selector: 'app-calendrier-semaine',
-  imports: [CommonModule, FormsModule,
-    RouterModule, CalendrierRdvDialog],
+  imports: [CommonModule, FormsModule, RouterModule, AppointementDialogComponent],
   templateUrl: './calendrier-semaine.html',
   styleUrl: './calendrier-semaine.css'
 })
 export class CalendrierSemaine implements OnInit {
-
-  @ViewChild(CalendrierRdvDialog)
-  calendrierRdvDialog!: CalendrierRdvDialog;
 
   public hours = Array.from({ length: 11 }, (_, i) => 8 + i);
   hourHeightPx = 64;
@@ -26,6 +22,10 @@ export class CalendrierSemaine implements OnInit {
   public weekStart: Date = this.getStartOfWeek(new Date());
 
   public hearings: Appointement[] = [];
+
+  showAppointementDialog = false;
+  selectedTime = '';
+  selectedDateStr = '';
 
   constructor(private appointementService: AppointementService) { }
 
@@ -166,13 +166,6 @@ export class CalendrierSemaine implements OnInit {
       .sort((a, b) => a.time.localeCompare(b.time));
   }
 
-  openAddAppointementDialog() {
-    this.calendrierRdvDialog.openDialog();
-  }
-  closeAddAppointementDialog() {
-    this.calendrierRdvDialog.closeDialog();
-  }
-
   showHiringDetails(appointement: Appointement) {
     alert(`Détails de l'audience:\n\nTitre: ${appointement.title}\nDossier: ${appointement.clientCase}\nHeure: ${appointement.time} - ${appointement.endTime}\nLieu: ${appointement.location}\nStatut: ${appointement.status}`);
   }
@@ -201,12 +194,23 @@ export class CalendrierSemaine implements OnInit {
 
     const formattedTime = `${String(normalizedHours).padStart(2, '0')}:${String(normalizedMinutes).padStart(2, '0')}`;
 
-    // 4. Afficher l'alerte
-    alert(`Nouvelle audience ? \nDate: ${dayName} ${targetDate.toLocaleDateString('fr-FR')} \nHeure suggérée: ${formattedTime}`);
+    // 4. Mettre à jour les variables et ouvrir la modale
+    const yyyy = targetDate.getFullYear();
+    const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(targetDate.getDate()).padStart(2, '0');
 
-    // OPTIONNEL : Vous pourriez ouvrir la modale d'ajout ici :
-    // this.openModal();
-    // ... et pré-remplir les champs date/heure avec les valeurs calculées ...
+    this.selectedDateStr = `${yyyy}-${mm}-${dd}`;
+    this.selectedTime = formattedTime;
+    this.showAppointementDialog = true;
+  }
+
+  closeAppointementDialog(): void {
+    this.showAppointementDialog = false;
+  }
+
+  onAppointementSaved(): void {
+    this.showAppointementDialog = false;
+    this.loadAppointements();
   }
 
 }

@@ -1,0 +1,118 @@
+<form [formGroup]="appointementForm" (ngSubmit)="save()">
+  <div class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 my-8 transform transition-all">
+      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+
+        <div class="sm:flex sm:items-start mb-6">
+          <div
+            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-cyan-100 sm:mx-0 sm:h-10 sm:w-10">
+            <svg class="h-6 w-6 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+          </div>
+          <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+            <h3 class="text-xl leading-6 font-bold text-gray-900" id="modal-title">
+              Nouvelle Audience / Plaidoirie
+            </h3>
+            <p class="text-sm text-gray-500 mt-1">Veuillez renseigner les détails de l'événement.</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Title Row -->
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Titre de l'audience *</label>
+            <input type="text" formControlName="title" placeholder="Ex: Plaidoirie affaire Dupont"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            <div *ngIf="appointementForm.get('title')?.touched && appointementForm.get('title')?.invalid"
+              class="text-red-500 text-xs mt-1">
+              Ce champ est requis.
+            </div>
+          </div>
+
+          <!-- Date & Times Row -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Date *</label>
+              <input type="date" formControlName="date"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Heure de début *</label>
+              <input type="time" formControlName="time"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Heure de fin *</label>
+              <input type="time" formControlName="endTime"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+          </div>
+
+          <!-- Location & Status Row -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Lieu *</label>
+              <input type="text" formControlName="location" placeholder="Ex: Tribunal de Paris, Salle 4"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Statut *</label>
+              <select formControlName="status"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                <option value="Standard">Standard</option>
+                <option value="Urgent">Urgent</option>
+                <option value="Reporté">Reporté</option>
+              </select>
+            </div>
+          </div>
+
+          <hr class="my-4 border-gray-200">
+          <p class="text-sm font-medium text-gray-500 mb-2">Associations Optionnelles</p>
+
+          <!-- Client & Dossier Row -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-min">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Client concerné</label>
+              <select formControlName="clientId"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 min-h-[42px]">
+                <option value="">-- Aucun --</option>
+                <option *ngFor="let client of clients" [value]="client.id">
+                  {{ client.type === 'PERSONNE' ? client.nom + ' ' + client.prenom : client.nom }}
+                </option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Dossier concerné</label>
+              <select formControlName="dossierId"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 min-h-[42px]">
+                <option value="">-- Aucun --</option>
+                <option *ngFor="let dossier of dossiers" [value]="dossier.id">
+                  {{ dossier.titre }} ({{dossier.referenceInterne}})
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Fallback text row -->
+          <div class="mt-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Description / Nom (Optionnel)</label>
+            <input type="text" formControlName="clientCase" placeholder="Ex: Autre indication"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500">
+          </div>
+
+        </div>
+      </div>
+      <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-end gap-3 rounded-b-xl border-t border-gray-200">
+        <button type="button" (click)="closeDialog()"
+          class="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 sm:mt-0 sm:w-auto sm:text-sm">
+          Annuler
+        </button>
+        <button type="submit" [disabled]="isLoading"
+          class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-cyan-600 text-base font-medium text-white hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 sm:w-auto sm:text-sm disabled:opacity-50">
+          {{ isLoading ? 'Sauvegarde...' : 'Ajouter l\'audience' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

@@ -14,3 +14,4 @@ export class UserService extends AbstractCrudService<User> {
         super(http);
     }
 }
+

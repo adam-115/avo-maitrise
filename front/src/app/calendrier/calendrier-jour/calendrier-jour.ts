@@ -3,10 +3,11 @@ import { Appointement } from '../../appTypes';
 import { AppointementService } from '../../services/appointement.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AppointementDialogComponent } from '../appointement-dialog/appointement-dialog';
 
 @Component({
   selector: 'app-calendrier-jour',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AppointementDialogComponent],
   templateUrl: './calendrier-jour.html',
   styleUrl: './calendrier-jour.css'
 })
@@ -14,6 +15,10 @@ export class CalendrierJour {
 
   // Propriété pour sélectionner la date affichée. Initialisée à la date du jour.
   @Input() date: Date = new Date();
+
+  showAppointementDialog = false;
+  selectedTime = '';
+  selectedDateStr = '';
 
   // Paramètres de la grille (inchangés)
   public hours = Array.from({ length: 11 }, (_, i) => 8 + i);
@@ -148,7 +153,22 @@ export class CalendrierJour {
 
     const formattedTime = `${String(normalizedHours).padStart(2, '0')}:${String(normalizedMinutes).padStart(2, '0')}`;
 
-    alert(`Journée: Clic à ${formattedTime}. Prêt à ajouter un Appointement.`);
+    const yyyy = this.date.getFullYear();
+    const mm = String(this.date.getMonth() + 1).padStart(2, '0');
+    const dd = String(this.date.getDate()).padStart(2, '0');
+    
+    this.selectedDateStr = `${yyyy}-${mm}-${dd}`;
+    this.selectedTime = formattedTime;
+    this.showAppointementDialog = true;
+  }
+
+  closeAppointementDialog(): void {
+    this.showAppointementDialog = false;
+  }
+
+  onAppointementSaved(): void {
+    this.showAppointementDialog = false;
+    this.loadAppointements();
   }
 
 

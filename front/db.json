@@ -6484,7 +6484,7 @@
   ],
   "appointements": [
     {
-      "id": 101,
+      "id": "101",
       "title": "Audience Plaidoirie",
       "clientCase": "SARL Alpha vs Beta",
       "time": "08:00",
@@ -6494,7 +6494,7 @@
       "date": "2026-03-02T00:00:00.000Z"
     },
     {
-      "id": 101,
+      "id": "101",
       "title": "Audience Plaidoirie",
       "clientCase": "SARL Alpha vs Beta",
       "time": "09:00",
@@ -6504,7 +6504,7 @@
       "date": "2026-03-02T00:00:00.000Z"
     },
     {
-      "id": 107,
+      "id": "107",
       "title": "Expertise Judiciaire",
       "clientCase": "Affaire ZYX",
       "time": "09:00",
@@ -6514,7 +6514,7 @@
       "date": "2026-03-02T00:00:00.000Z"
     },
     {
-      "id": 102,
+      "id": "102",
       "title": "Conférence ME",
       "clientCase": "Dupont c/ Procureur",
       "time": "11:30",
@@ -6524,7 +6524,7 @@
       "date": "2026-03-02T00:00:00.000Z"
     },
     {
-      "id": 103,
+      "id": "103",
       "title": "Référé Suspension",
       "clientCase": "Mme Martin",
       "time": "14:00",
@@ -6534,7 +6534,7 @@
       "date": "2026-03-03T00:00:00.000Z"
     },
     {
-      "id": 108,
+      "id": "108",
       "title": "Convocation Officier",
       "clientCase": "Prêt-Bail",
       "time": "14:30",
@@ -6544,7 +6544,7 @@
       "date": "2026-03-03T00:00:00.000Z"
     },
     {
-      "id": 109,
+      "id": "109",
       "title": "Consultation",
       "clientCase": "Nouveau Client",
       "time": "16:00",
@@ -6552,6 +6552,30 @@
       "location": "Cabinet - Salle A",
       "status": "Standard",
       "date": "2026-03-03T00:00:00.000Z"
+    },
+    {
+      "id": "1773239086031",
+      "title": "qdsqsd",
+      "date": "2026-03-11",
+      "time": "14:24",
+      "endTime": "17:24",
+      "location": "qsdqsd",
+      "status": "Urgent",
+      "clientId": "7334",
+      "dossierId": "",
+      "clientCase": "qsdqsdsq"
+    },
+    {
+      "id": 1773416539540,
+      "title": "eee",
+      "date": "2026-03-13",
+      "time": "16:41",
+      "endTime": "17:42",
+      "location": "fsfdfs",
+      "status": "Standard",
+      "clientId": "e466",
+      "dossierId": "76ad",
+      "clientCase": "dsfsdfsdfsd"
     }
   ]
 }
