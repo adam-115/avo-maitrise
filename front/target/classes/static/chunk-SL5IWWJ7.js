@@ -1,0 +1,1 @@
+import{R as o}from"./chunk-53LXCIDH.js";var a=class r{generateTimestampId(){let n=Date.now().toString(36),t=Math.random().toString(36).substring(2,9);return`${n}-${t}`}compareFn(n,t){return n&&t?n.id===t.id:n===t}static \u0275fac=function(t){return new(t||r)};static \u0275prov=o({token:r,factory:r.\u0275fac,providedIn:"root"})};export{a};

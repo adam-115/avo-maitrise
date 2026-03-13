@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +19,7 @@ export class Home {
   isSidebarOpen: boolean = false;
   activeRoute: string = 'calendrier';
   paths = NavigationService;
+  environment = environment;
 
   constructor(private readonly router: Router) {
 

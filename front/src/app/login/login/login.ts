@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NavigationService } from '../../services/navigation-service';
 import { UserService } from '../../services/user.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,7 @@ export class Login implements OnInit {
 
   loginForm!: FormGroup;
   errorMessage: string | null = null;
+  environment = environment;
 
   ngOnInit() {
     this.loginForm = this.fb.group({
