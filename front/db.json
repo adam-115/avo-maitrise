@@ -6809,16 +6809,126 @@
       "clientCase": "dsfsdfsdfsd"
     },
     {
-      "id": 1775036675553,
-      "title": "rdv ...",
-      "date": "2026-04-01",
-      "time": "12:43",
-      "endTime": "13:43",
+      "id": "1775036675553",
+      "title": "mehdi",
+      "date": "2026-04-01T00:00:00.000Z",
+      "time": "14:43",
+      "endTime": "17:43",
       "location": "jlksdjflkdjslkfd ",
       "status": "Standard",
       "clientId": "9808",
       "dossierId": "76ad",
-      "clientCase": "rdv l autre avocat "
+      "clientCase": "rdv l autre avocat ",
+      "style": {
+        "top": "-338.1333333333333px",
+        "height": "960px",
+        "width": "100%",
+        "left": "0%",
+        "zIndex": 1
+      }
+    },
+    {
+      "id": "1775132477479",
+      "title": "fff",
+      "date": "2026-04-02",
+      "time": "14:20",
+      "endTime": "14:45",
+      "location": "marrakech",
+      "status": "Standard",
+      "clientId": "9808",
+      "dossierId": "fe18",
+      "clientCase": "c est une description "
+    },
+    {
+      "id": "1775133245903",
+      "title": "qsdqsdqs",
+      "date": "2026-04-02",
+      "time": "16:33",
+      "endTime": "16:59",
+      "location": "qsdqsdsq",
+      "status": "Urgent",
+      "clientId": "4b48",
+      "dossierId": "76ad",
+      "clientCase": "qsdqsdqs"
+    },
+    {
+      "id": "1775134083703",
+      "title": "ddd",
+      "date": "2026-04-03",
+      "time": "08:00",
+      "endTime": "12:00",
+      "location": "dddd",
+      "status": "Reporté",
+      "clientId": "bea6",
+      "dossierId": "76ad",
+      "clientCase": "dddd"
+    },
+    {
+      "id": "1775134362080",
+      "title": "rrr",
+      "date": "2026-04-02",
+      "time": "09:10",
+      "endTime": "11:15",
+      "location": "eee",
+      "status": "Urgent",
+      "clientId": "4b48",
+      "dossierId": "76ad",
+      "clientCase": "eeee"
+    },
+    {
+      "id": "1775134405683",
+      "title": "eee",
+      "date": "2026-04-03",
+      "time": "09:15",
+      "endTime": "11:35",
+      "location": "eeee",
+      "status": "Urgent",
+      "clientId": "bea6",
+      "dossierId": "76ad",
+      "clientCase": "eee"
+    },
+    {
+      "id": "1775148507164",
+      "title": "sdfsdfsd",
+      "date": "2026-04-02",
+      "time": "10:30",
+      "endTime": "13:00",
+      "location": "fsdfsdf",
+      "status": "Standard",
+      "clientId": "",
+      "dossierId": "",
+      "clientCase": "sdfsfsd"
+    },
+    {
+      "id": "1775148614635",
+      "title": "mehdi2- adam1",
+      "date": "2026-04-02T00:00:00.000Z",
+      "time": "10:00",
+      "endTime": "14:00",
+      "location": "dsfdsfsd",
+      "status": "Standard",
+      "clientId": "17ac",
+      "dossierId": "",
+      "clientCase": "dsfsdfsd",
+      "style": {
+        "top": "0px",
+        "height": "384px",
+        "width": "33.333333333333336%",
+        "left": "0%",
+        "zIndex": 10
+      }
+    },
+    {
+      "id": "1775148695714",
+      "title": "dfssdfds",
+      "date": "2026-04-02",
+      "time": "15:00",
+      "endTime": "18:00",
+      "location": "sdfsdds",
+      "status": "Urgent",
+      "clientId": "",
+      "dossierId": "",
+      "clientCase": "adam"
     }
   ]
 }

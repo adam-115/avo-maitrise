@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output, Input } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, Input, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppointementService } from '../../services/appointement.service';
@@ -16,6 +16,9 @@ export class AppointementDialogComponent implements OnInit {
 
   @Output() onSave = new EventEmitter<void>();
   @Output() onClose = new EventEmitter<void>();
+
+  @Input()
+  selectedAppointement: Appointement | null = null;
 
   @Input() initialDate?: string;
   @Input() initialTime?: string;
@@ -47,6 +50,10 @@ export class AppointementDialogComponent implements OnInit {
       dossierId: [''],
       clientCase: [''] // Helper for standard display
     });
+
+    if (this.selectedAppointement) {
+      this.appointementForm.patchValue(this.selectedAppointement);
+    }
   }
 
   loadData() {
@@ -55,7 +62,6 @@ export class AppointementDialogComponent implements OnInit {
   }
 
   save() {
-    alert("start saving ");
     if (this.appointementForm.invalid) {
       this.appointementForm.markAllAsTouched();
       return;
@@ -77,25 +83,43 @@ export class AppointementDialogComponent implements OnInit {
       }
     }
 
-    const newAppointement: Appointement = {
-      // Mock ID generation for db.json if needed, though usually json-server handles it.
-      // We send it without ID to create. The type says id is mandatory, but for json-server we omit it or pass a random number.
-      id: Date.now(),
-      ...formValue
-    };
+    if (this.selectedAppointement) {
+      const updatedAppointement: Appointement = {
+        ...this.selectedAppointement,
+        ...formValue
+      };
+      this.appointementService.update(updatedAppointement.id, updatedAppointement).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.onSave.emit();
+          this.closeDialog();
+        },
+        error: (err) => {
+          console.error('Failed to update appointement', err);
+          this.isLoading = false;
+          // Ideally show an error notification here
+        }
+      });
+    } else {
+      const newAppointement: Appointement = {
+        // Pour json-server v1, l'ID doit obligatoirement être généré en tant que String !
+        id: Date.now().toString(),
+        ...formValue
+      };
 
-    this.appointementService.create(newAppointement).subscribe({
-      next: () => {
-        this.isLoading = false;
-        this.onSave.emit();
-        this.closeDialog();
-      },
-      error: (err) => {
-        console.error('Failed to create appointement', err);
-        this.isLoading = false;
-        // Ideally show an error notification here
-      }
-    });
+      this.appointementService.create(newAppointement).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.onSave.emit();
+          this.closeDialog();
+        },
+        error: (err) => {
+          console.error('Failed to create appointement', err);
+          this.isLoading = false;
+          // Ideally show an error notification here
+        }
+      });
+    }
   }
 
   closeDialog() {

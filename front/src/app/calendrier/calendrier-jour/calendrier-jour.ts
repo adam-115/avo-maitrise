@@ -28,6 +28,8 @@ export class CalendrierJour {
   public hearings: Appointement[] = [];
   public dayHearings: Appointement[] = [];
 
+  selectedAppointement: Appointement | null = null;
+
   constructor(private appointementService: AppointementService) { }
 
   ngOnInit() {
@@ -156,13 +158,14 @@ export class CalendrierJour {
     const yyyy = this.date.getFullYear();
     const mm = String(this.date.getMonth() + 1).padStart(2, '0');
     const dd = String(this.date.getDate()).padStart(2, '0');
-    
+
     this.selectedDateStr = `${yyyy}-${mm}-${dd}`;
     this.selectedTime = formattedTime;
     this.showAppointementDialog = true;
   }
 
   closeAppointementDialog(): void {
+    this.loadAppointements();
     this.showAppointementDialog = false;
   }
 
@@ -170,6 +173,16 @@ export class CalendrierJour {
     this.showAppointementDialog = false;
     this.loadAppointements();
   }
+
+  openAddAppointementDialog() {
+    this.showAppointementDialog = true;
+  }
+
+  openEditAppointementDialog(appointement: Appointement) {
+    this.selectedAppointement = appointement;
+    this.showAppointementDialog = true;
+  }
+
 
 
 }

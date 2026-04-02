@@ -8,14 +8,25 @@
           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
         </path>
       </svg>
-      Rôle des Audiences de la Semaine
+      Réunion de la Semaine
     </h2>
 
     <div class="flex space-x-3 items-center">
+
+      <button (click)="openAddAppointementDialog()"
+        class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 flex items-center ml-4">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        Ajouter une réunion
+      </button>
+
       <button (click)="goToCurrentWeek()"
         class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150 flex items-center">
         Semaine en Cours
       </button>
+
       <button (click)="changeWeek(-1)"
         class="px-3 py-2 text-sm font-medium rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 transition duration-150">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -73,6 +84,7 @@
         </ng-container>
 
         <div *ngFor="let hearing of getHearingsForDay(dayIndex)" (click)="$event.stopPropagation()"
+          (click)="openEditAppointementDialog(hearing)"
           class="absolute p-1.5 rounded-lg border-l-4 shadow-md cursor-pointer hover:shadow-lg transition duration-150"
           [ngClass]="getStatusClass(hearing.status)" [style.top]="hearing.style.top"
           [style.height]="hearing.style.height" [style.width]="hearing.style.width" [style.left]="hearing.style.left"
@@ -103,6 +115,7 @@
   </div>
 </div>
 
-<app-appointement-dialog *ngIf="showAppointementDialog" [initialDate]="selectedDateStr" [initialTime]="selectedTime"
-  (onClose)="closeAppointementDialog()" (onSave)="onAppointementSaved()">
+<app-appointement-dialog *ngIf="showAppointementDialog" [selectedAppointement]="selectedAppointement"
+  [initialDate]="selectedDateStr" [initialTime]="selectedTime" (onClose)="closeAppointementDialog()"
+  (onSave)="onAppointementSaved()">
 </app-appointement-dialog>

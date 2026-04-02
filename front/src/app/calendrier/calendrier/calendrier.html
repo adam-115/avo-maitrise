@@ -14,14 +14,7 @@
       class="px-4 py-2 rounded-md font-medium transition duration-150 hover:bg-cyan-500 hover:text-white">
       Vue Semaine
     </button>
-    <button (click)="openAddAppointementDialog()"
-      class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 flex items-center ml-4">
-      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-      </svg>
-      Ajouter Audience
-    </button>
+
 
   </div>
 </div>
@@ -37,9 +30,4 @@
 
 <!-- Ton composant audiences/plaidoiries ici -->
 <app-calendrier-semaine></app-calendrier-semaine>
-}
-
-@if (showAddAppointementDialog) {
-<app-appointement-dialog (onClose)="closeAddAppointementDialog()" (onSave)="closeAddAppointementDialog()">
-</app-appointement-dialog>
 }

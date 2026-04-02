@@ -27,6 +27,8 @@ export class CalendrierSemaine implements OnInit {
   selectedTime = '';
   selectedDateStr = '';
 
+  selectedAppointement: Appointement | null = null;
+
   constructor(private appointementService: AppointementService) { }
 
   ngOnInit() {
@@ -204,13 +206,28 @@ export class CalendrierSemaine implements OnInit {
     this.showAppointementDialog = true;
   }
 
+  openAddAppointementDialog() {
+    this.showAppointementDialog = true;
+  }
+
   closeAppointementDialog(): void {
+    this.loadAppointements();
     this.showAppointementDialog = false;
   }
 
   onAppointementSaved(): void {
-    this.showAppointementDialog = false;
     this.loadAppointements();
+    this.showAppointementDialog = false;
   }
+
+  openEditAppointementDialog(appointement: Appointement) {
+    this.selectedAppointement = appointement;
+    this.showAppointementDialog = true;
+  }
+
+
+
+
+
 
 }

@@ -7,7 +7,7 @@ import { AppointementDialogComponent } from '../appointement-dialog/appointement
 
 @Component({
   selector: 'app-calendrier',
-  imports: [CommonModule, FormsModule, CalendrierJour, CalendrierSemaine, AppointementDialogComponent],
+  imports: [CommonModule, FormsModule, CalendrierJour, CalendrierSemaine,],
   templateUrl: './calendrier.html',
   styleUrl: './calendrier.css'
 })
@@ -16,13 +16,6 @@ export class Calendrier {
 
   showAddAppointementDialog: boolean = false;
 
-  openAddAppointementDialog() {
-    this.showAddAppointementDialog = true;
-  }
-
-  closeAddAppointementDialog() {
-    this.showAddAppointementDialog = false;
-  }
 
 
 
