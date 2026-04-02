@@ -186,14 +186,13 @@ export const routes: Routes = [
       {
         path: NavigationService.BILLING_PREVIEW,
         loadComponent: () => import('./features/billing/components/invoice-preview/invoice-preview.component').then(m => m.InvoicePreviewComponent)
+      },
+      {
+        path: 'test',
+        loadComponent: () => import('./test/test').then(m => m.Test),
       }
     ]
 
   },
 
-
-  {
-    path: 'test',
-    loadComponent: () => import('./test/test').then(m => m.Test),
-  }
 ];

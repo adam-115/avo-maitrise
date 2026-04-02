@@ -30,6 +30,10 @@ export class Login implements OnInit {
   navigateToHomePage() {
     this.errorMessage = null;
 
+
+    if (environment.production) {
+      this.navigationService.navigateToHome();
+    }
     if (this.loginForm.valid) {
       const email = this.loginForm.value.email;
 

@@ -114,6 +114,45 @@
       "totalTTC": 380,
       "createdAt": "2026-03-05T22:52:55.274Z",
       "updatedAt": "2026-03-05T22:52:55.274Z"
+    },
+    {
+      "id": "1775038598076",
+      "invoiceNumber": "FAC-2026-455",
+      "date": "2026-04-01T00:00:00.000Z",
+      "clientId": "25fb",
+      "clientAddress": "adresse de si legale ",
+      "dossierId": "fe18",
+      "status": "DRAFT",
+      "disbursements": 20,
+      "lineItems": [
+        {
+          "id": "0",
+          "description": "plad",
+          "quantity": 1,
+          "hourlyRate": 100,
+          "vatRate": 20,
+          "totalHT": 100,
+          "totalTTC": 120,
+          "relatedTaskId": null,
+          "relatedEventId": null
+        },
+        {
+          "id": "1",
+          "description": "gest2",
+          "quantity": 1,
+          "hourlyRate": 199,
+          "vatRate": 20,
+          "totalHT": 199,
+          "totalTTC": 238.79999999999998,
+          "relatedTaskId": null,
+          "relatedEventId": null
+        }
+      ],
+      "totalHT": 299,
+      "totalVAT": 59.800000000000004,
+      "totalTTC": 378.8,
+      "createdAt": "2026-04-01T10:16:38.076Z",
+      "updatedAt": "2026-04-01T10:16:38.076Z"
     }
   ],
   "users": [
@@ -4845,6 +4884,52 @@
         }
       ],
       "clientId": "17ac"
+    },
+    {
+      "id": "5d37",
+      "amlFormConfigID": "53088",
+      "totalScore": 108,
+      "AmlPageConfigValues": [
+        {
+          "amlFormConfig": "53088",
+          "InputConfigID": "ml6w9gciv9gwxemzwqe",
+          "value": "Salaire / Revenus professionnels"
+        },
+        {
+          "amlFormConfig": "53088",
+          "InputConfigID": "ml6w9gcidt8dx24a9g",
+          "value": "Oui"
+        },
+        {
+          "amlFormConfig": "53088",
+          "InputConfigID": "ml6w9gcixs6qu8yc8uf",
+          "value": "< 10 000 €"
+        }
+      ],
+      "clientId": "25fb"
+    },
+    {
+      "id": "cdd2",
+      "amlFormConfigID": "53088",
+      "totalScore": 11,
+      "AmlPageConfigValues": [
+        {
+          "amlFormConfig": "53088",
+          "InputConfigID": "ml6w9gciv9gwxemzwqe",
+          "value": "Salaire / Revenus professionnels"
+        },
+        {
+          "amlFormConfig": "53088",
+          "InputConfigID": "ml6w9gcidt8dx24a9g",
+          "value": "Non"
+        },
+        {
+          "amlFormConfig": "53088",
+          "InputConfigID": "ml6w9gcixs6qu8yc8uf",
+          "value": "10 000 € - 50 000 €"
+        }
+      ],
+      "clientId": "25fb"
     }
   ],
   "type_client": [
@@ -5423,6 +5508,66 @@
       "contacts": [],
       "clientStatus": "INDULGENCE_VALIDATED",
       "documents": []
+    },
+    {
+      "id": "25fb",
+      "type": "SOCIETE",
+      "nom": "si legale ",
+      "prenom": "",
+      "email": "silegale@gmail.com",
+      "telephone": "00352691209800",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "AVOCATS",
+      "riskScore": 0,
+      "ubos": [
+        {
+          "nom": "adam",
+          "partDetention": 10,
+          "isPPE": true
+        },
+        {
+          "nom": "olivier",
+          "partDetention": 20,
+          "isPPE": false
+        }
+      ],
+      "contacts": [
+        {
+          "id": null,
+          "nom": "rifai",
+          "prenom": "taoufik",
+          "email": "adam.laftimi@gmail.com",
+          "telephone": "661425524",
+          "occupation": "manager"
+        },
+        {
+          "id": null,
+          "nom": "marc ",
+          "prenom": "marc",
+          "email": "mm@gmail.com",
+          "telephone": "066929515",
+          "occupation": "directeur "
+        }
+      ],
+      "clientStatus": "INDULGENCE_REQUIRED",
+      "documents": [
+        {
+          "title": "cin",
+          "description": "c est le cin de l identité ",
+          "name": "5653950 (1).pdf",
+          "file": {},
+          "tags": "",
+          "id": 1775037441977
+        },
+        {
+          "title": "conevntion ",
+          "description": "convention ",
+          "name": "5653950 (1).pdf",
+          "file": {},
+          "tags": "",
+          "id": 1775037472712
+        }
+      ]
     }
   ],
   "AmlPageConfigResult": [],
@@ -5859,6 +6004,12 @@
       "formConfigId": "fc-ind-002",
       "status": "SUBMITTED",
       "resultId": "4a79"
+    },
+    {
+      "id": "4656",
+      "clientId": "25fb",
+      "formConfigId": "fc-aml-001",
+      "status": "PENDING"
     }
   ],
   "StatutDossier": [
@@ -6023,6 +6174,44 @@
         }
       ],
       "updated_at": "2026-02-18T20:53:21.164Z"
+    },
+    {
+      "id": "fe18",
+      "referenceInterne": "si2026",
+      "titre": "conflit commerciale ",
+      "description": "",
+      "clientId": "25fb",
+      "responsableId": "1",
+      "intervenantsIds": [
+        "3",
+        "4"
+      ],
+      "domaineJuridique": "1",
+      "prioriteID": "2",
+      "statutID": "1",
+      "dateOuverture": "2026-04-01",
+      "methodeFacturation": "HORAIRE",
+      "budgetEstime": 10000,
+      "tauxHoraireApplique": 300,
+      "tags": [],
+      "documents": [
+        {
+          "title": "justif1",
+          "description": "bla bla  blab",
+          "name": "5653950 (1).pdf",
+          "file": {},
+          "tags": ""
+        },
+        {
+          "title": "doc2",
+          "description": "doc2",
+          "name": "5653950 (1).pdf",
+          "file": {},
+          "tags": "",
+          "date": "2026-04-01T10:06:00.519Z"
+        }
+      ],
+      "updated_at": "2026-04-01T10:05:04.651Z"
     }
   ],
   "TaskCategory": [
@@ -6480,6 +6669,48 @@
       "updatedAt": "2026-03-05T15:18:18.750Z",
       "isBilled": true,
       "invoiceId": "FAC-2026-686"
+    },
+    {
+      "id": "d9d9",
+      "dossierId": "fe18",
+      "titre": "audiance",
+      "typeId": "AUDIENCE",
+      "startDate": "2026-04-01T11:06:00.000Z",
+      "endDate": "2026-04-01T11:06:00.000Z",
+      "isAllDay": false,
+      "lieu": "bureau",
+      "isVirtual": false,
+      "organisateurId": "2",
+      "participantsIds": [
+        "2"
+      ],
+      "reminderMinutesBefore": 1440,
+      "statut": "CONFIRME",
+      "createdAt": "2026-04-01T10:07:06.141Z",
+      "updatedAt": "2026-04-01T10:07:06.141Z",
+      "isBilled": true,
+      "invoiceId": "FAC-2026-455"
+    },
+    {
+      "id": "1f66",
+      "dossierId": "fe18",
+      "titre": "rdv client ",
+      "typeId": "RDV",
+      "startDate": "2026-04-01T10:08:00.000Z",
+      "endDate": "2026-04-01T10:08:00.000Z",
+      "isAllDay": false,
+      "lieu": "ddd",
+      "isVirtual": false,
+      "organisateurId": "1",
+      "participantsIds": [
+        "1"
+      ],
+      "reminderMinutesBefore": 1440,
+      "statut": "CONFIRME",
+      "createdAt": "2026-04-01T10:09:07.405Z",
+      "updatedAt": "2026-04-01T10:09:07.405Z",
+      "isBilled": true,
+      "invoiceId": "FAC-2026-455"
     }
   ],
   "appointements": [
@@ -6566,7 +6797,7 @@
       "clientCase": "qsdqsdsq"
     },
     {
-      "id": 1773416539540,
+      "id": "1773416539540",
       "title": "eee",
       "date": "2026-03-13",
       "time": "16:41",
@@ -6576,6 +6807,18 @@
       "clientId": "e466",
       "dossierId": "76ad",
       "clientCase": "dsfsdfsdfsd"
+    },
+    {
+      "id": 1775036675553,
+      "title": "rdv ...",
+      "date": "2026-04-01",
+      "time": "12:43",
+      "endTime": "13:43",
+      "location": "jlksdjflkdjslkfd ",
+      "status": "Standard",
+      "clientId": "9808",
+      "dossierId": "76ad",
+      "clientCase": "rdv l autre avocat "
     }
   ]
 }

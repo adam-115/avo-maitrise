@@ -15,6 +15,7 @@
     <properties>
         <node.version>v22.13.1</node.version>
         <npm.version>10.9.2</npm.version>
+        <npm.build.script>run build</npm.build.script>
     </properties>
 
     <build>
@@ -53,7 +54,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                         <configuration>
-                            <arguments>run build</arguments>
+                            <arguments>${npm.build.script}</arguments>
                         </configuration>
                     </execution>
                 </executions>
@@ -84,4 +85,13 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <npm.build.script>run build:prod</npm.build.script>
+            </properties>
+        </profile>
+    </profiles>
 </project>

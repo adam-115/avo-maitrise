@@ -1,2 +1,3 @@
+com\avo\controller\TestController.class
 com\avo\AvoApplication.class
-com\avo\controller\SpaRedirectController.class
+com\avo\controller\HomeController.class
