@@ -6270,13 +6270,6 @@
       "libelle": "Terminé",
       "ordre_affichage": 3,
       "isClosingStatus": true
-    },
-    {
-      "id": "4",
-      "code": "ANNULE",
-      "libelle": "Annulé",
-      "ordre_affichage": 4,
-      "isClosingStatus": true
     }
   ],
   "Task": [

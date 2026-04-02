@@ -416,7 +416,7 @@ export interface TaskCategory {
 // Représente l'état d'avancement d'une tâche
 export interface TaskStatus {
   id: string;
-  code: 'A_FAIRE' | 'EN_COURS' | 'TERMINE' | 'ANNULE';
+  code: 'A_FAIRE' | 'EN_COURS' | 'TERMINE';
   libelle: string;      // Ex: "En attente"
   ordre_affichage: number;
   isClosingStatus: boolean; // Si vrai, la tâche est considérée comme finie

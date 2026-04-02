@@ -92,132 +92,130 @@
         <p class="text-slate-500 text-sm">Modifiez vos filtres ou créez une nouvelle tâche.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
         <div *ngFor="let task of filteredTasks" [ngClass]="{
-                'opacity-60 grayscale-[50%]': isClosed(task), 
-                'border-red-400 ring-2 ring-red-100': isOverdue(task) && !isClosed(task), 
-                'border-slate-200': !isOverdue(task) || isClosed(task),
-                'border-l-red-500': task.priorite === 'URGENTE',
-                'border-l-orange-500': task.priorite === 'HAUTE',
-                'border-l-slate-300': task.priorite === 'NORMALE',
-                'border-l-blue-400': task.priorite === 'BASSE'
+                'opacity-60 grayscale-[40%] hover:grayscale-0': isClosed(task), 
+                'ring-2 ring-red-400': isOverdue(task) && !isClosed(task)
             }"
-            class="bg-white rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 border border-l-[6px] flex flex-col relative group overflow-hidden">
+            class="group relative bg-white/80 backdrop-blur-xl border border-slate-100 rounded-[2rem] p-7 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1.5 transition-all duration-500 overflow-hidden flex flex-col">
 
-            <!-- Overdue Alert Ribbon -->
-            <div *ngIf="isOverdue(task) && !isClosed(task)"
-                class="absolute top-0 right-0 bg-gradient-to-r from-red-600 to-red-500 text-white text-[10px] font-black uppercase tracking-wider px-3 py-1.5 rounded-bl-2xl z-20 shadow-md flex items-center gap-1.5 animate-pulse">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                En Retard
+            <!-- Glowing background accent -->
+            <div
+                class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-cyan-100/60 to-indigo-100/20 rounded-full blur-3xl -mr-10 -mt-10 transition-transform duration-700 group-hover:scale-150 pointer-events-none">
             </div>
 
-            <!-- Card Header -->
-            <div class="p-5 pb-4 flex-1 flex flex-col relative bg-clip-padding">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="flex items-center gap-2 max-w-[75%] flex-wrap">
-                        <span *ngIf="getCategory(task.categoryId)"
-                            [style.backgroundColor]="getCategory(task.categoryId)?.couleur + '15'"
-                            [style.color]="getCategory(task.categoryId)?.couleur"
-                            [style.borderColor]="getCategory(task.categoryId)?.couleur + '30'"
-                            class="px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 border whitespace-nowrap overflow-hidden text-ellipsis shadow-sm">
-                            <i *ngIf="getCategory(task.categoryId)?.icone"
-                                [class]="getCategory(task.categoryId)?.icone"></i>
-                            {{ getCategory(task.categoryId)?.libelle }}
-                        </span>
-                        <span *ngIf="task.estimatedTimeMinutes"
-                            class="bg-indigo-50 text-indigo-700 border-indigo-100 px-2.5 py-1 rounded-full text-[11px] font-bold inline-flex items-center gap-1.5 border shadow-sm">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            {{ formatMinutesToHours(task.estimatedTimeMinutes) }}
-                        </span>
+            <!-- Overdue Ribbon -->
+            <div *ngIf="isOverdue(task) && !isClosed(task)" class="absolute top-5 right-5 animate-pulse z-20">
+                <span
+                    class="flex items-center gap-1.5 bg-red-50 text-red-600 border border-red-200 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider backdrop-blur-md shadow-sm">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    En Retard
+                </span>
+            </div>
 
-                    </div>
-                </div>
+            <!-- Header: Category & Priority -->
+            <div class="relative flex items-center gap-3 mb-5 z-10 w-full"
+                [ngClass]="{'pr-24': isOverdue(task) && !isClosed(task)}">
+                <span *ngIf="getCategory(task.categoryId)"
+                    [style.backgroundColor]="getCategory(task.categoryId)?.couleur + '15'"
+                    [style.color]="getCategory(task.categoryId)?.couleur"
+                    class="px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-widest inline-flex items-center gap-2 border border-white/50 shadow-sm backdrop-blur-md flex-shrink-0">
+                    <i *ngIf="getCategory(task.categoryId)?.icone" [class]="getCategory(task.categoryId)?.icone"></i>
+                    {{ getCategory(task.categoryId)?.libelle }}
+                </span>
+                <span [ngClass]="{
+                        'bg-red-50 text-red-600 border border-red-100': task.priorite === 'URGENTE',
+                        'bg-orange-50 text-orange-600 border border-orange-100': task.priorite === 'HAUTE',
+                        'bg-slate-50 text-slate-500 border border-slate-200': task.priorite === 'NORMALE',
+                        'bg-blue-50 text-blue-500 border border-blue-100': task.priorite === 'BASSE'
+                    }"
+                    class="text-[10px] font-extrabold uppercase tracking-widest px-2.5 py-1.5 rounded-xl shadow-sm flex-shrink-0">
+                    {{ task.priorite }}
+                </span>
+            </div>
 
-                <div class="flex justify-between items-start gap-2 mb-2">
-                    <h4 [ngClass]="{'line-through text-slate-400 decoration-slate-400': isClosed(task), 'text-slate-800': !isClosed(task)}"
-                        class="text-[17px] font-extrabold leading-tight tracking-tight">
-                        {{ task.titre }}
-                    </h4>
-                </div>
-
-                <p *ngIf="task.description" class="text-sm text-slate-500 line-clamp-2 leading-relaxed flex-1 mb-4">
+            <!-- Body: Title & Desc -->
+            <div class="relative z-10 mb-6 flex-1">
+                <h4 [ngClass]="{'line-through text-slate-400': isClosed(task), 'text-slate-800 group-hover:text-cyan-700 transition-colors': !isClosed(task)}"
+                    class="text-xl font-extrabold leading-snug tracking-tight mb-3 pr-4">
+                    {{ task.titre }}
+                </h4>
+                <p *ngIf="task.description" class="text-[13px] text-slate-500 line-clamp-3 leading-relaxed font-medium">
                     {{ task.description }}
                 </p>
+                <div *ngIf="task.estimatedTimeMinutes" class="mt-4 flex">
+                    <span
+                        class="bg-indigo-50/80 text-indigo-700 px-3.5 py-1.5 rounded-xl textxs font-bold inline-flex items-center gap-2 border border-indigo-100/50 shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Temps estimé: {{ formatMinutesToHours(task.estimatedTimeMinutes) }}
+                    </span>
+                </div>
+            </div>
 
-                <div class="flex items-center justify-between mt-auto pt-2">
-                    <div class="flex items-center gap-3">
-                        <span [ngClass]="{
-                              'bg-red-50 text-red-700': task.priorite === 'URGENTE',
-                              'bg-orange-50 text-orange-700': task.priorite === 'HAUTE',
-                              'bg-slate-100 text-slate-600': task.priorite === 'NORMALE',
-                              'bg-blue-50 text-blue-600': task.priorite === 'BASSE'
-                            }" class="text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-md">
-                            {{ task.priorite }}
-                        </span>
+            <!-- Footer Divider -->
+            <div class="h-px w-full bg-gradient-to-r from-slate-100 via-slate-200/80 to-transparent mb-5 relative z-10">
+            </div>
 
-                        <!-- Assigned Users Avatars -->
-                        <div *ngIf="task.assigneA && task.assigneA.length > 0"
-                            class="flex -space-x-1.5 overflow-hidden">
-                            <div *ngFor="let user of task.assigneA"
-                                class="inline-flex items-center justify-center w-6 h-6 rounded-full ring-2 ring-white bg-cyan-100 text-cyan-700 text-[9px] font-extrabold uppercase"
-                                [title]="user.firstName + ' ' + user.lastName">
-                                {{ (user.firstName.charAt(0) || '') + (user.lastName.charAt(0) || '') }}
-                            </div>
+            <!-- Footer: Avatars, Date, Status -->
+            <div class="relative z-10 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+
+                <!-- Left: Avatars & Action -->
+                <div class="flex items-center gap-4">
+                    <div *ngIf="task.assigneA && task.assigneA.length > 0" class="flex -space-x-2.5">
+                        <div *ngFor="let user of task.assigneA"
+                            class="inline-flex items-center justify-center w-9 h-9 rounded-full border-2 border-white bg-gradient-to-br from-cyan-400 to-blue-500 text-white text-[11px] font-black uppercase shadow-sm transform hover:scale-110 hover:z-10 transition-transform cursor-help"
+                            [title]="user.firstName + ' ' + user.lastName">
+                            {{ (user.firstName.charAt(0) || '') + (user.lastName.charAt(0) || '') }}
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-1">
-                        <button (click)="openForm(task, isClosed(task))"
-                            class="text-slate-400 hover:text-cyan-600 transition-all cursor-pointer p-1.5 bg-slate-50 hover:bg-cyan-50 rounded-lg"
-                            [title]="isClosed(task) ? 'Consulter' : 'Modifier'">
-                            <svg *ngIf="!isClosed(task)" class="w-4 h-4" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
-                                </path>
-                            </svg>
-                            <svg *ngIf="isClosed(task)" class="w-4 h-4" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
-                                </path>
-                            </svg>
-                        </button>
+                    <button (click)="openForm(task, isClosed(task))"
+                        class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-50 border border-slate-200 text-slate-500 hover:text-white hover:bg-cyan-600 hover:border-cyan-600 transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-0.5"
+                        [title]="isClosed(task) ? 'Consulter' : 'Modifier'">
+                        <svg *ngIf="!isClosed(task)" class="w-4 h-4" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z">
+                            </path>
+                        </svg>
+                        <svg *ngIf="isClosed(task)" class="w-4 h-4" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Right: Date & Select -->
+                <div class="flex flex-col items-start sm:items-end gap-2 text-right">
+                    <div class="flex items-center text-xs font-bold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-lg"
+                        [ngClass]="{'text-red-500 bg-red-50': isOverdue(task) && !isClosed(task)}">
+                        <svg class="w-3.5 h-3.5 mr-1.5 opacity-70" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                        {{ task.dateEcheance | date:'dd/MM/yyyy' }}
                     </div>
-                </div>
-            </div>
 
-            <!-- Card Footer -->
-            <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                <div class="flex items-center text-[11px] font-bold"
-                    [ngClass]="{'text-red-500 bg-red-50 px-2 py-0.5 rounded': isOverdue(task) && !isClosed(task), 'text-slate-500': !isOverdue(task) || isClosed(task)}">
-                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                        </path>
-                    </svg>
-                    {{ task.dateEcheance | date:'dd/MM/yyyy' }}
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <div class="relative flex items-center group/select">
-                        <div class="absolute left-2 w-2 h-2 rounded-full shadow-sm pointer-events-none"
-                            [ngClass]="isClosed(task) ? 'bg-slate-400' : 'bg-emerald-500'"></div>
+                    <div class="relative flex items-center group/select w-full sm:w-auto">
                         <select [ngModel]="task.statusId" (change)="onStatusChange(task, $event)"
-                            class="text-[11px] font-bold bg-white border border-slate-200 rounded-md py-1.5 pl-6 pr-6 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 cursor-pointer text-slate-700 shadow-sm appearance-none min-w-[120px]">
+                            class="w-full sm:w-auto text-[11px] font-extrabold bg-white hover:bg-slate-50 border border-slate-200 rounded-xl py-2 pl-3 pr-8 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 cursor-pointer text-slate-700 shadow-sm appearance-none min-w-[140px] transition-all">
                             <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
                         </select>
                         <div
-                            class="absolute right-2 text-slate-400 pointer-events-none group-hover/select:text-slate-600 transition-colors">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            class="absolute right-3 text-slate-400 pointer-events-none transition-transform group-hover/select:-translate-y-0.5">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -225,8 +223,6 @@
                     </div>
                 </div>
             </div>
-
-
 
         </div>
     </div>
