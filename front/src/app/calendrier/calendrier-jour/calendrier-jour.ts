@@ -4,6 +4,7 @@ import { AppointementService } from '../../services/appointement.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AppointementDialogComponent } from '../appointement-dialog/appointement-dialog';
+import { AlertService } from '../../services/alert-service';
 
 @Component({
   selector: 'app-calendrier-jour',
@@ -30,7 +31,7 @@ export class CalendrierJour {
 
   selectedAppointement: Appointement | null = null;
 
-  constructor(private appointementService: AppointementService) { }
+  constructor(private appointementService: AppointementService, private alertService: AlertService) { }
 
   ngOnInit() {
     this.loadAppointements();
@@ -183,6 +184,27 @@ export class CalendrierJour {
     this.showAppointementDialog = true;
   }
 
+  async deleteAppointement(appointement: Appointement, event: Event) {
+    event.stopPropagation(); // Avoid opening the edit dialog
 
+    const isConfirmed = await this.alertService.confirmMessage(
+      'Supprimer la réunion ?',
+      `Voulez-vous vraiment supprimer la réunion "${appointement.title}" ?`,
+      'warning'
+    );
+
+    if (isConfirmed) {
+      if (!appointement.id) return;
+      this.appointementService.delete(appointement.id).subscribe({
+        next: () => {
+          this.alertService.success('La réunion a été supprimée avec succès.');
+          this.loadAppointements(); // Reload data to remove it from UI
+        },
+        error: (err) => {
+          console.error('Failed to delete appointement', err);
+        }
+      });
+    }
+  }
 
 }
