@@ -1,4 +1,13 @@
 {
+  "taskLogs": [
+    {
+      "id": "3a97",
+      "taskId": "0df4",
+      "action": "COMMENT",
+      "description": "kjflsdjfjskljfds",
+      "createdAt": "2026-04-02T23:38:42.895Z"
+    }
+  ],
   "posts": [
     {
       "id": "1",
@@ -6311,9 +6320,7 @@
       "dossierId": "76ad",
       "isCompleted": false,
       "createdAt": "2026-02-27T12:44:23.787Z",
-      "id": "0df4",
-      "isBilled": true,
-      "invoiceId": "FAC-2026-686"
+      "id": "0df4"
     },
     {
       "id": "8ce9",
@@ -6346,6 +6353,20 @@
       "createdAt": "2026-03-05T21:05:25.138Z",
       "isBilled": true,
       "invoiceId": "FAC-2026-686"
+    },
+    {
+      "id": "98bf",
+      "titre": "sdfsdf",
+      "description": "sdfsdfds",
+      "categoryId": "1",
+      "statusId": "2",
+      "priorite": "HAUTE",
+      "dateEcheance": "2026-04-02",
+      "estimatedTimeMinutes": 145,
+      "assigneA": [],
+      "dossierId": "76ad",
+      "isCompleted": false,
+      "createdAt": "2026-04-02T22:05:37.943Z"
     }
   ],
   "TaskLog": [
@@ -6369,6 +6390,27 @@
       "action": "COMMENT",
       "description": "test 3",
       "createdAt": "2026-02-26T17:48:58.225Z"
+    },
+    {
+      "id": "1918",
+      "taskId": "98bf",
+      "action": "COMMENT",
+      "description": "test test test commentaire",
+      "createdAt": "2026-04-02T22:06:24.334Z"
+    },
+    {
+      "id": "c897",
+      "taskId": "0df4",
+      "action": "COMMENT",
+      "description": "c est un commenatire test",
+      "createdAt": "2026-04-02T22:57:51.719Z"
+    },
+    {
+      "id": "c614",
+      "taskId": "0df4",
+      "action": "COMMENT",
+      "description": "commentaire 2",
+      "createdAt": "2026-04-02T22:58:49.499Z"
     }
   ],
   "TaskTimeLog": [
