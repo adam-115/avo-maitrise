@@ -280,7 +280,7 @@ export class InvoiceEditorComponent implements OnInit {
         }
 
         // Marquer les tâches et événements comme facturés
-        this.markSelectedItemsAsBilled(savedInvoiceId!);
+        // this.markSelectedItemsAsBilled(savedInvoiceId!);
 
         this.router.navigate(['/home/billing']);
     }
@@ -312,15 +312,15 @@ export class InvoiceEditorComponent implements OnInit {
     }
 
     loadUnbilledItems(dossierId: string | number) {
-        this.selectedTaskIds.clear();
-        this.selectedEventIds.clear();
+        // this.selectedTaskIds.clear();
+        // this.selectedEventIds.clear();
 
-        this.taskService.getAll().subscribe(tasks => {
-            this.unbilledTasks = tasks.filter(t => String(t.dossierId) === String(dossierId) && !t.isBilled);
-        });
-        this.eventService.getAll().subscribe(events => {
-            this.unbilledEvents = events.filter(e => String(e.dossierId) === String(dossierId) && !e.isBilled);
-        });
+        // this.taskService.getAll().subscribe(tasks => {
+        //     this.unbilledTasks = tasks.filter(t => String(t.dossierId) === String(dossierId) && !t.isBilled);
+        // });
+        // this.eventService.getAll().subscribe(events => {
+        //     this.unbilledEvents = events.filter(e => String(e.dossierId) === String(dossierId) && !e.isBilled);
+        // });
     }
 
     toggleTaskSelection(taskId: string | number | undefined, event: any) {
@@ -361,25 +361,25 @@ export class InvoiceEditorComponent implements OnInit {
         this.showEventDialog = false;
     }
 
-    private markSelectedItemsAsBilled(invoiceId: string) {
-        this.selectedTaskIds.forEach(taskId => {
-            this.taskService.findById(String(taskId)).subscribe(task => {
-                if (task) {
-                    task.isBilled = true;
-                    task.invoiceId = invoiceId;
-                    this.taskService.update(String(task.id), task).subscribe();
-                }
-            });
-        });
+    // private markSelectedItemsAsBilled(invoiceId: string) {
+    //     this.selectedTaskIds.forEach(taskId => {
+    //         this.taskService.findById(String(taskId)).subscribe(task => {
+    //             if (task) {
+    //                 task.isBilled = true;
+    //                 task.invoiceId = invoiceId;
+    //                 this.taskService.update(String(task.id), task).subscribe();
+    //             }
+    //         });
+    //     });
 
-        this.selectedEventIds.forEach(eventId => {
-            this.eventService.findById(String(eventId)).subscribe(evt => {
-                if (evt) {
-                    evt.isBilled = true;
-                    evt.invoiceId = invoiceId;
-                    this.eventService.update(String(evt.id), evt).subscribe();
-                }
-            });
-        });
-    }
+    //     this.selectedEventIds.forEach(eventId => {
+    //         this.eventService.findById(String(eventId)).subscribe(evt => {
+    //             if (evt) {
+    //                 evt.isBilled = true;
+    //                 evt.invoiceId = invoiceId;
+    //                 this.eventService.update(String(evt.id), evt).subscribe();
+    //             }
+    //         });
+    //     });
+    // }
 }

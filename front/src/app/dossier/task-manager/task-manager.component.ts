@@ -1,19 +1,17 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
-import { Task, TaskCategory, TaskStatus, TaskLog, TaskTimeLog, User } from '../../appTypes';
+import { Task, TaskCategory, TaskStatus, User } from '../../appTypes';
 import { TaskService } from '../../services/task.service';
 import { TaskCategoryService } from '../../services/task-category.service';
 import { TaskStatusService } from '../../services/task-status.service';
-import { TaskLogService } from '../../services/task-log.service';
-import { TaskTimeLogService } from '../../services/task-time-log.service';
 import { UserService } from '../../services/user.service';
-import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
+import { TaskDialogComponent } from './task-dialog/task-dialog.component';
 
 @Component({
     selector: 'app-task-manager',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, UserSelectionDialog],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, TaskDialogComponent],
     templateUrl: './task-manager.component.html',
     styleUrls: ['./task-manager.component.css']
 })
@@ -25,14 +23,12 @@ export class TaskManagerComponent implements OnInit {
     categories: TaskCategory[] = [];
     statuses: TaskStatus[] = [];
     users: User[] = [];
-    taskTimeSpentMap: Map<number | string, number> = new Map();
 
-    taskForm!: FormGroup;
     showForm: boolean = false;
     isEditing: boolean = false;
+    isViewOnlyMode: boolean = false;
     selectedTaskId: number | undefined = undefined;
-
-    showUserDialog: boolean = false;
+    taskToEdit?: Task;
 
     // Filters
     searchTerm: string = '';
@@ -40,41 +36,14 @@ export class TaskManagerComponent implements OnInit {
     selectedStatusId: string = '';
     showUrgentOnly: boolean = false;
 
-    // Comments / Logs
-    showCommentsForTaskId: number | undefined = undefined;
-    activeTabForTaskId: 'COMMENTS' | 'TIME' | 'DETAILS' = 'DETAILS';
-    currentTaskLogs: TaskLog[] = [];
-    commentText: string = '';
-
-    // Time Tracking
-    currentTimeLogs: TaskTimeLog[] = [];
-    timeSpentInput: number | null = null;
-    timeCommentInput: string = '';
-
     taskService = inject(TaskService);
     categoryService = inject(TaskCategoryService);
     statusService = inject(TaskStatusService);
-    taskLogService = inject(TaskLogService);
-    taskTimeLogService = inject(TaskTimeLogService);
     userService = inject(UserService);
     fb = inject(FormBuilder);
 
     ngOnInit() {
-        this.initForm();
         this.loadData();
-    }
-
-    initForm() {
-        this.taskForm = this.fb.group({
-            titre: ['', Validators.required],
-            description: [''],
-            categoryId: ['', Validators.required],
-            statusId: ['', Validators.required],
-            priorite: ['NORMALE', Validators.required],
-            assigneAIds: [[]], // Array of assigned user IDs
-            dateEcheance: [new Date().toISOString().split('T')[0], Validators.required],
-            estimatedTimeMinutes: [null]
-        });
     }
 
     loadData() {
@@ -97,19 +66,6 @@ export class TaskManagerComponent implements OnInit {
         this.taskService.getAll().subscribe(allTasks => {
             this.tasks = allTasks.filter(t => t.dossierId == this.dossierId);
             this.applyFilters();
-            this.loadAllTimeLogs();
-        });
-    }
-
-    loadAllTimeLogs() {
-        this.taskTimeLogService.getAll().subscribe(allLogs => {
-            const map = new Map<number | string, number>();
-            allLogs.forEach(log => {
-                const taskId = log.taskId;
-                const current = map.get(taskId) || 0;
-                map.set(taskId, current + (log.timeSpentMinutes || 0));
-            });
-            this.taskTimeSpentMap = map;
         });
     }
 
@@ -140,74 +96,29 @@ export class TaskManagerComponent implements OnInit {
         this.applyFilters();
     }
 
-    openForm(task?: Task) {
+    openForm(task?: Task, isViewOnly: boolean = false) {
+        this.selectedTaskId = task?.id;
+        this.taskToEdit = task;
+        this.isEditing = !!task;
+        this.isViewOnlyMode = isViewOnly;
         this.showForm = true;
-        if (task) {
-            this.isEditing = true;
-            this.selectedTaskId = task.id;
-            this.taskForm.patchValue({
-                titre: task.titre,
-                description: task.description,
-                categoryId: task.categoryId,
-                statusId: task.statusId,
-                priorite: task.priorite,
-                assigneAIds: (task.assigneA || []).map(u => String(u.id)),
-                dateEcheance: new Date(task.dateEcheance).toISOString().split('T')[0],
-                estimatedTimeMinutes: task.estimatedTimeMinutes || null
-            });
-        } else {
-            this.isEditing = false;
-            this.selectedTaskId = undefined;
-            const defaultStatus = this.statuses.length > 0 ? this.statuses[0].id : '';
-            this.taskForm.reset({
-                priorite: 'NORMALE',
-                statusId: defaultStatus,
-                assigneAIds: [],
-                dateEcheance: new Date().toISOString().split('T')[0],
-                estimatedTimeMinutes: null
-            });
-        }
-    }
-
-    openUserDialog(): void {
-        this.showUserDialog = true;
-    }
-
-    closeUserDialog(): void {
-        this.showUserDialog = false;
-    }
-
-    onUsersSelected(selectedIds: string[]): void {
-        this.taskForm.patchValue({ assigneAIds: selectedIds });
-        this.closeUserDialog();
-    }
-
-    getSelectedAssignees(): User[] {
-        const selectedIds = this.taskForm.get('assigneAIds')?.value || [];
-        return this.users.filter(user => selectedIds.includes(String(user.id)));
-    }
-
-    removeAssignee(userId: string | number): void {
-        const currentIds = this.taskForm.get('assigneAIds')?.value || [];
-        const newIds = currentIds.filter((id: string | number) => String(id) !== String(userId));
-        this.taskForm.patchValue({ assigneAIds: newIds });
     }
 
     closeForm() {
         this.showForm = false;
-        this.taskForm.reset();
+        this.isEditing = false;
+        this.isViewOnlyMode = false;
+        this.selectedTaskId = undefined;
+        this.taskToEdit = undefined;
     }
 
-    saveTask() {
-        if (this.taskForm.invalid) return;
-        const formVals = this.taskForm.value;
-
+    saveTask(formVals: any) {
         // Map assigned IDs back to User objects
         const assignedUsers = this.users.filter(u =>
             (formVals.assigneAIds || []).includes(String(u.id))
         );
 
-        // Omit assigneAIds from the final object, since Task uses assigneA
+        // Omit assigneAIds from the final object
         const { assigneAIds, ...restFormVals } = formVals;
 
         const taskData: Task = {
@@ -260,78 +171,6 @@ export class TaskManagerComponent implements OnInit {
     isClosed(task: Task): boolean {
         const status = this.getStatus(task.statusId);
         return status?.isClosingStatus || false;
-    }
-
-    toggleComments(taskId: number | undefined) {
-        if (!taskId) return;
-        if (this.showCommentsForTaskId === taskId) {
-            this.showCommentsForTaskId = undefined;
-            this.currentTaskLogs = [];
-            this.currentTimeLogs = [];
-        } else {
-            this.showCommentsForTaskId = taskId;
-            this.activeTabForTaskId = 'DETAILS';
-            this.loadLogsForTask(taskId);
-            this.loadTimeLogsForTask(taskId);
-        }
-    }
-
-    switchTab(tab: 'COMMENTS' | 'TIME' | 'DETAILS') {
-        this.activeTabForTaskId = tab;
-    }
-
-    loadLogsForTask(taskId: number) {
-        this.taskLogService.getAll().subscribe(logs => {
-            this.currentTaskLogs = logs.filter(l => String(l.taskId) === String(taskId)).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        });
-    }
-
-    loadTimeLogsForTask(taskId: number) {
-        this.taskTimeLogService.getAll().subscribe(logs => {
-            this.currentTimeLogs = logs.filter(l => String(l.taskId) === String(taskId)).sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-        });
-    }
-
-    addComment(taskId: number | undefined) {
-        if (!taskId || !this.commentText.trim()) return;
-
-        const newLog: TaskLog = {
-            taskId: String(taskId),
-            action: 'COMMENT',
-            description: this.commentText.trim(),
-            createdAt: new Date(),
-        };
-
-        this.taskLogService.create(newLog).subscribe(() => {
-            this.commentText = '';
-            this.loadLogsForTask(taskId);
-        });
-    }
-
-    addTimeLog(taskId: number | undefined) {
-        if (!taskId || !this.timeSpentInput) return;
-
-        const newTimeLog: TaskTimeLog = {
-            taskId: String(taskId),
-            timeSpentMinutes: this.timeSpentInput,
-            description: this.timeCommentInput.trim(),
-            createdAt: new Date(),
-        };
-
-        this.taskTimeLogService.create(newTimeLog).subscribe(() => {
-            this.timeSpentInput = null;
-            this.timeCommentInput = '';
-            this.loadTimeLogsForTask(taskId);
-        });
-    }
-
-    getTotalTimeSpent(): number {
-        return this.currentTimeLogs.reduce((acc, log) => acc + (log.timeSpentMinutes || 0), 0);
-    }
-
-    getTimeSpent(taskId: number | string | undefined): number {
-        if (!taskId) return 0;
-        return this.taskTimeSpentMap.get(taskId) || 0;
     }
 
     formatMinutesToHours(minutes: number): string {

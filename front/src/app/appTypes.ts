@@ -440,12 +440,12 @@ export interface Task {
   createdBy?: User;
 
   // Facturation
-  isBilled?: boolean;
   invoiceId?: string;
 
   estimatedTimeMinutes?: number;
 
 }
+
 export interface TaskLog {
   id?: number;
   taskId?: string;
@@ -455,14 +455,6 @@ export interface TaskLog {
   createdBy?: User;
 }
 
-export interface TaskTimeLog {
-  id?: number;
-  taskId: string | number;
-  timeSpentMinutes: number;
-  description?: string;
-  createdAt: Date;
-  createdBy?: User;
-}
 
 // note par 
 export interface NoteCategory {

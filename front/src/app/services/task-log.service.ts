@@ -5,12 +5,12 @@ import { environment } from '../../environments/environment';
 import { TaskLog } from '../appTypes';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class TaskLogService extends AbstractCrudService<TaskLog> {
-    protected override apiUrl = environment.apiUrl + 'TaskLog';
+  protected override apiUrl = environment.apiUrl + 'taskLogs';
 
-    constructor(http: HttpClient) {
-        super(http);
-    }
+  constructor(http: HttpClient) {
+      super(http);
+  }
 }
