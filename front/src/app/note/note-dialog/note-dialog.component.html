@@ -22,7 +22,7 @@
           <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-1">Catégorie <span
               class="text-red-500">*</span></label>
           <select id="categoryId" formControlName="categoryId"
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+            class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             <option value="" disabled selected>Sélectionner une catégorie</option>
             @for (category of noteCategories; track category.id) {
             <option [value]="category.id">{{ category.label }}</option>
@@ -38,7 +38,7 @@
               class="text-red-500">*</span></label>
           <input type="text" formControlName="titre" id="titre" required
             placeholder="Ex: Mémorandum, Réunion stratégie 04/10"
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+            class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
           @if(noteForm.get('titre')?.invalid && noteForm.get('titre')?.touched) {
           <span class="text-red-500 text-xs mt-1 block">Le titre est requis (min 3 caractères).</span>
           }
@@ -49,7 +49,7 @@
               class="text-red-500">*</span></label>
           <textarea id="description" formControlName="description" rows="6" required
             placeholder="Saisissez ici les points de discussion, les idées, ou le résumé d'une conversation..."
-            class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5"></textarea>
+            class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
           @if(noteForm.get('description')?.invalid && noteForm.get('description')?.touched) {
           <span class="text-red-500 text-xs mt-1 block">La description est requise (min 3 caractères).</span>
           }
@@ -64,7 +64,7 @@
             <label for="priorityId" class="block text-sm font-medium text-gray-700 mb-1">Niveau de Priorité <span
                 class="text-red-500">*</span></label>
             <select id="priorityId" formControlName="priorityId"
-              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+              class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
               <option value="" disabled selected>Sélectionner une priorité</option>
               <option value="1">Basse</option>
               <option value="2">Normale</option>

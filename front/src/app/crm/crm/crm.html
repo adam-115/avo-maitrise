@@ -36,21 +36,21 @@
                     </svg>
                 </div>
                 <input id="search" name="search" [(ngModel)]="searchTerm" (input)="filterClients()"
-                    class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm"
+                    class="block w-full pl-10 pr-3 py-2 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors"
                     placeholder="Rechercher par nom, rôle ou pays..." type="search">
             </div>
         </div>
 
         <div class="flex space-x-4">
             <select [(ngModel)]="selectedType" (change)="filterClients()"
-                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 sm:text-sm">
+                class="block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 <option value="">Type (Tous)</option>
                 <option value="PERSONNE">Personne Physique</option>
                 <option value="SOCIETE">Entité / Société</option>
                 <option value="INSTITUTION">Institution</option>
             </select>
             <select [(ngModel)]="selectedRisk" (change)="filterClients()"
-                class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 sm:text-sm">
+                class="block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 <option value="">Risque AML (Tous)</option>
                 <option value="ELEVEE">Élevée</option>
                 <option value="MOYEN">Moyen</option>

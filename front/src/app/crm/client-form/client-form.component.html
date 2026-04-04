@@ -46,7 +46,7 @@
                             Sociale</label>
                         <input type="text" formControlName="nom"
                             [class.border-red-500]="clientForm.get('nom')?.touched && clientForm.get('nom')?.invalid"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all placeholder:font-normal"
+                            class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all placeholder:font-normal border-2 border-slate-300 hover:border-slate-400 transition-colors"
                             placeholder="Ex: Dupont ou Tech Corp">
                         @if (clientForm.get('nom')?.touched && clientForm.get('nom')?.invalid) {
                         <div class="text-red-500 text-[10px] font-bold mt-1 uppercase">Requis</div>
@@ -59,7 +59,7 @@
                         <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Prénom</label>
                         <input type="text" formControlName="prenom"
                             [class.border-red-500]="clientForm.get('prenom')?.touched && clientForm.get('prenom')?.invalid"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all">
+                            class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all border-2 border-slate-300 hover:border-slate-400 transition-colors">
                     </div>
                     }
 
@@ -68,7 +68,7 @@
                         <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Email Contact</label>
                         <input type="email" formControlName="email"
                             [class.border-red-500]="clientForm.get('email')?.touched && clientForm.get('email')?.invalid"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all">
+                            class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all border-2 border-slate-300 hover:border-slate-400 transition-colors">
                     </div>
 
                     <!-- Téléphone -->
@@ -76,7 +76,7 @@
                         <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Téléphone</label>
                         <input type="tel" formControlName="telephone"
                             [class.border-red-500]="clientForm.get('telephone')?.touched && clientForm.get('telephone')?.invalid"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all">
+                            class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all border-2 border-slate-300 hover:border-slate-400 transition-colors">
                     </div>
 
                     <!-- Pays -->
@@ -85,7 +85,7 @@
                             Siège</label>
                         <input type="text" formControlName="paysResidance"
                             [class.border-red-500]="clientForm.get('paysResidance')?.touched && clientForm.get('paysResidance')?.invalid"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all">
+                            class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all border-2 border-slate-300 hover:border-slate-400 transition-colors">
                     </div>
 
                 </div>
@@ -113,7 +113,7 @@
                             d'Activité</label>
                         <select formControlName="secteurActivite"
                             [class.border-red-500]="clientForm.get('secteurActivite')?.touched && clientForm.get('secteurActivite')?.invalid"
-                            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none appearance-none">
+                            class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold text-slate-900 focus:border-cyan-500 focus:ring-4 focus:ring-cyan-500/10 outline-none appearance-none border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             <option value="" disabled>Sélectionner un secteur</option>
                             @for (sec of secteurs; track sec.code) {
                             <option [value]="sec.code">
@@ -159,14 +159,14 @@
                             <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Nom Complet</label>
                             <input formControlName="nom" type="text"
                                 [class.border-red-500]="ubo.get('nom')?.touched && ubo.get('nom')?.invalid"
-                                class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500">
+                                class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         </div>
 
                         <div class="w-full md:w-32">
                             <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Détention (%)</label>
                             <input formControlName="partDetention" type="number"
                                 [class.border-red-500]="ubo.get('partDetention')?.touched && ubo.get('partDetention')?.invalid"
-                                class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500">
+                                class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         </div>
 
                         <div class="flex items-center pt-4">
@@ -224,31 +224,31 @@
                                 <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Nom</label>
                                 <input formControlName="nom" type="text"
                                     [class.border-red-500]="contact.get('nom')?.touched && contact.get('nom')?.invalid"
-                                    class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500">
+                                    class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             </div>
                             <div>
                                 <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Prénom</label>
                                 <input formControlName="prenom" type="text"
                                     [class.border-red-500]="contact.get('prenom')?.touched && contact.get('prenom')?.invalid"
-                                    class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500">
+                                    class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             </div>
                             <div>
                                 <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Email</label>
                                 <input formControlName="email" type="email"
                                     [class.border-red-500]="contact.get('email')?.touched && contact.get('email')?.invalid"
-                                    class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500">
+                                    class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             </div>
                             <div>
                                 <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Téléphone</label>
                                 <input formControlName="telephone" type="tel"
                                     [class.border-red-500]="contact.get('telephone')?.touched && contact.get('telephone')?.invalid"
-                                    class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500">
+                                    class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             </div>
                             <div>
                                 <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Occupation</label>
                                 <input formControlName="occupation" type="text"
                                     [class.border-red-500]="contact.get('occupation')?.touched && contact.get('occupation')?.invalid"
-                                    class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500">
+                                    class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold outline-none focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             </div>
                         </div>
 

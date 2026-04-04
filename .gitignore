@@ -1,3 +1,5 @@
 front/package-lock.json
 front/package-lock.json
 back/target/classes/com/avo/controller/TestController.class
+front/target/classes/static/index.html
+/front/target

@@ -26,7 +26,7 @@
                         aml config</label>
                     <div class="relative">
                         <select [(ngModel)]="selectedAMlFomConfig" (ngModelChange)="onConfigChange()"
-                            class="appearance-none w-full bg-white border border-slate-300 text-slate-700 py-2 pl-4 pr-8 rounded-lg font-bold focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent cursor-pointer shadow-sm">
+                            class="appearance-none w-full bg-white text-slate-700 py-2 pl-4 pr-8 rounded-lg font-bold focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent cursor-pointer shadow-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             @for (config of clientFormConfigs; track config.id) {
                             <option [ngValue]="config">
                                 {{ config.formName }}
@@ -69,7 +69,7 @@
                             <div class="relative">
                                 <select [id]="inputTypeConfig.name" [formControlName]="inputTypeConfig.name"
                                     [compareWith]="compareOptionObjects"
-                                    class="appearance-none block w-full rounded-xl border-slate-200 bg-slate-50/50 p-3.5 pr-10 text-slate-700 font-medium focus:bg-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all border outline-none">
+                                    class="appearance-none block w-full rounded-xl bg-slate-50/50 p-3.5 pr-10 text-slate-700 font-medium focus:bg-white focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100 transition-all outline-none border-2 border-slate-300 hover:border-slate-400 transition-colors">
                                     <option [value]="null" [disabled]="!inputTypeConfig.required">
                                         -- {{ inputTypeConfig.placeholder || 'Sélectionner une option' }} --
                                     </option>

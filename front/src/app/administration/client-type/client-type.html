@@ -103,7 +103,7 @@
             'border-red-500 focus:border-red-500 focus:ring-red-500/10': typeClientForm.get('libelle')?.invalid && typeClientForm.get('libelle')?.touched,
             'border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/10': !(typeClientForm.get('libelle')?.invalid && typeClientForm.get('libelle')?.touched)
               }"
-                class="w-full bg-slate-50 border rounded-xl p-4 text-sm font-bold text-slate-800 outline-none transition-all focus:ring-4">
+                class="w-full bg-slate-50 rounded-xl p-4 text-sm font-bold text-slate-800 outline-none transition-all focus:ring-4 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -115,7 +115,7 @@
                 <input type="text" formControlName="code" placeholder="CODE_ID" [ngClass]="{
             'border-red-500 focus:border-red-500 ring-red-500/10': typeClientForm.get('code')?.invalid && typeClientForm.get('code')?.touched,
             'border-slate-200 focus:border-cyan-500': !(typeClientForm.get('code')?.invalid && typeClientForm.get('code')?.touched)
-         }" class="w-full bg-slate-50 border rounded-xl p-4 text-xs font-black text-slate-900 uppercase outline-none transition-all focus:ring-4">
+         }" class="w-full bg-slate-50 rounded-xl p-4 text-xs font-black text-slate-900 uppercase outline-none transition-all focus:ring-4 border-2 border-slate-300 hover:border-slate-400 transition-colors">
 
                 <p *ngIf="typeClientForm.get('code')?.invalid && typeClientForm.get('code')?.touched"
                   class="text-[10px] text-red-500 font-bold mt-1 ml-1 uppercase">
@@ -125,7 +125,7 @@
               <div>
                 <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Position</label>
                 <input type="number" formControlName="ordre_affichage"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm font-black text-slate-900 focus:border-cyan-500 outline-none">
+                  class="w-full bg-slate-50 rounded-xl p-4 text-sm font-black text-slate-900 focus:border-cyan-500 outline-none border-2 border-slate-300 hover:border-slate-400 transition-colors">
               </div>
             </div>
 

@@ -168,7 +168,7 @@
                                     Sélectionnez le formulaire de Due Diligence que le client doit compléter.
                                 </p>
                                 <select [(ngModel)]="selectedFormIdToAssign"
-                                    class="block w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
+                                    class="block w-full px-3 py-2 bg-slate-50 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                                     <option [ngValue]="null" disabled selected>Choisir un formulaire...</option>
                                     @for (form of availableForms; track form.id) {
                                     <option [value]="form.id">{{ form.title }}</option>

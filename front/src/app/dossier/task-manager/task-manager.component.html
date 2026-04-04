@@ -43,18 +43,18 @@
             </div>
             <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
                 placeholder="Rechercher une tâche par titre..."
-                class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-700 shadow-sm transition-all placeholder:text-slate-400">
+                class="w-full pl-10 pr-4 py-3 bg-white rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-700 shadow-sm transition-all placeholder:text-slate-400 border-2 border-slate-300 hover:border-slate-400 transition-colors">
         </div>
 
         <div class="flex gap-4 overflow-x-auto pb-2 lg:pb-0">
             <select [(ngModel)]="selectedCategoryId" (ngModelChange)="applyFilters()"
-                class="bg-white border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block p-3 shadow-sm min-w-[150px]">
+                class="bg-white text-slate-700 text-sm rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block p-3 shadow-sm min-w-[150px] border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 <option value="">Toutes les Catégories</option>
                 <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</option>
             </select>
 
             <select [(ngModel)]="selectedStatusId" (ngModelChange)="applyFilters()"
-                class="bg-white border border-slate-200 text-slate-700 text-sm rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block p-3 shadow-sm min-w-[150px]">
+                class="bg-white text-slate-700 text-sm rounded-xl focus:ring-cyan-500 focus:border-cyan-500 block p-3 shadow-sm min-w-[150px] border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 <option value="">Tous les Statuts</option>
                 <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
             </select>
@@ -210,7 +210,7 @@
 
                     <div class="relative flex items-center group/select w-full sm:w-auto">
                         <select [ngModel]="task.statusId" (change)="onStatusChange(task, $event)"
-                            class="w-full sm:w-auto text-[11px] font-extrabold bg-white hover:bg-slate-50 border border-slate-200 rounded-xl py-2 pl-3 pr-8 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 cursor-pointer text-slate-700 shadow-sm appearance-none min-w-[140px] transition-all">
+                            class="w-full sm:w-auto text-[11px] font-extrabold bg-white hover:bg-slate-50 rounded-xl py-2 pl-3 pr-8 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 cursor-pointer text-slate-700 shadow-sm appearance-none min-w-[140px] transition-all border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
                         </select>
                         <div

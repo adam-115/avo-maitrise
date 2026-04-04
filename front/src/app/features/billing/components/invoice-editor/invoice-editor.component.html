@@ -52,13 +52,13 @@
                     <label class="block text-sm font-medium text-gray-700">Adresse de Facturation</label>
                     <textarea formControlName="clientAddress" rows="2"
                         placeholder="Adresse complète du client pour cette facture..."
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                        class="mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
                 </div>
 
                 <div *ngIf="invoiceForm.get('clientId')?.value">
                     <label class="block text-sm font-medium text-gray-700">Dossier Associé (Optionnel)</label>
                     <select formControlName="dossierId"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         <option value="">Aucun Dossier Spécifique</option>
                         <option *ngFor="let dossier of clientDossiers" [value]="dossier.id">
                             {{ dossier.referenceInterne }} - {{ dossier.titre }}
@@ -69,19 +69,19 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Numéro de Facture</label>
                     <input type="text" formControlName="invoiceNumber"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Date d'émission</label>
                     <input type="date" formControlName="date"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Statut</label>
                     <select formControlName="status"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        class="mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         <option value="DRAFT">Brouillon</option>
                         <option value="SENT">Envoyée</option>
                         <option value="PAID">Payée</option>
@@ -231,25 +231,25 @@
                         <label class="block text-xs font-medium text-gray-500 mb-1">Description</label>
                         <input type="text" formControlName="description"
                             placeholder="Abonnement mensuel, consultation..."
-                            class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            class="block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                     </div>
 
                     <div class="w-24">
                         <label class="block text-xs font-medium text-gray-500 mb-1">Qté / H</label>
                         <input type="number" step="0.5" formControlName="quantity"
-                            class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            class="block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                     </div>
 
                     <div class="w-32">
                         <label class="block text-xs font-medium text-gray-500 mb-1">Taux (€)</label>
                         <input type="number" step="1" formControlName="hourlyRate"
-                            class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            class="block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                     </div>
 
                     <div class="w-24">
                         <label class="block text-xs font-medium text-gray-500 mb-1">TVA (%)</label>
                         <select formControlName="vatRate"
-                            class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            class="block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             <option [value]="20">20%</option>
                             <option [value]="10">10%</option>
                             <option [value]="5.5">5.5%</option>
@@ -296,7 +296,7 @@
                         <span class="text-gray-500 sm:text-sm">€</span>
                     </div>
                     <input type="number" formControlName="disbursements"
-                        class="form-input block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                        class="form-input block w-full pl-7 pr-12 sm:text-sm rounded-md focus:ring-indigo-500 focus:border-indigo-500 border-2 border-slate-300 hover:border-slate-400 transition-colors"
                         placeholder="0.00">
                 </div>
             </div>

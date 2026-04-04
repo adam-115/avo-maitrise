@@ -114,7 +114,7 @@
               <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Nom du Secteur</label>
               <input type="text" formControlName="libelle" placeholder="Ex: Promotion Immobilière..."
                 [ngClass]="(secteurForm.get('libelle')?.invalid && secteurForm.get('libelle')?.touched) ? 'border-red-500 focus:ring-red-500/10' : 'border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/10'"
-                class="w-full bg-slate-50 border rounded-xl p-4 text-sm font-bold text-slate-800 outline-none transition-all focus:ring-4">
+                class="w-full bg-slate-50 rounded-xl p-4 text-sm font-bold text-slate-800 outline-none transition-all focus:ring-4 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
@@ -122,19 +122,19 @@
                 <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Code Système</label>
                 <input type="text" formControlName="code" placeholder="IMMOBILIER"
                   [ngClass]="(secteurForm.get('code')?.invalid && secteurForm.get('code')?.touched) ? 'border-red-500' : 'border-slate-200 focus:border-cyan-500'"
-                  class="w-full bg-slate-50 border rounded-xl p-4 text-xs font-black text-slate-900 uppercase outline-none transition-all focus:ring-4">
+                  class="w-full bg-slate-50 rounded-xl p-4 text-xs font-black text-slate-900 uppercase outline-none transition-all focus:ring-4 border-2 border-slate-300 hover:border-slate-400 transition-colors">
               </div>
               <div>
                 <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Position</label>
                 <input type="number" formControlName="ordre_affichage"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm font-black text-slate-900 focus:border-cyan-500 outline-none">
+                  class="w-full bg-slate-50 rounded-xl p-4 text-sm font-black text-slate-900 focus:border-cyan-500 outline-none border-2 border-slate-300 hover:border-slate-400 transition-colors">
               </div>
             </div>
 
             <div>
               <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Niveau de Risque</label>
               <select formControlName="riskNaturel"
-                class="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-sm font-bold text-slate-900 focus:border-cyan-500 outline-none appearance-none">
+                class="w-full bg-slate-50 rounded-xl p-4 text-sm font-bold text-slate-900 focus:border-cyan-500 outline-none appearance-none border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 <option value="FAIBLE">FAIBLE (Standard)</option>
                 <option value="MOYEN">MOYEN (Vigilance accrue)</option>
                 <option value="ELEVE">ELEVE (Renforcé)</option>

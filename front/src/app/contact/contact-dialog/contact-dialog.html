@@ -31,7 +31,7 @@
               <label for="new_contact_type" class="block text-sm font-medium text-gray-700 mb-1">Civilité <span
                   class="text-red-500">*</span></label>
               <select id="new_contact_type" formControlName="civilite" required
-                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 <option value="M.">Monsieur</option>
                 <option value="Mme">Madame</option>
                 <option value="Me">Maître</option>
@@ -42,7 +42,7 @@
                 (Optionnel)</label>
               <input type="text" formControlName="entreprise" id="new_contact_company"
                 placeholder="Ex: SCP Tiers-Avocats, SARL Beta..."
-                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
           </div>
 
@@ -51,12 +51,12 @@
               <label for="new_contact_last_name" class="block text-sm font-medium text-gray-700 mb-1">Nom <span
                   class="text-red-500">*</span></label>
               <input type="text" formControlName="nom" id="new_contact_last_name" required placeholder="Ex: Durand"
-                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
             <div>
               <label for="new_contact_first_name" class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
               <input type="text" formControlName="prenom" id="new_contact_first_name" placeholder="Ex: Luc"
-                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
           </div>
 
@@ -65,14 +65,14 @@
               <label for="new_contact_email" class="block text-sm font-medium text-gray-700 mb-1">Adresse
                 Email</label>
               <input type="email" formControlName="email" id="new_contact_email" placeholder="contact@exemple.com"
-                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
             <div>
               <label for="new_contact_phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone
                 Principal</label>
               <input type="tel" formControlName="telephoneMobile" id="new_contact_phone"
                 placeholder="+33 XX XX XX XX XX"
-                class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
           </div>
 
@@ -80,7 +80,7 @@
             <label for="new_contact_role" class="block text-sm font-medium text-gray-700 mb-1">Rôle de ce nouveau
               contact dans ce dossier <span class="text-red-500">*</span></label>
             <select id="new_contact_role" formControlName="notes" required
-              class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5">
+              class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
               <option value="Partie Adverse">Partie Adverse</option>
               <option value="Avocat Adverse">Avocat Adverse</option>
               <option value="Expert / Tiers">Expert / Tiers</option>

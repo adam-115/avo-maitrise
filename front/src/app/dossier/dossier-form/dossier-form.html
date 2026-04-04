@@ -8,12 +8,12 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Référence Interne</label>
         <input type="text" formControlName="referenceInterne"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700">Titre</label>
         <input type="text" formControlName="titre"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
       </div>
     </div>
 
@@ -26,7 +26,7 @@
       <div class="flex items-center mt-1 mb-2">
         <input type="text" (keydown.enter)="$event.preventDefault(); addTag($event)"
           placeholder="Ajouter un tag et appuyer sur Entrée"
-          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          class="block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
       </div>
       <div class="flex flex-wrap gap-2">
         @for (tag of tags; track tag; let i = $index) {
@@ -171,7 +171,7 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Priorité</label>
         <select formControlName="prioriteID"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
           <option value="">Sélectionner une priorité</option>
           <option *ngFor="let priority of priorities" [value]="priority.id">{{ priority.label }}</option>
         </select>
@@ -179,7 +179,7 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Statut</label>
         <select formControlName="statutID"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
           <option value="">Sélectionner un statut</option>
           <option *ngFor="let status of statuses" [value]="status.id">{{ status.label }}</option>
         </select>
@@ -191,7 +191,7 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Date d'Ouverture</label>
         <input type="date" formControlName="dateOuverture"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
       </div>
     </div>
 
@@ -200,7 +200,7 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Méthode de Facturation</label>
         <select formControlName="methodeFacturation"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
           <option value="HORAIRE">Horaire</option>
           <option value="FORFAIT">Forfait</option>
           <option value="RESULTAT">Résultat</option>
@@ -209,12 +209,12 @@
       <div>
         <label class="block text-sm font-medium text-gray-700">Budget Estimé (€)</label>
         <input type="number" formControlName="budgetEstime"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700">Taux Horaire (€/h)</label>
         <input type="number" formControlName="tauxHoraireApplique"
-          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border">
+          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
       </div>
     </div>
 

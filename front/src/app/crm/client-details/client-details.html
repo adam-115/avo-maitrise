@@ -73,7 +73,7 @@
                     <h3 class="text-sm font-medium text-gray-500 uppercase">Statut Client</h3>
                     <div class="mt-1">
                         <select [ngModel]="client.clientStatus" (ngModelChange)="onStatusChange($event)"
-                            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm font-bold"
+                            class="block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 sm:text-sm font-bold border-2 border-slate-300 hover:border-slate-400 transition-colors"
                             [ngClass]="{
                             'bg-green-100 text-green-800': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
                             'bg-yellow-100 text-yellow-800': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
