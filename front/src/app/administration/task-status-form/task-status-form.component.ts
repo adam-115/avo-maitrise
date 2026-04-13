@@ -79,6 +79,7 @@ export class TaskStatusFormComponent implements OnInit {
         this.selectedStatusId = status.id.toString();
         this.statusForm.patchValue({
             libelle: status.libelle,
+            code: status.code,
             ordre_affichage: status.ordre_affichage,
             isClosingStatus: status.isClosingStatus ?? false
         });
