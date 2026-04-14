@@ -21,11 +21,6 @@ export class NavigationService {
   static readonly CLIENT_EDIT = 'crm/client/edit/:id';
 
   static readonly CLIENT_DETAILS = 'client-details';
-  static readonly CLIENT_REVIEWS_AML = 'client-reviews-aml';
-  static readonly REVIEW_AML = 'review-aml';
-  static readonly CLIENT_REVIEWS_AML_REPORT = 'client-reviews-aml-report';
-  static readonly PERSON_REVIEW_AML = 'person-new-review-aml';
-  static readonly AML_REPORT_PERSON = 'aml-report-person';
   static readonly MODEL = 'model';
   static readonly FACTURATION = 'facturation';
   static readonly FACTURATION_DETAIL = 'facturation-detail';
@@ -36,16 +31,12 @@ export class NavigationService {
   static readonly AML_COMPLIANCE = 'aml-compliance';
 
   // AML Compliance Navigation
-  public static readonly AML_FORM_CONFIG_LIST = "aml-form-config-list";
-  public static readonly FORM_CONFIG_CREATE = "form-config/create";
-  public static readonly FORM_CONFIG_EDIT = "form-config/edit/:id";
-  public static readonly FORM_CONFIG_VIEW = "form-config/view/:id";
-  public static readonly FORM_RESULT_VIEW = "form-result/view/:id";
-  public static readonly CLIENT_AML_CONTEXT = "client-aml-context/:id";
+  // public static readonly FORM_CONFIG_VIEW = "form-config/view/:id";
+  // public static readonly FORM_RESULT_VIEW = "form-result/view/:id";
+  // public static readonly CLIENT_AML_CONTEXT = "client-aml-context/:id";
   public static readonly TYPE_CLIENT = "type_client";
   public static readonly ADMIN_PREFERENCE = "admin_preference";
   public static readonly ADMIN_SECTEUR_ATIVITE = "admin_secteur_activite";
-  public static readonly CLIENT_AML_REVIEW = "client-aml-review/:id";
 
   //Aml & dueDiligence
   public static readonly CLIENT_AML_RESULT = "client-aml-result/:id";
@@ -73,30 +64,30 @@ export class NavigationService {
 
 
 
-  public navigateToFormConfigList(): void {
-    this.router.navigate(['/home/', NavigationService.AML_FORM_CONFIG_LIST]);
-  }
+  // public navigateToFormConfigList(): void {
+  //   this.router.navigate(['/home/', NavigationService.AML_FORM_CONFIG_LIST]);
+  // }
 
-  public navigateToNewFormConfig(): void {
-    this.router.navigate(['/home/', ...NavigationService.FORM_CONFIG_CREATE.split('/')]);
-  }
+  // public navigateToNewFormConfig(): void {
+  //   this.router.navigate(['/home/', ...NavigationService.FORM_CONFIG_CREATE.split('/')]);
+  // }
 
 
-  public navigateToEditFormConfig(id: number): void {
-    let targetUrl = NavigationService.FORM_CONFIG_EDIT.replace(":id", id.toString());
-    this.router.navigate(['/home/', ...targetUrl.split("/")]);
+  // public navigateToEditFormConfig(id: number): void {
+  //   let targetUrl = NavigationService.FORM_CONFIG_EDIT.replace(":id", id.toString());
+  //   this.router.navigate(['/home/', ...targetUrl.split("/")]);
 
-  }
+  // }
 
-  public navigateToViewFormConfig(id: number, queryParams?: any): void {
-    let targetUrl = NavigationService.FORM_CONFIG_VIEW.replace(":id", id.toString());
-    this.router.navigate(['/home/', ...targetUrl.split("/")], { queryParams: queryParams });
-  }
+  // public navigateToViewFormConfig(id: number, queryParams?: any): void {
+  //   let targetUrl = NavigationService.FORM_CONFIG_VIEW.replace(":id", id.toString());
+  //   this.router.navigate(['/home/', ...targetUrl.split("/")], { queryParams: queryParams });
+  // }
 
-  public navigateToAMLContext(clientId: string): void {
-    let targetUrl = NavigationService.CLIENT_AML_CONTEXT.replace(":id", clientId);
-    this.router.navigate(['/home/', ...targetUrl.split("/")]);
-  }
+  // public navigateToAMLContext(clientId: string): void {
+  //   let targetUrl = NavigationService.CLIENT_AML_CONTEXT.replace(":id", clientId);
+  //   this.router.navigate(['/home/', ...targetUrl.split("/")]);
+  // }
 
 
 
@@ -140,15 +131,8 @@ export class NavigationService {
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
   }
 
-  navigateToClientAMLReview(id: string) {
-    let targetUrl = NavigationService.CLIENT_AML_REVIEW.replace(":id", id);
-    this.router.navigate(['/home/', ...targetUrl.split("/")]);
-  }
 
-  navigateToClientAMLReviewResult(id: string) {
-    let targetUrl = NavigationService.CLIENT_AML_RESULT.replace(":id", id);
-    this.router.navigate(['/home/', ...targetUrl.split("/")]);
-  }
+
 
   navigateToDiligenceFormBuilder() {
     this.router.navigate(['/home/', NavigationService.DILIGENCE_FORM_BUILDER]);

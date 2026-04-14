@@ -38,7 +38,7 @@ export class DiligenceFormViewerComponent implements OnInit {
                 this.loadFormConfig(id);
             } else {
                 this.alertService.displayMessage('Erreur', 'Identifiant du formulaire manquant', 'error');
-                this.navigationService.navigateToFormConfigList();
+                // this.navigationService.navigateToFormConfigList();
             }
         });
 
@@ -60,7 +60,7 @@ export class DiligenceFormViewerComponent implements OnInit {
             error: (err) => {
                 console.error('Error loading form config', err);
                 this.alertService.displayMessage('Erreur', 'Impossible de charger le formulaire', 'error');
-                this.navigationService.navigateToFormConfigList();
+                // this.navigationService.navigateToFormConfigList();
             }
         });
     }
@@ -144,7 +144,7 @@ export class DiligenceFormViewerComponent implements OnInit {
                 if (this.selectedClient) {
                     this.navigationService.navigateToClientDiligenceResults(this.selectedClient.id!);
                 } else {
-                    this.navigationService.navigateToFormConfigList();
+                    // this.navigationService.navigateToFormConfigList();
                 }
             },
             error: (err) => {

@@ -23,8 +23,8 @@ export class Administration {
     this.router.navigate([NavigationService.HOME, NavigationService.PROFILE_CABINET]);
   }
 
-  navigateToAML() {
-    this.navigationService.navigateToFormConfigList();
+  navigateToDueDiligence() {
+    this.navigationService.navigateToDiligenceFormList();
   }
 
   navigateToIndulgence() {

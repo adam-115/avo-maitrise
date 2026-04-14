@@ -5577,6 +5577,21 @@
           "id": 1775037472712
         }
       ]
+    },
+    {
+      "id": "f0ce",
+      "type": "PERSONNE",
+      "nom": "azeazeaz",
+      "prenom": "azeazeza",
+      "email": "adam.laftimi@gmail.com",
+      "telephone": "691209800",
+      "paysResidance": "Luxembourg",
+      "secteurActivite": "IMMOBILIER",
+      "riskScore": 0,
+      "ubos": [],
+      "contacts": [],
+      "clientStatus": "AML_REQUIRED",
+      "documents": []
     }
   ],
   "AmlPageConfigResult": [],

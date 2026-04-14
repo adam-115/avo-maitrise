@@ -47,10 +47,7 @@ export const routes: Routes = [
         path: NavigationService.CLIENT_DETAILS,
         loadComponent: () => import('./crm/client-details/client-details').then(m => m.ClientDetails)
       },
-      {
-        path: NavigationService.CLIENT_REVIEWS_AML,
-        loadComponent: () => import('./crm/crm/client-reviews-aml/client-reviews-aml').then(m => m.ClientReviewsAml)
-      },
+
 
       // gestion des documents models
       {
@@ -88,35 +85,7 @@ export const routes: Routes = [
         path: NavigationService.TYPE_CLIENT,
         loadComponent: () => import('./administration/client-type/client-type').then(m => m.ClientType)
       },
-      // AML Compliance Paths can be found in NavigationService
-      {
-        path: NavigationService.AML_FORM_CONFIG_LIST,
-        loadComponent: () => import('./aml-compliance/aml-form-list-component/aml-form-list-component').then(m => m.AmlFormListComponent)
-      },
-      {
-        path: NavigationService.FORM_CONFIG_CREATE,
-        loadComponent: () => import('./aml-compliance/aml-form-config-component/aml-form-config-component').then(m => m.AmlFormConfigComponent)
-      },
-      {
-        path: NavigationService.FORM_CONFIG_EDIT,
-        loadComponent: () => import('./aml-compliance/aml-form-config-component/aml-form-config-component').then(m => m.AmlFormConfigComponent)
-      },
-      {
-        path: NavigationService.FORM_CONFIG_VIEW,
-        loadComponent: () => import('./aml-compliance/aml-form-view-component/aml-form-view-component').then(m => m.AmlFormViewComponent)
-      },
-      // {
-      //   path: 'client-aml-context/:id',
-      //   component: ClientAmlContextComponent
-      // },
-      {
-        path: NavigationService.CLIENT_AML_REVIEW,
-        loadComponent: () => import('./aml-compliance/client-aml-review/client-aml-review').then(m => m.ClientAmlReview)
-      },
-      {
-        path: NavigationService.CLIENT_AML_RESULT,
-        loadComponent: () => import('./crm/client-aml-result/client-aml-result').then(m => m.ClientAmlResult)
-      },
+      // AML Compliance Paths can be found in NavigationService   
       {
         path: NavigationService.DILIGENCE_FORM_BUILDER,
         loadComponent: () => import('./due-diligence/diligence-form-builder-component/diligence-form-builder-component').then(m => m.DiligenceFormBuilderComponent)

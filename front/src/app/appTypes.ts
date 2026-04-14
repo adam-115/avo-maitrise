@@ -69,78 +69,11 @@ export interface Appointement {
 
 
 
-// configuration des formulaires AML
 
 export type InputType = 'select' | 'checkbox' | 'radio' | 'uploadFile';
 // icon type for alert service
 export type IconType = "success" | "error" | "warning" | "info" | "question";
 
-// configuration des formulaires AML
-export interface AmlFormConfig {
-  id?: number,
-  formName: string,
-  formTitle: string,
-  formDescription: string,
-  order: number,
-  inputConfigs: AmlInputConfig[],
-  typeClient?: ClientTypeEnum;
-  secteurActivite?: string;
-  typeOrganisme?: string;
-}
-
-export interface AmlInputConfig {
-  id?: string;
-  type: InputType;
-  name: string; // Added property for the form control name it must be unique
-  score?: number;// used for upload
-  facteur: number,
-  required: boolean;
-  labelMessage: string;
-  placeholder?: string;
-  options?: AMLInputOption[]; // for select , radio , checkbox
-  errorMessage?: string;
-  customStyle?: string;
-  defaultValue?: any;
-  displayOrer?: number;
-  optionsLayout?: 'block' | 'inline';
-  creationDate?: Date;
-  lastUpdateDate?: Date;
-}
-
-// used for the check box
-export interface AMLInputOption {
-  id?: string;
-  name?: string;
-  AmlInputConfigId?: number;
-  value: string;
-  score: number;
-  order?: number;
-}
-
-export interface AmlFormResult {
-  id?: number;
-  amlFormConfigID?: number;
-  totalScore?: number;
-  riskLevel?: 'Faible' | 'Modéré' | 'Élevé';
-  AmlPageConfigValues?: AmlInputValue[];
-  clientId?: string;
-}
-
-export interface AmlInputValue {
-  id?: number,
-  amlFormConfig?: number;
-  InputConfigID: string;
-  value: string;
-}
-
-
-// Interface pour le suivi du score par champ (simplifiée pour l'affichage)
-export interface FieldScore {
-  name: string;
-  label: string;
-  facteur: number;
-  scoreObtenu: number;
-}
 
 
 //### partie configuration
@@ -254,16 +187,6 @@ export enum ClientStatus {
 }
 
 
-//****** Indilgence part  ******/
-// export interface FormElement {
-//   id: string;
-//   type: 'text' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'label';
-//   label: string;
-//   placeholder?: string;
-//   options?: string[]; // Pour select/radio
-//   value?: any;
-//   required?: boolean;
-// }
 
 
 export enum FormType {
