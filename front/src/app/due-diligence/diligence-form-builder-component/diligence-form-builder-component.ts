@@ -22,9 +22,7 @@ export class DiligenceFormBuilderComponent implements OnInit {
   configForm!: FormGroup;
   diligenceForm!: FormGroup;
 
-  // Expose FormType for the template
-  FormType = FormType;
-  formTypeOptions = Object.values(FormType);
+
   fb = inject(FormBuilder);
   utilsService = inject(UtilsService);
   alertService = inject(AlertService);
@@ -43,8 +41,7 @@ export class DiligenceFormBuilderComponent implements OnInit {
       id: [{ value: generatedId, disabled: true }],
       name: ['', [Validators.required, Validators.minLength(3)]],
       title: ['', [Validators.required, Validators.minLength(3)]],
-      description: ['', [Validators.required]],
-      type: [FormType.AML, [Validators.required]]
+      description: ['', [Validators.required]]
     });
 
     // Initialize the fields form (will be dynamic)
@@ -155,6 +152,7 @@ export class DiligenceFormBuilderComponent implements OnInit {
 
     const formConfig: FormConfig = {
       ...this.configForm.value,
+      type: FormType.INDULGENCE,
       fields: this.formFields,
       creationDate: new Date(),
       lastUpdateDate: new Date()

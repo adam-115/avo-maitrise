@@ -24,8 +24,7 @@ export class SecteurActiviteComponent implements OnInit {
       code: ["", Validators.required],
       libelle: ["", Validators.required],
       ordre_affichage: [0, Validators.required],
-      actif: [true],
-      riskNaturel: ['FAIBLE', Validators.required]
+      actif: [true]
     });
     this.lodAllSeteurActivite();
   }
@@ -48,7 +47,6 @@ export class SecteurActiviteComponent implements OnInit {
       libelle: formValues.libelle,
       ordre_affichage: Number(formValues.ordre_affichage),
       actif: Boolean(formValues.actif),
-      riskNaturel: formValues.riskNaturel,
       // created_at est généralement géré par le backend
     };
   }
@@ -59,8 +57,7 @@ export class SecteurActiviteComponent implements OnInit {
       code: secteur.code,
       libelle: secteur.libelle,
       ordre_affichage: secteur.ordre_affichage,
-      actif: secteur.actif,
-      riskNaturel: secteur.riskNaturel || 'FAIBLE'
+      actif: secteur.actif
     });
   }
 
@@ -73,8 +70,7 @@ export class SecteurActiviteComponent implements OnInit {
     this.selectedSecteurActivite = null;
     this.secteurForm.reset({
       ordre_affichage: 0,
-      actif: true,
-      riskNaturel: 'FAIBLE'
+      actif: true
     });
   }
 
@@ -102,17 +98,11 @@ export class SecteurActiviteComponent implements OnInit {
     for (let i = 1; i < lines.length; i++) {
       const currentLine = lines[i].split(',');
       if (currentLine.length >= 2) {
-        const risqueVal = currentLine[4] ? currentLine[4].trim().toUpperCase() : 'FAIBLE';
-        // validate risk value
-        const validRisks = ['FAIBLE', 'MOYEN', 'ELEVE', 'CRITIQUE'];
-        const riskNaturel = validRisks.includes(risqueVal) ? risqueVal : 'FAIBLE';
-
         const secteur: SecteurActivite = {
           code: currentLine[0].trim(),
           libelle: currentLine[1].trim(),
           ordre_affichage: currentLine[2] ? Number(currentLine[2]) : 0,
-          actif: currentLine[3] ? currentLine[3].trim().toLowerCase() === 'true' : true,
-          riskNaturel: riskNaturel as any
+          actif: currentLine[3] ? currentLine[3].trim().toLowerCase() === 'true' : true
         };
         result.push(secteur);
       }

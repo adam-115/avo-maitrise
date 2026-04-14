@@ -6635,6 +6635,20 @@
       "notes": "Avocat Adverse",
       "createdAt": "2026-03-02T16:40:47.981Z",
       "updatedAt": "2026-03-02T16:40:47.981Z"
+    },
+    {
+      "id": "8703",
+      "dossierId": "fe18",
+      "civilite": "M.",
+      "nom": "aaa",
+      "prenom": "aaa",
+      "email": "adam.laftimi@gmail.com",
+      "telephoneMobile": "+352691209800",
+      "telephoneFixe": "",
+      "entreprise": "aaa",
+      "notes": "Partie Adverse",
+      "createdAt": "2026-04-14T16:13:35.746Z",
+      "updatedAt": "2026-04-14T16:13:35.746Z"
     }
   ],
   "MatterEvent": [

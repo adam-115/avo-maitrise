@@ -67,10 +67,6 @@ export interface Appointement {
   style?: any; // Contient les styles calculés: { top: '...', height: '...', width: '...', left: '...' }
 }
 
-
-
-
-export type InputType = 'select' | 'checkbox' | 'radio' | 'uploadFile';
 // icon type for alert service
 export type IconType = "success" | "error" | "warning" | "info" | "question";
 
@@ -101,7 +97,6 @@ export interface SecteurActivite {
   libelle: string;        // ex: 'Promotion Immobilière'
   ordre_affichage: number;
   actif: boolean;
-  riskNaturel: 'FAIBLE' | 'MOYEN' | 'ELEVE' | 'CRITIQUE';
   created_at?: Date;
 }
 
@@ -162,13 +157,6 @@ export interface Document {
 
 
 
-export interface MappingForm {
-  id?: number;
-  typeClient: ClientTypeEnum | 'PERSONNE' | 'SOCIETE' | 'INSTITUTION' | 'ASSOCIATION'; // Keeping string literal union for backward compatibility if needed, or switch to Enum
-  secteurActivite: string;
-  amlFormConfigID: number;
-}
-
 export enum ClientStatus {
   // Phase de Création
   AML_REQUIRED = 'AML_REQUIRED', // Client créé, mais questionnaire AML non rempli.
@@ -190,7 +178,6 @@ export enum ClientStatus {
 
 
 export enum FormType {
-  AML = 'AML',
   INDULGENCE = 'INDULGENCE',
 }
 
