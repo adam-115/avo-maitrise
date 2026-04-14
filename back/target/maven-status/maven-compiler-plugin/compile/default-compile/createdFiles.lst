@@ -1,3 +1,5 @@
 com\avo\controller\TestController.class
+com\avo\yente\ScreeningService.class
 com\avo\AvoApplication.class
 com\avo\controller\HomeController.class
+com\avo\yente\AmlController.class

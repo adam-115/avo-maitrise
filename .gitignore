@@ -6,3 +6,6 @@ front/target/classes/static/index.html
 update-borders.js
 *.class
 /back/target/classes
+/front/target
+/front/target
+/back/target

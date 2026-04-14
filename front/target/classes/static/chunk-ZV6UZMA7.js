@@ -1,1 +1,0 @@
-import{a as n}from"./chunk-HII3YURV.js";import{a as p}from"./chunk-N6Q423HR.js";import{x as i}from"./chunk-FE2BE4W4.js";import{R as e,V as o}from"./chunk-53LXCIDH.js";var c=class t extends n{apiUrl=p.apiUrl+"users";constructor(r){super(r)}static \u0275fac=function(m){return new(m||t)(o(i))};static \u0275prov=e({token:t,factory:t.\u0275fac,providedIn:"root"})};export{c as a};
