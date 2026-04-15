@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Client, ClientStatus, Document } from '../../appTypes';
+import { Client, ClientStatus, Document, YenteMatchResponse } from '../../appTypes';
 
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alert-service';
 import { ClientService } from '../../services/client-service';
 import { NavigationService } from '../../services/navigation-service';
+import { AmlService } from '../../services/aml-service';
 
 @Component({
   selector: 'app-client-details',
@@ -25,6 +26,9 @@ export class ClientDetails implements OnInit {
   private readonly router = inject(Router);
   private readonly navigationService = inject(NavigationService);
   private readonly alertService = inject(AlertService);
+  private readonly amlService = inject(AmlService);
+
+  isAmlLoading = false;
 
 
   // Expose ClientStatus enum for the template
@@ -188,6 +192,87 @@ export class ClientDetails implements OnInit {
       this.client.clientStatus = undefined; // Hack to force change detection
       setTimeout(() => { if (this.client) this.client.clientStatus = temp; }, 0);
     }
+  }
+
+  async verifyAml() {
+    if (!this.client) return;
+
+    const searchName = this.client.type === 'SOCIETE' ? 
+      this.client.nom : 
+      `${this.client.nom} ${this.client.prenom || ''}`.trim();
+
+    if (!searchName) {
+      this.alertService.displayMessage('Erreur', 'Le nom du client est manquant pour lancer l\'analyse.', 'error');
+      return;
+    }
+
+    this.isAmlLoading = true;
+
+    this.amlService.verifyClient(searchName).subscribe({
+      next: (res) => {
+        this.isAmlLoading = false;
+
+        let matchResponse: YenteMatchResponse;
+        if (typeof res === 'string') {
+          try {
+            matchResponse = JSON.parse(res);
+          } catch {
+            this.alertService.displayMessage('Erreur', 'Format de réponse invalide depuis Yente.', 'error');
+            return;
+          }
+        } else {
+          matchResponse = res;
+        }
+
+        const q1Results = matchResponse.responses?.['q1']?.results || [];
+
+        if (q1Results.length === 0) {
+          this.client!.amlAnalysisStatus = 'OK';
+          this.client!.amlMatchScore = 0;
+          this.client!.amlTargetEntityName = undefined;
+          this.client!.amlSanctionReason = undefined;
+        } else {
+          const topResult = q1Results.sort((a, b) => b.score - a.score)[0];
+          
+          this.client!.amlMatchScore = topResult.score;
+          this.client!.amlTargetEntityName = topResult.properties['name']?.[0] || 'Entité Inconnue';
+
+          if (topResult.score >= 0.8 || topResult.match || topResult.target) {
+            this.client!.amlAnalysisStatus = 'BLOCKED';
+            this.client!.clientStatus = ClientStatus.BLOCKED;
+            this.client!.amlSanctionReason = `Bloqué suite à une correspondance stricte (${(topResult.score * 100).toFixed(0)}%) avec ${this.client!.amlTargetEntityName} dans la base de sanctions.`;
+          } else if (topResult.score >= 0.5) {
+            this.client!.amlAnalysisStatus = 'SUSPECT';
+            if (this.client!.clientStatus !== ClientStatus.BLOCKED) {
+              this.client!.clientStatus = ClientStatus.VERIFICATION_AML_REQUIRED;
+            }
+          } else {
+            this.client!.amlAnalysisStatus = 'OK';
+          }
+        }
+
+        if (!this.client!.amlAnalysisStatus) {
+           this.client!.amlAnalysisStatus = 'TODO';
+        }
+        
+        this.client!.amlLastVerificationDate = new Date();
+
+        this.clientService.update(this.client!.id, this.client!).subscribe({
+          next: () => {
+            this.alertService.success('Analyse AML terminée et dossier mis à jour.');
+          },
+          error: (err) => {
+            console.error('Save error', err);
+            this.alertService.displayMessage('Attention', 'Résultat calculé mais échec de la sauvegarde.', 'error');
+          }
+        });
+      },
+      error: (err) => {
+        this.isAmlLoading = false;
+        console.error(err);
+        this.alertService.displayMessage('Erreur', 'Impossible de contacter le service Yente.', 'error');
+      }
+    });
   }
 }
 

@@ -131,6 +131,13 @@ export interface Client {
   clientStatus?: ClientStatus;
   documents?: Document[];
   adresse?: string;
+
+  // Yente AML specific properties
+  amlAnalysisStatus?: 'TODO' | 'OK' | 'SUSPECT' | 'BLOCKED';
+  amlMatchScore?: number;
+  amlTargetEntityName?: string;
+  amlSanctionReason?: string;
+  amlLastVerificationDate?: Date;
 }
 
 export interface TypeOrganisme {
@@ -518,4 +525,38 @@ export interface Invoice {
   updatedAt: Date;
 }
 
-// for opensanctions : 
+// for opensanctions :
+export interface YenteMatchQuery {
+  schema: string;
+  properties: Record<string, string[]>;
+}
+
+export interface YenteMatchRequest {
+  queries: Record<string, YenteMatchQuery>;
+}
+
+export interface YenteEntity {
+  id: string;
+  schema: string; // 'Person', 'Company', 'Organization', etc.
+  properties: Record<string, string[]>;
+  datasets: string[];
+  referents?: string[];
+  target?: boolean;
+  first_seen?: string;
+  last_seen?: string;
+  last_change?: string;
+}
+
+export interface YenteMatchResult extends YenteEntity {
+  score: number;
+  match: boolean;
+}
+
+export interface YenteQueryResponse {
+  query: YenteMatchQuery;
+  results: YenteMatchResult[];
+}
+
+export interface YenteMatchResponse {
+  responses: Record<string, YenteQueryResponse>;
+}

@@ -43,16 +43,16 @@ export class ClientType implements OnInit {
   }
 
   selectType(selectedType: TypeClient): void {
-    this.selectedClientType =selectedType;
+    this.selectedClientType = selectedType;
     this.mapTypeClientToForm(selectedType);
   }
 
   resetForm() {
     this.typeClientForm?.reset();
-    this.selectedClientType = null ;
+    this.selectedClientType = null;
   }
 
- private mapFormToTypeClient(existingId?: number): TypeClient {
+  private mapFormToTypeClient(existingId?: number): TypeClient {
     const formValues = this.typeClientForm.value;
     return {
       // If you are updating an existing record, pass the ID
@@ -67,13 +67,13 @@ export class ClientType implements OnInit {
   }
 
   private mapTypeClientToForm(type: TypeClient): void {
-  this.typeClientForm.patchValue({
-    libelle: type.libelle,
-    code: type.code,
-    ordre_affichage: type.ordre_affichage,
-    actif: type.actif
-  });
-}
+    this.typeClientForm.patchValue({
+      libelle: type.libelle,
+      code: type.code,
+      ordre_affichage: type.ordre_affichage,
+      actif: type.actif
+    });
+  }
 
 
 

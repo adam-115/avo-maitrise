@@ -73,7 +73,7 @@
                     </th>
                     <th scope="col"
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Risque AML
+                        Risque Interne
                     </th>
                     <th scope="col"
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -85,7 +85,7 @@
                     </th>
                     <th scope="col"
                         class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Dernière MàJ
+                        Sanctions / Yente
                     </th>
                     <th scope="col" class="relative px-6 py-3">
                         <span class="sr-only">Actions</span>
@@ -130,9 +130,33 @@
                         {{ client.paysResidance }}
                     </td>
 
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <!-- Date removed as not available in interface -->
-                        -
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <!-- Yente AML Status -->
+                        @if(client.amlAnalysisStatus === 'OK') {
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                AML OK
+                            </span>
+                        } @else if(client.amlAnalysisStatus === 'SUSPECT') {
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                SUSPECT ({{ client.amlMatchScore ? (client.amlMatchScore * 100).toFixed(0) : 0 }}%)
+                            </span>
+                        } @else if(client.amlAnalysisStatus === 'BLOCKED') {
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                BLOQUÉ
+                            </span>
+                        } @else {
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-500">
+                                NON VÉRIFIÉ
+                            </span>
+                        }
+                        
+                        <div class="mt-1 text-[10px] text-gray-400">
+                            @if(client.amlLastVerificationDate) {
+                                {{ client.amlLastVerificationDate | date:'dd/MM/yyyy HH:mm' }}
+                            } @else {
+                                -- / --
+                            }
+                        </div>
                     </td>
 
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
