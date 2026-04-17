@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "test_entities")
@@ -15,6 +16,9 @@ public class TestEntity {
     private Long id;
 
     private String message;
+
+    @Version
+    private Integer version;
 
     public TestEntity() {
     }
