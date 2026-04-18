@@ -5,6 +5,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchQuery.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchResult.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\client\YenteApiClient.java
 D:\avo-maitrise\back\src\main\java\com\avo\dao\TestRepository.java
+D:\avo-maitrise\back\src\main\java\com\avo\config\BaseRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\AmlAnalysisResult.java
 D:\avo-maitrise\back\src\main\java\com\avo\AvoApplication.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteQueryResponse.java
@@ -12,7 +13,11 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\HomeController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\TestController.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchResponse.java
+D:\avo-maitrise\back\src\main\java\com\avo\config\GlobalExceptionHandler.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchRequest.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\service\YenteAmlService.java
+D:\avo-maitrise\back\src\main\java\com\avo\config\BaseController.java
 D:\avo-maitrise\back\src\main\java\com\avo\dao\ClientDao.java
+D:\avo-maitrise\back\src\main\java\com\avo\config\QueryDslConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientEntity.java
+D:\avo-maitrise\back\src\main\java\com\avo\config\BaseService.java
