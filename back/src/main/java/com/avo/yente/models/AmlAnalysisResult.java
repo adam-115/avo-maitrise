@@ -1,13 +1,26 @@
 package com.avo.yente.models;
 
 public class AmlAnalysisResult {
+    /** Indicates if the client is recognized as a Politically Exposed Person (PEP). */
     private boolean isPep;
+
+    /** Indicates if the client is currently subject to any international or local sanctions. */
     private boolean isSanctioned;
+
+    /** Indicates if the client is a family member or close associate of a PEP or sanctioned individual. */
     private boolean isFamilyMember;
+
+    /** The highest match score returned by the Yente API indicating the confidence of the match. */
     private Double matchScore;
+
+    /** The actual entity name from the Yente dataset that matched the client. */
     private String matchName;
+
+    /** The reason the client was matched, extracting context from dataset topics (e.g., sanctions or PEP). */
     private String sanctionReason;
-    private String status; // OK, SUSPECT, BLOCKED
+
+    /** Overall validation status outcome (e.g., OK, SUSPECT, BLOCKED). */
+    private String status;
 
     public boolean isPep() {
         return isPep;

@@ -1,6 +1,6 @@
 package com.avo.yente.service;
 
-import com.avo.dao.ClientDao;
+import com.avo.dao.ClientRepository;
 import com.avo.entities.ClientEntity;
 import com.avo.yente.client.YenteApiClient;
 import com.avo.yente.models.*;
@@ -12,15 +12,15 @@ import java.util.*;
 public class YenteAmlService {
 
     private final YenteApiClient yenteApiClient;
-    private final ClientDao clientDao;
+    private final ClientRepository clientrepository;
 
-    public YenteAmlService(YenteApiClient yenteApiClient, ClientDao clientDao) {
+    public YenteAmlService(YenteApiClient yenteApiClient, ClientRepository clientDao) {
         this.yenteApiClient = yenteApiClient;
-        this.clientDao = clientDao;
+        this.clientrepository = clientDao;
     }
 
-    public AmlAnalysisResult checkClientAndSave(UUID clientId) {
-        ClientEntity client = clientDao.findById(clientId)
+    public AmlAnalysisResult checkClientAndSave(Long clientId) {
+        ClientEntity client = clientrepository.findById(clientId)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 
         AmlAnalysisResult result = checkClientStatus(client);
@@ -31,26 +31,35 @@ public class YenteAmlService {
         client.setAmlAnalysisStatus(result.getStatus());
         client.setAmlLastVerificationDate(new Date());
 
-        clientDao.save(client);
+        clientrepository.save(client);
         return result;
     }
 
     public AmlAnalysisResult checkClientStatus(ClientEntity client) {
-        String schema = (client.getType() != null && client.getType().name().equals("SOCIETE")) ? "Company" : "Person";
+        String schema = "Person";
+        String fullName = "";
+        String country = null;
 
-        Map<String, List<String>> properties = new HashMap<>();
-        String prenom = client.getPrenom() != null ? client.getPrenom() : "";
-        String nom = client.getNom() != null ? client.getNom() : "";
-        String fullName = (prenom + " " + nom).trim();
-
-        if (fullName.isEmpty() && client.getType() != null && client.getType().name().equals("SOCIETE")) {
-            fullName = client.getNom();
+        if (client instanceof com.avo.entities.PersonnePhysique p) {
+            String prenom = p.getPrenom() != null ? p.getPrenom() : "";
+            String nom = p.getNom() != null ? p.getNom() : "";
+            fullName = (prenom + " " + nom).trim();
+            country = p.getNationalite();
+        } else if (client instanceof com.avo.entities.ClientMoral m) {
+            schema = "Company";
+            fullName = m.getNomCommercial() != null ? m.getNomCommercial() : "";
+        } else if (client instanceof com.avo.entities.Association a) {
+            schema = "Organization";
+            fullName = a.getNom() != null ? a.getNom() : "";
         }
 
-        properties.put("name", List.of(fullName));
+        Map<String, List<String>> properties = new HashMap<>();
+        if (!fullName.isEmpty()) {
+            properties.put("name", List.of(fullName));
+        }
 
-        if (client.getPaysResidance() != null && !client.getPaysResidance().isEmpty()) {
-            properties.put("country", List.of(client.getPaysResidance()));
+        if (country != null && !country.isEmpty()) {
+            properties.put("country", List.of(country));
         }
 
         YenteMatchQuery query = new YenteMatchQuery(schema, properties);

@@ -1,6 +1,6 @@
 package com.avo.yente.service;
 
-import com.avo.dao.ClientDao;
+import com.avo.dao.ClientRepository;
 import com.avo.entities.ClientEntity;
 import com.avo.entities.ClientTypeEnum;
 import com.avo.yente.client.YenteApiClient;
@@ -25,21 +25,20 @@ class YenteAmlServiceTest {
     private YenteApiClient yenteApiClient;
 
     @Mock
-    private ClientDao clientDao;
+    private ClientRepository clientDao;
 
     @InjectMocks
     private YenteAmlService yenteAmlService;
 
-    private ClientEntity dummyClient;
+    private com.avo.entities.PersonnePhysique dummyClient;
 
     @BeforeEach
     void setUp() {
-        dummyClient = new ClientEntity();
-        dummyClient.setId(UUID.randomUUID());
-        dummyClient.setType(ClientTypeEnum.PERSONNE);
+        dummyClient = new com.avo.entities.PersonnePhysique();
+        dummyClient.setId(1L);
         dummyClient.setPrenom("John");
         dummyClient.setNom("Doe");
-        dummyClient.setPaysResidance("France");
+        dummyClient.setNationalite("France");
     }
 
     @Test
