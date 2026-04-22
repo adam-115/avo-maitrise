@@ -15,13 +15,19 @@ public class YenteApiClient {
     private final RestTemplate restTemplate;
     private final String yenteApiUrl;
     private final String yenteApiKey;
+    private final String yenteDefaultDataset;
+    private final String yenteDefaultMatchPath;
 
     public YenteApiClient(
             @Value("${yente.api.url}") String yenteApiUrl,
-            @Value("${yente.api.key}") String yenteApiKey) {
+            @Value("${yente.api.key}") String yenteApiKey,
+            @Value("${yente.api.default.dataset}") String yenteDefaultDataset,
+            @Value("${yente.api.default.match.path}") String yenteDefaultMatchPath) {
         this.restTemplate = new RestTemplate();
         this.yenteApiUrl = yenteApiUrl;
         this.yenteApiKey = yenteApiKey;
+        this.yenteDefaultDataset = yenteDefaultDataset;
+        this.yenteDefaultMatchPath = yenteDefaultMatchPath;
     }
 
     public YenteMatchResponse match(YenteMatchRequest request) {
@@ -36,7 +42,24 @@ public class YenteApiClient {
 
         HttpEntity<YenteMatchRequest> entity = new HttpEntity<>(request, headers);
 
-        String url = yenteApiUrl + "/match/default";
+        String url = yenteApiUrl + yenteDefaultMatchPath + yenteDefaultDataset;
         return restTemplate.postForObject(url, entity, YenteMatchResponse.class);
     }
+
+    public boolean checkHealth() {
+        try {
+            String url = yenteApiUrl + "/healthz";
+            org.springframework.http.ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    
+
+    
+
+
 }

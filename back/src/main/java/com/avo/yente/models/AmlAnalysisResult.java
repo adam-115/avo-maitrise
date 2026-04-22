@@ -1,6 +1,19 @@
 package com.avo.yente.models;
 
+import java.util.List;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+@ToString
+@NoArgsConstructor
+@Getter
+@Setter
 public class AmlAnalysisResult {
+
+    private String refIdenti;
+
     /** Indicates if the client is recognized as a Politically Exposed Person (PEP). */
     private boolean isPep;
 
@@ -21,60 +34,8 @@ public class AmlAnalysisResult {
 
     /** Overall validation status outcome (e.g., OK, SUSPECT, BLOCKED). */
     private String status;
+    
+    /** The referents of the match. */
+    private List<String> referents;
 
-    public boolean isPep() {
-        return isPep;
-    }
-
-    public void setPep(boolean pep) {
-        isPep = pep;
-    }
-
-    public boolean isSanctioned() {
-        return isSanctioned;
-    }
-
-    public void setSanctioned(boolean sanctioned) {
-        isSanctioned = sanctioned;
-    }
-
-    public boolean isFamilyMember() {
-        return isFamilyMember;
-    }
-
-    public void setFamilyMember(boolean familyMember) {
-        isFamilyMember = familyMember;
-    }
-
-    public Double getMatchScore() {
-        return matchScore;
-    }
-
-    public void setMatchScore(Double matchScore) {
-        this.matchScore = matchScore;
-    }
-
-    public String getMatchName() {
-        return matchName;
-    }
-
-    public void setMatchName(String matchName) {
-        this.matchName = matchName;
-    }
-
-    public String getSanctionReason() {
-        return sanctionReason;
-    }
-
-    public void setSanctionReason(String sanctionReason) {
-        this.sanctionReason = sanctionReason;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
 }

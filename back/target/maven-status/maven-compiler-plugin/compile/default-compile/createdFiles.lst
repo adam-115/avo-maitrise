@@ -10,7 +10,6 @@ com\avo\yente\models\AmlAnalysisResult.class
 com\avo\entities\Association.class
 com\avo\yente\service\YenteAmlService.class
 com\avo\entities\QClientEntity.class
-com\avo\dao\ClientRepository.class
 com\avo\entities\UBO.class
 com\avo\entities\QTestEntity.class
 com\avo\yente\models\YenteQueryResponse.class
@@ -31,5 +30,4 @@ com\avo\config\QueryDslConfig.class
 com\avo\config\BaseService.class
 com\avo\services\TestService.class
 com\avo\entities\ClientTypeEnum.class
-com\avo\dao\TestRepository.class
 com\avo\entities\QClientMoral.class

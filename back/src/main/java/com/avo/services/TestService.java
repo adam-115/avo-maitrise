@@ -2,7 +2,7 @@ package com.avo.services;
 
 import org.springframework.stereotype.Service;
 
-import com.avo.dao.TestRepository;
+import com.avo.repositories.TestRepository;
 
 @Service
 public class TestService {

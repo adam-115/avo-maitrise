@@ -7,5 +7,6 @@ public enum ClientStatus {
     INDULGENCE_REQUIRED,
     INDULGENCE_VALIDATED,
     VALIDATED,
-    BLOCKED
+    BLOCKED,
+    SUSPICIOUS
 }

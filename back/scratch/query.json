@@ -1,0 +1,10 @@
+{
+  "queries": {
+    "q1": {
+      "schema": "Person",
+      "properties": {
+        "name": ["Nicolas Sarkozy"]
+      }
+    }
+  }
+}

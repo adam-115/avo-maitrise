@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.avo.config.BaseController;
-import com.avo.dao.TestRepository;
 import com.avo.entities.QTestEntity;
 import com.avo.entities.TestEntity;
+import com.avo.repositories.TestRepository;
 
 @RestController
 @RequestMapping("/api/test")

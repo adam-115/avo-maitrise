@@ -38,6 +38,8 @@ public class ClientEntity {
 
     private String adresse;
 
+    private String pays;
+
     @Column(name = "aml_analysis_status")
     private String amlAnalysisStatus; // TODO, OK, SUSPECT, BLOCKED
 

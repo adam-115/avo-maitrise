@@ -1,8 +1,8 @@
 package com.avo.yente.service;
 
-import com.avo.dao.ClientRepository;
 import com.avo.entities.ClientEntity;
 import com.avo.entities.ClientTypeEnum;
+import com.avo.repositories.ClientRepository;
 import com.avo.yente.client.YenteApiClient;
 import com.avo.yente.models.*;
 import org.junit.jupiter.api.BeforeEach;
