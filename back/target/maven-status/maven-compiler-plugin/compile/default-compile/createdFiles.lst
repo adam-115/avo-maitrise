@@ -3,7 +3,9 @@ com\avo\entities\QPersonnePhysique.class
 com\avo\entities\QUBO.class
 com\avo\entities\ClientMoral.class
 com\avo\entities\TestEntity.class
+com\avo\repositories\ClientMoralRepository.class
 com\avo\yente\client\YenteApiClient.class
+com\avo\repositories\AssociationRepository.class
 com\avo\entities\QAssociation.class
 com\avo\yente\models\YenteMatchRequest.class
 com\avo\yente\models\AmlAnalysisResult.class
@@ -11,7 +13,9 @@ com\avo\entities\Association.class
 com\avo\yente\service\YenteAmlService.class
 com\avo\entities\QClientEntity.class
 com\avo\entities\UBO.class
+com\avo\repositories\ClientRepository.class
 com\avo\entities\QTestEntity.class
+com\avo\repositories\PersonnePhysiqueRepository.class
 com\avo\yente\models\YenteQueryResponse.class
 com\avo\yente\models\YenteMatchQuery.class
 com\avo\entities\PersonnePhysique.class
@@ -26,6 +30,7 @@ com\avo\entities\ClientEntity.class
 com\avo\config\IBaseService.class
 com\avo\AvoApplication.class
 com\avo\entities\ClientStatus.class
+com\avo\repositories\TestRepository.class
 com\avo\config\QueryDslConfig.class
 com\avo\config\BaseService.class
 com\avo\services\TestService.class

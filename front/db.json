@@ -5251,7 +5251,7 @@
           "occupation": "aa"
         }
       ],
-      "clientStatus": "BLOCKED",
+      "clientStatus": "INDULGENCE_VALIDATED",
       "documents": [
         {
           "title": "aaa",
@@ -5992,6 +5992,27 @@
           "value": true
         }
       ]
+    },
+    {
+      "id": "3b49",
+      "formConfigId": "fc-ind-001",
+      "clientId": "9808",
+      "creationDate": "2026-04-23T12:52:07.680Z",
+      "lastUpdateDate": "2026-04-23T12:52:07.680Z",
+      "fieldResults": [
+        {
+          "fieldConfigId": "field-004",
+          "value": "jdqklsdjlqkjds"
+        },
+        {
+          "fieldConfigId": "field-005",
+          "value": "qsdqsdsq"
+        },
+        {
+          "fieldConfigId": "field-006",
+          "value": "opt-007"
+        }
+      ]
     }
   ],
   "ClientDiligenceStatus": [
@@ -6034,6 +6055,13 @@
       "clientId": "25fb",
       "formConfigId": "fc-aml-001",
       "status": "PENDING"
+    },
+    {
+      "id": "b88e",
+      "clientId": "9808",
+      "formConfigId": "fc-ind-001",
+      "status": "SUBMITTED",
+      "resultId": "3b49"
     }
   ],
   "StatutDossier": [
@@ -6974,6 +7002,18 @@
       "clientId": "",
       "dossierId": "",
       "clientCase": "adam"
+    },
+    {
+      "id": "1776948309744",
+      "title": "lqsjkdlsqjkd",
+      "date": "2026-04-23",
+      "time": "14:44",
+      "endTime": "15:44",
+      "location": "eazezaz",
+      "status": "Urgent",
+      "clientId": "bea6",
+      "dossierId": "fe18",
+      "clientCase": "qsdqsdsq"
     }
   ]
 }

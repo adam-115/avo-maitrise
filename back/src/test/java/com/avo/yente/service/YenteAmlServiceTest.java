@@ -1,10 +1,19 @@
 package com.avo.yente.service;
 
-import com.avo.entities.ClientEntity;
-import com.avo.entities.ClientTypeEnum;
-import com.avo.repositories.ClientRepository;
-import com.avo.yente.client.YenteApiClient;
-import com.avo.yente.models.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,11 +21,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import com.avo.repositories.ClientRepository;
+import com.avo.yente.client.YenteApiClient;
+import com.avo.yente.models.AmlAnalysisResult;
+import com.avo.yente.models.YenteMatchRequest;
+import com.avo.yente.models.YenteMatchResponse;
+import com.avo.yente.models.YenteMatchResult;
+import com.avo.yente.models.YenteQueryResponse;
 
 @ExtendWith(MockitoExtension.class)
 class YenteAmlServiceTest {
@@ -48,13 +59,13 @@ class YenteAmlServiceTest {
         when(yenteApiClient.match(any(YenteMatchRequest.class))).thenReturn(emptyResponse);
 
         // Act
-        AmlAnalysisResult result = yenteAmlService.checkClientStatus(dummyClient);
+        List<AmlAnalysisResult> results = yenteAmlService.checkClientStatus(dummyClient);
 
         // Assert
-        assertNotNull(result);
-        assertEquals("OK", result.getStatus());
-        assertFalse(result.isPep());
-        assertFalse(result.isSanctioned());
+        assertNotNull(results.get(0));
+        assertEquals("OK", results.get(0).getStatus());
+        assertFalse(results.get(0).isPep());
+        assertFalse(results.get(0).isSanctioned());
     }
 
     @Test
@@ -76,14 +87,14 @@ class YenteAmlServiceTest {
         when(yenteApiClient.match(any(YenteMatchRequest.class))).thenReturn(yenteResponse);
 
         // Act
-        AmlAnalysisResult result = yenteAmlService.checkClientStatus(dummyClient);
+        List<AmlAnalysisResult> results = yenteAmlService.checkClientStatus(dummyClient);
 
         // Assert
-        assertTrue(result.isSanctioned());
-        assertFalse(result.isPep());
-        assertEquals("BLOCKED", result.getStatus());
-        assertEquals(0.95, result.getMatchScore());
-        assertEquals("John Doe", result.getMatchName());
+        assertTrue(results.get(0).isSanctioned());
+        assertFalse(results.get(0).isPep());
+        assertEquals("BLOCKED", results.get(0).getStatus());
+        assertEquals(0.95, results.get(0).getMatchScore());
+        assertEquals("John Doe", results.get(0).getMatchName());
     }
 
     @Test
@@ -105,14 +116,14 @@ class YenteAmlServiceTest {
         when(yenteApiClient.match(any(YenteMatchRequest.class))).thenReturn(yenteResponse);
 
         // Act
-        AmlAnalysisResult result = yenteAmlService.checkClientStatus(dummyClient);
+        List<AmlAnalysisResult> result = yenteAmlService.checkClientStatus(dummyClient);
 
         // Assert
-        assertTrue(result.isPep());
-        assertFalse(result.isSanctioned());
-        assertEquals("SUSPECT", result.getStatus());
-        assertEquals(0.88, result.getMatchScore());
-        assertEquals("John Doe PEP", result.getMatchName());
+        assertTrue(result.get(0).isPep());
+        assertFalse(result.get(0).isSanctioned());
+        assertEquals("SUSPECT", result.get(0).getStatus());
+        assertEquals(0.88, result.get(0).getMatchScore());
+        assertEquals("John Doe PEP", result.get(0).getMatchName());
     }
 
     @Test

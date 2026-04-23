@@ -1,5 +1,7 @@
 package com.avo.yente.service;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,18 +37,23 @@ class YenteIntegrationTest {
         
         pp = personnePhysiqueRepository.save(pp);
 
-        AmlAnalysisResult result = yenteAmlService.checkClientStatus(pp);
+        List<AmlAnalysisResult> results = yenteAmlService.checkClientStatus(pp);
         System.out.println("============================== Start MATCH Search for Person ==============================");
         System.out.println(pp.toString());
         System.out.println("============================== MATCH RESULT ==============================");
-        System.out.println("Status: " + result.getStatus());
-        System.out.println("Sanctioned: " + result.isSanctioned());
-        System.out.println("PEP: " + result.isPep());
-        System.out.println("Family Member: " + result.isFamilyMember());
-        System.out.println("Match Name: " + result.getMatchName());
-        System.out.println("Match Score: " + result.getMatchScore());
-        System.out.println("Sanction Reason: " + result.getSanctionReason());
-        System.out.println("Referents: " + result.getReferents().toString());
+        if (!results.isEmpty()) {
+            System.out.println("Yente ID: " + results.get(0).getYenteId());
+            System.out.println("Status: " + results.get(0).getStatus());
+            System.out.println("Sanctioned: " + results.get(0).isSanctioned());
+            System.out.println("PEP: " + results.get(0).isPep());
+            System.out.println("Family Member: " + results.get(0).isFamilyMember());
+            System.out.println("Match Name: " + results.get(0).getMatchName());
+            System.out.println("Match Score: " + results.get(0).getMatchScore());
+            System.out.println("Sanction Reason: " + results.get(0).getSanctionReason());
+            System.out.println("Referents: " + results.get(0).getReferents().toString());
+        } else {
+            System.out.println("No matches found.");
+        }
         System.out.println("==========================================================================");
     }
 
@@ -65,17 +72,21 @@ class YenteIntegrationTest {
         
         cm = clientMoralRepository.save(cm);
 
-        com.avo.yente.models.AmlAnalysisResult result = yenteAmlService.checkClientStatus(cm);
+        List<AmlAnalysisResult> results = yenteAmlService.checkClientStatus(cm);
         
         System.out.println("============================== MATCH RESULT ==============================");
-        System.out.println("Status: " + result.getStatus());
-        System.out.println("Sanctioned: " + result.isSanctioned());
-        System.out.println("PEP: " + result.isPep());
-        System.out.println("Family Member: " + result.isFamilyMember());
-        System.out.println("Match Name: " + result.getMatchName());
-        System.out.println("Match Score: " + result.getMatchScore());
-        System.out.println("Sanction Reason: " + result.getSanctionReason());
-        System.out.println("Referents: " + result.getReferents().toString());
+        if (!results.isEmpty()) {
+            System.out.println("Status: " + results.get(0).getStatus());
+            System.out.println("Sanctioned: " + results.get(0).isSanctioned());
+            System.out.println("PEP: " + results.get(0).isPep());
+            System.out.println("Family Member: " + results.get(0).isFamilyMember());
+            System.out.println("Match Name: " + results.get(0).getMatchName());
+            System.out.println("Match Score: " + results.get(0).getMatchScore());
+            System.out.println("Sanction Reason: " + results.get(0).getSanctionReason());
+            System.out.println("Referents: " + results.get(0).getReferents().toString());
+        } else {
+            System.out.println("No matches found.");
+        }
         System.out.println("==========================================================================");
     }
 
@@ -88,17 +99,21 @@ class YenteIntegrationTest {
         
         a = associationRepository.save(a);
 
-        AmlAnalysisResult result = yenteAmlService.checkClientStatus(a);
+        List<AmlAnalysisResult> results = yenteAmlService.checkClientStatus(a);
         
         System.out.println("============================== MATCH RESULT ==============================");
-        System.out.println("Status: " + result.getStatus());
-        System.out.println("Sanctioned: " + result.isSanctioned());
-        System.out.println("PEP: " + result.isPep());
-        System.out.println("Family Member: " + result.isFamilyMember());
-        System.out.println("Match Name: " + result.getMatchName());
-        System.out.println("Match Score: " + result.getMatchScore());
-        System.out.println("Sanction Reason: " + result.getSanctionReason());
-        System.out.println("Referents: " + result.getReferents().toString());
+        if (!results.isEmpty()) {
+            System.out.println("Status: " + results.get(0).getStatus());
+            System.out.println("Sanctioned: " + results.get(0).isSanctioned());
+            System.out.println("PEP: " + results.get(0).isPep());
+            System.out.println("Family Member: " + results.get(0).isFamilyMember());
+            System.out.println("Match Name: " + results.get(0).getMatchName());
+            System.out.println("Match Score: " + results.get(0).getMatchScore());
+            System.out.println("Sanction Reason: " + results.get(0).getSanctionReason());
+            System.out.println("Referents: " + results.get(0).getReferents().toString());
+        } else {
+            System.out.println("No matches found.");
+        }
         System.out.println("==========================================================================");
     }
 
@@ -112,51 +127,63 @@ class YenteIntegrationTest {
         
         pp = personnePhysiqueRepository.save(pp);
 
-        com.avo.yente.models.AmlAnalysisResult result = yenteAmlService.checkClientStatus(pp);
+        List<AmlAnalysisResult> results = yenteAmlService.checkClientStatus(pp);
         
         System.out.println("============================== SANCTIONED PERSON MATCH ==============================");
-        System.out.println("Status: " + result.getStatus());
-        System.out.println("Sanctioned: " + result.isSanctioned());
-        System.out.println("Match Name: " + result.getMatchName());
-        System.out.println("Match Score: " + result.getMatchScore());
-        System.out.println("Referents: " + result.getReferents().toString());
+        if (!results.isEmpty()) {
+            System.out.println("Status: " + results.get(0).getStatus());
+            System.out.println("Sanctioned: " + results.get(0).isSanctioned());
+            System.out.println("Match Name: " + results.get(0).getMatchName());
+            System.out.println("Match Score: " + results.get(0).getMatchScore());
+            System.out.println("Referents: " + results.get(0).getReferents().toString());
+        } else {
+            System.out.println("No matches found.");
+        }
         System.out.println("=====================================================================================");
     }
 
     @Test
     public void testMatchSanctionedCompany() {
-        com.avo.entities.ClientMoral cm = new com.avo.entities.ClientMoral();
+        ClientMoral cm = new ClientMoral();
         cm.setNomCommercial("Gazprom");
         cm.setPays("ru");
         
         // cm = clientMoralRepository.save(cm);
 
-        com.avo.yente.models.AmlAnalysisResult result = yenteAmlService.checkClientStatus(cm);
+        List<AmlAnalysisResult> results = yenteAmlService.checkClientStatus(cm);
         
         System.out.println("============================== SANCTIONED COMPANY MATCH ==============================");
-        System.out.println("Status: " + result.getStatus());
-        System.out.println("Sanctioned: " + result.isSanctioned());
-        System.out.println("Match Name: " + result.getMatchName());
-        System.out.println("Match Score: " + result.getMatchScore());
-        System.out.println("Referents: " + result.getReferents().toString());
+        if (!results.isEmpty()) {
+            System.out.println("Status: " + results.get(0).getStatus());
+            System.out.println("Sanctioned: " + results.get(0).isSanctioned());
+            System.out.println("Match Name: " + results.get(0).getMatchName());
+            System.out.println("Match Score: " + results.get(0).getMatchScore());
+            System.out.println("Referents: " + results.get(0).getReferents().toString());
+        } else {
+            System.out.println("No matches found.");
+        }
         System.out.println("======================================================================================");
     }
 
     @Test
     public void testMatchSanctionedAssociation() {
-        com.avo.entities.Association a = new com.avo.entities.Association();
+        Association a = new Association();
         a.setNom("Al-Qaeda");
         
         // a = associationRepository.save(a);
 
-        com.avo.yente.models.AmlAnalysisResult result = yenteAmlService.checkClientStatus(a);
+        List<AmlAnalysisResult> results = yenteAmlService.checkClientStatus(a);
         
         System.out.println("============================== SANCTIONED ASSOCIATION MATCH ==============================");
-        System.out.println("Status: " + result.getStatus());
-        System.out.println("Sanctioned: " + result.isSanctioned());
-        System.out.println("Match Name: " + result.getMatchName());
-        System.out.println("Match Score: " + result.getMatchScore());
-        System.out.println("Referents: " + result.getReferents().toString());
+        if (!results.isEmpty()) {
+            System.out.println("Status: " + results.get(0).getStatus());
+            System.out.println("Sanctioned: " + results.get(0).isSanctioned());
+            System.out.println("Match Name: " + results.get(0).getMatchName());
+            System.out.println("Match Score: " + results.get(0).getMatchScore());
+            System.out.println("Referents: " + results.get(0).getReferents().toString());
+        } else {
+            System.out.println("No matches found.");
+        }
         System.out.println("==========================================================================================");
     }
 
