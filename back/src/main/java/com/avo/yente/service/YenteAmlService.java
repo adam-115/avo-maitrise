@@ -19,6 +19,9 @@ import com.avo.yente.models.YenteMatchResponse;
 import com.avo.yente.models.YenteMatchResult;
 import com.avo.yente.models.YenteQueryResponse;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class YenteAmlService {
 
@@ -48,6 +51,7 @@ public class YenteAmlService {
      * @return The complete AML analysis result
      */
     public AmlAnalysisResult checkClientAndSave(Long clientId) {
+        log.info("Starting AML verification for client ID: {}", clientId);
         ClientEntity client = clientrepository.findById(clientId)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 
@@ -61,6 +65,7 @@ public class YenteAmlService {
         client.setAmlLastVerificationDate(new Date());
 
         clientrepository.save(client);
+        log.info("AML verification completed for client ID: {}. Status: {}", clientId, bestResult.getStatus());
         return bestResult;
     }
 
@@ -83,13 +88,17 @@ public class YenteAmlService {
      */
     public List<AmlAnalysisResult> checkClientStatus(ClientEntity client) {
         if (client instanceof com.avo.entities.PersonnePhysique p) {
+            log.info("Checking AML status for PersonnePhysique: {} {}", p.getPrenom(), p.getNom());
             return matchPerson(p.getPrenom(), p.getNom(), p.getNationalite());
         } else if (client instanceof com.avo.entities.ClientMoral m) {
+            log.info("Checking AML status for ClientMoral: {}", m.getNomCommercial());
             return matchCompany(m.getNomCommercial(), m.getPays());
         } else if (client instanceof com.avo.entities.Association a) {
+            log.info("Checking AML status for Association: {}", a.getNom());
             return matchOrganization(a.getNom(), a.getPays());
         }
 
+        log.warn("Unknown client type for AML check");
         AmlAnalysisResult emptyResult = new AmlAnalysisResult();
         emptyResult.setStatus("OK");
         return List.of(emptyResult);
@@ -209,16 +218,18 @@ public class YenteAmlService {
      * @return The aggregated and parsed analysis result
      */
     private List<AmlAnalysisResult> executeMatchQuery(String schema, Map<String, List<String>> properties) {
+        log.debug("Executing match query for schema: {}, properties: {}", schema, properties);
         YenteMatchQuery query = new YenteMatchQuery(schema, properties);
         Map<String, YenteMatchQuery> queries = new HashMap<>();
         queries.put("query-1", query);
-
+        log.info("start match query" + queries.toString());
         YenteMatchRequest request = new YenteMatchRequest(queries);
-
+        log.info("match query" + request.toString());
         YenteMatchResponse response;
         try {
             response = yenteApiClient.match(request);
         } catch (Exception e) {
+            log.error("Failed to query Yente API", e);
             throw new RuntimeException("Failed to query Yente API: " + e.getMessage(), e);
         }
 
@@ -239,6 +250,7 @@ public class YenteAmlService {
         List<AmlAnalysisResult> amlAnalysisResults = new ArrayList<>();
 
         if (response == null || response.responses() == null || !response.responses().containsKey("query-1")) {
+            log.warn("Empty or invalid response from Yente API");
             return amlAnalysisResults;
         }
 
@@ -246,8 +258,11 @@ public class YenteAmlService {
         List<YenteMatchResult> matches = queryResp.results();
 
         if (matches == null || matches.isEmpty()) {
+            log.info("No matches found in Yente dataset");
             return amlAnalysisResults;
         }
+
+        log.info("Found {} potential matches from Yente", matches.size());
 
         // Focus load all math > aml.suspect.threshold=60
         // aml.block.threshold=80
@@ -321,9 +336,13 @@ public class YenteAmlService {
                 if (amlAnalysisResult.isSanctioned()) {
                     amlAnalysisResult.setSanctionReason("Matched against sanctions dataset or flagged topic");
                     amlAnalysisResult.setStatus("BLOCKED");
+                    log.warn("Match resulted in BLOCKED status. Reason: {}", amlAnalysisResult.getSanctionReason());
                 } else if (amlAnalysisResult.isPep() || amlAnalysisResult.isFamilyMember()) {
                     amlAnalysisResult.setSanctionReason("Flagged as PEP or related family member");
                     amlAnalysisResult.setStatus("SUSPECT");
+                    log.info("Match resulted in SUSPECT status. Reason: {}", amlAnalysisResult.getSanctionReason());
+                } else {
+                    log.debug("Match score is high but no specific sanctions or PEP flags found");
                 }
 
                 amlAnalysisResults.add(amlAnalysisResult);

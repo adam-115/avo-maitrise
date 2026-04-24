@@ -9,6 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class YenteApiClient {
 
@@ -43,15 +46,23 @@ public class YenteApiClient {
         HttpEntity<YenteMatchRequest> entity = new HttpEntity<>(request, headers);
 
         String url = yenteApiUrl + yenteDefaultMatchPath + yenteDefaultDataset;
-        return restTemplate.postForObject(url, entity, YenteMatchResponse.class);
+        log.info("Sending match request to Yente API: {}", url);
+        log.debug("Request payload: {}", request);
+        YenteMatchResponse response = restTemplate.postForObject(url, entity, YenteMatchResponse.class);
+        log.info("Received match response from Yente API");
+        return response;
     }
 
     public boolean checkHealth() {
         try {
             String url = yenteApiUrl + "/healthz";
+            log.debug("Checking Yente API health at {}", url);
             org.springframework.http.ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-            return response.getStatusCode().is2xxSuccessful();
+            boolean isHealthy = response.getStatusCode().is2xxSuccessful();
+            log.info("Yente API health check result: {}", isHealthy);
+            return isHealthy;
         } catch (Exception e) {
+            log.error("Yente API health check failed: {}", e.getMessage());
             return false;
         }
     }
