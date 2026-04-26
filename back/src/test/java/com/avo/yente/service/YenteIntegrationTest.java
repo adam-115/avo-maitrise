@@ -1,5 +1,9 @@
 package com.avo.yente.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -9,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.avo.entities.Association;
 import com.avo.entities.ClientMoral;
-import com.avo.entities.PersonnePhysique;
+import com.avo.entities.ClientPersonnePhysique;
 import com.avo.yente.models.AmlAnalysisResult;
 
 @SpringBootTest
@@ -22,6 +26,8 @@ class YenteIntegrationTest {
     @Test
     public void testCheckYenteHealth() {
         boolean health = yenteAmlService.checkYenteHealth();
+        assertNotNull(health);
+        assertEquals(true, health);
     }
 
     @Autowired
@@ -29,7 +35,7 @@ class YenteIntegrationTest {
 
     @Test
     public void testMatchPersonnePhysique() {
-        PersonnePhysique pp = new PersonnePhysique();
+        ClientPersonnePhysique pp = new ClientPersonnePhysique();
         pp.setPrenom("nicolas");
         pp.setNom("sarkozy");
         pp.setNationalite("fr");
@@ -55,6 +61,8 @@ class YenteIntegrationTest {
             System.out.println("No matches found.");
         }
         System.out.println("==========================================================================");
+        assertNotNull(results);
+        assertNotEquals(0, results.size());
     }
 
     @Autowired
@@ -88,6 +96,8 @@ class YenteIntegrationTest {
             System.out.println("No matches found.");
         }
         System.out.println("==========================================================================");
+        assertNotNull(results);
+        assertNotEquals(0, results.size());
     }
 
     @Test
@@ -115,11 +125,13 @@ class YenteIntegrationTest {
             System.out.println("No matches found.");
         }
         System.out.println("==========================================================================");
+        assertNotNull(results);
+        assertNotEquals(0, results.size());
     }
 
     @Test
     public void testMatchSanctionedPerson() {
-        com.avo.entities.PersonnePhysique pp = new com.avo.entities.PersonnePhysique();
+        com.avo.entities.ClientPersonnePhysique pp = new com.avo.entities.ClientPersonnePhysique();
         pp.setPrenom("Vladimir");
         pp.setNom("Putin");
         pp.setNationalite("ru");
@@ -140,6 +152,8 @@ class YenteIntegrationTest {
             System.out.println("No matches found.");
         }
         System.out.println("=====================================================================================");
+        assertNotNull(results);
+        assertNotEquals(0, results.size());
     }
 
     @Test
@@ -163,6 +177,8 @@ class YenteIntegrationTest {
             System.out.println("No matches found.");
         }
         System.out.println("======================================================================================");
+        assertNotNull(results);
+        assertNotEquals(0, results.size());
     }
 
     @Test
@@ -185,6 +201,67 @@ class YenteIntegrationTest {
             System.out.println("No matches found.");
         }
         System.out.println("==========================================================================================");
+        assertNotNull(results);
+        assertNotEquals(0, results.size());
     }
 
+
+    @Test
+    public void testMatchPersonnePhysiqueAsString() {
+        ClientPersonnePhysique pp = new ClientPersonnePhysique();
+        pp.setPrenom("nicolas");
+        pp.setNom("sarkozy");
+        pp.setNationalite("fr");
+        pp.setEmail("nicolas.sarkozy@test.com");
+          
+        pp = personnePhysiqueRepository.save(pp);
+        
+        String res = yenteAmlService.checkClientStatusAsString(pp);
+        System.out.println("============================== Start MATCH Search for Person ==============================");
+        System.out.println(pp.toString());
+        System.out.println("============================== MATCH RESULT ==============================");
+        System.out.println(res);
+        System.out.println("==========================================================================");
+        assertNotNull(res);
+        assertNotEquals("", res);
+    }
+
+    @Test
+    public void testMatchClientMoralAsString() {
+        ClientMoral cm = new ClientMoral();
+        cm.setNomCommercial("total");
+        cm.setPays("fr");
+        cm.setEmail("total@test.com");
+        
+        cm = clientMoralRepository.save(cm);
+
+        String res = yenteAmlService.checkClientStatusAsString(cm);
+        System.out.println("============================== Start MATCH Search for Client Moral ==============================");
+        System.out.println(cm.toString());
+        System.out.println("============================== MATCH RESULT ==============================");
+        System.out.println(res);
+        System.out.println("==========================================================================");
+        assertNotNull(res);
+        assertNotEquals("", res);
+    }
+
+    @Test
+    public void testMatchAssociationAsString() {
+        Association a = new Association();
+        a.setNom("total");
+        a.setPays("fr");
+        a.setEmail("total@test.com");
+        
+        a = associationRepository.save(a);
+
+        String res = yenteAmlService.checkClientStatusAsString(a);
+        System.out.println("============================== Start MATCH Search for Association ==============================");
+        System.out.println(a.toString());
+        System.out.println("============================== MATCH RESULT ==============================");
+        System.out.println(res);
+        System.out.println("==========================================================================");
+        assertNotNull(res);
+        assertNotNull(res);
+        assertNotEquals("", res);
+    }
 }

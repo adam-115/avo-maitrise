@@ -33,7 +33,24 @@ public class YenteApiClient {
         this.yenteDefaultMatchPath = yenteDefaultMatchPath;
     }
 
-    public YenteMatchResponse match(YenteMatchRequest request) {
+   
+
+    public boolean checkHealth() {
+        try {
+            String url = yenteApiUrl + "/healthz";
+            log.debug("Checking Yente API health at {}", url);
+            org.springframework.http.ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+            boolean isHealthy = response.getStatusCode().is2xxSuccessful();
+            log.info("Yente API health check result: {}", isHealthy);
+            return isHealthy;
+        } catch (Exception e) {
+            log.error("Yente API health check failed: {}", e.getMessage());
+            return false;
+        }
+    }
+
+
+     public YenteMatchResponse match(YenteMatchRequest request) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
@@ -53,18 +70,23 @@ public class YenteApiClient {
         return response;
     }
 
-    public boolean checkHealth() {
-        try {
-            String url = yenteApiUrl + "/healthz";
-            log.debug("Checking Yente API health at {}", url);
-            org.springframework.http.ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-            boolean isHealthy = response.getStatusCode().is2xxSuccessful();
-            log.info("Yente API health check result: {}", isHealthy);
-            return isHealthy;
-        } catch (Exception e) {
-            log.error("Yente API health check failed: {}", e.getMessage());
-            return false;
+
+    public String matchAsString(YenteMatchRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        if (yenteApiKey != null && !yenteApiKey.trim().isEmpty()) {
+            // Include both common formats just to be safe if the middleware changed
+            headers.set("Authorization", yenteApiKey);
+            headers.set("X-API-Key", yenteApiKey);
         }
+        HttpEntity<YenteMatchRequest> entity = new HttpEntity<>(request, headers);
+        String url = yenteApiUrl + yenteDefaultMatchPath + yenteDefaultDataset;
+        log.info("Sending match request to Yente API: {}", url);
+        log.debug("Request payload: {}", request);
+        String response = restTemplate.postForObject(url, entity, String.class);
+        log.info("Received match response from Yente API : {}", response);
+        return response;
     }
 
 

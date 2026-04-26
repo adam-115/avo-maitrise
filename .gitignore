@@ -15,3 +15,7 @@ update-borders.js
 *.class
 /back/target
 /back/target
+/back
+/back/target/maven-status
+/back/target
+/back/target

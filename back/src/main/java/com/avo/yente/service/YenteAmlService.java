@@ -30,14 +30,17 @@ public class YenteAmlService {
 
     private final YenteApiClient yenteApiClient;
     private final ClientRepository clientrepository;
+    private final ScreeningLogMatchService screeningLogMatchService;
 
     public YenteAmlService(YenteApiClient yenteApiClient, ClientRepository clientDao,
             @Value("${aml.block.threshold}") double blockThreshold,
-            @Value("${aml.suspect.threshold}") double suspectThreshold) {
+            @Value("${aml.suspect.threshold}") double suspectThreshold,
+            ScreeningLogMatchService screeningLogMatchService) {
         this.blockThreshold = blockThreshold;
         this.suspectThreshold = suspectThreshold;
         this.yenteApiClient = yenteApiClient;
         this.clientrepository = clientDao;
+        this.screeningLogMatchService = screeningLogMatchService;
     }
 
     /**
@@ -87,7 +90,7 @@ public class YenteAmlService {
      * @return The AML match results retrieved from Yente
      */
     public List<AmlAnalysisResult> checkClientStatus(ClientEntity client) {
-        if (client instanceof com.avo.entities.PersonnePhysique p) {
+        if (client instanceof com.avo.entities.ClientPersonnePhysique p) {
             log.info("Checking AML status for PersonnePhysique: {} {}", p.getPrenom(), p.getNom());
             return matchPerson(p.getPrenom(), p.getNom(), p.getNationalite());
         } else if (client instanceof com.avo.entities.ClientMoral m) {
@@ -278,9 +281,9 @@ public class YenteAmlService {
             amlAnalysisResult.setReferents(match.referents());
 
             if (match.score() >= suspectThreshold) {
-                // extract the yent ID 
+                // extract the yent ID
                 amlAnalysisResult.setYenteId(match.id());
-                                
+
                 // Extract matched target name
                 if (match.properties() != null && match.properties().containsKey("name")) {
                     List<String> names = match.properties().get("name");
@@ -351,5 +354,114 @@ public class YenteAmlService {
         }
         return amlAnalysisResults;
 
+    }
+
+    private List<AmlAnalysisResult> executeMatchQuery(String clinetId, String schema,
+            Map<String, List<String>> properties) {
+        log.debug("Executing match query for schema: {}, properties: {}", schema, properties);
+        YenteMatchQuery query = new YenteMatchQuery(schema, properties);
+        Map<String, YenteMatchQuery> queries = new HashMap<>();
+        queries.put("query-1", query);
+        log.info("start match query" + queries.toString());
+        YenteMatchRequest request = new YenteMatchRequest(queries);
+        log.info("match query" + request.toString());
+        YenteMatchResponse response;
+        try {
+            response = yenteApiClient.match(request);
+        } catch (Exception e) {
+            log.error("Failed to query Yente API", e);
+            throw new RuntimeException("Failed to query Yente API: " + e.getMessage(), e);
+        }
+
+        return parseResponse(response);
+    }
+
+    public String exuteTheMathAsString(String clientId, String schema, Map<String, List<String>> properties) {
+        log.debug("Executing match query for schema: {}, properties: {}", schema, properties);
+        YenteMatchQuery query = new YenteMatchQuery(schema, properties);
+        Map<String, YenteMatchQuery> queries = new HashMap<>();
+        queries.put(clientId, query);
+        log.info("start match query" + queries.toString());
+        YenteMatchRequest request = new YenteMatchRequest(queries);
+        log.info("match query" + request.toString());
+        try {
+            String result = yenteApiClient.matchAsString(request);
+            log.info("match query result" + result);
+            return result;
+        } catch (Exception e) {
+            log.error("Failed to query Yente API", e);
+            throw new RuntimeException("Failed to query Yente API: " + e.getMessage(), e);
+        }
+    }
+
+    public String checkClientStatusAsString(ClientEntity client) {
+        if (client instanceof com.avo.entities.ClientPersonnePhysique p) {
+            log.info("Checking AML status for PersonnePhysique: {} {}", p.getPrenom(), p.getNom());
+            return matchPersonAsString(p.getPrenom(), p.getNom(), p.getNationalite());
+        } else if (client instanceof com.avo.entities.ClientMoral m) {
+            log.info("Checking AML status for ClientMoral: {}", m.getNomCommercial());
+            return matchCompanyAsString(m.getNomCommercial(), m.getPays());
+        } else if (client instanceof com.avo.entities.Association a) {
+            log.info("Checking AML status for Association: {}", a.getNom());
+            return matchOrganizationAsString(a.getNom(), a.getPays());
+        }
+
+        log.warn("Unknown client type for AML check");
+        AmlAnalysisResult emptyResult = new AmlAnalysisResult();
+        emptyResult.setStatus("OK");
+        return new String();
+    }
+
+    public String matchPersonAsString(String firstName, String lastName, String country) {
+        Map<String, List<String>> properties = new HashMap<>();
+        String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+        fullName = fullName.trim();
+        if (!fullName.isEmpty()) {
+            properties.put("name", List.of(fullName));
+        }
+        if (country != null && !country.isEmpty()) {
+            properties.put("country", List.of(country));
+        }
+        return executeMatchQueryAsString("Person", properties);
+    }
+
+    private String executeMatchQueryAsString(String schema, Map<String, List<String>> properties) {
+        log.debug("Executing match query for schema: {}, properties: {}", schema, properties);
+        YenteMatchQuery query = new YenteMatchQuery(schema, properties);
+        Map<String, YenteMatchQuery> queries = new HashMap<>();
+        queries.put("query-1", query);
+        log.info("start match query" + queries.toString());
+        YenteMatchRequest request = new YenteMatchRequest(queries);
+        log.info("match query" + request.toString());
+        String response;
+        try {
+            response = yenteApiClient.matchAsString(request);
+        } catch (Exception e) {
+            log.error("Failed to query Yente API", e);
+            throw new RuntimeException("Failed to query Yente API: " + e.getMessage(), e);
+        }
+        return response;
+    }
+
+    public String matchCompanyAsString(String name, String country) {
+        Map<String, List<String>> properties = new HashMap<>();
+        if (name != null && !name.isEmpty()) {
+            properties.put("name", List.of(name));
+        }
+        if (country != null && !country.isEmpty()) {
+            properties.put("country", List.of(country)); // FollowTheMoney allows country/jurisdiction
+        }
+        return executeMatchQueryAsString("Company", properties);
+    }
+
+    public String matchOrganizationAsString(String name, String country) {
+        Map<String, List<String>> properties = new HashMap<>();
+        if (name != null && !name.isEmpty()) {
+            properties.put("name", List.of(name));
+        }
+        if (country != null && !country.isEmpty()) {
+            properties.put("country", List.of(country)); // FollowTheMoney allows country/jurisdiction
+        }
+        return executeMatchQueryAsString("Organization", properties);
     }
 }
