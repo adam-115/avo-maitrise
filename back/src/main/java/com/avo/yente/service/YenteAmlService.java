@@ -99,6 +99,9 @@ public class YenteAmlService {
         } else if (client instanceof com.avo.entities.Association a) {
             log.info("Checking AML status for Association: {}", a.getNom());
             return matchOrganization(a.getNom(), a.getPays());
+        } else if (client instanceof com.avo.entities.Institution i) {
+            log.info("Checking AML status for Institution: {}", i.getNom());
+            return matchOrganization(i.getNom(), i.getPays());
         }
 
         log.warn("Unknown client type for AML check");
@@ -404,6 +407,9 @@ public class YenteAmlService {
         } else if (client instanceof com.avo.entities.Association a) {
             log.info("Checking AML status for Association: {}", a.getNom());
             return matchOrganizationAsString(a.getNom(), a.getPays());
+        } else if (client instanceof com.avo.entities.Institution i) {
+            log.info("Checking AML status for Institution: {}", i.getNom());
+            return matchOrganizationAsString(i.getNom(), i.getPays());
         }
 
         log.warn("Unknown client type for AML check");

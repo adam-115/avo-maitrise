@@ -4,6 +4,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\ScreeningLogMatch.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\client\YenteApiClient.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ClientMoralRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\UBO.java
+D:\avo-maitrise\back\src\main\java\com\avo\repositories\InstitutionRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\AmlAnalysisResult.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\AssociationRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\GlobalExceptionHandler.java
@@ -19,6 +20,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\services\TestService.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchResult.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ClientRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Document.java
+D:\avo-maitrise\back\src\main\java\com\avo\entities\Institution.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ScreeningMatch.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ScreeningLogMatchRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\AvoApplication.java
