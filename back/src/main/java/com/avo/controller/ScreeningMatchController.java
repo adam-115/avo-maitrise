@@ -6,43 +6,43 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.avo.dtos.TestEntityDTO;
-import com.avo.entities.TestEntity;
-import com.avo.services.TestService;
+import com.avo.dtos.ScreeningMatchDTO;
+import com.avo.entities.ScreeningMatch;
+import com.avo.services.ScreeningMatchService;
 import com.querydsl.core.types.Predicate;
 
 @RestController
-@RequestMapping("/api/test")
-public class TestController {
+@RequestMapping("/api/screening/matches")
+public class ScreeningMatchController {
 
-    private final TestService service;
+    private final ScreeningMatchService service;
 
-    public TestController(TestService service) {
+    public ScreeningMatchController(ScreeningMatchService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<Page<TestEntityDTO>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<ScreeningMatchDTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<TestEntityDTO>> search(@QuerydslPredicate(root = TestEntity.class) Predicate predicate, Pageable pageable) {
+    public ResponseEntity<Page<ScreeningMatchDTO>> search(@QuerydslPredicate(root = ScreeningMatch.class) Predicate predicate, Pageable pageable) {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TestEntityDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<ScreeningMatchDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<TestEntityDTO> create(@RequestBody TestEntityDTO dto) {
+    public ResponseEntity<ScreeningMatchDTO> create(@RequestBody ScreeningMatchDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping
-    public ResponseEntity<TestEntityDTO> update(@RequestBody TestEntityDTO dto) {
+    public ResponseEntity<ScreeningMatchDTO> update(@RequestBody ScreeningMatchDTO dto) {
         return ResponseEntity.ok(service.update(dto));
     }
 

@@ -24,10 +24,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    @ExceptionHandler(value = { Exception.class })
-    protected ResponseEntity<String> handleConflict(RuntimeException ex, WebRequest request) {
-        String bodyOfResponse = "Internal server error check with the support team";
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(bodyOfResponse);
+    @ExceptionHandler(value = { Throwable.class })
+    protected ResponseEntity<String> handleConflict(Throwable ex, WebRequest request) {
+        java.io.StringWriter sw = new java.io.StringWriter();
+        java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+        ex.printStackTrace(pw);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(sw.toString());
     }
 
 }

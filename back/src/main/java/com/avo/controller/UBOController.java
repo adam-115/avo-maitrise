@@ -6,43 +6,43 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.avo.dtos.TestEntityDTO;
-import com.avo.entities.TestEntity;
-import com.avo.services.TestService;
+import com.avo.dtos.UBODTO;
+import com.avo.entities.UBO;
+import com.avo.services.UBOService;
 import com.querydsl.core.types.Predicate;
 
 @RestController
-@RequestMapping("/api/test")
-public class TestController {
+@RequestMapping("/api/ubos")
+public class UBOController {
 
-    private final TestService service;
+    private final UBOService service;
 
-    public TestController(TestService service) {
+    public UBOController(UBOService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<Page<TestEntityDTO>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<UBODTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<TestEntityDTO>> search(@QuerydslPredicate(root = TestEntity.class) Predicate predicate, Pageable pageable) {
+    public ResponseEntity<Page<UBODTO>> search(@QuerydslPredicate(root = UBO.class) Predicate predicate, Pageable pageable) {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TestEntityDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<UBODTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<TestEntityDTO> create(@RequestBody TestEntityDTO dto) {
+    public ResponseEntity<UBODTO> create(@RequestBody UBODTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping
-    public ResponseEntity<TestEntityDTO> update(@RequestBody TestEntityDTO dto) {
+    public ResponseEntity<UBODTO> update(@RequestBody UBODTO dto) {
         return ResponseEntity.ok(service.update(dto));
     }
 

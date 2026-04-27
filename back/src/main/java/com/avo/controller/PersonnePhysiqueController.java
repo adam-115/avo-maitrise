@@ -6,43 +6,43 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.avo.dtos.TestEntityDTO;
-import com.avo.entities.TestEntity;
-import com.avo.services.TestService;
+import com.avo.dtos.ClientPersonnePhysiqueDTO;
+import com.avo.entities.ClientPersonnePhysique;
+import com.avo.services.PersonnePhysiqueService;
 import com.querydsl.core.types.Predicate;
 
 @RestController
-@RequestMapping("/api/test")
-public class TestController {
+@RequestMapping("/api/clients/physique")
+public class PersonnePhysiqueController {
 
-    private final TestService service;
+    private final PersonnePhysiqueService service;
 
-    public TestController(TestService service) {
+    public PersonnePhysiqueController(PersonnePhysiqueService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<Page<TestEntityDTO>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<ClientPersonnePhysiqueDTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<TestEntityDTO>> search(@QuerydslPredicate(root = TestEntity.class) Predicate predicate, Pageable pageable) {
+    public ResponseEntity<Page<ClientPersonnePhysiqueDTO>> search(@QuerydslPredicate(root = ClientPersonnePhysique.class) Predicate predicate, Pageable pageable) {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TestEntityDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<ClientPersonnePhysiqueDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<TestEntityDTO> create(@RequestBody TestEntityDTO dto) {
+    public ResponseEntity<ClientPersonnePhysiqueDTO> create(@RequestBody ClientPersonnePhysiqueDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping
-    public ResponseEntity<TestEntityDTO> update(@RequestBody TestEntityDTO dto) {
+    public ResponseEntity<ClientPersonnePhysiqueDTO> update(@RequestBody ClientPersonnePhysiqueDTO dto) {
         return ResponseEntity.ok(service.update(dto));
     }
 

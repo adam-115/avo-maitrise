@@ -2,3 +2,4 @@ front/package-lock.json
 update-borders.js
 *.class
 target/
+/back/target

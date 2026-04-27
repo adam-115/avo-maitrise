@@ -6,43 +6,43 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.avo.dtos.TestEntityDTO;
-import com.avo.entities.TestEntity;
-import com.avo.services.TestService;
+import com.avo.dtos.DocumentDTO;
+import com.avo.entities.Document;
+import com.avo.services.DocumentService;
 import com.querydsl.core.types.Predicate;
 
 @RestController
-@RequestMapping("/api/test")
-public class TestController {
+@RequestMapping("/api/documents")
+public class DocumentController {
 
-    private final TestService service;
+    private final DocumentService service;
 
-    public TestController(TestService service) {
+    public DocumentController(DocumentService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<Page<TestEntityDTO>> findAll(Pageable pageable) {
+    public ResponseEntity<Page<DocumentDTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<TestEntityDTO>> search(@QuerydslPredicate(root = TestEntity.class) Predicate predicate, Pageable pageable) {
+    public ResponseEntity<Page<DocumentDTO>> search(@QuerydslPredicate(root = Document.class) Predicate predicate, Pageable pageable) {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TestEntityDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<DocumentDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<TestEntityDTO> create(@RequestBody TestEntityDTO dto) {
+    public ResponseEntity<DocumentDTO> create(@RequestBody DocumentDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping
-    public ResponseEntity<TestEntityDTO> update(@RequestBody TestEntityDTO dto) {
+    public ResponseEntity<DocumentDTO> update(@RequestBody DocumentDTO dto) {
         return ResponseEntity.ok(service.update(dto));
     }
 

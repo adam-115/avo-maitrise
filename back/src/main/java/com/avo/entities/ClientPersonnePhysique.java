@@ -28,6 +28,5 @@ public class ClientPersonnePhysique extends ClientEntity {
     @Column(name = "date_naissance")
     private Date dateNaissance;
 
-    @jakarta.persistence.OneToMany(mappedBy = "DOcument")
-    private List<Document>  documents ;
+
 }
