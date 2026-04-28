@@ -33,6 +33,7 @@ export class SecteurActiviteComponent implements OnInit {
   private lodAllSeteurActivite() {
     this.secteurActiviteService.getAll().subscribe(data => {
       this.secteurs = data;
+      console.log("les secteurs sont : ", data);
     })
   }
 

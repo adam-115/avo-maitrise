@@ -12,9 +12,9 @@ public interface ScreeningMatchMapper {
 
     ScreeningMatchMapper INSTANCE = Mappers.getMapper(ScreeningMatchMapper.class);
 
-    @Mapping(source = "client.id", target = "clientId")
+    @Mapping(source = "client", target = "clientEntityDTO")
     ScreeningMatchDTO toDto(ScreeningMatch screeningMatch);
 
-    @Mapping(source = "clientId", target = "client.id")
+    @Mapping(source = "uboDTO", target = "ubo")
     ScreeningMatch toEntity(ScreeningMatchDTO screeningMatchDTO);
 }

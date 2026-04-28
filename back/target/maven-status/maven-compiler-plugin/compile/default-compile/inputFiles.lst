@@ -4,7 +4,9 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\ScreeningLogMatch.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\client\YenteApiClient.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\UBORepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\UBOMapper.java
+D:\avo-maitrise\back\src\main\java\com\avo\controller\SecteurActiviteController.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ScreeningLogMatchDTO.java
+D:\avo-maitrise\back\src\main\java\com\avo\entities\SecteurActivite.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ClientMoralDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ClientPersonnePhysiqueDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\AssociationRepository.java
@@ -33,6 +35,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\DocumentService.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\TestController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\PersonnePhysiqueController.java
+D:\avo-maitrise\back\src\main\java\com\avo\repositories\SecteurActiviteRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\QueryDslConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\AssociationDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\DocumentMapper.java
@@ -56,6 +59,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\repositories\PersonnePhysiqueReposito
 D:\avo-maitrise\back\src\main\java\com\avo\controller\ClientController.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\ClientEntityMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\ScreeningMatchMapper.java
+D:\avo-maitrise\back\src\main\java\com\avo\mappers\SecteurActiviteMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ClientEntityDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientTypeEnum.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\TestEntity.java
@@ -70,5 +74,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteQueryResponse.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\service\ScreeningLogMatchService.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\HomeController.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchResponse.java
+D:\avo-maitrise\back\src\main\java\com\avo\dtos\SecteurActiviteDTO.java
+D:\avo-maitrise\back\src\main\java\com\avo\services\SecteurActiviteService.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\DocumentRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientEntity.java

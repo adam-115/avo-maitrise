@@ -9,6 +9,7 @@ com\avo\controller\AssociationController.class
 com\avo\dtos\UBODTO$UBODTOBuilder.class
 com\avo\entities\Association.class
 com\avo\repositories\InstitutionRepository.class
+com\avo\mappers\SecteurActiviteMapperImpl.class
 com\avo\mappers\TestEntityMapper.class
 com\avo\entities\QTestEntity.class
 com\avo\mappers\ClientMoralMapper.class
@@ -28,6 +29,7 @@ com\avo\services\ClientMoralService.class
 com\avo\mappers\AssociationMapperImpl.class
 com\avo\entities\TestEntity.class
 com\avo\yente\models\YenteMatchRequest.class
+com\avo\repositories\SecteurActiviteRepository.class
 com\avo\dtos\ClientPersonnePhysiqueDTO$ClientPersonnePhysiqueDTOBuilder.class
 com\avo\services\DocumentService.class
 com\avo\mappers\ScreeningLogMatchMapper.class
@@ -54,11 +56,13 @@ com\avo\dtos\DocumentDTO$DocumentDTOBuilder.class
 com\avo\dtos\ScreeningLogMatchDTO.class
 com\avo\entities\QClientMoral.class
 com\avo\controller\ClientController.class
+com\avo\entities\SecteurActivite.class
 com\avo\repositories\ClientMoralRepository.class
 com\avo\services\PersonnePhysiqueService.class
 com\avo\entities\QAssociation.class
 com\avo\services\InstitutionService.class
 com\avo\dtos\ClientPersonnePhysiqueDTO.class
+com\avo\services\SecteurActiviteService.class
 com\avo\controller\ScreeningMatchController.class
 com\avo\controller\ClientMoralController.class
 com\avo\dtos\InstitutionDTO.class
@@ -72,13 +76,16 @@ com\avo\entities\UBO.class
 com\avo\mappers\ClientPersonnePhysiqueMapper.class
 com\avo\services\ClientService.class
 com\avo\yente\service\ScreeningLogMatchService.class
+com\avo\controller\SecteurActiviteController.class
 com\avo\config\GlobalExceptionHandler.class
 com\avo\entities\Document.class
 com\avo\controller\HomeController.class
+com\avo\dtos\SecteurActiviteDTO.class
 com\avo\mappers\InstitutionMapper.class
 com\avo\controller\ScreeningLogMatchController.class
 com\avo\AvoApplication.class
 com\avo\dtos\ClientMoralDTO$ClientMoralDTOBuilderImpl.class
+com\avo\dtos\SecteurActiviteDTO$SecteurActiviteDTOBuilder.class
 com\avo\mappers\ScreeningMatchMapper.class
 com\avo\services\TestService.class
 com\avo\dtos\UBODTO.class
@@ -92,6 +99,7 @@ com\avo\repositories\ScreeningMatchRepository.class
 com\avo\mappers\ClientEntityMapper.class
 com\avo\dtos\AssociationDTO$AssociationDTOBuilderImpl.class
 com\avo\repositories\PersonnePhysiqueRepository.class
+com\avo\entities\QSecteurActivite.class
 com\avo\yente\models\YenteMatchQuery.class
 com\avo\dtos\ClientEntityDTO.class
 com\avo\entities\QClientPersonnePhysique.class
@@ -101,6 +109,7 @@ com\avo\dtos\InstitutionDTO$InstitutionDTOBuilder.class
 com\avo\entities\ClientEntity.class
 com\avo\entities\ClientStatus.class
 com\avo\repositories\TestRepository.class
+com\avo\mappers\SecteurActiviteMapper.class
 com\avo\mappers\AssociationMapper.class
 com\avo\repositories\UBORepository.class
 com\avo\entities\QInstitution.class

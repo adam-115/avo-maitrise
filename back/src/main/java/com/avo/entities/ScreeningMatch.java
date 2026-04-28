@@ -43,7 +43,7 @@ public class ScreeningMatch {
     private ClientEntity client;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = true)
+    @JoinColumn(name = "ubo_id", nullable = true)
     private UBO ubo ;
 
     /**

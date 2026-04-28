@@ -137,8 +137,9 @@
               </label>
             </div>
 
+            <!-- [disabled]="secteurForm.invalid" -->
             <div class="pt-4 space-y-3">
-              <button type="submit" (click)="submit()" [disabled]="secteurForm.invalid"
+              <button type="submit" (click)="submit()" 
                 class="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-100 hover:bg-cyan-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none disabled:cursor-not-allowed">
                 {{ selectedSecteurActivite ? "Mettre à jour le secteur" : "Ajouter le secteur" }}
               </button>
