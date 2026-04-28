@@ -32,8 +32,8 @@ export class SecteurActiviteComponent implements OnInit {
 
   private lodAllSeteurActivite() {
     this.secteurActiviteService.getAll().subscribe(data => {
-      this.secteurs = data;
-      console.log("les secteurs sont : ", data);
+      this.secteurs = data.content;
+      console.log("les secteurs sont : ", data.content);
     })
   }
 
@@ -46,7 +46,7 @@ export class SecteurActiviteComponent implements OnInit {
       ...(this.selectedSecteurActivite?.id && { id: this.selectedSecteurActivite.id }),
       code: formValues.code,
       libelle: formValues.libelle,
-      ordre_affichage: Number(formValues.ordre_affichage),
+      ordreAffichage: Number(formValues.ordre_affichage),
       actif: Boolean(formValues.actif),
       // created_at est généralement géré par le backend
     };
@@ -57,7 +57,7 @@ export class SecteurActiviteComponent implements OnInit {
     this.secteurForm.patchValue({
       code: secteur.code,
       libelle: secteur.libelle,
-      ordre_affichage: secteur.ordre_affichage,
+      ordre_affichage: secteur.ordreAffichage,
       actif: secteur.actif
     });
   }
@@ -102,7 +102,7 @@ export class SecteurActiviteComponent implements OnInit {
         const secteur: SecteurActivite = {
           code: currentLine[0].trim(),
           libelle: currentLine[1].trim(),
-          ordre_affichage: currentLine[2] ? Number(currentLine[2]) : 0,
+          ordreAffichage: currentLine[2] ? Number(currentLine[2]) : 0,
           actif: currentLine[3] ? currentLine[3].trim().toLowerCase() === 'true' : true
         };
         result.push(secteur);
@@ -137,8 +137,9 @@ export class SecteurActiviteComponent implements OnInit {
       if (this.selectedSecteurActivite == null) {
         let newSecteurActivity = this.formToSecteur();
         this.secteurActiviteService.create(newSecteurActivity).subscribe(data => {
-          this.lodAllSeteurActivite();
           this.alertService.success("element bien ajouté ");
+          this.lodAllSeteurActivite();
+          this.resetForm();
         });
       } else {
         let updatedSecteurActivity = this.formToSecteur();
@@ -146,6 +147,7 @@ export class SecteurActiviteComponent implements OnInit {
         this.secteurActiviteService.update(updatedSecteurActivity.id, updatedSecteurActivity).subscribe(data => {
           this.lodAllSeteurActivite();
           this.alertService.success("elemet mis a jour");
+          this.resetForm();
         }
         );
       }

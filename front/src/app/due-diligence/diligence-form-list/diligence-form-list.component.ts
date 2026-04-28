@@ -5,6 +5,7 @@ import { NavigationService } from '../../services/navigation-service';
 import { FormConfig } from '../../appTypes';
 import { FormConfigService } from '../../services/form-config-service';
 import { AlertService } from '../../services/alert-service';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
     selector: 'app-diligence-form-list',
@@ -26,8 +27,8 @@ export class DiligenceFormListComponent implements OnInit {
 
     loadFormsConfig(): void {
         this.formConfigService.getAll().subscribe({
-            next: (data) => {
-                this.formConfigs = data;
+            next: (data: PaginatedResponse<FormConfig>) => {
+                this.formConfigs = data.content;
             },
             error: (err) => {
                 this.alertService.displayMessage('Erreur', 'Impossible de charger les formulaires', 'error');

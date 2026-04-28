@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomaineJuridiqueService } from '../../services/domaine-juridique.service';
 import { DomaineJuridique } from '../../appTypes';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
     selector: 'app-domaine-juridique-form',
@@ -37,8 +38,8 @@ export class DomaineJuridiqueFormComponent implements OnInit {
 
     loadDomaines(): void {
         this.domaineJuridiqueService.getAll().subscribe({
-            next: (data) => {
-                this.domaines = data.sort((a, b) => a.order - b.order);
+            next: (data: PaginatedResponse<DomaineJuridique>) => {
+                this.domaines = data.content.sort((a, b) => a.order - b.order);
             },
             error: (err) => {
                 console.error('Error loading domaines', err);

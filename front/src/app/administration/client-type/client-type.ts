@@ -34,7 +34,7 @@ export class ClientType implements OnInit {
 
   private lodAllClientType() {
     this.typeClientService.getAll().subscribe(data => {
-      this.clientTypes = data;
+      this.clientTypes = data.content;
     });
   }
 

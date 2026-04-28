@@ -7,6 +7,7 @@ import { MatterStatusService } from '../../services/statut-dossier.service';
 import { DossierPrioriteService } from '../../services/dossier-priorite.service';
 import { DomaineJuridiqueService } from '../../services/domaine-juridique.service';
 import { forkJoin } from 'rxjs';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
     selector: 'app-dossier-info',
@@ -38,17 +39,17 @@ export class DossierInfo implements OnInit {
 
     loadDependencies(): void {
         forkJoin({
-            clients: this.clientService.getAll(),
-            users: this.userService.getAll(),
-            statuses: this.statusService.getAll(),
-            priorities: this.priorityService.getAll(),
-            domaines: this.domaineService.getAll()
+            clients: this.clientService.getAll() as any,
+            users: this.userService.getAll() as any,
+            statuses: this.statusService.getAll() as any,
+            priorities: this.priorityService.getAll() as any,
+            domaines: this.domaineService.getAll() as any
         }).subscribe(({ clients, users, statuses, priorities, domaines }) => {
-            this.clients = clients;
-            this.users = users;
-            this.statuses = statuses;
-            this.priorities = priorities;
-            this.domaines = domaines;
+            this.clients = (clients as any).content;
+            this.users = (users as any).content;
+            this.statuses = (statuses as any).content;
+            this.priorities = (priorities as any).content;
+            this.domaines = (domaines as any).content;
         });
     }
 

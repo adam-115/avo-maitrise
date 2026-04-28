@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EventTypeService } from '../../services/event-type.service';
 import { EventType } from '../../appTypes';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
     selector: 'app-event-type',
@@ -37,8 +38,8 @@ export class EventTypeComponent implements OnInit {
 
     loadEventTypes(): void {
         this.eventTypeService.getAll().subscribe({
-            next: (data) => {
-                this.eventTypes = data.sort((a, b) => a.order - b.order);
+            next: (data: PaginatedResponse<EventType>) => {
+                this.eventTypes = data.content.sort((a, b) => a.order - b.order);
             },
             error: (err) => {
                 console.error('Error loading event types', err);

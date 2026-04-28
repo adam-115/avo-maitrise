@@ -3,6 +3,7 @@ import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { DossierContact } from '../../appTypes';
 import { DossierContactService } from '../../services/dossier-contact.service';
 import { AlertService } from '../../services/alert-service';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-contact',
@@ -27,8 +28,8 @@ export class ContactComponent implements OnInit {
   }
 
   loadContacts() {
-    this.contactService.getAll().subscribe(contacts => {
-      this.contacts = contacts.filter(c => String(c.dossierId) === String(this.dossierID));
+    this.contactService.getAll().subscribe((data: PaginatedResponse<DossierContact>) => {
+      this.contacts = data.content.filter(c => String(c.dossierId) === String(this.dossierID));
     });
   }
 

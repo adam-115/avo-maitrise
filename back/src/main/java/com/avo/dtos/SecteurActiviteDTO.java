@@ -16,7 +16,7 @@ public class SecteurActiviteDTO {
     private Long id;
     private String code;
     private String libelle;
-    private Integer ordreAffichage;
+    private Long ordreAffichage;
     private boolean actif;
     private Date createdAt;
 

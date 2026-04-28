@@ -4,6 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatterEvent, User } from '../../appTypes';
 import { UserService } from '../../services/user.service';
 import { UserSelectionDialog } from '../../dossier/user-selection-dialog/user-selection-dialog';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-evenement-dialog',
@@ -35,7 +36,7 @@ export class EvenementDialogComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit(): void {
-    this.userService.getAll().subscribe(data => this.users = data);
+    this.userService.getAll().subscribe((data:PaginatedResponse<User>) => this.users = data.content);
 
     this.eventForm = new FormGroup({
       titre: new FormControl('', [Validators.required, Validators.minLength(3)]),

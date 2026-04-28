@@ -3,6 +3,7 @@ import { UtilisateursFormDialog } from '../utilisateurs-form-dialog/utilisateurs
 import { UserService } from '../../../services/user.service';
 import { User, UserRole } from '../../../appTypes';
 import { CommonModule } from '@angular/common';
+import { PaginatedResponse } from '../../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-utilisateur',
@@ -24,8 +25,8 @@ export class Utilisateur implements OnInit {
   }
 
   loadUsers() {
-    this.userService.getAll().subscribe(data => {
-      this.users = data;
+    this.userService.getAll().subscribe((data: PaginatedResponse<User>) => {
+      this.users = data.content;
     });
   }
 

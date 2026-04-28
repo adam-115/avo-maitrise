@@ -38,7 +38,7 @@ export class TaskCategoryFormComponent implements OnInit {
     loadCategories(): void {
         this.taskCategoryService.getAll().subscribe({
             next: (data) => {
-                this.categories = data; // Assuming order is not defined in model, or sort by id/libelle
+                this.categories = data.content; // Assuming order is not defined in model, or sort by id/libelle
             },
             error: (err) => {
                 console.error('Error loading tasks categories', err);

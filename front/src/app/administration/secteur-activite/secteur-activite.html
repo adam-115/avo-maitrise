@@ -52,7 +52,7 @@
                 <td class="px-6 py-4 text-sm font-black transition-colors"
                   [class.text-cyan-600]="selectedSecteurActivite?.id === secteur.id"
                   [class.text-slate-300]="selectedSecteurActivite?.id !== secteur.id">
-                  {{ secteur.ordre_affichage | number:'2.0' }}
+                  {{ secteur.ordreAffichage | number:'2.0' }}
                 </td>
 
                 <td class="px-6 py-4">
@@ -139,7 +139,7 @@
 
             <!-- [disabled]="secteurForm.invalid" -->
             <div class="pt-4 space-y-3">
-              <button type="submit" (click)="submit()" 
+              <button type="submit" (click)="submit()" [disabled]="secteurForm.invalid"
                 class="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-100 hover:bg-cyan-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none disabled:cursor-not-allowed">
                 {{ selectedSecteurActivite ? "Mettre à jour le secteur" : "Ajouter le secteur" }}
               </button>

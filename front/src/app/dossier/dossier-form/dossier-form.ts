@@ -13,6 +13,7 @@ import { ClientSelectionDialog } from '../client-selection-dialog/client-selecti
 import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
 import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { DomaineJuridiqueSelectionDialog } from '../domaine-juridique-selection-dialog/domaine-juridique-selection-dialog';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-dossier-form',
@@ -81,11 +82,11 @@ export class DossierForm implements OnInit {
   }
 
   loadDependencies(): void {
-    this.clientService.getAll().subscribe(data => this.clients = data);
-    this.statusService.getAll().subscribe(data => this.statuses = data);
-    this.priorityService.getAll().subscribe(data => this.priorities = data);
-    this.userService.getAll().subscribe(data => this.users = data);
-    this.domaineService.getAll().subscribe(data => this.domaines = data.filter(d => d.active));
+    this.clientService.getAll().subscribe((data: PaginatedResponse<Client>) => this.clients = data.content);
+    this.statusService.getAll().subscribe((data: PaginatedResponse<StatutDossier>) => this.statuses = data.content);
+    this.priorityService.getAll().subscribe((data: PaginatedResponse<DossierPriorite>) => this.priorities = data.content);
+    this.userService.getAll().subscribe((data: PaginatedResponse<User>) => this.users = data.content);
+    this.domaineService.getAll().subscribe((data: PaginatedResponse<DomaineJuridique>) => this.domaines = data.content.filter(d => d.active));
   }
 
   loadDossier(id: number): void {

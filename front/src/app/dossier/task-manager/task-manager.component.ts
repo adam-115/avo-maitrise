@@ -5,6 +5,7 @@ import { Task, TaskCategory, TaskStatus, User } from '../../appTypes';
 import { TaskService } from '../../services/task.service';
 import { TaskCategoryService } from '../../services/task-category.service';
 import { TaskStatusService } from '../../services/task-status.service';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { UserService } from '../../services/user.service';
 import { TaskDialogComponent } from './task-dialog/task-dialog.component';
 
@@ -47,14 +48,14 @@ export class TaskManagerComponent implements OnInit {
     }
 
     loadData() {
-        this.userService.getAll().subscribe(usersList => {
-            this.users = usersList;
+        this.userService.getAll().subscribe(data => {
+            this.users = data.content;
         });
 
-        this.categoryService.getAll().subscribe(cats => {
-            this.categories = cats;
-            this.statusService.getAll().subscribe(stats => {
-                this.statuses = stats.sort((a, b) => a.ordre_affichage - b.ordre_affichage);
+        this.categoryService.getAll().subscribe(data => {
+            this.categories = data.content;
+            this.statusService.getAll().subscribe(sData => {
+                this.statuses = sData.content.sort((a, b) => a.ordre_affichage - b.ordre_affichage);
                 if (this.dossierId) {
                     this.loadTasks();
                 }
@@ -63,8 +64,8 @@ export class TaskManagerComponent implements OnInit {
     }
 
     loadTasks() {
-        this.taskService.getAll().subscribe(allTasks => {
-            this.tasks = allTasks.filter(t => t.dossierId == this.dossierId);
+        this.taskService.getAll().subscribe(data => {
+            this.tasks = data.content.filter(t => t.dossierId == this.dossierId);
             this.applyFilters();
         });
     }

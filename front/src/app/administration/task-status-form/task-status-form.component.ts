@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TaskStatusService } from '../../services/task-status.service';
 import { TaskStatus } from '../../appTypes';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
     selector: 'app-task-status-form',
@@ -36,8 +37,8 @@ export class TaskStatusFormComponent implements OnInit {
 
     loadStatuses(): void {
         this.taskStatusService.getAll().subscribe({
-            next: (data) => {
-                this.statuses = data.sort((a, b) => a.ordre_affichage - b.ordre_affichage);
+            next: (data:PaginatedResponse<TaskStatus>) => {
+                this.statuses = data.content.sort((a, b) => a.ordre_affichage - b.ordre_affichage);
             },
             error: (err) => {
                 console.error('Error loading task statuses', err);

@@ -116,8 +116,8 @@ export abstract class AbstractCrudService<T> {
   }
 
 
-  getAll(): Observable<T[]> {
-    return this.http.get<T[]>(this.apiUrl);
+  getAll(): Observable<PaginatedResponse<T>> {
+    return this.http.get<PaginatedResponse<T>>(this.apiUrl);
   }
 
   /**

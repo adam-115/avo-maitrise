@@ -3,3 +3,4 @@ update-borders.js
 *.class
 target/
 /back/target
+spring.log

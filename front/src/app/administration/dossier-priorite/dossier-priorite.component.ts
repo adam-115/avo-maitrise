@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DossierPrioriteService } from '../../services/dossier-priorite.service';
 import { DossierPriorite } from '../../appTypes';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
     selector: 'app-dossier-priorite',
@@ -37,8 +38,8 @@ export class DossierPrioriteComponent implements OnInit {
 
     loadPriorities(): void {
         this.dossierPrioriteService.getAll().subscribe({
-            next: (data) => {
-                this.priorities = data.sort((a, b) => a.order - b.order);
+            next: (data: PaginatedResponse<DossierPriorite>) => {
+                this.priorities = data.content.sort((a, b) => a.order - b.order);
             },
             error: (err) => {
                 console.error('Error loading priorities', err);

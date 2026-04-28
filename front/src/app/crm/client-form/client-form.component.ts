@@ -12,6 +12,7 @@ import { ClientMoralService } from '../../services/client-moral.service';
 import { PersonnePhysiqueService } from '../../services/personne-physique.service';
 import { AssociationService } from '../../services/association.service';
 import { InstitutionService } from '../../services/institution.service';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
     selector: 'app-client-form',
@@ -154,8 +155,8 @@ export class ClientFormComponent implements OnInit {
     }
 
     private loadSecteurs(): void {
-        this.secteurService.getAll().subscribe(data => {
-            this.secteurs = data.filter(s => s.actif);
+        this.secteurService.getAll().subscribe((data: PaginatedResponse<SecteurActivite>) => {
+            this.secteurs = data.content.filter(s => s.actif);
         });
     }
 

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NoteCategoryService } from '../../services/note-category.service';
 import { NoteCategory } from '../../appTypes';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
     selector: 'app-note-category',
@@ -37,8 +38,8 @@ export class NoteCategoryComponent implements OnInit {
 
     loadCategories(): void {
         this.noteCategoryService.getAll().subscribe({
-            next: (data) => {
-                this.categories = data.sort((a, b) => a.order - b.order);
+            next: (data: PaginatedResponse<NoteCategory>) => {
+                this.categories = data.content.sort((a, b) => a.order - b.order);
             },
             error: (err) => {
                 console.error('Error loading categories', err);

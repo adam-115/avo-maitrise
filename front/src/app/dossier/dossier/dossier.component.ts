@@ -9,6 +9,7 @@ import { MatterStatusService } from '../../services/statut-dossier.service';
 import { UserService } from '../../services/user.service';
 import { Dossier as DossierModel, Client, StatutDossier, DossierPriorite, User } from '../../appTypes';
 import { forkJoin } from 'rxjs';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { NavigationService } from '../../services/navigation-service';
 
 @Component({
@@ -61,11 +62,11 @@ export class DossierComponent implements OnInit {
       priorities: this.priorityService.getAll(),
       users: this.userService.getAll()
     }).subscribe(({ dossiers, clients, statuses, priorities, users }) => {
-      this.dossiers = dossiers;
-      this.clients = clients;
-      this.statuses = statuses;
-      this.priorities = priorities;
-      this.users = users;
+      this.dossiers = (dossiers as PaginatedResponse<DossierModel>).content;
+      this.clients = (clients as PaginatedResponse<Client>).content;
+      this.statuses = (statuses as PaginatedResponse<StatutDossier>).content;
+      this.priorities = (priorities as PaginatedResponse<DossierPriorite>).content;
+      this.users = (users as PaginatedResponse<User>).content;
 
       this.calculateKPIs();
     });

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatterStatusService } from '../../services/statut-dossier.service';
 import { StatutDossier } from '../../appTypes';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
     selector: 'app-dossier-status-form',
@@ -37,8 +38,8 @@ export class DossierStatusFormComponent implements OnInit {
 
     loadStatuses(): void {
         this.statutDossierService.getAll().subscribe({
-            next: (data) => {
-                this.statuses = data.sort((a, b) => a.order - b.order);
+            next: (data: PaginatedResponse<StatutDossier>) => {
+                this.statuses = data.content.sort((a, b) => a.order - b.order);
             },
             error: (err) => {
                 console.error('Error loading statuses', err);

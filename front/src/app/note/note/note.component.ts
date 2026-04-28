@@ -5,6 +5,7 @@ import { Note, NoteCategory } from '../../appTypes';
 import { NoteService } from '../../services/note.service';
 import { NoteCategoryService } from '../../services/note-category.service';
 import { AlertService } from '../../services/alert-service';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-note',
@@ -32,14 +33,14 @@ export class NoteComponent implements OnInit {
   }
 
   loadNotes() {
-    this.noteService.getAll().subscribe(notes => {
-      this.notes = notes.filter(n => String(n.dossierId) === String(this.dossierID));
+    this.noteService.getAll().subscribe((data: PaginatedResponse<Note>) => {
+      this.notes = data.content.filter(n => String(n.dossierId) === String(this.dossierID));
     });
   }
 
   loadCategories() {
-    this.noteCategoryService.getAll().subscribe(categories => {
-      this.categories = categories;
+    this.noteCategoryService.getAll().subscribe((categories: PaginatedResponse<NoteCategory>) => {
+      this.categories =   categories.content;
     });
   }
 

@@ -32,7 +32,7 @@ public class SecteurActivite {
     private String libelle;
 
     @Column(name = "ordre_affichage")
-    private Integer ordreAffichage;
+    private Long ordreAffichage;
 
     private boolean actif;
 

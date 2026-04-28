@@ -14,6 +14,7 @@ import { TaskStatusService } from '../../../../services/task-status.service';
 import { TaskCategoryService } from '../../../../services/task-category.service';
 import { EventTypeService } from '../../../../services/event-type.service';
 import { Client, Dossier, Invoice, InvoiceLineItem, InvoiceStatus, MatterEvent, Task, TaskStatus, TaskCategory, EventType } from '../../../../appTypes';
+import { PaginatedResponse } from '../../../../services/genericService/abstract-crud.service';
 
 @Component({
     selector: 'app-invoice-editor',
@@ -73,11 +74,11 @@ export class InvoiceEditorComponent implements OnInit {
     totalTTC = signal(0);
 
     ngOnInit(): void {
-        this.clientService.getAll().subscribe(data => this.clients = data || []);
-        this.dossierService.getAll().subscribe(data => this.allDossiers = data || []);
-        this.taskStatusService.getAll().subscribe(data => this.taskStatuses = data || []);
-        this.taskCategoryService.getAll().subscribe(data => this.taskCategories = data || []);
-        this.eventTypeService.getAll().subscribe(data => this.eventTypes = data || []);
+        this.clientService.getAll().subscribe((data:PaginatedResponse<Client>) => this.clients = data.content || []);
+        this.dossierService.getAll().subscribe((data:PaginatedResponse<Dossier>) => this.allDossiers = data.content || []);
+        this.taskStatusService.getAll().subscribe((data:PaginatedResponse<TaskStatus>) => this.taskStatuses = data.content || []);
+        this.taskCategoryService.getAll().subscribe((data:PaginatedResponse<TaskCategory>) => this.taskCategories = data.content || []);
+        this.eventTypeService.getAll().subscribe((data:PaginatedResponse<EventType>) => this.eventTypes = data.content || []);
 
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {

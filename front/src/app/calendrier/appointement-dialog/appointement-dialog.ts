@@ -5,6 +5,7 @@ import { AppointementService } from '../../services/appointement.service';
 import { ClientService } from '../../services/client-service';
 import { DossierService } from '../../services/dossier.service';
 import { Appointement, Client, Dossier } from '../../appTypes';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-appointement-dialog',
@@ -62,8 +63,8 @@ export class AppointementDialogComponent implements OnInit {
   }
 
   loadData() {
-    this.clientService.getAll().subscribe(clients => this.clients = clients);
-    this.dossierService.getAll().subscribe(dossiers => this.dossiers = dossiers);
+    this.clientService.getAll().subscribe((clients: PaginatedResponse<Client>) => this.clients = clients.content);
+    this.dossierService.getAll().subscribe((dossiers: PaginatedResponse<Dossier>) => this.dossiers = dossiers.content);
   }
 
   save() {

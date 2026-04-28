@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { NavigationService } from '../../services/navigation-service';
 import { UserService } from '../../services/user.service';
 import { environment } from '../../../environments/environment';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { User } from '../../appTypes';
 
 @Component({
   selector: 'app-login',
@@ -38,8 +40,8 @@ export class Login implements OnInit {
       const email = this.loginForm.value.email;
 
       this.userService.getAll().subscribe({
-        next: (users) => {
-          const userExists = users.find(u => u.email === email);
+        next: (data: PaginatedResponse<User>) => {
+          const userExists = data.content.find((u: User) => u.email === email);
           if (userExists) {
             this.navigationService.navigateToHome();
           } else {

@@ -5,6 +5,7 @@ import { FormResultService } from '../../services/form-result-service';
 import { ClientService } from '../../services/client-service';
 import { FormConfigService } from '../../services/form-config-service';
 import { NavigationService } from '../../services/navigation-service';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { ClientDiligenceStatusService } from '../../services/client-diligence-status-service';
 import { Client, DiligenceFormResult, FormConfig, ClientDiligenceStatus, ClientStatus } from '../../appTypes';
 import { forkJoin, map, switchMap, of } from 'rxjs';
@@ -94,8 +95,8 @@ export class ClientDiligenceResultsComponent implements OnInit {
     }
 
     private loadAvailableForms() {
-        this.formConfigService.getAll().subscribe(forms => {
-            this.availableForms = forms;
+        this.formConfigService.getAll().subscribe(data => {
+            this.availableForms = data.content;
         });
     }
 

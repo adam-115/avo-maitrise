@@ -95,9 +95,9 @@ export interface SecteurActivite {
   id?: number;
   code: string;           // ex: 'IMMOBILIER', 'FINTECH'
   libelle: string;        // ex: 'Promotion Immobilière'
-  ordre_affichage: number;
+  ordreAffichage: number;
   actif: boolean;
-  created_at?: Date;
+  createdAt?: Date;
 }
 
 export interface UBO {

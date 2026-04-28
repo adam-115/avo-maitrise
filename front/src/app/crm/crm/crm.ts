@@ -6,6 +6,7 @@ import { ClientService } from '../../services/client-service';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 
 @Component({
@@ -47,9 +48,9 @@ export class Crm implements OnInit {
 
   loadClients() {
     this.clientService.getAll().subscribe({
-      next: (data) => {
-        this.clients = data;
-        this.filteredClients = data;
+      next: (data: PaginatedResponse<Client>) => {
+        this.clients = data.content;
+        this.filteredClients = data.content;
         this.filterClients();
       },
       error: (err) => {

@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { AppointementService } from '../../services/appointement.service';
 import { AppointementDialogComponent } from '../appointement-dialog/appointement-dialog';
 import { AlertService } from '../../services/alert-service';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-calendrier-semaine',
@@ -38,9 +39,9 @@ export class CalendrierSemaine implements OnInit {
 
   loadAppointements(): void {
     this.appointementService.getAll().subscribe({
-      next: (data) => {
+      next: (data: PaginatedResponse<Appointement>) => {
         // Convert the ISO string dates back to Javascript Date objects
-        this.hearings = data.map(app => ({
+        this.hearings = data.content.map(app => ({
           ...app,
           date: new Date(app.date)
         }));

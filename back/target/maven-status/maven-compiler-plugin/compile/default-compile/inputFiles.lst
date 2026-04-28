@@ -43,6 +43,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\repositories\ScreeningMatchRepository
 D:\avo-maitrise\back\src\main\java\com\avo\controller\InstitutionController.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchQuery.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\ScreeningMatchController.java
+D:\avo-maitrise\back\src\main\java\com\avo\config\CorsConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ClientMoralRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\UBO.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\InstitutionService.java

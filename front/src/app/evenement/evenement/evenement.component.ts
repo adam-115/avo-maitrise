@@ -5,6 +5,7 @@ import { AlertService } from '../../services/alert-service';
 import { MatterEventService } from '../../services/matter-event.service';
 import { UserService } from '../../services/user.service';
 import { EvenementDialogComponent } from './../evenement-dialog/evenement-dialog.component';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-evenement',
@@ -27,7 +28,7 @@ export class EvenementComponent implements OnInit {
   viewedEvent: MatterEvent | null = null;
 
   ngOnInit() {
-    this.userService.getAll().subscribe(data => this.users = data);
+    this.userService.getAll().subscribe(data => this.users = data.content);
     this.loadEvents();
   }
 
@@ -38,8 +39,8 @@ export class EvenementComponent implements OnInit {
   }
 
   loadEvents() {
-    this.matterEventService.getAll().subscribe(res => {
-      this.events = res.filter(e => String(e.dossierId) === String(this.dossierId));
+    this.matterEventService.getAll().subscribe((res:PaginatedResponse<MatterEvent>) => {
+      this.events = res.content.filter(e => String(e.dossierId) === String(this.dossierId));
     });
   }
 

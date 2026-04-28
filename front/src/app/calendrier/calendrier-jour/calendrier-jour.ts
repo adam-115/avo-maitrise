@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AppointementDialogComponent } from '../appointement-dialog/appointement-dialog';
 import { AlertService } from '../../services/alert-service';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-calendrier-jour',
@@ -39,8 +40,8 @@ export class CalendrierJour {
 
   loadAppointements(): void {
     this.appointementService.getAll().subscribe({
-      next: (data) => {
-        this.hearings = data.map(app => ({
+      next: (data: PaginatedResponse<Appointement>) => {
+        this.hearings = data.content.map(app => ({
           ...app,
           date: new Date(app.date)
         }));

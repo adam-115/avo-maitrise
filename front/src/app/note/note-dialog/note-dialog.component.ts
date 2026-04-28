@@ -3,6 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { CommonModule } from '@angular/common';
 import { Note, NoteCategory } from '../../appTypes';
 import { NoteCategoryService } from '../../services/note-category.service';
+import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-note-dialog',
@@ -37,8 +38,8 @@ export class NoteDialogComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    this.noteCategoryService.getAll().subscribe((noteCategories) => {
-      this.noteCategories = noteCategories;
+    this.noteCategoryService.getAll().subscribe((noteCategories: PaginatedResponse<NoteCategory>) => {
+      this.noteCategories = noteCategories.content;
     });
   }
 

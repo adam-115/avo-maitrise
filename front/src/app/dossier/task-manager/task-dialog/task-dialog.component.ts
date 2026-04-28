@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } 
 import { Task, TaskCategory, TaskStatus, User, TaskLog } from '../../../appTypes';
 import { UserSelectionDialog } from '../../user-selection-dialog/user-selection-dialog';
 import { TaskLogService } from '../../../services/task-log.service';
+import { PaginatedResponse } from '../../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-task-dialog',
@@ -110,8 +111,8 @@ export class TaskDialogComponent implements OnInit {
 
   loadLogs() {
     if (!this.taskToEdit?.id) return;
-    this.taskLogService.getAll().subscribe(logs => {
-      this.currentTaskLogs = logs
+    this.taskLogService.getAll().subscribe(data => {
+      this.currentTaskLogs = data.content
         .filter(l => String(l.taskId) === String(this.taskToEdit!.id))
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     });
