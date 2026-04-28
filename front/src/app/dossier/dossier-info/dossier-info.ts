@@ -54,8 +54,8 @@ export class DossierInfo implements OnInit {
 
     getClientName(clientId: string | number | undefined): string {
         if (!clientId) return 'Non spécifié';
-        const client = this.clients.find(c => c.id == clientId);
-        return client ? (client.nom || client.prenom || 'Nom Inconnu') : 'Inconnu';
+        const client = this.clients.find(c => c.id == clientId) as any;
+        return client ? (client.nom || client.nomCommercial || client.prenom || 'Nom Inconnu') : 'Inconnu';
     }
 
     getResponsableName(userId: string | undefined): string {

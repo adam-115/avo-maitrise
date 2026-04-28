@@ -42,6 +42,10 @@ public class ScreeningMatch {
     @JoinColumn(name = "client_id", nullable = false)
     private ClientEntity client;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id", nullable = true)
+    private UBO ubo ;
+
     /**
      * The unique identifier of the matched entity from the external Yente/OpenSanctions API.
      */

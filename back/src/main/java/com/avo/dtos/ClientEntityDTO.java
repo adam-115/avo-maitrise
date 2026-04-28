@@ -25,5 +25,6 @@ public class ClientEntityDTO {
     private String amlSanctionReason;
     private Date amlLastVerificationDate;
     private List<DocumentDTO> documents;
+    private List<ScreeningMatchDTO> screeningMatchDTOs ;
 
 }

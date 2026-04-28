@@ -20,6 +20,11 @@ export class DiligenceFormResultViewerComponent implements OnInit {
     client: Client | null = null;
     loading = true;
 
+    getDisplayName(client: any): string {
+        if (!client) return '';
+        return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+    }
+
     private route = inject(ActivatedRoute);
     private formResultService = inject(FormResultService);
     private formConfigService = inject(FormConfigService);
@@ -100,7 +105,7 @@ export class DiligenceFormResultViewerComponent implements OnInit {
 
     goBack() {
         if (this.client) {
-            this.navigationService.navigateToClientDiligenceResults(this.client.id!);
+            this.navigationService.navigateToClientDiligenceResults(String(this.client.id!));
         } else {
             this.navigationService.navigateToClients();
         }

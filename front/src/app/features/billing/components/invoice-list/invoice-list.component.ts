@@ -40,7 +40,7 @@ export class InvoiceListComponent {
         if (term) {
             invoices = invoices.filter(inv =>
                 inv.invoiceNumber.toLowerCase().includes(term) ||
-                inv.clientId.toLowerCase().includes(term)
+                String(inv.clientId).toLowerCase().includes(term)
             );
         }
         return invoices;

@@ -21,6 +21,11 @@ export class DiligenceFormViewerComponent implements OnInit {
     diligenceForm: FormGroup = new FormGroup({});
     selectedClient: Client | null = null;
 
+    getDisplayName(client: any): string {
+        if (!client) return '';
+        return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+    }
+
     private route = inject(ActivatedRoute);
     private fb = inject(FormBuilder);
     private formConfigService = inject(FormConfigService);
@@ -142,7 +147,7 @@ export class DiligenceFormViewerComponent implements OnInit {
                 // Optional: Navigate back to client details if we have a client, otherwise list
                 // For now, keep existing behavior but maybe improve later
                 if (this.selectedClient) {
-                    this.navigationService.navigateToClientDiligenceResults(this.selectedClient.id!);
+                    this.navigationService.navigateToClientDiligenceResults(String(this.selectedClient.id!));
                 } else {
                     // this.navigationService.navigateToFormConfigList();
                 }
@@ -156,7 +161,7 @@ export class DiligenceFormViewerComponent implements OnInit {
 
     private updateAssignmentStatus(result: DiligenceFormResult) {
         if (this.selectedClient?.id && this.formConfig?.id) {
-            this.statusService.findByClientId(this.selectedClient.id).subscribe(statuses => {
+            this.statusService.findByClientId(String(this.selectedClient.id)).subscribe(statuses => {
                 const assignment = statuses.find(s => s.formConfigId === this.formConfig?.id && s.status === 'PENDING');
                 if (assignment) {
                     assignment.status = 'SUBMITTED';

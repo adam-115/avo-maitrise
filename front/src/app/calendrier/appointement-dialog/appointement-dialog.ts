@@ -33,6 +33,11 @@ export class AppointementDialogComponent implements OnInit {
   dossiers: Dossier[] = [];
   isLoading = false;
 
+  getDisplayName(client: any): string {
+    if (!client) return '';
+    return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+  }
+
   ngOnInit() {
     this.initForm();
     this.loadData();
@@ -77,7 +82,7 @@ export class AppointementDialogComponent implements OnInit {
         if (dossier) formValue.clientCase = dossier.titre;
       } else if (formValue.clientId) {
         const client = this.clients.find(c => String(c.id) === String(formValue.clientId));
-        if (client) formValue.clientCase = `${client.nom} ${client.prenom}`;
+        if (client) formValue.clientCase = this.getDisplayName(client);
       } else {
         formValue.clientCase = formValue.title;
       }

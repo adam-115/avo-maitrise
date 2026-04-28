@@ -59,7 +59,7 @@ export class InvoiceEditorComponent implements OnInit {
     invoiceForm = new FormGroup({
         invoiceNumber: new FormControl('', Validators.required),
         date: new FormControl<string>(new Date().toISOString().substring(0, 10), Validators.required),
-        clientId: new FormControl('', Validators.required),
+        clientId: new FormControl<number | string>('', Validators.required),
         clientAddress: new FormControl(''),
         dossierId: new FormControl('', Validators.required),
         status: new FormControl<InvoiceStatus>('DRAFT'),
@@ -189,8 +189,8 @@ export class InvoiceEditorComponent implements OnInit {
     getSelectedClientName(): string {
         const clientId = this.invoiceForm.get('clientId')?.value;
         if (!clientId) return '';
-        const client = this.clients.find(c => String(c.id) === String(clientId));
-        return client ? `${client.nom || ''} ${client.prenom || ''}`.trim() : '';
+        const client = this.clients.find(c => String(c.id) === String(clientId)) as any;
+        return client ? `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim() : '';
     }
 
     loadInvoice(id: string) {
@@ -256,7 +256,7 @@ export class InvoiceEditorComponent implements OnInit {
         const newInvoice: Partial<Invoice> = {
             invoiceNumber: val.invoiceNumber!,
             date: new Date(val.date!),
-            clientId: val.clientId!,
+            clientId: Number(val.clientId!),
             clientAddress: val.clientAddress || undefined,
             dossierId: val.dossierId || undefined,
             status: val.status as InvoiceStatus,

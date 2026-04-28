@@ -59,4 +59,7 @@ public class ClientEntity {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Document> documents;
 
+    @OneToMany(mappedBy ="client")
+    private List<ScreeningMatch> screeningMatchs ;
+
 }

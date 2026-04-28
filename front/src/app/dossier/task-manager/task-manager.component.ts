@@ -27,7 +27,7 @@ export class TaskManagerComponent implements OnInit {
     showForm: boolean = false;
     isEditing: boolean = false;
     isViewOnlyMode: boolean = false;
-    selectedTaskId: number | undefined = undefined;
+    selectedTaskId: number | string | undefined = undefined;
     taskToEdit?: Task;
 
     // Filters
@@ -147,7 +147,7 @@ export class TaskManagerComponent implements OnInit {
         const target = event.target as HTMLSelectElement;
         const newStatusId = target.value;
         const updatedTask = { ...task, statusId: newStatusId };
-        this.taskService.update((task.id as number).toString(), updatedTask).subscribe(() => {
+        this.taskService.update(String(task.id!), updatedTask).subscribe(() => {
             this.loadTasks();
         });
     }

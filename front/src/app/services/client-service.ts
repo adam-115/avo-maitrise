@@ -15,7 +15,7 @@ export class ClientService extends AbstractCrudService<Client> {
         super(http);
     }
 
-    updateClientStatus(id: string, status: ClientStatus): Observable<Client> {
+    updateClientStatus(id: string | number, status: ClientStatus): Observable<Client> {
         return this.http.patch<Client>(`${this.apiUrl}/${id}`, { clientStatus: status });
     }
 }

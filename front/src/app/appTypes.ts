@@ -54,11 +54,11 @@ export enum ContactTypeCreation {
 
 // Interface pour définir la structure d'une Audience Judiciaire
 export interface Appointement {
-  id: number;
+  id: number | string;
   title: string;
   clientCase: string; // Keep for backward compatibility or simple display
-  clientId?: string;      // ID of the related client
-  dossierId?: string | number; // ID of the related dossier
+  clientId?: number | string;      // ID of the related client
+  dossierId?: number | string; // ID of the related dossier
   time: string; // Heure de début "HH:mm"
   endTime: string; // Heure de fin "HH:mm"
   location: string;
@@ -101,10 +101,23 @@ export interface SecteurActivite {
 }
 
 export interface UBO {
-  nom: string;
+  id?: number;
+  fullName: string;
+  dateOfBirth?: Date;
+  nationality?: string;
+  roleInCompany?: string;
+  percentageOfOwnership?: number;
+  amlAnalysisStatus?: 'TODO' | 'OK' | 'SUSPECT' | 'BLOCKED';
+  amlMatchScore?: number;
+  amlTargetEntityName?: string;
+  amlSanctionReason?: string;
+  amlLastVerificationDate?: Date;
+
+  // Compatibility fields
+  nom?: string;
   prenom?: string;
-  partDetention: number; // Percentage
-  isPPE: boolean; // Personne Politiquement Exposée
+  partDetention?: number;
+  isPPE?: boolean;
 }
 
 export interface ContactPoint {
@@ -117,20 +130,13 @@ export interface ContactPoint {
 }
 
 export interface Client {
-  id: string;
-  type: ClientTypeEnum;
-  nom?: string;
-  prenom?: string;
+  id?: number;
+  type?: ClientTypeEnum;
   email?: string;
   telephone?: string;
-  secteurActivite: string; // Could be ID or Code
-  paysResidance: string;
-  riskScore: number;
-  ubos?: UBO[]; // Optional, mostly for legal entities
-  contacts?: ContactPoint[];
-  clientStatus?: ClientStatus;
-  documents?: Document[];
   adresse?: string;
+  pays?: string;
+  paysResidance?: string; // Alias for pays (deprecated)
 
   // Yente AML specific properties
   amlAnalysisStatus?: 'TODO' | 'OK' | 'SUSPECT' | 'BLOCKED';
@@ -138,6 +144,59 @@ export interface Client {
   amlTargetEntityName?: string;
   amlSanctionReason?: string;
   amlLastVerificationDate?: Date;
+
+  // Common collections
+  documents?: Document[];
+  ubos?: UBO[]; // For compatibility with ClientFormComponent
+  
+  // Additional fields for frontend logic
+  riskScore?: number;
+  clientStatus?: ClientStatus;
+  secteurActivite?: string;
+  contacts?: ContactPoint[];
+}
+
+export interface ClientPersonnePhysique extends Client {
+  nom?: string;
+  prenom?: string;
+  nationalite?: string;
+  cin?: string;
+  dateNaissance?: Date;
+}
+
+export interface ClientMoral extends Client {
+  nomCommercial?: string;
+  formeJuridique?: string;
+  numeroRegistreCommerce?: string;
+  numeroIdFiscal?: string;
+  nomRepresentantLegal?: string;
+  prenomRepresentantLegal?: string;
+  nationaliteRepresentantLegal?: string;
+  cinRepresentantLegal?: string;
+  dateNaissanceRepresentantLegal?: Date;
+  ubos?: UBO[];
+}
+
+export interface Association extends Client {
+  nom?: string;
+  numeroRegistreNational?: string;
+  numeroIdFiscal?: string;
+  nomRepresentantLegal?: string;
+  prenomRepresentantLegal?: string;
+  nationaliteRepresentantLegal?: string;
+  cinRepresentantLegal?: string;
+  dateNaissanceRepresentantLegal?: Date;
+}
+
+export interface Institution extends Client {
+  nom?: string;
+  numeroRegistreNational?: string;
+  numeroIdFiscal?: string;
+  nomRepresentantLegal?: string;
+  prenomRepresentantLegal?: string;
+  nationaliteRepresentantLegal?: string;
+  cinRepresentantLegal?: string;
+  dateNaissanceRepresentantLegal?: Date;
 }
 
 export interface TypeOrganisme {
@@ -152,14 +211,21 @@ export interface TypeOrganisme {
 
 export interface Document {
   id?: number;
+  nomFichier?: string;
+  typeDocument?: string;
+  urlStockage?: string;
+  dateUpload?: Date;
+  estValide?: boolean;
+  filename?: string; // For compatibility
+  
+  // Frontend specific fields (for file upload & compatibility)
   title?: string;
   name?: string;
+  label?: string; // For DocumentComponent
   description?: string;
-  tags?: string;
   file?: File;
-  label?: string;
-  filename?: string;
-  date?: Date;
+  tags?: string; // For DocumentDialog
+  date?: Date; // For legacy DocumentComponent
 }
 
 
@@ -234,7 +300,7 @@ export interface FieldResult {
 export interface DiligenceFormResult {
   id?: string;
   formConfigId: string;
-  clientId?: string;
+  clientId?: number;
   creationDate: Date;
   lastUpdateDate: Date;
   fieldResults: FieldResult[];
@@ -242,7 +308,7 @@ export interface DiligenceFormResult {
 
 export interface ClientDiligenceStatus {
   id?: string;
-  clientId: string;
+  clientId: number;
   formConfigId: string;
   status: 'PENDING' | 'SUBMITTED' | 'VALIDATED';
   resultId?: string; // Optional, link to the submission
@@ -288,7 +354,7 @@ export interface Dossier {
   description?: string;
 
   // Relations
-  clientId: string | number;   // ID du client rattaché
+  clientId: number;   // ID du client rattaché
   responsableId: string;       // ID de l'avocat responsable (associé)
   intervenantsIds: string[];   // Liste des collaborateurs travaillant sur le dossier
 
@@ -340,7 +406,7 @@ export interface TaskStatus {
 }
 
 export interface Task {
-  id?: number;
+  id?: number | string;
   dossierId: number | string;
   titre: string;
   description?: string;
@@ -507,7 +573,7 @@ export interface Invoice {
   id: string;
   invoiceNumber: string; // N° facture
   date: Date;
-  clientId: string;      // Référence au client
+  clientId: number;      // Référence au client
   clientAddress?: string; // Adresse du client au moment de la facture
   dossierId?: string;    // Référence au dossier (optionnel pour rétrocompatibilité)
 

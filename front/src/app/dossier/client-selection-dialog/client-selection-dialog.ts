@@ -20,6 +20,11 @@ export class ClientSelectionDialog implements OnInit {
     selectedClientId: string | number | null = null;
     searchTerm: string = '';
 
+    getDisplayName(client: any): string {
+        if (!client) return '';
+        return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+    }
+
     ngOnInit(): void {
         this.filteredClients = [...this.clients];
         this.selectedClientId = this.initialSelection;
@@ -30,11 +35,13 @@ export class ClientSelectionDialog implements OnInit {
             this.filteredClients = [...this.clients];
         } else {
             const lowerTerm = this.searchTerm.toLowerCase();
-            this.filteredClients = this.clients.filter(client =>
-                (client.nom && client.nom.toLowerCase().includes(lowerTerm)) ||
-                (client.prenom && client.prenom.toLowerCase().includes(lowerTerm)) ||
-                (client.email && client.email.toLowerCase().includes(lowerTerm))
-            );
+            this.filteredClients = this.clients.filter(client => {
+                const c = client as any;
+                return (c.nom && c.nom.toLowerCase().includes(lowerTerm)) ||
+                    (c.nomCommercial && c.nomCommercial.toLowerCase().includes(lowerTerm)) ||
+                    (c.prenom && c.prenom.toLowerCase().includes(lowerTerm)) ||
+                    (c.email && c.email.toLowerCase().includes(lowerTerm));
+            });
         }
     }
 

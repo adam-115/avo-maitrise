@@ -22,6 +22,11 @@ export class ClientDetails implements OnInit {
 
   isLoading = true;
 
+  getDisplayName(client: any): string {
+    if (!client) return '';
+    return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+  }
+
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly navigationService = inject(NavigationService);
@@ -197,9 +202,10 @@ export class ClientDetails implements OnInit {
   async verifyAml() {
     if (!this.client) return;
 
-    const searchName = this.client.type === 'SOCIETE' ? 
-      this.client.nom : 
-      `${this.client.nom} ${this.client.prenom || ''}`.trim();
+    const c = this.client as any;
+    const searchName = this.client.type === 'SOCIETE' || this.client.type === 'INSTITUTION' ? 
+      (c.nomCommercial || c.nom) : 
+      `${c.nom || ''} ${c.prenom || ''}`.trim();
 
     if (!searchName) {
       this.alertService.displayMessage('Erreur', 'Le nom du client est manquant pour lancer l\'analyse.', 'error');

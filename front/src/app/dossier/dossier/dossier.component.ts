@@ -85,8 +85,8 @@ export class DossierComponent implements OnInit {
   }
 
   getClientName(clientId: string | number): string {
-    const client = this.clients.find(c => c.id == clientId);
-    return client ? (client.nom || client.prenom || 'Client Inconnu') : 'Client Inconnu';
+    const client = this.clients.find(c => c.id == clientId) as any;
+    return client ? (client.nom || client.nomCommercial || client.prenom || 'Client Inconnu') : 'Client Inconnu';
   }
 
   getResponsableName(userId: string): string {
@@ -94,11 +94,11 @@ export class DossierComponent implements OnInit {
     return user ? user.username : 'Non assigné';
   }
 
-  getStatus(statusId: string): StatutDossier | undefined {
+  getStatus(statusId: string | number): StatutDossier | undefined {
     return this.statuses.find(s => s.id == statusId);
   }
 
-  getPriority(priorityId: string): DossierPriorite | undefined {
+  getPriority(priorityId: string | number): DossierPriorite | undefined {
     return this.priorities.find(p => p.id == priorityId);
   }
 

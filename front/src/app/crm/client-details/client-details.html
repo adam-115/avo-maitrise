@@ -5,10 +5,10 @@
         <div>
             <nav class="text-sm font-medium text-gray-500 mb-2">
                 <a routerLink="/contacts" class="hover:text-cyan-600">Gestion des Contacts</a> /
-                <span class="text-slate-800 font-semibold">{{ client.nom }} {{ client.prenom }}</span>
+                <span class="text-slate-800 font-semibold">{{ getDisplayName(client) }}</span>
             </nav>
             <h1 class="text-3xl font-bold text-slate-800 flex items-center">
-                {{ client.nom }} {{ client.prenom }}
+                {{ getDisplayName(client) }}
                 <span class="ml-4 px-3 py-1 text-sm font-semibold rounded-full" [ngClass]="{
                       'bg-purple-100 text-purple-800': client.type === 'SOCIETE',
                       'bg-blue-100 text-blue-800': client.type === 'PERSONNE',
@@ -38,9 +38,9 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <!-- AML Risk Score -->
         <div class="p-4 rounded-xl border-l-4 bg-white shadow-sm" [ngClass]="{
-           'border-red-600': client.riskScore >= 75,
-           'border-yellow-600': client.riskScore >= 25 && client.riskScore < 75,
-           'border-green-600': client.riskScore < 25
+           'border-red-600': client.riskScore! >= 75,
+           'border-yellow-600': client.riskScore! >= 25 && client.riskScore! < 75,
+           'border-green-600': client.riskScore! < 25
          }">
             <div class="flex items-center justify-between">
                 <div>
@@ -51,9 +51,9 @@
                     </div>
                 </div>
                 <div class="p-2 rounded-full" [ngClass]="{
-                    'bg-red-100 text-red-600': client.riskScore >= 75,
-                    'bg-yellow-100 text-yellow-600': client.riskScore >= 25 && client.riskScore < 75,
-                    'bg-green-100 text-green-600': client.riskScore < 25
+                    'bg-red-100 text-red-600': client.riskScore! >= 75,
+                    'bg-yellow-100 text-yellow-600': client.riskScore! >= 25 && client.riskScore! < 75,
+                    'bg-green-100 text-green-600': client.riskScore! < 25
                 }">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -179,11 +179,11 @@
 
                 <div class="space-y-3 text-sm">
                     @if (client.type === 'PERSONNE') {
-                    <p><strong>Nom :</strong> {{ client.nom }}</p>
-                    <p><strong>Prénom :</strong> {{ client.prenom }}</p>
+                    <p><strong>Nom :</strong> {{ $any(client).nom }}</p>
+                    <p><strong>Prénom :</strong> {{ $any(client).prenom }}</p>
                     }
                     @if (client.type === 'SOCIETE') {
-                    <p><strong>Raison Sociale :</strong> {{ client.nom }}</p>
+                    <p><strong>Raison Sociale :</strong> {{ $any(client).nomCommercial || $any(client).nom }}</p>
                     }
                     <p><strong>Pays :</strong> {{ client.paysResidance }}</p>
                     <p><strong>Secteur :</strong> {{ client.secteurActivite }}</p>

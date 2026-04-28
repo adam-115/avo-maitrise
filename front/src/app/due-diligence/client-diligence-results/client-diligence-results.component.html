@@ -7,7 +7,7 @@
                 <h1 class="text-3xl font-black text-slate-900 tracking-tight">Résultats Due Diligence</h1>
                 @if (client) {
                 <p class="text-slate-500 font-medium mt-1">
-                    Historique pour <span class="text-cyan-600 font-bold">{{ client.nom }} {{ client.prenom }}</span>
+                    Historique pour <span class="text-cyan-600 font-bold">{{ getDisplayName(client) }}</span>
                 </p>
                 } @else {
                 <p class="text-slate-500 font-medium mt-1">Chargement du client...</p>

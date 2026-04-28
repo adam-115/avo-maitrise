@@ -114,8 +114,8 @@ export class DossierForm implements OnInit {
   getSelectedClientName(): string {
     const clientId = this.dossierForm.get('clientId')?.value;
     if (!clientId) return '';
-    const client = this.clients.find(c => c.id == clientId);
-    return client ? `${client.nom || ''} ${client.prenom || ''}`.trim() : '';
+    const client = this.clients.find(c => c.id == clientId) as any;
+    return client ? `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim() : '';
   }
 
   // User Selection Dialog Methods

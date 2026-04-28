@@ -31,15 +31,15 @@
         <div class="flex-1 overflow-y-auto p-2">
             <ul class="divide-y divide-gray-100">
                 @for (client of filteredClients; track client.id) {
-                <li (click)="selectClient(client.id)"
+                <li (click)="selectClient(client.id!)"
                     class="flex items-center p-3 hover:bg-gray-50 cursor-pointer rounded-md transition-colors duration-150"
-                    [class.bg-blue-50]="isSelected(client.id)">
+                    [class.bg-blue-50]="isSelected(client.id!)">
 
                     <div class="flex-shrink-0 mr-4">
-                        <div [class.border-blue-600]="isSelected(client.id)"
-                            [class.border-gray-300]="!isSelected(client.id)"
+                        <div [class.border-blue-600]="isSelected(client.id!)"
+                            [class.border-gray-300]="!isSelected(client.id!)"
                             class="h-5 w-5 border rounded-full flex items-center justify-center transition-colors duration-200 relative">
-                            @if (isSelected(client.id)) {
+                            @if (isSelected(client.id!)) {
                             <div class="h-3 w-3 bg-blue-600 rounded-full"></div>
                             }
                         </div>
@@ -47,7 +47,7 @@
 
                     <div class="flex-1 min-w-0">
                         <p class="text-sm font-medium text-gray-900 truncate">
-                            {{ client.nom }} {{ client.prenom }}
+                            {{ getDisplayName(client) }}
                             <span
                                 class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
                                 {{ client.type }}

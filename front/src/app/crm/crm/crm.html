@@ -96,7 +96,7 @@
                 @for (client of filteredClients; track client.id) {
                 <tr class="hover:bg-cyan-50 transition duration-150 cursor-pointer">
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-slate-900">{{ client.nom }} {{ client.prenom }}</div>
+                        <div class="text-sm font-medium text-slate-900">{{ getDisplayName(client) }}</div>
                         <div class="text-xs text-gray-500">ID: {{ client.id }}</div>
                     </td>
 
@@ -162,7 +162,7 @@
                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <a (click)="navigateToClientDetails(client)"
                             class="text-cyan-600 hover:text-cyan-900 mr-4 cursor-pointer">Voir</a>
-                        <button (click)="navigateToClientDiligenceResults(client.id)"
+                        <button (click)="navigateToClientDiligenceResults(client.id!)"
                             class="text-slate-600 hover:text-slate-900">Due Diligence</button>
                     </td>
                 </tr>

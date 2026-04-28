@@ -27,6 +27,11 @@ export class ClientDiligenceResultsComponent implements OnInit {
     showAssignDialog = false;
     selectedFormIdToAssign: string | null = null;
 
+    getDisplayName(client: any): string {
+        if (!client) return '';
+        return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+    }
+
     private route = inject(ActivatedRoute);
     private formResultService = inject(FormResultService);
     private clientService = inject(ClientService);
@@ -62,8 +67,8 @@ export class ClientDiligenceResultsComponent implements OnInit {
 
                 // Extract unique form config IDs from results AND assignments
                 const configIds = new Set<string>();
-                results.forEach(r => configIds.add(r.formConfigId));
-                assignments.forEach(a => configIds.add(a.formConfigId));
+                results.forEach(r => configIds.add(String(r.formConfigId)));
+                assignments.forEach(a => configIds.add(String(a.formConfigId)));
 
                 if (configIds.size > 0) {
                     const configRequests = Array.from(configIds).map(id => this.formConfigService.findById(id));
@@ -112,12 +117,12 @@ export class ClientDiligenceResultsComponent implements OnInit {
         // Since NavigationService.navigateToDiligenceFormResultViewer takes ID (result ID), we need a new method or use the generic one.
         // Actually, we need to navigate to the *Form Viewer* (to fill it), not the *Result Viewer*.
         // The Form Viewer route is `diligence-form-viewer/:id` (where ID is form config ID).
-        this.navigationService.navigateToDiligenceFormViewer(assignment.formConfigId, this.client?.id);
+        this.navigationService.navigateToDiligenceFormViewer(String(assignment.formConfigId), String(this.client?.id));
     }
 
     backToClient() {
         if (this.client) {
-            this.navigationService.navigateToClientDetails(this.client.id!);
+            this.navigationService.navigateToClientDetails(String(this.client.id!));
         } else {
             this.navigationService.navigateToClients();
         }
@@ -145,12 +150,12 @@ export class ClientDiligenceResultsComponent implements OnInit {
             next: (assignment) => {
                 this.assignments.push(assignment);
                 // Also fetch the config if not already loaded
-                if (!this.formConfigs.has(assignment.formConfigId)) {
-                    this.formConfigService.findById(assignment.formConfigId).subscribe(config => {
-                        this.formConfigs.set(config.id!, config);
+                if (!this.formConfigs.has(String(assignment.formConfigId))) {
+                    this.formConfigService.findById(String(assignment.formConfigId)).subscribe(config => {
+                        this.formConfigs.set(String(config.id!), config);
                     });
                 }
-                this.clientService.updateClientStatus(this.client?.id!, ClientStatus.INDULGENCE_REQUIRED).subscribe({
+                this.clientService.updateClientStatus(String(this.client?.id!), ClientStatus.INDULGENCE_REQUIRED).subscribe({
                     next: () => {
                         this.alertService.displayMessage('Succès', 'Formulaire assigné avec succès', 'success');
                         this.closeAssignDialog();

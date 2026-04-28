@@ -28,6 +28,11 @@ export class Crm implements OnInit {
   selectedType: string = '';
   selectedRisk: string = '';
 
+  getDisplayName(client: any): string {
+    if (!client) return '';
+    return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+  }
+
   get alertCount(): number {
     return this.clients.filter(c => c.clientStatus === ClientStatus.AML_REQUIRED).length;
   }
@@ -80,7 +85,7 @@ export class Crm implements OnInit {
     // For now keeping existing pattern but usually we'd pass ID
     // this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS]);
     // Better implementation:
-    this.navigationService.navigateToClientDetails(client.id);
+    this.navigationService.navigateToClientDetails(String(client.id));
     // this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS], { queryParams: { id: client.id } });
   }
 
@@ -93,8 +98,8 @@ export class Crm implements OnInit {
   }
 
 
-  navigateToClientDiligenceResults(clientId: string) {
-    this.navigationService.navigateToClientDiligenceResults(clientId);
+  navigateToClientDiligenceResults(clientId: number) {
+    this.navigationService.navigateToClientDiligenceResults(String(clientId));
   }
 
   getStatusColor(status: string | undefined): string {

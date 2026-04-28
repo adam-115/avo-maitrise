@@ -22,8 +22,7 @@
                 <!-- Nom Complet -->
                 <div class="space-y-1">
                     <p class="text-xs uppercase tracking-wider font-bold text-slate-400">Client</p>
-                    <p class="text-base font-bold text-slate-900">{{ selectedClient.nom }} {{ selectedClient.prenom }}
-                    </p>
+                    <p class="text-base font-bold text-slate-900">{{ getDisplayName(selectedClient) }}</p>
                     <span
                         class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
                         {{ selectedClient.type }}

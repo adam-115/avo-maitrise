@@ -1053,3 +1053,77 @@
 2026-04-27T15:45:48.951+01:00  INFO 15820 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
 2026-04-27T15:45:48.956+01:00  INFO 15820 --- [restartedMain] com.avo.AvoApplication                   : Started AvoApplication in 2.121 seconds (process running for 54.658)
 2026-04-27T15:45:48.958+01:00  INFO 15820 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-04-27T15:46:15.573+01:00  INFO 15820 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2026-04-27T15:46:15.593+01:00  INFO 15820 --- [Thread-11] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-27T15:46:15.593+01:00  INFO 15820 --- [Thread-11] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2026-04-27T15:46:15.609+01:00  INFO 15820 --- [Thread-11] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.
+2026-04-27T15:46:15.748+01:00  INFO 15820 --- [restartedMain] com.avo.AvoApplication                   : Starting AvoApplication using Java 17.0.2 with PID 15820 (D:\avo-maitrise\back\target\classes started by lenovo in D:\avo-maitrise)
+2026-04-27T15:46:15.748+01:00  INFO 15820 --- [restartedMain] com.avo.AvoApplication                   : No active profile set, falling back to 1 default profile: "default"
+2026-04-27T15:46:16.306+01:00  INFO 15820 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-27T15:46:16.428+01:00  INFO 15820 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 121 ms. Found 10 JPA repository interfaces.
+2026-04-27T15:46:16.641+01:00  INFO 15820 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-04-27T15:46:16.645+01:00  INFO 15820 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-27T15:46:16.646+01:00  INFO 15820 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-04-27T15:46:16.726+01:00  INFO 15820 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-04-27T15:46:16.728+01:00  INFO 15820 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 970 ms
+2026-04-27T15:46:16.804+01:00  INFO 15820 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Starting...
+2026-04-27T15:46:16.831+01:00  INFO 15820 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-4 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5e05eb09
+2026-04-27T15:46:16.832+01:00  INFO 15820 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Start completed.
+2026-04-27T15:46:16.936+01:00  INFO 15820 --- [restartedMain] liquibase.changelog                      : Reading from `si-legale`.databasechangelog
+2026-04-27T15:46:16.966+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : UPDATE SUMMARY
+2026-04-27T15:46:16.966+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : Run:                          0
+2026-04-27T15:46:16.967+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : Previously run:               0
+2026-04-27T15:46:16.967+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : Filtered out:                 0
+2026-04-27T15:46:16.969+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : -------------------------------
+2026-04-27T15:46:16.971+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : Total change sets:            0
+2026-04-27T15:46:16.971+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : Update summary generated
+2026-04-27T15:46:16.976+01:00  INFO 15820 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2026-04-27T15:46:16.978+01:00  INFO 15820 --- [restartedMain] liquibase.command                        : Command execution complete
+2026-04-27T15:46:17.029+01:00  INFO 15820 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-27T15:46:17.036+01:00  INFO 15820 --- [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-04-27T15:46:17.052+01:00  INFO 15820 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-27T15:46:17.396+01:00  INFO 15820 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-27T15:46:17.528+01:00  INFO 15820 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-27T15:46:18.148+01:00  WARN 15820 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-27T15:46:18.155+01:00  INFO 15820 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2026-04-27T15:46:18.278+01:00  INFO 15820 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-04-27T15:46:18.293+01:00  INFO 15820 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2026-04-27T15:46:18.300+01:00  INFO 15820 --- [restartedMain] com.avo.AvoApplication                   : Started AvoApplication in 2.609 seconds (process running for 84.002)
+2026-04-27T15:46:18.303+01:00  INFO 15820 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
+2026-04-27T15:46:19.743+01:00  INFO 15820 --- [File Watcher] rtingClassPathChangeChangedEventListener : Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2026-04-27T15:46:19.758+01:00  INFO 15820 --- [Thread-15] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-04-27T15:46:19.762+01:00  INFO 15820 --- [Thread-15] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown initiated...
+2026-04-27T15:46:19.768+01:00  INFO 15820 --- [Thread-15] com.zaxxer.hikari.HikariDataSource       : HikariPool-4 - Shutdown completed.
+2026-04-27T15:46:19.836+01:00  INFO 15820 --- [restartedMain] com.avo.AvoApplication                   : Starting AvoApplication using Java 17.0.2 with PID 15820 (D:\avo-maitrise\back\target\classes started by lenovo in D:\avo-maitrise)
+2026-04-27T15:46:19.836+01:00  INFO 15820 --- [restartedMain] com.avo.AvoApplication                   : No active profile set, falling back to 1 default profile: "default"
+2026-04-27T15:46:20.257+01:00  INFO 15820 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-04-27T15:46:20.425+01:00  INFO 15820 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 167 ms. Found 10 JPA repository interfaces.
+2026-04-27T15:46:20.743+01:00  INFO 15820 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2026-04-27T15:46:20.745+01:00  INFO 15820 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-04-27T15:46:20.746+01:00  INFO 15820 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.19]
+2026-04-27T15:46:20.793+01:00  INFO 15820 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-04-27T15:46:20.794+01:00  INFO 15820 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 956 ms
+2026-04-27T15:46:20.825+01:00  INFO 15820 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Starting...
+2026-04-27T15:46:20.845+01:00  INFO 15820 --- [restartedMain] com.zaxxer.hikari.pool.HikariPool        : HikariPool-5 - Added connection com.mysql.cj.jdbc.ConnectionImpl@48de517e
+2026-04-27T15:46:20.846+01:00  INFO 15820 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-5 - Start completed.
+2026-04-27T15:46:20.917+01:00  INFO 15820 --- [restartedMain] liquibase.changelog                      : Reading from `si-legale`.databasechangelog
+2026-04-27T15:46:20.928+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : UPDATE SUMMARY
+2026-04-27T15:46:20.929+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : Run:                          0
+2026-04-27T15:46:20.929+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : Previously run:               0
+2026-04-27T15:46:20.929+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : Filtered out:                 0
+2026-04-27T15:46:20.929+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : -------------------------------
+2026-04-27T15:46:20.930+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : Total change sets:            0
+2026-04-27T15:46:20.930+01:00  INFO 15820 --- [restartedMain] liquibase.util                           : Update summary generated
+2026-04-27T15:46:20.933+01:00  INFO 15820 --- [restartedMain] liquibase.lockservice                    : Successfully released change log lock
+2026-04-27T15:46:20.934+01:00  INFO 15820 --- [restartedMain] liquibase.command                        : Command execution complete
+2026-04-27T15:46:20.955+01:00  INFO 15820 --- [restartedMain] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-04-27T15:46:20.959+01:00  INFO 15820 --- [restartedMain] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-04-27T15:46:20.965+01:00  INFO 15820 --- [restartedMain] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-04-27T15:46:21.216+01:00  INFO 15820 --- [restartedMain] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-04-27T15:46:21.339+01:00  INFO 15820 --- [restartedMain] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-04-27T15:46:22.010+01:00  WARN 15820 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-04-27T15:46:22.024+01:00  INFO 15820 --- [restartedMain] o.s.b.a.w.s.WelcomePageHandlerMapping    : Adding welcome page: class path resource [static/index.html]
+2026-04-27T15:46:22.143+01:00  INFO 15820 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2026-04-27T15:46:22.156+01:00  INFO 15820 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2026-04-27T15:46:22.160+01:00  INFO 15820 --- [restartedMain] com.avo.AvoApplication                   : Started AvoApplication in 2.344 seconds (process running for 87.862)
+2026-04-27T15:46:22.163+01:00  INFO 15820 --- [restartedMain] .ConditionEvaluationDeltaLoggingListener : Condition evaluation unchanged
