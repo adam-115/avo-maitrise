@@ -31,4 +31,11 @@ public class ClientMoral extends ClientEntity {
     @OneToMany(mappedBy = "clientMoral", cascade = CascadeType.ALL)
     private List<UBO> ubos;
 
+    @Override
+    public void linkChildren() {
+        super.linkChildren();
+        if (ubos != null) {
+            ubos.forEach(u -> u.setClientMoral(this));
+        }
+    }
 }

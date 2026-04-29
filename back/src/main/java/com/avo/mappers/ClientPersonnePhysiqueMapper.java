@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import com.avo.dtos.ClientPersonnePhysiqueDTO;
 import com.avo.entities.ClientPersonnePhysique;
 
-@Mapper(componentModel = "spring", uses = {DocumentMapper.class})
+@Mapper(componentModel = "spring", uses = {DocumentMapper.class, ContactPointMapper.class})
 public interface ClientPersonnePhysiqueMapper {
 
     ClientPersonnePhysiqueMapper INSTANCE = Mappers.getMapper(ClientPersonnePhysiqueMapper.class);

@@ -177,7 +177,8 @@ export class ClientFormComponent implements OnInit {
             prenom: [data?.prenom || '', Validators.required],
             email: [data?.email || '', [Validators.required, Validators.email]],
             telephone: [data?.telephone || '', Validators.required],
-            occupation: [data?.occupation || '', Validators.required]
+            occupation: [data?.occupation || '', Validators.required],
+            adresse: [data?.adresse || '']
         });
     }
 

@@ -35,11 +35,13 @@ public class ClientMoralService {
 
     public ClientMoralDTO create(ClientMoralDTO dto) {
         ClientMoral entity = mapper.toEntity(dto);
+        entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
 
     public ClientMoralDTO update(ClientMoralDTO dto) {
         ClientMoral entity = mapper.toEntity(dto);
+        entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
     

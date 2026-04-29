@@ -127,6 +127,7 @@ export interface ContactPoint {
   email: string;
   telephone: string;
   occupation: string;
+  adresse?: string;
 }
 
 export interface Client {
@@ -139,9 +140,7 @@ export interface Client {
   paysResidance?: string; // Alias for pays (deprecated)
 
   // Yente AML specific properties
-  amlAnalysisStatus?: 'TODO' | 'OK' | 'SUSPECT' | 'BLOCKED';
   amlMatchScore?: number;
-  amlTargetEntityName?: string;
   amlSanctionReason?: string;
   amlLastVerificationDate?: Date;
 
@@ -244,7 +243,8 @@ export enum ClientStatus {
 
   // Phase Finale
   VALIDATED = 'VALIDATED',                       // Dossier complet et accepté. Le client est opérationnel.
-  BLOCKED = 'BLOCKED'                            // Client rejeté ou gelé pour non-conformité majeure.
+  BLOCKED = 'BLOCKED',                            // Client rejeté ou gelé pour non-conformité majeure.
+  SUSPICIOUS = 'SUSPICIOUS'                      // Client suspect nécessitant une attention particulière.
 }
 
 

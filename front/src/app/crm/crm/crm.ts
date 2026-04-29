@@ -119,8 +119,27 @@ export class Crm implements OnInit {
         return 'bg-green-100 text-green-800';
       case ClientStatus.BLOCKED:
         return 'bg-red-100 text-red-800';
+      case ClientStatus.SUSPICIOUS:
+        return 'bg-red-50 text-red-600 border border-red-200';
       default:
         return 'bg-gray-100 text-gray-800';
     }
+  }
+
+  getClientTypeIcon(type: string | undefined): string {
+    switch (type) {
+      case 'PERSONNE': return 'user';
+      case 'SOCIETE': return 'briefcase';
+      case 'ASSOCIATION': return 'users';
+      case 'INSTITUTION': return 'landmark';
+      default: return 'help-circle';
+    }
+  }
+
+  getClientSpecificInfo(client: any): string {
+    if (client.type === 'PERSONNE') return client.cin ? `CIN: ${client.cin}` : '';
+    if (client.type === 'SOCIETE') return client.numeroRegistreCommerce ? `RC: ${client.numeroRegistreCommerce}` : '';
+    if (client.type === 'ASSOCIATION' || client.type === 'INSTITUTION') return client.numeroRegistreNational ? `RN: ${client.numeroRegistreNational}` : '';
+    return '';
   }
 }

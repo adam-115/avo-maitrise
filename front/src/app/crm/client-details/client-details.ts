@@ -233,32 +233,29 @@ export class ClientDetails implements OnInit {
         const q1Results = matchResponse.responses?.['q1']?.results || [];
 
         if (q1Results.length === 0) {
-          this.client!.amlAnalysisStatus = 'OK';
+          this.client!.clientStatus = ClientStatus.AML_VALIDATED;
           this.client!.amlMatchScore = 0;
-          this.client!.amlTargetEntityName = undefined;
           this.client!.amlSanctionReason = undefined;
         } else {
           const topResult = q1Results.sort((a, b) => b.score - a.score)[0];
           
           this.client!.amlMatchScore = topResult.score;
-          this.client!.amlTargetEntityName = topResult.properties['name']?.[0] || 'Entité Inconnue';
+          const targetName = topResult.properties['name']?.[0] || 'Entité Inconnue';
 
           if (topResult.score >= 0.8 || topResult.match || topResult.target) {
-            this.client!.amlAnalysisStatus = 'BLOCKED';
             this.client!.clientStatus = ClientStatus.BLOCKED;
-            this.client!.amlSanctionReason = `Bloqué suite à une correspondance stricte (${(topResult.score * 100).toFixed(0)}%) avec ${this.client!.amlTargetEntityName} dans la base de sanctions.`;
+            this.client!.amlSanctionReason = `Bloqué suite à une correspondance stricte (${(topResult.score * 100).toFixed(0)}%) avec ${targetName} dans la base de sanctions.`;
           } else if (topResult.score >= 0.5) {
-            this.client!.amlAnalysisStatus = 'SUSPECT';
-            if (this.client!.clientStatus !== ClientStatus.BLOCKED) {
-              this.client!.clientStatus = ClientStatus.VERIFICATION_AML_REQUIRED;
-            }
+            this.client!.clientStatus = ClientStatus.SUSPICIOUS;
+            this.client!.amlSanctionReason = `Statut suspect : correspondance à ${(topResult.score * 100).toFixed(0)}% détectée avec ${targetName}.`;
           } else {
-            this.client!.amlAnalysisStatus = 'OK';
+            this.client!.clientStatus = ClientStatus.AML_VALIDATED;
+            this.client!.amlSanctionReason = undefined;
           }
         }
 
-        if (!this.client!.amlAnalysisStatus) {
-           this.client!.amlAnalysisStatus = 'TODO';
+        if (!this.client!.clientStatus) {
+           this.client!.clientStatus = ClientStatus.AML_REQUIRED;
         }
         
         this.client!.amlLastVerificationDate = new Date();

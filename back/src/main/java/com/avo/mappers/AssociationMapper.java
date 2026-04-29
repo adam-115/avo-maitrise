@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import com.avo.dtos.AssociationDTO;
 import com.avo.entities.Association;
 
-@Mapper(componentModel = "spring", uses = {DocumentMapper.class})
+@Mapper(componentModel = "spring", uses = {DocumentMapper.class, ContactPointMapper.class})
 public interface AssociationMapper {
 
     AssociationMapper INSTANCE = Mappers.getMapper(AssociationMapper.class);

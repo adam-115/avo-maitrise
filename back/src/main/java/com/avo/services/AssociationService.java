@@ -35,11 +35,13 @@ public class AssociationService {
 
     public AssociationDTO create(AssociationDTO dto) {
         Association entity = mapper.toEntity(dto);
+        entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
 
     public AssociationDTO update(AssociationDTO dto) {
         Association entity = mapper.toEntity(dto);
+        entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
     

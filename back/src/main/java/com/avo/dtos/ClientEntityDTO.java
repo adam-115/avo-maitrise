@@ -2,6 +2,7 @@ package com.avo.dtos;
 
 import java.util.Date;
 import java.util.List;
+import com.avo.entities.ClientStatus;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,12 +20,12 @@ public class ClientEntityDTO {
     private String telephone;
     private String adresse;
     private String pays;
-    private String amlAnalysisStatus;
+    private ClientStatus clientStatus;
     private Double amlMatchScore;
-    private String amlTargetEntityName;
     private String amlSanctionReason;
     private Date amlLastVerificationDate;
     private List<DocumentDTO> documents;
+    private List<ContactPointDTO> contacts;
     private List<ScreeningMatchDTO> screeningMatchDTOs ;
 
 }

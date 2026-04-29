@@ -35,11 +35,13 @@ public class InstitutionService {
 
     public InstitutionDTO create(InstitutionDTO dto) {
         Institution entity = mapper.toEntity(dto);
+        entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
 
     public InstitutionDTO update(InstitutionDTO dto) {
         Institution entity = mapper.toEntity(dto);
+        entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
     

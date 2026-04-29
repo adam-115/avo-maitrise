@@ -40,14 +40,14 @@ public class ClientEntity {
 
     private String pays;
 
-    @Column(name = "aml_analysis_status")
-    private String amlAnalysisStatus; // TODO, OK, SUSPECT, BLOCKED
+    @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
+    //AMl required as default Value
+    private ClientStatus clientStatus = ClientStatus.AML_REQUIRED;
 
     @Column(name = "aml_match_score")
     private Double amlMatchScore;
 
-    @Column(name = "aml_target_entity_name")
-    private String amlTargetEntityName;
+
 
     @Column(name = "aml_sanction_reason")
     private String amlSanctionReason;
@@ -59,7 +59,18 @@ public class ClientEntity {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
     private List<Document> documents;
 
-    @OneToMany(mappedBy ="client")
+    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
+    private List<ContactPoint> contacts;
+
+    @OneToMany(mappedBy ="client" , cascade = CascadeType.PERSIST)
     private List<ScreeningMatch> screeningMatchs ;
 
+    public void linkChildren() {
+        if (documents != null) {
+            documents.forEach(d -> d.setClient(this));
+        }
+        if (contacts != null) {
+            contacts.forEach(c -> c.setClient(this));
+        }
+    }
 }

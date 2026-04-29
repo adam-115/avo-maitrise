@@ -62,13 +62,22 @@ public class YenteAmlService {
         AmlAnalysisResult bestResult = result.get(0);
 
         client.setAmlMatchScore(bestResult.getMatchScore());
-        client.setAmlTargetEntityName(bestResult.getMatchName());
         client.setAmlSanctionReason(bestResult.getSanctionReason());
-        client.setAmlAnalysisStatus(bestResult.getStatus());
+        
+        // Map AML status string to ClientStatus enum
+        String amlStatus = bestResult.getStatus();
+        if ("OK".equalsIgnoreCase(amlStatus)) {
+            client.setClientStatus(com.avo.entities.ClientStatus.AML_VALIDATED);
+        } else if ("SUSPECT".equalsIgnoreCase(amlStatus)) {
+            client.setClientStatus(com.avo.entities.ClientStatus.SUSPICIOUS);
+        } else if ("BLOCKED".equalsIgnoreCase(amlStatus)) {
+            client.setClientStatus(com.avo.entities.ClientStatus.BLOCKED);
+        }
+        
         client.setAmlLastVerificationDate(new Date());
 
         clientrepository.save(client);
-        log.info("AML verification completed for client ID: {}. Status: {}", clientId, bestResult.getStatus());
+        log.info("AML verification completed for client ID: {}. Status: {}", clientId, client.getClientStatus());
         return bestResult;
     }
 

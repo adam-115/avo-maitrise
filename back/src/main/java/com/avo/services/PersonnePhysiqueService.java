@@ -35,11 +35,13 @@ public class PersonnePhysiqueService {
 
     public ClientPersonnePhysiqueDTO create(ClientPersonnePhysiqueDTO dto) {
         ClientPersonnePhysique entity = mapper.toEntity(dto);
+        entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
 
     public ClientPersonnePhysiqueDTO update(ClientPersonnePhysiqueDTO dto) {
         ClientPersonnePhysique entity = mapper.toEntity(dto);
+        entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
     
