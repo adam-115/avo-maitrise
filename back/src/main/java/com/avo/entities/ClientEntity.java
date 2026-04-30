@@ -65,6 +65,14 @@ public class ClientEntity {
     @OneToMany(mappedBy ="client" , cascade = CascadeType.PERSIST)
     private List<ScreeningMatch> screeningMatchs ;
 
+    public String getType() {
+        if (this instanceof ClientPersonnePhysique) return "PERSONNE";
+        if (this instanceof ClientMoral) return "SOCIETE";
+        if (this instanceof Association) return "ASSOCIATION";
+        if (this instanceof Institution) return "INSTITUTION";
+        return null;
+    }
+
     public void linkChildren() {
         if (documents != null) {
             documents.forEach(d -> d.setClient(this));

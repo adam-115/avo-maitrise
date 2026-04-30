@@ -18,7 +18,16 @@ export class NavigationService {
   static readonly DOSSIER_DETAIL = 'dossier-detail/:id';
   static readonly CRM = 'crm';
   static readonly NEW_CLIENT = 'crm/client/new';
+  static readonly NEW_PERSONNE = 'crm/personne/new';
+  static readonly NEW_SOCIETE = 'crm/societe/new';
+  static readonly NEW_ASSOCIATION = 'crm/association/new';
+  static readonly NEW_INSTITUTION = 'crm/institution/new';
+  
   static readonly CLIENT_EDIT = 'crm/client/edit/:id';
+  static readonly PERSONNE_EDIT = 'crm/personne/edit/:id';
+  static readonly SOCIETE_EDIT = 'crm/societe/edit/:id';
+  static readonly ASSOCIATION_EDIT = 'crm/association/edit/:id';
+  static readonly INSTITUTION_EDIT = 'crm/institution/edit/:id';
 
   static readonly CLIENT_DETAILS = 'client-details';
   static readonly MODEL = 'model';

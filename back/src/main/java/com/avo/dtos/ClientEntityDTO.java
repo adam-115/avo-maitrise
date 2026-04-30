@@ -20,6 +20,7 @@ public class ClientEntityDTO {
     private String telephone;
     private String adresse;
     private String pays;
+    private String type;
     private ClientStatus clientStatus;
     private Double amlMatchScore;
     private String amlSanctionReason;

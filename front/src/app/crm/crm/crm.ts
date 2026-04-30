@@ -7,15 +7,31 @@ import { ClientService } from '../../services/client-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { ClientPhysiqueListComponent } from './client-physique-list/client-physique-list.component';
+import { ClientMoralListComponent } from './client-moral-list/client-moral-list.component';
+import { AssociationListComponent } from './association-list/association-list.component';
+import { InstitutionListComponent } from './institution-list/institution-list.component';
+import { ClientCardComponent } from './client-card/client-card.component';
 
 
 @Component({
   selector: 'app-crm',
-  imports: [RouterModule, CommonModule, FormsModule],
+  imports: [
+    RouterModule, 
+    CommonModule, 
+    FormsModule, 
+    ClientPhysiqueListComponent, 
+    ClientMoralListComponent, 
+    AssociationListComponent, 
+    InstitutionListComponent,
+    ClientCardComponent
+  ],
   templateUrl: './crm.html',
   styleUrl: './crm.css'
 })
 export class Crm implements OnInit {
+  
+  activeTab: 'ALL' | 'PERSONNE' | 'SOCIETE' | 'ASSOCIATION' | 'INSTITUTION' = 'ALL';
 
   private readonly navigationService = inject(NavigationService);
   private readonly clientService = inject(ClientService);
@@ -95,7 +111,23 @@ export class Crm implements OnInit {
   }
 
   navigateToNewClient() {
-    this.navigationService.navigateToNewClient();
+    switch (this.activeTab) {
+      case 'PERSONNE':
+        this.router.navigate(['/home/', ...NavigationService.NEW_PERSONNE.split('/')]);
+        break;
+      case 'SOCIETE':
+        this.router.navigate(['/home/', ...NavigationService.NEW_SOCIETE.split('/')]);
+        break;
+      case 'ASSOCIATION':
+        this.router.navigate(['/home/', ...NavigationService.NEW_ASSOCIATION.split('/')]);
+        break;
+      case 'INSTITUTION':
+        this.router.navigate(['/home/', ...NavigationService.NEW_INSTITUTION.split('/')]);
+        break;
+      default:
+        // Default to global or Personne
+        this.router.navigate(['/home/', ...NavigationService.NEW_PERSONNE.split('/')]);
+    }
   }
 
 
