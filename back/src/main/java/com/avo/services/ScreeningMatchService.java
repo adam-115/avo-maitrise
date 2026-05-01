@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.avo.dtos.ScreeningMatchDTO;
+import com.avo.entities.QScreeningMatch;
 import com.avo.entities.ScreeningMatch;
 import com.avo.mappers.ScreeningMatchMapper;
 import com.avo.repositories.ScreeningMatchRepository;
@@ -42,8 +43,23 @@ public class ScreeningMatchService {
         ScreeningMatch entity = mapper.toEntity(dto);
         return mapper.toDto(repository.save(entity));
     }
+
+
+    // public Page<ScreeningMatchDTO> getMatchesByClientId(Long clientId, Pageable pageable) {
+    //     QScreeningMatch qMatch = QScreeningMatch.screeningMatch;
+        
+    //     // On définit la condition (Predicate)
+    //     Predicate condition = qMatch.client.id.eq(clientId);
+        
+    //     // On exécute avec la pagination et le tri inclus dans l'objet pageable
+    //     return repository.findAll(condition, pageable).map(mapper::toDto);
+        
+    // }
     
-    public void delete(Long id) {
-        repository.deleteById(id);
-    }
+    // public void delete(Long id) {
+    //     repository.deleteById(id);
+    // }
+
+
+
 }

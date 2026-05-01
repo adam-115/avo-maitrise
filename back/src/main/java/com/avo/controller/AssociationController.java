@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.avo.dtos.AssociationDTO;
 import com.avo.entities.Association;
 import com.avo.services.AssociationService;
+import com.avo.services.ScreeningMatchService;
 import com.querydsl.core.types.Predicate;
 
 @RestController
@@ -16,9 +17,10 @@ import com.querydsl.core.types.Predicate;
 public class AssociationController {
 
     private final AssociationService service;
-
-    public AssociationController(AssociationService service) {
+    private final ScreeningMatchService screeningMatchService ;
+    public AssociationController(AssociationService service , ScreeningMatchService screeningMatchService ) {
         this.service = service;
+        this.screeningMatchService = screeningMatchService;
     }
 
     @GetMapping
@@ -46,9 +48,11 @@ public class AssociationController {
         return ResponseEntity.ok(service.update(dto));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
-    }
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<Void> delete(@PathVariable Long id) {
+    //     service.delete(id);
+    //     return ResponseEntity.noContent().build();
+    // }
+
+
 }
