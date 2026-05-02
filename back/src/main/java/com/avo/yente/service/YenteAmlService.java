@@ -30,12 +30,12 @@ public class YenteAmlService {
 
     private final YenteApiClient yenteApiClient;
     private final ClientRepository clientrepository;
-    private final ScreeningLogMatchService screeningLogMatchService;
+    private final ScreeningExecutionService screeningLogMatchService;
 
     public YenteAmlService(YenteApiClient yenteApiClient, ClientRepository clientDao,
             @Value("${aml.block.threshold}") double blockThreshold,
             @Value("${aml.suspect.threshold}") double suspectThreshold,
-            ScreeningLogMatchService screeningLogMatchService) {
+            ScreeningExecutionService screeningLogMatchService) {
         this.blockThreshold = blockThreshold;
         this.suspectThreshold = suspectThreshold;
         this.yenteApiClient = yenteApiClient;

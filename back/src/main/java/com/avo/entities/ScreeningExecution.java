@@ -21,11 +21,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "match_logs")
+@Table(name = "screening_execution")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ScreeningLogMatch {
+public class ScreeningExecution {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +35,10 @@ public class ScreeningLogMatch {
     @JoinColumn(name = "client_id", nullable = false)
     private ClientEntity client;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ubo_id", nullable = true)
+    private UBO ubo ;
 
     /**
      * The raw JSON response received from the Yente API, stored for audit and
@@ -50,4 +54,10 @@ public class ScreeningLogMatch {
      */
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    @Column(name = "execution_message", nullable = true)
+    private String executionMessage;
+
+    @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
+    @Column(name = "status")
+    private ScreeningExecutionStatus status ;
 }

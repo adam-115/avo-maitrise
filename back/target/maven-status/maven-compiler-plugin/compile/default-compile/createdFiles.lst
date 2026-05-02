@@ -4,11 +4,11 @@ com\avo\dtos\ScreeningMatchDTO$ScreeningMatchDTOBuilder.class
 com\avo\entities\ClientMoral.class
 com\avo\yente\client\YenteApiClient.class
 com\avo\repositories\AssociationRepository.class
-com\avo\mappers\ScreeningLogMatchMapperImpl.class
 com\avo\controller\AssociationController.class
 com\avo\dtos\UBODTO$UBODTOBuilder.class
 com\avo\entities\Association.class
 com\avo\repositories\InstitutionRepository.class
+com\avo\yente\service\ScreeningExecutionService.class
 com\avo\mappers\SecteurActiviteMapperImpl.class
 com\avo\mappers\TestEntityMapper.class
 com\avo\entities\QTestEntity.class
@@ -26,7 +26,7 @@ com\avo\controller\PersonnePhysiqueController.class
 com\avo\yente\models\YenteMatchResult.class
 com\avo\dtos\ContactPointDTO$ContactPointDTOBuilder.class
 com\avo\config\QueryDslConfig.class
-com\avo\entities\QScreeningLogMatch.class
+com\avo\mappers\ScreeningExecutionhMapper.class
 com\avo\mappers\ContactPointMapperImpl.class
 com\avo\services\ClientMoralService.class
 com\avo\mappers\AssociationMapperImpl.class
@@ -36,7 +36,6 @@ com\avo\yente\models\YenteMatchRequest.class
 com\avo\repositories\SecteurActiviteRepository.class
 com\avo\dtos\ClientPersonnePhysiqueDTO$ClientPersonnePhysiqueDTOBuilder.class
 com\avo\services\DocumentService.class
-com\avo\mappers\ScreeningLogMatchMapper.class
 com\avo\mappers\DocumentMapper.class
 com\avo\controller\DocumentController.class
 com\avo\entities\QClientEntity.class
@@ -44,7 +43,6 @@ com\avo\mappers\ClientEntityMapperImpl.class
 com\avo\dtos\DocumentDTO.class
 com\avo\repositories\ClientRepository.class
 com\avo\repositories\DocumentRepository.class
-com\avo\dtos\ScreeningLogMatchDTO$ScreeningLogMatchDTOBuilder.class
 com\avo\yente\models\YenteQueryResponse.class
 com\avo\mappers\ScreeningMatchMapperImpl.class
 com\avo\mappers\UBOMapper.class
@@ -57,10 +55,11 @@ com\avo\entities\ClientTypeEnum.class
 com\avo\controller\UBOController.class
 com\avo\dtos\ClientMoralDTO.class
 com\avo\dtos\DocumentDTO$DocumentDTOBuilder.class
-com\avo\dtos\ScreeningLogMatchDTO.class
 com\avo\entities\QClientMoral.class
 com\avo\controller\ClientController.class
 com\avo\entities\SecteurActivite.class
+com\avo\job\YenteClientVerificationJob.class
+com\avo\controller\ScreeningExecutionController.class
 com\avo\repositories\ClientMoralRepository.class
 com\avo\services\PersonnePhysiqueService.class
 com\avo\entities\QAssociation.class
@@ -80,14 +79,15 @@ com\avo\dtos\ClientEntityDTO$ClientEntityDTOBuilder.class
 com\avo\entities\UBO.class
 com\avo\mappers\ClientPersonnePhysiqueMapper.class
 com\avo\services\ClientService.class
-com\avo\yente\service\ScreeningLogMatchService.class
 com\avo\controller\SecteurActiviteController.class
 com\avo\config\GlobalExceptionHandler.class
 com\avo\entities\Document.class
 com\avo\controller\HomeController.class
+com\avo\mappers\ScreeningExecutionhMapperImpl.class
 com\avo\dtos\SecteurActiviteDTO.class
 com\avo\mappers\InstitutionMapper.class
-com\avo\controller\ScreeningLogMatchController.class
+com\avo\repositories\ScreeningExecutionRepository.class
+com\avo\dtos\ScreeningExecutionDTO.class
 com\avo\AvoApplication.class
 com\avo\dtos\ClientMoralDTO$ClientMoralDTOBuilderImpl.class
 com\avo\mappers\ContactPointMapper.class
@@ -95,13 +95,13 @@ com\avo\dtos\SecteurActiviteDTO$SecteurActiviteDTOBuilder.class
 com\avo\mappers\ScreeningMatchMapper.class
 com\avo\services\TestService.class
 com\avo\dtos\UBODTO.class
-com\avo\entities\ScreeningLogMatch.class
 com\avo\services\UBOService.class
 com\avo\entities\QUBO.class
 com\avo\mappers\DocumentMapperImpl.class
 com\avo\dtos\TestEntityDTO.class
 com\avo\mappers\TestEntityMapperImpl.class
 com\avo\repositories\ScreeningMatchRepository.class
+com\avo\dtos\ScreeningExecutionDTO$ScreeningExecutionDTOBuilder.class
 com\avo\mappers\ClientEntityMapper.class
 com\avo\dtos\AssociationDTO$AssociationDTOBuilderImpl.class
 com\avo\repositories\PersonnePhysiqueRepository.class
@@ -109,6 +109,8 @@ com\avo\entities\QSecteurActivite.class
 com\avo\yente\models\YenteMatchQuery.class
 com\avo\dtos\ClientEntityDTO.class
 com\avo\entities\QClientPersonnePhysique.class
+com\avo\entities\QScreeningExecution.class
+com\avo\entities\ScreeningExecution.class
 com\avo\entities\ScreeningMatch.class
 com\avo\dtos\AssociationDTO.class
 com\avo\dtos\InstitutionDTO$InstitutionDTOBuilder.class
@@ -123,4 +125,3 @@ com\avo\repositories\ContactPointRepository.class
 com\avo\dtos\ContactPointDTO.class
 com\avo\mappers\ClientPersonnePhysiqueMapperImpl.class
 com\avo\entities\Institution.class
-com\avo\repositories\ScreeningLogMatchRepository.class

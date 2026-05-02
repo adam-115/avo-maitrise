@@ -18,7 +18,7 @@ public class ScreeningMatchDTO {
     private Long id;
     private ClientEntityDTO clientEntityDTO;
     private UBODTO uboDTO;
-
+    private ScreeningExecutionDTO screeningExecutionDTO;
     private String yenteId;
     private Double score;
     private String targetName;

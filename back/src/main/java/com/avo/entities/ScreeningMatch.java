@@ -35,6 +35,10 @@ public class ScreeningMatch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "screening_execution_id", nullable = true)
+    private ScreeningExecution screeningExecution;
+    
     /**
      * The client associated with this screening match.
      */
