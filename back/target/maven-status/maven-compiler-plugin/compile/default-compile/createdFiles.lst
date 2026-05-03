@@ -33,6 +33,7 @@ com\avo\mappers\AssociationMapperImpl.class
 com\avo\config\CorsConfig.class
 com\avo\entities\TestEntity.class
 com\avo\yente\models\YenteMatchRequest.class
+com\avo\entities\ScreeningExecutionStatus.class
 com\avo\repositories\SecteurActiviteRepository.class
 com\avo\dtos\ClientPersonnePhysiqueDTO$ClientPersonnePhysiqueDTOBuilder.class
 com\avo\services\DocumentService.class

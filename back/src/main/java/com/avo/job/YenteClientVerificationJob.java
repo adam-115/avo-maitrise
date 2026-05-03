@@ -7,11 +7,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.avo.dtos.ScreeningExecutionDTO;
+import com.avo.dtos.UBODTO;
 import com.avo.dtos.ScreeningMatchDTO;
 import com.avo.entities.ClientEntity;
 import com.avo.entities.ScreeningExecutionStatus;
@@ -58,7 +60,7 @@ public class YenteClientVerificationJob {
         this.objectMapper = objectMapper;
     }
 
-    @Scheduled(fixedDelay = 100000)
+    // @Scheduled(fixedDelay = 100000)
     @Transactional
     public void executeMatchClient() {
         System.out.println("executeMatchClient executed at " + LocalDateTime.now());
@@ -136,30 +138,74 @@ public class YenteClientVerificationJob {
 
     @Transactional
     public void executeMatchUbos() {
-        /*
-         * load all client
-         * load all ubo
-         * create screening match
-         */
-
         System.out.println("executeMatchUbos executed at " + LocalDateTime.now());
         int pageNum = 0;
-        Slice<ClientEntity> slice;
+        Page<UBODTO> page;
 
         do {
-            // On demande 100 éléments
             Pageable pageable = PageRequest.of(pageNum, batchSize);
-
-            // Récupération du slice
-            slice = clientRepository.findAll(pageable);
-
-            // Traitement des données
-            List<ClientEntity> clients = slice.getContent();
-
-            // On incrémente pour passer au lot suivant
+            page = uboService.findAll(pageable);
+            processAMLForUbo(page.getContent());
             pageNum++;
+        } while (page.hasNext());
+    }
 
-        } while (slice.hasNext()); // Vérifie s'il reste des données sans faire de COUNT
+    public void processAMLForUbo(List<UBODTO> uboList) {
+        uboList.stream().forEach(ubo -> {
+            JsonNode jsonNodeResult = null;
+            ScreeningExecutionDTO screeningExecutionDTO = new ScreeningExecutionDTO();
+            screeningExecutionDTO.setUboDTO(ubo);
+            screeningExecutionDTO.setCreatedAt(LocalDateTime.now());
+
+            try {
+                String matchResultAsString = this.yenteAmlService.matchPersonAsString(ubo.getFullName(), "", ubo.getNationality());
+                jsonNodeResult = objectMapper.readTree(matchResultAsString);
+                screeningExecutionDTO.setRawResponse(jsonNodeResult);
+
+                JsonNode result = null;
+                if (jsonNodeResult != null && jsonNodeResult.has("responses")) {
+                    JsonNode responsesNode = jsonNodeResult.get("responses");
+                    if (responsesNode.has("query-1")) {
+                        result = responsesNode.get("query-1").get("results");
+                    }
+                }
+
+                if (result != null && result.isArray() && result.size() > 0) {
+                    screeningExecutionDTO.setExecutionMessage(
+                            "UBO checked at:" + LocalDateTime.now().toString() + "Status:"
+                                    + screeningExecutionDTO.getStatus());
+                    ScreeningExecutionDTO savedExecutionDTO = screeningExecutionService.create(screeningExecutionDTO);
+
+                    for (JsonNode resNode : result) {
+                        double matchScore = resNode.get("score").asDouble();
+
+                        if (matchScore >= suspectThreshold) {
+                            ScreeningMatchDTO screeningMatchDTO = new ScreeningMatchDTO();
+                            screeningMatchDTO.setUboDTO(ubo);
+                            screeningMatchDTO.setRawResponse(jsonNodeResult);
+                            screeningMatchDTO.setScore(matchScore);
+                            if (resNode.has("id")) {
+                                screeningMatchDTO.setYenteId(resNode.get("id").asText());
+                            }
+                            screeningMatchDTO.setCreatedAt(LocalDateTime.now());
+                            screeningMatchDTO.setScreeningExecutionDTO(savedExecutionDTO);
+                            screeningMatchService.create(screeningMatchDTO);
+                        }
+                    }
+                } else {
+                    screeningExecutionDTO.setStatus(ScreeningExecutionStatus.PASSED);
+                    screeningExecutionDTO.setExecutionMessage(
+                            "UBO checked at:" + LocalDateTime.now().toString() + "Status:"
+                                    + screeningExecutionDTO.getStatus());
+                    screeningExecutionService.create(screeningExecutionDTO);
+                }
+            } catch (Exception e) {
+                screeningExecutionDTO.setExecutionMessage("Error: " + e.getMessage());
+                screeningExecutionDTO.setStatus(ScreeningExecutionStatus.FAILED);
+                screeningExecutionService.create(screeningExecutionDTO);
+                e.printStackTrace();
+            }
+        });
     }
 
 }
