@@ -226,6 +226,30 @@ export class ClientDetails implements OnInit {
       }
     });
   }
+
+  getResultsFromRawResponse(rawResponse: any): any[] {
+    if (!rawResponse) return [];
+    
+    let parsed = rawResponse;
+    if (typeof rawResponse === 'string') {
+      try {
+        parsed = JSON.parse(rawResponse);
+      } catch {
+        return [];
+      }
+    }
+    
+    // Yente structure: { responses: { "q1": { results: [...] } } }
+    const responses = parsed.responses;
+    if (!responses) return [];
+    
+    const queryKey = Object.keys(responses)[0]; // get the first query key (e.g. 'q1' or 'query-1')
+    if (queryKey && responses[queryKey] && Array.isArray(responses[queryKey].results)) {
+      return responses[queryKey].results;
+    }
+    
+    return [];
+  }
 }
 
 
