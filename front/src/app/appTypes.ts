@@ -248,7 +248,34 @@ export enum ClientStatus {
 }
 
 
+//ScreeningMatches
 
+export enum ScreeningExecutionStatus {
+  PASSED = 'PASSED',
+  FAILED = 'FAILED'
+}
+
+export interface ScreeningExecutionDTO {
+  id?: number;
+  clientEntityDTO?: Client;
+  uboDTO?: UBO;
+  rawResponse?: any;
+  createdAt?: Date | string;
+  executionMessage?: string;
+  status?: ScreeningExecutionStatus;
+}
+
+export interface ScreeningMatchDTO {
+  id?: number;
+  clientEntityDTO?: Client;
+  uboDTO?: UBO;
+  screeningExecutionDTO?: ScreeningExecutionDTO;
+  yenteId?: string;
+  score?: number;
+  targetName?: string;
+  rawResponse?: any;
+  createdAt?: Date | string;
+}
 
 export enum FormType {
   INDULGENCE = 'INDULGENCE',

@@ -1,24 +1,31 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Client, ClientStatus, Document, YenteMatchResponse } from '../../appTypes';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Client, ClientStatus, Document, YenteMatchResponse, ScreeningExecutionDTO, ScreeningMatchDTO, ScreeningExecutionStatus } from '../../appTypes';
 
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alert-service';
 import { ClientService } from '../../services/client-service';
 import { NavigationService } from '../../services/navigation-service';
 import { AmlService } from '../../services/aml-service';
+import { ScreeningExecutionService } from '../../services/screening-execution.service';
+import { ScreeningMatchService } from '../../services/screening-match.service';
 
 @Component({
   selector: 'app-client-details',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './client-details.html',
   styleUrl: './client-details.css'
 })
 export class ClientDetails implements OnInit {
 
   clientService = inject(ClientService);
+  screeningExecutionService = inject(ScreeningExecutionService);
+  screeningMatchService = inject(ScreeningMatchService);
+
   client: Client | null = null;
+  executions: ScreeningExecutionDTO[] = [];
+  matches: ScreeningMatchDTO[] = [];
 
   isLoading = true;
 
@@ -34,7 +41,6 @@ export class ClientDetails implements OnInit {
   private readonly amlService = inject(AmlService);
 
   isAmlLoading = false;
-
 
   // Expose ClientStatus enum for the template
   public ClientStatus = ClientStatus;
@@ -55,10 +61,18 @@ export class ClientDetails implements OnInit {
   private loadClient(id: string) {
     this.clientService.findById(id).subscribe(client => {
       this.client = client;
+      this.loadAmlHistory(id);
     });
   }
 
-
+  loadAmlHistory(clientId: string) {
+    this.screeningExecutionService.getByClientId(clientId).subscribe(res => {
+      this.executions = res.content || [];
+    });
+    this.screeningMatchService.getByClientId(clientId).subscribe(res => {
+      this.matches = res.content || [];
+    });
+  }
 
   private extractDocuments() {
     // Map existing client documents if they exist
@@ -71,8 +85,6 @@ export class ClientDetails implements OnInit {
     } else if (this.client) {
       this.client.documents = [];
     }
-
-
   }
 
   isFile(value: string): boolean {
@@ -81,13 +93,9 @@ export class ClientDetails implements OnInit {
     return extensions.some(ext => value.toLowerCase().endsWith(ext));
   }
 
-
-
-
   startDueDiligence() {
-    alert("startDueDiligence");
+    this.verifyAml();
   }
-
 
   editClient() {
     console.log('Edit client', this.client?.id);
@@ -131,71 +139,11 @@ export class ClientDetails implements OnInit {
         error: (err) => {
           console.error('Error updating status', err);
           this.alertService.displayMessage('Erreur', 'Impossible de mettre à jour le statut.', 'error');
-          // Revert on error
           if (this.client) this.client.clientStatus = previousStatus;
         }
       });
     } else {
-      // Revert change if cancelled (because ngModel updated it essentially)
-      // Actually with (ngModelChange) the model is updated unless we split binding. 
-      // But here I'll use simple (change) on select and [ngModel] without () maybe?
-      // Or just revert:
       this.client.clientStatus = previousStatus;
-      // Force angular detection or reload? Since it's primitive string, it should work if UI bound.
-      // However, often select needs a tick to revert visually if we prevent the change. 
-      // Let's rely on standard revert.
-
-      // Creating a new reference to trigger change detection if needed, or just assigning back.
-      // If using [(ngModel)], the value in UI corresponds to `client.clientStatus`.
-      // When user selects new item, `client.clientStatus` Becomes `newStatus`.
-      // Then we enter this function. `previousStatus` we can't get from `this.client.clientStatus` anymore since it's already updated!
-      // WAIT. The logic above "const previousStatus = this.client.clientStatus" gets the NEW status if [(ngModel)] updated it already.
-
-      // CORRECT APPROACH: Split [(ngModel)] into [ngModel] and (ngModelChange).
-      // OR store previous status somewhere? No.
-      // I'll use (change) event on the select and manually handle the update logic instead of two-way binding for the confirmation flow.
-      // But wait, `(change)` passes the event.
-    }
-  }
-
-  // Better approach for confirmation flow:
-  // We use [ngModel]="client.clientStatus" (one way)
-  // And (ngModelChange)="onStatusChange($event)"
-  // In onStatusChange(newVal), `this.client.clientStatus` is STILL the OLD value because we didn't use [()]. 
-  // We only update it if confirmed.
-
-  async handleStatusChange(newStatus: any) {
-    if (!this.client) return;
-    const currentStatus = this.client.clientStatus;
-
-    if (newStatus === currentStatus) return;
-
-    const confirmed = await this.alertService.confirmMessage(
-      'Changement de statut',
-      `Voulez-vous passer ce dossier au statut : ${newStatus} ?`,
-      'question'
-    );
-
-    if (confirmed) {
-      this.clientService.updateClientStatus(this.client.id!, newStatus).subscribe({
-        next: (updated) => {
-          this.client = updated;
-          this.alertService.success('Statut mis à jour.');
-        },
-        error: (err) => {
-          console.error(err);
-          this.alertService.displayMessage('Erreur', 'Echec de la mise à jour', 'error');
-        }
-      });
-    } else {
-      // Since we verify before applying, we don't need to revert the model technically,
-      // BUT the UI select might have visually changed to the selected option even if we didn't update the model?
-      // No, with [ngModel] (one-way), if we don't update the variable, Angular should keep/revert the select to the bound value.
-      // Sometimes strictly need to force update to same value to trigger change detection if it got out of sync.
-      // A simple trick is `this.client.clientStatus = currentStatus` (reassign self)
-      const temp = this.client.clientStatus;
-      this.client.clientStatus = undefined; // Hack to force change detection
-      setTimeout(() => { if (this.client) this.client.clientStatus = temp; }, 0);
     }
   }
 
@@ -263,6 +211,7 @@ export class ClientDetails implements OnInit {
         this.clientService.update(this.client!.id, this.client!).subscribe({
           next: () => {
             this.alertService.success('Analyse AML terminée et dossier mis à jour.');
+            this.loadAmlHistory(String(this.client!.id)); // Reload matches and executions after update
           },
           error: (err) => {
             console.error('Save error', err);

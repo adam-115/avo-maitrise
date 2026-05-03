@@ -12,7 +12,7 @@ import com.avo.yente.service.ScreeningExecutionService;
 import com.querydsl.core.types.Predicate;
 
 @RestController
-@RequestMapping("/api/screening/log-matches")
+@RequestMapping("/api/screening/matches/execution")
 public class ScreeningExecutionController {
 
     private final ScreeningExecutionService service;
