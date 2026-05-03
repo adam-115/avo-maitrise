@@ -5,3 +5,4 @@ target/
 /back/target
 spring.log
 spring.log
+*.log
