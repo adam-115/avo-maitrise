@@ -103,13 +103,13 @@
         </div>
         <div class="flex items-baseline">
           <span class="text-4xl font-black tracking-tight" [ngClass]="{
-            'text-rose-600': client.amlMatchScore! >= 0.8,
-            'text-orange-500': client.amlMatchScore! >= 0.5 && client.amlMatchScore! < 0.8,
-            'text-emerald-500': !client.amlMatchScore || client.amlMatchScore! < 0.5
-          }">{{ client.amlMatchScore ? (client.amlMatchScore * 100).toFixed(0) : 0 }}%</span>
+            'text-rose-600': getHighestMatchScore() >= 0.8,
+            'text-orange-500': getHighestMatchScore() >= 0.5 && getHighestMatchScore() < 0.8,
+            'text-emerald-500': getHighestMatchScore() < 0.5
+          }">{{ (getHighestMatchScore() * 100).toFixed(0) }}%</span>
         </div>
-        <p class="text-xs text-slate-500 mt-2 font-medium truncate" [title]="client.amlSanctionReason || 'Aucune sanction détectée'">
-          {{ client.amlSanctionReason || 'Aucune sanction détectée.' }}
+        <p class="text-xs text-slate-500 mt-2 font-medium truncate">
+          {{ getHighestMatchScore() >= 0.5 ? 'Correspondance détectée' : 'Aucune sanction stricte détectée.' }}
         </p>
       </div>
     </div>
@@ -274,8 +274,11 @@
                     @for (match of matches; track match.id) {
                       <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap">
-                          <div class="text-sm font-bold text-slate-900">{{ match.targetName || 'Inconnu' }}</div>
-                          <div class="text-xs text-slate-500 mt-1">Cible: {{ match.uboDTO ? match.uboDTO.fullName : ($any(client).nom || $any(client).nomCommercial || 'Client') }}</div>
+                          <div class="text-sm font-bold text-slate-900">{{ getTargetName(match) }}</div>
+                          <div class="text-xs text-slate-500 mt-1">
+                            @if(match.matchReason) { <span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-medium text-[10px] mr-1 uppercase">{{ match.matchReason }}</span> }
+                            Cible: {{ match.uboDTO ? match.uboDTO.fullName : (getDisplayName(client) || 'Client') }}
+                          </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold" [ngClass]="{
@@ -406,4 +409,5 @@
 
   </div>
 </div>
+
 }

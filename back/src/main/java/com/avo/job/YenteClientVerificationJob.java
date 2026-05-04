@@ -114,6 +114,16 @@ public class YenteClientVerificationJob {
                             if (resNode.has("id")) {
                                 screeningMatchDTO.setYenteId(resNode.get("id").asText());
                             }
+                            if (resNode.has("properties") && resNode.get("properties").has("topics")) {
+                                JsonNode topicsNode = resNode.get("properties").get("topics");
+                                if (topicsNode.isArray() && topicsNode.size() > 0) {
+                                    java.util.List<String> topicsList = new java.util.ArrayList<>();
+                                    for (JsonNode topic : topicsNode) {
+                                        topicsList.add(topic.asText());
+                                    }
+                                    screeningMatchDTO.setMatchReason(String.join(", ", topicsList));
+                                }
+                            }
                             screeningMatchDTO.setCreatedAt(LocalDateTime.now());
                             screeningMatchDTO.setScreeningExecutionDTO(savedExecutionDTO);
                             screeningMatchService.create(screeningMatchDTO);
@@ -186,6 +196,16 @@ public class YenteClientVerificationJob {
                             screeningMatchDTO.setScore(matchScore);
                             if (resNode.has("id")) {
                                 screeningMatchDTO.setYenteId(resNode.get("id").asText());
+                            }
+                            if (resNode.has("properties") && resNode.get("properties").has("topics")) {
+                                JsonNode topicsNode = resNode.get("properties").get("topics");
+                                if (topicsNode.isArray() && topicsNode.size() > 0) {
+                                    java.util.List<String> topicsList = new java.util.ArrayList<>();
+                                    for (JsonNode topic : topicsNode) {
+                                        topicsList.add(topic.asText());
+                                    }
+                                    screeningMatchDTO.setMatchReason(String.join(", ", topicsList));
+                                }
                             }
                             screeningMatchDTO.setCreatedAt(LocalDateTime.now());
                             screeningMatchDTO.setScreeningExecutionDTO(savedExecutionDTO);

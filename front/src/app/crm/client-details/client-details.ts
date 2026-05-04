@@ -182,31 +182,21 @@ export class ClientDetails implements OnInit {
 
         if (q1Results.length === 0) {
           this.client!.clientStatus = ClientStatus.AML_VALIDATED;
-          this.client!.amlMatchScore = 0;
-          this.client!.amlSanctionReason = undefined;
         } else {
-          const topResult = q1Results.sort((a, b) => b.score - a.score)[0];
+          const topResult = q1Results.sort((a: any, b: any) => b.score - a.score)[0];
           
-          this.client!.amlMatchScore = topResult.score;
-          const targetName = topResult.properties['name']?.[0] || 'Entité Inconnue';
-
           if (topResult.score >= 0.8 || topResult.match || topResult.target) {
             this.client!.clientStatus = ClientStatus.BLOCKED;
-            this.client!.amlSanctionReason = `Bloqué suite à une correspondance stricte (${(topResult.score * 100).toFixed(0)}%) avec ${targetName} dans la base de sanctions.`;
           } else if (topResult.score >= 0.5) {
             this.client!.clientStatus = ClientStatus.SUSPICIOUS;
-            this.client!.amlSanctionReason = `Statut suspect : correspondance à ${(topResult.score * 100).toFixed(0)}% détectée avec ${targetName}.`;
           } else {
             this.client!.clientStatus = ClientStatus.AML_VALIDATED;
-            this.client!.amlSanctionReason = undefined;
           }
         }
 
         if (!this.client!.clientStatus) {
            this.client!.clientStatus = ClientStatus.AML_REQUIRED;
         }
-        
-        this.client!.amlLastVerificationDate = new Date();
 
         this.clientService.update(this.client!.id, this.client!).subscribe({
           next: () => {
@@ -249,6 +239,36 @@ export class ClientDetails implements OnInit {
     }
     
     return [];
+  }
+
+  getTargetName(match: ScreeningMatchDTO): string {
+    if (match.targetName) return match.targetName;
+    
+    if (match.rawResponse) {
+      let parsed = match.rawResponse;
+      if (typeof parsed === 'string') {
+        try { parsed = JSON.parse(parsed); } catch {}
+      }
+      
+      const responses = parsed?.responses;
+      if (responses) {
+        const queryKey = Object.keys(responses)[0];
+        if (queryKey && responses[queryKey]?.results) {
+          const results = responses[queryKey].results;
+          const found = results.find((r: any) => r.id === match.yenteId);
+          if (found?.properties?.name?.[0]) {
+            return found.properties.name[0];
+          }
+        }
+      }
+    }
+    
+    return 'Inconnu';
+  }
+
+  getHighestMatchScore(): number {
+    if (!this.matches || this.matches.length === 0) return 0;
+    return Math.max(...this.matches.map(m => m.score || 0));
   }
 }
 

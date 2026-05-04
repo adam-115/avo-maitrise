@@ -77,4 +77,10 @@ public class ScreeningMatch {
      */
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    /**
+     * The reason or topic for the match (e.g., sanction, pep).
+     */
+    @Column(name = "match_reason", columnDefinition = "TEXT")
+    private String matchReason;
+
 }

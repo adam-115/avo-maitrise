@@ -61,9 +61,6 @@ public class YenteAmlService {
         List<AmlAnalysisResult> result = checkClientStatus(client);
         AmlAnalysisResult bestResult = result.get(0);
 
-        client.setAmlMatchScore(bestResult.getMatchScore());
-        client.setAmlSanctionReason(bestResult.getSanctionReason());
-        
         // Map AML status string to ClientStatus enum
         String amlStatus = bestResult.getStatus();
         if ("OK".equalsIgnoreCase(amlStatus)) {
@@ -73,8 +70,6 @@ public class YenteAmlService {
         } else if ("BLOCKED".equalsIgnoreCase(amlStatus)) {
             client.setClientStatus(com.avo.entities.ClientStatus.BLOCKED);
         }
-        
-        client.setAmlLastVerificationDate(new Date());
 
         clientrepository.save(client);
         log.info("AML verification completed for client ID: {}. Status: {}", clientId, client.getClientStatus());

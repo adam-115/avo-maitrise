@@ -20,10 +20,7 @@ public class UBODTO {
     private String roleInCompany;
     private Double percentageOfOwnership;
     private String amlAnalysisStatus;
-    private Double amlMatchScore;
     private String amlTargetEntityName;
-    private String amlSanctionReason;
-    private Date amlLastVerificationDate;
     private Long clientMoralId; // reference to ClientMoral
 
 }

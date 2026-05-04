@@ -22,9 +22,6 @@ public class ClientEntityDTO {
     private String pays;
     private String type;
     private ClientStatus clientStatus;
-    private Double amlMatchScore;
-    private String amlSanctionReason;
-    private Date amlLastVerificationDate;
     private List<DocumentDTO> documents;
     private List<ContactPointDTO> contacts;
     private List<ScreeningMatchDTO> screeningMatchDTOs ;

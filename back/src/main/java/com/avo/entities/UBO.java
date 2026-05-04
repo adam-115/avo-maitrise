@@ -46,18 +46,8 @@ public class UBO {
     @Column(name = "aml_analysis_status")
     private String amlAnalysisStatus; // TODO, OK, SUSPECT, BLOCKED
 
-    @Column(name = "aml_match_score")
-    private Double amlMatchScore;
-
     @Column(name = "aml_target_entity_name")
     private String amlTargetEntityName;
-
-    @Column(name = "aml_sanction_reason")
-    private String amlSanctionReason;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "aml_last_verification_date")
-    private Date amlLastVerificationDate;
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)

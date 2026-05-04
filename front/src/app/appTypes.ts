@@ -108,10 +108,6 @@ export interface UBO {
   roleInCompany?: string;
   percentageOfOwnership?: number;
   amlAnalysisStatus?: 'TODO' | 'OK' | 'SUSPECT' | 'BLOCKED';
-  amlMatchScore?: number;
-  amlTargetEntityName?: string;
-  amlSanctionReason?: string;
-  amlLastVerificationDate?: Date;
 
   // Compatibility fields
   nom?: string;
@@ -138,11 +134,6 @@ export interface Client {
   adresse?: string;
   pays?: string;
   paysResidance?: string; // Alias for pays (deprecated)
-
-  // Yente AML specific properties
-  amlMatchScore?: number;
-  amlSanctionReason?: string;
-  amlLastVerificationDate?: Date;
 
   // Common collections
   documents?: Document[];
@@ -273,6 +264,7 @@ export interface ScreeningMatchDTO {
   yenteId?: string;
   score?: number;
   targetName?: string;
+  matchReason?: string;
   rawResponse?: any;
   createdAt?: Date | string;
 }

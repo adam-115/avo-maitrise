@@ -24,6 +24,6 @@ public class ScreeningMatchDTO {
     private String targetName;
     private JsonNode rawResponse;
     private LocalDateTime createdAt;
-    
+    private String matchReason;
 
 }
