@@ -140,7 +140,6 @@ export interface Client {
   ubos?: UBO[]; // For compatibility with ClientFormComponent
   
   // Additional fields for frontend logic
-  riskScore?: number;
   clientStatus?: ClientStatus;
   secteurActivite?: string;
   contacts?: ContactPoint[];

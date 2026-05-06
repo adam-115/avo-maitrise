@@ -43,7 +43,6 @@ export class InstitutionFormComponent implements OnInit {
             adresse: [''],
             pays: ['', Validators.required],
             secteurActivite: ['', Validators.required],
-            riskScore: [0],
             nom: ['', Validators.required],
             numeroRegistreNational: ['', Validators.required],
             numeroIdFiscal: [''],
@@ -139,3 +138,4 @@ export class InstitutionFormComponent implements OnInit {
         this.router.navigate(['/home/crm']);
     }
 }
+

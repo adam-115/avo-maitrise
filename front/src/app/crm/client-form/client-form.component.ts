@@ -64,7 +64,6 @@ export class ClientFormComponent implements OnInit {
             adresse: [''],
             pays: ['', Validators.required],
             secteurActivite: ['', Validators.required],
-            riskScore: [0],
             
             // Personne Physique fields
             nom: [''],
@@ -262,3 +261,4 @@ export class ClientFormComponent implements OnInit {
         this.router.navigate(['/home/crm']);
     }
 }
+

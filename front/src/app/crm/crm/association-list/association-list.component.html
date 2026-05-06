@@ -34,7 +34,6 @@
             <th class="px-6 py-5 text-xs font-black uppercase tracking-widest text-slate-500 border-r border-slate-100">Contact / Email</th>
             <th class="px-6 py-5 text-xs font-black uppercase tracking-widest text-slate-500 border-r border-slate-100">RN / Pays d'origine</th>
             <th class="px-6 py-5 text-xs font-black uppercase tracking-widest text-slate-500 border-r border-slate-100">Status AML</th>
-            <th class="px-6 py-5 text-xs font-black uppercase tracking-widest text-slate-500 border-r border-slate-100 text-center">Risque</th>
             <th class="px-6 py-5 text-xs font-black uppercase tracking-widest text-slate-500 text-right">Actions</th>
           </tr>
         </thead>
@@ -65,20 +64,6 @@
                       [ngClass]="getStatusColor(client.clientStatus)">
                   {{ client.clientStatus?.replace('_', ' ') }}
                 </span>
-              </td>
-              <td class="px-6 py-4 border-r border-slate-50">
-                <div class="flex flex-col items-center gap-1.5">
-                  <span class="text-xs font-black text-slate-900">{{ client.riskScore || 0 }}%</span>
-                  <div class="w-20 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-                    <div class="h-full rounded-full transition-all duration-1000"
-                         [style.width.%]="client.riskScore || 0"
-                         [ngClass]="{
-                           'bg-emerald-500': (client.riskScore || 0) < 30,
-                           'bg-amber-500': (client.riskScore || 0) >= 30 && (client.riskScore || 0) < 70,
-                           'bg-red-500': (client.riskScore || 0) >= 70
-                         }"></div>
-                  </div>
-                </div>
               </td>
               <td class="px-6 py-4">
                 <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
@@ -114,3 +99,4 @@
     </div>
   </div>
 </div>
+

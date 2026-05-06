@@ -44,7 +44,6 @@ export class ClientMoralFormComponent implements OnInit {
             adresse: [''],
             pays: ['', Validators.required],
             secteurActivite: ['', Validators.required],
-            riskScore: [0],
             nomCommercial: ['', Validators.required],
             formeJuridique: [''],
             numeroRegistreCommerce: ['', Validators.required],
@@ -158,3 +157,4 @@ export class ClientMoralFormComponent implements OnInit {
         this.router.navigate(['/home/crm']);
     }
 }
+

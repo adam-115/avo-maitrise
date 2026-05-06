@@ -45,7 +45,6 @@ export class PersonnePhysiqueFormComponent implements OnInit {
             adresse: [''],
             pays: ['', Validators.required],
             secteurActivite: ['', Validators.required],
-            riskScore: [0],
             nom: ['', Validators.required],
             prenom: ['', Validators.required],
             nationalite: [''],
@@ -143,3 +142,4 @@ export class PersonnePhysiqueFormComponent implements OnInit {
         this.router.navigate(['/home/crm']);
     }
 }
+

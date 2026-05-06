@@ -84,7 +84,7 @@ export class Crm implements OnInit {
       const matchesType = !this.selectedType || client.type === this.selectedType;
 
       // TODO: Implement risk filter once mapping is clear. Currently riskScore is a number.
-      // const matchesRisk = !this.selectedRisk || client.riskScore === this.selectedRisk;
+      
 
       return matchesSearch && matchesType;
     });
@@ -175,3 +175,4 @@ export class Crm implements OnInit {
     return '';
   }
 }
+
