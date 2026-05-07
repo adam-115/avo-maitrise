@@ -15,11 +15,13 @@ export class ScreeningExecutionService extends AbstractCrudService<ScreeningExec
         super(http);
     }
 
-    getByClientId(clientId: string | number, page: number = 0, size: number = 10): Observable<PaginatedResponse<ScreeningExecutionDTO>> {
+    getByClientId(clientId: string | number, page: number = 0, size: number = 10, sort: string = 'createdAt,desc'): Observable<PaginatedResponse<ScreeningExecutionDTO>> {
         const params = new HttpParams()
             .set('client.id', clientId.toString())
             .set('page', page.toString())
-            .set('size', size.toString());
+            .set('size', size.toString())
+            .append('sort', sort)
+            .append('sort', 'id,desc');
         return this.http.get<PaginatedResponse<ScreeningExecutionDTO>>(`${this.apiUrl}/search`, { params });
     }
 }

@@ -270,6 +270,25 @@ export class ClientDetails implements OnInit {
     if (!this.matches || this.matches.length === 0) return 0;
     return Math.max(...this.matches.map(m => m.score || 0));
   }
+
+  getTopics(reasonString?: string): { label: string, description: string, colorClass: string }[] {
+    if (!reasonString) return [];
+    const topics = reasonString.split(',').map(t => t.trim().toLowerCase());
+    return topics.map(topic => {
+      switch (topic) {
+        case 'role.pep': return { label: 'PEP', description: 'Personne Politiquement Exposée', colorClass: 'bg-amber-100 text-amber-800' };
+        case 'role.rca': return { label: 'RCA', description: 'Proche ou Associé d\'une PEP', colorClass: 'bg-amber-100 text-amber-800' };
+        case 'sanction': return { label: 'SANCTION', description: 'Fait l\'objet de sanctions internationales', colorClass: 'bg-rose-100 text-rose-800' };
+        case 'crime.terror': return { label: 'TERRORISME', description: 'Liens avec le terrorisme', colorClass: 'bg-rose-100 text-rose-800' };
+        case 'crime.fin': return { label: 'FINANCE', description: 'Criminalité financière', colorClass: 'bg-rose-100 text-rose-800' };
+        case 'crime': return { label: 'CRIME', description: 'Antécédents criminels', colorClass: 'bg-rose-100 text-rose-800' };
+        case 'poi': return { label: 'POI', description: 'Personne d\'intérêt', colorClass: 'bg-indigo-100 text-indigo-800' };
+        case 'corp.disqual': return { label: 'DISQUALIFIÉ', description: 'Interdiction de gérer une société', colorClass: 'bg-orange-100 text-orange-800' };
+        case 'wanted': return { label: 'RECHERCHÉ', description: 'Avis de recherche', colorClass: 'bg-rose-100 text-rose-800' };
+        default: return { label: topic.toUpperCase(), description: 'Catégorie signalée', colorClass: 'bg-slate-100 text-slate-800' };
+      }
+    });
+  }
 }
 
 

@@ -254,12 +254,19 @@
                   <tbody class="bg-white divide-y divide-slate-200">
                     @for (match of matches; track match.id) {
                       <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4">
                           <div class="text-sm font-bold text-slate-900">{{ getTargetName(match) }}</div>
-                          <div class="text-xs text-slate-500 mt-1">
-                            @if(match.matchReason) { <span class="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-medium text-[10px] mr-1 uppercase">{{ match.matchReason }}</span> }
-                            Cible: {{ match.uboDTO ? match.uboDTO.fullName : (getDisplayName(client) || 'Client') }}
-                          </div>
+                          <div class="text-xs text-slate-500 mt-1 mb-2">Cible: {{ match.uboDTO ? match.uboDTO.fullName : (getDisplayName(client) || 'Client') }}</div>
+                          @if(match.matchReason) {
+                            <div class="flex flex-col gap-1 mt-1">
+                              @for(topic of getTopics(match.matchReason); track topic.label) {
+                                <div class="flex items-center gap-1.5">
+                                  <span class="px-1.5 py-0.5 rounded-sm font-bold text-[10px] shadow-sm border border-black/5 leading-none {{topic.colorClass}}">{{ topic.label }}</span>
+                                  <span class="text-[11px] text-slate-500 italic">{{ topic.description }}</span>
+                                </div>
+                              }
+                            </div>
+                          }
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                           <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold" [ngClass]="{
@@ -316,12 +323,14 @@
                     <div class="flex space-x-4">
                       <!-- Timeline dot -->
                       <div class="flex flex-col items-center">
-                        <div class="h-8 w-8 rounded-full flex items-center justify-center shrink-0" [ngClass]="{
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center shrink-0 shadow-sm" [ngClass]="{
                           'bg-emerald-100 text-emerald-600': exec.status === 'PASSED',
-                          'bg-slate-100 text-slate-600': exec.status === 'FAILED'
+                          'bg-rose-100 text-rose-600': exec.status === 'FAILED',
+                          'bg-slate-100 text-slate-600': !exec.status
                         }">
                           @if(exec.status === 'PASSED') { <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> }
-                          @if(exec.status === 'FAILED') { <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> }
+                          @if(exec.status === 'FAILED') { <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"></path></svg> }
+                          @if(!exec.status) { <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> }
                         </div>
                       </div>
                       
@@ -331,7 +340,14 @@
                           <p class="text-sm font-bold text-slate-900">
                             Cible : {{ exec.uboDTO ? exec.uboDTO.fullName + ' (UBO)' : 'Client Principal' }}
                           </p>
-                          <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">{{ exec.createdAt | date:'short' }}</span>
+                          <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest shadow-sm" [ngClass]="{
+                              'bg-emerald-100 text-emerald-800 border border-emerald-200': exec.status === 'PASSED',
+                              'bg-rose-100 text-rose-800 border border-rose-200': exec.status === 'FAILED',
+                              'bg-slate-100 text-slate-800 border border-slate-200': !exec.status
+                            }">{{ exec.status || 'INCONNU' }}</span>
+                            <span class="text-xs font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">{{ exec.createdAt | date:'short' }}</span>
+                          </div>
                         </div>
                         <p class="text-sm text-slate-600 mb-2">{{ exec.executionMessage || 'Analyse terminée.' }}</p>
                         
