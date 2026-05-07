@@ -230,20 +230,34 @@
         
         <!-- Correspondances Bloquantes (Screening Matches) -->
         <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-          <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+          <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex flex-wrap gap-4 items-center justify-between">
             <h2 class="text-lg font-bold text-slate-900 flex items-center">
               <svg class="w-5 h-5 mr-2 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
               Correspondances Sanctions (Hits)
             </h2>
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold" [ngClass]="matches.length > 0 ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'">
-              {{ matches.length }} Match(es)
-            </span>
+            
+            <div class="flex items-center gap-3">
+              <!-- Search by Date -->
+              <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-sm transition-all focus-within:ring-2 focus-within:ring-rose-500/20 focus-within:border-rose-500">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <input type="date" [value]="matchDateFilter" (input)="matchDateFilter = $any($event.target).value" class="text-sm border-none focus:ring-0 text-slate-600 bg-transparent p-0 w-32 cursor-pointer">
+                @if(matchDateFilter) {
+                  <button (click)="matchDateFilter = ''" class="text-slate-400 hover:text-rose-500 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  </button>
+                }
+              </div>
+
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold" [ngClass]="getFilteredMatches().length > 0 ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'">
+                {{ getFilteredMatches().length }} Match(es)
+              </span>
+            </div>
           </div>
           <div class="p-0">
-            @if (matches.length > 0) {
-              <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200">
-                  <thead class="bg-slate-50">
+            @if (getFilteredMatches().length > 0) {
+              <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                <table class="min-w-full divide-y divide-slate-200 sticky-header">
+                  <thead class="bg-slate-50 sticky top-0 z-10">
                     <tr>
                       <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Entité Matchée</th>
                       <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Score</th>
@@ -252,7 +266,7 @@
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-slate-200">
-                    @for (match of matches; track match.id) {
+                    @for (match of getFilteredMatches(); track match.id) {
                       <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-4">
                           <div class="text-sm font-bold text-slate-900">{{ getTargetName(match) }}</div>

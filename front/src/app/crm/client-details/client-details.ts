@@ -26,6 +26,20 @@ export class ClientDetails implements OnInit {
   client: Client | null = null;
   executions: ScreeningExecutionDTO[] = [];
   matches: ScreeningMatchDTO[] = [];
+  matchDateFilter: string = '';
+
+  getFilteredMatches(): ScreeningMatchDTO[] {
+    if (!this.matchDateFilter) return this.matches;
+    return this.matches.filter(match => {
+      if (!match.createdAt) return false;
+      const dateObj = new Date(match.createdAt);
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+      return dateStr <= this.matchDateFilter;
+    });
+  }
 
   isLoading = true;
 
