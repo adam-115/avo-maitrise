@@ -235,7 +235,8 @@ export enum ClientStatus {
   VALIDATED = 'VALIDATED',                       // Dossier complet et accepté. Le client est opérationnel.
   BLOCKED = 'BLOCKED',                            // Client rejeté ou gelé pour non-conformité majeure.
   SUSPICIOUS = 'SUSPICIOUS',                      // Client suspect nécessitant une attention particulière.
-  DUE_DILIGENCE_REQUIRED = 'DUE_DILIGENCE_REQUIRED' // Complément d'information nécessaire.
+  DUE_DILIGENCE_REQUIRED = 'DUE_DILIGENCE_REQUIRED', // Complément d'information nécessaire.
+  RE_EVALUATION_REQUIRED = 'RE_EVALUATION_REQUIRED' // Données OpenSanctions mises à jour.
 }
 
 
@@ -250,7 +251,18 @@ export enum ScreeningMatchStatus {
   PENDING = 'PENDING',
   FALSE_POSITIVE = 'FALSE_POSITIVE',
   TRUE_POSITIVE = 'TRUE_POSITIVE',
-  ESCALATED = 'ESCALATED'
+  ESCALATED = 'ESCALATED',
+  RE_EVALUATION_REQUIRED = 'RE_EVALUATION_REQUIRED',
+  NO_LONGER_SANCTIONED = 'NO_LONGER_SANCTIONED'
+}
+
+export interface Notification {
+  id?: number;
+  title: string;
+  message: string;
+  clientId?: number;
+  createdAt: Date;
+  isRead: boolean;
 }
 
 export interface ScreeningExecutionDTO {
@@ -278,6 +290,7 @@ export interface ScreeningMatchDTO {
   reviewerComment?: string;
   reviewedAt?: Date | string;
   reviewedBy?: string;
+  yenteLastUpdate?: string;
 }
 
 export enum FormType {

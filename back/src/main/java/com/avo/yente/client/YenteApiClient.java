@@ -89,6 +89,18 @@ public class YenteApiClient {
         return response;
     }
 
+    public com.avo.yente.models.YenteMatchResult getEntity(String yenteId) {
+        HttpHeaders headers = new HttpHeaders();
+        if (yenteApiKey != null && !yenteApiKey.trim().isEmpty()) {
+            headers.set("Authorization", yenteApiKey);
+            headers.set("X-API-Key", yenteApiKey);
+        }
+        HttpEntity<Void> entity = new HttpEntity<>(headers);
+        String url = yenteApiUrl + "/entities/" + yenteId;
+        log.info("Fetching entity from Yente API: {}", url);
+        return restTemplate.exchange(url, org.springframework.http.HttpMethod.GET, entity, com.avo.yente.models.YenteMatchResult.class).getBody();
+    }
+
 
     
 

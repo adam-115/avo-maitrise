@@ -16,32 +16,31 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "aml_allow_list")
-public class AmlAllowList {
+@Table(name = "notifications")
+public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "message", columnDefinition = "TEXT")
+    private String message;
+
     @Column(name = "client_id")
     private Long clientId;
-
-    @Column(name = "ubo_id")
-    private Long uboId;
-
-    @Column(name = "yente_id", nullable = false)
-    private String yenteId;
-
-    @Column(name = "reason", columnDefinition = "TEXT")
-    private String reason;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    public AmlAllowList(Long clientId, Long uboId, String yenteId, String reason) {
+    @Column(name = "is_read")
+    private boolean isRead = false;
+
+    public Notification(String title, String message, Long clientId) {
+        this.title = title;
+        this.message = message;
         this.clientId = clientId;
-        this.uboId = uboId;
-        this.yenteId = yenteId;
-        this.reason = reason;
     }
 }

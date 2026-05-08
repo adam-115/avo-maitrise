@@ -73,31 +73,7 @@ export class NavigationService {
 
 
 
-  // public navigateToFormConfigList(): void {
-  //   this.router.navigate(['/home/', NavigationService.AML_FORM_CONFIG_LIST]);
-  // }
-
-  // public navigateToNewFormConfig(): void {
-  //   this.router.navigate(['/home/', ...NavigationService.FORM_CONFIG_CREATE.split('/')]);
-  // }
-
-
-  // public navigateToEditFormConfig(id: number): void {
-  //   let targetUrl = NavigationService.FORM_CONFIG_EDIT.replace(":id", id.toString());
-  //   this.router.navigate(['/home/', ...targetUrl.split("/")]);
-
-  // }
-
-  // public navigateToViewFormConfig(id: number, queryParams?: any): void {
-  //   let targetUrl = NavigationService.FORM_CONFIG_VIEW.replace(":id", id.toString());
-  //   this.router.navigate(['/home/', ...targetUrl.split("/")], { queryParams: queryParams });
-  // }
-
-  // public navigateToAMLContext(clientId: string): void {
-  //   let targetUrl = NavigationService.CLIENT_AML_CONTEXT.replace(":id", clientId);
-  //   this.router.navigate(['/home/', ...targetUrl.split("/")]);
-  // }
-
+  
 
 
   public navigateToTypeClient(): void {

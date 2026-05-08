@@ -14,6 +14,29 @@
                 Alertes Urgentes & Actions Requises (2)
             </h2>
 
+            <!-- Monitoring Alerts (Re-evaluation Required) -->
+            @if (notifications.length > 0) {
+                <div class="space-y-3">
+                    @for (notif of notifications; track notif.id) {
+                        <div class="bg-indigo-50 border-l-4 border-indigo-600 text-indigo-900 p-4 rounded-lg shadow-sm flex justify-between items-center animate-pulse">
+                            <div class="flex items-center">
+                                <div class="p-2 bg-indigo-100 rounded-full mr-3">
+                                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                </div>
+                                <div>
+                                    <p class="font-bold text-sm uppercase tracking-tight">{{ notif.title }}</p>
+                                    <p class="text-xs opacity-90">{{ notif.message }}</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button (click)="markAsRead(notif)" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 px-2 py-1 rounded">Masquer</button>
+                                <a (click)="navigateToClientDetails(notif?.clientId!)" class="text-xs font-bold bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition shadow-sm">Analyser</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
             <div class="bg-red-100 border-l-4 border-red-600 text-red-800 p-4 rounded-lg shadow-md flex justify-between items-center">
                 <div>
                     <p class="font-bold">Audience J-1 : Affaire Société ALPHA c/ BETA (2025/123)</p>

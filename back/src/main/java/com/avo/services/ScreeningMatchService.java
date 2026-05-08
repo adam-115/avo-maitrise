@@ -16,19 +16,22 @@ public class ScreeningMatchService {
 
     private final ScreeningMatchRepository repository;
     private final ScreeningMatchMapper mapper;
-    private final com.avo.repositories.AmlAllowListRepository allowListRepository;
     private final com.avo.repositories.ClientRepository clientRepository;
     private final com.avo.repositories.UBORepository uboRepository;
+    private final com.avo.repositories.NotificationRepository notificationRepository;
+    private final com.avo.yente.client.YenteApiClient yenteApiClient;
 
     public ScreeningMatchService(ScreeningMatchRepository repository, ScreeningMatchMapper mapper,
-                                com.avo.repositories.AmlAllowListRepository allowListRepository,
                                 com.avo.repositories.ClientRepository clientRepository,
-                                com.avo.repositories.UBORepository uboRepository) {
+                                com.avo.repositories.UBORepository uboRepository,
+                                com.avo.repositories.NotificationRepository notificationRepository,
+                                com.avo.yente.client.YenteApiClient yenteApiClient) {
         this.repository = repository;
         this.mapper = mapper;
-        this.allowListRepository = allowListRepository;
         this.clientRepository = clientRepository;
         this.uboRepository = uboRepository;
+        this.notificationRepository = notificationRepository;
+        this.yenteApiClient = yenteApiClient;
     }
 
     @org.springframework.transaction.annotation.Transactional
@@ -42,14 +45,15 @@ public class ScreeningMatchService {
         match.setReviewedAt(java.time.LocalDateTime.now());
 
         if (decision == com.avo.entities.ScreeningMatchStatus.FALSE_POSITIVE) {
-            // Add to allow-list
-            com.avo.entities.AmlAllowList allowEntry = new com.avo.entities.AmlAllowList(
-                match.getClient() != null ? match.getClient().getId() : null,
-                match.getUbo() != null ? match.getUbo().getId() : null,
-                match.getYenteId(),
-                comment
-            );
-            allowListRepository.save(allowEntry);
+            // Fetch current state from Yente to snapshot the version
+            try {
+                com.avo.yente.models.YenteMatchResult entity = yenteApiClient.getEntity(match.getYenteId());
+                if (entity != null) {
+                    match.setYenteLastUpdate(entity.lastChange());
+                }
+            } catch (Exception e) {
+                System.err.println("Failed to fetch entity for decision snapshot: " + e.getMessage());
+            }
         }
 
         repository.save(match);
@@ -79,6 +83,8 @@ public class ScreeningMatchService {
             client.setClientStatus(com.avo.entities.ClientStatus.BLOCKED);
         } else if (hasPending || hasEscalated) {
             // Keep current suspicious/required status
+        } else if (matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.RE_EVALUATION_REQUIRED)) {
+            client.setClientStatus(com.avo.entities.ClientStatus.RE_EVALUATION_REQUIRED);
         } else {
             client.setClientStatus(com.avo.entities.ClientStatus.AML_VALIDATED);
         }

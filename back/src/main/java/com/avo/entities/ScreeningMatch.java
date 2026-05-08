@@ -96,4 +96,7 @@ public class ScreeningMatch {
     @Column(name = "reviewed_by")
     private String reviewedBy;
 
+    @Column(name = "yente_last_update")
+    private String yenteLastUpdate;
+
 }

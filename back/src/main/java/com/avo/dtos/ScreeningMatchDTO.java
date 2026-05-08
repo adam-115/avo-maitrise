@@ -29,5 +29,6 @@ public class ScreeningMatchDTO {
     private String reviewerComment;
     private LocalDateTime reviewedAt;
     private String reviewedBy;
+    private String yenteLastUpdate;
 
 }

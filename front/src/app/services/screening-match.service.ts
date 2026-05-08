@@ -32,4 +32,13 @@ export class ScreeningMatchService extends AbstractCrudService<ScreeningMatchDTO
             .set('reviewer', reviewer);
         return this.http.post<ScreeningMatchDTO>(`${this.apiUrl}/${matchId}/process-decision`, null, { params });
     }
+
+    getReEvaluationMatches(page: number = 0, size: number = 5): Observable<PaginatedResponse<ScreeningMatchDTO>> {
+        const params = new HttpParams()
+            .set('status', 'RE_EVALUATION_REQUIRED')
+            .set('page', page.toString())
+            .set('size', size.toString())
+            .set('sort', 'createdAt,desc');
+        return this.http.get<PaginatedResponse<ScreeningMatchDTO>>(`${this.apiUrl}/search`, { params });
+    }
 }

@@ -33,7 +33,9 @@ export class MatchAnalysisModal {
      return {
         score: result?.score,
         datasets: result?.datasets,
-        schema: result?.schema
+        schema: result?.schema,
+        lastChange: result?.last_change,
+        firstSeen: result?.first_seen
      };
   }
 
