@@ -25,5 +25,9 @@ public class ScreeningMatchDTO {
     private JsonNode rawResponse;
     private LocalDateTime createdAt;
     private String matchReason;
+    private String status; // Using String for DTO to avoid enum serialization issues if preferred, but usually Enum is better. I'll use String for compatibility with existing patterns if any.
+    private String reviewerComment;
+    private LocalDateTime reviewedAt;
+    private String reviewedBy;
 
 }

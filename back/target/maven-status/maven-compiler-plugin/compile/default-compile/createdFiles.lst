@@ -26,6 +26,7 @@ com\avo\controller\PersonnePhysiqueController.class
 com\avo\yente\models\YenteMatchResult.class
 com\avo\dtos\ContactPointDTO$ContactPointDTOBuilder.class
 com\avo\config\QueryDslConfig.class
+com\avo\entities\AmlAllowList.class
 com\avo\mappers\ScreeningExecutionhMapper.class
 com\avo\mappers\ContactPointMapperImpl.class
 com\avo\services\ClientMoralService.class
@@ -50,6 +51,7 @@ com\avo\mappers\UBOMapper.class
 com\avo\yente\models\YenteMatchResponse.class
 com\avo\services\AssociationService.class
 com\avo\dtos\ClientPersonnePhysiqueDTO$ClientPersonnePhysiqueDTOBuilderImpl.class
+com\avo\entities\ScreeningMatchStatus.class
 com\avo\dtos\AssociationDTO$AssociationDTOBuilder.class
 com\avo\dtos\ClientEntityDTO$ClientEntityDTOBuilderImpl.class
 com\avo\entities\ClientTypeEnum.class
@@ -109,6 +111,7 @@ com\avo\repositories\PersonnePhysiqueRepository.class
 com\avo\entities\QSecteurActivite.class
 com\avo\yente\models\YenteMatchQuery.class
 com\avo\dtos\ClientEntityDTO.class
+com\avo\entities\QAmlAllowList.class
 com\avo\entities\QClientPersonnePhysique.class
 com\avo\entities\QScreeningExecution.class
 com\avo\entities\ScreeningExecution.class
@@ -122,6 +125,7 @@ com\avo\mappers\SecteurActiviteMapper.class
 com\avo\mappers\AssociationMapper.class
 com\avo\repositories\UBORepository.class
 com\avo\entities\QInstitution.class
+com\avo\repositories\AmlAllowListRepository.class
 com\avo\repositories\ContactPointRepository.class
 com\avo\dtos\ContactPointDTO.class
 com\avo\mappers\ClientPersonnePhysiqueMapperImpl.class

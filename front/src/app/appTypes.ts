@@ -234,7 +234,8 @@ export enum ClientStatus {
   // Phase Finale
   VALIDATED = 'VALIDATED',                       // Dossier complet et accepté. Le client est opérationnel.
   BLOCKED = 'BLOCKED',                            // Client rejeté ou gelé pour non-conformité majeure.
-  SUSPICIOUS = 'SUSPICIOUS'                      // Client suspect nécessitant une attention particulière.
+  SUSPICIOUS = 'SUSPICIOUS',                      // Client suspect nécessitant une attention particulière.
+  DUE_DILIGENCE_REQUIRED = 'DUE_DILIGENCE_REQUIRED' // Complément d'information nécessaire.
 }
 
 
@@ -243,6 +244,13 @@ export enum ClientStatus {
 export enum ScreeningExecutionStatus {
   PASSED = 'PASSED',
   FAILED = 'FAILED'
+}
+
+export enum ScreeningMatchStatus {
+  PENDING = 'PENDING',
+  FALSE_POSITIVE = 'FALSE_POSITIVE',
+  TRUE_POSITIVE = 'TRUE_POSITIVE',
+  ESCALATED = 'ESCALATED'
 }
 
 export interface ScreeningExecutionDTO {
@@ -266,6 +274,10 @@ export interface ScreeningMatchDTO {
   matchReason?: string;
   rawResponse?: any;
   createdAt?: Date | string;
+  status?: ScreeningMatchStatus;
+  reviewerComment?: string;
+  reviewedAt?: Date | string;
+  reviewedBy?: string;
 }
 
 export enum FormType {

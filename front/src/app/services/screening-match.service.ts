@@ -24,4 +24,12 @@ export class ScreeningMatchService extends AbstractCrudService<ScreeningMatchDTO
             .append('sort', 'id,desc');
         return this.http.get<PaginatedResponse<ScreeningMatchDTO>>(`${this.apiUrl}/search`, { params });
     }
+
+    processDecision(matchId: number, decision: string, comment: string, reviewer: string): Observable<ScreeningMatchDTO> {
+        let params = new HttpParams()
+            .set('decision', decision)
+            .set('comment', comment)
+            .set('reviewer', reviewer);
+        return this.http.post<ScreeningMatchDTO>(`${this.apiUrl}/${matchId}/process-decision`, null, { params });
+    }
 }

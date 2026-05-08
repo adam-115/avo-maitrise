@@ -8,4 +8,5 @@ import com.avo.entities.ScreeningMatch;
 
 @Repository
 public interface ScreeningMatchRepository extends JpaRepository<ScreeningMatch, Long> , QuerydslPredicateExecutor<ScreeningMatch> {
+    java.util.List<ScreeningMatch> findByClientId(Long clientId);
 }

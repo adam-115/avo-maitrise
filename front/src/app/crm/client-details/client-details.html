@@ -64,8 +64,8 @@
           <select [ngModel]="client.clientStatus" (ngModelChange)="onStatusChange($event)"
               class="block w-full rounded-lg sm:text-sm font-bold border-0 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 transition-all py-2.5 pl-3 pr-10"
               [ngClass]="{
-              'bg-emerald-50 text-emerald-800 ring-emerald-200': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
-              'bg-amber-50 text-amber-800 ring-amber-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
+               'bg-emerald-50 text-emerald-800 ring-emerald-200': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
+              'bg-amber-50 text-amber-800 ring-amber-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED' || client.clientStatus === 'DUE_DILIGENCE_REQUIRED',
               'bg-rose-50 text-rose-800 ring-rose-200': client.clientStatus === 'BLOCKED',
               'bg-orange-50 text-orange-800 ring-orange-200': client.clientStatus === 'INDULGENCE_REQUIRED',
               'bg-indigo-50 text-indigo-800 ring-indigo-200': client.clientStatus === 'INDULGENCE_VALIDATED'
@@ -263,6 +263,7 @@
                       <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Score</th>
                       <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Source / ID Yente</th>
                       <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">Date</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-slate-200">
@@ -299,6 +300,20 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
                           {{ match.createdAt | date:'dd/MM/yyyy HH:mm' }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                          <div class="flex items-center justify-end gap-2">
+                            @if (match.status && match.status !== 'PENDING') {
+                              <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-widest shadow-sm" [ngClass]="{
+                                'bg-emerald-100 text-emerald-800 border border-emerald-200': match.status === 'FALSE_POSITIVE',
+                                'bg-rose-100 text-rose-800 border border-rose-200': match.status === 'TRUE_POSITIVE',
+                                'bg-amber-100 text-amber-800 border border-amber-200': match.status === 'ESCALATED'
+                              }">{{ match.status }}</span>
+                            }
+                            <button (click)="openAnalysisModal(match)" class="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors shadow-sm border border-indigo-100">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     }
@@ -419,6 +434,16 @@
     </div>
 
   </div>
+
+  <!-- Analysis Modal -->
+  @if (isAnalysisModalOpen && selectedMatch && client) {
+    <app-match-analysis-modal 
+      [match]="selectedMatch" 
+      [client]="client"
+      (close)="closeAnalysisModal()"
+      (decisionMade)="onDecisionMade($event)">
+    </app-match-analysis-modal>
+  }
 </div>
 
 }

@@ -45,11 +45,13 @@ public class YenteClientVerificationJob {
     private final ScreeningExecutionService screeningExecutionService;
     private final ClientRepository clientRepository;
     private final UBOService uboService;
+    private final com.avo.repositories.AmlAllowListRepository allowListRepository;
 
     public YenteClientVerificationJob(YenteAmlService yenteAmlService, ClientService clientService,
             ScreeningMatchService screeningMatchService,
             ScreeningExecutionService screeningLogMatchService, ClientRepository clientRepository,
-            UBOService uboService, ClientEntityMapper clientEntityMapper, ObjectMapper objectMapper) {
+            UBOService uboService, ClientEntityMapper clientEntityMapper, ObjectMapper objectMapper,
+            com.avo.repositories.AmlAllowListRepository allowListRepository) {
         this.yenteAmlService = yenteAmlService;
         this.clientService = clientService;
         this.screeningMatchService = screeningMatchService;
@@ -58,9 +60,10 @@ public class YenteClientVerificationJob {
         this.uboService = uboService;
         this.clientEntityMapper = clientEntityMapper;
         this.objectMapper = objectMapper;
+        this.allowListRepository = allowListRepository;
     }
 
-    // @Scheduled(fixedDelay = 100000)
+    // @Scheduled(fixedDelay = 1000000)
     @Transactional
     public void executeMatchClient() {
         System.out.println("executeMatchClient executed at " + LocalDateTime.now());
@@ -112,7 +115,11 @@ public class YenteClientVerificationJob {
                             screeningMatchDTO.setRawResponse(jsonNodeResult);
                             screeningMatchDTO.setScore(matchScore);
                             if (resNode.has("id")) {
-                                screeningMatchDTO.setYenteId(resNode.get("id").asText());
+                                String yenteId = resNode.get("id").asText();
+                                if (allowListRepository.existsByClientIdAndYenteId(client.getId(), yenteId)) {
+                                    continue;
+                                }
+                                screeningMatchDTO.setYenteId(yenteId);
                             }
                             if (resNode.has("properties") && resNode.get("properties").has("topics")) {
                                 JsonNode topicsNode = resNode.get("properties").get("topics");
@@ -195,7 +202,11 @@ public class YenteClientVerificationJob {
                             screeningMatchDTO.setRawResponse(jsonNodeResult);
                             screeningMatchDTO.setScore(matchScore);
                             if (resNode.has("id")) {
-                                screeningMatchDTO.setYenteId(resNode.get("id").asText());
+                                String yenteId = resNode.get("id").asText();
+                                if (allowListRepository.existsByUboIdAndYenteId(ubo.getId(), yenteId)) {
+                                    continue;
+                                }
+                                screeningMatchDTO.setYenteId(yenteId);
                             }
                             if (resNode.has("properties") && resNode.get("properties").has("topics")) {
                                 JsonNode topicsNode = resNode.get("properties").get("topics");

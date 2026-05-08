@@ -46,6 +46,15 @@ public class ScreeningMatchController {
         return ResponseEntity.ok(service.update(dto));
     }
 
+    @PostMapping("/{id}/process-decision")
+    public ResponseEntity<ScreeningMatchDTO> processDecision(
+            @PathVariable Long id,
+            @RequestParam com.avo.entities.ScreeningMatchStatus decision,
+            @RequestParam(required = false) String comment,
+            @RequestParam(required = false) String reviewer) {
+        return ResponseEntity.ok(service.processDecision(id, decision, comment, reviewer));
+    }
+
 
 
     // @DeleteMapping("/{id}")

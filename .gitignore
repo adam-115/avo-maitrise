@@ -7,3 +7,4 @@ spring.log
 spring.log
 *.log
 spring.log
+*.class

@@ -83,4 +83,17 @@ public class ScreeningMatch {
     @Column(name = "match_reason", columnDefinition = "TEXT")
     private String matchReason;
 
+    @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private ScreeningMatchStatus status = ScreeningMatchStatus.PENDING;
+
+    @Column(name = "reviewer_comment", columnDefinition = "TEXT")
+    private String reviewerComment;
+
+    @Column(name = "reviewed_at")
+    private LocalDateTime reviewedAt;
+
+    @Column(name = "reviewed_by")
+    private String reviewedBy;
+
 }

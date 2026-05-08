@@ -11,9 +11,11 @@ import { AmlService } from '../../services/aml-service';
 import { ScreeningExecutionService } from '../../services/screening-execution.service';
 import { ScreeningMatchService } from '../../services/screening-match.service';
 
+import { MatchAnalysisModal } from './match-analysis-modal';
+
 @Component({
   selector: 'app-client-details',
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, MatchAnalysisModal],
   templateUrl: './client-details.html',
   styleUrl: './client-details.css'
 })
@@ -42,6 +44,8 @@ export class ClientDetails implements OnInit {
   }
 
   isLoading = true;
+  selectedMatch: ScreeningMatchDTO | null = null;
+  isAnalysisModalOpen = false;
 
   getDisplayName(client: any): string {
     if (!client) return '';
@@ -53,6 +57,25 @@ export class ClientDetails implements OnInit {
   private readonly navigationService = inject(NavigationService);
   private readonly alertService = inject(AlertService);
   private readonly amlService = inject(AmlService);
+
+  openAnalysisModal(match: ScreeningMatchDTO) {
+    this.selectedMatch = match;
+    this.isAnalysisModalOpen = true;
+  }
+
+  closeAnalysisModal() {
+    this.selectedMatch = null;
+    this.isAnalysisModalOpen = false;
+  }
+
+  onDecisionMade(updatedMatch: ScreeningMatchDTO) {
+    if (this.client && this.client.id) {
+      const clientId = String(this.client.id);
+      this.loadAmlHistory(clientId);
+      this.loadClient(clientId);
+    }
+    this.closeAnalysisModal();
+  }
 
   isAmlLoading = false;
 
