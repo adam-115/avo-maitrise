@@ -8,3 +8,7 @@ spring.log
 *.log
 spring.log
 *.class
+spring.log.2026-05-08.0.gz
+spring.log.2026-05-01.0.gz
+*.gz
+spring.log

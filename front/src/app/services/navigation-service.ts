@@ -24,10 +24,10 @@ export class NavigationService {
   static readonly NEW_INSTITUTION = 'crm/institution/new';
   
   static readonly CLIENT_EDIT = 'crm/client/edit/:id';
-  static readonly PERSONNE_EDIT = 'crm/personne/edit/:id';
-  static readonly SOCIETE_EDIT = 'crm/societe/edit/:id';
-  static readonly ASSOCIATION_EDIT = 'crm/association/edit/:id';
-  static readonly INSTITUTION_EDIT = 'crm/institution/edit/:id';
+  // static readonly PERSONNE_EDIT = 'crm/personne/edit/:id';
+  // static readonly SOCIETE_EDIT = 'crm/societe/edit/:id';
+  // static readonly ASSOCIATION_EDIT = 'crm/association/edit/:id';
+  // static readonly INSTITUTION_EDIT = 'crm/institution/edit/:id';
 
   static readonly CLIENT_DETAILS = 'client-details';
   static readonly MODEL = 'model';

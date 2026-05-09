@@ -114,17 +114,7 @@ export class ClientCardComponent {
   }
 
   navigateToEdit() {
-    let route = '';
-    switch (this.client.type) {
-      case 'PERSONNE': route = NavigationService.PERSONNE_EDIT; break;
-      case 'SOCIETE': route = NavigationService.SOCIETE_EDIT; break;
-      case 'ASSOCIATION': route = NavigationService.ASSOCIATION_EDIT; break;
-      case 'INSTITUTION': route = NavigationService.INSTITUTION_EDIT; break;
-      default: route = NavigationService.CLIENT_EDIT;
-    }
-    const target = route.replace(':id', String(this.client.id));
-    const router = inject(Router);
-    router.navigate(['/home/', ...target.split('/')]);
+    this.navigationService.navigateToClientEdit(String(this.client.id));
   }
 
   navigateToDiligence() {

@@ -67,8 +67,7 @@ export class ClientPhysiqueListComponent implements OnInit {
   }
 
   navigateToEdit(client: ClientPersonnePhysique) {
-    const target = NavigationService.PERSONNE_EDIT.replace(':id', String(client.id));
-    this.router.navigate(['/home/', ...target.split('/')]);
+    this.navigationService.navigateToClientEdit(String(client.id));
   }
 
   navigateToDiligence(client: ClientPersonnePhysique) {

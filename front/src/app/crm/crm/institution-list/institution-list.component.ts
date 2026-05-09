@@ -67,8 +67,7 @@ export class InstitutionListComponent implements OnInit {
   }
 
   navigateToEdit(client: Institution) {
-    const target = NavigationService.INSTITUTION_EDIT.replace(':id', String(client.id));
-    this.router.navigate(['/home/', ...target.split('/')]);
+    this.navigationService.navigateToClientEdit(String(client.id));
   }
 
   navigateToDiligence(client: Institution) {

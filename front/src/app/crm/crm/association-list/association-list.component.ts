@@ -67,8 +67,7 @@ export class AssociationListComponent implements OnInit {
   }
 
   navigateToEdit(client: Association) {
-    const target = NavigationService.ASSOCIATION_EDIT.replace(':id', String(client.id));
-    this.router.navigate(['/home/', ...target.split('/')]);
+    this.navigationService.navigateToClientEdit(String(client.id));
   }
 
   navigateToDiligence(client: Association) {

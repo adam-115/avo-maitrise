@@ -67,8 +67,7 @@ export class ClientMoralListComponent implements OnInit {
   }
 
   navigateToEdit(client: ClientMoral) {
-    const target = NavigationService.SOCIETE_EDIT.replace(':id', String(client.id));
-    this.router.navigate(['/home/', ...target.split('/')]);
+    this.navigationService.navigateToClientEdit(String(client.id));
   }
 
   navigateToDiligence(client: ClientMoral) {
