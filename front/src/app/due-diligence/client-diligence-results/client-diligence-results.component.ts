@@ -18,6 +18,17 @@ import { AssignFormModalComponent } from '../assign-form-modal/assign-form-modal
     standalone: true,
     imports: [CommonModule, DatePipe, FormsModule, AssignFormModalComponent],
     templateUrl: './client-diligence-results.component.html',
+    styles: [`
+        @keyframes blink-red {
+            0% { border-color: rgba(244, 63, 94, 0.2); box-shadow: 0 0 0 rgba(244, 63, 94, 0); }
+            50% { border-color: rgba(244, 63, 94, 1); box-shadow: 0 0 15px rgba(244, 63, 94, 0.3); }
+            100% { border-color: rgba(244, 63, 94, 0.2); box-shadow: 0 0 0 rgba(244, 63, 94, 0); }
+        }
+        .blink-red-border {
+            animation: blink-red 2s infinite ease-in-out;
+            border-width: 2px !important;
+        }
+    `]
 })
 export class ClientDiligenceResultsComponent implements OnInit {
     client: Client | null = null;
