@@ -160,6 +160,26 @@
                         }
                     </div>
                     }
+
+                    @case ('file') {
+                    <div
+                        class="flex flex-col items-center justify-center p-8 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl hover:border-cyan-400 hover:bg-cyan-50/30 transition-all group/file cursor-pointer relative">
+                        <input type="file" [formControlName]="field.id!"
+                            class="absolute inset-0 opacity-0 cursor-pointer">
+                        <div
+                            class="p-3 bg-white rounded-full shadow-sm text-slate-400 group-hover/file:text-cyan-500 transition-colors mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                        <p class="text-sm font-bold text-slate-500 group-hover/file:text-cyan-700 transition-colors">
+                            Cliquez ou glissez un fichier ici
+                        </p>
+                        <p class="text-xs text-slate-400 mt-1">PDF, Image (Max 10Mo)</p>
+                    </div>
+                    }
                     }
 
                     @if (diligenceForm.get(field.id!)?.touched && diligenceForm.get(field.id!)?.invalid) {

@@ -27,8 +27,15 @@ export class DiligenceFormListComponent implements OnInit {
 
     loadFormsConfig(): void {
         this.formConfigService.getAll().subscribe({
-            next: (data: PaginatedResponse<FormConfig>) => {
-                this.formConfigs = data.content;
+            next: (data: any) => {
+                // Handle both paginated (Spring) and non-paginated (mock/json-server) responses
+                if (Array.isArray(data)) {
+                    this.formConfigs = data;
+                } else if (data && data.content) {
+                    this.formConfigs = data.content;
+                } else {
+                    this.formConfigs = [];
+                }
             },
             error: (err) => {
                 this.alertService.displayMessage('Erreur', 'Impossible de charger les formulaires', 'error');

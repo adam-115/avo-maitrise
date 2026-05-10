@@ -315,7 +315,7 @@ export interface FormConfig {
 export interface FieldConfig {
   id?: string;
   name?: string;
-  type: 'text' | 'number' | 'textarea' | 'select' | 'radio' | 'checkbox';
+  type: 'text' | 'number' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'file';
   label: string;
   required: boolean;
   errorMessage: string;

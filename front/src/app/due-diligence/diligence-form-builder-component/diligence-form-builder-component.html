@@ -16,16 +16,27 @@
         <p class="mt-2 text-slate-500 font-medium ml-[60px]">Créez et prévisualisez vos champs en temps réel.</p>
       </div>
 
-      <button (click)="showDialog = true"
-        class="group inline-flex items-center gap-2 bg-white border-2 border-slate-200 text-slate-600 px-6 py-3 rounded-xl shadow-sm hover:border-cyan-400 hover:text-cyan-600 transition-all font-bold text-sm">
-        <span
-          class="bg-slate-100 text-slate-400 rounded-lg p-1 group-hover:bg-cyan-50 group-hover:text-cyan-500 transition-colors">
+      <div class="flex items-center gap-3">
+        <button (click)="onSubmit()"
+          class="inline-flex items-center gap-2 bg-slate-900 text-cyan-400 px-6 py-3 rounded-xl shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all font-bold text-sm uppercase tracking-wider transform hover:-translate-y-0.5 active:translate-y-0">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+              d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
           </svg>
-        </span>
-        Ajouter un champ
-      </button>
+          Enregistrer
+        </button>
+
+        <button (click)="showDialog = true"
+          class="group inline-flex items-center gap-2 bg-white border-2 border-slate-200 text-slate-600 px-6 py-3 rounded-xl shadow-sm hover:border-cyan-400 hover:text-cyan-600 transition-all font-bold text-sm">
+          <span
+            class="bg-slate-100 text-slate-400 rounded-lg p-1 group-hover:bg-cyan-50 group-hover:text-cyan-500 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </span>
+          Ajouter un champ
+        </button>
+      </div>
     </div>
 
 
@@ -47,21 +58,6 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-      <!-- Identifiant (Lecture seule) -->
-      <div class="md:col-span-2">
-        <label class="block text-sm font-bold text-slate-700 mb-2">Identifiant Unique</label>
-        <div class="relative">
-          <input type="text" formControlName="id" readonly
-            class="w-full px-4 py-3 bg-slate-100 rounded-xl text-slate-500 font-mono text-sm shadow-inner cursor-not-allowed border-2 border-slate-300 hover:border-slate-400 transition-colors">
-          <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-            </svg>
-          </div>
-        </div>
-      </div>
       <!-- Nom Technique -->
       <div>
         <label class="block text-sm font-bold text-slate-700 mb-2">Nom Technique <span
@@ -96,6 +92,17 @@
         <p class="mt-1 text-xs text-red-500 font-medium">La description est requise.</p>
         }
       </div>
+    </div>
+    
+    <div class="mt-8 pt-6 border-t border-slate-100 flex justify-end">
+      <button (click)="onSubmit()" type="button"
+        class="inline-flex items-center gap-2 bg-slate-900 text-cyan-400 px-6 py-3 rounded-xl shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all font-bold text-sm uppercase tracking-wider transform hover:-translate-y-0.5 active:translate-y-0">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+            d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+        </svg>
+        Enregistrer les paramètres
+      </button>
     </div>
   </form>
 
@@ -208,6 +215,23 @@
         </div>
         }
 
+        @case ('file') {
+        <div
+          class="flex flex-col items-center justify-center p-8 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl hover:border-cyan-400 hover:bg-cyan-50/30 transition-all group/file cursor-pointer relative">
+          <input type="file" [formControlName]="field.id!" class="absolute inset-0 opacity-0 cursor-pointer">
+          <div class="p-3 bg-white rounded-full shadow-sm text-slate-400 group-hover/file:text-cyan-500 transition-colors mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+          <p class="text-sm font-bold text-slate-500 group-hover/file:text-cyan-700 transition-colors">
+            Cliquez pour télécharger un fichier
+          </p>
+          <p class="text-xs text-slate-400 mt-1">PDF, PNG, JPG (Max 10Mo)</p>
+        </div>
+        }
+
         }
 
         @if (diligenceForm.get(field.id!)?.touched && diligenceForm.get(field.id!)?.invalid) {
@@ -228,7 +252,7 @@
     <div class="bg-slate-50 p-6 border-t border-slate-100 flex justify-end">
       <button type="submit" [disabled]="diligenceForm.invalid"
         class="w-full md:w-auto px-8 py-3.5 bg-slate-900 text-cyan-400 font-black rounded-xl hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all disabled:opacity-30 disabled:shadow-none flex justify-center items-center gap-3 transform hover:-translate-y-0.5 active:translate-y-0 text-sm uppercase tracking-wider">
-        Validation du formulaire
+        Enregistrer le Formulaire
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

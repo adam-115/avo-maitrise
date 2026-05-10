@@ -29,16 +29,16 @@ export class DiligenceFormBuilderComponent implements OnInit {
   navigationService = inject(NavigationService);
   formService = inject(FormConfigService);
   route = inject(ActivatedRoute);
+  currentFormId: string = '';
   showDialog = false;
   formFields: FieldConfig[] = [];
 
 
   ngOnInit(): void {
 
-    const generatedId = this.utilsService.generateTimestampId();
+    this.currentFormId = this.utilsService.generateTimestampId();
     // Initialize the form configuration form
     this.configForm = this.fb.group({
-      id: [{ value: generatedId, disabled: true }],
       name: ['', [Validators.required, Validators.minLength(3)]],
       title: ['', [Validators.required, Validators.minLength(3)]],
       description: ['', [Validators.required]]
@@ -59,6 +59,7 @@ export class DiligenceFormBuilderComponent implements OnInit {
     this.formService.findById(id).subscribe({
       next: (config) => {
         if (config) {
+          this.currentFormId = config.id!;
           this.configForm.patchValue(config);
           if (config.fields) {
             config.fields.forEach(field => {
@@ -117,6 +118,13 @@ export class DiligenceFormBuilderComponent implements OnInit {
         this.diligenceForm.addControl(option.id!, control);
       });
     }
+
+    if (field.type === 'file') {
+      const control = field.required
+        ? this.fb.control(null, Validators.required)
+        : this.fb.control(null);
+      this.diligenceForm.addControl(field.id, control);
+    }
   }
 
   private generateFieldId(fied: FieldConfig): FieldConfig {
@@ -151,6 +159,7 @@ export class DiligenceFormBuilderComponent implements OnInit {
     }
 
     const formConfig: FormConfig = {
+      id: this.currentFormId,
       ...this.configForm.value,
       type: FormType.INDULGENCE,
       fields: this.formFields,
@@ -160,7 +169,7 @@ export class DiligenceFormBuilderComponent implements OnInit {
 
     console.log('Form Configuration:', formConfig);
 
-    const id = this.configForm.get('id')?.value;
+    const id = this.currentFormId;
     // If we loaded an existing form, we should likely update it.
     // However, the ID field is disabled. `getRawValue()` might include it.
     // Let's check if we are in edit mode based on route or existing ID in global state?

@@ -121,6 +121,13 @@ export class DiligenceFormViewerComponent implements OnInit {
                 this.diligenceForm.addControl(option.id!, control);
             });
         }
+
+        if (field.type === 'file') {
+            const control = field.required
+                ? this.fb.control(null, Validators.required)
+                : this.fb.control(null);
+            this.diligenceForm.addControl(field.id, control);
+        }
     }
 
     onSubmit() {

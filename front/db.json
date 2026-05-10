@@ -5798,48 +5798,6 @@
       ]
     },
     {
-      "id": "fc-ind-002",
-      "type": "INDULGENCE",
-      "name": "Dérogation - Conflit d'Intérêts",
-      "title": "Déclaration Conflit d'Intérêts Potentiel",
-      "description": "À utiliser lorsqu'un lien personnel ou professionnel existe avec la partie adverse.",
-      "creationDate": "2026-02-15T16:00:00.000Z",
-      "lastUpdateDate": "2026-02-15T16:00:00.000Z",
-      "fields": [
-        {
-          "id": "field-012",
-          "name": "nature_relation",
-          "type": "textarea",
-          "label": "Nature de la relation avec la partie adverse",
-          "required": true,
-          "errorMessage": "Requis"
-        },
-        {
-          "id": "field-013",
-          "name": "mesures_attenuation",
-          "type": "textarea",
-          "label": "Mesures prises pour éviter le conflit",
-          "required": true,
-          "errorMessage": "Requis"
-        },
-        {
-          "id": "field-014",
-          "name": "accord_client",
-          "type": "checkbox",
-          "label": "Accord écrit du client obtenu ?",
-          "required": true,
-          "errorMessage": "Requis",
-          "options": [
-            {
-              "id": "opt-013",
-              "value": "Oui",
-              "fieldConfigId": "field-014"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "id": "fc-ind-003",
       "type": "INDULGENCE",
       "name": "Dérogation - Risque Pays Élevé",
@@ -5865,6 +5823,148 @@
           "errorMessage": "Requis"
         }
       ]
+    },
+    {
+      "id": "5576",
+      "name": "form1",
+      "title": "form1",
+      "description": "c est formulaire  pour la validation du client adam",
+      "type": "INDULGENCE",
+      "fields": [
+        {
+          "name": "aaa",
+          "type": "text",
+          "label": "aaa",
+          "required": true,
+          "errorMessage": "Ce champ est obligatoire",
+          "id": "moy73gao-f553yvv"
+        },
+        {
+          "name": "bbbb",
+          "type": "select",
+          "label": "bbbb",
+          "required": false,
+          "errorMessage": "Ce champ est obligatoire",
+          "options": [
+            {
+              "id": "moy74u33-ukz9dq0",
+              "value": "aaaaa"
+            },
+            {
+              "id": "moy74u33-87ndhh4",
+              "value": "ssss"
+            },
+            {
+              "id": "moy74u33-ue0e8mu",
+              "value": "dfddd"
+            },
+            {
+              "id": "moy74u33-ch2p0lj",
+              "value": "bbbb"
+            }
+          ],
+          "id": "moy74u33-0647mcy"
+        },
+        {
+          "name": "mariée ",
+          "type": "checkbox",
+          "label": "mariée ",
+          "required": true,
+          "errorMessage": "Ce champ est obligatoire",
+          "options": [
+            {
+              "id": "moy75e67-5cagzcd",
+              "value": "Oui"
+            }
+          ],
+          "id": "moy75e67-koteeyl"
+        }
+      ],
+      "creationDate": "2026-05-09T10:24:33.601Z",
+      "lastUpdateDate": "2026-05-09T10:24:33.601Z"
+    },
+    {
+      "id": "9d2b",
+      "name": "ffff",
+      "title": "fffff",
+      "description": "ffff",
+      "type": "INDULGENCE",
+      "fields": [
+        {
+          "name": "name ",
+          "type": "textarea",
+          "label": "name ",
+          "required": false,
+          "errorMessage": "Ce champ est obligatoire",
+          "id": "moy7csvs-vp6c3pq"
+        },
+        {
+          "name": "eee",
+          "type": "text",
+          "label": "eee",
+          "required": false,
+          "errorMessage": "Ce champ est obligatoire",
+          "id": "moy7d0r5-tyrrzbw"
+        }
+      ],
+      "creationDate": "2026-05-09T10:30:02.369Z",
+      "lastUpdateDate": "2026-05-09T10:30:02.369Z"
+    },
+    {
+      "id": "8719",
+      "name": "fff",
+      "title": "fff",
+      "description": "fffff",
+      "type": "INDULGENCE",
+      "fields": [],
+      "creationDate": "2026-05-09T10:30:31.658Z",
+      "lastUpdateDate": "2026-05-09T10:30:31.658Z"
+    },
+    {
+      "id": "2237",
+      "name": "fff",
+      "title": "fff",
+      "description": "fff",
+      "type": "INDULGENCE",
+      "fields": [
+        {
+          "name": "ffff",
+          "type": "text",
+          "label": "ffff",
+          "required": true,
+          "errorMessage": "Ce champ est obligatoire",
+          "id": "moy7e7ad-y3i3e7m"
+        }
+      ],
+      "creationDate": "2026-05-09T10:31:04.125Z",
+      "lastUpdateDate": "2026-05-09T10:31:04.125Z"
+    },
+    {
+      "id": "moy8wtzs-287upzg",
+      "name": "test one ",
+      "title": "validation one ",
+      "description": "sdfsdfsdfsd",
+      "type": "INDULGENCE",
+      "fields": [
+        {
+          "name": "RCS",
+          "type": "file",
+          "label": "RCS",
+          "required": true,
+          "errorMessage": "Ce champ est obligatoire",
+          "id": "moy8ynha-ckyrnfv"
+        },
+        {
+          "name": "name seconde one ",
+          "type": "text",
+          "label": "name seconde one ",
+          "required": false,
+          "errorMessage": "Ce champ est obligatoire",
+          "id": "moy8z30b-kpm758v"
+        }
+      ],
+      "creationDate": "2026-05-09T11:15:14.684Z",
+      "lastUpdateDate": "2026-05-09T11:15:14.684Z"
     }
   ],
   "DiligenceFormResult": [
@@ -5973,7 +6073,7 @@
     },
     {
       "id": "4a79",
-      "formConfigId": "fc-ind-002",
+      "formConfigId": null,
       "clientId": "15a9",
       "creationDate": "2026-02-16T09:13:17.058Z",
       "lastUpdateDate": "2026-02-16T09:13:17.058Z",
@@ -6046,7 +6146,7 @@
     {
       "id": "9b4c",
       "clientId": "15a9",
-      "formConfigId": "fc-ind-002",
+      "formConfigId": null,
       "status": "SUBMITTED",
       "resultId": "4a79"
     },
