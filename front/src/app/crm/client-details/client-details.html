@@ -447,6 +447,16 @@
       (decisionMade)="onDecisionMade($event)">
     </app-match-analysis-modal>
   }
+
+  <!-- Assign Form Modal -->
+  @if (showAssignFormModal) {
+    <app-assign-form-modal 
+      [availableForms]="availableForms"
+      (close)="showAssignFormModal = false"
+      (assign)="assignForm($event)">
+    </app-assign-form-modal>
+  }
 </div>
 
 }
+

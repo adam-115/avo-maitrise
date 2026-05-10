@@ -9,13 +9,13 @@ import { environment } from '../../environments/environment';
     providedIn: 'root'
 })
 export class ClientDiligenceStatusService extends AbstractCrudService<ClientDiligenceStatus> {
-    protected override apiUrl = environment.apiUrl + 'ClientDiligenceStatus';
+    protected override apiUrl = environment.apiUrl + 'clientDiligenceStatus';
 
     constructor(http: HttpClient) {
         super(http);
     }
 
     findByClientId(clientId: string): Observable<ClientDiligenceStatus[]> {
-        return this.http.get<ClientDiligenceStatus[]>(`${this.apiUrl}?clientId=${clientId}`);
+        return this.http.get<ClientDiligenceStatus[]>(`${this.apiUrl}/client/${clientId}`);
     }
 }

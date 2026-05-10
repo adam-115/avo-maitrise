@@ -11,11 +11,12 @@ import { Client, DiligenceFormResult, FormConfig, ClientDiligenceStatus, ClientS
 import { forkJoin, map, switchMap, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alert-service';
+import { AssignFormModalComponent } from '../assign-form-modal/assign-form-modal.component';
 
 @Component({
     selector: 'app-client-diligence-results',
     standalone: true,
-    imports: [CommonModule, DatePipe, FormsModule],
+    imports: [CommonModule, DatePipe, FormsModule, AssignFormModalComponent],
     templateUrl: './client-diligence-results.component.html',
 })
 export class ClientDiligenceResultsComponent implements OnInit {
@@ -26,7 +27,6 @@ export class ClientDiligenceResultsComponent implements OnInit {
     availableForms: FormConfig[] = [];
     loading = true;
     showAssignDialog = false;
-    selectedFormIdToAssign: string | null = null;
 
     getDisplayName(client: any): string {
         if (!client) return '';
@@ -97,6 +97,8 @@ export class ClientDiligenceResultsComponent implements OnInit {
     private loadAvailableForms() {
         this.formConfigService.getAll().subscribe(data => {
             this.availableForms = data.content;
+            console.log("available forms", this.availableForms);
+
         });
     }
 
@@ -131,19 +133,18 @@ export class ClientDiligenceResultsComponent implements OnInit {
 
     openAssignDialog() {
         this.showAssignDialog = true;
-        this.selectedFormIdToAssign = null;
     }
 
     closeAssignDialog() {
         this.showAssignDialog = false;
     }
 
-    assignForm() {
-        if (!this.selectedFormIdToAssign || !this.client) return;
+    assignForm(formId: string) {
+        if (!formId || !this.client) return;
 
         const newAssignment: ClientDiligenceStatus = {
             clientId: this.client.id!,
-            formConfigId: this.selectedFormIdToAssign,
+            formConfigId: formId,
             status: 'PENDING'
         };
 
@@ -156,16 +157,8 @@ export class ClientDiligenceResultsComponent implements OnInit {
                         this.formConfigs.set(String(config.id!), config);
                     });
                 }
-                this.clientService.updateClientStatus(String(this.client?.id!), ClientStatus.INDULGENCE_REQUIRED).subscribe({
-                    next: () => {
-                        this.alertService.displayMessage('Succès', 'Formulaire assigné avec succès', 'success');
-                        this.closeAssignDialog();
-                    },
-                    error: (err) => {
-                        console.error('Error assigning form', err);
-                        this.alertService.displayMessage('Erreur', 'Erreur lors de l\'assignation', 'error');
-                    }
-                });
+                this.alertService.displayMessage('Succès', 'Formulaire assigné avec succès', 'success');
+                this.closeAssignDialog();
             },
             error: (err) => {
                 console.error('Error assigning form', err);

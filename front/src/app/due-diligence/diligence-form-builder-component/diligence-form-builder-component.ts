@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NewDiligenceField } from "../new-diligence-field/new-diligence-field";
 import { UtilsService } from '../../services/utils-service';
-import { FieldConfig, FormConfig, FormType } from '../../appTypes';
+import { ClientTypeEnum, FieldConfig, FormConfig, FormType } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
 import { NavigationService } from '../../services/navigation-service';
 import { FormConfigService } from '../../services/form-config-service';
@@ -32,6 +32,7 @@ export class DiligenceFormBuilderComponent implements OnInit {
   currentFormId: string = '';
   showDialog = false;
   formFields: FieldConfig[] = [];
+  ClientTypeEnum = ClientTypeEnum;
 
 
   ngOnInit(): void {
@@ -41,7 +42,8 @@ export class DiligenceFormBuilderComponent implements OnInit {
     this.configForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       title: ['', [Validators.required, Validators.minLength(3)]],
-      description: ['', [Validators.required]]
+      description: ['', [Validators.required]],
+      targetClientType: [null]
     });
 
     // Initialize the fields form (will be dynamic)

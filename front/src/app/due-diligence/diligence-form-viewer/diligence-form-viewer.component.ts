@@ -130,6 +130,20 @@ export class DiligenceFormViewerComponent implements OnInit {
         }
     }
 
+    onFileChange(event: any, fieldId: string) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                this.diligenceForm.patchValue({
+                    [fieldId]: reader.result
+                });
+                this.diligenceForm.get(fieldId)?.markAsTouched();
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
     onSubmit() {
         if (this.diligenceForm.invalid) {
             this.diligenceForm.markAllAsTouched();

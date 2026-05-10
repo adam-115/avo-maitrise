@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { Client, ClientStatus, Document, YenteMatchResponse, ScreeningExecutionDTO, ScreeningMatchDTO, ScreeningExecutionStatus } from '../../appTypes';
+import { Client, ClientStatus, Document, YenteMatchResponse, ScreeningExecutionDTO, ScreeningMatchDTO, ScreeningExecutionStatus, FormConfig, ClientDiligenceStatus } from '../../appTypes';
 
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alert-service';
@@ -10,12 +10,15 @@ import { NavigationService } from '../../services/navigation-service';
 import { AmlService } from '../../services/aml-service';
 import { ScreeningExecutionService } from '../../services/screening-execution.service';
 import { ScreeningMatchService } from '../../services/screening-match.service';
+import { FormConfigService } from '../../services/form-config-service';
+import { ClientDiligenceStatusService } from '../../services/client-diligence-status-service';
 
 import { MatchAnalysisModal } from './match-analysis-modal';
+import { AssignFormModalComponent } from '../../due-diligence/assign-form-modal/assign-form-modal.component';
 
 @Component({
   selector: 'app-client-details',
-  imports: [CommonModule, FormsModule, RouterModule, MatchAnalysisModal],
+  imports: [CommonModule, FormsModule, RouterModule, MatchAnalysisModal, AssignFormModalComponent],
   templateUrl: './client-details.html',
   styleUrl: './client-details.css'
 })
@@ -24,11 +27,16 @@ export class ClientDetails implements OnInit {
   clientService = inject(ClientService);
   screeningExecutionService = inject(ScreeningExecutionService);
   screeningMatchService = inject(ScreeningMatchService);
+  formConfigService = inject(FormConfigService);
+  diligenceStatusService = inject(ClientDiligenceStatusService);
 
   client: Client | null = null;
   executions: ScreeningExecutionDTO[] = [];
   matches: ScreeningMatchDTO[] = [];
   matchDateFilter: string = '';
+
+  showAssignFormModal = false;
+  availableForms: FormConfig[] = [];
 
   getFilteredMatches(): ScreeningMatchDTO[] {
     if (!this.matchDateFilter) return this.matches;
@@ -131,7 +139,38 @@ export class ClientDetails implements OnInit {
   }
 
   startDueDiligence() {
-    this.verifyAml();
+    this.formConfigService.findAll(0, 100).subscribe({
+      next: (res) => {
+        // Filter forms by client type if needed
+        this.availableForms = res.content.filter(f => !f.targetClientType || f.targetClientType === this.client?.type);
+        this.showAssignFormModal = true;
+      },
+      error: (err) => {
+        this.alertService.displayMessage('Erreur', 'Impossible de charger les formulaires.', 'error');
+      }
+    });
+  }
+
+  assignForm(formId: string) {
+    if (!formId || !this.client) return;
+
+    const assignment: ClientDiligenceStatus = {
+      clientId: this.client.id!,
+      formConfigId: formId,
+      status: 'PENDING'
+    };
+
+    this.diligenceStatusService.create(assignment).subscribe({
+      next: () => {
+        this.alertService.displayMessage('Succès', 'Formulaire assigné avec succès.', 'success');
+        this.showAssignFormModal = false;
+        // Trigger AML check after assignment if that was the intent, or just stay here
+        // this.verifyAml(); 
+      },
+      error: (err) => {
+        this.alertService.displayMessage('Erreur', 'L\'assignation a échoué.', 'error');
+      }
+    });
   }
 
   editClient() {

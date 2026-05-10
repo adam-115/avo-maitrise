@@ -301,6 +301,7 @@ export enum FormType {
 export interface FormConfig {
   id?: string;
   type: FormType;
+  targetClientType?: ClientTypeEnum;
   name: string;
   title: string;
   description: string;

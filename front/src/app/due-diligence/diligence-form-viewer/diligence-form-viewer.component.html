@@ -164,7 +164,7 @@
                     @case ('file') {
                     <div
                         class="flex flex-col items-center justify-center p-8 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl hover:border-cyan-400 hover:bg-cyan-50/30 transition-all group/file cursor-pointer relative">
-                        <input type="file" [formControlName]="field.id!"
+                        <input type="file" (change)="onFileChange($event, field.id!)"
                             class="absolute inset-0 opacity-0 cursor-pointer">
                         <div
                             class="p-3 bg-white rounded-full shadow-sm text-slate-400 group-hover/file:text-cyan-500 transition-colors mb-3">
