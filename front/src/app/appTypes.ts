@@ -356,6 +356,9 @@ export interface ClientDiligenceStatus {
   formConfigId: string;
   status: 'PENDING' | 'SUBMITTED' | 'VALIDATED';
   resultId?: string; // Optional, link to the submission
+  creationDate?: Date;
+  lastUpdateDate?: Date;
+  enabled?: boolean;
 }
 
 

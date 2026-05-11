@@ -156,7 +156,8 @@ export class ClientDiligenceResultsComponent implements OnInit {
         const newAssignment: ClientDiligenceStatus = {
             clientId: this.client.id!,
             formConfigId: formId,
-            status: 'PENDING'
+            status: 'PENDING', 
+            enabled:true
         };
 
         this.statusService.create(newAssignment).subscribe({
@@ -176,6 +177,30 @@ export class ClientDiligenceResultsComponent implements OnInit {
                 this.alertService.displayMessage('Erreur', 'Erreur lors de l\'assignation', 'error');
             }
         });
+    }
+
+    deleteAssignment(id: string) {
+        if (!id) return;
+        
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette assignation ?')) {
+            this.statusService.delete(id).subscribe({
+                next: () => {
+                    // Update local state - soft delete means it might still be in the list but disabled
+                    // but usually we want to remove it from the "Actions Requises" view.
+                    const index = this.assignments.findIndex(a => a.id === id);
+                    if (index !== -1) {
+                        this.assignments[index].enabled = false;
+                        // For immediate feedback in the "Actions Requises" grid
+                        this.assignments = [...this.assignments];
+                    }
+                    this.alertService.displayMessage('Succès', 'Assignation supprimée', 'success');
+                },
+                error: (err) => {
+                    console.error('Error deleting assignment', err);
+                    this.alertService.displayMessage('Erreur', 'Erreur lors de la suppression', 'error');
+                }
+            });
+        }
     }
 }
 

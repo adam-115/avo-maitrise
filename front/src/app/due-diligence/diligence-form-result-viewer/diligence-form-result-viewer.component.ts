@@ -13,12 +13,48 @@ import { forkJoin, switchMap, of, map } from 'rxjs';
     standalone: true,
     imports: [CommonModule],
     templateUrl: './diligence-form-result-viewer.component.html',
+    styles: [`
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .min-h-screen {
+                min-height: auto !important;
+                background-color: white !important;
+            }
+            .max-w-4xl {
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .bg-slate-50 {
+                background-color: white !important;
+            }
+            .shadow-sm {
+                box-shadow: none !important;
+            }
+            .rounded-2xl, .rounded-3xl {
+                border-radius: 0 !important;
+            }
+            .border {
+                border-color: #e2e8f0 !important;
+            }
+            body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    `]
 })
 export class DiligenceFormResultViewerComponent implements OnInit {
     result: DiligenceFormResult | null = null;
     formConfig: FormConfig | null = null;
     client: Client | null = null;
     loading = true;
+
+    printResult() {
+        window.print();
+    }
 
     getDisplayName(client: any): string {
         if (!client) return '';

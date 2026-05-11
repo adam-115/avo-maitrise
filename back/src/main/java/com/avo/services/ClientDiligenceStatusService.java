@@ -50,6 +50,9 @@ public class ClientDiligenceStatusService {
 
     @Transactional
     public void delete(String id) {
-        repository.deleteById(id);
+        repository.findById(id).ifPresent(entity -> {
+            entity.setEnabled(false);
+            repository.save(entity);
+        });
     }
 }

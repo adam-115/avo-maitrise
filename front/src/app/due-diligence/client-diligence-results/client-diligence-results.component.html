@@ -52,7 +52,7 @@
             } @else {
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 @for (assignment of assignments; track assignment.id) {
-                @if (assignment.status === 'PENDING') {
+                @if (assignment.status === 'PENDING' && assignment.enabled !== false) {
                 <div
                     class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-cyan-300 transition-all group blink-red-border">
                     <div class="flex justify-between items-start mb-3">
@@ -60,16 +60,23 @@
                             class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
                             À FAIRE
                         </span>
-                        <!-- <button class="text-slate-400 hover:text-red-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        <button (click)="deleteAssignment(assignment.id!)" class="text-slate-400 hover:text-rose-500 p-1 hover:bg-rose-50 rounded-lg transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
-                        </button> -->
+                        </button>
                     </div>
                     <h3 class="font-bold text-slate-800 mb-1 group-hover:text-cyan-600 transition-colors">
                         {{ getFormTitle(assignment.formConfigId) }}
                     </h3>
-                    <p class="text-xs text-slate-500 mb-4">Assigné le: -</p> <!-- Date implementation if needed -->
+                    <div class="space-y-1 mb-4">
+                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Assigné le: {{ assignment.creationDate | date:'dd/MM/yyyy HH:mm' }}
+                        </p>
+                    </div>
                     <button (click)="fillForm(assignment)"
                         class="w-full py-2 bg-slate-50 hover:bg-cyan-50 text-slate-700 hover:text-cyan-700 font-bold rounded-lg text-sm transition-colors border border-slate-200 hover:border-cyan-200">
                         Remplir maintenant

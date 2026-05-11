@@ -10,16 +10,26 @@
         } @else if (result && formConfig) {
 
         <!-- En-tête avec Navigation -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            <button (click)="goBack()"
-                class="inline-flex items-center text-slate-500 hover:text-slate-800 font-bold transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Retour
-            </button>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 no-print">
+            <div class="flex items-center gap-4">
+                <button (click)="goBack()"
+                    class="inline-flex items-center text-slate-500 hover:text-slate-800 font-bold transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Retour
+                </button>
+                
+                <button (click)="printResult()"
+                    class="inline-flex items-center px-4 py-2 bg-slate-900 text-cyan-400 rounded-xl hover:bg-slate-800 transition-all font-bold text-sm shadow-lg shadow-slate-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Imprimer
+                </button>
+            </div>
 
             <div class="text-right">
                 <span

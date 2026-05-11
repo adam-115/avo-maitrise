@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.OffsetDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,4 +17,7 @@ public class ClientDiligenceStatusDTO {
     private String formConfigId;
     private String status;
     private String resultId;
+    private OffsetDateTime creationDate;
+    private OffsetDateTime lastUpdateDate;
+    private boolean enabled;
 }

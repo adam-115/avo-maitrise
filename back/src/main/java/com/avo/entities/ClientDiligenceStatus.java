@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.OffsetDateTime;
 
 @Entity
 @Data
@@ -29,4 +30,21 @@ public class ClientDiligenceStatus {
     private DiligenceStatus status;
 
     private String resultId;
+
+    private OffsetDateTime creationDate;
+    private OffsetDateTime lastUpdateDate;
+
+    @Builder.Default
+    private boolean enabled = true;
+
+    @PrePersist
+    protected void onCreate() {
+        creationDate = OffsetDateTime.now();
+        lastUpdateDate = OffsetDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        lastUpdateDate = OffsetDateTime.now();
+    }
 }

@@ -67,7 +67,7 @@ public class YenteClientVerificationJob {
         this.notificationRepository = notificationRepository;
     }
 
-    // @Scheduled(fixedDelay = 1000000)
+    // @Scheduled(fixedDelay = 100000)
     @Transactional
     public void executeMatchClient() {
         System.out.println("executeMatchClient executed at " + LocalDateTime.now());
