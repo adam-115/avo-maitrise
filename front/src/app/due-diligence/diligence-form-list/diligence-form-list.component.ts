@@ -1,4 +1,3 @@
-
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NavigationService } from '../../services/navigation-service';
@@ -6,11 +5,13 @@ import { FormConfig } from '../../appTypes';
 import { FormConfigService } from '../../services/form-config-service';
 import { AlertService } from '../../services/alert-service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { FormsModule } from '@angular/forms';
+import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
     selector: 'app-diligence-form-list',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, FormsModule],
     templateUrl: './diligence-form-list.component.html',
     styleUrl: './diligence-form-list.component.css',
 })
@@ -20,21 +21,46 @@ export class DiligenceFormListComponent implements OnInit {
     alertService = inject(AlertService);
 
     formConfigs: FormConfig[] = [];
+    
+    // Pagination and Sorting
+    currentPage = 0;
+    pageSize = 10;
+    totalElements = 0;
+    totalPages = 0;
+    sortField = 'name';
+    sortDirection = 'asc';
+
+    // Search
+    searchTerm = '';
+    private searchSubject = new Subject<string>();
 
     ngOnInit(): void {
         this.loadFormsConfig();
+
+        // Setup debounced search
+        this.searchSubject.pipe(
+            debounceTime(400),
+            distinctUntilChanged()
+        ).subscribe(() => {
+            this.currentPage = 0; // Reset to first page on search
+            this.loadFormsConfig();
+        });
     }
 
     loadFormsConfig(): void {
-        this.formConfigService.getAll().subscribe({
-            next: (data: any) => {
-                // Handle both paginated (Spring) and non-paginated (mock/json-server) responses
-                if (Array.isArray(data)) {
-                    this.formConfigs = data;
-                } else if (data && data.content) {
+        const sortParam = `${this.sortField},${this.sortDirection}`;
+        const filters = { name: this.searchTerm }; // QueryDSL will match name
+        
+        this.formConfigService.findAll(this.currentPage, this.pageSize, sortParam, filters).subscribe({
+            next: (data: PaginatedResponse<FormConfig>) => {
+                if (data && data.content) {
                     this.formConfigs = data.content;
+                    this.totalElements = data.totalElements;
+                    this.totalPages = data.totalPages;
                 } else {
                     this.formConfigs = [];
+                    this.totalElements = 0;
+                    this.totalPages = 0;
                 }
             },
             error: (err) => {
@@ -42,6 +68,39 @@ export class DiligenceFormListComponent implements OnInit {
                 console.error('Error loading forms', err);
             }
         });
+    }
+
+    onSearch(): void {
+        this.searchSubject.next(this.searchTerm);
+    }
+
+    onPageChange(page: number): void {
+        this.currentPage = page;
+        this.loadFormsConfig();
+    }
+
+    onSort(field: string): void {
+        if (this.sortField === field) {
+            this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            this.sortField = field;
+            this.sortDirection = 'asc';
+        }
+        this.loadFormsConfig();
+    }
+
+    getPages(): number[] {
+        return Array.from({ length: this.totalPages }, (_, i) => i);
+    }
+
+    protected readonly Math = Math;
+
+    get startIndex(): number {
+        return this.currentPage * this.pageSize + 1;
+    }
+
+    get endIndex(): number {
+        return Math.min((this.currentPage + 1) * this.pageSize, this.totalElements);
     }
 
     onAdd(): void {

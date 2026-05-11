@@ -27,7 +27,6 @@ com\avo\dtos\TestEntityDTO$TestEntityDTOBuilder.class
 com\avo\dtos\ScreeningMatchDTO.class
 com\avo\mappers\InstitutionMapperImpl.class
 com\avo\mappers\UBOMapperImpl.class
-com\avo\dtos\InstitutionDTO$InstitutionDTOBuilderImpl.class
 com\avo\entities\QDocument.class
 com\avo\entities\QScreeningMatch.class
 com\avo\controller\ClientDiligenceStatusController.class
@@ -57,7 +56,6 @@ com\avo\entities\TestEntity.class
 com\avo\yente\models\YenteMatchRequest.class
 com\avo\entities\ScreeningExecutionStatus.class
 com\avo\repositories\SecteurActiviteRepository.class
-com\avo\dtos\ClientPersonnePhysiqueDTO$ClientPersonnePhysiqueDTOBuilder.class
 com\avo\services\DocumentService.class
 com\avo\mappers\DocumentMapper.class
 com\avo\controller\DocumentController.class
@@ -74,14 +72,11 @@ com\avo\yente\models\YenteMatchResponse.class
 com\avo\services\AssociationService.class
 com\avo\entities\QFormConfig.class
 com\avo\entities\DiligenceStatus.class
-com\avo\dtos\ClientPersonnePhysiqueDTO$ClientPersonnePhysiqueDTOBuilderImpl.class
 com\avo\entities\ScreeningMatchStatus.class
 com\avo\dtos\DiligenceFormResultDTO$DiligenceFormResultDTOBuilder.class
 com\avo\dtos\FieldConfigDTO$FieldConfigDTOBuilder.class
 com\avo\repositories\FormConfigRepository.class
 com\avo\mappers\ClientDiligenceStatusMapper.class
-com\avo\dtos\AssociationDTO$AssociationDTOBuilder.class
-com\avo\dtos\ClientEntityDTO$ClientEntityDTOBuilderImpl.class
 com\avo\entities\ClientTypeEnum.class
 com\avo\controller\UBOController.class
 com\avo\dtos\ClientMoralDTO.class
@@ -106,12 +101,10 @@ com\avo\controller\ClientMoralController.class
 com\avo\dtos\FieldOptionDTO.class
 com\avo\dtos\InstitutionDTO.class
 com\avo\yente\models\AmlAnalysisResult.class
-com\avo\dtos\ClientMoralDTO$ClientMoralDTOBuilder.class
 com\avo\entities\ClientPersonnePhysique.class
 com\avo\mappers\ClientMoralMapperImpl.class
 com\avo\repositories\DiligenceFormResultRepository.class
 com\avo\yente\service\YenteAmlService.class
-com\avo\dtos\ClientEntityDTO$ClientEntityDTOBuilder.class
 com\avo\entities\UBO.class
 com\avo\entities\FieldConfig.class
 com\avo\mappers\ClientPersonnePhysiqueMapper.class
@@ -129,7 +122,6 @@ com\avo\repositories\ScreeningExecutionRepository.class
 com\avo\mappers\FormConfigMapperImpl.class
 com\avo\dtos\ScreeningExecutionDTO.class
 com\avo\AvoApplication.class
-com\avo\dtos\ClientMoralDTO$ClientMoralDTOBuilderImpl.class
 com\avo\mappers\ContactPointMapper.class
 com\avo\dtos\SecteurActiviteDTO$SecteurActiviteDTOBuilder.class
 com\avo\mappers\ScreeningMatchMapper.class
@@ -147,7 +139,6 @@ com\avo\dtos\ScreeningExecutionDTO$ScreeningExecutionDTOBuilder.class
 com\avo\entities\FieldOption$FieldOptionBuilder.class
 com\avo\mappers\ClientEntityMapper.class
 com\avo\mappers\DiligenceFormResultMapperImpl.class
-com\avo\dtos\AssociationDTO$AssociationDTOBuilderImpl.class
 com\avo\repositories\PersonnePhysiqueRepository.class
 com\avo\controller\DiligenceFormResultController.class
 com\avo\entities\QSecteurActivite.class
@@ -160,7 +151,6 @@ com\avo\entities\QScreeningExecution.class
 com\avo\entities\ScreeningExecution.class
 com\avo\entities\ScreeningMatch.class
 com\avo\dtos\AssociationDTO.class
-com\avo\dtos\InstitutionDTO$InstitutionDTOBuilder.class
 com\avo\entities\ClientEntity.class
 com\avo\entities\ClientStatus.class
 com\avo\repositories\TestRepository.class

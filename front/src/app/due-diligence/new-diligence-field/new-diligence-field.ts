@@ -72,7 +72,10 @@ export class NewDiligenceField {
 
         // On ajoute les nouvelles options à la liste existante
         newOptions.forEach((opt: string) => {
-          this.options.push({ value: opt });
+          this.options.push({ 
+            id: this.utilsService.generateTimestampId(),
+            value: opt 
+          });
         });
       };
       reader.readAsText(file);

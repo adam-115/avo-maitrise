@@ -92,7 +92,7 @@ export class DiligenceFormViewerComponent implements OnInit {
         if (!field.id) return;
 
         // case text or textarea
-        if (field.type === 'text' || field.type === 'textarea') {
+        if (field.type === 'text' || field.type === 'textarea' || field.type === 'number') {
             const control = field.required
                 ? this.fb.control('', Validators.required)
                 : this.fb.control('');
@@ -113,8 +113,9 @@ export class DiligenceFormViewerComponent implements OnInit {
             this.diligenceForm.addControl(field.id, control);
         }
 
-        if (field.type === 'checkbox' && field.options) {
-            field.options.forEach(option => {
+        if (field.type === 'checkbox') {
+            const options = field.options || [];
+            options.forEach(option => {
                 const control = field.required
                     ? this.fb.control(false, Validators.requiredTrue)
                     : this.fb.control(false);

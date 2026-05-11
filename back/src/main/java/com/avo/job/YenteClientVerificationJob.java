@@ -67,7 +67,7 @@ public class YenteClientVerificationJob {
         this.notificationRepository = notificationRepository;
     }
 
-    // @Scheduled(fixedDelay = 100000)
+    // @Scheduled(fixedDelay = 100000)  
     @Transactional
     public void executeMatchClient() {
         System.out.println("executeMatchClient executed at " + LocalDateTime.now());
@@ -107,8 +107,9 @@ public class YenteClientVerificationJob {
                 java.util.Set<String> currentYenteIds = new java.util.HashSet<>();
                 
                 if (result != null && result.isArray() && result.size() > 0) {
+                    screeningExecutionDTO.setStatus(ScreeningExecutionStatus.PASSED);
                     screeningExecutionDTO.setExecutionMessage(
-                            "Client checked at:" + LocalDateTime.now().toString() + "Status:"
+                            "Client checked at:" + LocalDateTime.now().toString() + " Status: "
                                     + screeningExecutionDTO.getStatus());
                     ScreeningExecutionDTO savedExecutionDTO = screeningExecutionService.create(screeningExecutionDTO);
 
@@ -179,7 +180,7 @@ public class YenteClientVerificationJob {
                 } else {
                     screeningExecutionDTO.setStatus(ScreeningExecutionStatus.PASSED);
                     screeningExecutionDTO.setExecutionMessage(
-                            "Client checked at:" + LocalDateTime.now().toString() + "Status:"
+                            "Client checked at:" + LocalDateTime.now().toString() + " Status: "
                                     + screeningExecutionDTO.getStatus());
                     screeningExecutionService.create(screeningExecutionDTO);
                 }
@@ -239,8 +240,9 @@ public class YenteClientVerificationJob {
                 java.util.Set<String> currentYenteIds = new java.util.HashSet<>();
 
                 if (result != null && result.isArray() && result.size() > 0) {
+                    screeningExecutionDTO.setStatus(ScreeningExecutionStatus.PASSED);
                     screeningExecutionDTO.setExecutionMessage(
-                            "UBO checked at:" + LocalDateTime.now().toString() + "Status:"
+                            "UBO checked at:" + LocalDateTime.now().toString() + " Status: "
                                     + screeningExecutionDTO.getStatus());
                     ScreeningExecutionDTO savedExecutionDTO = screeningExecutionService.create(screeningExecutionDTO);
 
@@ -301,7 +303,7 @@ public class YenteClientVerificationJob {
                 } else {
                     screeningExecutionDTO.setStatus(ScreeningExecutionStatus.PASSED);
                     screeningExecutionDTO.setExecutionMessage(
-                            "UBO checked at:" + LocalDateTime.now().toString() + "Status:"
+                            "UBO checked at:" + LocalDateTime.now().toString() + " Status: "
                                     + screeningExecutionDTO.getStatus());
                     screeningExecutionService.create(screeningExecutionDTO);
                 }

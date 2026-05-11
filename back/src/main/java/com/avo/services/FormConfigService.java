@@ -18,14 +18,17 @@ public class FormConfigService {
     private final FormConfigRepository repository;
     private final FormConfigMapper mapper;
 
+    @Transactional(readOnly = true)
     public Page<FormConfigDTO> findAll(Pageable pageable) {
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     public Page<FormConfigDTO> search(Predicate predicate, Pageable pageable) {
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
+    @Transactional(readOnly = true)
     public FormConfigDTO findById(String id) {
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }

@@ -33,7 +33,7 @@ public class FormConfig {
     private OffsetDateTime creationDate;
     private OffsetDateTime lastUpdateDate;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "form_config_id")
     private List<FieldConfig> fields;
 

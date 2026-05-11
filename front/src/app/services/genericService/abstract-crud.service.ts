@@ -78,15 +78,29 @@ export abstract class AbstractCrudService<T> {
   }
 
   /**
-   * Finds all items with pagination.
+   * Finds all items with pagination, optional sorting, and optional filters.
    * @param page The page number (0-indexed). Defaults to 0.
    * @param size The number of items per page. Defaults to 10.
+   * @param sort Optional sort string (e.g., 'name,asc').
+   * @param filters Optional filter object where keys are parameter names.
    * @returns An Observable of a paginated response.
    */
-  findAll(page: number = 0, size: number = 10): Observable<PaginatedResponse<T>> {
+  findAll(page: number = 0, size: number = 10, sort?: string, filters?: any): Observable<PaginatedResponse<T>> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
+
+    if (sort) {
+      params = params.set('sort', sort);
+    }
+
+    if (filters) {
+      Object.keys(filters).forEach(key => {
+        if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+          params = params.set(key, filters[key]);
+        }
+      });
+    }
 
     return this.http.get<PaginatedResponse<T>>(this.apiUrl, { params });
   }

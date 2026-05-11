@@ -24,7 +24,7 @@ public class FieldConfig {
     private String errorMessage;
     private String placeholder;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "field_config_id")
     private List<FieldOption> options;
 }

@@ -91,7 +91,7 @@ export class DiligenceFormBuilderComponent implements OnInit {
     if (!field.id) return;
 
     // case text or textarea
-    if (field.type === 'text' || field.type === 'textarea') {
+    if (field.type === 'text' || field.type === 'textarea' || field.type === 'number') {
       const control = field.required
         ? this.fb.control('', Validators.required)
         : this.fb.control('');

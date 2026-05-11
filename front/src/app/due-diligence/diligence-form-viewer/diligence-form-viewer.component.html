@@ -105,6 +105,11 @@
                         class="w-full px-4 py-3.5 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-700 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                     }
 
+                    @case ('number') {
+                    <input type="number" [formControlName]="field.id!" [placeholder]="field.placeholder || field.label"
+                        class="w-full px-4 py-3.5 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-700 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+                    }
+
                     @case ('textarea') {
                     <textarea [formControlName]="field.id!" [placeholder]="field.placeholder || field.label" rows="3"
                         class="w-full px-4 py-3.5 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-700 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
@@ -146,7 +151,7 @@
                         }
                     </div>
                     }
-
+                    
                     @case ('checkbox') {
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         @for (opt of field.options; track opt.id) {

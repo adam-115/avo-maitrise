@@ -7,12 +7,11 @@ import com.avo.entities.ClientStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.experimental.SuperBuilder;
+import lombok.Builder;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
 public class ClientEntityDTO {
 
     private Long id;
