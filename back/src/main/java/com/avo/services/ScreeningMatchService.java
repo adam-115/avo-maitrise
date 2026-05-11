@@ -77,7 +77,7 @@ public class ScreeningMatchService {
         java.util.List<ScreeningMatch> matches = repository.findByClientId(client.getId());
         boolean hasBlocked = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.TRUE_POSITIVE);
         boolean hasPending = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.PENDING);
-        boolean hasEscalated = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.ESCALATED);
+        boolean hasEscalated = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.DILIGENCE_REQUIRED);
 
         if (hasBlocked) {
             client.setClientStatus(com.avo.entities.ClientStatus.BLOCKED);

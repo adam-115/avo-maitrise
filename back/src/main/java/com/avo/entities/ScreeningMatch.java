@@ -84,7 +84,7 @@ public class ScreeningMatch {
     private String matchReason;
 
     @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = false, columnDefinition = "VARCHAR(50)")
     private ScreeningMatchStatus status = ScreeningMatchStatus.PENDING;
 
     @Column(name = "reviewer_comment", columnDefinition = "TEXT")

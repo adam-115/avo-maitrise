@@ -79,6 +79,17 @@ export class ClientDetails implements OnInit {
   onDecisionMade(updatedMatch: ScreeningMatchDTO) {
     if (this.client && this.client.id) {
       const clientId = String(this.client.id);
+      
+      // If decision requires diligence, trigger the workflow
+      if (updatedMatch.status === 'DILIGENCE_REQUIRED') {
+        this.clientService.updateClientStatus(this.client.id!, ClientStatus.DUE_DILIGENCE_REQUIRED).subscribe({
+          next: (updatedClient) => {
+            this.client = updatedClient;
+            this.startDueDiligence();
+          }
+        });
+      }
+
       this.loadAmlHistory(clientId);
       this.loadClient(clientId);
     }

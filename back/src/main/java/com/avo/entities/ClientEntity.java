@@ -38,7 +38,7 @@ public class ClientEntity {
     private String pays;
 
     @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
-    //AMl required as default Value
+    @Column(name = "client_status", columnDefinition = "VARCHAR(50)")
     private ClientStatus clientStatus = ClientStatus.AML_REQUIRED;
 
 
