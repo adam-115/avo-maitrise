@@ -150,16 +150,9 @@ export class ClientDetails implements OnInit {
   }
 
   startDueDiligence() {
-    this.formConfigService.findAll(0, 100).subscribe({
-      next: (res) => {
-        // Filter forms by client type if needed
-        this.availableForms = res.content.filter(f => !f.targetClientType || f.targetClientType === this.client?.type);
-        this.showAssignFormModal = true;
-      },
-      error: (err) => {
-        this.alertService.displayMessage('Erreur', 'Impossible de charger les formulaires.', 'error');
-      }
-    });
+    if (this.client?.id) {
+      this.navigationService.navigateToClientDiligenceResults(String(this.client.id));
+    }
   }
 
   assignForm(formId: string) {

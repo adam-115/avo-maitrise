@@ -74,3 +74,8 @@
   transform: rotate(-90deg);
   transform-origin: 50% 50%;
 }
+/* Shimmer effect for premium buttons */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

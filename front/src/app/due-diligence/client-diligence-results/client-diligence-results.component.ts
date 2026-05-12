@@ -57,7 +57,6 @@ export class ClientDiligenceResultsComponent implements OnInit {
             const clientId = params.get('id');
             if (clientId) {
                 this.loadData(clientId);
-                this.loadAvailableForms();
             } else {
                 this.navigationService.navigateToClients();
             }
@@ -97,6 +96,9 @@ export class ClientDiligenceResultsComponent implements OnInit {
         ).subscribe({
             next: () => {
                 this.loading = false;
+                if (this.client?.type) {
+                    this.loadAvailableForms(this.client.type);
+                }
             },
             error: (err) => {
                 console.error('Error loading data', err);
@@ -105,11 +107,10 @@ export class ClientDiligenceResultsComponent implements OnInit {
         });
     }
 
-    private loadAvailableForms() {
-        this.formConfigService.getAll().subscribe(data => {
+    private loadAvailableForms(clientType: string) {
+        this.formConfigService.findAll(0, 100, undefined, { targetClientType: clientType }).subscribe(data => {
             this.availableForms = data.content;
-            console.log("available forms", this.availableForms);
-
+            console.log("available forms for type " + clientType, this.availableForms);
         });
     }
 
