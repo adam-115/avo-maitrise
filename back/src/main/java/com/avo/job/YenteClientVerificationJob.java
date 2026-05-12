@@ -4,17 +4,17 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.avo.dtos.ScreeningExecutionDTO;
-import com.avo.dtos.UBODTO;
 import com.avo.dtos.ScreeningMatchDTO;
+import com.avo.dtos.UBODTO;
 import com.avo.entities.ClientEntity;
 import com.avo.entities.ScreeningExecutionStatus;
 import com.avo.mappers.ClientEntityMapper;
@@ -47,6 +47,7 @@ public class YenteClientVerificationJob {
     private final UBOService uboService;
     private final com.avo.repositories.ScreeningMatchRepository screeningMatchRepository;
     private final com.avo.repositories.NotificationRepository notificationRepository;
+    private final com.avo.mappers.ScreeningExecutionhMapper screeningExecutionhMapper;
 
     public YenteClientVerificationJob(YenteAmlService yenteAmlService, ClientService clientService,
             ScreeningMatchService screeningMatchService,
@@ -54,7 +55,8 @@ public class YenteClientVerificationJob {
             com.avo.repositories.ClientRepository clientRepository,
             UBOService uboService, ClientEntityMapper clientEntityMapper, ObjectMapper objectMapper,
             com.avo.repositories.ScreeningMatchRepository screeningMatchRepository,
-            com.avo.repositories.NotificationRepository notificationRepository) {
+            com.avo.repositories.NotificationRepository notificationRepository,
+            com.avo.mappers.ScreeningExecutionhMapper screeningExecutionhMapper) {
         this.yenteAmlService = yenteAmlService;
         this.clientService = clientService;
         this.screeningMatchService = screeningMatchService;
@@ -65,9 +67,10 @@ public class YenteClientVerificationJob {
         this.objectMapper = objectMapper;
         this.screeningMatchRepository = screeningMatchRepository;
         this.notificationRepository = notificationRepository;
+        this.screeningExecutionhMapper = screeningExecutionhMapper;
     }
 
-    // @Scheduled(fixedDelay = 100000)  
+    // @Scheduled(fixedDelay = 100000)
     @Transactional
     public void executeMatchClient() {
         System.out.println("executeMatchClient executed at " + LocalDateTime.now());
@@ -95,7 +98,7 @@ public class YenteClientVerificationJob {
                 String matchResultAsString = this.yenteAmlService.checkClientStatusAsString(client);
                 jsonNodeResult = objectMapper.readTree(matchResultAsString);
                 screeningExecutionDTO.setRawResponse(jsonNodeResult);
-                
+
                 JsonNode result = null;
                 if (jsonNodeResult != null && jsonNodeResult.has("responses")) {
                     JsonNode responsesNode = jsonNodeResult.get("responses");
@@ -105,7 +108,8 @@ public class YenteClientVerificationJob {
                 }
 
                 java.util.Set<String> currentYenteIds = new java.util.HashSet<>();
-                
+
+                boolean hasMatchAboveThreshold = false;
                 if (result != null && result.isArray() && result.size() > 0) {
                     screeningExecutionDTO.setStatus(ScreeningExecutionStatus.PASSED);
                     screeningExecutionDTO.setExecutionMessage(
@@ -117,14 +121,16 @@ public class YenteClientVerificationJob {
                         double matchScore = resNode.get("score").asDouble();
                         String yenteId = resNode.has("id") ? resNode.get("id").asText() : null;
                         String yenteUpdate = resNode.has("last_change") ? resNode.get("last_change").asText() : null;
-                        
-                        if (yenteId != null) currentYenteIds.add(yenteId);
+
+                        if (yenteId != null)
+                            currentYenteIds.add(yenteId);
 
                         if (matchScore >= suspectThreshold && yenteId != null) {
+                            hasMatchAboveThreshold = true;
                             // Check for existing match in DB
-                            java.util.Optional<com.avo.entities.ScreeningMatch> lastMatchOpt = 
-                                screeningMatchRepository.findFirstByClientIdAndYenteIdOrderByCreatedAtDesc(client.getId(), yenteId);
-                            
+                            java.util.Optional<com.avo.entities.ScreeningMatch> lastMatchOpt = screeningMatchRepository
+                                    .findFirstByClientIdAndYenteIdOrderByCreatedAtDesc(client.getId(), yenteId);
+
                             boolean needsNewMatch = false;
                             com.avo.entities.ScreeningMatchStatus newStatus = com.avo.entities.ScreeningMatchStatus.PENDING;
 
@@ -134,7 +140,7 @@ public class YenteClientVerificationJob {
                                     // UPDATE DETECTED
                                     needsNewMatch = true;
                                     newStatus = com.avo.entities.ScreeningMatchStatus.PENDING;
-                                    
+
                                     // Notify lawyer of update
                                     String clientName = client.getId().toString();
                                     if (client instanceof com.avo.entities.ClientPersonnePhysique) {
@@ -144,10 +150,11 @@ public class YenteClientVerificationJob {
                                     }
 
                                     notificationRepository.save(new com.avo.entities.Notification(
-                                        "Mise à jour Sanctions",
-                                        "L'entité " + yenteId + " a été mise à jour. Une re-évaluation est requise pour " + clientName,
-                                        client.getId()
-                                    ));
+                                            "Mise à jour Sanctions",
+                                            "L'entité " + yenteId
+                                                    + " a été mise à jour. Une re-évaluation est requise pour "
+                                                    + clientName,
+                                            client.getId()));
                                 }
                             } else {
                                 // NEW HIT
@@ -155,6 +162,7 @@ public class YenteClientVerificationJob {
                             }
 
                             if (needsNewMatch) {
+                                client.setClientStatus(com.avo.entities.ClientStatus.VERIFICATION_AML_REQUIRED);
                                 ScreeningMatchDTO screeningMatchDTO = new ScreeningMatchDTO();
                                 screeningMatchDTO.setClientEntityDTO(clientEntityMapper.toDto(client));
                                 screeningMatchDTO.setRawResponse(jsonNodeResult);
@@ -162,18 +170,25 @@ public class YenteClientVerificationJob {
                                 screeningMatchDTO.setYenteId(yenteId);
                                 screeningMatchDTO.setYenteLastUpdate(yenteUpdate);
                                 screeningMatchDTO.setStatus(newStatus.name());
-                                
+
                                 // Extract Reason
                                 if (resNode.has("properties") && resNode.get("properties").has("topics")) {
                                     JsonNode topicsNode = resNode.get("properties").get("topics");
                                     java.util.List<String> topicsList = new java.util.ArrayList<>();
-                                    for (JsonNode t : topicsNode) topicsList.add(t.asText());
+                                    for (JsonNode t : topicsNode)
+                                        topicsList.add(t.asText());
                                     screeningMatchDTO.setMatchReason(String.join(", ", topicsList));
                                 }
-                                
+
                                 screeningMatchDTO.setCreatedAt(LocalDateTime.now());
                                 screeningMatchDTO.setScreeningExecutionDTO(savedExecutionDTO);
                                 screeningMatchService.create(screeningMatchDTO);
+                            } else {
+                                // Update existing match's execution link
+                                lastMatchOpt.ifPresent(m -> {
+                                    m.setScreeningExecution(screeningExecutionhMapper.toEntity(savedExecutionDTO));
+                                    screeningMatchRepository.save(m);
+                                });
                             }
                         }
                     }
@@ -185,10 +200,17 @@ public class YenteClientVerificationJob {
                     screeningExecutionService.create(screeningExecutionDTO);
                 }
 
+                if (!hasMatchAboveThreshold) {
+                    client.setClientStatus(com.avo.entities.ClientStatus.VALIDATED);
+                }
+                clientRepository.save(client);
+
                 // CLEANUP: Mark missing matches as NO_LONGER_SANCTIONED
-                java.util.List<com.avo.entities.ScreeningMatch> dbMatches = screeningMatchRepository.findByClientId(client.getId());
+                java.util.List<com.avo.entities.ScreeningMatch> dbMatches = screeningMatchRepository
+                        .findByClientId(client.getId());
                 for (com.avo.entities.ScreeningMatch m : dbMatches) {
-                    if (m.getStatus() != com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED && !currentYenteIds.contains(m.getYenteId())) {
+                    if (m.getStatus() != com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED
+                            && !currentYenteIds.contains(m.getYenteId())) {
                         m.setStatus(com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED);
                         screeningMatchRepository.save(m);
                     }
@@ -225,7 +247,8 @@ public class YenteClientVerificationJob {
             screeningExecutionDTO.setCreatedAt(LocalDateTime.now());
 
             try {
-                String matchResultAsString = this.yenteAmlService.matchPersonAsString(ubo.getFullName(), "", ubo.getNationality());
+                String matchResultAsString = this.yenteAmlService.matchPersonAsString(ubo.getFullName(), "",
+                        ubo.getNationality());
                 jsonNodeResult = objectMapper.readTree(matchResultAsString);
                 screeningExecutionDTO.setRawResponse(jsonNodeResult);
 
@@ -251,12 +274,13 @@ public class YenteClientVerificationJob {
                         String yenteId = resNode.has("id") ? resNode.get("id").asText() : null;
                         String yenteUpdate = resNode.has("last_change") ? resNode.get("last_change").asText() : null;
 
-                        if (yenteId != null) currentYenteIds.add(yenteId);
+                        if (yenteId != null)
+                            currentYenteIds.add(yenteId);
 
                         if (matchScore >= suspectThreshold && yenteId != null) {
                             // Check for existing match in DB
-                            java.util.Optional<com.avo.entities.ScreeningMatch> lastMatchOpt = 
-                                screeningMatchRepository.findFirstByUboIdAndYenteIdOrderByCreatedAtDesc(ubo.getId(), yenteId);
+                            java.util.Optional<com.avo.entities.ScreeningMatch> lastMatchOpt = screeningMatchRepository
+                                    .findFirstByUboIdAndYenteIdOrderByCreatedAtDesc(ubo.getId(), yenteId);
 
                             boolean needsNewMatch = false;
                             com.avo.entities.ScreeningMatchStatus newStatus = com.avo.entities.ScreeningMatchStatus.PENDING;
@@ -266,13 +290,14 @@ public class YenteClientVerificationJob {
                                 if (yenteUpdate != null && !yenteUpdate.equals(lastMatch.getYenteLastUpdate())) {
                                     needsNewMatch = true;
                                     newStatus = com.avo.entities.ScreeningMatchStatus.PENDING;
-                                    
+
                                     // Notification
                                     notificationRepository.save(new com.avo.entities.Notification(
-                                        "Mise à jour Sanctions (UBO)",
-                                        "L'entité " + yenteId + " a été mise à jour. Re-évaluation requise pour l'UBO " + ubo.getFullName(),
-                                        ubo.getClientMoralId()
-                                    ));
+                                            "Mise à jour Sanctions (UBO)",
+                                            "L'entité " + yenteId
+                                                    + " a été mise à jour. Re-évaluation requise pour l'UBO "
+                                                    + ubo.getFullName(),
+                                            ubo.getClientMoralId()));
                                 }
                             } else {
                                 needsNewMatch = true;
@@ -290,13 +315,20 @@ public class YenteClientVerificationJob {
                                 if (resNode.has("properties") && resNode.get("properties").has("topics")) {
                                     JsonNode topicsNode = resNode.get("properties").get("topics");
                                     java.util.List<String> topicsList = new java.util.ArrayList<>();
-                                    for (JsonNode t : topicsNode) topicsList.add(t.asText());
+                                    for (JsonNode t : topicsNode)
+                                        topicsList.add(t.asText());
                                     screeningMatchDTO.setMatchReason(String.join(", ", topicsList));
                                 }
 
                                 screeningMatchDTO.setCreatedAt(LocalDateTime.now());
                                 screeningMatchDTO.setScreeningExecutionDTO(savedExecutionDTO);
                                 screeningMatchService.create(screeningMatchDTO);
+                            } else {
+                                // Update existing match's execution link
+                                lastMatchOpt.ifPresent(m -> {
+                                    m.setScreeningExecution(screeningExecutionhMapper.toEntity(savedExecutionDTO));
+                                    screeningMatchRepository.save(m);
+                                });
                             }
                         }
                     }
@@ -309,9 +341,11 @@ public class YenteClientVerificationJob {
                 }
 
                 // CLEANUP
-                java.util.List<com.avo.entities.ScreeningMatch> dbMatches = screeningMatchRepository.findByUboId(ubo.getId());
+                java.util.List<com.avo.entities.ScreeningMatch> dbMatches = screeningMatchRepository
+                        .findByUboId(ubo.getId());
                 for (com.avo.entities.ScreeningMatch m : dbMatches) {
-                    if (m.getStatus() != com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED && !currentYenteIds.contains(m.getYenteId())) {
+                    if (m.getStatus() != com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED
+                            && !currentYenteIds.contains(m.getYenteId())) {
                         m.setStatus(com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED);
                         screeningMatchRepository.save(m);
                     }

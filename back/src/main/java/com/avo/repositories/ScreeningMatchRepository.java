@@ -10,6 +10,7 @@ import com.avo.entities.ScreeningMatch;
 public interface ScreeningMatchRepository extends JpaRepository<ScreeningMatch, Long> , QuerydslPredicateExecutor<ScreeningMatch> {
     java.util.List<com.avo.entities.ScreeningMatch> findByClientId(Long clientId);
     java.util.List<com.avo.entities.ScreeningMatch> findByUboId(Long uboId);
+    java.util.List<com.avo.entities.ScreeningMatch> findByScreeningExecutionId(Long executionId);
     
     java.util.Optional<com.avo.entities.ScreeningMatch> findFirstByClientIdAndYenteIdOrderByCreatedAtDesc(Long clientId, String yenteId);
     java.util.Optional<com.avo.entities.ScreeningMatch> findFirstByUboIdAndYenteIdOrderByCreatedAtDesc(Long uboId, String yenteId);

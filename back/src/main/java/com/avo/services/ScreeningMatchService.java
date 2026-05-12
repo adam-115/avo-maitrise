@@ -20,18 +20,21 @@ public class ScreeningMatchService {
     private final com.avo.repositories.UBORepository uboRepository;
     private final com.avo.repositories.NotificationRepository notificationRepository;
     private final com.avo.yente.client.YenteApiClient yenteApiClient;
+    private final com.avo.repositories.ScreeningExecutionRepository screeningExecutionRepository;
 
     public ScreeningMatchService(ScreeningMatchRepository repository, ScreeningMatchMapper mapper,
                                 com.avo.repositories.ClientRepository clientRepository,
                                 com.avo.repositories.UBORepository uboRepository,
                                 com.avo.repositories.NotificationRepository notificationRepository,
-                                com.avo.yente.client.YenteApiClient yenteApiClient) {
+                                com.avo.yente.client.YenteApiClient yenteApiClient,
+                                com.avo.repositories.ScreeningExecutionRepository screeningExecutionRepository) {
         this.repository = repository;
         this.mapper = mapper;
         this.clientRepository = clientRepository;
         this.uboRepository = uboRepository;
         this.notificationRepository = notificationRepository;
         this.yenteApiClient = yenteApiClient;
+        this.screeningExecutionRepository = screeningExecutionRepository;
     }
 
     @org.springframework.transaction.annotation.Transactional
@@ -70,19 +73,26 @@ public class ScreeningMatchService {
     }
 
     private void updateClientAmlStatus(com.avo.entities.ClientEntity client) {
-        // Logic: if any PENDING match exists -> keep status
-        // if TRUE_POSITIVE exists -> BLOCKED
-        // if all processed and no TRUE_POSITIVE -> AML_VALIDATED (or previous status)
+        // Logic: find the last execution for this client and load only matches related to it
+        com.avo.entities.ScreeningExecution lastExec = screeningExecutionRepository.findFirstByClientIdOrderByCreatedAtDesc(client.getId())
+                .orElse(null);
         
-        java.util.List<ScreeningMatch> matches = repository.findByClientId(client.getId());
+        if (lastExec == null) return;
+
+        java.util.List<ScreeningMatch> matches = repository.findByScreeningExecutionId(lastExec.getId());
         boolean hasBlocked = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.TRUE_POSITIVE);
+        boolean hasDiligence = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.DILIGENCE_REQUIRED);
         boolean hasPending = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.PENDING);
-        boolean hasEscalated = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.DILIGENCE_REQUIRED);
+        boolean hasNoLongerSanctioned = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED);
 
         if (hasBlocked) {
             client.setClientStatus(com.avo.entities.ClientStatus.BLOCKED);
-        } else if (hasPending || hasEscalated) {
-            // Keep current suspicious/required status
+        } else if (hasDiligence) {
+            client.setClientStatus(com.avo.entities.ClientStatus.INDULGENCE_REQUIRED);
+        } else if (hasPending) {
+            client.setClientStatus(com.avo.entities.ClientStatus.VERIFICATION_AML_REQUIRED);
+        } else if (hasNoLongerSanctioned) {
+            client.setClientStatus(com.avo.entities.ClientStatus.VALIDATED);
         } else {
             client.setClientStatus(com.avo.entities.ClientStatus.AML_VALIDATED);
         }
