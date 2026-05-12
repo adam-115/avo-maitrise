@@ -40,6 +40,7 @@ public class ClientDiligenceStatusController {
 
     @PostMapping
     public ResponseEntity<ClientDiligenceStatusDTO> create(@RequestBody ClientDiligenceStatusDTO dto) {
+        dto.setEnabled(true);
         return ResponseEntity.ok(service.create(dto));
     }
 
