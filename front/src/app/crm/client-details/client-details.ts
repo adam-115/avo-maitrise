@@ -82,7 +82,7 @@ export class ClientDetails implements OnInit {
       
       // If decision requires diligence, trigger the workflow
       if (updatedMatch.status === 'DILIGENCE_REQUIRED') {
-        this.clientService.updateClientStatus(this.client.id!, ClientStatus.DUE_DILIGENCE_REQUIRED).subscribe({
+        this.clientService.updateClientStatus(this.client.id!, ClientStatus.INDULGENCE_REQUIRED).subscribe({
           next: (updatedClient) => {
             this.client = updatedClient;
             this.startDueDiligence();
@@ -268,7 +268,7 @@ export class ClientDetails implements OnInit {
           if (topResult.score >= 0.8 || topResult.match || topResult.target) {
             this.client!.clientStatus = ClientStatus.BLOCKED;
           } else if (topResult.score >= 0.5) {
-            this.client!.clientStatus = ClientStatus.SUSPICIOUS;
+            this.client!.clientStatus = ClientStatus.VERIFICATION_AML_REQUIRED;
           } else {
             this.client!.clientStatus = ClientStatus.AML_VALIDATED;
           }

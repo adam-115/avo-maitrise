@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="20260512-migrate-obsolete-statuses" author="antigravity">
+        <sql>
+            UPDATE clients SET client_status = 'VERIFICATION_AML_REQUIRED' WHERE client_status IN ('SUSPICIOUS', 'DUE_DILIGENCE_REQUIRED', 'RE_EVALUATION_REQUIRED');
+            UPDATE clients SET client_status = 'VALIDATED' WHERE client_status = 'INDULGENCE_VALIDATED';
+            UPDATE screening_matches SET status = 'PENDING' WHERE status = 'RE_EVALUATION_REQUIRED';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

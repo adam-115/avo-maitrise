@@ -83,8 +83,6 @@ public class ScreeningMatchService {
             client.setClientStatus(com.avo.entities.ClientStatus.BLOCKED);
         } else if (hasPending || hasEscalated) {
             // Keep current suspicious/required status
-        } else if (matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.RE_EVALUATION_REQUIRED)) {
-            client.setClientStatus(com.avo.entities.ClientStatus.RE_EVALUATION_REQUIRED);
         } else {
             client.setClientStatus(com.avo.entities.ClientStatus.AML_VALIDATED);
         }

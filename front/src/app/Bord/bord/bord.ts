@@ -19,7 +19,7 @@ export class Bord implements OnInit {
   private navigationService = inject(NavigationService);
 
   notifications: Notification[] = [];
-  reEvaluationMatches: ScreeningMatchDTO[] = [];
+
   isLoading = true;
 
   ngOnInit(): void {
@@ -35,29 +35,6 @@ export class Bord implements OnInit {
         this.notifications = data;
       },
       error: (err) => console.error('Error fetching notifications', err)
-    });
-
-    // Fetch matches requiring re-evaluation (latest 5)
-    this.screeningMatchService.getByClientId('', 0, 5, 'createdAt,desc').subscribe({
-        // Note: the backend search might need a specific filter for status
-        // I'll add a specific method to ScreeningMatchService if needed, 
-        // but for now I'll use the generic search with status param in the service.
-    });
-    
-    // Better way: use a specific search in the service
-    this.loadReEvaluations();
-  }
-
-  loadReEvaluations(): void {
-    this.screeningMatchService.getReEvaluationMatches(0, 5).subscribe({
-      next: (res) => {
-        this.reEvaluationMatches = res.content || [];
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error fetching re-evaluations', err);
-        this.isLoading = false;
-      }
     });
   }
 

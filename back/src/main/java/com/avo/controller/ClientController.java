@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.avo.dtos.ClientEntityDTO;
 import com.avo.entities.ClientEntity;
+import com.avo.entities.ClientStatus;
 import com.avo.services.ClientService;
 import com.querydsl.core.types.Predicate;
 
@@ -38,6 +39,8 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<ClientEntityDTO> create(@RequestBody ClientEntityDTO dto) {
+        // default AML status creation 
+        dto.setClientStatus(ClientStatus.AML_REQUIRED);
         return ResponseEntity.ok(service.create(dto));
     }
 
@@ -50,6 +53,13 @@ public class ClientController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ClientEntityDTO> updateStatus(@PathVariable Long id, @RequestBody java.util.Map<String, String> updates) {
+        String statusStr = updates.get("clientStatus");
+        com.avo.entities.ClientStatus status = com.avo.entities.ClientStatus.valueOf(statusStr);
+        return ResponseEntity.ok(service.updateStatus(id, status));
     }
 
     

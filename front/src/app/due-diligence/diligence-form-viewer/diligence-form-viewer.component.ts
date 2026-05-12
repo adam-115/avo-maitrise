@@ -193,7 +193,7 @@ export class DiligenceFormViewerComponent implements OnInit {
                     });
                 }
                 if (statuses.filter(s => s.status === 'PENDING').length === 0) {
-                    this.selectedClient!.clientStatus = ClientStatus.INDULGENCE_VALIDATED;
+                    this.selectedClient!.clientStatus = ClientStatus.VALIDATED;
                     this.clientService.update(this.selectedClient!.id!, this.selectedClient!).subscribe({
                         error: (err) => console.error('Error updating client status', err)
                     });

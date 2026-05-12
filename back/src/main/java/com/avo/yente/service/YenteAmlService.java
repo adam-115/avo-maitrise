@@ -66,7 +66,7 @@ public class YenteAmlService {
         if ("OK".equalsIgnoreCase(amlStatus)) {
             client.setClientStatus(com.avo.entities.ClientStatus.AML_VALIDATED);
         } else if ("SUSPECT".equalsIgnoreCase(amlStatus)) {
-            client.setClientStatus(com.avo.entities.ClientStatus.SUSPICIOUS);
+            client.setClientStatus(com.avo.entities.ClientStatus.VERIFICATION_AML_REQUIRED);
         } else if ("BLOCKED".equalsIgnoreCase(amlStatus)) {
             client.setClientStatus(com.avo.entities.ClientStatus.BLOCKED);
         }

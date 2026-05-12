@@ -133,7 +133,7 @@ public class YenteClientVerificationJob {
                                 if (yenteUpdate != null && !yenteUpdate.equals(lastMatch.getYenteLastUpdate())) {
                                     // UPDATE DETECTED
                                     needsNewMatch = true;
-                                    newStatus = com.avo.entities.ScreeningMatchStatus.RE_EVALUATION_REQUIRED;
+                                    newStatus = com.avo.entities.ScreeningMatchStatus.PENDING;
                                     
                                     // Notify lawyer of update
                                     String clientName = client.getId().toString();
@@ -265,7 +265,7 @@ public class YenteClientVerificationJob {
                                 com.avo.entities.ScreeningMatch lastMatch = lastMatchOpt.get();
                                 if (yenteUpdate != null && !yenteUpdate.equals(lastMatch.getYenteLastUpdate())) {
                                     needsNewMatch = true;
-                                    newStatus = com.avo.entities.ScreeningMatchStatus.RE_EVALUATION_REQUIRED;
+                                    newStatus = com.avo.entities.ScreeningMatchStatus.PENDING;
                                     
                                     // Notification
                                     notificationRepository.save(new com.avo.entities.Notification(

@@ -229,14 +229,8 @@ export enum ClientStatus {
 
   // Phase d'Indulgence (Dérogation)
   INDULGENCE_REQUIRED = 'INDULGENCE_REQUIRED',   // Le client nécessite une validation spéciale (ex: risque élevé).
-  INDULGENCE_VALIDATED = 'INDULGENCE_VALIDATED', // L'associé a accepté de prendre le client malgré le risque.
-
-  // Phase Finale
   VALIDATED = 'VALIDATED',                       // Dossier complet et accepté. Le client est opérationnel.
-  BLOCKED = 'BLOCKED',                            // Client rejeté ou gelé pour non-conformité majeure.
-  SUSPICIOUS = 'SUSPICIOUS',                      // Client suspect nécessitant une attention particulière.
-  DUE_DILIGENCE_REQUIRED = 'DUE_DILIGENCE_REQUIRED', // Complément d'information nécessaire.
-  RE_EVALUATION_REQUIRED = 'RE_EVALUATION_REQUIRED' // Données OpenSanctions mises à jour.
+  BLOCKED = 'BLOCKED'                            // Client rejeté ou gelé pour non-conformité majeure.
 }
 
 
@@ -252,7 +246,6 @@ export enum ScreeningMatchStatus {
   FALSE_POSITIVE = 'FALSE_POSITIVE',
   TRUE_POSITIVE = 'TRUE_POSITIVE',
   DILIGENCE_REQUIRED = 'DILIGENCE_REQUIRED',
-  RE_EVALUATION_REQUIRED = 'RE_EVALUATION_REQUIRED',
   NO_LONGER_SANCTIONED = 'NO_LONGER_SANCTIONED'
 }
 

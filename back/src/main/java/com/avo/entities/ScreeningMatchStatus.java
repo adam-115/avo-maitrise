@@ -5,6 +5,5 @@ public enum ScreeningMatchStatus {
     FALSE_POSITIVE,
     TRUE_POSITIVE,
     DILIGENCE_REQUIRED,
-    RE_EVALUATION_REQUIRED,
     NO_LONGER_SANCTIONED
 }

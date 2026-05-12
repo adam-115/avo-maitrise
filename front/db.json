@@ -5251,7 +5251,7 @@
           "occupation": "aa"
         }
       ],
-      "clientStatus": "INDULGENCE_VALIDATED",
+      "clientStatus": "VALIDATED",
       "documents": [
         {
           "title": "aaa",
@@ -5515,7 +5515,7 @@
         }
       ],
       "contacts": [],
-      "clientStatus": "INDULGENCE_VALIDATED",
+      "clientStatus": "VALIDATED",
       "documents": []
     },
     {

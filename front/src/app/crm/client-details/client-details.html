@@ -72,7 +72,7 @@
               <span class="text-sm font-bold text-slate-500 uppercase">État Actuel</span>
               <span class="premium-badge" [ngClass]="{
                 'bg-emerald-100 text-emerald-800 border-emerald-200': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
-                'bg-amber-100 text-amber-800 border-amber-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'DUE_DILIGENCE_REQUIRED',
+                'bg-amber-100 text-amber-800 border-amber-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
                 'bg-rose-100 text-rose-800 border-rose-200': client.clientStatus === 'BLOCKED',
                 'bg-indigo-100 text-indigo-800 border-indigo-200': client.clientStatus?.startsWith('INDULGENCE')
               }">{{ client.clientStatus?.replace('_', ' ') }}</span>

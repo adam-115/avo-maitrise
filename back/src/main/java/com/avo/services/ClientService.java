@@ -46,4 +46,10 @@ public class ClientService {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+
+    public ClientEntityDTO updateStatus(Long id, com.avo.entities.ClientStatus status) {
+        ClientEntity entity = repository.findById(id).orElseThrow(() -> new RuntimeException("Client not found"));
+        entity.setClientStatus(status);
+        return mapper.toDto(repository.save(entity));
+    }
 }
