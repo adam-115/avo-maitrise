@@ -1,9 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Dossier, Client, User, StatutDossier, DossierPriorite, DomaineJuridique } from '../../appTypes';
 import { ClientService } from '../../services/client-service';
 import { UserService } from '../../services/user.service';
-import { MatterStatusService } from '../../services/statut-dossier.service';
+import { StatutDossierService } from '../../services/statut-dossier.service';
 import { DossierPrioriteService } from '../../services/dossier-priorite.service';
 import { DomaineJuridiqueService } from '../../services/domaine-juridique.service';
 import { forkJoin } from 'rxjs';
@@ -25,13 +25,13 @@ export class DossierInfo implements OnInit {
     priorities: DossierPriorite[] = [];
     domaines: DomaineJuridique[] = [];
 
-    constructor(
-        private clientService: ClientService,
-        private userService: UserService,
-        private statusService: MatterStatusService,
-        private priorityService: DossierPrioriteService,
-        private domaineService: DomaineJuridiqueService
-    ) { }
+    private clientService = inject(ClientService);
+    private userService = inject(UserService);
+    private statusService = inject(StatutDossierService);
+    private priorityService = inject(DossierPrioriteService);
+    private domaineService = inject(DomaineJuridiqueService);
+
+    constructor() { }
 
     ngOnInit(): void {
         this.loadDependencies();

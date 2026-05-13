@@ -12,12 +12,9 @@ export class Preferences {
 
   navigationService = inject(NavigationService);
 
-
-
   navigateBackToAdmin() {
     throw ("not yet implemented");
   }
-
 
 
   navigateToAdminSecteurActivite() {

@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DossierService } from '../../services/dossier.service';
 import { ClientService } from '../../services/client-service';
-import { MatterStatusService } from '../../services/statut-dossier.service';
+import { StatutDossierService } from '../../services/statut-dossier.service';
 import { DossierPrioriteService } from '../../services/dossier-priorite.service';
 import { UserService } from '../../services/user.service';
 import { DomaineJuridiqueService } from '../../services/domaine-juridique.service';
@@ -23,6 +23,16 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
   styleUrl: './dossier-form.css'
 })
 export class DossierForm implements OnInit {
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private dossierService = inject(DossierService);
+  private clientService = inject(ClientService);
+  private statusService = inject(StatutDossierService);
+  private priorityService = inject(DossierPrioriteService);
+  private userService = inject(UserService);
+  private domaineService = inject(DomaineJuridiqueService);
+
   dossierForm: FormGroup;
   isEditMode = false;
   dossierId: number | null = null;
@@ -39,17 +49,7 @@ export class DossierForm implements OnInit {
   showDocumentDialog = false;
   showDomaineDialog = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private dossierService: DossierService,
-    private clientService: ClientService,
-    private statusService: MatterStatusService,
-    private priorityService: DossierPrioriteService,
-    private userService: UserService,
-    private domaineService: DomaineJuridiqueService
-  ) {
+  constructor() {
     this.dossierForm = this.fb.group({
       referenceInterne: ['', Validators.required],
       titre: ['', Validators.required],

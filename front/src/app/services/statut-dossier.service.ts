@@ -7,7 +7,7 @@ import { StatutDossier } from '../appTypes';
 @Injectable({
     providedIn: 'root'
 })
-export class MatterStatusService extends AbstractCrudService<StatutDossier> {
+export class StatutDossierService extends AbstractCrudService<StatutDossier> {
     protected override apiUrl = environment.apiUrl + 'StatutDossier';
 
     constructor(http: HttpClient) {

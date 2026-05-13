@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatterStatusService } from '../../services/statut-dossier.service';
+import { StatutDossierService } from '../../services/statut-dossier.service';
 import { StatutDossier } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { AlertService } from '../../services/alert-service';
 
 @Component({
     selector: 'app-dossier-status-form',
@@ -19,10 +20,11 @@ export class DossierStatusFormComponent implements OnInit {
     selectedStatusId: string | null = null;
     errorMessage: string = '';
 
-    constructor(
-        private statutDossierService: MatterStatusService,
-        private fb: FormBuilder
-    ) {
+    private statutDossierService = inject(StatutDossierService);
+    private fb = inject(FormBuilder);
+    private alertService = inject(AlertService);
+
+    constructor() {
         this.statusForm = this.fb.group({
             label: ['', Validators.required],
             code: ['', Validators.required],
@@ -44,6 +46,7 @@ export class DossierStatusFormComponent implements OnInit {
             error: (err) => {
                 console.error('Error loading statuses', err);
                 this.errorMessage = 'Erreur lors du chargement des statuts.';
+                this.alertService.displayMessage('Erreur', this.errorMessage, 'error');
             }
         });
     }
@@ -51,28 +54,34 @@ export class DossierStatusFormComponent implements OnInit {
     onSubmit(): void {
         if (this.statusForm.valid) {
             const formValue = this.statusForm.value;
-            const statusData: StatutDossier = {
-                ...formValue,
-                id: this.selectedStatusId ? this.selectedStatusId : this.generateId()
+            const statusData: any = {
+                ...formValue
             };
 
             if (this.isEditing && this.selectedStatusId) {
+                statusData.id = this.selectedStatusId;
                 this.statutDossierService.update(statusData).subscribe({
                     next: () => {
+                        this.alertService.success('Statut mis à jour avec succès');
                         this.resetForm();
                         this.loadStatuses();
                     },
-                    error: (err) => console.error('Error updating status', err)
+                    error: (err) => {
+                        console.error('Error updating status', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la mise à jour.', 'error');
+                    }
                 });
             } else {
-                // Remove ID for creation if backend generates it, but for json-server we usually generate or let it handle.
-                // If we want to simulate ID generation:
                 this.statutDossierService.create(statusData).subscribe({
                     next: () => {
+                        this.alertService.success('Statut créé avec succès');
                         this.resetForm();
                         this.loadStatuses();
                     },
-                    error: (err) => console.error('Error creating status', err)
+                    error: (err) => {
+                        console.error('Error creating status', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la création.', 'error');
+                    }
                 });
             }
         }
@@ -90,14 +99,23 @@ export class DossierStatusFormComponent implements OnInit {
         });
     }
 
-    deleteStatus(id: string): void {
+    async deleteStatus(id: string): Promise<void> {
         const status = this.statuses.find(s => s.id === id);
-        if (status && confirm('Êtes-vous sûr de vouloir désactiver ce statut ?')) {
-            const updatedStatus: StatutDossier = { ...status, active: false };
-            this.statutDossierService.update(updatedStatus).subscribe({
-                next: () => this.loadStatuses(),
-                error: (err) => console.error('Error updating status', err)
-            });
+        if (status) {
+            const isConfirmed = await this.alertService.confirmMessage('Confirmation', 'Êtes-vous sûr de vouloir désactiver ce statut ?', 'warning');
+            if (isConfirmed) {
+                const updatedStatus: StatutDossier = { ...status, active: false };
+                this.statutDossierService.update(updatedStatus).subscribe({
+                    next: () => {
+                        this.alertService.success('Statut désactivé avec succès');
+                        this.loadStatuses();
+                    },
+                    error: (err) => {
+                        console.error('Error updating status', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la désactivation.', 'error');
+                    }
+                });
+            }
         }
     }
 
@@ -113,9 +131,5 @@ export class DossierStatusFormComponent implements OnInit {
             color: '#000000',
             order: 0
         });
-    }
-
-    generateId(): string {
-        return Math.random().toString(36).substr(2, 9);
     }
 }

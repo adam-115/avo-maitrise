@@ -10,6 +10,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\dtos\ClientPersonnePhysiqueDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\ClientDiligenceStatusService.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchRequest.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ScreeningMatchStatus.java
+D:\avo-maitrise\back\src\main\java\com\avo\services\StatutDossierService.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ClientRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\DiligenceFormResultMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\UBODTO.java
@@ -19,6 +20,8 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\DocumentService.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\TestController.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\ClientDiligenceStatusMapper.java
+D:\avo-maitrise\back\src\main\java\com\avo\controller\StatutDossierController.java
+D:\avo-maitrise\back\src\main\java\com\avo\mappers\StatutDossierMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\FieldOption.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\SecteurActiviteRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientDiligenceStatus.java
@@ -34,6 +37,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\repositories\InstitutionRepository.ja
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ScreeningExecution.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\DiligenceFormResult.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\AssociationService.java
+D:\avo-maitrise\back\src\main\java\com\avo\repositories\StatutDossierRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\DocumentDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\ClientMoralService.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\TestRepository.java
@@ -68,6 +72,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\repositories\AssociationRepository.ja
 D:\avo-maitrise\back\src\main\java\com\avo\config\GlobalExceptionHandler.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\DiligenceStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\ClientService.java
+D:\avo-maitrise\back\src\main\java\com\avo\dtos\StatutDossierDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\FormConfigRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\DocumentController.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientPersonnePhysique.java
@@ -85,6 +90,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\mappers\InstitutionMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\FormConfigDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ClientDiligenceStatusDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\PersonnePhysiqueController.java
+D:\avo-maitrise\back\src\main\java\com\avo\entities\StatutDossier.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ContactPointRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\QueryDslConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\AssociationDTO.java

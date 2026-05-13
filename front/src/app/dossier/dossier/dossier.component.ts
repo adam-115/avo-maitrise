@@ -1,11 +1,11 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DossierService } from '../../services/dossier.service';
 import { ClientService } from '../../services/client-service';
 import { DossierPrioriteService } from '../../services/dossier-priorite.service';
-import { MatterStatusService } from '../../services/statut-dossier.service';
+import { StatutDossierService } from '../../services/statut-dossier.service';
 import { UserService } from '../../services/user.service';
 import { Dossier as DossierModel, Client, StatutDossier, DossierPriorite, User } from '../../appTypes';
 import { forkJoin } from 'rxjs';
@@ -15,11 +15,18 @@ import { NavigationService } from '../../services/navigation-service';
 @Component({
   selector: 'app-dossier',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './dossier.component.html',
   styleUrl: './dossier.component.css'
 })
 export class DossierComponent implements OnInit {
+  private dossierService = inject(DossierService);
+  private clientService = inject(ClientService);
+  private priorityService = inject(DossierPrioriteService);
+  private statusService = inject(StatutDossierService);
+  private userService = inject(UserService);
+  private router = inject(Router);
+
   dossiers: DossierModel[] = [];
   clients: Client[] = [];
   statuses: StatutDossier[] = [];
@@ -41,14 +48,7 @@ export class DossierComponent implements OnInit {
   statusFilter: string = 'Tous';
   lawyerFilter: string = 'Tous';
 
-  constructor(
-    private readonly router: Router,
-    private dossierService: DossierService,
-    private clientService: ClientService,
-    private priorityService: DossierPrioriteService,
-    private statusService: MatterStatusService,
-    private userService: UserService
-  ) { }
+  constructor() { }
 
   ngOnInit(): void {
     this.loadData();
