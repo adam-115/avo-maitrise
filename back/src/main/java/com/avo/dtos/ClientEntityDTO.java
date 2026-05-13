@@ -21,8 +21,34 @@ public class ClientEntityDTO {
     private String pays;
     private String type;
     private ClientStatus clientStatus;
+    private String secteurActivite;
     private List<DocumentDTO> documents;
     private List<ContactPointDTO> contacts;
     private List<ScreeningMatchDTO> screeningMatchDTOs ;
+    
+    // Personne Physique fields
+    private String nom;
+    private String prenom;
+    private String nationalite;
+    private String cin;
+    private Date dateNaissance;
+
+    // Client Moral / Societe fields
+    private String nomCommercial;
+    private String formeJuridique;
+    private String numeroRegistreCommerce;
+    private String numeroIdFiscal;
+    
+    // Representant Legal fields
+    private String nomRepresentantLegal;
+    private String prenomRepresentantLegal;
+    private String nationaliteRepresentantLegal;
+    private String cinRepresentantLegal;
+    private Date dateNaissanceRepresentantLegal;
+
+    // Association / Institution fields
+    private String numeroRegistreNational;
+
+    private List<UBODTO> ubos;
 
 }

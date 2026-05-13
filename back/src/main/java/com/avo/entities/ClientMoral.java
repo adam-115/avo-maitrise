@@ -28,7 +28,7 @@ public class ClientMoral extends ClientEntity {
     private String cinRepresentantLegal;
     private Date dateNaissanceRepresentantLegal;
 
-    @OneToMany(mappedBy = "clientMoral", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "clientMoral", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UBO> ubos;
 
     @Override

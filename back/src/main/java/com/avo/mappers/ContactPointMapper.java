@@ -14,6 +14,7 @@ public interface ContactPointMapper {
 
     ContactPointDTO toDto(ContactPoint contactPoint);
 
+    @Mapping(target = "email", source = "email")
     @Mapping(target = "client", ignore = true)
     ContactPoint toEntity(ContactPointDTO contactPointDTO);
 }

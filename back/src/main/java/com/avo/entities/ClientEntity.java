@@ -41,11 +41,14 @@ public class ClientEntity {
     @Column(name = "client_status", columnDefinition = "VARCHAR(50)")
     private ClientStatus clientStatus = ClientStatus.AML_REQUIRED;
 
+    @Column(name = "secteur_activite")
+    private String secteurActivite;
+
 
     @OneToMany(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Document> documents;
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContactPoint> contacts;
 
     @OneToMany(mappedBy ="client" , cascade = CascadeType.PERSIST)

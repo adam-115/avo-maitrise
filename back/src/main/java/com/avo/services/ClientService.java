@@ -35,11 +35,13 @@ public class ClientService {
 
     public ClientEntityDTO create(ClientEntityDTO dto) {
         ClientEntity entity = mapper.toEntity(dto);
+        entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
 
     public ClientEntityDTO update(ClientEntityDTO dto) {
         ClientEntity entity = mapper.toEntity(dto);
+        entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
     
