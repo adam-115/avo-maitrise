@@ -113,10 +113,7 @@ export const routes: Routes = [
         path: NavigationService.ADMIN_SECTEUR_ATIVITE,
         loadComponent: () => import('./administration/secteur-activite/secteur-activite').then(m => m.SecteurActiviteComponent)
       },
-      {
-        path: NavigationService.TYPE_CLIENT,
-        loadComponent: () => import('./administration/client-type/client-type').then(m => m.ClientType)
-      },
+
       // AML Compliance Paths can be found in NavigationService   
       {
         path: NavigationService.DILIGENCE_FORM_BUILDER,

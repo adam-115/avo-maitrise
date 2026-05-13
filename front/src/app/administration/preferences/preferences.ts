@@ -18,9 +18,7 @@ export class Preferences {
     throw ("not yet implemented");
   }
 
-  navigateToClientTypesPreferences() {
-    this.navigationService.navigateToPrefrenceTypeClient();
-  }
+
 
   navigateToAdminSecteurActivite() {
     this.navigationService.navigateToAdminSecteurActivite();

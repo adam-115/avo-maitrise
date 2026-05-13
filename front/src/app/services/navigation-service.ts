@@ -43,7 +43,7 @@ export class NavigationService {
   // public static readonly FORM_CONFIG_VIEW = "form-config/view/:id";
   // public static readonly FORM_RESULT_VIEW = "form-result/view/:id";
   // public static readonly CLIENT_AML_CONTEXT = "client-aml-context/:id";
-  public static readonly TYPE_CLIENT = "type_client";
+
   public static readonly ADMIN_PREFERENCE = "admin_preference";
   public static readonly ADMIN_SECTEUR_ATIVITE = "admin_secteur_activite";
 
@@ -76,9 +76,7 @@ export class NavigationService {
   
 
 
-  public navigateToTypeClient(): void {
-    this.router.navigate(['/home/', ...NavigationService.TYPE_CLIENT.split('/')]);
-  }
+
 
 
   navigateToHome(): void {
@@ -94,9 +92,7 @@ export class NavigationService {
     this.router.navigate([NavigationService.HOME, NavigationService.ADMIN_PREFERENCE]);
   }
 
-  navigateToPrefrenceTypeClient() {
-    this.router.navigate([NavigationService.HOME, NavigationService.TYPE_CLIENT]);
-  }
+
 
   navigateToAdminSecteurActivite() {
     this.router.navigate([NavigationService.HOME, NavigationService.ADMIN_SECTEUR_ATIVITE]);
