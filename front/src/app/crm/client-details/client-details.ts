@@ -16,10 +16,12 @@ import { DocumentService } from '../../services/document.service';
 
 import { MatchAnalysisModal } from './match-analysis-modal';
 import { AssignFormModalComponent } from '../../due-diligence/assign-form-modal/assign-form-modal.component';
+import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 
 @Component({
   selector: 'app-client-details',
-  imports: [CommonModule, FormsModule, RouterModule, MatchAnalysisModal, AssignFormModalComponent],
+  standalone: true,
+  imports: [CommonModule, FormsModule, RouterModule, MatchAnalysisModal, AssignFormModalComponent, DocumentDialog],
   templateUrl: './client-details.html',
   styleUrl: './client-details.css'
 })
@@ -56,6 +58,7 @@ export class ClientDetails implements OnInit {
   isLoading = true;
   selectedMatch: ScreeningMatchDTO | null = null;
   isAnalysisModalOpen = false;
+  showAddDocumentDialog = false;
 
   getDisplayName(client: any): string {
     if (!client) return '';
@@ -96,6 +99,67 @@ export class ClientDetails implements OnInit {
       this.loadClient(clientId);
     }
     this.closeAnalysisModal();
+  }
+
+  openAddDocumentDialog() {
+    this.showAddDocumentDialog = true;
+  }
+
+  closeAddDocumentDialog() {
+    this.showAddDocumentDialog = false;
+  }
+
+  onAddDocument(doc: Document) {
+    if (this.client && this.client.id) {
+      if (doc.file) {
+        this.fileToBase64(doc.file).then(base64 => {
+          const docDto: Document = {
+            ...doc,
+            fileData: base64,
+            clientId: this.client!.id,
+            nomFichier: doc.name || doc.nomFichier || 'document.pdf'
+          };
+
+          this.documentService.create(docDto).subscribe({
+            next: (savedDoc: Document) => {
+              if (!this.client!.documents) this.client!.documents = [];
+              this.client!.documents.push(savedDoc);
+              this.alertService.success('Document ajouté avec succès');
+              this.closeAddDocumentDialog();
+            },
+            error: (err: any) => {
+              console.error('Error creating document:', err);
+              this.alertService.displayMessage('Erreur', 'Erreur lors de l\'ajout du document', 'error');
+            }
+          });
+        });
+      } else {
+        doc.clientId = this.client.id;
+        this.documentService.create(doc).subscribe({
+          next: (savedDoc: Document) => {
+            if (!this.client!.documents) this.client!.documents = [];
+            this.client!.documents.push(savedDoc);
+            this.alertService.success('Document ajouté avec succès');
+            this.closeAddDocumentDialog();
+          },
+          error: (err: any) => {
+            this.alertService.displayMessage('Erreur', 'Erreur lors de l\'ajout du document', 'error');
+          }
+        });
+      }
+    }
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const result = reader.result as string;
+        resolve(result.split(',')[1]); // Remove data:application/pdf;base64,
+      };
+      reader.onerror = error => reject(error);
+    });
   }
 
   isAmlLoading = false;

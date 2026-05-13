@@ -1,6 +1,5 @@
 com\avo\controller\InstitutionController.class
 com\avo\entities\QFieldConfig.class
-com\avo\controller\TestController.class
 com\avo\services\FormConfigService.class
 com\avo\dtos\ScreeningMatchDTO$ScreeningMatchDTOBuilder.class
 com\avo\entities\ClientMoral.class
@@ -9,7 +8,6 @@ com\avo\dtos\ClientDiligenceStatusDTO.class
 com\avo\dtos\FieldConfigDTO.class
 com\avo\repositories\AssociationRepository.class
 com\avo\entities\FieldConfig$FieldConfigBuilder.class
-com\avo\controller\AssociationController.class
 com\avo\dtos\UBODTO$UBODTOBuilder.class
 com\avo\dtos\FormConfigDTO$FormConfigDTOBuilder.class
 com\avo\entities\Association.class
@@ -31,7 +29,6 @@ com\avo\entities\QDocument.class
 com\avo\entities\QScreeningMatch.class
 com\avo\controller\ClientDiligenceStatusController.class
 com\avo\entities\QContactPoint.class
-com\avo\services\ScreeningMatchService.class
 com\avo\controller\PersonnePhysiqueController.class
 com\avo\yente\models\YenteMatchResult.class
 com\avo\dtos\ContactPointDTO$ContactPointDTOBuilder.class
@@ -85,7 +82,6 @@ com\avo\entities\QClientMoral.class
 com\avo\controller\ClientController.class
 com\avo\entities\QNotification.class
 com\avo\entities\SecteurActivite.class
-com\avo\job\YenteClientVerificationJob.class
 com\avo\controller\ScreeningExecutionController.class
 com\avo\dtos\ClientDiligenceStatusDTO$ClientDiligenceStatusDTOBuilder.class
 com\avo\repositories\ClientMoralRepository.class
@@ -96,7 +92,6 @@ com\avo\dtos\ClientPersonnePhysiqueDTO.class
 com\avo\dtos\FieldOptionDTO$FieldOptionDTOBuilder.class
 com\avo\entities\ContactPoint.class
 com\avo\services\SecteurActiviteService.class
-com\avo\controller\ScreeningMatchController.class
 com\avo\controller\ClientMoralController.class
 com\avo\dtos\FieldOptionDTO.class
 com\avo\dtos\InstitutionDTO.class
@@ -124,7 +119,6 @@ com\avo\AvoApplication.class
 com\avo\mappers\ContactPointMapper.class
 com\avo\dtos\SecteurActiviteDTO$SecteurActiviteDTOBuilder.class
 com\avo\mappers\ScreeningMatchMapper.class
-com\avo\services\TestService.class
 com\avo\dtos\UBODTO.class
 com\avo\entities\QFieldResult.class
 com\avo\services\UBOService.class
@@ -153,7 +147,6 @@ com\avo\entities\ScreeningMatch.class
 com\avo\dtos\AssociationDTO.class
 com\avo\entities\ClientEntity.class
 com\avo\entities\ClientStatus.class
-com\avo\repositories\TestRepository.class
 com\avo\mappers\SecteurActiviteMapper.class
 com\avo\dtos\FieldResultDTO$FieldResultDTOBuilder.class
 com\avo\mappers\AssociationMapper.class
