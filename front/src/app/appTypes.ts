@@ -215,6 +215,7 @@ export interface Document {
   file?: File;
   tags?: string; // For DocumentDialog
   date?: Date; // For legacy DocumentComponent
+  fileData?: string; // Base64 content for backend BLOB
 }
 
 

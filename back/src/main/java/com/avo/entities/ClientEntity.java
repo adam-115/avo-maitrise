@@ -42,7 +42,7 @@ public class ClientEntity {
     private ClientStatus clientStatus = ClientStatus.AML_REQUIRED;
 
 
-    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Document> documents;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
@@ -61,10 +61,20 @@ public class ClientEntity {
 
     public void linkChildren() {
         if (documents != null) {
-            documents.forEach(d -> d.setClient(this));
+            documents.forEach(d -> {
+                d.setClient(this);
+                if (this.id == null) {
+                    d.setId(null);
+                }
+            });
         }
         if (contacts != null) {
-            contacts.forEach(c -> c.setClient(this));
+            contacts.forEach(c -> {
+                c.setClient(this);
+                if (this.id == null) {
+                    c.setId(null);
+                }
+            });
         }
     }
 }

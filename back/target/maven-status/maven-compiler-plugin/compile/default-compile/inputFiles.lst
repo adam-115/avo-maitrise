@@ -25,6 +25,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientDiligenceStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\DocumentMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ScreeningMatchRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\InstitutionController.java
+D:\avo-maitrise\back\src\main\java\com\avo\mappers\ScreeningExecutionMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\ScreeningMatchController.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\FormType.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ClientMoralRepository.java
@@ -47,7 +48,6 @@ D:\avo-maitrise\back\src\main\java\com\avo\controller\DiligenceFormResultControl
 D:\avo-maitrise\back\src\main\java\com\avo\entities\FieldResult.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ClientDiligenceStatusRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\TestEntity.java
-D:\avo-maitrise\back\src\main\java\com\avo\mappers\ScreeningExecutionhMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\FieldResultDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\AvoApplication.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Association.java

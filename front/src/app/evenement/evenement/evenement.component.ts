@@ -111,7 +111,7 @@ export class EvenementComponent implements OnInit {
 
   updateMatterEvent(matterEvent: MatterEvent) {
     if (!matterEvent.id) return;
-    this.matterEventService.update(matterEvent.id, matterEvent).subscribe({
+    this.matterEventService.update(matterEvent).subscribe({
       next: (updatedEvent) => {
         this.alertService.displayMessage('Événement mis à jour avec succès', 'success', 'success');
         const index = this.events.findIndex(e => e.id === updatedEvent.id);

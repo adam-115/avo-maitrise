@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.avo.entities.ScreeningExecution;
 import com.avo.dtos.ScreeningExecutionDTO;
-import com.avo.mappers.ScreeningExecutionhMapper;
+import com.avo.mappers.ScreeningExecutionMapper;
 import com.avo.repositories.ScreeningExecutionRepository;
 import com.querydsl.core.types.Predicate;
 
@@ -14,9 +14,9 @@ import com.querydsl.core.types.Predicate;
 public class ScreeningExecutionService {
 
     private final ScreeningExecutionRepository screeningExecutionRepository;
-    private final ScreeningExecutionhMapper mapper;
-
-    public ScreeningExecutionService(ScreeningExecutionRepository screeningExecutionRepository, ScreeningExecutionhMapper mapper) {
+    private final ScreeningExecutionMapper mapper;
+    
+    public ScreeningExecutionService(ScreeningExecutionRepository screeningExecutionRepository, ScreeningExecutionMapper mapper) {
         this.screeningExecutionRepository = screeningExecutionRepository;
         this.mapper = mapper;
     }

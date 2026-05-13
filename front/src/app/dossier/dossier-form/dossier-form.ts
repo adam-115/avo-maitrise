@@ -261,7 +261,7 @@ export class DossierForm implements OnInit {
     };
 
     if (this.isEditMode && this.dossierId) {
-      this.dossierService.update(this.dossierId, dossierData).subscribe(() => {
+      this.dossierService.update(dossierData).subscribe(() => {
         this.navigateToDossier();
       });
     } else {

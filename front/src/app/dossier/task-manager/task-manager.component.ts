@@ -132,7 +132,7 @@ export class TaskManagerComponent implements OnInit {
 
         if (this.isEditing && this.selectedTaskId) {
             taskData.id = this.selectedTaskId;
-            this.taskService.update(this.selectedTaskId.toString(), taskData).subscribe(() => {
+            this.taskService.update(taskData).subscribe(() => {
                 this.loadTasks();
                 this.closeForm();
             });
@@ -148,7 +148,7 @@ export class TaskManagerComponent implements OnInit {
         const target = event.target as HTMLSelectElement;
         const newStatusId = target.value;
         const updatedTask = { ...task, statusId: newStatusId };
-        this.taskService.update(String(task.id!), updatedTask).subscribe(() => {
+        this.taskService.update(updatedTask).subscribe(() => {
             this.loadTasks();
         });
     }

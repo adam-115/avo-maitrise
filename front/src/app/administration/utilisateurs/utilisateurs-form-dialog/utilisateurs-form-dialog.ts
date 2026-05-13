@@ -104,7 +104,7 @@ export class UtilisateursFormDialog {
     };
 
     if (this.isEditMode && this.currentUserId) {
-      this.userService.update(this.currentUserId, userData as User).subscribe(() => {
+      this.userService.update(userData as User).subscribe(() => {
         this.closeUserForm();
         this.userSaved.emit();
         // Reload parent or notify

@@ -12,6 +12,7 @@ import { ScreeningExecutionService } from '../../services/screening-execution.se
 import { ScreeningMatchService } from '../../services/screening-match.service';
 import { FormConfigService } from '../../services/form-config-service';
 import { ClientDiligenceStatusService } from '../../services/client-diligence-status-service';
+import { DocumentService } from '../../services/document.service';
 
 import { MatchAnalysisModal } from './match-analysis-modal';
 import { AssignFormModalComponent } from '../../due-diligence/assign-form-modal/assign-form-modal.component';
@@ -29,6 +30,7 @@ export class ClientDetails implements OnInit {
   screeningMatchService = inject(ScreeningMatchService);
   formConfigService = inject(FormConfigService);
   diligenceStatusService = inject(ClientDiligenceStatusService);
+  documentService = inject(DocumentService);
 
   client: Client | null = null;
   executions: ScreeningExecutionDTO[] = [];
@@ -130,18 +132,7 @@ export class ClientDetails implements OnInit {
     });
   }
 
-  private extractDocuments() {
-    // Map existing client documents if they exist
-    if (this.client && this.client.documents) {
-      this.client.documents = this.client.documents.map((d: any) => ({
-        label: d.title || 'Document Client',
-        filename: d.name || d.filename || 'unknown',
-        date: new Date() // Date handling could be improved if API provides it
-      }));
-    } else if (this.client) {
-      this.client.documents = [];
-    }
-  }
+
 
   isFile(value: string): boolean {
     if (!value) return false; // Ensure value is not null/undefined
@@ -183,20 +174,44 @@ export class ClientDetails implements OnInit {
   }
 
   downloadDocument(doc: Document) {
-    console.log("doc.file" + doc.file);
-
-    if (doc.file) {
-      const url = URL.createObjectURL(doc.file);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = doc.filename || doc.name || 'document';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } else {
-      console.log('Download document', doc);
+    if (!doc.id) {
+      this.alertService.displayMessage('Attention', 'Document sans ID, impossible de télécharger.', 'warning');
+      return;
     }
+
+    this.documentService.findById(doc.id).subscribe({
+      next: (fullDoc) => {
+        if (fullDoc.fileData) {
+          try {
+            const byteCharacters = atob(fullDoc.fileData);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: fullDoc.typeDocument || 'application/octet-stream' });
+            
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fullDoc.nomFichier || fullDoc.name || 'document';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          } catch (e) {
+            console.error('Error decoding file data', e);
+            this.alertService.displayMessage('Erreur', 'Données de fichier corrompues.', 'error');
+          }
+        } else {
+          this.alertService.displayMessage('Erreur', 'Le contenu du fichier est vide ou non disponible.', 'error');
+        }
+      },
+      error: (err) => {
+        console.error('Error downloading document', err);
+        this.alertService.displayMessage('Erreur', 'Impossible de récupérer le document depuis le serveur.', 'error');
+      }
+    });
   }
 
   async onStatusChange(newStatus: string) {
@@ -278,7 +293,7 @@ export class ClientDetails implements OnInit {
            this.client!.clientStatus = ClientStatus.AML_REQUIRED;
         }
 
-        this.clientService.update(this.client!.id, this.client!).subscribe({
+        this.clientService.update(this.client!).subscribe({
           next: () => {
             this.alertService.success('Analyse AML terminée et dossier mis à jour.');
             this.loadAmlHistory(String(this.client!.id)); // Reload matches and executions after update

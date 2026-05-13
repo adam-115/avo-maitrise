@@ -57,7 +57,7 @@ export class DossierStatusFormComponent implements OnInit {
             };
 
             if (this.isEditing && this.selectedStatusId) {
-                this.statutDossierService.update(this.selectedStatusId, statusData).subscribe({
+                this.statutDossierService.update(statusData).subscribe({
                     next: () => {
                         this.resetForm();
                         this.loadStatuses();
@@ -94,7 +94,7 @@ export class DossierStatusFormComponent implements OnInit {
         const status = this.statuses.find(s => s.id === id);
         if (status && confirm('Êtes-vous sûr de vouloir désactiver ce statut ?')) {
             const updatedStatus: StatutDossier = { ...status, active: false };
-            this.statutDossierService.update(id, updatedStatus).subscribe({
+            this.statutDossierService.update(updatedStatus).subscribe({
                 next: () => this.loadStatuses(),
                 error: (err) => console.error('Error updating status', err)
             });

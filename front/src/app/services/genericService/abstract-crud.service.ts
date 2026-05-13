@@ -60,12 +60,11 @@ export abstract class AbstractCrudService<T> {
 
   /**
    * Updates an existing item on the backend.
-   * @param id The ID of the item to update.
-   * @param item The updated item data.
+   * @param item The updated item data (should include the ID).
    * @returns An Observable of the updated item.
    */
-  update(id: any, item: T): Observable<T> {
-    return this.http.put<T>(`${this.apiUrl}/${id}`, item);
+  update(item: T): Observable<T> {
+    return this.http.put<T>(this.apiUrl, item);
   }
 
   /**

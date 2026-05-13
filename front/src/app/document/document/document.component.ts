@@ -48,7 +48,7 @@ export class DocumentComponent implements OnInit {
       this.documents = this.selectedDossier.documents;
 
       if (this.selectedDossier.id) {
-        this.dossierService.update(this.selectedDossier.id, this.selectedDossier).subscribe({
+        this.dossierService.update(this.selectedDossier).subscribe({
           next: () => {
             console.log('Dossier updated successfully with new document');
             this.closeDocumentDialog();

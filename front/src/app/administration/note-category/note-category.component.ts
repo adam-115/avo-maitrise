@@ -57,7 +57,7 @@ export class NoteCategoryComponent implements OnInit {
             };
 
             if (this.isEditing && this.selectedCategoryId) {
-                this.noteCategoryService.update(this.selectedCategoryId.toString(), categoryData).subscribe({
+                this.noteCategoryService.update(categoryData).subscribe({
                     next: () => {
                         this.resetForm();
                         this.loadCategories();
@@ -92,7 +92,7 @@ export class NoteCategoryComponent implements OnInit {
         const category = this.categories.find(c => String(c.id) === String(id));
         if (category && confirm('Êtes-vous sûr de vouloir désactiver cette catégorie ?')) {
             const updatedCategory: NoteCategory = { ...category, active: false };
-            this.noteCategoryService.update(id.toString(), updatedCategory).subscribe({
+            this.noteCategoryService.update(updatedCategory).subscribe({
                 next: () => this.loadCategories(),
                 error: (err) => console.error('Error updating category', err)
             });

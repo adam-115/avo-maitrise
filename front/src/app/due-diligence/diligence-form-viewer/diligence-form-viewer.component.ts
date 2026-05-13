@@ -188,18 +188,18 @@ export class DiligenceFormViewerComponent implements OnInit {
                 if (assignment) {
                     assignment.status = 'SUBMITTED';
                     assignment.resultId = result.id;
-                    this.statusService.update(assignment.id, assignment).subscribe({
+                    this.statusService.update(assignment).subscribe({
                         error: (err) => console.error('Error updating assignment status', err)
                     });
                 }
                 if (statuses.filter(s => s.status === 'PENDING').length === 0) {
                     this.selectedClient!.clientStatus = ClientStatus.VALIDATED;
-                    this.clientService.update(this.selectedClient!.id!, this.selectedClient!).subscribe({
+                    this.clientService.update(this.selectedClient!).subscribe({
                         error: (err) => console.error('Error updating client status', err)
                     });
                 } else {
                     this.selectedClient!.clientStatus = ClientStatus.INDULGENCE_REQUIRED;
-                    this.clientService.update(this.selectedClient!.id!, this.selectedClient!).subscribe({
+                    this.clientService.update(this.selectedClient!).subscribe({
                         error: (err) => console.error('Error updating client status', err)
                     });
                 }

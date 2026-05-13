@@ -180,7 +180,7 @@ export class DiligenceFormBuilderComponent implements OnInit {
     const routeId = this.route.snapshot.paramMap.get('id');
 
     if (routeId) {
-      this.formService.update(routeId, formConfig).subscribe({
+      this.formService.update(formConfig).subscribe({
         next: (response) => {
           this.alertService.displayMessage("Succès", "Formulaire mis à jour avec succès", "success");
           this.navigationService.navigateToDiligenceFormList();

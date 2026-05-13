@@ -8,9 +8,9 @@ import com.avo.dtos.ScreeningExecutionDTO;
 import com.avo.entities.ScreeningExecution;
 
 @Mapper(componentModel = "spring")
-public interface ScreeningExecutionhMapper {
+public interface ScreeningExecutionMapper {
 
-    ScreeningExecutionhMapper INSTANCE = Mappers.getMapper(ScreeningExecutionhMapper.class);
+    ScreeningExecutionMapper INSTANCE = Mappers.getMapper(ScreeningExecutionMapper.class);
 
     @Mapping(source = "client", target = "clientEntityDTO")
     @Mapping(source = "ubo", target = "uboDTO")

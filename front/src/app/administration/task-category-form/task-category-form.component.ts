@@ -56,7 +56,7 @@ export class TaskCategoryFormComponent implements OnInit {
             };
 
             if (this.isEditing && this.selectedCategoryId) {
-                this.taskCategoryService.update(this.selectedCategoryId, categoryData).subscribe({
+                this.taskCategoryService.update(categoryData).subscribe({
                     next: () => {
                         this.resetForm();
                         this.loadCategories();
@@ -91,7 +91,7 @@ export class TaskCategoryFormComponent implements OnInit {
         const category = this.categories.find(c => c.id === id);
         if (category && confirm('Êtes-vous sûr de vouloir désactiver cette catégorie de tâche ?')) {
             const updatedCategory: TaskCategory = { ...category, actif: false };
-            this.taskCategoryService.update(id.toString(), updatedCategory).subscribe({
+            this.taskCategoryService.update(updatedCategory).subscribe({
                 next: () => this.loadCategories(),
                 error: (err) => console.error('Error updating task category', err)
             });

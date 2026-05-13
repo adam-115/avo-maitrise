@@ -144,7 +144,7 @@ export class SecteurActiviteComponent implements OnInit {
       } else {
         let updatedSecteurActivity = this.formToSecteur();
         updatedSecteurActivity.id = this.selectedSecteurActivite.id;
-        this.secteurActiviteService.update(updatedSecteurActivity.id, updatedSecteurActivity).subscribe(data => {
+        this.secteurActiviteService.update(updatedSecteurActivity).subscribe(data => {
           this.lodAllSeteurActivite();
           this.alertService.success("elemet mis a jour");
           this.resetForm();

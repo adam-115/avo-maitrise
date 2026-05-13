@@ -57,7 +57,7 @@ export class DomaineJuridiqueFormComponent implements OnInit {
             };
 
             if (this.isEditing && this.selectedDomaineId) {
-                this.domaineJuridiqueService.update(this.selectedDomaineId, domaineData).subscribe({
+                this.domaineJuridiqueService.update(domaineData).subscribe({
                     next: () => {
                         this.resetForm();
                         this.loadDomaines();
@@ -92,7 +92,7 @@ export class DomaineJuridiqueFormComponent implements OnInit {
         const domaine = this.domaines.find(d => d.id === id);
         if (domaine && confirm('Êtes-vous sûr de vouloir désactiver ce domaine juridique ?')) {
             const updatedDomaine: DomaineJuridique = { ...domaine, active: false };
-            this.domaineJuridiqueService.update(id, updatedDomaine).subscribe({
+            this.domaineJuridiqueService.update(updatedDomaine).subscribe({
                 next: () => this.loadDomaines(),
                 error: (err) => console.error('Error updating domaine', err)
             });

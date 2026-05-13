@@ -57,7 +57,7 @@ export class EventTypeComponent implements OnInit {
             };
 
             if (this.isEditing && this.selectedEventTypeId) {
-                this.eventTypeService.update(this.selectedEventTypeId.toString(), eventTypeData).subscribe({
+                this.eventTypeService.update(eventTypeData).subscribe({
                     next: () => {
                         this.resetForm();
                         this.loadEventTypes();
@@ -98,7 +98,7 @@ export class EventTypeComponent implements OnInit {
         const eventType = this.eventTypes.find(e => String(e.id) === String(id));
         if (eventType && confirm('Êtes-vous sûr de vouloir désactiver ce type d\'événement ?')) {
             const updatedEventType: EventType = { ...eventType, active: false };
-            this.eventTypeService.update(id.toString(), updatedEventType).subscribe({
+            this.eventTypeService.update(updatedEventType).subscribe({
                 next: () => this.loadEventTypes(),
                 error: (err) => console.error('Error deactivating event type', err)
             });

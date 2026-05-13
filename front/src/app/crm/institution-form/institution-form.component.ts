@@ -101,7 +101,7 @@ export class InstitutionFormComponent implements OnInit {
     openAddDocumentDialog() { this.showAddDocumentDialog = true; }
     closeAddDocumentDialog() { this.showAddDocumentDialog = false; }
     onAddDocument(doc: Document) {
-        if (!doc.id) doc.id = Date.now();
+        // Do not generate a fake ID here, it causes "detached entity" errors on backend
         this.documents.push(doc);
         this.closeAddDocumentDialog();
     }
@@ -117,20 +117,43 @@ export class InstitutionFormComponent implements OnInit {
         }
 
         const formValue = this.clientForm.getRawValue();
-        formValue.documents = this.documents;
         formValue.clientStatus = ClientStatus.AML_REQUIRED;
 
-        const request$ = this.isEditMode ? this.service.update(formValue.id, formValue) : this.service.create(formValue);
-
-        request$.subscribe({
-            next: (client: any) => {
-                this.alertService.success(this.isEditMode ? 'Institution modifiée' : 'Institution créée');
-                this.navigationService.navigateToClientDetails(String(client.id));
-            },
-            error: (err: any) => {
-                console.error(err);
-                this.alertService.displayMessage('Erreur', 'Opération échouée', 'error');
+        // Convert files to base64 for BLOB storage if needed
+        const uploadPromises = this.documents.map(async (doc) => {
+            if (doc.file && !doc.fileData) {
+                doc.fileData = await this.fileToBase64(doc.file);
             }
+            if (!doc.nomFichier) doc.nomFichier = doc.name;
+            return doc;
+        });
+
+        Promise.all(uploadPromises).then(() => {
+            formValue.documents = this.documents;
+            const request$ = this.isEditMode ? this.service.update(formValue) : this.service.create(formValue);
+
+            request$.subscribe({
+                next: (client: any) => {
+                    this.alertService.success(this.isEditMode ? 'Institution modifiée' : 'Institution créée');
+                    this.navigationService.navigateToClientDetails(String(client.id));
+                },
+                error: (err: any) => {
+                    console.error(err);
+                    this.alertService.displayMessage('Erreur', 'Opération échouée', 'error');
+                }
+            });
+        });
+    }
+
+    private fileToBase64(file: File): Promise<string> {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                const base64String = reader.result as string;
+                resolve(base64String.split(',')[1]);
+            };
+            reader.onerror = error => reject(error);
         });
     }
 

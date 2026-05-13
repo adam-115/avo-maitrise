@@ -47,7 +47,7 @@ public class YenteClientVerificationJob {
     private final UBOService uboService;
     private final com.avo.repositories.ScreeningMatchRepository screeningMatchRepository;
     private final com.avo.repositories.NotificationRepository notificationRepository;
-    private final com.avo.mappers.ScreeningExecutionhMapper screeningExecutionhMapper;
+    private final com.avo.mappers.ScreeningExecutionMapper screeningExecutionMapper;
 
     public YenteClientVerificationJob(YenteAmlService yenteAmlService, ClientService clientService,
             ScreeningMatchService screeningMatchService,
@@ -56,7 +56,7 @@ public class YenteClientVerificationJob {
             UBOService uboService, ClientEntityMapper clientEntityMapper, ObjectMapper objectMapper,
             com.avo.repositories.ScreeningMatchRepository screeningMatchRepository,
             com.avo.repositories.NotificationRepository notificationRepository,
-            com.avo.mappers.ScreeningExecutionhMapper screeningExecutionhMapper) {
+            com.avo.mappers.ScreeningExecutionMapper screeningExecutionMapper) {
         this.yenteAmlService = yenteAmlService;
         this.clientService = clientService;
         this.screeningMatchService = screeningMatchService;
@@ -67,7 +67,7 @@ public class YenteClientVerificationJob {
         this.objectMapper = objectMapper;
         this.screeningMatchRepository = screeningMatchRepository;
         this.notificationRepository = notificationRepository;
-        this.screeningExecutionhMapper = screeningExecutionhMapper;
+        this.screeningExecutionMapper = screeningExecutionMapper;
     }
 
     // @Scheduled(fixedDelay = 100000)
@@ -186,7 +186,7 @@ public class YenteClientVerificationJob {
                             } else {
                                 // Update existing match's execution link
                                 lastMatchOpt.ifPresent(m -> {
-                                    m.setScreeningExecution(screeningExecutionhMapper.toEntity(savedExecutionDTO));
+                                    m.setScreeningExecution(screeningExecutionMapper.toEntity(savedExecutionDTO));
                                     screeningMatchRepository.save(m);
                                 });
                             }
@@ -326,7 +326,7 @@ public class YenteClientVerificationJob {
                             } else {
                                 // Update existing match's execution link
                                 lastMatchOpt.ifPresent(m -> {
-                                    m.setScreeningExecution(screeningExecutionhMapper.toEntity(savedExecutionDTO));
+                                    m.setScreeningExecution(screeningExecutionMapper.toEntity(savedExecutionDTO));
                                     screeningMatchRepository.save(m);
                                 });
                             }

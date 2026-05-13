@@ -57,7 +57,7 @@ export class DossierPrioriteComponent implements OnInit {
             };
 
             if (this.isEditing && this.selectedPriorityId) {
-                this.dossierPrioriteService.update(this.selectedPriorityId, priorityData).subscribe({
+                this.dossierPrioriteService.update(priorityData).subscribe({
                     next: () => {
                         this.resetForm();
                         this.loadPriorities();
@@ -92,7 +92,7 @@ export class DossierPrioriteComponent implements OnInit {
         const priority = this.priorities.find(p => p.id === id);
         if (priority && confirm('Êtes-vous sûr de vouloir désactiver cette priorité ?')) {
             const updatedPriority: DossierPriorite = { ...priority, active: false };
-            this.dossierPrioriteService.update(id, updatedPriority).subscribe({
+            this.dossierPrioriteService.update(updatedPriority).subscribe({
                 next: () => this.loadPriorities(),
                 error: (err) => console.error('Error updating priority', err)
             });

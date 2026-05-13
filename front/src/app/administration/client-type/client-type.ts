@@ -93,7 +93,7 @@ export class ClientType implements OnInit {
 
     } else if (this.selectedClientType && this.typeClientForm.valid) {
       const updatedClientType = this.mapFormToTypeClient(this.selectedClientType.id);
-      this.typeClientService.update(this.selectedClientType.id, updatedClientType).subscribe({
+      this.typeClientService.update(updatedClientType).subscribe({
         complete: () => {
           this.alertService.success('element est bien modifié');
           this.lodAllClientType();

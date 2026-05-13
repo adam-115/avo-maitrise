@@ -96,7 +96,7 @@ export class NoteComponent implements OnInit {
 
   updateNote(updatedNote: Note) {
     if (!updatedNote.id) return;
-    this.noteService.update(updatedNote.id, updatedNote).subscribe(note => {
+    this.noteService.update(updatedNote).subscribe(note => {
       const index = this.notes.findIndex(n => n.id === note.id);
       if (index !== -1) {
         this.notes[index] = note;

@@ -42,7 +42,6 @@ com\avo\repositories\NotificationRepository.class
 com\avo\config\QueryDslConfig.class
 com\avo\dtos\NotificationDTO.class
 com\avo\mappers\ClientDiligenceStatusMapperImpl.class
-com\avo\mappers\ScreeningExecutionhMapper.class
 com\avo\controller\NotificationController.class
 com\avo\entities\FieldResult.class
 com\avo\mappers\ContactPointMapperImpl.class
@@ -52,6 +51,7 @@ com\avo\services\ClientDiligenceStatusService.class
 com\avo\services\DiligenceFormResultService.class
 com\avo\config\CorsConfig.class
 com\avo\entities\ClientDiligenceStatus$ClientDiligenceStatusBuilder.class
+com\avo\mappers\ScreeningExecutionMapper.class
 com\avo\entities\TestEntity.class
 com\avo\yente\models\YenteMatchRequest.class
 com\avo\entities\ScreeningExecutionStatus.class
@@ -114,7 +114,6 @@ com\avo\dtos\DiligenceFormResultDTO.class
 com\avo\config\GlobalExceptionHandler.class
 com\avo\entities\Document.class
 com\avo\controller\HomeController.class
-com\avo\mappers\ScreeningExecutionhMapperImpl.class
 com\avo\dtos\SecteurActiviteDTO.class
 com\avo\entities\QFieldOption.class
 com\avo\mappers\InstitutionMapper.class
@@ -133,6 +132,7 @@ com\avo\entities\QClientDiligenceStatus.class
 com\avo\entities\QUBO.class
 com\avo\mappers\DocumentMapperImpl.class
 com\avo\dtos\TestEntityDTO.class
+com\avo\mappers\ScreeningExecutionMapperImpl.class
 com\avo\mappers\TestEntityMapperImpl.class
 com\avo\repositories\ScreeningMatchRepository.class
 com\avo\dtos\ScreeningExecutionDTO$ScreeningExecutionDTOBuilder.class

@@ -61,7 +61,7 @@ export class BillingService extends AbstractCrudService<Invoice> {
         if (existing) {
             const invoiceToSave = { ...existing, ...updatedData, updatedAt: new Date() };
             // Utiliser la méthode update() héritée du parent abstract-crud.service 
-            super.update(id, invoiceToSave).subscribe(savedInvoice => {
+            super.update(invoiceToSave).subscribe(savedInvoice => {
                 this.invoicesSignal.update(current =>
                     current.map(inv => inv.id === id ? savedInvoice : inv)
                 );

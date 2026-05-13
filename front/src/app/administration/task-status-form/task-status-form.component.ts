@@ -56,7 +56,7 @@ export class TaskStatusFormComponent implements OnInit {
             };
 
             if (this.isEditing && this.selectedStatusId) {
-                this.taskStatusService.update(this.selectedStatusId, statusData).subscribe({
+                this.taskStatusService.update(statusData).subscribe({
                     next: () => {
                         this.resetForm();
                         this.loadStatuses();

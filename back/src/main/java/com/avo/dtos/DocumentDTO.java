@@ -19,6 +19,13 @@ public class DocumentDTO {
     private String urlStockage;
     private LocalDateTime dateUpload;
     private boolean estValide;
+    private String title;
+    private String name;
+    private String label;
+    private String description;
+    private String tags;
+    private String filename;
     private Long clientId; // reference to ClientEntity
+    private byte[] fileData;
 
 }

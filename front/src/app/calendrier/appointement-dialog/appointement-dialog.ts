@@ -94,7 +94,7 @@ export class AppointementDialogComponent implements OnInit {
         ...this.selectedAppointement,
         ...formValue
       };
-      this.appointementService.update(updatedAppointement.id, updatedAppointement).subscribe({
+      this.appointementService.update(updatedAppointement).subscribe({
         next: () => {
           this.isLoading = false;
           this.onSave.emit();
