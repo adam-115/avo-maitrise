@@ -8,7 +8,7 @@ import { Dossier } from '../appTypes';
     providedIn: 'root'
 })
 export class DossierService extends AbstractCrudService<Dossier> {
-    protected override apiUrl = environment.apiUrl + 'dossiers';
+    protected override apiUrl = environment.apiUrl + 'Dossier';
 
     constructor(http: HttpClient) {
         super(http);

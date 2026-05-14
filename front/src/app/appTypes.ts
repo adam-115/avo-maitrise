@@ -405,10 +405,7 @@ export interface Dossier {
   prioriteID: string; // Relies on DossierPriorite.code or DossierPriorite.id
   statutID: string; // Relies on StatutDossier.code or StatutDossier.id
 
-  // Compliance AML
-  amlValidated: boolean;       // Indique si le KYC client a été validé pour ce dossier
-  riskLevel: 'FAIBLE' | 'MODERE' | 'ELEVE'; // Hérité du score client ou spécifique au dossier
-
+  // Compliance AML (Removed)
   documents: Document[]; // les documents du dossier
 
   // Dates
