@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DomaineJuridiqueService } from '../../services/domaine-juridique.service';
 import { DomaineJuridique } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { AlertService } from '../../services/alert-service';
 
 @Component({
     selector: 'app-domaine-juridique-form',
@@ -19,10 +20,11 @@ export class DomaineJuridiqueFormComponent implements OnInit {
     selectedDomaineId: string | null = null;
     errorMessage: string = '';
 
-    constructor(
-        private domaineJuridiqueService: DomaineJuridiqueService,
-        private fb: FormBuilder
-    ) {
+    private domaineJuridiqueService = inject(DomaineJuridiqueService);
+    private fb = inject(FormBuilder);
+    private alertService = inject(AlertService);
+
+    constructor() {
         this.domaineForm = this.fb.group({
             label: ['', Validators.required],
             code: ['', Validators.required],
@@ -44,6 +46,7 @@ export class DomaineJuridiqueFormComponent implements OnInit {
             error: (err) => {
                 console.error('Error loading domaines', err);
                 this.errorMessage = 'Erreur lors du chargement des domaines juridiques.';
+                this.alertService.displayMessage('Erreur', this.errorMessage, 'error');
             }
         });
     }
@@ -51,26 +54,34 @@ export class DomaineJuridiqueFormComponent implements OnInit {
     onSubmit(): void {
         if (this.domaineForm.valid) {
             const formValue = this.domaineForm.value;
-            const domaineData: DomaineJuridique = {
-                ...formValue,
-                id: this.selectedDomaineId ? this.selectedDomaineId : this.generateId()
+            const domaineData: any = {
+                ...formValue
             };
 
             if (this.isEditing && this.selectedDomaineId) {
+                domaineData.id = this.selectedDomaineId;
                 this.domaineJuridiqueService.update(domaineData).subscribe({
                     next: () => {
+                        this.alertService.success('Domaine juridique mis à jour avec succès');
                         this.resetForm();
                         this.loadDomaines();
                     },
-                    error: (err) => console.error('Error updating domaine', err)
+                    error: (err) => {
+                        console.error('Error updating domaine', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la mise à jour.', 'error');
+                    }
                 });
             } else {
                 this.domaineJuridiqueService.create(domaineData).subscribe({
                     next: () => {
+                        this.alertService.success('Domaine juridique créé avec succès');
                         this.resetForm();
                         this.loadDomaines();
                     },
-                    error: (err) => console.error('Error creating domaine', err)
+                    error: (err) => {
+                        console.error('Error creating domaine', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la création.', 'error');
+                    }
                 });
             }
         }
@@ -88,14 +99,23 @@ export class DomaineJuridiqueFormComponent implements OnInit {
         });
     }
 
-    deleteDomaine(id: string): void {
+    async deleteDomaine(id: string): Promise<void> {
         const domaine = this.domaines.find(d => d.id === id);
-        if (domaine && confirm('Êtes-vous sûr de vouloir désactiver ce domaine juridique ?')) {
-            const updatedDomaine: DomaineJuridique = { ...domaine, active: false };
-            this.domaineJuridiqueService.update(updatedDomaine).subscribe({
-                next: () => this.loadDomaines(),
-                error: (err) => console.error('Error updating domaine', err)
-            });
+        if (domaine) {
+            const isConfirmed = await this.alertService.confirmMessage('Confirmation', 'Êtes-vous sûr de vouloir désactiver ce domaine juridique ?', 'warning');
+            if (isConfirmed) {
+                const updatedDomaine: DomaineJuridique = { ...domaine, active: false };
+                this.domaineJuridiqueService.update(updatedDomaine).subscribe({
+                    next: () => {
+                        this.alertService.success('Domaine juridique désactivé avec succès');
+                        this.loadDomaines();
+                    },
+                    error: (err) => {
+                        console.error('Error updating domaine', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la désactivation.', 'error');
+                    }
+                });
+            }
         }
     }
 
@@ -111,9 +131,5 @@ export class DomaineJuridiqueFormComponent implements OnInit {
             color: '#000000',
             order: 0
         });
-    }
-
-    generateId(): string {
-        return Math.random().toString(36).substr(2, 9);
     }
 }

@@ -1,0 +1,54 @@
+package com.avo.services;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import com.avo.dtos.TaskStatusDTO;
+import com.avo.entities.TaskStatus;
+import com.avo.mappers.TaskStatusMapper;
+import com.avo.repositories.TaskStatusRepository;
+import com.querydsl.core.types.Predicate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class TaskStatusService {
+
+    private final TaskStatusRepository repository;
+    private final TaskStatusMapper mapper;
+
+    public TaskStatusService(TaskStatusRepository repository, TaskStatusMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
+
+    public Page<TaskStatusDTO> findAll(Pageable pageable) {
+        return repository.findAll(pageable).map(mapper::toDto);
+    }
+
+    public List<TaskStatusDTO> findAll() {
+        return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
+    }
+
+    public Page<TaskStatusDTO> search(Predicate predicate, Pageable pageable) {
+        return repository.findAll(predicate, pageable).map(mapper::toDto);
+    }
+
+    public TaskStatusDTO findById(Long id) {
+        return repository.findById(id).map(mapper::toDto).orElse(null);
+    }
+
+    public TaskStatusDTO create(TaskStatusDTO dto) {
+        TaskStatus entity = mapper.toEntity(dto);
+        return mapper.toDto(repository.save(entity));
+    }
+
+    public TaskStatusDTO update(TaskStatusDTO dto) {
+        TaskStatus entity = mapper.toEntity(dto);
+        return mapper.toDto(repository.save(entity));
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
+}

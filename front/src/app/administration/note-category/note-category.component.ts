@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NoteCategoryService } from '../../services/note-category.service';
 import { NoteCategory } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { AlertService } from '../../services/alert-service';
 
 @Component({
     selector: 'app-note-category',
@@ -19,10 +20,11 @@ export class NoteCategoryComponent implements OnInit {
     selectedCategoryId: string | number | null = null;
     errorMessage: string = '';
 
-    constructor(
-        private noteCategoryService: NoteCategoryService,
-        private fb: FormBuilder
-    ) {
+    private noteCategoryService = inject(NoteCategoryService);
+    private fb = inject(FormBuilder);
+    private alertService = inject(AlertService);
+
+    constructor() {
         this.categoryForm = this.fb.group({
             label: ['', Validators.required],
             code: ['', Validators.required],
@@ -44,6 +46,7 @@ export class NoteCategoryComponent implements OnInit {
             error: (err) => {
                 console.error('Error loading categories', err);
                 this.errorMessage = 'Erreur lors du chargement des catégories de notes.';
+                this.alertService.displayMessage('Erreur', this.errorMessage, 'error');
             }
         });
     }
@@ -51,26 +54,34 @@ export class NoteCategoryComponent implements OnInit {
     onSubmit(): void {
         if (this.categoryForm.valid) {
             const formValue = this.categoryForm.value;
-            const categoryData: NoteCategory = {
-                ...formValue,
-                id: this.selectedCategoryId ? this.selectedCategoryId : this.generateId()
+            const categoryData: any = {
+                ...formValue
             };
 
             if (this.isEditing && this.selectedCategoryId) {
+                categoryData.id = this.selectedCategoryId;
                 this.noteCategoryService.update(categoryData).subscribe({
                     next: () => {
+                        this.alertService.success('Catégorie mise à jour avec succès');
                         this.resetForm();
                         this.loadCategories();
                     },
-                    error: (err) => console.error('Error updating category', err)
+                    error: (err) => {
+                        console.error('Error updating category', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la mise à jour.', 'error');
+                    }
                 });
             } else {
                 this.noteCategoryService.create(categoryData).subscribe({
                     next: () => {
+                        this.alertService.success('Catégorie créée avec succès');
                         this.resetForm();
                         this.loadCategories();
                     },
-                    error: (err) => console.error('Error creating category', err)
+                    error: (err) => {
+                        console.error('Error creating category', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la création.', 'error');
+                    }
                 });
             }
         }
@@ -88,14 +99,23 @@ export class NoteCategoryComponent implements OnInit {
         });
     }
 
-    deleteCategory(id: string | number): void {
+    async deleteCategory(id: string | number): Promise<void> {
         const category = this.categories.find(c => String(c.id) === String(id));
-        if (category && confirm('Êtes-vous sûr de vouloir désactiver cette catégorie ?')) {
-            const updatedCategory: NoteCategory = { ...category, active: false };
-            this.noteCategoryService.update(updatedCategory).subscribe({
-                next: () => this.loadCategories(),
-                error: (err) => console.error('Error updating category', err)
-            });
+        if (category) {
+            const isConfirmed = await this.alertService.confirmMessage('Confirmation', 'Êtes-vous sûr de vouloir désactiver cette catégorie ?', 'warning');
+            if (isConfirmed) {
+                const updatedCategory: NoteCategory = { ...category, active: false };
+                this.noteCategoryService.update(updatedCategory).subscribe({
+                    next: () => {
+                        this.alertService.success('Catégorie désactivée avec succès');
+                        this.loadCategories();
+                    },
+                    error: (err) => {
+                        console.error('Error updating category', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la désactivation.', 'error');
+                    }
+                });
+            }
         }
     }
 
@@ -111,9 +131,5 @@ export class NoteCategoryComponent implements OnInit {
             color: '#000000',
             order: 0
         });
-    }
-
-    generateId(): string {
-        return Math.random().toString(36).substr(2, 9);
     }
 }

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DossierPrioriteService } from '../../services/dossier-priorite.service';
 import { DossierPriorite } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { AlertService } from '../../services/alert-service';
 
 @Component({
     selector: 'app-dossier-priorite',
@@ -19,10 +20,11 @@ export class DossierPrioriteComponent implements OnInit {
     selectedPriorityId: string | null = null;
     errorMessage: string = '';
 
-    constructor(
-        private dossierPrioriteService: DossierPrioriteService,
-        private fb: FormBuilder
-    ) {
+    private dossierPrioriteService = inject(DossierPrioriteService);
+    private fb = inject(FormBuilder);
+    private alertService = inject(AlertService);
+
+    constructor() {
         this.priorityForm = this.fb.group({
             label: ['', Validators.required],
             code: ['', Validators.required],
@@ -44,6 +46,7 @@ export class DossierPrioriteComponent implements OnInit {
             error: (err) => {
                 console.error('Error loading priorities', err);
                 this.errorMessage = 'Erreur lors du chargement des priorités.';
+                this.alertService.displayMessage('Erreur', this.errorMessage, 'error');
             }
         });
     }
@@ -51,26 +54,34 @@ export class DossierPrioriteComponent implements OnInit {
     onSubmit(): void {
         if (this.priorityForm.valid) {
             const formValue = this.priorityForm.value;
-            const priorityData: DossierPriorite = {
-                ...formValue,
-                id: this.selectedPriorityId ? this.selectedPriorityId : this.generateId()
+            const priorityData: any = {
+                ...formValue
             };
 
             if (this.isEditing && this.selectedPriorityId) {
+                priorityData.id = this.selectedPriorityId;
                 this.dossierPrioriteService.update(priorityData).subscribe({
                     next: () => {
+                        this.alertService.success('Priorité mise à jour avec succès');
                         this.resetForm();
                         this.loadPriorities();
                     },
-                    error: (err) => console.error('Error updating priority', err)
+                    error: (err) => {
+                        console.error('Error updating priority', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la mise à jour.', 'error');
+                    }
                 });
             } else {
                 this.dossierPrioriteService.create(priorityData).subscribe({
                     next: () => {
+                        this.alertService.success('Priorité créée avec succès');
                         this.resetForm();
                         this.loadPriorities();
                     },
-                    error: (err) => console.error('Error creating priority', err)
+                    error: (err) => {
+                        console.error('Error creating priority', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la création.', 'error');
+                    }
                 });
             }
         }
@@ -88,14 +99,23 @@ export class DossierPrioriteComponent implements OnInit {
         });
     }
 
-    deletePriority(id: string): void {
+    async deletePriority(id: string): Promise<void> {
         const priority = this.priorities.find(p => p.id === id);
-        if (priority && confirm('Êtes-vous sûr de vouloir désactiver cette priorité ?')) {
-            const updatedPriority: DossierPriorite = { ...priority, active: false };
-            this.dossierPrioriteService.update(updatedPriority).subscribe({
-                next: () => this.loadPriorities(),
-                error: (err) => console.error('Error updating priority', err)
-            });
+        if (priority) {
+            const isConfirmed = await this.alertService.confirmMessage('Confirmation', 'Êtes-vous sûr de vouloir désactiver cette priorité ?', 'warning');
+            if (isConfirmed) {
+                const updatedPriority: DossierPriorite = { ...priority, active: false };
+                this.dossierPrioriteService.update(updatedPriority).subscribe({
+                    next: () => {
+                        this.alertService.success('Priorité désactivée avec succès');
+                        this.loadPriorities();
+                    },
+                    error: (err) => {
+                        console.error('Error updating priority', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la désactivation.', 'error');
+                    }
+                });
+            }
         }
     }
 
@@ -111,9 +131,5 @@ export class DossierPrioriteComponent implements OnInit {
             color: '#000000',
             order: 0
         });
-    }
-
-    generateId(): string {
-        return Math.random().toString(36).substr(2, 9);
     }
 }

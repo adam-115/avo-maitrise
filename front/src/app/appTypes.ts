@@ -430,8 +430,8 @@ export interface Dossier {
 
 // Représente une catégorie de tâche (ex: Procédure, Recherche)
 export interface TaskCategory {
-  id: number | string;
-  code: 'PROCEDURE' | 'RECHERCHE' | 'CLIENT' | 'ADMIN' | 'AUDIENCE';
+  id: string | number;
+  code: string;
   libelle: string;      // Ex: "Actes et Procédures"
   couleur: string;      // Code Hexa ou classe Tailwind pour l'UI
   icone?: string;       // Nom de l'icône (Lucide, Heroicons...)
@@ -440,8 +440,8 @@ export interface TaskCategory {
 
 // Représente l'état d'avancement d'une tâche
 export interface TaskStatus {
-  id: string;
-  code: 'A_FAIRE' | 'EN_COURS' | 'TERMINE';
+  id: string | number;
+  code: string;
   libelle: string;      // Ex: "En attente"
   ordre_affichage: number;
   isClosingStatus: boolean; // Si vrai, la tâche est considérée comme finie

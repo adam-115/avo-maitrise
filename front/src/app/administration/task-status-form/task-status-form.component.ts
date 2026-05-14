@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TaskStatusService } from '../../services/task-status.service';
 import { TaskStatus } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { AlertService } from '../../services/alert-service';
 
 @Component({
     selector: 'app-task-status-form',
@@ -19,10 +20,11 @@ export class TaskStatusFormComponent implements OnInit {
     selectedStatusId: string | null = null;
     errorMessage: string = '';
 
-    constructor(
-        private taskStatusService: TaskStatusService,
-        private fb: FormBuilder
-    ) {
+    private taskStatusService = inject(TaskStatusService);
+    private fb = inject(FormBuilder);
+    private alertService = inject(AlertService);
+
+    constructor() {
         this.statusForm = this.fb.group({
             libelle: ['', Validators.required],
             code: ['', Validators.required],
@@ -37,12 +39,13 @@ export class TaskStatusFormComponent implements OnInit {
 
     loadStatuses(): void {
         this.taskStatusService.getAll().subscribe({
-            next: (data:PaginatedResponse<TaskStatus>) => {
+            next: (data: PaginatedResponse<TaskStatus>) => {
                 this.statuses = data.content.sort((a, b) => a.ordre_affichage - b.ordre_affichage);
             },
             error: (err) => {
                 console.error('Error loading task statuses', err);
                 this.errorMessage = 'Erreur lors du chargement des statuts de tâches.';
+                this.alertService.displayMessage('Erreur', this.errorMessage, 'error');
             }
         });
     }
@@ -50,26 +53,34 @@ export class TaskStatusFormComponent implements OnInit {
     onSubmit(): void {
         if (this.statusForm.valid) {
             const formValue = this.statusForm.value;
-            const statusData: TaskStatus = {
-                ...formValue,
-                id: this.selectedStatusId ? this.selectedStatusId : this.generateId()
+            const statusData: any = {
+                ...formValue
             };
 
             if (this.isEditing && this.selectedStatusId) {
+                statusData.id = this.selectedStatusId;
                 this.taskStatusService.update(statusData).subscribe({
                     next: () => {
+                        this.alertService.success('Statut mis à jour avec succès');
                         this.resetForm();
                         this.loadStatuses();
                     },
-                    error: (err) => console.error('Error updating task status', err)
+                    error: (err) => {
+                        console.error('Error updating task status', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la mise à jour.', 'error');
+                    }
                 });
             } else {
                 this.taskStatusService.create(statusData).subscribe({
                     next: () => {
+                        this.alertService.success('Statut créé avec succès');
                         this.resetForm();
                         this.loadStatuses();
                     },
-                    error: (err) => console.error('Error creating task status', err)
+                    error: (err) => {
+                        console.error('Error creating task status', err);
+                        this.alertService.displayMessage('Erreur', 'Erreur lors de la création.', 'error');
+                    }
                 });
             }
         }
@@ -86,11 +97,18 @@ export class TaskStatusFormComponent implements OnInit {
         });
     }
 
-    deleteStatus(id: string | number): void {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce statut ?')) {
+    async deleteStatus(id: string | number): Promise<void> {
+        const isConfirmed = await this.alertService.confirmMessage('Confirmation', 'Êtes-vous sûr de vouloir supprimer ce statut ?', 'warning');
+        if (isConfirmed) {
             this.taskStatusService.delete(id.toString()).subscribe({
-                next: () => this.loadStatuses(),
-                error: (err) => console.error('Error deleting task status', err)
+                next: () => {
+                    this.alertService.success('Statut supprimé avec succès');
+                    this.loadStatuses();
+                },
+                error: (err) => {
+                    console.error('Error deleting task status', err);
+                    this.alertService.displayMessage('Erreur', 'Erreur lors de la suppression.', 'error');
+                }
             });
         }
     }
@@ -106,9 +124,5 @@ export class TaskStatusFormComponent implements OnInit {
             ordre_affichage: 0,
             isClosingStatus: false
         });
-    }
-
-    generateId(): string {
-        return Math.random().toString(36).substr(2, 9);
     }
 }
