@@ -15,6 +15,7 @@ export class NavigationService {
   static readonly HOME = 'home';
   static readonly DOSSIER = 'dossier';
   static readonly DOSSIER_FORM = 'dossier-form';
+  static readonly DOSSIER_EDIT = 'dossier/edit/:id';
   static readonly DOSSIER_DETAIL = 'dossier-detail/:id';
   static readonly CRM = 'crm';
   static readonly NEW_CLIENT = 'crm/client/new';

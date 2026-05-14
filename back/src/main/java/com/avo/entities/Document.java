@@ -56,4 +56,8 @@ public class Document {
     @JoinColumn(name = "client_id")
     private ClientEntity client;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dossier_id")
+    private Dossier dossier;
+
 }

@@ -36,7 +36,7 @@ export class DossierForm implements OnInit {
 
   dossierForm: FormGroup;
   isEditMode = false;
-  dossierId: number | null = null;
+  dossierId: string | number | null = null;
 
   clients: Client[] = [];
   statuses: StatutDossier[] = [];
@@ -76,7 +76,7 @@ export class DossierForm implements OnInit {
       const id = params.get('id');
       if (id) {
         this.isEditMode = true;
-        this.dossierId = +id;
+        this.dossierId = id;
         this.loadDossier(this.dossierId);
       }
     });
@@ -90,7 +90,7 @@ export class DossierForm implements OnInit {
     this.domaineService.getAll().subscribe((data: PaginatedResponse<DomaineJuridique>) => this.domaines = data.content.filter(d => d.active));
   }
 
-  loadDossier(id: number): void {
+  loadDossier(id: string | number): void {
     this.dossierService.findById(id).subscribe(dossier => {
       this.dossierForm.patchValue({
         ...dossier,
@@ -267,6 +267,7 @@ export class DossierForm implements OnInit {
 
     const dossierData: Dossier = {
       ...this.dossierForm.value,
+      id: this.dossierId,
       updated_at: new Date()
     };
 

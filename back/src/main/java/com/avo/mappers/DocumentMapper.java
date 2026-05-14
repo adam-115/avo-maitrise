@@ -13,8 +13,10 @@ public interface DocumentMapper {
     DocumentMapper INSTANCE = Mappers.getMapper(DocumentMapper.class);
 
     @Mapping(source = "client.id", target = "clientId")
+    @Mapping(source = "dossier.id", target = "dossierId")
     DocumentDTO toDto(Document document);
 
     @Mapping(target = "client", ignore = true)
+    @Mapping(target = "dossier", ignore = true)
     Document toEntity(DocumentDTO documentDTO);
 }

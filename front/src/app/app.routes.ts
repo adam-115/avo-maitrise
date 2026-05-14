@@ -28,6 +28,10 @@ export const routes: Routes = [
         loadComponent: () => import('./dossier/dossier-form/dossier-form').then(m => m.DossierForm)
       },
       {
+        path: NavigationService.DOSSIER_EDIT,
+        loadComponent: () => import('./dossier/dossier-form/dossier-form').then(m => m.DossierForm)
+      },
+      {
         path: NavigationService.DOSSIER_DETAIL,
         loadComponent: () => import('./dossier/dossier-details/dossier-details').then(m => m.DossierDetails)
       },

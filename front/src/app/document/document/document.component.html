@@ -45,7 +45,7 @@
         </div>
 
         @if(documents && documents.length > 0) {
-        @for (doc of documents; track doc) {
+        @for (doc of paginatedDocuments; track doc; let i = $index) {
         <div
             class="grid grid-cols-1 md:grid-cols-12 items-center border-b border-gray-100 hover:bg-cyan-50 p-4 transition duration-100">
 
@@ -72,18 +72,18 @@
             <div class="col-span-1 text-sm text-gray-700 text-center hidden md:block">-</div>
 
             <div class="col-span-1 flex justify-end space-x-2">
-                <button title="Télécharger" class="p-1 text-gray-500 hover:text-cyan-600">
+                <button (click)="downloadDocument(doc)" title="Télécharger" class="p-1 text-gray-500 hover:text-cyan-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
                 </button>
-                <button title="Détails" class="p-1 text-gray-500 hover:text-cyan-600">
+                <button (click)="deleteDocument(i + (currentPage - 1) * pageSize)" title="Supprimer" class="p-1 text-gray-500 hover:text-red-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 010 1.414l-3.414 3.414a1 1 0 01-.707.293H15m-1.5-6.5h-5.836a2 2 0 00-1.414.586L4 16l-1.414 1.414">
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                         </path>
                     </svg>
                 </button>
@@ -97,9 +97,32 @@
         }
     </div>
 
-    <div class="mt-4 flex justify-between items-center text-sm text-gray-600">
-        <p>Affichage de {{ documents.length > 0 ? 1 : 0 }} à {{ documents.length }} sur {{ documents.length }}
-            documents.</p>
+    <div class="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div class="text-sm text-gray-600 order-2 sm:order-1">
+            Affichage de <b>{{ documents.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</b> à 
+            <b>{{ Math.min(currentPage * pageSize, documents.length) }}</b> sur 
+            <b>{{ documents.length }}</b> documents.
+        </div>
+        
+        <div class="flex items-center space-x-2 order-1 sm:order-2" *ngIf="totalPages > 1">
+            <button (click)="prevPage()" [disabled]="currentPage === 1"
+                class="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                Précédent
+            </button>
+            
+            <div class="flex items-center space-x-1">
+                <span class="px-3 py-1.5 rounded-lg bg-cyan-600 text-white font-medium">
+                    {{ currentPage }}
+                </span>
+                <span class="text-gray-400 px-1">/</span>
+                <span class="text-gray-600 font-medium">{{ totalPages }}</span>
+            </div>
+
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                class="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+                Suivant
+            </button>
+        </div>
     </div>
 </div>
 @if(showAddDocumentDialog){

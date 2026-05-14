@@ -26,6 +26,7 @@ public class DocumentDTO {
     private String tags;
     private String filename;
     private Long clientId; // reference to ClientEntity
+    private Long dossierId; // reference to Dossier
     private byte[] fileData;
 
 }

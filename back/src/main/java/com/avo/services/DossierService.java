@@ -15,11 +15,24 @@ import java.util.stream.Collectors;
 public class DossierService {
 
     private final DossierRepository repository;
+    private final com.avo.repositories.ClientRepository clientRepository;
     private final DossierMapper mapper;
 
-    public DossierService(DossierRepository repository, DossierMapper mapper) {
+    public DossierService(DossierRepository repository, com.avo.repositories.ClientRepository clientRepository, DossierMapper mapper) {
         this.repository = repository;
+        this.clientRepository = clientRepository;
         this.mapper = mapper;
+    }
+
+    private void linkDocuments(Dossier entity) {
+        if (entity.getDocuments() != null) {
+            entity.getDocuments().forEach(doc -> {
+                doc.setDossier(entity);
+                if (doc.getClient() == null && entity.getClientId() != null) {
+                    clientRepository.findById(entity.getClientId()).ifPresent(doc::setClient);
+                }
+            });
+        }
     }
 
     public Page<DossierDTO> findAll(Pageable pageable) {
@@ -40,11 +53,13 @@ public class DossierService {
 
     public DossierDTO create(DossierDTO dto) {
         Dossier entity = mapper.toEntity(dto);
+        linkDocuments(entity);
         return mapper.toDto(repository.save(entity));
     }
 
     public DossierDTO update(DossierDTO dto) {
         Dossier entity = mapper.toEntity(dto);
+        linkDocuments(entity);
         return mapper.toDto(repository.save(entity));
     }
 

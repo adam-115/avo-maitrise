@@ -88,11 +88,16 @@ export class DocumentDialog implements OnInit, OnChanges {
 
   submit() {
     if (this.documentDialogFrom.valid && this.selectedFile) {
-      let newDocument: Document = this.formToDocument();
-      if (this.selectedFile) {
-        newDocument.file = this.selectedFile;
-      }
-      this.addDocumentEvent.emit(this.formToDocument());
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1];
+        const newDocument: Document = this.formToDocument();
+        newDocument.fileData = base64String;
+        newDocument.filename = this.selectedFile?.name;
+        newDocument.nomFichier = this.selectedFile?.name;
+        this.addDocumentEvent.emit(newDocument);
+      };
+      reader.readAsDataURL(this.selectedFile);
     }
   }
 
