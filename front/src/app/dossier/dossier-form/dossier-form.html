@@ -1,284 +1,329 @@
-
-<div class="container mx-auto p-6 bg-white shadow-lg rounded-lg">
-  <h2 class="text-2xl font-bold mb-6 text-gray-800">{{ isEditMode ? 'Modifier le Dossier' : 'Nouveau Dossier' }}</h2>
-
-  <form [formGroup]="dossierForm" (ngSubmit)="onSubmit()">
-
-    <!-- Informations Générales -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Référence Interne</label>
-        <input type="text" formControlName="referenceInterne"
-          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Titre</label>
-        <input type="text" formControlName="titre"
-          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-      </div>
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-screen">
+  
+  <!-- Header Section -->
+  <div class="md:flex md:items-center md:justify-between mb-8">
+    <div class="min-w-0 flex-1">
+      <h2 class="text-3xl font-bold leading-7 text-gray-900 sm:truncate sm:text-4xl sm:tracking-tight">
+        {{ isEditMode ? 'Modifier le Dossier' : 'Créer un Nouveau Dossier' }}
+      </h2>
+      <p class="mt-2 text-sm text-gray-500">
+        Remplissez les informations ci-dessous pour configurer le dossier client.
+      </p>
     </div>
+  </div>
 
+  <form [formGroup]="dossierForm" (ngSubmit)="onSubmit()" class="space-y-8">
 
-
-
-    <!-- Tags -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700">Tags</label>
-      <div class="flex items-center mt-1 mb-2">
-        <input type="text" (keydown.enter)="$event.preventDefault(); addTag($event)"
-          placeholder="Ajouter un tag et appuyer sur Entrée"
-          class="block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-      </div>
-      <div class="flex flex-wrap gap-2">
-        @for (tag of tags; track tag; let i = $index) {
-        <span class="inline-flex items-center bg-gray-100 text-gray-800 rounded-full px-3 py-1 text-sm font-medium">
-          {{ tag }}
-          <button type="button" (click)="removeTag(i)"
-            class="ml-2 text-gray-500 hover:text-gray-700 focus:outline-none">
-            <span class="sr-only">Retirer</span>
-            <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clip-rule="evenodd" />
-            </svg>
-          </button>
-        </span>
-        }
-      </div>
-    </div>
-
-    <!-- Relations -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Client</label>
-
-        <div *ngIf="getSelectedClientName()"
-          class="flex items-center justify-between p-2 border rounded-md bg-gray-50 mb-2">
+    <!-- Card: Informations Générales -->
+    <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">Informations Générales</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <p class="text-sm font-medium text-gray-900">{{ getSelectedClientName() }}</p>
-            <p class="text-xs text-gray-500">Client #{{ dossierForm.get('clientId')?.value }}</p>
+            <label class="block text-sm font-medium leading-6 text-gray-900">Référence Interne</label>
+            <div class="mt-2">
+              <input type="text" formControlName="referenceInterne"
+                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all duration-200">
+            </div>
           </div>
-          <button type="button" (click)="openClientDialog()"
-            class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-            Changer
-          </button>
-        </div>
-
-        <button *ngIf="!getSelectedClientName()" type="button" (click)="openClientDialog()"
-          class="input-trigger w-full flex items-center justify-between p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <span>Sélectionner un client</span>
-          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        <app-client-selection-dialog *ngIf="showClientDialog" [clients]="clients"
-          [initialSelection]="dossierForm.get('clientId')?.value" (confirmSelection)="onClientSelected($event)"
-          (closeDialog)="closeClientDialog()">
-        </app-client-selection-dialog>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Responsable</label>
-
-        <div *ngIf="getSelectedResponsableName()"
-          class="flex items-center justify-between p-2 border rounded-md bg-gray-50 mb-2">
           <div>
-            <p class="text-sm font-medium text-gray-900">{{ getSelectedResponsableName() }}</p>
+            <label class="block text-sm font-medium leading-6 text-gray-900">Titre</label>
+            <div class="mt-2">
+              <input type="text" formControlName="titre" placeholder="Ex: Litige Commercial Dupont"
+                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all duration-200">
+            </div>
           </div>
-          <button type="button" (click)="openResponsableDialog()"
-            class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-            Changer
-          </button>
-        </div>
-
-        <button *ngIf="!getSelectedResponsableName()" type="button" (click)="openResponsableDialog()"
-          class="input-trigger w-full flex items-center justify-between p-2 border border-gray-300 rounded-md text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <span>Sélectionner un responsable</span>
-          <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        <app-user-selection-dialog *ngIf="showResponsableDialog" [users]="users"
-          [initialSelection]="dossierForm.get('responsableId')?.value ? [dossierForm.get('responsableId')?.value] : []"
-          [singleSelection]="true" (confirmSelection)="onResponsableSelected($event)"
-          (closeDialog)="closeResponsableDialog()">
-        </app-user-selection-dialog>
-      </div>
-      <div class="md:col-span-2">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Intervenants</label>
-
-        <div class="flex flex-wrap gap-2 mb-2">
-          <div *ngFor="let user of getSelectedIntervenants()"
-            class="inline-flex items-center bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-medium">
-            {{ user.username }}
-            <button type="button" (click)="removeIntervenant(user.id!)"
-              class="ml-2 text-blue-600 hover:text-blue-800 focus:outline-none">
-              <span class="sr-only">Retirer</span>
-              <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clip-rule="evenodd" />
-              </svg>
-            </button>
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium leading-6 text-gray-900">Tags</label>
+            <div class="mt-2">
+              <input type="text" (keydown.enter)="$event.preventDefault(); addTag($event)"
+                placeholder="Ajouter un tag et appuyer sur Entrée"
+                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all duration-200">
+            </div>
+            <!-- Tags display -->
+            <div class="mt-3 flex flex-wrap gap-2">
+              @for (tag of tags; track tag; let i = $index) {
+              <span class="inline-flex items-center gap-x-1.5 rounded-full bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10 shadow-sm">
+                {{ tag }}
+                <button type="button" (click)="removeTag(i)" class="group relative -mr-1 h-4 w-4 rounded-full hover:bg-indigo-600/20 transition-colors">
+                  <span class="sr-only">Retirer</span>
+                  <svg viewBox="0 0 14 14" class="h-4 w-4 stroke-indigo-700/50 group-hover:stroke-indigo-700/75">
+                    <path d="M4 4l6 6m0-6l-6 6" stroke-width="1.5" stroke-linecap="round" />
+                  </svg>
+                </button>
+              </span>
+              }
+            </div>
           </div>
         </div>
-
-        <button type="button" (click)="openUserDialog()"
-          class="inline-flex items-center px-4 py-2 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-          <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          Gérer les intervenants
-        </button>
-      </div>
-
-      <app-user-selection-dialog *ngIf="showUserDialog" [users]="users"
-        [initialSelection]="dossierForm.get('intervenantsIds')?.value || []"
-        (confirmSelection)="onUsersSelected($event)" (closeDialog)="closeUserDialog()">
-      </app-user-selection-dialog>
-    </div>
-
-    <!-- Classification -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Domaine Juridique</label>
-        <div class="flex items-center">
-          <div *ngIf="dossierForm.get('domaineJuridique')?.value"
-            class="flex-1 flex items-center p-2 bg-gray-50 border rounded-l-md border-r-0 border-gray-300">
-            <div [style.background-color]="getSelectedDomaineColor()" class="w-3 h-3 rounded-full mr-2"></div>
-            <span class="text-gray-900 font-medium">{{ getSelectedDomaineLabel() }}</span>
-          </div>
-          <button type="button" (click)="openDomaineDialog()"
-            [class.rounded-l-md]="!dossierForm.get('domaineJuridique')?.value"
-            class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-r-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            [ngClass]="{'w-full': !dossierForm.get('domaineJuridique')?.value}">
-            <svg *ngIf="!dossierForm.get('domaineJuridique')?.value" class="-ml-1 mr-2 h-5 w-5 text-gray-400"
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-            </svg>
-            {{ dossierForm.get('domaineJuridique')?.value ? 'Changer' : 'Sélectionner un domaine' }}
-          </button>
-        </div>
-        <input type="hidden" formControlName="domaineJuridique">
-
-        <app-domaine-juridique-selection-dialog *ngIf="showDomaineDialog" [domaines]="domaines"
-          [initialSelection]="dossierForm.get('domaineJuridique')?.value" (confirmSelection)="onDomaineSelected($event)"
-          (closeDialog)="closeDomaineDialog()">
-        </app-domaine-juridique-selection-dialog>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Priorité</label>
-        <select formControlName="prioriteID"
-          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-          <option value="">Sélectionner une priorité</option>
-          <option *ngFor="let priority of priorities" [value]="priority.id">{{ priority.label }}</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Statut</label>
-        <select formControlName="statutID"
-          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-          <option value="">Sélectionner un statut</option>
-          <option *ngFor="let status of statuses" [value]="status.id">{{ status.label }}</option>
-        </select>
       </div>
     </div>
 
-    <!-- Dates -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Date d'Ouverture</label>
-        <input type="date" formControlName="dateOuverture"
-          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-      </div>
-    </div>
-
-    <!-- Facturation -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Méthode de Facturation</label>
-        <select formControlName="methodeFacturation"
-          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-          <option value="HORAIRE">Horaire</option>
-          <option value="FORFAIT">Forfait</option>
-          <option value="RESULTAT">Résultat</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Budget Estimé (€)</label>
-        <input type="number" formControlName="budgetEstime"
-          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700">Taux Horaire (€/h)</label>
-        <input type="number" formControlName="tauxHoraireApplique"
-          class="mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-      </div>
-    </div>
-
-    <!-- Documents -->
-    <div class="mb-6">
-      <label class="block text-sm font-medium text-gray-700 mb-2">Documents</label>
-
-      <button type="button" (click)="openDocumentDialog()"
-        class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-        <svg class="-ml-1 mr-2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-          stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-        Ajouter un document
-      </button>
-
-      <app-document-dialog *ngIf="showDocumentDialog" [dialogTitle]="'Ajouter un document'"
-        (addDocumentEvent)="onDocumentAdded($event)" (closeDialogEvent)="closeDocumentDialog()">
-      </app-document-dialog>
-
-      @if (documents.length > 0) {
-      <div class="mt-4">
-        <h4 class="text-sm font-medium text-gray-700 mb-2">Fichiers sélectionnés</h4>
-        <ul class="divide-y divide-gray-200 border border-gray-200 rounded-md">
-          @for (doc of documents; track doc.name; let i = $index) {
-          <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-            <div class="w-0 flex-1 flex items-center">
-              <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd"
-                  d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
-                  clip-rule="evenodd" />
-              </svg>
-              <div class="ml-2 flex-1 w-0 truncate">
-                <div class="flex items-center">
-                  <span class="font-medium text-gray-900 truncate">{{ doc.title }}</span>
-                  <span *ngIf="doc.name" class="ml-2 text-xs text-gray-500 truncate">({{ doc.name }})</span>
+    <!-- Card: Relations -->
+    <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">Parties Prenantes</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          <!-- Client Selection -->
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Client Principal</label>
+            
+            <div *ngIf="getSelectedClientName()" class="flex items-center justify-between p-3 border border-indigo-100 rounded-lg bg-indigo-50/50 shadow-sm">
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 font-bold">
+                  {{ getSelectedClientName().charAt(0) | uppercase }}
                 </div>
-                <p *ngIf="doc.description" class="text-xs text-gray-500 truncate">{{ doc.description }}</p>
+                <div>
+                  <p class="text-sm font-semibold text-gray-900">{{ getSelectedClientName() }}</p>
+                  <p class="text-xs text-gray-500 font-medium">Ref: #{{ dossierForm.get('clientId')?.value }}</p>
+                </div>
+              </div>
+              <button type="button" (click)="openClientDialog()" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500 transition-colors px-3 py-1.5 rounded-md hover:bg-indigo-50">
+                Modifier
+              </button>
+            </div>
+
+            <button *ngIf="!getSelectedClientName()" type="button" (click)="openClientDialog()"
+              class="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-4 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all">
+              <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span class="mt-2 block text-sm font-semibold text-gray-900">Sélectionner un client</span>
+            </button>
+
+            <app-client-selection-dialog *ngIf="showClientDialog" [clients]="clients"
+              [initialSelection]="dossierForm.get('clientId')?.value" (confirmSelection)="onClientSelected($event)"
+              (closeDialog)="closeClientDialog()">
+            </app-client-selection-dialog>
+          </div>
+
+          <!-- Responsable Selection -->
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Avocat Responsable</label>
+
+            <div *ngIf="getSelectedResponsableName()" class="flex items-center justify-between p-3 border border-emerald-100 rounded-lg bg-emerald-50/50 shadow-sm">
+              <div class="flex items-center gap-3">
+                <div class="h-10 w-10 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 font-bold">
+                  {{ getSelectedResponsableName().charAt(0) | uppercase }}
+                </div>
+                <div>
+                  <p class="text-sm font-semibold text-gray-900">{{ getSelectedResponsableName() }}</p>
+                  <p class="text-xs text-emerald-600 font-medium">Lead</p>
+                </div>
+              </div>
+              <button type="button" (click)="openResponsableDialog()" class="text-sm font-semibold text-emerald-600 hover:text-emerald-500 transition-colors px-3 py-1.5 rounded-md hover:bg-emerald-50">
+                Modifier
+              </button>
+            </div>
+
+            <button *ngIf="!getSelectedResponsableName()" type="button" (click)="openResponsableDialog()"
+              class="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-4 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all">
+              <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <span class="mt-2 block text-sm font-semibold text-gray-900">Assigner un responsable</span>
+            </button>
+
+            <app-user-selection-dialog *ngIf="showResponsableDialog" [users]="users"
+              [initialSelection]="dossierForm.get('responsableId')?.value ? [dossierForm.get('responsableId')?.value] : []"
+              [singleSelection]="true" (confirmSelection)="onResponsableSelected($event)"
+              (closeDialog)="closeResponsableDialog()">
+            </app-user-selection-dialog>
+          </div>
+
+          <!-- Intervenants -->
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Équipe (Intervenants)</label>
+
+            <div class="flex flex-wrap gap-2 mb-3">
+              <div *ngFor="let user of getSelectedIntervenants()" class="inline-flex items-center gap-x-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 shadow-sm">
+                <div class="h-4 w-4 rounded-full bg-blue-200 flex items-center justify-center text-[10px] font-bold">{{ user.username.charAt(0) | uppercase }}</div>
+                {{ user.username }}
+                <button type="button" (click)="removeIntervenant(user.id!)" class="group relative -mr-1 h-4 w-4 rounded-full hover:bg-blue-600/20 transition-colors">
+                  <span class="sr-only">Retirer</span>
+                  <svg viewBox="0 0 14 14" class="h-4 w-4 stroke-blue-700/50 group-hover:stroke-blue-700/75">
+                    <path d="M4 4l6 6m0-6l-6 6" stroke-width="1.5" stroke-linecap="round" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <button type="button" (click)="openUserDialog()"
+              class="inline-flex items-center px-4 py-2 text-sm font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <svg class="-ml-0.5 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Ajouter des intervenants
+            </button>
+
+            <app-user-selection-dialog *ngIf="showUserDialog" [users]="users"
+              [initialSelection]="dossierForm.get('intervenantsIds')?.value || []"
+              (confirmSelection)="onUsersSelected($event)" (closeDialog)="closeUserDialog()">
+            </app-user-selection-dialog>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card: Classification & Dates -->
+    <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">Classification & Paramètres</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <!-- Domaine Juridique -->
+          <div class="lg:col-span-2">
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Domaine Juridique</label>
+            <div class="flex shadow-sm rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+              <div *ngIf="dossierForm.get('domaineJuridique')?.value" class="flex-1 flex items-center px-3 bg-gray-50/50 rounded-l-md border-r border-gray-200">
+                <div [style.background-color]="getSelectedDomaineColor()" class="w-2.5 h-2.5 rounded-full mr-2.5 shadow-sm"></div>
+                <span class="text-sm text-gray-900 font-medium">{{ getSelectedDomaineLabel() }}</span>
+              </div>
+              <button type="button" (click)="openDomaineDialog()"
+                [class.rounded-l-md]="!dossierForm.get('domaineJuridique')?.value"
+                class="flex-shrink-0 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-r-md transition-colors border-l border-gray-200 focus:outline-none"
+                [ngClass]="{'w-full justify-center': !dossierForm.get('domaineJuridique')?.value}">
+                {{ dossierForm.get('domaineJuridique')?.value ? 'Modifier' : 'Sélectionner un domaine' }}
+              </button>
+            </div>
+            <input type="hidden" formControlName="domaineJuridique">
+
+            <app-domaine-juridique-selection-dialog *ngIf="showDomaineDialog" [domaines]="domaines"
+              [initialSelection]="dossierForm.get('domaineJuridique')?.value" (confirmSelection)="onDomaineSelected($event)"
+              (closeDialog)="closeDomaineDialog()">
+            </app-domaine-juridique-selection-dialog>
+          </div>
+
+          <!-- Priorité -->
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Priorité</label>
+            <select formControlName="prioriteID"
+              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 cursor-pointer">
+              <option value="">Sélectionner</option>
+              <option *ngFor="let priority of priorities" [value]="priority.id">{{ priority.label }}</option>
+            </select>
+          </div>
+
+          <!-- Statut -->
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Statut</label>
+            <select formControlName="statutID"
+              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 cursor-pointer">
+              <option value="">Sélectionner</option>
+              <option *ngFor="let status of statuses" [value]="status.id">{{ status.label }}</option>
+            </select>
+          </div>
+
+          <!-- Date Ouverture -->
+          <div class="lg:col-span-2 mt-2">
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Date d'Ouverture</label>
+            <input type="date" formControlName="dateOuverture"
+              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card: Facturation -->
+    <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">Facturation & Finance</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Méthode de Facturation</label>
+            <select formControlName="methodeFacturation"
+              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 cursor-pointer">
+              <option value="HORAIRE">Facturation Horaire</option>
+              <option value="FORFAIT">Au Forfait</option>
+              <option value="RESULTAT">Au Résultat</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Budget Estimé</label>
+            <div class="relative rounded-md shadow-sm">
+              <input type="number" formControlName="budgetEstime" placeholder="0.00"
+                class="block w-full rounded-md border-0 py-2.5 pl-3 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <span class="text-gray-500 sm:text-sm">EUR</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Taux Horaire</label>
+            <div class="relative rounded-md shadow-sm">
+              <input type="number" formControlName="tauxHoraireApplique" placeholder="0.00"
+                class="block w-full rounded-md border-0 py-2.5 pl-3 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <span class="text-gray-500 sm:text-sm">€ / h</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card: Documents -->
+    <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
+      <div class="px-4 py-5 sm:p-6">
+        <div class="flex items-center justify-between mb-4 border-b pb-2">
+          <h3 class="text-base font-semibold leading-6 text-gray-900">Documents Associés</h3>
+          <button type="button" (click)="openDocumentDialog()"
+            class="inline-flex items-center gap-x-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-500">
+            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
+            </svg>
+            Ajouter
+          </button>
+        </div>
+
+        <app-document-dialog *ngIf="showDocumentDialog" [dialogTitle]="'Ajouter un document'"
+          (addDocumentEvent)="onDocumentAdded($event)" (closeDialogEvent)="closeDocumentDialog()">
+        </app-document-dialog>
+
+        @if (documents.length > 0) {
+        <ul role="list" class="divide-y divide-gray-100 rounded-md border border-gray-200 shadow-sm mt-4">
+          @for (doc of documents; track doc.name; let i = $index) {
+          <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6 transition-colors hover:bg-gray-50">
+            <div class="flex w-0 flex-1 items-center">
+              <svg class="h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z" clip-rule="evenodd" />
+              </svg>
+              <div class="ml-4 flex min-w-0 flex-1 gap-2">
+                <span class="truncate font-medium text-gray-900">{{ doc.title }}</span>
+                <span *ngIf="doc.name" class="flex-shrink-0 text-gray-400">({{ doc.name }})</span>
               </div>
             </div>
             <div class="ml-4 flex-shrink-0">
-              <button type="button" (click)="removeDocument(i)" class="font-medium text-red-600 hover:text-red-500">
-                Retirer
-              </button>
+              <button type="button" (click)="removeDocument(i)" class="font-medium text-red-600 hover:text-red-500 transition-colors">Retirer</button>
             </div>
           </li>
           }
         </ul>
+        } @else {
+        <div class="text-center rounded-lg border-2 border-dashed border-gray-300 px-6 py-10 mt-4">
+          <svg class="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zM12.75 12a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V18a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V12z" clip-rule="evenodd" />
+            <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
+          </svg>
+          <h3 class="mt-2 text-sm font-semibold text-gray-900">Aucun document</h3>
+          <p class="mt-1 text-sm text-gray-500">Ajoutez des pièces jointes ou des fichiers à ce dossier.</p>
+        </div>
+        }
       </div>
-      }
     </div>
 
-    <!-- Actions -->
-    <div class="flex justify-end gap-4 mt-6">
+    <!-- Actions Footer -->
+    <div class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 pt-6 mt-8">
       <button type="button" (click)="navigateToDossier()"
-        class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400">
+        class="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700 transition-colors">
         Annuler
       </button>
       <button type="submit" [disabled]="dossierForm.invalid"
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50">
-        {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+        class="rounded-md bg-indigo-600 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+        {{ isEditMode ? 'Enregistrer les modifications' : 'Créer le Dossier' }}
       </button>
     </div>
+
   </form>
 </div>
