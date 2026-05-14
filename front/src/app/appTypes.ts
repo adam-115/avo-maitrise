@@ -16,10 +16,13 @@ export interface User {
   role: UserRole;
 
   photo?: Document;
+  photoBlob?: string; // Représente la photo en base64 ou sous forme de blob textuel
 
   // Spécificités Cabinet
   barreauId?: string;          // Numéro de toque ou identifiant au barreau
-  specialite?: string[];       // Ex: ['Droit des sociétés', 'Fiscalité']
+  phoneNumber?: string;
+  gsm?: string;
+  address?: string;
   isPartner: boolean;          // Indique si l'utilisateur est associé
 
   // Paramètres Système

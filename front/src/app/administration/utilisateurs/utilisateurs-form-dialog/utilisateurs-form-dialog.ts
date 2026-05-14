@@ -37,6 +37,9 @@ export class UtilisateursFormDialog {
       isActive: [true],
       isPartner: [false],
       barreauId: [''],
+      phoneNumber: [''],
+      gsm: [''],
+      address: ['']
       // Password handling would typically be more complex (separate change password flow)
       // For now, we omit it or treat it as optional/separate
     });
@@ -58,7 +61,10 @@ export class UtilisateursFormDialog {
         role: user.role,
         isActive: user.isActive,
         isPartner: user.isPartner,
-        barreauId: user.barreauId
+        barreauId: user.barreauId,
+        phoneNumber: user.phoneNumber,
+        gsm: user.gsm,
+        address: user.address
       });
     } else {
       this.currentUserId = null;
@@ -100,7 +106,8 @@ export class UtilisateursFormDialog {
     const userData: Partial<User> = {
       ...formValue,
       photo: this.photoData || undefined,
-      avatarUrl: this.photoPreviewUrl || undefined
+      avatarUrl: this.photoPreviewUrl || undefined,
+      photoBlob: this.photoPreviewUrl || undefined
     };
 
     if (this.isEditMode && this.currentUserId) {
