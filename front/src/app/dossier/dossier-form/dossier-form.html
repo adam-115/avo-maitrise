@@ -34,6 +34,13 @@
             </div>
           </div>
           <div class="md:col-span-2">
+            <label class="block text-sm font-medium leading-6 text-gray-900">Description</label>
+            <div class="mt-2">
+              <textarea formControlName="description" rows="3" placeholder="Description détaillée du dossier..."
+                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all duration-200"></textarea>
+            </div>
+          </div>
+          <div class="md:col-span-2">
             <label class="block text-sm font-medium leading-6 text-gray-900">Tags</label>
             <div class="mt-2">
               <input type="text" (keydown.enter)="$event.preventDefault(); addTag($event)"
@@ -91,6 +98,9 @@
               </svg>
               <span class="mt-2 block text-sm font-semibold text-gray-900">Sélectionner un client</span>
             </button>
+
+            <!-- Status Alert Component -->
+            <app-client-status-alert [status]="getSelectedClientStatus()"></app-client-status-alert>
 
             <app-client-selection-dialog *ngIf="showClientDialog" [clients]="clients"
               [initialSelection]="dossierForm.get('clientId')?.value" (confirmSelection)="onClientSelected($event)"

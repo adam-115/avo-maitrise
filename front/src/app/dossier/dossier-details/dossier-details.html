@@ -1,154 +1,184 @@
-<div class="bg-white p-6 rounded-xl shadow-lg mb-8">
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-screen">
 
-  <div class="flex justify-between items-center mb-4 border-b pb-4">
-    <nav class="text-sm font-medium text-gray-500">
-      <a href="#" class="hover:text-cyan-600">Liste des Affaires</a> /
-      <span class="text-slate-800 font-semibold">PEN-2024-045</span>
-    </nav>
-    <span class="px-3 py-1 text-sm leading-5 font-bold rounded-full bg-red-100 text-red-700 border border-red-300">
-      STATUT : URGENT
-    </span>
-  </div>
-
-  <div class="flex flex-col lg:flex-row justify-between lg:items-center space-y-4 lg:space-y-0 mb-6">
-
-    <div>
-      <h1 class="text-3xl font-bold text-slate-800">
-        Affaire C. contre Ministère Public
-      </h1>
-      <p class="text-lg text-gray-600 mt-1">
-        Client: <span class="font-semibold text-cyan-600">M. Charles C.</span> (Partie Défenderesse)
-      </p>
-    </div>
-
-    <div class="flex space-x-3 flex-shrink-0">
-      <button
-        class="flex items-center space-x-2 px-4 py-2 bg-yellow-500 text-white font-semibold rounded-lg shadow-md hover:bg-yellow-600 transition duration-150">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <span>Ajouter Temps</span>
-      </button>
-      <button
-        class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
-          </path>
-        </svg>
-        <span>Modifier Dossier</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="bg-red-50 p-4 rounded-xl shadow-inner border border-red-300 flex justify-between items-center mt-4">
-    <div class="flex items-center space-x-3">
-      <svg class="w-7 h-7 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
-        </path>
-      </svg>
-      <div>
-        <p class="text-sm font-semibold text-red-700">ÉCHÉANCE CLÉ IMMINENTE :</p>
-        <p class="text-xl font-bold text-red-600">Audience Préparatoire</p>
-        <p class="text-sm text-red-500">Le **05/10/2025** à 09:00 - Tribunal Correctionnel.</p>
-      </div>
-    </div>
-    <button
-      class="text-center py-2 px-4 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition text-sm flex-shrink-0">
-      Détails Échéance
-    </button>
-  </div>
-</div>
-
-<div class="border-b border-gray-200">
-  <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-    <a (click)="updateSelectedTab(DossierTabType.VUE_ENSEMBLE)"
-      [ngClass]="selectedTab== DossierTabType.VUE_ENSEMBLE?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-      class="whitespace-nowrap py-3 px-1 font-semibold text-sm">
-      Vue d'Ensemble
-    </a>
-    <a (click)="updateSelectedTab(DossierTabType.Document)"
-      [ngClass]="selectedTab== DossierTabType.Document?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
-      Documents (12)
-    </a>
-
-    <a (click)="updateSelectedTab(DossierTabType.EVENEMENT)"
-      [ngClass]="selectedTab== DossierTabType.EVENEMENT?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
-      Événements (7)
-    </a>
-    <a (click)="updateSelectedTab(DossierTabType.TACHE)"
-      [ngClass]="selectedTab== DossierTabType.TACHE?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
-      Tâches (7)
-    </a>
-    <a (click)="updateSelectedTab(DossierTabType.NOTE)"
-      [ngClass]="selectedTab== DossierTabType.NOTE ?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
-      Notes (12)
-    </a>
-    <a (click)="updateSelectedTab(DossierTabType.CONTACT)"
-      [ngClass]="selectedTab== DossierTabType.CONTACT ?'border-b-2 border-cyan-600 text-cyan-600':'text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-      class=" whitespace-nowrap py-3 px-1 font-medium text-sm">
-      Contacts (9)
-    </a>
+  <!-- Breadcrumbs -->
+  <nav class="flex mb-6" aria-label="Breadcrumb">
+    <ol role="list" class="flex items-center space-x-4">
+      <li>
+        <div>
+          <a routerLink="/home/dossier" class="text-gray-400 hover:text-gray-500 transition-colors">
+            <svg class="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7a1 1 0 010 1.414l-7 7a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-5.293-5.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+            <span class="sr-only">Dossiers</span>
+          </a>
+        </div>
+      </li>
+      <li>
+        <div class="flex items-center">
+          <svg class="h-5 w-5 flex-shrink-0 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+          </svg>
+          <span class="ml-4 text-sm font-medium text-gray-500">Détails du Dossier</span>
+        </div>
+      </li>
+    </ol>
   </nav>
-</div>
 
-<div class="mt-6">
+  <!-- Header Section -->
+  <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden mb-8">
+    <div class="px-4 py-6 sm:p-8">
+      <div class="md:flex md:items-center md:justify-between">
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10">
+              {{ selectedDossier?.referenceInterne }}
+            </span>
+            <span class="inline-flex items-center rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-700/10">
+              OUVERT
+            </span>
+          </div>
+          <h1 class="text-3xl font-bold leading-7 text-gray-900 sm:truncate sm:text-4xl sm:tracking-tight">
+            {{ selectedDossier?.titre }}
+          </h1>
+          <div class="mt-4 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
+            <div class="mt-2 flex items-center text-sm text-gray-500">
+              <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm.75 4.75a.75.75 0 00-1.5 0v4.5a.75.75 0 00.196.49l2.25 2.25a.75.75 0 101.06-1.06l-2.006-2.006V6.75z" clip-rule="evenodd" />
+              </svg>
+              Ouvert le {{ selectedDossier?.dateOuverture | date:'dd/MM/yyyy' }}
+            </div>
+            <div class="mt-2 flex items-center text-sm text-gray-500">
+              <svg class="mr-1.5 h-5 w-5 flex-shrink-0 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+              </svg>
+              {{ selectedDossier?.domaineJuridique }}
+            </div>
+          </div>
+        </div>
+        <div class="mt-5 flex lg:ml-4 lg:mt-0 gap-3">
+          <button type="button" [routerLink]="['/home/dossier/edit', selectedDossier?.id]"
+            class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 transition-colors">
+            <svg class="-ml-0.5 mr-1.5 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2.695 14.763l-1.262 3.154a.5.5 0 00.65.65l3.154-1.262a.5.5 0 00.26-.26l10.552-10.552a.5.5 0 000-.707l-2.828-2.828a.5.5 0 00-.707 0L2.955 14.503a.5.5 0 00-.26.26z" />
+            </svg>
+            Modifier
+          </button>
+        </div>
+      </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-    @if (selectedTab == DossierTabType.Document) {
-    <div class="lg:col-span-3  space-y-8">
-      <app-document [selectedDossier]="selectedDossier"></app-document>
+      <!-- Client Status Alert Integrated in Header -->
+      <app-client-status-alert [status]="getClientStatus()"></app-client-status-alert>
     </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="border-b border-gray-200 mb-8 overflow-x-auto">
+    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+      @for (tab of [
+        { id: DossierTabType.VUE_ENSEMBLE, label: 'Vue d\'Ensemble' },
+        { id: DossierTabType.Document, label: 'Documents', count: selectedDossier?.documents?.length || 0 },
+        { id: DossierTabType.EVENEMENT, label: 'Événements' },
+        { id: DossierTabType.TACHE, label: 'Tâches' },
+        { id: DossierTabType.NOTE, label: 'Notes' },
+        { id: DossierTabType.CONTACT, label: 'Contacts' }
+      ]; track tab.id) {
+        <button (click)="updateSelectedTab(tab.id)"
+          [ngClass]="selectedTab === tab.id ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'"
+          class="group inline-flex items-center border-b-2 py-4 px-1 text-sm font-medium transition-all duration-200">
+          <span>{{ tab.label }}</span>
+          <span *ngIf="tab.count !== undefined" 
+            [ngClass]="selectedTab === tab.id ? 'bg-indigo-100 text-indigo-600' : 'bg-gray-100 text-gray-900'"
+            class="ml-3 hidden rounded-full py-0.5 px-2.5 text-xs font-medium md:inline-block">
+            {{ tab.count }}
+          </span>
+        </button>
+      }
+    </nav>
+  </div>
+
+  <!-- Content Section -->
+  <div class="animate-in fade-in slide-in-from-bottom-4 duration-500">
+    @if (selectedTab === DossierTabType.Document) {
+      <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden p-6">
+        <app-document [selectedDossier]="selectedDossier"></app-document>
+      </div>
     }
-    <!-- @if (selectedTab == DossierTabType.TEMP_FACTURATION) {
-    <div class="lg:col-span-3  space-y-8">
-      <app-temp></app-temp>
-    </div>
-    } -->
 
-    @if (selectedTab == DossierTabType.EVENEMENT) {
-    <div class="lg:col-span-3  space-y-8">
-      <app-evenement [dossierId]="selectedDossier?.id || ''"></app-evenement>
-    </div>
+    @if (selectedTab === DossierTabType.EVENEMENT) {
+      <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden p-6">
+        <app-evenement [dossierId]="selectedDossier?.id || ''"></app-evenement>
+      </div>
     }
 
-    @if (selectedTab == DossierTabType.TACHE) {
-    <div class="lg:col-span-3  space-y-8">
-      <app-task-manager [dossierId]="selectedDossier?.id || ''"></app-task-manager>
-    </div>
+    @if (selectedTab === DossierTabType.TACHE) {
+      <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden p-6">
+        <app-task-manager [dossierId]="selectedDossier?.id || ''"></app-task-manager>
+      </div>
     }
 
-    @if (selectedTab == DossierTabType.NOTE) {
-    <div class="lg:col-span-3  space-y-8">
-      <app-note [dossierID]="selectedDossier?.id || ''" [userId]="userid"></app-note>
-    </div>
+    @if (selectedTab === DossierTabType.NOTE) {
+      <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden p-6">
+        <app-note [dossierID]="selectedDossier?.id || ''" [userId]="userid"></app-note>
+      </div>
     }
 
-    @if (selectedTab == DossierTabType.CONTACT) {
-    <div class="lg:col-span-3  space-y-8">
-      <app-contact [dossierID]="selectedDossier?.id || ''"></app-contact>
-    </div>
+    @if (selectedTab === DossierTabType.CONTACT) {
+      <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden p-6">
+        <app-contact [dossierID]="selectedDossier?.id || ''"></app-contact>
+      </div>
     }
 
-    <!-- @if (selectedTab == DossierTabType.FACTURE) {
-    <div class="lg:col-span-3  space-y-8">
-      <app-dossier-facture></app-dossier-facture>
-    </div>
-    } -->
-
-    @if(selectedTab === DossierTabType.VUE_ENSEMBLE){
-    <div class="lg:col-span-3  space-y-8">
-      <app-dossier-info [dossier]="selectedDossier"></app-dossier-info>
-    </div>
-
+    @if (selectedTab === DossierTabType.VUE_ENSEMBLE) {
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2">
+          <app-dossier-info [dossier]="selectedDossier"></app-dossier-info>
+        </div>
+        
+        <!-- Sidebar / Quick Actions -->
+        <div class="space-y-6">
+          <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl p-6">
+            <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">Échéance Prochaine</h3>
+            <div class="rounded-lg bg-red-50 p-4 border border-red-100">
+              <div class="flex items-start">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-bold text-red-800 uppercase tracking-wide">Audience Préparatoire</h3>
+                  <div class="mt-2 text-sm text-red-700">
+                    <p>Le 05/10/2025 à 09:00</p>
+                    <p class="font-medium">Tribunal Correctionnel</p>
+                  </div>
+                  <div class="mt-4">
+                    <button type="button" class="text-sm font-semibold text-red-800 hover:text-red-700">
+                      Voir détails &rarr;
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Team Section -->
+          <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl p-6">
+            <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">Équipe</h3>
+            <ul role="list" class="divide-y divide-gray-100">
+              <li class="flex items-center justify-between py-4">
+                <div class="flex items-center gap-x-3">
+                  <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-600">A</div>
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-gray-900">Me. Alain Moreau</p>
+                    <p class="text-xs text-gray-500">Associé Responsable</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     }
   </div>
 </div>

@@ -13,12 +13,13 @@ import { ClientSelectionDialog } from '../client-selection-dialog/client-selecti
 import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
 import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { DomaineJuridiqueSelectionDialog } from '../domaine-juridique-selection-dialog/domaine-juridique-selection-dialog';
+import { ClientStatusAlertComponent } from '../../shared/components/client-status-alert/client-status-alert.component';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-dossier-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, UserSelectionDialog, ClientSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog],
+  imports: [CommonModule, ReactiveFormsModule, UserSelectionDialog, ClientSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent],
   templateUrl: './dossier-form.html',
   styleUrl: './dossier-form.css'
 })
@@ -117,6 +118,15 @@ export class DossierForm implements OnInit {
     if (!clientId) return '';
     const client = this.clients.find(c => c.id == clientId) as any;
     return client ? `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim() : '';
+  }
+
+  getSelectedClientStatus(): string | undefined {
+    const clientId = this.dossierForm.get('clientId')?.value;
+    if (!clientId) return undefined;
+    // Use string comparison to be safe with IDs from different sources
+    const client = this.clients.find(c => String(c.id) === String(clientId)) as any;
+    // Fallback to 'status' if 'clientStatus' is not present
+    return client?.clientStatus || client?.status;
   }
 
   // User Selection Dialog Methods
