@@ -23,6 +23,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\TaskStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ClientRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\DossierPrioriteService.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\DiligenceFormResultMapper.java
+D:\avo-maitrise\back\src\main\java\com\avo\repositories\EventTypeRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\UBODTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Institution.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\DossierPrioriteRepository.java
@@ -49,6 +50,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\FormType.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\DomaineJuridiqueService.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ClientMoralRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\DiligenceFormResultRepository.java
+D:\avo-maitrise\back\src\main\java\com\avo\entities\EventType.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\InstitutionRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ScreeningExecution.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\DiligenceFormResult.java
@@ -83,6 +85,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\ContactPoint.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\NotificationDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\FieldConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\TaskCategoryDTO.java
+D:\avo-maitrise\back\src\main\java\com\avo\mappers\EventTypeMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\PersonnePhysiqueService.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\NoteCategoryController.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\TaskCategoryRepository.java
@@ -90,6 +93,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\yente\client\YenteApiClient.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\ClientDiligenceStatusController.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\NoteCategoryMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\SecteurActivite.java
+D:\avo-maitrise\back\src\main\java\com\avo\controller\EventTypeController.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\AssociationRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\GlobalExceptionHandler.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\DiligenceStatus.java
@@ -126,6 +130,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\FormConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchQuery.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\CorsConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\UBO.java
+D:\avo-maitrise\back\src\main\java\com\avo\services\EventTypeService.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\InstitutionService.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\AmlAnalysisResult.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\DomaineJuridique.java
@@ -141,6 +146,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientTypeEnum.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Notification.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\TaskCategoryService.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchResult.java
+D:\avo-maitrise\back\src\main\java\com\avo\dtos\EventTypeDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ScreeningMatchDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\NotificationRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\ScreeningMatchService.java

@@ -550,7 +550,7 @@ export interface DossierContact {
 
 
 export interface EventType {
-  id?: string;
+  id?: number;
   label: string;
   code: string;
   color?: string;

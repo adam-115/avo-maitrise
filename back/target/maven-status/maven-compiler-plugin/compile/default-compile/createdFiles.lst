@@ -53,6 +53,7 @@ com\avo\controller\ClientController.class
 com\avo\entities\QNotification.class
 com\avo\entities\SecteurActivite.class
 com\avo\dtos\ClientDiligenceStatusDTO$ClientDiligenceStatusDTOBuilder.class
+com\avo\entities\QEventType.class
 com\avo\repositories\ClientMoralRepository.class
 com\avo\entities\QAssociation.class
 com\avo\services\InstitutionService.class
@@ -61,6 +62,7 @@ com\avo\entities\ContactPoint.class
 com\avo\services\SecteurActiviteService.class
 com\avo\mappers\TaskCategoryMapper.class
 com\avo\controller\ClientMoralController.class
+com\avo\dtos\EventTypeDTO$EventTypeDTOBuilder.class
 com\avo\dtos\FieldOptionDTO.class
 com\avo\yente\models\AmlAnalysisResult.class
 com\avo\mappers\DossierPrioriteMapperImpl.class
@@ -121,10 +123,13 @@ com\avo\entities\Association.class
 com\avo\repositories\InstitutionRepository.class
 com\avo\dtos\FormConfigDTO.class
 com\avo\controller\TaskStatusController.class
+com\avo\dtos\EventTypeDTO.class
 com\avo\entities\FormType.class
+com\avo\controller\EventTypeController.class
 com\avo\mappers\DiligenceFormResultMapper.class
 com\avo\repositories\StatutDossierRepository.class
 com\avo\entities\QTestEntity.class
+com\avo\mappers\EventTypeMapperImpl.class
 com\avo\dtos\TestEntityDTO$TestEntityDTOBuilder.class
 com\avo\entities\QNoteCategory.class
 com\avo\dtos\ScreeningMatchDTO.class
@@ -133,6 +138,7 @@ com\avo\controller\ClientDiligenceStatusController.class
 com\avo\services\ScreeningMatchService.class
 com\avo\controller\PersonnePhysiqueController.class
 com\avo\yente\models\YenteMatchResult.class
+com\avo\services\EventTypeService.class
 com\avo\controller\DomaineJuridiqueController.class
 com\avo\dtos\FieldResultDTO.class
 com\avo\entities\FieldResult$FieldResultBuilder.class
@@ -145,6 +151,7 @@ com\avo\mappers\AssociationMapperImpl.class
 com\avo\services\TaskCategoryService.class
 com\avo\mappers\StatutDossierMapperImpl.class
 com\avo\dtos\DomaineJuridiqueDTO$DomaineJuridiqueDTOBuilder.class
+com\avo\repositories\EventTypeRepository.class
 com\avo\repositories\TaskStatusRepository.class
 com\avo\entities\TestEntity.class
 com\avo\entities\ScreeningExecutionStatus.class
@@ -190,6 +197,7 @@ com\avo\repositories\ScreeningExecutionRepository.class
 com\avo\mappers\FormConfigMapperImpl.class
 com\avo\dtos\ScreeningExecutionDTO.class
 com\avo\dtos\TaskStatusDTO.class
+com\avo\entities\EventType.class
 com\avo\dtos\SecteurActiviteDTO$SecteurActiviteDTOBuilder.class
 com\avo\mappers\ScreeningMatchMapper.class
 com\avo\services\TestService.class
@@ -203,6 +211,7 @@ com\avo\repositories\ScreeningMatchRepository.class
 com\avo\mappers\TaskStatusMapperImpl.class
 com\avo\entities\FieldOption$FieldOptionBuilder.class
 com\avo\mappers\ClientEntityMapper.class
+com\avo\mappers\EventTypeMapper.class
 com\avo\controller\DiligenceFormResultController.class
 com\avo\entities\QSecteurActivite.class
 com\avo\entities\QTaskStatus.class
