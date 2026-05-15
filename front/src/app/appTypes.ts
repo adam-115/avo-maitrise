@@ -551,7 +551,7 @@ export interface DossierContact {
 
 
 export interface EventType {
-  id?: number;
+  id: number;
   label: string;
   code: string;
   color?: string;
@@ -565,7 +565,7 @@ export interface MatterEvent {
   titre: string;                   // Ex: "Audience de plaidoirie - JAF"
   description?: string;
 
-  typeId: string;         // Identifiant de l'EventType
+  categorie: EventType;         // Identifiant de l'EventType
 
   // Temps
   startDate: Date;                 // Date et heure de début
@@ -574,11 +574,8 @@ export interface MatterEvent {
 
   // Lieu
   lieu?: string;                   // Adresse ou nom du Tribunal/Salle
-  isVirtual: boolean;              // Si c'est une visio (Lien Teams/Zoom)
-  meetingLink?: string;
 
   // Participants
-  organisateurId: string;          // L'avocat qui crée l'événement
   participantsIds: string[];       // Liste des IDs (Collaborateurs ou Contacts)
 
   // Rappels & Alertes
@@ -589,10 +586,6 @@ export interface MatterEvent {
 
   createdAt: Date;
   updatedAt: Date;
-
-  // Facturation
-  isBilled?: boolean;
-  invoiceId?: string;
 }
 
 // Modèles de Facturation

@@ -171,9 +171,9 @@
                                 <span class="text-sm font-medium text-gray-900">{{ event.titre }}</span>
                                 <div class="flex items-center space-x-2 mt-1">
                                     <span class="text-xs text-gray-500">{{ event.startDate | date:'dd/MM/yyyy' }}</span>
-                                    <span *ngIf="event.typeId"
+                                    <span *ngIf="event.categorie"
                                         class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
-                                        {{ getEventTypeLabel(event.typeId) }}
+                                        {{ event.categorie.label }}
                                     </span>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
                                         [ngClass]="{
@@ -352,7 +352,7 @@
     }
     <!-- Event Details Modal -->
     @if(showEventDialog){
-    <app-event-details-dialog [event]="detailEvent" [typeLabel]="getEventTypeLabel(detailEvent!.typeId)"
+    <app-event-details-dialog [event]="detailEvent" [typeLabel]="detailEvent?.categorie?.label || ''"
         [statusLabel]="detailEvent!.statut" (closeDialog)="closeEventDetails()">
     </app-event-details-dialog>
     }

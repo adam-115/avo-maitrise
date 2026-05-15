@@ -300,10 +300,8 @@ export class InvoiceEditorComponent implements OnInit {
         return cat ? cat.libelle : '';
     }
 
-    getEventTypeLabel(typeId: number | string | undefined): string {
-        if (!typeId) return '';
-        const type = this.eventTypes.find(t => String(t.id) === String(typeId));
-        return type ? type.label : '';
+    getEventTypeLabel(event: MatterEvent | undefined): string {
+        return event?.categorie?.label || '';
     }
 
     formatMinutesToHours(minutes: number): string {

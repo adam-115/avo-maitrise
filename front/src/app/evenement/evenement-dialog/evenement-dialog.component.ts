@@ -5,6 +5,7 @@ import { MatterEvent, User } from '../../appTypes';
 import { UserService } from '../../services/user.service';
 import { UserSelectionDialog } from '../../dossier/user-selection-dialog/user-selection-dialog';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { EventTypeService } from '../../services/event-type.service';
 
 @Component({
   selector: 'app-evenement-dialog',
@@ -31,22 +32,29 @@ export class EvenementDialogComponent implements OnInit {
 
   eventForm!: FormGroup;
   users: User[] = [];
+  eventTypes: any[] = [];
   showUserDialog = false;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private eventTypeService: EventTypeService) { }
 
   ngOnInit(): void {
-    this.userService.getAll().subscribe((data:PaginatedResponse<User>) => this.users = data.content);
+    this.userService.getAll().subscribe((data: PaginatedResponse<User>) => this.users = data.content);
+    this.eventTypeService.getAll().subscribe((data: PaginatedResponse<any>) => {
+      this.eventTypes = data.content;
+    }); 
 
     this.eventForm = new FormGroup({
       titre: new FormControl('', [Validators.required, Validators.minLength(3)]),
       typeId: new FormControl('', [Validators.required]),
       startDate: new FormControl('', [Validators.required]),
       startTime: new FormControl(''),
-      organisateurId: new FormControl(''),
+      endDate: new FormControl(''),
+      endTime: new FormControl(''),
       participantsIds: new FormControl([]),
       lieu: new FormControl(''),
-      reminder: new FormControl(false)
+      description: new FormControl(''),
+      reminder: new FormControl(false),
+      reminderMinutesBefore: new FormControl(30)
     });
 
     if (this.eventToEdit) {
@@ -55,6 +63,7 @@ export class EvenementDialogComponent implements OnInit {
   }
 
   ngOnChanges(): void {
+    if (!this.eventForm) return;
 
     if (this.eventToEdit) {
       let startTime = '';
@@ -63,15 +72,24 @@ export class EvenementDialogComponent implements OnInit {
         startTime = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
       }
 
+      let endTime = '';
+      if (!this.eventToEdit.isAllDay && this.eventToEdit.endDate) {
+        const dateObj = new Date(this.eventToEdit.endDate);
+        endTime = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
+      }
+
       this.eventForm.patchValue({
         titre: this.eventToEdit.titre,
-        typeId: this.eventToEdit.typeId,
+        typeId: this.eventToEdit.categorie ? this.eventToEdit.categorie.id : '',
         startDate: formatDate(this.eventToEdit.startDate, 'yyyy-MM-dd', 'en-US'),
         startTime: startTime,
-        organisateurId: this.eventToEdit.organisateurId,
+        endDate: this.eventToEdit.endDate ? formatDate(this.eventToEdit.endDate, 'yyyy-MM-dd', 'en-US') : '',
+        endTime: endTime,
         participantsIds: this.eventToEdit.participantsIds || [],
         lieu: this.eventToEdit.lieu,
-        reminder: !!this.eventToEdit.reminderMinutesBefore
+        description: this.eventToEdit.description || '',
+        reminder: !!this.eventToEdit.reminderMinutesBefore,
+        reminderMinutesBefore: this.eventToEdit.reminderMinutesBefore || 30
       });
     } else {
       this.eventForm.reset();
@@ -117,21 +135,23 @@ export class EvenementDialogComponent implements OnInit {
         startDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
       }
 
-      const partsIds = formValue.participantsIds || [];
-      const primaryOrganisateur = partsIds.length > 0 ? partsIds[0] : '';
+      let endDateTime = formValue.endDate ? new Date(formValue.endDate) : new Date(startDateTime);
+      if (formValue.endTime) {
+        const [hours, minutes] = formValue.endTime.split(':');
+        endDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
+      }
 
       const eventData: MatterEvent = {
         dossierId: this.dossierId,
         titre: formValue.titre,
-        typeId: formValue.typeId,
+        categorie: this.eventTypes.find(et => String(et.id) === String(formValue.typeId)),
         startDate: startDateTime,
-        endDate: startDateTime, // EndDate identique pour l'instant
+        endDate: endDateTime,
         isAllDay: !formValue.startTime,
         lieu: formValue.lieu,
-        isVirtual: formValue.lieu?.toLowerCase().includes('teams') || formValue.lieu?.toLowerCase().includes('zoom') ? true : false,
-        organisateurId: primaryOrganisateur,
-        participantsIds: partsIds,
-        reminderMinutesBefore: formValue.reminder ? 1440 : undefined,
+        description: formValue.description,
+        participantsIds: formValue.participantsIds || [],
+        reminderMinutesBefore: formValue.reminder ? formValue.reminderMinutesBefore : undefined,
         statut: this.eventToEdit ? this.eventToEdit.statut : 'CONFIRME',
         createdAt: this.eventToEdit ? this.eventToEdit.createdAt : new Date(),
         updatedAt: new Date()

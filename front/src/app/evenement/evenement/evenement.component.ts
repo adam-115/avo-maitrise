@@ -44,7 +44,15 @@ export class EvenementComponent implements OnInit {
     });
   }
 
-  getEventTheme(typeId: string | number) {
+  getEventTheme(typeId: string | number | undefined) {
+    if (!typeId) {
+      return {
+        border: 'border-gray-400',
+        text: 'text-gray-600',
+        label: 'Non Catégorisé',
+        icon: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'
+      };
+    }
     const typeStr = String(typeId).toUpperCase();
     if (typeStr.includes('AUDIENCE') || typeStr === '1') {
       return {

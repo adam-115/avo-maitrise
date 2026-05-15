@@ -28,18 +28,18 @@
     <div class="space-y-4">
         @for (event of events; track event.id) {
         <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 hover:shadow-xl transition duration-200 cursor-pointer"
-            [ngClass]="getEventTheme(event.typeId).border" (click)="viewEventDetails(event)">
+            [ngClass]="getEventTheme(event.categorie?.id).border" (click)="viewEventDetails(event)">
             <div class="flex items-start space-x-4">
-                <svg class="w-7 h-7 flex-shrink-0 mt-1" [ngClass]="getEventTheme(event.typeId).text" fill="none"
+                <svg class="w-7 h-7 flex-shrink-0 mt-1" [ngClass]="getEventTheme(event.categorie?.id).text" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        [attr.d]="getEventTheme(event.typeId).icon"></path>
+                        [attr.d]="getEventTheme(event.categorie?.id).icon"></path>
                 </svg>
 
                 <div class="flex-grow">
                     <div class="flex justify-between items-start">
-                        <p class="text-xs font-semibold uppercase mb-1" [ngClass]="getEventTheme(event.typeId).text">
-                            {{ getEventTheme(event.typeId).label }}
+                        <p class="text-xs font-semibold uppercase mb-1" [ngClass]="getEventTheme(event.categorie?.id).text">
+                            {{ getEventTheme(event.categorie.id).label }}
                         </p>
                         <div class="flex space-x-2">
                             <button (click)="$event.stopPropagation(); editEvent(event)"
@@ -73,8 +73,8 @@
                                 }}</span>
                         </div>
                         <div>
-                            <span class="font-semibold text-gray-600">Responsable :</span> {{
-                            getUserName(event.organisateurId) }}
+                            <span class="font-semibold text-gray-600">Intervenants :</span> 
+                            {{ (event.participantsIds && event.participantsIds.length > 0) ? getUserName(event.participantsIds[0]) : 'Aucun' }}
                         </div>
                         <div class="col-span-2" *ngIf="event.lieu">
                             <span class="font-semibold text-gray-600">Lieu :</span> {{ event.lieu }}
@@ -123,20 +123,20 @@
         class="bg-white rounded-xl shadow-2xl w-full max-w-2xl transform transition-all scale-100 opacity-100 flex flex-col max-h-[90vh]">
         <!-- Header -->
         <div class="px-6 py-4 flex justify-between items-center rounded-t-xl"
-            [ngClass]="getEventTheme(viewedEvent.typeId).border" style="border-bottom-width: 4px;">
+            [ngClass]="getEventTheme(viewedEvent.categorie.id).border" style="border-bottom-width: 4px;">
             <div class="flex items-center space-x-3">
-                <svg class="w-8 h-8 flex-shrink-0" [ngClass]="getEventTheme(viewedEvent.typeId).text" fill="none"
+                <svg class="w-8 h-8 flex-shrink-0" [ngClass]="getEventTheme(viewedEvent.categorie.id).text" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        [attr.d]="getEventTheme(viewedEvent.typeId).icon"></path>
+                        [attr.d]="getEventTheme(viewedEvent.categorie.id).icon"></path>
                 </svg>
                 <div>
                     <h3 class="text-xl font-bold text-slate-800 leading-tight">
                         {{ viewedEvent.titre }}
                     </h3>
                     <span class="text-sm font-medium uppercase tracking-wider"
-                        [ngClass]="getEventTheme(viewedEvent.typeId).text">
-                        {{ getEventTheme(viewedEvent.typeId).label }}
+                        [ngClass]="getEventTheme(viewedEvent.categorie.id).text">
+                        {{ getEventTheme(viewedEvent.categorie.id).label }}
                     </span>
                 </div>
             </div>
@@ -162,12 +162,23 @@
                         </path>
                     </svg>
                     <div>
-                        <p class="text-sm text-gray-500 font-medium">Date & Heure</p>
-                        <p class="text-gray-800 font-semibold">{{ viewedEvent.startDate | date:'longDate' }}</p>
-                        <p class="text-gray-600 font-medium" *ngIf="!viewedEvent.isAllDay">{{ viewedEvent.startDate |
-                            date:'HH:mm' }}</p>
+                        <p class="text-sm text-gray-500 font-medium">Période</p>
+                        <div class="space-y-1">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-xs font-bold text-cyan-600 uppercase">Du :</span>
+                                <p class="text-gray-800 font-semibold">{{ viewedEvent.startDate | date:'dd/MM/yyyy' }}
+                                    <span class="text-gray-600 font-medium" *ngIf="!viewedEvent.isAllDay">à {{ viewedEvent.startDate | date:'HH:mm' }}</span>
+                                </p>
+                            </div>
+                            <div class="flex items-center space-x-2" *ngIf="viewedEvent.endDate">
+                                <span class="text-xs font-bold text-red-600 uppercase">Au :</span>
+                                <p class="text-gray-800 font-semibold">{{ viewedEvent.endDate | date:'dd/MM/yyyy' }}
+                                    <span class="text-gray-600 font-medium" *ngIf="!viewedEvent.isAllDay">à {{ viewedEvent.endDate | date:'HH:mm' }}</span>
+                                </p>
+                            </div>
+                        </div>
                         <span *ngIf="viewedEvent.isAllDay"
-                            class="inline-block mt-1 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">Toute
+                            class="inline-block mt-2 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">Toute
                             la journée</span>
                     </div>
                 </div>
@@ -184,18 +195,26 @@
                     <div>
                         <p class="text-sm text-gray-500 font-medium">Lieu</p>
                         <p class="text-gray-800 font-semibold">{{ viewedEvent.lieu || 'Non spécifié' }}</p>
-                        <span *ngIf="viewedEvent.isVirtual"
-                            class="inline-flex items-center mt-1 px-2 py-0.5 bg-purple-100 text-purple-800 text-xs font-semibold rounded-full">
-                            <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                            Visioconférence
-                        </span>
                     </div>
                 </div>
+            </div>
+
+            <!-- Description -->
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                <h4 class="text-sm text-gray-500 font-medium mb-3 flex items-center">
+                    <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h7"></path>
+                    </svg>
+                    Description / Notes
+                </h4>
+                <p class="text-gray-700 text-sm whitespace-pre-wrap leading-relaxed" *ngIf="viewedEvent.description">
+                    {{ viewedEvent.description }}
+                </p>
+                <p class="text-gray-400 text-sm italic" *ngIf="!viewedEvent.description">
+                    Aucune description fournie.
+                </p>
             </div>
 
             <!-- Intervenants -->
@@ -211,22 +230,11 @@
                 </h4>
 
                 <div class="space-y-4">
-                    <div>
-                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">Responsable</p>
-                        <div
-                            class="inline-flex items-center px-4 py-2 border border-blue-200 bg-blue-50 text-blue-800 rounded-md shadow-sm">
-                            <span class="font-bold">{{ getUserName(viewedEvent.organisateurId) }}</span>
-                            <span
-                                class="ml-2 bg-blue-200 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase">Leader</span>
-                        </div>
-                    </div>
-
-                    <div *ngIf="viewedEvent.participantsIds && viewedEvent.participantsIds.length > 1">
-                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Autres Participants
-                        </p>
+                    <div *ngIf="viewedEvent.participantsIds && viewedEvent.participantsIds.length > 0">
+                        <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Participants</p>
                         <div class="flex flex-wrap gap-2">
                             <ng-container *ngFor="let pid of viewedEvent.participantsIds">
-                                <div *ngIf="pid !== viewedEvent.organisateurId"
+                                <div
                                     class="inline-flex items-center px-3 py-1.5 border border-gray-200 bg-gray-50 text-gray-700 rounded-md text-sm">
                                     {{ getUserName(pid) }}
                                 </div>
