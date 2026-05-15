@@ -119,12 +119,12 @@
             <!-- Header: Category & Priority -->
             <div class="relative flex items-center gap-3 mb-5 z-10 w-full"
                 [ngClass]="{'pr-24': isOverdue(task) && !isClosed(task)}">
-                <span *ngIf="getCategory(task.categoryId)"
-                    [style.backgroundColor]="getCategory(task.categoryId)?.couleur + '15'"
-                    [style.color]="getCategory(task.categoryId)?.couleur"
+                <span *ngIf="task.category"
+                    [style.backgroundColor]="task.category.couleur + '15'"
+                    [style.color]="task.category.couleur"
                     class="px-3.5 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-widest inline-flex items-center gap-2 border border-white/50 shadow-sm backdrop-blur-md flex-shrink-0">
-                    <i *ngIf="getCategory(task.categoryId)?.icone" [class]="getCategory(task.categoryId)?.icone"></i>
-                    {{ getCategory(task.categoryId)?.libelle }}
+                    <i *ngIf="task.category.icone" [class]="task.category.icone"></i>
+                    {{ task.category.libelle }}
                 </span>
                 <span [ngClass]="{
                         'bg-red-50 text-red-600 border border-red-100': task.priorite === 'URGENTE',
@@ -167,8 +167,8 @@
 
                 <!-- Left: Avatars & Action -->
                 <div class="flex items-center gap-4">
-                    <div *ngIf="task.assigneA && task.assigneA.length > 0" class="flex -space-x-2.5">
-                        <div *ngFor="let user of task.assigneA"
+                    <div *ngIf="task.assignees && task.assignees.length > 0" class="flex -space-x-2.5">
+                        <div *ngFor="let user of task.assignees"
                             class="inline-flex items-center justify-center w-9 h-9 rounded-full border-2 border-white bg-gradient-to-br from-cyan-400 to-blue-500 text-white text-[11px] font-black uppercase shadow-sm transform hover:scale-110 hover:z-10 transition-transform cursor-help"
                             [title]="user.firstName + ' ' + user.lastName">
                             {{ (user.firstName.charAt(0) || '') + (user.lastName.charAt(0) || '') }}
@@ -209,7 +209,7 @@
                     </div>
 
                     <div class="relative flex items-center group/select w-full sm:w-auto">
-                        <select [ngModel]="task.statusId" (change)="onStatusChange(task, $event)"
+                        <select [ngModel]="task.status?.id" (change)="onStatusChange(task, $event)"
                             class="w-full sm:w-auto text-[11px] font-extrabold bg-white hover:bg-slate-50 rounded-xl py-2 pl-3 pr-8 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 cursor-pointer text-slate-700 shadow-sm appearance-none min-w-[140px] transition-all border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
                         </select>

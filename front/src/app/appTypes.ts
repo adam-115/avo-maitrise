@@ -431,7 +431,7 @@ export interface Dossier {
 
 // Représente une catégorie de tâche (ex: Procédure, Recherche)
 export interface TaskCategory {
-  id: string | number;
+  id:  number;
   code: string;
   libelle: string;      // Ex: "Actes et Procédures"
   couleur: string;      // Code Hexa ou classe Tailwind pour l'UI
@@ -441,7 +441,7 @@ export interface TaskCategory {
 
 // Représente l'état d'avancement d'une tâche
 export interface TaskStatus {
-  id: string | number;
+  id: number;
   code: string;
   libelle: string;      // Ex: "En attente"
   ordre_affichage: number;
@@ -449,17 +449,17 @@ export interface TaskStatus {
 }
 
 export interface Task {
-  id?: number | string;
-  dossierId: number | string;
+  id?: number ;
+  dossierId: number;
   titre: string;
   description?: string;
 
-  // Relations par ID
-  categoryId: number | string;
-  statusId: string;
+  // Relations par objets
+  category: TaskCategory;
+  status: TaskStatus;
 
   priorite: 'BASSE' | 'NORMALE' | 'HAUTE' | 'URGENTE';
-  assigneA?: User[];
+  assignees?: User[];
   dateEcheance: Date;
   isCompleted: boolean;
   createdAt: Date;

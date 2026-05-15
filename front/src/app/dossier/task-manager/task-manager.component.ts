@@ -73,20 +73,20 @@ export class TaskManagerComponent implements OnInit {
     get completionRate(): number {
         if (this.tasks.length === 0) return 0;
         const closingStatuses = this.statuses.filter(s => s.isClosingStatus).map(s => String(s.id));
-        const completedTasks = this.tasks.filter(t => closingStatuses.includes(String(t.statusId))).length;
+        const completedTasks = this.tasks.filter(t => closingStatuses.includes(String(t.status?.id))).length;
         return Math.round((completedTasks / this.tasks.length) * 100);
     }
 
     get completedCount(): number {
         const closingStatuses = this.statuses.filter(s => s.isClosingStatus).map(s => String(s.id));
-        return this.tasks.filter(t => closingStatuses.includes(String(t.statusId))).length;
+        return this.tasks.filter(t => closingStatuses.includes(String(t.status?.id))).length;
     }
 
     applyFilters() {
         this.filteredTasks = this.tasks.filter(task => {
             const matchSearch = this.searchTerm ? task.titre.toLowerCase().includes(this.searchTerm.toLowerCase()) : true;
-            const matchCategory = this.selectedCategoryId ? String(task.categoryId) === String(this.selectedCategoryId) : true;
-            const matchStatus = this.selectedStatusId ? String(task.statusId) === String(this.selectedStatusId) : true;
+            const matchCategory = this.selectedCategoryId ? String(task.category?.id) === String(this.selectedCategoryId) : true;
+            const matchStatus = this.selectedStatusId ? String(task.status?.id) === String(this.selectedStatusId) : true;
             const matchUrgent = this.showUrgentOnly ? task.priorite === 'URGENTE' : true;
             return matchSearch && matchCategory && matchStatus && matchUrgent;
         });
@@ -119,19 +119,25 @@ export class TaskManagerComponent implements OnInit {
             (formVals.assigneAIds || []).includes(String(u.id))
         );
 
-        // Omit assigneAIds from the final object
-        const { assigneAIds, ...restFormVals } = formVals;
+        // Find Category and Status objects
+        const category = this.categories.find(c => String(c.id) === String(formVals.categoryId));
+        const status = this.statuses.find(s => String(s.id) === String(formVals.statusId));
+
+        // Omit IDs from the final object
+        const { assigneAIds, categoryId, statusId, ...restFormVals } = formVals;
 
         const taskData: Task = {
             ...restFormVals,
-            assigneA: assignedUsers,
-            dossierId: this.dossierId,
-            isCompleted: false,
+            category: category!,
+            status: status!,
+            assignees: assignedUsers,
+            dossierId: Number(this.dossierId),
+            isCompleted: status?.isClosingStatus || false,
             createdAt: this.isEditing ? this.tasks.find(t => t.id === this.selectedTaskId)?.createdAt || new Date() : new Date()
         };
 
         if (this.isEditing && this.selectedTaskId) {
-            taskData.id = this.selectedTaskId;
+            taskData.id = Number(this.selectedTaskId);
             this.taskService.update(taskData).subscribe(() => {
                 this.loadTasks();
                 this.closeForm();
@@ -147,7 +153,14 @@ export class TaskManagerComponent implements OnInit {
     onStatusChange(task: Task, event: Event) {
         const target = event.target as HTMLSelectElement;
         const newStatusId = target.value;
-        const updatedTask = { ...task, statusId: newStatusId };
+        const newStatus = this.statuses.find(s => String(s.id) === String(newStatusId));
+        if (!newStatus) return;
+
+        const updatedTask: Task = { 
+            ...task, 
+            status: newStatus,
+            isCompleted: newStatus.isClosingStatus
+        };
         this.taskService.update(updatedTask).subscribe(() => {
             this.loadTasks();
         });
@@ -170,8 +183,7 @@ export class TaskManagerComponent implements OnInit {
     }
 
     isClosed(task: Task): boolean {
-        const status = this.getStatus(task.statusId);
-        return status?.isClosingStatus || false;
+        return task.status?.isClosingStatus || false;
     }
 
     formatMinutesToHours(minutes: number): string {

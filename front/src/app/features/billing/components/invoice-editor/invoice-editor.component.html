@@ -112,17 +112,17 @@
                             <div class="flex flex-col pr-4 flex-grow">
                                 <span class="text-sm font-medium text-gray-900">{{ task.titre }}</span>
                                 <div class="flex items-center space-x-2 mt-1">
-                                    <span *ngIf="task.categoryId"
+                                    <span *ngIf="task.category"
                                         class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
-                                        {{ getTaskCategoryLabel(task.categoryId) }}
+                                        {{ task.category.libelle }}
                                     </span>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
                                         [ngClass]="{
-                                              'bg-green-100 text-green-800': task.statusId === 'TERMINE' || getTaskStatusLabel(task.statusId).toLowerCase() === 'terminé',
-                                              'bg-blue-100 text-blue-800': task.statusId === 'EN_COURS' || getTaskStatusLabel(task.statusId).toLowerCase() === 'en cours',
-                                              'bg-gray-100 text-gray-800': task.statusId !== 'TERMINE' && task.statusId !== 'EN_COURS' && getTaskStatusLabel(task.statusId).toLowerCase() !== 'terminé' && getTaskStatusLabel(task.statusId).toLowerCase() !== 'en cours'
+                                              'bg-green-100 text-green-800': task.status?.code === 'TERMINE' || task.status?.libelle?.toLowerCase() === 'terminé',
+                                              'bg-blue-100 text-blue-800': task.status?.code === 'EN_COURS' || task.status?.libelle?.toLowerCase() === 'en cours',
+                                              'bg-gray-100 text-gray-800': task.status?.code !== 'TERMINE' && task.status?.code !== 'EN_COURS' && task.status?.libelle?.toLowerCase() !== 'terminé' && task.status?.libelle?.toLowerCase() !== 'en cours'
                                           }">
-                                        {{ getTaskStatusLabel(task.statusId) }}
+                                        {{ task.status?.libelle }}
                                     </span>
                                     <span *ngIf="task.estimatedTimeMinutes"
                                         class="bg-indigo-50 text-indigo-700 border-indigo-100 px-2.5 py-1 rounded-full text-[11px] font-bold inline-flex items-center gap-1.5 border shadow-sm">
@@ -346,8 +346,8 @@
 
     <!-- Task Details Modal -->
     @if(showTaskDialog){
-    <app-task-details-dialog [task]="detailTask" [categoryLabel]="getTaskCategoryLabel(detailTask?.categoryId)"
-        [statusLabel]="getTaskStatusLabel(detailTask!.statusId)" (closeDialog)="closeTaskDetails()">
+    <app-task-details-dialog [task]="detailTask" [categoryLabel]="detailTask?.category?.libelle || ''"
+        [statusLabel]="detailTask?.status?.libelle || ''" (closeDialog)="closeTaskDetails()">
     </app-task-details-dialog>
     }
     <!-- Event Details Modal -->

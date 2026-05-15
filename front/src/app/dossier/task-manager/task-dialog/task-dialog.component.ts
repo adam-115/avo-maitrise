@@ -38,10 +38,10 @@ export class TaskDialogComponent implements OnInit {
       this.taskForm.patchValue({
         titre: this.taskToEdit.titre,
         description: this.taskToEdit.description,
-        categoryId: this.taskToEdit.categoryId,
-        statusId: this.taskToEdit.statusId,
+        categoryId: this.taskToEdit.category?.id,
+        statusId: this.taskToEdit.status?.id,
         priorite: this.taskToEdit.priorite,
-        assigneAIds: (this.taskToEdit.assigneA || []).map(u => String(u.id)),
+        assigneAIds: (this.taskToEdit.assignees || []).map(u => String(u.id)),
         dateEcheance: new Date(this.taskToEdit.dateEcheance).toISOString().split('T')[0],
         estimatedTimeMinutes: this.taskToEdit.estimatedTimeMinutes || null
       });
