@@ -1,10 +1,11 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
-import { Task, TaskCategory, TaskStatus, User } from '../../appTypes';
+import { Task, TaskCategory, TaskStatus, User, TaskLog } from '../../appTypes';
 import { TaskService } from '../../services/task.service';
 import { TaskCategoryService } from '../../services/task-category.service';
 import { TaskStatusService } from '../../services/task-status.service';
+import { TaskLogService } from '../../services/task-log.service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { UserService } from '../../services/user.service';
 import { TaskDialogComponent } from './task-dialog/task-dialog.component';
@@ -24,6 +25,8 @@ export class TaskManagerComponent implements OnInit {
     categories: TaskCategory[] = [];
     statuses: TaskStatus[] = [];
     users: User[] = [];
+    taskLogsMap: { [key: number]: TaskLog[] } = {};
+    taskTabs: { [key: number]: 'INFO' | 'LOGS' } = {};
 
     showForm: boolean = false;
     isEditing: boolean = false;
@@ -40,6 +43,7 @@ export class TaskManagerComponent implements OnInit {
     taskService = inject(TaskService);
     categoryService = inject(TaskCategoryService);
     statusService = inject(TaskStatusService);
+    taskLogService = inject(TaskLogService);
     userService = inject(UserService);
     fb = inject(FormBuilder);
 
@@ -66,7 +70,18 @@ export class TaskManagerComponent implements OnInit {
     loadTasks() {
         this.taskService.getAll().subscribe(data => {
             this.tasks = data.content.filter(t => t.dossierId == this.dossierId);
+            this.tasks.forEach(task => {
+                if (task.id) this.loadTaskLogs(Number(task.id));
+            });
             this.applyFilters();
+        });
+    }
+
+    loadTaskLogs(taskId: number) {
+        this.taskLogService.getAll().subscribe(data => {
+            this.taskLogsMap[taskId] = data.content
+                .filter(l => String(l.taskId) === String(taskId))
+                .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
         });
     }
 
@@ -174,6 +189,11 @@ export class TaskManagerComponent implements OnInit {
         return this.statuses.find(s => String(s.id) === String(id));
     }
 
+    getTaskLogs(taskId?: number): TaskLog[] {
+        if (taskId === undefined) return [];
+        return this.taskLogsMap[taskId] || [];
+    }
+
     isOverdue(task: Task): boolean {
         if (this.isClosed(task)) return false;
         const dueDate = new Date(task.dateEcheance);
@@ -190,5 +210,28 @@ export class TaskManagerComponent implements OnInit {
         const h = Math.floor(minutes / 60);
         const m = minutes % 60;
         return `${h}h ${m > 0 ? m + 'm' : ''}`.trim();
+    }
+
+    addQuickComment(task: Task, comment: string) {
+        if (!comment.trim() || !task.id) return;
+
+        const newLog: TaskLog = {
+            taskId: String(task.id),
+            action: 'COMMENT',
+            description: comment.trim(),
+            createdAt: new Date(),
+        };
+
+        this.taskLogService.create(newLog).subscribe(() => {
+            this.loadTaskLogs(Number(task.id));
+        });
+    }
+
+    switchTaskTab(taskId: number, tab: 'INFO' | 'LOGS') {
+        this.taskTabs[taskId] = tab;
+    }
+
+    getTaskTab(taskId: number): 'INFO' | 'LOGS' {
+        return this.taskTabs[taskId] || 'INFO';
     }
 }
