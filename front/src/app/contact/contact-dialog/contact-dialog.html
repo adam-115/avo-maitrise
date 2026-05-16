@@ -6,7 +6,7 @@
 
     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-cyan-50 rounded-t-xl">
       <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
-        Lier un Contact au Dossier PEN-2024-045
+        Lier un Contact au Dossier {{ dossierNumber }}
       </h3>
       <button type="button" (click)="closeDialog()" class="text-gray-400 hover:text-gray-600 transition">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -74,6 +74,39 @@
                 placeholder="+33 XX XX XX XX XX"
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="new_contact_toque" class="block text-sm font-medium text-gray-700 mb-1">Numéro de Toque (Si Avocat)</label>
+              <input type="text" formControlName="numToque" id="new_contact_toque" placeholder="Ex: 1234"
+                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+            </div>
+            <div>
+              <label for="new_contact_web" class="block text-sm font-medium text-gray-700 mb-1">Site Web</label>
+              <input type="url" formControlName="siteWeb" id="new_contact_web" placeholder="https://..."
+                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="new_contact_profession" class="block text-sm font-medium text-gray-700 mb-1">Profession</label>
+              <input type="text" formControlName="profession" id="new_contact_profession" placeholder="Ex: Notaire, Expert..."
+                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+            </div>
+            <div>
+              <label for="new_contact_pays" class="block text-sm font-medium text-gray-700 mb-1">Pays</label>
+              <input type="text" formControlName="pays" id="new_contact_pays" placeholder="Ex: France"
+                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+            </div>
+          </div>
+
+          <div>
+            <label for="new_contact_observation" class="block text-sm font-medium text-gray-700 mb-1">Observations / Commentaires</label>
+            <textarea formControlName="observation" id="new_contact_observation" rows="2"
+              placeholder="Notes complémentaires sur ce contact..."
+              class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
           </div>
 
           <div class="pt-2">

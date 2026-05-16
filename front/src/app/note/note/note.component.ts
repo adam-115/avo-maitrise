@@ -1,5 +1,6 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { NoteDialogComponent } from '../note-dialog/note-dialog.component';
 import { Note, NoteCategory } from '../../appTypes';
 import { NoteService } from '../../services/note.service';
@@ -9,7 +10,7 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
 
 @Component({
   selector: 'app-note',
-  imports: [NoteDialogComponent, CommonModule],
+  imports: [NoteDialogComponent, CommonModule, FormsModule],
   templateUrl: './note.component.html',
   styleUrl: './note.component.css'
 })
@@ -19,6 +20,7 @@ export class NoteComponent implements OnInit {
 
   notes: Note[] = [];
   categories: NoteCategory[] = [];
+  searchTerm: string = '';
   showNoteDialog = false;
   selectedNote: Note | null = null;
   @Input() dossierID = "1";
@@ -30,6 +32,17 @@ export class NoteComponent implements OnInit {
   ngOnInit() {
     this.loadNotes();
     this.loadCategories();
+  }
+
+  get filteredNotes() {
+    if (!this.searchTerm.trim()) {
+      return this.notes;
+    }
+    const lowerTerm = this.searchTerm.toLowerCase();
+    return this.notes.filter(note => 
+      note.title.toLowerCase().includes(lowerTerm) || 
+      note.description.toLowerCase().includes(lowerTerm)
+    );
   }
 
   loadNotes() {

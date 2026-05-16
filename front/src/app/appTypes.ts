@@ -530,6 +530,7 @@ export interface DossierContact {
   civilite?: 'M.' | 'Mme' | 'Me';
   nom: string;
   prenom: string;
+  type?: ContactRole;
 
   entreprise?: string;         // Nom du cabinet ou de l'étude
 
@@ -542,9 +543,12 @@ export interface DossierContact {
   // Précisions métiers
   numToque?: string;           // Pour les avocats (Toque au barreau)
   siteWeb?: string;
+  pays?: string;
+  profession?: string;
 
   // Métadonnées
-  notes?: string;              // Commentaire libre sur ce contact
+  notes?: string;              // Commentaire libre sur ce contact (Role in UI)
+  observation?: string;        // Observations complémentaires
   createdAt: Date;
   updatedAt: Date;
 }

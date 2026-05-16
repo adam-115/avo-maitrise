@@ -15,6 +15,7 @@ export class ContactDialog {
   selectedContactTypeCreation = ContactTypeCreation.NOUVEAU;
 
   @Input() dossierId: string = '';
+  @Input() dossierNumber: string = '';
   @Output() contactCreated = new EventEmitter<DossierContact>();
   @Output() closeContactDialog = new EventEmitter<void>();
 
@@ -30,6 +31,11 @@ export class ContactDialog {
       telephoneMobile: [''],
       telephoneFixe: [''],
       entreprise: [''],
+      numToque: [''],
+      siteWeb: [''],
+      pays: [''],
+      profession: [''],
+      observation: [''],
       notes: ['', Validators.required] // Rôle dans le dossier
     });
   }
@@ -52,6 +58,11 @@ export class ContactDialog {
         telephoneMobile: value.telephoneMobile,
         telephoneFixe: value.telephoneFixe,
         entreprise: value.entreprise,
+        numToque: value.numToque,
+        siteWeb: value.siteWeb,
+        pays: value.pays,
+        profession: value.profession,
+        observation: value.observation,
         notes: value.notes,
         createdAt: new Date(),
         updatedAt: new Date()

@@ -125,7 +125,7 @@
 
     @if (selectedTab === DossierTabType.CONTACT) {
       <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden p-6">
-        <app-contact [dossierID]="selectedDossier?.id || ''"></app-contact>
+        <app-contact [dossierID]="selectedDossier?.id || ''" [dossierNumber]="selectedDossier?.referenceInterne || ''"></app-contact>
       </div>
     }
 
