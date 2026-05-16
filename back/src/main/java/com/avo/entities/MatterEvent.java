@@ -1,18 +1,12 @@
 package com.avo.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
 @Entity
 @Table(name = "matter_events")
-@Getter
-@Setter
-@NoArgsConstructor
 public class MatterEvent {
 
     @Id
@@ -59,6 +53,50 @@ public class MatterEvent {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+
+    public MatterEvent() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public Long getDossierId() { return dossierId; }
+    public void setDossierId(Long dossierId) { this.dossierId = dossierId; }
+
+    public String getTitre() { return titre; }
+    public void setTitre(String titre) { this.titre = titre; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public EventType getCategorie() { return categorie; }
+    public void setCategorie(EventType categorie) { this.categorie = categorie; }
+
+    public Date getStartDate() { return startDate; }
+    public void setStartDate(Date startDate) { this.startDate = startDate; }
+
+    public Date getEndDate() { return endDate; }
+    public void setEndDate(Date endDate) { this.endDate = endDate; }
+
+    public boolean isAllDay() { return isAllDay; }
+    public void setAllDay(boolean allDay) { isAllDay = allDay; }
+
+    public String getLieu() { return lieu; }
+    public void setLieu(String lieu) { this.lieu = lieu; }
+
+    public List<String> getParticipantsIds() { return participantsIds; }
+    public void setParticipantsIds(List<String> participantsIds) { this.participantsIds = participantsIds; }
+
+    public Integer getReminderMinutesBefore() { return reminderMinutesBefore; }
+    public void setReminderMinutesBefore(Integer reminderMinutesBefore) { this.reminderMinutesBefore = reminderMinutesBefore; }
+
+    public String getStatut() { return statut; }
+    public void setStatut(String statut) { this.statut = statut; }
+
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+
+    public Date getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
 
     @PrePersist
     protected void onCreate() {

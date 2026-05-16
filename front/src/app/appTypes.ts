@@ -44,7 +44,7 @@ export enum DossierTabType {
   TACHE = 'TACHE',
   NOTE = 'NOTE',
   CONTACT = 'CONTACT',
-  // FACTURE = 'FACTURE'
+  ACTIVITY = 'ACTIVITY'
 }
 // contact type for contact Dialog component
 export enum ContactTypeCreation {
@@ -665,4 +665,15 @@ export interface YenteQueryResponse {
 
 export interface YenteMatchResponse {
   responses: Record<string, YenteQueryResponse>;
+}
+
+export interface MatterActivity {
+    id?: number;
+    dossierId: number | string;
+    author: string;
+    action: string;
+    targetType: string;
+    targetId?: number | string;
+    description: string;
+    createdAt: Date | string;
 }

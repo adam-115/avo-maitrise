@@ -1,11 +1,12 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Dossier, Client, User, StatutDossier, DossierPriorite, DomaineJuridique } from '../../appTypes';
+import { Dossier, Client, User, StatutDossier, DossierPriorite, DomaineJuridique, MatterActivity } from '../../appTypes';
 import { ClientService } from '../../services/client-service';
 import { UserService } from '../../services/user.service';
 import { StatutDossierService } from '../../services/statut-dossier.service';
 import { DossierPrioriteService } from '../../services/dossier-priorite.service';
 import { DomaineJuridiqueService } from '../../services/domaine-juridique.service';
+import { MatterActivityService } from '../../services/matter-activity.service';
 import { forkJoin } from 'rxjs';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
@@ -16,7 +17,7 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
     templateUrl: './dossier-info.html',
     styleUrl: './dossier-info.css'
 })
-export class DossierInfo implements OnInit {
+export class DossierInfo implements OnInit, OnChanges {
     @Input() dossier?: Dossier | null;
 
     clients: Client[] = [];
@@ -24,17 +25,26 @@ export class DossierInfo implements OnInit {
     statuses: StatutDossier[] = [];
     priorities: DossierPriorite[] = [];
     domaines: DomaineJuridique[] = [];
+    activities: MatterActivity[] = [];
 
     private clientService = inject(ClientService);
     private userService = inject(UserService);
     private statusService = inject(StatutDossierService);
     private priorityService = inject(DossierPrioriteService);
     private domaineService = inject(DomaineJuridiqueService);
+    private activityService = inject(MatterActivityService);
 
     constructor() { }
 
     ngOnInit(): void {
         this.loadDependencies();
+        this.loadActivities();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['dossier'] && this.dossier) {
+            this.loadActivities();
+        }
     }
 
     loadDependencies(): void {
@@ -51,6 +61,20 @@ export class DossierInfo implements OnInit {
             this.priorities = (priorities as any).content;
             this.domaines = (domaines as any).content;
         });
+    }
+
+    loadActivities(): void {
+        if (this.dossier && this.dossier.id) {
+            this.activityService.getActivitiesByDossier(this.dossier.id).subscribe(data => {
+                this.activities = data.sort((a, b) => {
+                    const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                    const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                    return dateB - dateA;
+                });
+            });
+        } else {
+            this.activities = [];
+        }
     }
 
     getClientName(clientId: string | number | undefined): string {
@@ -109,34 +133,15 @@ export class DossierInfo implements OnInit {
         return `${method}${rate}`;
     }
 
-    // Mock activities for the UI - normally fetched from a service
-    activities = [
-        {
-            author: 'Maître Dupont',
-            action: 'A ajouté le',
-            target: 'rapport d\'analyse financière',
-            targetType: 'document',
-            time: 'Il y a 2 heures',
-            color: 'bg-cyan-600'
-        },
-        {
-            author: 'Système',
-            action: 'Événement créé :',
-            target: 'Audience Préparatoire',
-            targetType: 'event',
-            time: 'Hier, 16:00',
-            color: 'bg-yellow-500',
-            highlight: true
-        },
-        {
-            author: 'Maître Martin',
-            action: 'A passé',
-            target: '3,5 heures',
-            targetType: 'time',
-            time: 'Il y a 3 jours',
-            description: 'sur la rédaction des conclusions.',
-            color: 'bg-slate-400'
+    getActivityColor(type: string): string {
+        switch (type) {
+            case 'Tâche': return 'bg-blue-500';
+            case 'Note': return 'bg-cyan-600';
+            case 'Événement': return 'bg-yellow-500';
+            case 'Document': return 'bg-purple-500';
+            case 'Dossier': return 'bg-green-500';
+            default: return 'bg-slate-400';
         }
-    ];
+    }
 }
 

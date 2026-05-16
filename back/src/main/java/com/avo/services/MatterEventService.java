@@ -8,6 +8,8 @@ import com.avo.entities.MatterEvent;
 import com.avo.mappers.MatterEventMapper;
 import com.avo.repositories.MatterEventRepository;
 import com.querydsl.core.types.Predicate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,10 +18,12 @@ public class MatterEventService {
 
     private final MatterEventRepository repository;
     private final MatterEventMapper mapper;
+    private final MatterActivityService activityService;
 
-    public MatterEventService(MatterEventRepository repository, MatterEventMapper mapper) {
+    public MatterEventService(MatterEventRepository repository, MatterEventMapper mapper, MatterActivityService activityService) {
         this.repository = repository;
         this.mapper = mapper;
+        this.activityService = activityService;
     }
 
     public Page<MatterEventDTO> findAll(Pageable pageable) {
@@ -49,6 +53,29 @@ public class MatterEventService {
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        repository.findById(id).ifPresent(event -> {
+            String author = getCurrentUsername();
+            activityService.logActivity(
+                event.getDossierId(),
+                author,
+                "Suppression",
+                "Événement",
+                event.getId(),
+                "Événement supprimé : " + event.getTitre()
+            );
+            repository.delete(event);
+        });
+    }
+
+    private String getCurrentUsername() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null) {
+                return authentication.getName();
+            }
+        } catch (Exception e) {
+            // Fallback
+        }
+        return "Système";
     }
 }

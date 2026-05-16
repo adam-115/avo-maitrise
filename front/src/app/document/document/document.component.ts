@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, Input, OnInit, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DocumentDialog } from '../document-dialog/document-dialog';
 import { Dossier, Document } from '../../appTypes';
@@ -13,7 +13,7 @@ import { AlertService } from '../../services/alert-service';
   templateUrl: './document.component.html',
   styleUrl: './document.component.css'
 })
-export class DocumentComponent implements OnInit {
+export class DocumentComponent implements OnInit, OnChanges {
 
   @Input()
   selectedDossier: Dossier | null = null;
@@ -26,15 +26,41 @@ export class DocumentComponent implements OnInit {
   Math = Math;
 
   // Pagination
-  currentPage = 1;
+  currentPage = 1; // 1-indexed for UI
   pageSize = 5;
+  totalElements = 0;
+  totalPages = 0;
 
   ngOnInit(): void {
     this.refreshDocuments();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedDossier'] && !changes['selectedDossier'].firstChange) {
+      this.currentPage = 1; // Reset to first page on dossier change
+      this.refreshDocuments();
+    }
+  }
+
   refreshDocuments() {
-    this.documents = this.selectedDossier?.documents || [];
+    if (this.selectedDossier?.id) {
+      this.documentService.getByDossierId(
+        this.selectedDossier.id, 
+        this.currentPage - 1, 
+        this.pageSize
+      ).subscribe({
+        next: (response) => {
+          this.documents = response.content;
+          this.totalElements = response.totalElements;
+          this.totalPages = response.totalPages;
+        },
+        error: (err) => {
+          console.error('Error fetching documents:', err);
+        }
+      });
+    } else {
+      this.documents = [];
+    }
   }
 
   openDocumentDialog() {
@@ -47,47 +73,44 @@ export class DocumentComponent implements OnInit {
 
   addDocument(document: Document) {
     if (this.selectedDossier) {
-      if (!this.selectedDossier.documents) {
-        this.selectedDossier.documents = [];
-      }
       document.date = new Date();
       document.clientId = this.selectedDossier.clientId;
-      document.dossierId = this.selectedDossier.id;
-      this.selectedDossier.documents.push(document);
-      this.refreshDocuments();
+      document.dossierId = Number(this.selectedDossier.id);
 
-      if (this.selectedDossier.id) {
-        this.dossierService.update(this.selectedDossier).subscribe({
-          next: () => {
-            this.alertService.success('Document ajouté avec succès');
-            this.closeDocumentDialog();
-          },
-          error: (err) => {
-            console.error('Error updating dossier:', err);
+      this.documentService.create(document).subscribe({
+        next: (savedDoc) => {
+          if (this.selectedDossier) {
+            this.refreshDocuments();
           }
-        });
-      }
+          this.alertService.success('Document ajouté avec succès');
+          this.closeDocumentDialog();
+        },
+        error: (err) => {
+          console.error('Error creating document:', err);
+          this.alertService.displayMessage('Erreur', 'Erreur lors de l\'ajout du document','error');
+        }
+      });
     }
   }
 
-  async deleteDocument(index: number) {
+  async deleteDocument(doc: Document, index: number) {
     const confirmed = await this.alertService.confirmMessage(
       'Suppression',
       'Voulez-vous vraiment supprimer ce document ?',
       'warning'
     );
 
-    if (confirmed && this.selectedDossier && this.selectedDossier.documents) {
-      this.selectedDossier.documents.splice(index, 1);
-      this.refreshDocuments();
-
-      if (this.selectedDossier.id) {
-        this.dossierService.update(this.selectedDossier).subscribe({
-          next: () => {
-            this.alertService.success('Document supprimé');
-          }
-        });
-      }
+    if (confirmed && doc.id) {
+      this.documentService.delete(doc.id).subscribe({
+        next: () => {
+          this.refreshDocuments();
+          this.alertService.success('Document supprimé');
+        },
+        error: (err) => {
+          console.error('Error deleting document:', err);
+          this.alertService.displayMessage('Erreur', 'Erreur lors de la suppression du document','error');
+        }
+      });
     }
   }
 
@@ -113,24 +136,18 @@ export class DocumentComponent implements OnInit {
   }
 
   // Pagination helpers
-  get paginatedDocuments() {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.documents.slice(start, start + this.pageSize);
-  }
-
-  get totalPages() {
-    return Math.ceil(this.documents.length / this.pageSize);
-  }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
+      this.refreshDocuments();
     }
   }
 
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.refreshDocuments();
     }
   }
 

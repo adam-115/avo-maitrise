@@ -16,17 +16,15 @@
             <h3 class="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Journal d'Activité Récente</h3>
             <ul class="space-y-4">
                 <li *ngFor="let activity of activities" class="flex items-start space-x-3">
-                    <div [class]="'flex-shrink-0 w-2 h-2 mt-2 rounded-full ' + (activity.color || 'bg-cyan-600')">
+                    <div [class]="'flex-shrink-0 w-2 h-2 mt-2 rounded-full ' + getActivityColor(activity.targetType)">
                     </div>
                     <div class="flex-1 text-sm">
                         <p class="font-semibold text-slate-800">{{ activity.author }}</p>
                         <p class="text-gray-700">
-                            {{ activity.action }}
-                            <span *ngIf="activity.target" [class.font-medium]="true"
-                                [class.text-red-600]="activity.highlight">{{ activity.target }}</span>
-                            {{ activity.description }}
+                            {{ activity.action }} {{ activity.targetType }} :
+                            <span class="font-medium text-slate-900">{{ activity.description }}</span>
                         </p>
-                        <span class="text-xs text-gray-500">{{ activity.time }}</span>
+                        <span class="text-xs text-gray-500">{{ activity.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
                     </div>
                 </li>
             </ul>

@@ -1,5 +1,7 @@
 package com.avo.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,19 @@ public class DocumentService {
 
     private final DocumentRepository repository;
     private final DocumentMapper mapper;
+    private final com.avo.repositories.ClientRepository clientRepository;
+    private final com.avo.repositories.DossierRepository dossierRepository;
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-    public DocumentService(DocumentRepository repository, DocumentMapper mapper) {
+    public DocumentService(DocumentRepository repository, DocumentMapper mapper, 
+                           com.avo.repositories.ClientRepository clientRepository,
+                           com.avo.repositories.DossierRepository dossierRepository,
+                           org.springframework.context.ApplicationEventPublisher eventPublisher) {
         this.repository = repository;
         this.mapper = mapper;
+        this.clientRepository = clientRepository;
+        this.dossierRepository = dossierRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public Page<DocumentDTO> findAll(Pageable pageable) {
@@ -35,15 +46,60 @@ public class DocumentService {
 
     public DocumentDTO create(DocumentDTO dto) {
         Document entity = mapper.toEntity(dto);
-        return mapper.toDto(repository.save(entity));
+        entity.setDateUpload(LocalDateTime.now());
+        
+        if (dto.getClientId() != null) {
+            clientRepository.findById(dto.getClientId()).ifPresent(entity::setClient);
+        }
+        if (dto.getDossierId() != null) {
+            dossierRepository.findById(dto.getDossierId()).ifPresent(entity::setDossier);
+        }
+
+        Document saved = repository.save(entity);
+        
+        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+            this, saved.getDossier() != null ? saved.getDossier().getId() : dto.getDossierId(), 
+            getCurrentUsername(), "Upload", "Document", saved.getId(), "Document uploadé : " + saved.getNomFichier()
+        ));
+        
+        return mapper.toDto(saved);
     }
 
     public DocumentDTO update(DocumentDTO dto) {
         Document entity = mapper.toEntity(dto);
-        return mapper.toDto(repository.save(entity));
+
+        if (dto.getClientId() != null) {
+            clientRepository.findById(dto.getClientId()).ifPresent(entity::setClient);
+        }
+        if (dto.getDossierId() != null) {
+            dossierRepository.findById(dto.getDossierId()).ifPresent(entity::setDossier);
+        }
+
+        Document saved = repository.save(entity);
+
+        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+            this, saved.getDossier() != null ? saved.getDossier().getId() : dto.getDossierId(),
+            getCurrentUsername(), "Mise à jour", "Document", saved.getId(), "Document mis à jour : " + saved.getNomFichier()
+        ));
+
+        return mapper.toDto(saved);
     }
     
     public void delete(Long id) {
-        repository.deleteById(id);
+        repository.findById(id).ifPresent(doc -> {
+            eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                this, doc.getDossier() != null ? doc.getDossier().getId() : null,
+                getCurrentUsername(), "Suppression", "Document", doc.getId(), "Document supprimé : " + doc.getNomFichier()
+            ));
+            repository.delete(doc);
+        });
+    }
+
+    private String getCurrentUsername() {
+        try {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null) return auth.getName();
+        } catch (Exception e) {}
+        return "Système";
     }
 }

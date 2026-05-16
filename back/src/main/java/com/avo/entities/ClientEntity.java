@@ -12,16 +12,10 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "clients")
-@Inheritance(strategy = InheritanceType.JOINED) // Sépare les tables pour chaque type
-@Getter
-@Setter
-@NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 public class ClientEntity {
 
     @Id
@@ -44,7 +38,6 @@ public class ClientEntity {
     @Column(name = "secteur_activite")
     private String secteurActivite;
 
-
     @OneToMany(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Document> documents;
 
@@ -53,6 +46,38 @@ public class ClientEntity {
 
     @OneToMany(mappedBy ="client" , cascade = CascadeType.PERSIST)
     private List<ScreeningMatch> screeningMatchs ;
+
+    public ClientEntity() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getTelephone() { return telephone; }
+    public void setTelephone(String telephone) { this.telephone = telephone; }
+
+    public String getAdresse() { return adresse; }
+    public void setAdresse(String adresse) { this.adresse = adresse; }
+
+    public String getPays() { return pays; }
+    public void setPays(String pays) { this.pays = pays; }
+
+    public ClientStatus getClientStatus() { return clientStatus; }
+    public void setClientStatus(ClientStatus clientStatus) { this.clientStatus = clientStatus; }
+
+    public String getSecteurActivite() { return secteurActivite; }
+    public void setSecteurActivite(String secteurActivite) { this.secteurActivite = secteurActivite; }
+
+    public List<Document> getDocuments() { return documents; }
+    public void setDocuments(List<Document> documents) { this.documents = documents; }
+
+    public List<ContactPoint> getContacts() { return contacts; }
+    public void setContacts(List<ContactPoint> contacts) { this.contacts = contacts; }
+
+    public List<ScreeningMatch> getScreeningMatchs() { return screeningMatchs; }
+    public void setScreeningMatchs(List<ScreeningMatch> screeningMatchs) { this.screeningMatchs = screeningMatchs; }
 
     public String getType() {
         if (this instanceof ClientPersonnePhysique) return "PERSONNE";

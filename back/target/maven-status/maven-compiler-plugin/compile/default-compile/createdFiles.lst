@@ -16,9 +16,11 @@ com\avo\entities\FieldOption.class
 com\avo\mappers\ClientMoralMapper.class
 com\avo\entities\QNote.class
 com\avo\mappers\InstitutionMapperImpl.class
+com\avo\entities\MatterActivity.class
 com\avo\mappers\UBOMapperImpl.class
 com\avo\entities\QDocument.class
 com\avo\entities\QContactPoint.class
+com\avo\events\MatterActionEvent.class
 com\avo\dtos\ContactPointDTO$ContactPointDTOBuilder.class
 com\avo\entities\ClientDiligenceStatus.class
 com\avo\entities\DomaineJuridique.class
@@ -42,6 +44,7 @@ com\avo\dtos\DossierPrioriteDTO.class
 com\avo\mappers\DomaineJuridiqueMapperImpl.class
 com\avo\mappers\MatterEventMapperImpl.class
 com\avo\mappers\NoteMapperImpl.class
+com\avo\controllers\MatterActivityController.class
 com\avo\entities\QStatutDossier.class
 com\avo\controller\DocumentController.class
 com\avo\entities\QClientEntity.class
@@ -49,9 +52,12 @@ com\avo\mappers\ClientEntityMapperImpl.class
 com\avo\dtos\DocumentDTO.class
 com\avo\repositories\ClientRepository.class
 com\avo\repositories\DocumentRepository.class
+com\avo\services\DossierContactService.class
 com\avo\mappers\TaskCategoryMapperImpl.class
 com\avo\mappers\DossierMapperImpl.class
+com\avo\entities\QDossierContact.class
 com\avo\services\NoteService.class
+com\avo\config\SecurityConfig.class
 com\avo\dtos\DiligenceFormResultDTO$DiligenceFormResultDTOBuilder.class
 com\avo\dtos\FieldConfigDTO$FieldConfigDTOBuilder.class
 com\avo\entities\QTask.class
@@ -89,6 +95,7 @@ com\avo\dtos\DiligenceFormResultDTO.class
 com\avo\entities\Document.class
 com\avo\entities\NoteCategory.class
 com\avo\entities\TaskLog.class
+com\avo\controller\DossierContactController.class
 com\avo\controller\HomeController.class
 com\avo\dtos\NoteCategoryDTO$NoteCategoryDTOBuilder.class
 com\avo\dtos\SecteurActiviteDTO.class
@@ -109,9 +116,11 @@ com\avo\mappers\DocumentMapperImpl.class
 com\avo\mappers\TaskLogMapperImpl.class
 com\avo\mappers\TaskStatusMapper.class
 com\avo\entities\StatutDossier.class
+com\avo\repositories\MatterActivityRepository.class
 com\avo\mappers\ScreeningExecutionMapperImpl.class
 com\avo\mappers\TestEntityMapperImpl.class
 com\avo\services\DossierPrioriteService.class
+com\avo\repositories\DossierContactRepository.class
 com\avo\dtos\ScreeningExecutionDTO$ScreeningExecutionDTOBuilder.class
 com\avo\repositories\NoteRepository.class
 com\avo\dtos\DossierDTO$DossierDTOBuilder.class
@@ -132,10 +141,12 @@ com\avo\entities\QInstitution.class
 com\avo\mappers\NoteCategoryMapper.class
 com\avo\controller\FormConfigController.class
 com\avo\controller\TaskController.class
+com\avo\dtos\DossierContactDTO.class
 com\avo\entities\DiligenceFormResult$DiligenceFormResultBuilder.class
 com\avo\entities\QFieldConfig.class
 com\avo\controller\TestController.class
 com\avo\entities\TaskStatus.class
+com\avo\mappers\DossierContactMapperImpl.class
 com\avo\entities\ClientMoral.class
 com\avo\dtos\FieldConfigDTO.class
 com\avo\entities\TaskCategory.class
@@ -212,6 +223,7 @@ com\avo\services\UserService.class
 com\avo\mappers\TaskMapper.class
 com\avo\controller\NoteController.class
 com\avo\repositories\FormConfigRepository.class
+com\avo\services\MatterActivityService.class
 com\avo\mappers\ClientDiligenceStatusMapper.class
 com\avo\dtos\TaskCategoryDTO$TaskCategoryDTOBuilder.class
 com\avo\entities\Task.class
@@ -222,6 +234,7 @@ com\avo\repositories\NoteCategoryRepository.class
 com\avo\job\YenteClientVerificationJob.class
 com\avo\controller\ScreeningExecutionController.class
 com\avo\entities\QDossier.class
+com\avo\mappers\DossierContactMapper.class
 com\avo\repositories\DossierRepository.class
 com\avo\mappers\TaskLogMapper.class
 com\avo\services\PersonnePhysiqueService.class
@@ -257,6 +270,7 @@ com\avo\controller\NoteCategoryController.class
 com\avo\repositories\TaskCategoryRepository.class
 com\avo\repositories\ScreeningMatchRepository.class
 com\avo\mappers\TaskStatusMapperImpl.class
+com\avo\entities\DossierContact.class
 com\avo\entities\FieldOption$FieldOptionBuilder.class
 com\avo\mappers\ClientEntityMapper.class
 com\avo\mappers\EventTypeMapper.class
@@ -269,10 +283,12 @@ com\avo\mappers\FormConfigMapper.class
 com\avo\dtos\UserDTO$UserDTOBuilder.class
 com\avo\dtos\AssociationDTO.class
 com\avo\entities\ClientEntity.class
+com\avo\entities\QMatterActivity.class
 com\avo\entities\QTaskCategory.class
 com\avo\entities\ClientStatus.class
 com\avo\repositories\TestRepository.class
 com\avo\mappers\SecteurActiviteMapper.class
+com\avo\services\MatterActivityEventListener.class
 com\avo\mappers\AssociationMapper.class
 com\avo\entities\DiligenceFormResult.class
 com\avo\entities\QDiligenceFormResult.class

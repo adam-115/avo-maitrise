@@ -11,12 +11,13 @@ import { ClientService } from '../../services/client-service';
 import { UserService } from '../../services/user.service';
 import { ClientStatusAlertComponent } from "../../shared/components/client-status-alert/client-status-alert.component";
 import { DossierInfo } from "../dossier-info/dossier-info";
+import { MatterActivityComponent } from "../matter-activity/matter-activity";
 import { TaskManagerComponent } from "../task-manager/task-manager.component";
 
 @Component({
   selector: 'app-dossier-details',
   imports: [DocumentComponent, CommonModule, EvenementComponent, TaskManagerComponent, NoteComponent, ContactComponent
-    , DossierInfo, ClientStatusAlertComponent, RouterModule],
+    , DossierInfo, ClientStatusAlertComponent, RouterModule, MatterActivityComponent],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })

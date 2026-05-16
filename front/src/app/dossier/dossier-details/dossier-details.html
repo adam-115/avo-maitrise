@@ -81,7 +81,8 @@
         { id: DossierTabType.EVENEMENT, label: 'Événements' },
         { id: DossierTabType.TACHE, label: 'Tâches' },
         { id: DossierTabType.NOTE, label: 'Notes' },
-        { id: DossierTabType.CONTACT, label: 'Contacts' }
+        { id: DossierTabType.CONTACT, label: 'Contacts' },
+        { id: DossierTabType.ACTIVITY, label: 'Journal' }
       ]; track tab.id) {
         <button (click)="updateSelectedTab(tab.id)"
           [ngClass]="selectedTab === tab.id ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'"
@@ -126,6 +127,12 @@
     @if (selectedTab === DossierTabType.CONTACT) {
       <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden p-6">
         <app-contact [dossierID]="selectedDossier?.id || ''" [dossierNumber]="selectedDossier?.referenceInterne || ''"></app-contact>
+      </div>
+    }
+
+    @if (selectedTab === DossierTabType.ACTIVITY) {
+      <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden p-6">
+        <app-matter-activity [dossierId]="selectedDossier?.id || ''"></app-matter-activity>
       </div>
     }
 

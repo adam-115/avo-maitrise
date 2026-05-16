@@ -65,6 +65,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\controller\ClientMoralController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\FormConfigController.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\ClientMoralMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\InstitutionDTO.java
+D:\avo-maitrise\back\src\main\java\com\avo\events\MatterActionEvent.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\FormConfigDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Task.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\NoteCategoryRepository.java
@@ -80,6 +81,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\repositories\TaskRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\ScreeningExecutionController.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientTypeEnum.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\EventTypeDTO.java
+D:\avo-maitrise\back\src\main\java\com\avo\config\SecurityConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ScreeningMatchDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\UBOController.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\ClientPersonnePhysiqueMapper.java
@@ -115,6 +117,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\controller\TestController.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\MatterEventService.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\StatutDossierController.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\DossierPrioriteDTO.java
+D:\avo-maitrise\back\src\main\java\com\avo\entities\MatterActivity.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ScreeningMatchRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\ScreeningExecutionMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\DossierPrioriteController.java
@@ -140,6 +143,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\mappers\ScreeningMatchMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\TaskController.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\TaskService.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\FieldResult.java
+D:\avo-maitrise\back\src\main\java\com\avo\repositories\MatterActivityRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Dossier.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\MatterEventMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\AvoApplication.java
@@ -163,6 +167,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\dtos\StatutDossierDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\NoteDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\DocumentController.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientPersonnePhysique.java
+D:\avo-maitrise\back\src\main\java\com\avo\services\MatterActivityService.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\TestService.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\TaskCategory.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Document.java
@@ -177,6 +182,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\StatutDossier.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ContactPointRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\QueryDslConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\TaskCategoryController.java
+D:\avo-maitrise\back\src\main\java\com\avo\controllers\MatterActivityController.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchQuery.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\CorsConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\UBO.java
@@ -192,6 +198,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\mappers\SecteurActiviteMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\FormConfigService.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ClientEntityDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Notification.java
+D:\avo-maitrise\back\src\main\java\com\avo\services\MatterActivityEventListener.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\TaskCategoryService.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchResult.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\DossierService.java

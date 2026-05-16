@@ -21,13 +21,15 @@ public class DossierContactService {
 
     private final DossierContactRepository repository;
     private final DossierContactMapper mapper;
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public DossierContactService(DossierContactRepository repository, DossierContactMapper mapper) {
+    public DossierContactService(DossierContactRepository repository, DossierContactMapper mapper, org.springframework.context.ApplicationEventPublisher eventPublisher) {
         this.repository = repository;
         this.mapper = mapper;
+        this.eventPublisher = eventPublisher;
     }
 
     public Page<DossierContactDTO> findAll(Pageable pageable) {
@@ -51,7 +53,13 @@ public class DossierContactService {
     public DossierContactDTO create(DossierContactDTO dto) {
         DossierContact entity = mapper.toEntity(dto);
         attachRelatedEntities(entity, dto);
-        return mapper.toDto(repository.save(entity));
+        DossierContact saved = repository.save(entity);
+        
+        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+            this, saved.getDossier().getId(), getCurrentUsername(), "Ajout", "Contact", saved.getId(), "Contact ajouté : " + saved.getNom() + " " + saved.getPrenom()
+        ));
+        
+        return mapper.toDto(saved);
     }
 
     public DossierContactDTO update(DossierContactDTO dto) {
@@ -73,7 +81,21 @@ public class DossierContactService {
         existing.setNotes(dto.getNotes());
 
         attachRelatedEntities(existing, dto);
-        return mapper.toDto(repository.save(existing));
+        DossierContact saved = repository.save(existing);
+
+        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+            this, saved.getDossier().getId(), getCurrentUsername(), "Mise à jour", "Contact", saved.getId(), "Contact mis à jour : " + saved.getNom() + " " + saved.getPrenom()
+        ));
+
+        return mapper.toDto(saved);
+    }
+
+    private String getCurrentUsername() {
+        try {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null) return auth.getName();
+        } catch (Exception e) {}
+        return "Système";
     }
 
     private void attachRelatedEntities(DossierContact entity, DossierContactDTO dto) {
@@ -83,6 +105,11 @@ public class DossierContactService {
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        repository.findById(id).ifPresent(contact -> {
+            eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                this, contact.getDossier().getId(), getCurrentUsername(), "Suppression", "Contact", contact.getId(), "Contact supprimé : " + contact.getNom() + " " + contact.getPrenom()
+            ));
+            repository.delete(contact);
+        });
     }
 }

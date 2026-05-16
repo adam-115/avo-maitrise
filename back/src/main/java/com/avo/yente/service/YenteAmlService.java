@@ -19,11 +19,10 @@ import com.avo.yente.models.YenteMatchResponse;
 import com.avo.yente.models.YenteMatchResult;
 import com.avo.yente.models.YenteQueryResponse;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class YenteAmlService {
+
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(YenteAmlService.class);
 
     private final double blockThreshold;
     private final double suspectThreshold;

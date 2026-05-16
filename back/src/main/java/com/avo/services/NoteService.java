@@ -14,6 +14,8 @@ import jakarta.persistence.PersistenceContext;
 import com.avo.entities.Dossier;
 import com.avo.entities.AppUser;
 import com.avo.entities.NoteCategory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,13 +25,15 @@ public class NoteService {
 
     private final NoteRepository repository;
     private final NoteMapper mapper;
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public NoteService(NoteRepository repository, NoteMapper mapper) {
+    public NoteService(NoteRepository repository, NoteMapper mapper, org.springframework.context.ApplicationEventPublisher eventPublisher) {
         this.repository = repository;
         this.mapper = mapper;
+        this.eventPublisher = eventPublisher;
     }
 
     public Page<NoteDTO> findAll(Pageable pageable) {
@@ -53,7 +57,14 @@ public class NoteService {
     public NoteDTO create(NoteDTO dto) {
         Note entity = mapper.toEntity(dto);
         attachRelatedEntities(entity, dto);
-        return mapper.toDto(repository.save(entity));
+        Note saved = repository.save(entity);
+        
+        String author = getCurrentUsername();
+        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+            this, saved.getDossier().getId(), author, "Création", "Note", saved.getId(), "Note créée : " + saved.getTitle()
+        ));
+        
+        return mapper.toDto(saved);
     }
 
     public NoteDTO update(NoteDTO dto) {
@@ -65,7 +76,26 @@ public class NoteService {
         existing.setDescription(dto.getDescription());
         attachRelatedEntities(existing, dto);
 
-        return mapper.toDto(repository.save(existing));
+        Note saved = repository.save(existing);
+        
+        String author = getCurrentUsername();
+        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+            this, saved.getDossier().getId(), author, "Modification", "Note", saved.getId(), "Note modifiée : " + saved.getTitle()
+        ));
+
+        return mapper.toDto(saved);
+    }
+
+    private String getCurrentUsername() {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null) {
+                return authentication.getName();
+            }
+        } catch (Exception e) {
+            // Fallback
+        }
+        return "Système";
     }
 
     private void attachRelatedEntities(Note entity, NoteDTO dto) {
@@ -81,6 +111,12 @@ public class NoteService {
     }
 
     public void delete(Long id) {
-        repository.deleteById(id);
+        repository.findById(id).ifPresent(note -> {
+            String author = getCurrentUsername();
+            eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                this, note.getDossier().getId(), author, "Suppression", "Note", note.getId(), "Note supprimée : " + note.getTitle()
+            ));
+            repository.delete(note);
+        });
     }
 }

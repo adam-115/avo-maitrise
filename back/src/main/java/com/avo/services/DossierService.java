@@ -17,11 +17,14 @@ public class DossierService {
     private final DossierRepository repository;
     private final com.avo.repositories.ClientRepository clientRepository;
     private final DossierMapper mapper;
+    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
-    public DossierService(DossierRepository repository, com.avo.repositories.ClientRepository clientRepository, DossierMapper mapper) {
+    public DossierService(DossierRepository repository, com.avo.repositories.ClientRepository clientRepository,
+            DossierMapper mapper, org.springframework.context.ApplicationEventPublisher eventPublisher) {
         this.repository = repository;
         this.clientRepository = clientRepository;
         this.mapper = mapper;
+        this.eventPublisher = eventPublisher;
     }
 
     private void linkDocuments(Dossier entity) {
@@ -54,13 +57,45 @@ public class DossierService {
     public DossierDTO create(DossierDTO dto) {
         Dossier entity = mapper.toEntity(dto);
         linkDocuments(entity);
-        return mapper.toDto(repository.save(entity));
+        Dossier saved = repository.save(entity);
+
+        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                this, saved.getId(), getCurrentUsername(), "Création", "Dossier", saved.getId(),
+                "Nouveau dossier créé : " + saved.getTitre()));
+
+        return mapper.toDto(saved);
     }
 
     public DossierDTO update(DossierDTO dto) {
         Dossier entity = mapper.toEntity(dto);
         linkDocuments(entity);
-        return mapper.toDto(repository.save(entity));
+        Dossier saved = repository.save(entity);
+
+        if (saved.getDocuments().size() > dto.getDocuments().size()) {
+            for (int i = dto.getDocuments().size(); i < saved.getDocuments().size(); i++) {
+                eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                        this, saved.getId(), getCurrentUsername(), "Ajout", "Document",
+                        saved.getDocuments().get(i).getId(),
+                        "Document ajouté : " + saved.getDocuments().get(i).getNomFichier()));
+            }
+        } else {
+            eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                    this, saved.getId(), getCurrentUsername(), "Mise à jour", "Dossier", saved.getId(),
+                    "Dossier mis à jour : " + saved.getTitre()));
+        }
+
+        return mapper.toDto(saved);
+    }
+
+    private String getCurrentUsername() {
+        try {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
+                    .getContext().getAuthentication();
+            if (auth != null)
+                return auth.getName();
+        } catch (Exception e) {
+        }
+        return "Système";
     }
 
     public void delete(Long id) {

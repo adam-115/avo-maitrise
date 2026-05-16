@@ -1,18 +1,12 @@
 package com.avo.entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
 @Entity
 @Table(name = "dossiers")
-@Getter
-@Setter
-@NoArgsConstructor
 public class Dossier {
 
     @Id
@@ -69,6 +63,59 @@ public class Dossier {
     private Double tauxHoraireApplique;
 
     private String methodeFacturation;
+
+    public Dossier() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getReferenceInterne() { return referenceInterne; }
+    public void setReferenceInterne(String referenceInterne) { this.referenceInterne = referenceInterne; }
+
+    public String getTitre() { return titre; }
+    public void setTitre(String titre) { this.titre = titre; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public Long getClientId() { return clientId; }
+    public void setClientId(Long clientId) { this.clientId = clientId; }
+
+    public String getResponsableId() { return responsableId; }
+    public void setResponsableId(String responsableId) { this.responsableId = responsableId; }
+
+    public List<String> getIntervenantsIds() { return intervenantsIds; }
+    public void setIntervenantsIds(List<String> intervenantsIds) { this.intervenantsIds = intervenantsIds; }
+
+    public String getDomaineJuridique() { return domaineJuridique; }
+    public void setDomaineJuridique(String domaineJuridique) { this.domaineJuridique = domaineJuridique; }
+
+    public String getPrioriteID() { return prioriteID; }
+    public void setPrioriteID(String prioriteID) { this.prioriteID = prioriteID; }
+
+    public String getStatutID() { return statutID; }
+    public void setStatutID(String statutID) { this.statutID = statutID; }
+
+    public List<Document> getDocuments() { return documents; }
+    public void setDocuments(List<Document> documents) { this.documents = documents; }
+
+    public Date getDateOuverture() { return dateOuverture; }
+    public void setDateOuverture(Date dateOuverture) { this.dateOuverture = dateOuverture; }
+
+    public Date getDateCloture() { return dateCloture; }
+    public void setDateCloture(Date dateCloture) { this.dateCloture = dateCloture; }
+
+    public Date getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+
+    public Double getBudgetEstime() { return budgetEstime; }
+    public void setBudgetEstime(Double budgetEstime) { this.budgetEstime = budgetEstime; }
+
+    public Double getTauxHoraireApplique() { return tauxHoraireApplique; }
+    public void setTauxHoraireApplique(Double tauxHoraireApplique) { this.tauxHoraireApplique = tauxHoraireApplique; }
+
+    public String getMethodeFacturation() { return methodeFacturation; }
+    public void setMethodeFacturation(String methodeFacturation) { this.methodeFacturation = methodeFacturation; }
 
     @PrePersist
     protected void onCreate() {

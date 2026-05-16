@@ -16,21 +16,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@NoArgsConstructor
-@Getter
-@Setter
 
 @Entity
 @Table(name = "screening_matches")
 public class ScreeningMatch {
 
-    /**
-     * The unique identifier for the screening match record.
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,9 +29,6 @@ public class ScreeningMatch {
     @JoinColumn(name = "screening_execution_id", nullable = true)
     private ScreeningExecution screeningExecution;
     
-    /**
-     * The client associated with this screening match.
-     */
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", nullable = false)
     private ClientEntity client;
@@ -50,36 +37,18 @@ public class ScreeningMatch {
     @JoinColumn(name = "ubo_id", nullable = true)
     private UBO ubo ;
 
-    /**
-     * The unique identifier of the matched entity from the external Yente/OpenSanctions API.
-     */
     private String yenteId;
 
-    /**
-     * The matching score representing the similarity or probability of the match.
-     */
     private Double score;
 
-    /**
-     * The name of the target entity that was matched.
-     */
     private String targetName;
 
-    /**
-     * The raw JSON response received from the Yente API, stored for audit and detailed review purposes.
-     */
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "raw_response", columnDefinition = "json")
     private JsonNode rawResponse;
 
-    /**
-     * The timestamp indicating when this screening match was recorded in the system.
-     */
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    /**
-     * The reason or topic for the match (e.g., sanction, pep).
-     */
     @Column(name = "match_reason", columnDefinition = "TEXT")
     private String matchReason;
 
@@ -99,4 +68,50 @@ public class ScreeningMatch {
     @Column(name = "yente_last_update")
     private String yenteLastUpdate;
 
+    public ScreeningMatch() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public ScreeningExecution getScreeningExecution() { return screeningExecution; }
+    public void setScreeningExecution(ScreeningExecution screeningExecution) { this.screeningExecution = screeningExecution; }
+
+    public ClientEntity getClient() { return client; }
+    public void setClient(ClientEntity client) { this.client = client; }
+
+    public UBO getUbo() { return ubo; }
+    public void setUbo(UBO ubo) { this.ubo = ubo; }
+
+    public String getYenteId() { return yenteId; }
+    public void setYenteId(String yenteId) { this.yenteId = yenteId; }
+
+    public Double getScore() { return score; }
+    public void setScore(Double score) { this.score = score; }
+
+    public String getTargetName() { return targetName; }
+    public void setTargetName(String targetName) { this.targetName = targetName; }
+
+    public JsonNode getRawResponse() { return rawResponse; }
+    public void setRawResponse(JsonNode rawResponse) { this.rawResponse = rawResponse; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getMatchReason() { return matchReason; }
+    public void setMatchReason(String matchReason) { this.matchReason = matchReason; }
+
+    public ScreeningMatchStatus getStatus() { return status; }
+    public void setStatus(ScreeningMatchStatus status) { this.status = status; }
+
+    public String getReviewerComment() { return reviewerComment; }
+    public void setReviewerComment(String reviewerComment) { this.reviewerComment = reviewerComment; }
+
+    public LocalDateTime getReviewedAt() { return reviewedAt; }
+    public void setReviewedAt(LocalDateTime reviewedAt) { this.reviewedAt = reviewedAt; }
+
+    public String getReviewedBy() { return reviewedBy; }
+    public void setReviewedBy(String reviewedBy) { this.reviewedBy = reviewedBy; }
+
+    public String getYenteLastUpdate() { return yenteLastUpdate; }
+    public void setYenteLastUpdate(String yenteLastUpdate) { this.yenteLastUpdate = yenteLastUpdate; }
 }

@@ -4,15 +4,9 @@ import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "associations")
-@Getter
-@Setter
-@NoArgsConstructor
 public class Association extends ClientEntity {
 
     private String nom;
@@ -24,4 +18,29 @@ public class Association extends ClientEntity {
     private String cinRepresentantLegal;
     private Date dateNaissanceRepresentantLegal;
 
+    public Association() {}
+
+    public String getNom() { return nom; }
+    public void setNom(String nom) { this.nom = nom; }
+
+    public String getNumeroRegistreNational() { return numeroRegistreNational; }
+    public void setNumeroRegistreNational(String numeroRegistreNational) { this.numeroRegistreNational = numeroRegistreNational; }
+
+    public String getNumeroIdFiscal() { return numeroIdFiscal; }
+    public void setNumeroIdFiscal(String numeroIdFiscal) { this.numeroIdFiscal = numeroIdFiscal; }
+
+    public String getNomRepresentantLegal() { return nomRepresentantLegal; }
+    public void setNomRepresentantLegal(String nomRepresentantLegal) { this.nomRepresentantLegal = nomRepresentantLegal; }
+
+    public String getPrenomRepresentantLegal() { return prenomRepresentantLegal; }
+    public void setPrenomRepresentantLegal(String prenomRepresentantLegal) { this.prenomRepresentantLegal = prenomRepresentantLegal; }
+
+    public String getNationaliteRepresentantLegal() { return nationaliteRepresentantLegal; }
+    public void setNationaliteRepresentantLegal(String nationaliteRepresentantLegal) { this.nationaliteRepresentantLegal = nationaliteRepresentantLegal; }
+
+    public String getCinRepresentantLegal() { return cinRepresentantLegal; }
+    public void setCinRepresentantLegal(String cinRepresentantLegal) { this.cinRepresentantLegal = cinRepresentantLegal; }
+
+    public Date getDateNaissanceRepresentantLegal() { return dateNaissanceRepresentantLegal; }
+    public void setDateNaissanceRepresentantLegal(Date dateNaissanceRepresentantLegal) { this.dateNaissanceRepresentantLegal = dateNaissanceRepresentantLegal; }
 }

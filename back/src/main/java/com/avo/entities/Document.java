@@ -3,6 +3,7 @@ package com.avo.entities;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,15 +13,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "documents")
-@Getter
-@Setter
-@NoArgsConstructor
 public class Document {
 
     @Id
@@ -28,11 +23,10 @@ public class Document {
     private Long id;
 
     @Column(nullable = true)
-    private String nomFichier; // ex: "piece_identite.pdf"
+    private String nomFichier;
 
-    private String typeDocument; // ex: "ID_CARD", "KBIS", "STATUTS"
+    private String typeDocument;
 
-    // Frontend compatibility & metadata
     private String title;
     private String name;
     private String label;
@@ -40,8 +34,7 @@ public class Document {
     private String tags;
     private String filename;
 
-    // TODO check MinIO to store files or maybe use blob
-    private String urlStockage; // Chemin vers le serveur de fichiers ou S3
+    private String urlStockage;
 
     private LocalDateTime dateUpload = LocalDateTime.now();
 
@@ -56,8 +49,54 @@ public class Document {
     @JoinColumn(name = "client_id")
     private ClientEntity client;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.DETACH)
     @JoinColumn(name = "dossier_id")
     private Dossier dossier;
 
+    public Document() {}
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getNomFichier() { return nomFichier; }
+    public void setNomFichier(String nomFichier) { this.nomFichier = nomFichier; }
+
+    public String getTypeDocument() { return typeDocument; }
+    public void setTypeDocument(String typeDocument) { this.typeDocument = typeDocument; }
+
+    public String getTitle() { return title; }
+    public void setTitle(String title) { this.title = title; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getLabel() { return label; }
+    public void setLabel(String label) { this.label = label; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public String getTags() { return tags; }
+    public void setTags(String tags) { this.tags = tags; }
+
+    public String getFilename() { return filename; }
+    public void setFilename(String filename) { this.filename = filename; }
+
+    public String getUrlStockage() { return urlStockage; }
+    public void setUrlStockage(String urlStockage) { this.urlStockage = urlStockage; }
+
+    public LocalDateTime getDateUpload() { return dateUpload; }
+    public void setDateUpload(LocalDateTime dateUpload) { this.dateUpload = dateUpload; }
+
+    public boolean isEstValide() { return estValide; }
+    public void setEstValide(boolean estValide) { this.estValide = estValide; }
+
+    public byte[] getFileData() { return fileData; }
+    public void setFileData(byte[] fileData) { this.fileData = fileData; }
+
+    public ClientEntity getClient() { return client; }
+    public void setClient(ClientEntity client) { this.client = client; }
+
+    public Dossier getDossier() { return dossier; }
+    public void setDossier(Dossier dossier) { this.dossier = dossier; }
 }
