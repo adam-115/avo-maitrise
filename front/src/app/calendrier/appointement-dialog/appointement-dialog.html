@@ -74,23 +74,69 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-min">
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1">Client concerné</label>
-              <select formControlName="clientId"
-                class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 min-h-[42px] border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                <option value="">-- Aucun --</option>
-                <option *ngFor="let client of clients" [value]="client.id">
-                  {{ getDisplayName(client) }}
-                </option>
-              </select>
+              
+              <!-- Selected Client Info -->
+              <div *ngIf="getSelectedClientName()" class="flex items-center justify-between p-2.5 border border-indigo-100 rounded-lg bg-indigo-50/50 shadow-sm min-h-[42px]">
+                <div class="flex items-center gap-2">
+                  <div class="h-7 w-7 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-xs font-bold">
+                    {{ getSelectedClientName().charAt(0) | uppercase }}
+                  </div>
+                  <div>
+                    <p class="text-sm font-semibold text-gray-900 leading-tight">{{ getSelectedClientName() }}</p>
+                    <p class="text-[10px] text-gray-500 font-medium leading-tight">Ref: #{{ appointementForm.get('clientId')?.value }}</p>
+                  </div>
+                </div>
+                <button type="button" (click)="openClientDialog()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-500 transition-colors px-2 py-1 rounded-md hover:bg-indigo-50">
+                  Modifier
+                </button>
+              </div>
+
+              <!-- Select Client Button -->
+              <button *ngIf="!getSelectedClientName()" type="button" (click)="openClientDialog()"
+                class="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 p-2.5 text-center hover:border-gray-400 focus:outline-none transition-all min-h-[42px]">
+                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span class="text-sm font-semibold text-gray-700">Sélectionner un client</span>
+              </button>
+
+              <app-client-selection-dialog *ngIf="showClientDialog" [clients]="clients"
+                [initialSelection]="appointementForm.get('clientId')?.value" (confirmSelection)="onClientSelected($event)"
+                (closeDialog)="closeClientDialog()">
+              </app-client-selection-dialog>
             </div>
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-1">Dossier concerné</label>
-              <select formControlName="dossierId"
-                class="w-full px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 min-h-[42px] border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                <option value="">-- Aucun --</option>
-                <option *ngFor="let dossier of dossiers" [value]="dossier.id">
-                  {{ dossier.titre }} ({{dossier.referenceInterne}})
-                </option>
-              </select>
+              
+              <!-- Selected Dossier Info -->
+              <div *ngIf="getSelectedDossierName()" class="flex items-center justify-between p-2.5 border border-cyan-100 rounded-lg bg-cyan-50/50 shadow-sm min-h-[42px]">
+                <div class="flex items-center gap-2 max-w-[70%]">
+                  <div class="h-7 w-7 flex items-center justify-center rounded-full bg-cyan-100 text-cyan-600 text-xs font-bold flex-shrink-0">
+                    {{ getSelectedDossierName().charAt(0) | uppercase }}
+                  </div>
+                  <div class="truncate">
+                    <p class="text-sm font-semibold text-gray-900 leading-tight truncate">{{ getSelectedDossierName() }}</p>
+                    <p class="text-[10px] text-gray-500 font-medium leading-tight">Ref: #{{ appointementForm.get('dossierId')?.value }}</p>
+                  </div>
+                </div>
+                <button type="button" (click)="openDossierDialog()" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500 transition-colors px-2 py-1 rounded-md hover:bg-cyan-50">
+                  Modifier
+                </button>
+              </div>
+
+              <!-- Select Dossier Button -->
+              <button *ngIf="!getSelectedDossierName()" type="button" (click)="openDossierDialog()"
+                class="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 p-2.5 text-center hover:border-gray-400 focus:outline-none transition-all min-h-[42px]">
+                <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span class="text-sm font-semibold text-gray-700">Sélectionner un dossier</span>
+              </button>
+
+              <app-dossier-selection-dialog *ngIf="showDossierDialog" [dossiers]="dossiers"
+                [initialSelection]="appointementForm.get('dossierId')?.value" (confirmSelection)="onDossierSelected($event)"
+                (closeDialog)="closeDossierDialog()">
+              </app-dossier-selection-dialog>
             </div>
           </div>
 

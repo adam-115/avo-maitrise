@@ -20,6 +20,10 @@ export class ClientSelectionDialog implements OnInit {
     selectedClientId: string | number | null = null;
     searchTerm: string = '';
 
+    // Pagination
+    currentPage = 1;
+    pageSize = 5;
+
     getDisplayName(client: any): string {
         if (!client) return '';
         return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
@@ -28,9 +32,11 @@ export class ClientSelectionDialog implements OnInit {
     ngOnInit(): void {
         this.filteredClients = [...this.clients];
         this.selectedClientId = this.initialSelection;
+        this.currentPage = 1;
     }
 
     filterClients(): void {
+        this.currentPage = 1;
         if (!this.searchTerm) {
             this.filteredClients = [...this.clients];
         } else {
@@ -42,6 +48,31 @@ export class ClientSelectionDialog implements OnInit {
                     (c.prenom && c.prenom.toLowerCase().includes(lowerTerm)) ||
                     (c.email && c.email.toLowerCase().includes(lowerTerm));
             });
+        }
+    }
+
+    get totalPages(): number {
+        return Math.ceil(this.filteredClients.length / this.pageSize);
+    }
+
+    get paginatedClients(): Client[] {
+        const startIndex = (this.currentPage - 1) * this.pageSize;
+        return this.filteredClients.slice(startIndex, startIndex + this.pageSize);
+    }
+
+    get currentEndIndex(): number {
+        return Math.min(this.currentPage * this.pageSize, this.filteredClients.length);
+    }
+
+    nextPage(): void {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage++;
+        }
+    }
+
+    prevPage(): void {
+        if (this.currentPage > 1) {
+            this.currentPage--;
         }
     }
 

@@ -6,10 +6,12 @@ import { ClientService } from '../../services/client-service';
 import { DossierService } from '../../services/dossier.service';
 import { Appointement, Client, Dossier } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { ClientSelectionDialog } from '../../dossier/client-selection-dialog/client-selection-dialog';
+import { DossierSelectionDialog } from '../../dossier/dossier-selection-dialog/dossier-selection-dialog';
 
 @Component({
   selector: 'app-appointement-dialog',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ClientSelectionDialog, DossierSelectionDialog],
   templateUrl: './appointement-dialog.html',
   styleUrl: './appointement-dialog.css'
 })
@@ -33,10 +35,52 @@ export class AppointementDialogComponent implements OnInit {
   clients: Client[] = [];
   dossiers: Dossier[] = [];
   isLoading = false;
+  showClientDialog = false;
+  showDossierDialog = false;
 
   getDisplayName(client: any): string {
     if (!client) return '';
     return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+  }
+
+  openClientDialog(): void {
+    this.showClientDialog = true;
+  }
+
+  closeClientDialog(): void {
+    this.showClientDialog = false;
+  }
+
+  onClientSelected(clientId: string | number): void {
+    this.appointementForm.patchValue({ clientId: clientId });
+    this.closeClientDialog();
+  }
+
+  getSelectedClientName(): string {
+    const clientId = this.appointementForm.get('clientId')?.value;
+    if (!clientId) return '';
+    const client = this.clients.find(c => c.id == clientId) as any;
+    return client ? `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim() : '';
+  }
+
+  openDossierDialog(): void {
+    this.showDossierDialog = true;
+  }
+
+  closeDossierDialog(): void {
+    this.showDossierDialog = false;
+  }
+
+  onDossierSelected(dossierId: string | number): void {
+    this.appointementForm.patchValue({ dossierId: dossierId });
+    this.closeDossierDialog();
+  }
+
+  getSelectedDossierName(): string {
+    const dossierId = this.appointementForm.get('dossierId')?.value;
+    if (!dossierId) return '';
+    const dossier = this.dossiers.find(d => d.id == dossierId);
+    return dossier ? `${dossier.titre} (${dossier.referenceInterne})` : '';
   }
 
   ngOnInit() {
@@ -107,9 +151,7 @@ export class AppointementDialogComponent implements OnInit {
         }
       });
     } else {
-      const newAppointement: Appointement = {
-        // Pour json-server v1, l'ID doit obligatoirement être généré en tant que String !
-        id: Date.now().toString(),
+      const newAppointement: any = {
         ...formValue
       };
 

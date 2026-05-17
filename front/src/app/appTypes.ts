@@ -61,7 +61,9 @@ export interface Appointement {
   title: string;
   clientCase: string; // Keep for backward compatibility or simple display
   clientId?: number | string;      // ID of the related client
+  client?: Client;
   dossierId?: number | string; // ID of the related dossier
+  dossier?: Dossier;
   time: string; // Heure de début "HH:mm"
   endTime: string; // Heure de fin "HH:mm"
   location: string;

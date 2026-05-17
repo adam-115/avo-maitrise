@@ -39,7 +39,7 @@ export class CalendrierJour {
   }
 
   loadAppointements(): void {
-    this.appointementService.getAll().subscribe({
+    this.appointementService.findAll(0, 1000).subscribe({
       next: (data: PaginatedResponse<Appointement>) => {
         this.hearings = data.content.map(app => ({
           ...app,

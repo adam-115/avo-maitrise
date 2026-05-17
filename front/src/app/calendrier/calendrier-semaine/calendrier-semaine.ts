@@ -38,7 +38,7 @@ export class CalendrierSemaine implements OnInit {
   }
 
   loadAppointements(): void {
-    this.appointementService.getAll().subscribe({
+    this.appointementService.findAll(0, 1000).subscribe({
       next: (data: PaginatedResponse<Appointement>) => {
         // Convert the ISO string dates back to Javascript Date objects
         this.hearings = data.content.map(app => ({
