@@ -89,6 +89,27 @@ public class ScreeningMatchService {
             client.setClientStatus(com.avo.entities.ClientStatus.BLOCKED);
         } else if (hasDiligence) {
             client.setClientStatus(com.avo.entities.ClientStatus.INDULGENCE_REQUIRED);
+            
+            String clientName = client.getId().toString();
+            if (client instanceof com.avo.entities.ClientPersonnePhysique) {
+                com.avo.entities.ClientPersonnePhysique p = (com.avo.entities.ClientPersonnePhysique) client;
+                clientName = p.getPrenom() + " " + p.getNom();
+            } else if (client instanceof com.avo.entities.ClientMoral) {
+                com.avo.entities.ClientMoral m = (com.avo.entities.ClientMoral) client;
+                clientName = m.getNomCommercial();
+            } else if (client instanceof com.avo.entities.Association) {
+                com.avo.entities.Association a = (com.avo.entities.Association) client;
+                clientName = a.getNom();
+            } else if (client instanceof com.avo.entities.Institution) {
+                com.avo.entities.Institution i = (com.avo.entities.Institution) client;
+                clientName = i.getNom();
+            }
+
+            notificationRepository.save(new com.avo.entities.Notification(
+                "Indulgence AML Requise",
+                "Le statut du client " + clientName + " est passé à Indulgence/Dérogation requise. Une approbation ou vigilance complémentaire est nécessaire.",
+                client.getId()
+            ));
         } else if (hasPending) {
             client.setClientStatus(com.avo.entities.ClientStatus.VERIFICATION_AML_REQUIRED);
         } else if (hasNoLongerSanctioned) {

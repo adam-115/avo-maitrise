@@ -122,13 +122,13 @@ INSERT INTO app_users (id, email, username, first_name, last_name, role, is_part
 -- ============================================================================
 -- 9.1 PERSONNES PHYSIQUES (IDs: 11-30)
 INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur_activite) VALUES 
-(11, 'alexis.vidal@email.com', '+33612345678', '45 Rue de Courcelles, Paris', 'France', 'VERIFICATION_AML_REQUIRED', 'IT'),
+(11, 'vladimir.putin@email.ru', '+33612345678', '45 Rue de Courcelles, Paris', 'Russie', 'VERIFICATION_AML_REQUIRED', 'IT'),
 (12, 'sophie.dubois@email.com', '+33698765432', '12 Avenue des Gobelins, Paris', 'France', 'VALIDATED', 'SAN'),
 (13, 'michel.rodriguez@email.com', '+33644556677', '89 Boulevard de la Liberté, Lille', 'France', 'VALIDATED', 'BTP'),
-(14, 'kurt.muller@email.de', '+491701234567', 'Kaiserstraße 12, Frankfurt', 'Allemagne', 'VERIFICATION_AML_REQUIRED', 'FIN'),
+(14, 'roman.abramovich@email.ru', '+491701234567', 'Kaiserstraße 12, Frankfurt', 'Russie', 'VERIFICATION_AML_REQUIRED', 'FIN'),
 (15, 'sarah.connor@email.com', '+12135550199', '742 Evergreen Terrace, Los Angeles', 'USA', 'VALIDATED', 'IND'),
 (16, 'nicolas.sarkozy@email.fr', '+33600223344', '8 Place de l''Étoile, Paris', 'France', 'VALIDATED', 'IMM'),
-(17, 'julie.moreau@email.com', '+33688990011', '14 Rue de la Gare, Lyon', 'France', 'VERIFICATION_AML_REQUIRED', 'EDU'),
+(17, 'viktor.vekselberg@email.ru', '+33688990011', '14 Rue de la Gare, Lyon', 'Russie', 'VERIFICATION_AML_REQUIRED', 'EDU'),
 (18, 'thomas.dubois@email.com', '+33622446688', '56 Avenue Foch, Nice', 'France', 'VALIDATED', 'TRA'),
 (19, 'emma.watson@email.co.uk', '+442079460192', '22 Baker St, London', 'Royaume-Uni', 'VALIDATED', 'COM'),
 (20, 'david.beckham@email.com', '+13105550143', '100 Ocean Drive, Miami', 'USA', 'VALIDATED', 'SAN');
@@ -136,9 +136,9 @@ INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur
 -- 9.2 CLIENTS MORAUX (IDs: 21-30)
 INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur_activite) VALUES 
 (21, 'contact@novatech.fr', '+33140506070', '102 Rond-Point du Progrès, Lyon', 'France', 'VALIDATED', 'IT'),
-(22, 'finance@batibuild.com', '+33240302010', 'Z.I. Plaine de l''Ain, Blyes', 'France', 'VERIFICATION_AML_REQUIRED', 'BTP'),
+(22, 'finance@sberbank.ru', '+33240302010', 'Z.I. Plaine de l''Ain, Blyes', 'Russie', 'VERIFICATION_AML_REQUIRED', 'BTP'),
 (23, 'info@luxeglobal.ch', '+41223334455', 'Rue du Rhône 42, Genève', 'Suisse', 'VALIDATED', 'COM'),
-(24, 'legal@alphafinance.lu', '+35226123456', 'Avenue John F. Kennedy, Luxembourg', 'Luxembourg', 'VERIFICATION_AML_REQUIRED', 'FIN'),
+(24, 'legal@vtb.ru', '+35226123456', 'Avenue John F. Kennedy, Luxembourg', 'Russie', 'VERIFICATION_AML_REQUIRED', 'FIN'),
 (25, 'ops@redalert.ru', '+7495000000', 'Red Square 5, Moscow', 'Russie', 'VALIDATED', 'TRA'),
 (26, 'contact@solargroup.de', '+49301234567', 'Sonnenallee 89, Berlin', 'Allemagne', 'VALIDATED', 'ENV');
 
@@ -163,13 +163,13 @@ INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur
 -- ============================================================================
 -- 10.1 personnes_physiques
 INSERT INTO personnes_physiques (id, nom, prenom, nationalite, cin, date_naissance) VALUES 
-(11, 'Vidal', 'Alexis', 'Française', 'CIN-1122', '1982-05-14'),
+(11, 'Putin', 'Vladimir', 'Russe', 'CIN-1122', '1952-10-07'),
 (12, 'Dubois', 'Sophie', 'Française', 'CIN-3344', '1975-11-23'),
 (13, 'Rodriguez', 'Michel', 'Espagnole', 'CIN-5566', '1968-08-02'),
-(14, 'Muller', 'Kurt', 'Allemande', 'CIN-7788', '1990-03-30'),
+(14, 'Abramovich', 'Roman', 'Russe', 'CIN-7788', '1966-10-24'),
 (15, 'Connor', 'Sarah', 'Américaine', 'CIN-9900', '1985-07-12'),
 (16, 'Sarkozy', 'Nicolas', 'Française', 'CIN-NICO-77', '1955-01-28'),
-(17, 'Moreau', 'Julie', 'Française', 'CIN-8822', '1992-04-18'),
+(17, 'Vekselberg', 'Viktor', 'Russe', 'CIN-8822', '1957-04-14'),
 (18, 'Dubois', 'Thomas', 'Française', 'CIN-8933', '1980-02-15'),
 (19, 'Watson', 'Emma', 'Britannique', 'CIN-WAT-90', '1990-04-15'),
 (20, 'Beckham', 'David', 'Britannique', 'CIN-BECK-75', '1975-05-02');
@@ -177,9 +177,9 @@ INSERT INTO personnes_physiques (id, nom, prenom, nationalite, cin, date_naissan
 -- 10.2 clients_moraux
 INSERT INTO clients_moraux (id, nom_commercial, forme_juridique, numero_registre_commerce, numero_id_fiscal, nom_representant_legal, prenom_representant_legal, nationalite_representant_legal, cin_representant_legal, date_naissance_representant_legal) VALUES 
 (21, 'NovaTech SAS', 'SAS', 'RCS LYON B 123 456 789', 'FR-TAX-123456789', 'Martin', 'Thierry', 'Française', 'CIN-REP-21', '1970-04-05'),
-(22, 'BatiBuild SARL', 'SARL', 'RCS BOURG B 987 654 321', 'FR-TAX-987654321', 'Gauthier', 'Bernard', 'Française', 'CIN-REP-22', '1965-09-18'),
+(22, 'Sberbank of Russia PJSC', 'SARL', 'RCS BOURG B 987 654 321', 'RU-TAX-987654321', 'Abramovich', 'Roman', 'Russe', 'CIN-REP-22', '1966-10-24'),
 (23, 'Luxe Global SA', 'SA', 'CHE-123.456.789 MWST', 'CH-TAX-1234567', 'Rossi', 'Elena', 'Italienne', 'CIN-REP-23', '1978-12-15'),
-(24, 'Alpha Finance Europe', 'SA', 'RCS LUXEMBOURG B 555666', 'LU-TAX-555666', 'Vanderbilt', 'Charles', 'Luxembourgeoise', 'CIN-REP-24', '1959-01-22'),
+(24, 'VTB Bank PJSC', 'SA', 'RCS LUXEMBOURG B 555666', 'RU-TAX-555666', 'Vekselberg', 'Viktor', 'Russe', 'CIN-REP-24', '1957-04-14'),
 (25, 'Red Alert Trading', 'LLC', 'RCS MOSCOW 000123', 'RU-TAX-666', 'Ivanov', 'Dmitry', 'Russe', 'CIN-REP-25', '1981-08-25'),
 (26, 'SolarGroup Gmbh', 'Gmbh', 'HRB BERLIN 112233', 'DE-TAX-112233', 'Schulz', 'Hans', 'Allemande', 'CIN-REP-26', '1973-10-12');
 
@@ -205,9 +205,9 @@ INSERT INTO institutions (id, nom, numero_registre_national, numero_id_fiscal, n
 INSERT INTO ubos (id, full_name, nationality, role_in_company, percentage_of_ownership, client_id, aml_analysis_status) VALUES 
 (1, 'Thierry Martin', 'Française', 'CEO & Fondateur', 60.0, 21, 'OK'),
 (2, 'Sylvie Martin', 'Française', 'Actionnaire', 40.0, 21, 'OK'),
-(3, 'Bernard Gauthier', 'Française', 'Gérant majoritaire', 75.0, 22, 'VERIFICATION_AML_REQUIRED'),
+(3, 'Roman Abramovich', 'Russe', 'Gérant majoritaire', 75.0, 22, 'VERIFICATION_AML_REQUIRED'),
 (4, 'Elena Rossi', 'Italienne', 'Administrateur délégué', 51.0, 23, 'OK'),
-(5, 'Charles Vanderbilt', 'Luxembourgeoise', 'Directeur Général', 10.0, 24, 'VERIFICATION_AML_REQUIRED'),
+(5, 'Viktor Vekselberg', 'Russe', 'Directeur Général', 10.0, 24, 'VERIFICATION_AML_REQUIRED'),
 (6, 'Dmitry Ivanov', 'Russe', 'Owner', 100.0, 25, 'OK'),
 (7, 'Hans Schulz', 'Allemande', 'Managing Director', 80.0, 26, 'OK');
 

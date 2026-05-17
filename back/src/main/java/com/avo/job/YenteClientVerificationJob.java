@@ -205,6 +205,30 @@ public class YenteClientVerificationJob {
                 }
                 clientRepository.save(client);
 
+                if (client.getClientStatus() == com.avo.entities.ClientStatus.VERIFICATION_AML_REQUIRED) {
+                    String clientName = client.getId().toString();
+                    if (client instanceof com.avo.entities.ClientPersonnePhysique) {
+                        com.avo.entities.ClientPersonnePhysique p = (com.avo.entities.ClientPersonnePhysique) client;
+                        clientName = p.getPrenom() + " " + p.getNom();
+                    } else if (client instanceof com.avo.entities.ClientMoral) {
+                        com.avo.entities.ClientMoral m = (com.avo.entities.ClientMoral) client;
+                        clientName = m.getNomCommercial();
+                    } else if (client instanceof com.avo.entities.Association) {
+                        com.avo.entities.Association a = (com.avo.entities.Association) client;
+                        clientName = a.getNom();
+                    } else if (client instanceof com.avo.entities.Institution) {
+                        com.avo.entities.Institution i = (com.avo.entities.Institution) client;
+                        clientName = i.getNom();
+                    }
+
+                    notificationRepository.save(new com.avo.entities.Notification(
+                            "Alerte AML : Revue Requise",
+                            "Des correspondances suspectes ont été identifiées pour le client " + clientName
+                                    + ". Une évaluation de conformité AML est requise.",
+                            client.getId()));
+                }
+                
+
                 // CLEANUP: Mark missing matches as NO_LONGER_SANCTIONED
                 java.util.List<com.avo.entities.ScreeningMatch> dbMatches = screeningMatchRepository
                         .findByClientId(client.getId());
