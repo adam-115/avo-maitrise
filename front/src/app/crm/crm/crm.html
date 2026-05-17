@@ -110,22 +110,50 @@
     <!-- Content Sections -->
     <div [ngSwitch]="activeTab">
         <!-- ALL TAB -->
-        <div *ngSwitchCase="'ALL'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            @for (client of filteredClients; track client.id) {
-                <app-client-card [client]="client"></app-client-card>
-            } @empty {
-                <div class="col-span-full py-20 flex flex-col items-center justify-center text-center bg-white rounded-[40px] shadow-sm border-2 border-dashed border-slate-200">
-                    <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-6">
-                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        <div *ngSwitchCase="'ALL'">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                @for (client of paginatedClients; track client.id) {
+                    <app-client-card [client]="client"></app-client-card>
+                } @empty {
+                    <div class="col-span-full py-20 flex flex-col items-center justify-center text-center bg-white rounded-[40px] shadow-sm border-2 border-dashed border-slate-200">
+                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-6">
+                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-900 mb-2">Aucun client trouvé</h3>
+                        <p class="text-slate-500 font-medium mb-8">Commencez par ajouter votre premier client à l'annuaire.</p>
+                        <button (click)="navigateToNewClient()"
+                            class="px-8 py-3 bg-slate-900 text-white font-black rounded-2xl hover:scale-105 transition-transform">
+                            Créer un Client
+                        </button>
                     </div>
-                    <h3 class="text-2xl font-black text-slate-900 mb-2">Aucun client trouvé</h3>
-                    <p class="text-slate-500 font-medium mb-8">Commencez par ajouter votre premier client à l'annuaire.</p>
-                    <button (click)="navigateToNewClient()"
-                        class="px-8 py-3 bg-slate-900 text-white font-black rounded-2xl hover:scale-105 transition-transform">
-                        Créer un Client
+                }
+            </div>
+
+            <!-- Pagination Toolbar -->
+            <div *ngIf="totalPages > 1" class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white px-8 py-5 rounded-[25px] border border-slate-200 shadow-sm transition-all hover:shadow-md">
+                <span class="text-slate-500 font-bold text-base">
+                    Affichage de <span class="text-slate-900 font-black">{{ (currentPage - 1) * pageSize + 1 }}</span> à 
+                    <span class="text-slate-900 font-black">{{ currentEndIndex }}</span> sur 
+                    <span class="text-slate-900 font-black">{{ filteredClients.length }}</span> clients
+                </span>
+                <div class="flex items-center gap-2">
+                    <button (click)="prevPage()" [disabled]="currentPage === 1"
+                        class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    
+                    <button *ngFor="let page of pages" (click)="currentPage = page"
+                        [ngClass]="currentPage === page ? 'bg-cyan-600 border-cyan-600 text-white shadow-md shadow-cyan-100 scale-105' : 'border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'"
+                        class="flex items-center justify-center w-12 h-12 rounded-2xl font-black text-base transition-all active:scale-95">
+                        {{ page }}
+                    </button>
+
+                    <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                        class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </button>
                 </div>
-            }
+            </div>
         </div>
 
         <!-- PERSONNE TAB -->

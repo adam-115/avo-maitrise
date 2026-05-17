@@ -45,6 +45,43 @@ export class Crm implements OnInit {
   selectedType: string = '';
   selectedRisk: string = '';
 
+  // Pagination
+  currentPage = 1;
+  pageSize = 6;
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredClients.length / this.pageSize);
+  }
+
+  get paginatedClients(): Client[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.filteredClients.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  get currentEndIndex(): number {
+    return Math.min(this.currentPage * this.pageSize, this.filteredClients.length);
+  }
+
+  get pages(): number[] {
+    const list: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      list.push(i);
+    }
+    return list;
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
   getDisplayName(client: any): string {
     if (!client) return '';
     return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
@@ -76,6 +113,7 @@ export class Crm implements OnInit {
   }
 
   filterClients() {
+    this.currentPage = 1;
     this.filteredClients = this.clients.filter(client => {
       const matchesSearch = !this.searchTerm ||
         (client.contacts && client.contacts.some(c => (c.nom + ' ' + c.prenom).toLowerCase().includes(this.searchTerm.toLowerCase()))) ||
