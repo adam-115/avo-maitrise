@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NoteDialogComponent } from '../note-dialog/note-dialog.component';
@@ -14,46 +14,87 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
   templateUrl: './note.component.html',
   styleUrl: './note.component.css'
 })
-export class NoteComponent implements OnInit {
+export class NoteComponent implements OnInit, OnChanges {
 
   private alertService = inject(AlertService);
+  private noteService = inject(NoteService);
+  private noteCategoryService = inject(NoteCategoryService);
 
   notes: Note[] = [];
   categories: NoteCategory[] = [];
   searchTerm: string = '';
   showNoteDialog = false;
   selectedNote: Note | null = null;
+
   @Input() dossierID = "1";
   @Input() userId = "2";
 
-  private noteService = inject(NoteService);
-  private noteCategoryService = inject(NoteCategoryService);
+  // Pagination
+  currentPage = 1;
+  pageSize = 6;
 
   ngOnInit() {
     this.loadNotes();
     this.loadCategories();
   }
 
-  get filteredNotes() {
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['dossierID'] && !changes['dossierID'].firstChange) {
+      this.currentPage = 1;
+      this.loadNotes();
+    }
+  }
+
+  get filteredNotes(): Note[] {
     if (!this.searchTerm.trim()) {
       return this.notes;
     }
     const lowerTerm = this.searchTerm.toLowerCase();
     return this.notes.filter(note => 
-      note.title.toLowerCase().includes(lowerTerm) || 
-      note.description.toLowerCase().includes(lowerTerm)
+      (note.title && note.title.toLowerCase().includes(lowerTerm)) || 
+      (note.description && note.description.toLowerCase().includes(lowerTerm))
     );
   }
 
+  get paginatedNotes(): Note[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.filteredNotes.slice(start, start + this.pageSize);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.filteredNotes.length / this.pageSize);
+  }
+
+  get currentEndIndex(): number {
+    return Math.min(this.currentPage * this.pageSize, this.filteredNotes.length);
+  }
+
+  onSearchChange() {
+    this.currentPage = 1;
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
   loadNotes() {
-    this.noteService.getAll().subscribe((data: PaginatedResponse<Note>) => {
-      this.notes = data.content.filter(n => String(n.dossierId) === String(this.dossierID));
+    if (!this.dossierID) return;
+    this.noteService.getByDossierId(this.dossierID, 0, 1000).subscribe((data: PaginatedResponse<Note>) => {
+      this.notes = data.content;
     });
   }
 
   loadCategories() {
     this.noteCategoryService.getAll().subscribe((categories: PaginatedResponse<NoteCategory>) => {
-      this.categories =   categories.content;
+      this.categories = categories.content;
     });
   }
 
@@ -77,11 +118,11 @@ export class NoteComponent implements OnInit {
   }
 
   addNote(note: Note) {
-    this.noteService.create(note).subscribe(newNote => {
-      this.notes.push(newNote);
+    this.noteService.create(note).subscribe(() => {
+      this.loadNotes();
+      this.closeNoteCreationModal();
     });
   }
-
 
   async deleteNote(id?: number | string) {
     if (!id) return;
@@ -94,13 +135,11 @@ export class NoteComponent implements OnInit {
 
     if (confirm) {
       this.noteService.delete(id).subscribe(() => {
-        this.notes = this.notes.filter(c => c.id !== id);
-        this.alertService.success('La note a été retiré du dossier.');
+        this.loadNotes();
+        this.alertService.success('La note a été retirée du dossier.');
       });
     }
   }
-
-
 
   editNote(note: Note) {
     this.selectedNote = note;
@@ -109,19 +148,10 @@ export class NoteComponent implements OnInit {
 
   updateNote(updatedNote: Note) {
     if (!updatedNote.id) return;
-    this.noteService.update(updatedNote).subscribe(note => {
-      const index = this.notes.findIndex(n => n.id === note.id);
-      if (index !== -1) {
-        this.notes[index] = note;
-      }
+    this.noteService.update(updatedNote).subscribe(() => {
+      this.loadNotes();
+      this.closeNoteCreationModal();
       this.alertService.success('La note a été mise à jour.');
     });
   }
-
-
-
-
-
-
-
 }

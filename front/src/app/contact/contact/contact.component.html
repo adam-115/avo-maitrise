@@ -12,7 +12,7 @@
         </button>
 
         <div class="relative w-full max-w-xs">
-            <input type="text" placeholder="Rechercher un nom ou un rôle..." [(ngModel)]="searchTerm"
+            <input type="text" placeholder="Rechercher un nom ou un rôle..." [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()"
                 class="w-full pl-10 pr-4 py-2 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
                 stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -33,7 +33,7 @@
     </div>
     } @else {
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        @for (contact of filteredContacts; track contact.id) {
+        @for (contact of paginatedContacts; track contact.id) {
         <div class="cursor-pointer transition-transform hover:scale-[1.01]" (click)="viewContactDetails(contact)">
             <h3 class="text-xl font-bold text-slate-800 border-b pb-2 mb-4 text-cyan-600">
                 {{ contact.notes || 'Rôle non défini' }}
@@ -86,6 +86,37 @@
         }
     </div>
     }
+
+    <!-- Pagination -->
+    <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-5 rounded-xl border border-slate-200 shadow-sm" *ngIf="filteredContacts.length > 0">
+        <div class="text-sm text-slate-500 order-2 sm:order-1 font-medium font-sans">
+            Affichage de <b>{{ filteredContacts.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</b> à 
+            <b>{{ currentEndIndex }}</b> sur 
+            <b>{{ filteredContacts.length }}</b> contacts.
+        </div>
+        
+        <div class="flex items-center space-x-2 order-1 sm:order-2" *ngIf="totalPages > 1">
+            <button (click)="prevPage()" [disabled]="currentPage === 1"
+                class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            
+            <span class="text-sm font-bold text-gray-700 px-3 font-sans">
+                Page <span class="text-cyan-600 font-extrabold">{{ currentPage }}</span> sur {{ totalPages }}
+            </span>
+            
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                class="inline-flex items-center justify-center p-2 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
 </div>
 
 @if (showDialog) {

@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatterEvent, User } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
@@ -13,7 +13,7 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
   templateUrl: './evenement.component.html',
   styleUrl: './evenement.component.css'
 })
-export class EvenementComponent implements OnInit {
+export class EvenementComponent implements OnInit, OnChanges {
 
   @Input({ required: true })
   dossierId!: string;
@@ -27,9 +27,22 @@ export class EvenementComponent implements OnInit {
   selectedEvent: MatterEvent | null = null;
   viewedEvent: MatterEvent | null = null;
 
+  // Pagination
+  currentPage = 1; // 1-indexed for UI
+  pageSize = 5;
+  totalElements = 0;
+  totalPages = 0;
+
   ngOnInit() {
     this.userService.getAll().subscribe(data => this.users = data.content);
     this.loadEvents();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['dossierId'] && !changes['dossierId'].firstChange) {
+      this.currentPage = 1;
+      this.loadEvents();
+    }
   }
 
   getUserName(userId: string | number): string {
@@ -39,9 +52,24 @@ export class EvenementComponent implements OnInit {
   }
 
   loadEvents() {
-    this.matterEventService.getAll().subscribe((res:PaginatedResponse<MatterEvent>) => {
-      this.events = res.content.filter(e => String(e.dossierId) === String(this.dossierId));
-    });
+    if (this.dossierId) {
+      this.matterEventService.getByDossierId(
+        this.dossierId,
+        this.currentPage - 1,
+        this.pageSize
+      ).subscribe({
+        next: (response) => {
+          this.events = response.content;
+          this.totalElements = response.totalElements;
+          this.totalPages = response.totalPages;
+        },
+        error: (err) => {
+          console.error('Error fetching events:', err);
+        }
+      });
+    } else {
+      this.events = [];
+    }
   }
 
   getEventTheme(typeId: string | number | undefined) {
@@ -78,7 +106,6 @@ export class EvenementComponent implements OnInit {
     }
   }
 
-
   openModal() {
     this.selectedEvent = null;
     this.showDialog = true;
@@ -88,7 +115,6 @@ export class EvenementComponent implements OnInit {
     this.selectedEvent = event;
     this.showDialog = true;
   }
-
 
   closeModal() {
     this.showDialog = false;
@@ -106,7 +132,7 @@ export class EvenementComponent implements OnInit {
     this.matterEventService.create(matterEvent).subscribe({
       next: (newEvent) => {
         this.alertService.displayMessage('Événement ajouté avec succès', 'success', 'success');
-        this.events.push(newEvent);
+        this.loadEvents();
         this.closeModal();
       },
       error: (error) => {
@@ -116,16 +142,12 @@ export class EvenementComponent implements OnInit {
     });
   }
 
-
   updateMatterEvent(matterEvent: MatterEvent) {
     if (!matterEvent.id) return;
     this.matterEventService.update(matterEvent).subscribe({
       next: (updatedEvent) => {
         this.alertService.displayMessage('Événement mis à jour avec succès', 'success', 'success');
-        const index = this.events.findIndex(e => e.id === updatedEvent.id);
-        if (index !== -1) {
-          this.events[index] = updatedEvent;
-        }
+        this.loadEvents();
         this.closeModal();
       },
       error: (error) => {
@@ -146,7 +168,7 @@ export class EvenementComponent implements OnInit {
       this.matterEventService.delete(eventId).subscribe({
         next: () => {
           this.alertService.success('Événement supprimé avec succès');
-          this.events = this.events.filter(e => e.id !== eventId);
+          this.loadEvents();
         },
         error: (error) => {
           this.alertService.displayMessage('Erreur lors de la suppression', 'error', 'error');
@@ -156,7 +178,17 @@ export class EvenementComponent implements OnInit {
     }
   }
 
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadEvents();
+    }
+  }
 
-
-
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadEvents();
+    }
+  }
 }

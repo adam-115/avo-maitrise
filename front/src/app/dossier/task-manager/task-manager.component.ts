@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Task, TaskCategory, TaskStatus, User, TaskLog } from '../../appTypes';
@@ -17,7 +17,7 @@ import { TaskDialogComponent } from './task-dialog/task-dialog.component';
     templateUrl: './task-manager.component.html',
     styleUrls: ['./task-manager.component.css']
 })
-export class TaskManagerComponent implements OnInit {
+export class TaskManagerComponent implements OnInit, OnChanges {
     @Input() dossierId!: string | number;
 
     tasks: Task[] = [];
@@ -34,6 +34,10 @@ export class TaskManagerComponent implements OnInit {
     selectedTaskId: number | string | undefined = undefined;
     taskToEdit?: Task;
 
+    // Pagination
+    currentPage = 1;
+    pageSize = 6;
+
     // Filters
     searchTerm: string = '';
     selectedCategoryId: string = '';
@@ -49,6 +53,13 @@ export class TaskManagerComponent implements OnInit {
 
     ngOnInit() {
         this.loadData();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['dossierId'] && !changes['dossierId'].firstChange) {
+            this.currentPage = 1;
+            this.loadTasks();
+        }
     }
 
     loadData() {
@@ -68,8 +79,9 @@ export class TaskManagerComponent implements OnInit {
     }
 
     loadTasks() {
-        this.taskService.getAll().subscribe(data => {
-            this.tasks = data.content.filter(t => t.dossierId == this.dossierId);
+        if (!this.dossierId) return;
+        this.taskService.getByDossierId(this.dossierId, 0, 1000).subscribe(data => {
+            this.tasks = data.content;
             this.tasks.forEach(task => {
                 if (task.id) this.loadTaskLogs(Number(task.id));
             });
@@ -98,6 +110,7 @@ export class TaskManagerComponent implements OnInit {
     }
 
     applyFilters() {
+        this.currentPage = 1;
         this.filteredTasks = this.tasks.filter(task => {
             const matchSearch = this.searchTerm ? task.titre.toLowerCase().includes(this.searchTerm.toLowerCase()) : true;
             const matchCategory = this.selectedCategoryId ? String(task.category?.id) === String(this.selectedCategoryId) : true;
@@ -233,5 +246,31 @@ export class TaskManagerComponent implements OnInit {
 
     getTaskTab(taskId: number): 'INFO' | 'LOGS' {
         return this.taskTabs[taskId] || 'INFO';
+    }
+
+    // Pagination Helpers
+    get paginatedTasks(): Task[] {
+        const start = (this.currentPage - 1) * this.pageSize;
+        return this.filteredTasks.slice(start, start + this.pageSize);
+    }
+
+    get totalPages(): number {
+        return Math.ceil(this.filteredTasks.length / this.pageSize);
+    }
+
+    get currentEndIndex(): number {
+        return Math.min(this.currentPage * this.pageSize, this.filteredTasks.length);
+    }
+
+    nextPage() {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage++;
+        }
+    }
+
+    prevPage() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+        }
     }
 }

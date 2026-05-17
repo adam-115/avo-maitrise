@@ -93,7 +93,7 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        <div *ngFor="let task of filteredTasks" [ngClass]="{
+        <div *ngFor="let task of paginatedTasks" [ngClass]="{
                 'opacity-70 grayscale-[30%] hover:grayscale-0': isClosed(task), 
                 'ring-2 ring-red-400': isOverdue(task) && !isClosed(task)
             }"
@@ -282,6 +282,37 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm" *ngIf="filteredTasks.length > 0">
+        <div class="text-sm text-slate-500 order-2 sm:order-1 font-medium">
+            Affichage de <b>{{ filteredTasks.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</b> à 
+            <b>{{ currentEndIndex }}</b> sur 
+            <b>{{ filteredTasks.length }}</b> tâches.
+        </div>
+        
+        <div class="flex items-center space-x-2 order-1 sm:order-2" *ngIf="totalPages > 1">
+            <button (click)="prevPage()" [disabled]="currentPage === 1"
+                class="inline-flex items-center justify-center p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            
+            <span class="text-sm font-bold text-slate-700 px-3">
+                Page <span class="text-cyan-600 font-extrabold">{{ currentPage }}</span> sur {{ totalPages }}
+            </span>
+            
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                class="inline-flex items-center justify-center p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 shadow-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
         </div>
     </div>
 </div>
