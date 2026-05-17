@@ -11,6 +11,7 @@ import com.avo.entities.Document;
 import com.avo.mappers.DocumentMapper;
 import com.avo.repositories.DocumentRepository;
 import com.querydsl.core.types.Predicate;
+import com.avo.entities.DocumentType;
 
 @Service
 public class DocumentService {
@@ -55,12 +56,23 @@ public class DocumentService {
             dossierRepository.findById(dto.getDossierId()).ifPresent(entity::setDossier);
         }
 
+        // Dynamically classify document type
+        if (entity.getDossier() != null) {
+            entity.setTypeDocument(DocumentType.DOSSIER);
+        } else if (entity.getClient() != null) {
+            entity.setTypeDocument(DocumentType.CLIENT);
+        } else {
+            entity.setTypeDocument(DocumentType.MODEL);
+        }
+
         Document saved = repository.save(entity);
         
-        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
-            this, saved.getDossier() != null ? saved.getDossier().getId() : dto.getDossierId(), 
-            getCurrentUsername(), "Upload", "Document", saved.getId(), "Document uploadé : " + saved.getNomFichier()
-        ));
+        if (saved.getTypeDocument() == DocumentType.DOSSIER) {
+            eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                this, saved.getDossier() != null ? saved.getDossier().getId() : dto.getDossierId(), 
+                getCurrentUsername(), "Upload", "Document", saved.getId(), "Document uploadé : " + saved.getNomFichier()
+            ));
+        }
         
         return mapper.toDto(saved);
     }
@@ -75,22 +87,35 @@ public class DocumentService {
             dossierRepository.findById(dto.getDossierId()).ifPresent(entity::setDossier);
         }
 
+        // Dynamically classify document type
+        if (entity.getDossier() != null) {
+            entity.setTypeDocument(DocumentType.DOSSIER);
+        } else if (entity.getClient() != null) {
+            entity.setTypeDocument(DocumentType.CLIENT);
+        } else {
+            entity.setTypeDocument(DocumentType.MODEL);
+        }
+
         Document saved = repository.save(entity);
 
-        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
-            this, saved.getDossier() != null ? saved.getDossier().getId() : dto.getDossierId(),
-            getCurrentUsername(), "Mise à jour", "Document", saved.getId(), "Document mis à jour : " + saved.getNomFichier()
-        ));
+        if (saved.getTypeDocument() == DocumentType.DOSSIER) {
+            eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                this, saved.getDossier() != null ? saved.getDossier().getId() : dto.getDossierId(),
+                getCurrentUsername(), "Mise à jour", "Document", saved.getId(), "Document mis à jour : " + saved.getNomFichier()
+            ));
+        }
 
         return mapper.toDto(saved);
     }
     
     public void delete(Long id) {
         repository.findById(id).ifPresent(doc -> {
-            eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
-                this, doc.getDossier() != null ? doc.getDossier().getId() : null,
-                getCurrentUsername(), "Suppression", "Document", doc.getId(), "Document supprimé : " + doc.getNomFichier()
-            ));
+            if (doc.getTypeDocument() == DocumentType.DOSSIER) {
+                eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                    this, doc.getDossier() != null ? doc.getDossier().getId() : null,
+                    getCurrentUsername(), "Suppression", "Document", doc.getId(), "Document supprimé : " + doc.getNomFichier()
+                ));
+            }
             repository.delete(doc);
         });
     }

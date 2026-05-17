@@ -10,18 +10,19 @@
             Liste des Modèles et Ressources Internes
         </h1>
         <p class="text-gray-600 mt-1">
-            Recherchez, filtrez et gérez les modèles de documents et les politiques internes.
+            Recherchez, filtrez et gérez les modèles de documents et les politiques internes de votre cabinet.
         </p>
     </div>
 
+    <!-- Options de Recherche & Filtrage -->
     <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
         <h2 class="text-xl font-bold text-slate-800 mb-4 text-indigo-700">Options de Recherche & Filtrage</h2>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <input type="text" placeholder="Rechercher par nom, description..."
+            <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" placeholder="Rechercher par nom, description..."
                 class="rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
 
-            <select class="rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+            <select [(ngModel)]="selectedCategory" (ngModelChange)="applyFilters()" class="rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 <option value="">Toutes les Catégories</option>
                 <option value="CONTRACT">Modèles de Contrats</option>
                 <option value="KYC_FORM">Formulaires KYC</option>
@@ -29,7 +30,7 @@
                 <option value="INTERNAL">Documents de Travail</option>
             </select>
 
-            <select class="rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+            <select [(ngModel)]="selectedStatus" (ngModelChange)="applyFilters()" class="rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 <option value="">Tous les Statuts</option>
                 <option value="ACTIVE">Actif</option>
                 <option value="IN_REVIEW">En Revue</option>
@@ -39,157 +40,60 @@
 
         <div class="mt-6 flex justify-between items-center border-t pt-4">
             <p class="text-sm text-gray-600">
-                <span class="font-semibold text-slate-800">4</span> documents modèles trouvés.
+                <span class="font-semibold text-slate-800">{{ filteredDocuments.length }}</span> document(s) modèle(s) trouvé(s).
             </p>
-            <a (click)="openUploadModal()"
+            <button (click)="openCreateDialog()"
                 class="px-5 py-2.5 rounded-lg text-sm font-medium text-white bg-green-600 shadow-md hover:bg-green-700 transition duration-150 flex items-center space-x-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
                 <span>Ajouter un Nouveau Modèle</span>
-            </a>
+            </button>
         </div>
     </div>
 
+    <!-- Empty State -->
+    <div *ngIf="filteredDocuments.length === 0" class="bg-white rounded-xl shadow-md p-12 text-center border border-gray-100">
+        <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+        </svg>
+        <h3 class="text-lg font-bold text-slate-700 mb-1">Aucun Modèle de Document</h3>
+        <p class="text-gray-500 text-sm">Aucun document modèle ne correspond aux filtres de recherche actuels.</p>
+    </div>
+
+    <!-- Grid of documents -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between border-t-4 border-green-500">
+        <div *ngFor="let doc of filteredDocuments" class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between border-t-4 border-indigo-500 hover:shadow-2xl transition duration-200">
             <div>
                 <div class="flex items-center justify-between mb-3">
                     <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">ACTIF</span>
-                    <span class="text-xs text-gray-500">MàJ: 01/09/2025</span>
+                    <span class="text-xs text-gray-500">MàJ: {{ doc.dateUpload || doc.date || 'Récent' | date:'dd/MM/yyyy' }}</span>
                 </div>
-                <h3 class="text-lg font-bold text-slate-800">Modèle Contrat Service Client (Standard)</h3>
-                <p class="text-sm text-gray-600 mt-1 mb-2">
-                    Version standard du contrat de service client, conforme aux dernières réglementations EU.
+                <h3 class="text-lg font-bold text-slate-800 truncate" [title]="doc.title">{{ doc.title }}</h3>
+                <p class="text-sm text-gray-600 mt-1 mb-3 line-clamp-3 min-h-[4.5rem]">
+                    {{ doc.description || 'Aucune description fournie.' }}
                 </p>
                 <div class="flex items-center space-x-2 text-sm text-gray-700">
                     <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                    <span>Catégorie: <span class="font-medium">Modèles de Contrats</span></span>
+                    <span>Catégorie: <span class="font-medium text-slate-800">{{ getCategoryLabel(doc.tags || '') }}</span></span>
                 </div>
-                <div class="flex items-center space-x-2 text-sm text-gray-700 mt-1">
+                <div class="flex items-center space-x-2 text-sm text-gray-700 mt-1.5 truncate">
                     <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5.5c.582 0 1.08.275 1.397.77l1.761 2.72c.3.468.5.836.5 1.21v13a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2zm0 0l-1.558-.027A2 2 0 004.5 4H7z"></path></svg>
-                    <span>Version: <span class="font-medium">V5.1</span> (.PDF)</span>
+                    <span>Fichier: <span class="font-semibold text-indigo-600" [title]="doc.nomFichier || doc.filename || doc.name">{{ doc.nomFichier || doc.filename || doc.name || 'document' }}</span></span>
                 </div>
             </div>
 
-            <div class="mt-4 border-t pt-4 flex justify-between space-x-2">
-                <a href="#" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            <div class="mt-6 border-t pt-4 flex justify-between space-x-2">
+                <button (click)="downloadModel(doc)" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
+                    <svg class="w-4 h-4 mr-1.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
                     Télécharger
-                </a>
-                <a href="#" class="inline-flex items-center px-3 py-2 border border-blue-300 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-50 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                    Éditer
-                </a>
-                <button class="inline-flex items-center px-3 py-2 border border-red-300 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    Archiver
                 </button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between border-t-4 border-yellow-500">
-            <div>
-                <div class="flex items-center justify-between mb-3">
-                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">EN REVUE</span>
-                    <span class="text-xs text-gray-500">MàJ: 15/09/2025</span>
-                </div>
-                <h3 class="text-lg font-bold text-slate-800">Politique Interne KYC/AML 2025</h3>
-                <p class="text-sm text-gray-600 mt-1 mb-2">
-                    Projet de la nouvelle politique KYC/AML pour l'année fiscale 2025, en attente d'approbation.
-                </p>
-                <div class="flex items-center space-x-2 text-sm text-gray-700">
-                    <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                    <span>Catégorie: <span class="font-medium">Politiques Internes</span></span>
-                </div>
-                <div class="flex items-center space-x-2 text-sm text-gray-700 mt-1">
-                    <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5.5c.582 0 1.08.275 1.397.77l1.761 2.72c.3.468.5.836.5 1.21v13a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2zm0 0l-1.558-.027A2 2 0 004.5 4H7z"></path></svg>
-                    <span>Version: <span class="font-medium">V1.0</span> (.DOCX)</span>
-                </div>
-            </div>
-
-            <div class="mt-4 border-t pt-4 flex justify-between space-x-2">
-                <a href="#" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Télécharger
-                </a>
-                <a href="#" class="inline-flex items-center px-3 py-2 border border-blue-300 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-50 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                <button (click)="openEditDialog(doc)" class="inline-flex items-center px-3 py-2 border border-blue-300 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-50 transition duration-150">
+                    <svg class="w-4 h-4 mr-1.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                     Éditer
-                </a>
-                <button class="inline-flex items-center px-3 py-2 border border-red-300 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    Archiver
                 </button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between opacity-70 border-t-4 border-gray-400">
-            <div>
-                <div class="flex items-center justify-between mb-3">
-                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">ARCHIVÉ</span>
-                    <span class="text-xs text-gray-500">MàJ: 05/03/2024</span>
-                </div>
-                <h3 class="text-lg font-bold text-slate-800">Formulaire Déclaration d'Origine des Fonds</h3>
-                <p class="text-sm text-gray-600 mt-1 mb-2">
-                    Ancienne version du formulaire d'origine des fonds, remplacée par la V1.2.
-                </p>
-                <div class="flex items-center space-x-2 text-sm text-gray-700">
-                    <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                    <span>Catégorie: <span class="font-medium">Formulaires KYC</span></span>
-                </div>
-                <div class="flex items-center space-x-2 text-sm text-gray-700 mt-1">
-                    <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5.5c.582 0 1.08.275 1.397.77l1.761 2.72c.3.468.5.836.5 1.21v13a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2zm0 0l-1.558-.027A2 2 0 004.5 4H7z"></path></svg>
-                    <span>Version: <span class="font-medium">V1.1</span> (.PDF)</span>
-                </div>
-            </div>
-
-            <div class="mt-4 border-t pt-4 flex justify-between space-x-2">
-                <a href="#" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Télécharger
-                </a>
-                <span class="inline-flex items-center px-3 py-2 border border-blue-100 rounded-lg text-sm font-medium text-blue-300">
-                    Éditer
-                </span>
-                <button class="inline-flex items-center px-3 py-2 border border-red-300 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                <button (click)="deleteModel(doc)" class="inline-flex items-center px-3 py-2 border border-red-300 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50 transition duration-150">
+                    <svg class="w-4 h-4 mr-1.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     Supprimer
-                </button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col justify-between border-t-4 border-cyan-500">
-            <div>
-                <div class="flex items-center justify-between mb-3">
-                    <span class="px-3 py-1 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-800">ACTIF</span>
-                    <span class="text-xs text-gray-500">MàJ: 20/08/2025</span>
-                </div>
-                <h3 class="text-lg font-bold text-slate-800">Procédure d'Onboarding Client</h3>
-                <p class="text-sm text-gray-600 mt-1 mb-2">
-                    Guide étape par étape pour le processus d'intégration des nouveaux clients.
-                </p>
-                <div class="flex items-center space-x-2 text-sm text-gray-700">
-                    <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                    <span>Catégorie: <span class="font-medium">Documents de Travail</span></span>
-                </div>
-                <div class="flex items-center space-x-2 text-sm text-gray-700 mt-1">
-                    <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5.5c.582 0 1.08.275 1.397.77l1.761 2.72c.3.468.5.836.5 1.21v13a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2zm0 0l-1.558-.027A2 2 0 004.5 4H7z"></path></svg>
-                    <span>Version: <span class="font-medium">V2.0</span> (.PDF)</span>
-                </div>
-            </div>
-
-            <div class="mt-4 border-t pt-4 flex justify-between space-x-2">
-                <a href="#" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Télécharger
-                </a>
-                <a href="#" class="inline-flex items-center px-3 py-2 border border-blue-300 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-50 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                    Éditer
-                </a>
-                <button class="inline-flex items-center px-3 py-2 border border-red-300 rounded-lg text-sm font-medium text-red-700 hover:bg-red-50 transition duration-150">
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    Archiver
                 </button>
             </div>
         </div>
@@ -197,4 +101,11 @@
     </div>
 </div>
 
-<app-upload-file-modal></app-upload-file-modal>
+<!-- Modal Dialog for Document Templates -->
+<app-document-dialog 
+    *ngIf="showDocumentDialog" 
+    [dialogTitle]="dialogTitle" 
+    [selectedDocument]="selectedDocument"
+    (addDocumentEvent)="saveDocument($event)" 
+    (closeDialogEvent)="closeDialog()">
+</app-document-dialog>

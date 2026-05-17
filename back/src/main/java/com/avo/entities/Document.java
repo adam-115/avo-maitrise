@@ -25,7 +25,8 @@ public class Document {
     @Column(nullable = true)
     private String nomFichier;
 
-    private String typeDocument;
+    @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
+    private DocumentType typeDocument;
 
     private String title;
     private String name;
@@ -61,8 +62,8 @@ public class Document {
     public String getNomFichier() { return nomFichier; }
     public void setNomFichier(String nomFichier) { this.nomFichier = nomFichier; }
 
-    public String getTypeDocument() { return typeDocument; }
-    public void setTypeDocument(String typeDocument) { this.typeDocument = typeDocument; }
+    public DocumentType getTypeDocument() { return typeDocument; }
+    public void setTypeDocument(DocumentType typeDocument) { this.typeDocument = typeDocument; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }

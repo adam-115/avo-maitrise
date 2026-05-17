@@ -22,4 +22,12 @@ export class DocumentService extends AbstractCrudService<Document> {
             .set('size', size.toString());
         return this.http.get<PaginatedResponse<Document>>(`${this.apiUrl}/search`, { params });
     }
+
+    getByType(typeDocument: string, page: number = 0, size: number = 100): Observable<PaginatedResponse<Document>> {
+        const params = new HttpParams()
+            .set('typeDocument', typeDocument)
+            .set('page', page.toString())
+            .set('size', size.toString());
+        return this.http.get<PaginatedResponse<Document>>(`${this.apiUrl}/search`, { params });
+    }
 }

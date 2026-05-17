@@ -401,13 +401,13 @@ export interface Dossier {
 
   // Relations
   clientId: number;   // ID du client rattaché
-  responsableId: string;       // ID de l'avocat responsable (associé)
-  intervenantsIds: string[];   // Liste des collaborateurs travaillant sur le dossier
+  responsableId: User;       // L'avocat responsable (associé)
+  intervenantsIds: User[];   // Liste des collaborateurs travaillant sur le dossier
 
   // Classification
-  domaineJuridique: string;    // Ex: Droit des Affaires, Droit Social, Immobilier
-  prioriteID: string; // Relies on DossierPriorite.code or DossierPriorite.id
-  statutID: string; // Relies on StatutDossier.code or StatutDossier.id
+  domaineJuridique: DomaineJuridique;    // Ex: Droit des Affaires, Droit Social, Immobilier
+  prioriteID: DossierPriorite; // Relies on DossierPriorite
+  statutID: StatutDossier; // Relies on StatutDossier
 
   // Compliance AML (Removed)
   documents: Document[]; // les documents du dossier

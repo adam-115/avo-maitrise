@@ -11,28 +11,84 @@
     </button>
 </header>
 
+<!-- Stats Dashboard Header -->
+<div class="mb-4 flex items-center justify-between">
+    <div>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Indicateurs de Performance (Mai 2026)</h2>
+        <p class="text-xs text-slate-500">Données en temps réel calculées pour le mois en cours</p>
+    </div>
+    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-700/10">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        Synchronisé
+    </span>
+</div>
+
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-cyan-600">
-        <p class="text-sm font-medium text-gray-500">Dossiers Actifs</p>
-        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ activeDossiersCount }}</p>
-        <p class="text-xs text-gray-500 mt-2">Vue d'ensemble rapide</p>
+    <!-- Card 1: Nouveaux Dossiers -->
+    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-md border border-slate-100 hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-indigo-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-300"></div>
+        <div class="flex items-center justify-between mb-4">
+            <div class="p-2.5 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+                </svg>
+            </div>
+            <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+12% vs avr.</span>
+        </div>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nouveaux Dossiers</p>
+        <p class="text-3xl font-extrabold text-slate-800 mt-1">{{ createdThisMonthCount }}</p>
+        <p class="text-xs text-slate-500 mt-2 font-medium">Ouverts au cours de ce mois</p>
     </div>
-    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-yellow-500">
-        <p class="text-sm font-medium text-gray-500">Dossiers Urgents</p>
-        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ urgentDossiersCount }}</p>
-        <p class="text-xs text-red-500 mt-2">À traiter cette semaine</p>
+
+    <!-- Card 2: Dossiers Clos -->
+    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-md border border-slate-100 hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-violet-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-300"></div>
+        <div class="flex items-center justify-between mb-4">
+            <div class="p-2.5 bg-violet-50 border border-violet-100 rounded-xl text-violet-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Objectif : 10</span>
+        </div>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Dossiers Clos</p>
+        <p class="text-3xl font-extrabold text-slate-800 mt-1">{{ closedThisMonthCount }}</p>
+        <p class="text-xs text-slate-500 mt-2 font-medium">Résolus avec succès ce mois</p>
     </div>
-    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-slate-400">
-        <p class="text-sm font-medium text-gray-500">Heures non facturées</p>
-        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ unbilledHours }} h</p>
-        <p class="text-xs text-gray-500 mt-2">Prêt pour la facturation</p>
+
+    <!-- Card 3: Heures Enregistrées -->
+    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-md border border-slate-100 hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-amber-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-300"></div>
+        <div class="flex items-center justify-between mb-4">
+            <div class="p-2.5 bg-amber-50 border border-amber-100 rounded-xl text-amber-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">Est. {{ unbilledHours * 150 }} €</span>
+        </div>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Facturable Mensuel</p>
+        <p class="text-3xl font-extrabold text-slate-800 mt-1">{{ unbilledHours }} h</p>
+        <p class="text-xs text-slate-500 mt-2 font-medium">Heures prêtes à facturer</p>
     </div>
-    <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-slate-600">
-        <p class="text-sm font-medium text-gray-500">Dossiers Clos (30j)</p>
-        <p class="text-3xl font-extrabold text-slate-900 mt-1">{{ successRate }}</p>
-        <p class="text-xs text-cyan-600 mt-2">Taux de succès</p>
+
+    <!-- Card 4: Taux de Clôture -->
+    <div class="relative overflow-hidden bg-white p-6 rounded-2xl shadow-md border border-slate-100 hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+        <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-cyan-50 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-300"></div>
+        <div class="flex items-center justify-between mb-4">
+            <div class="p-2.5 bg-cyan-50 border border-cyan-100 rounded-xl text-cyan-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+            </div>
+            <span class="text-xs font-bold text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-full">Optimal &gt; 70%</span>
+        </div>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Taux d'Efficacité</p>
+        <p class="text-3xl font-extrabold text-slate-800 mt-1">{{ closureRate }}%</p>
+        <p class="text-xs text-slate-500 mt-2 font-medium">Clôtures vs Créations ce mois</p>
     </div>
 </div>
+
 
 <div class="flex flex-col sm:flex-row gap-4 mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
     <div class="relative flex-grow">

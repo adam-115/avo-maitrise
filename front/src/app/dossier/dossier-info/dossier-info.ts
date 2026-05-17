@@ -83,46 +83,54 @@ export class DossierInfo implements OnInit, OnChanges {
         return client ? (client.nom || client.nomCommercial || client.prenom || 'Nom Inconnu') : 'Inconnu';
     }
 
-    getResponsableName(userId: string | undefined): string {
-        if (!userId) return 'Non spécifié';
-        const user = this.users.find(u => u.id == userId);
+    getResponsableName(userOrId: any): string {
+        if (!userOrId) return 'Non spécifié';
+        if (typeof userOrId === 'object' && userOrId.username) return userOrId.username;
+        const user = this.users.find(u => String(u.id) === String(userOrId));
         return user ? user.username : 'Inconnu';
     }
 
-    getStatusLabel(statusId: string | undefined): string {
-        if (!statusId) return 'Non spécifié';
-        const status = this.statuses.find(s => s.id == statusId);
+    getStatusLabel(statusOrId: any): string {
+        if (!statusOrId) return 'Non spécifié';
+        if (typeof statusOrId === 'object' && statusOrId.label) return statusOrId.label;
+        const status = this.statuses.find(s => String(s.id) === String(statusOrId));
         return status ? status.label : 'Inconnu';
     }
 
-    getStatusColor(statusId: string | undefined): string {
-        if (!statusId) return '#ccc';
-        const status = this.statuses.find(s => s.id == statusId);
+    getStatusColor(statusOrId: any): string {
+        if (!statusOrId) return '#ccc';
+        if (typeof statusOrId === 'object' && statusOrId.color) return statusOrId.color;
+        const status = this.statuses.find(s => String(s.id) === String(statusOrId));
         return status ? (status.color || '#ccc') : '#ccc';
     }
 
-    getPriorityLabel(priorityId: string | undefined): string {
-        if (!priorityId) return 'Non spécifié';
-        const priority = this.priorities.find(p => p.id == priorityId);
+    getPriorityLabel(priorityOrId: any): string {
+        if (!priorityOrId) return 'Non spécifié';
+        if (typeof priorityOrId === 'object' && priorityOrId.label) return priorityOrId.label;
+        const priority = this.priorities.find(p => String(p.id) === String(priorityOrId));
         return priority ? priority.label : 'Inconnu';
     }
 
-    getPriorityColor(priorityId: string | undefined): string {
-        if (!priorityId) return 'transparent';
-        const priority = this.priorities.find(p => p.id == priorityId);
+    getPriorityColor(priorityOrId: any): string {
+        if (!priorityOrId) return 'transparent';
+        if (typeof priorityOrId === 'object' && priorityOrId.color) return priorityOrId.color;
+        const priority = this.priorities.find(p => String(p.id) === String(priorityOrId));
         return priority ? (priority.color || 'transparent') : 'transparent';
     }
 
-    getDomaineLabel(domaineId: string | undefined): string {
-        if (!domaineId) return 'Non spécifié';
-        const domaine = this.domaines.find(d => d.id == domaineId);
+    getDomaineLabel(domaineOrId: any): string {
+        if (!domaineOrId) return 'Non spécifié';
+        if (typeof domaineOrId === 'object' && domaineOrId.label) return domaineOrId.label;
+        const domaine = this.domaines.find(d => String(d.id) === String(domaineOrId));
         return domaine ? domaine.label : 'Inconnu';
     }
 
-    getCollaborateursNames(ids: string[] | undefined): string {
+    getCollaborateursNames(ids: any[] | undefined): string {
         if (!ids || ids.length === 0) return 'Aucun';
-        return ids.map(id => {
-            const user = this.users.find(u => u.id == id);
+        return ids.map(item => {
+            if (!item) return 'Inconnu';
+            if (typeof item === 'object' && item.username) return item.username;
+            const user = this.users.find(u => String(u.id) === String(item));
             return user ? user.username : 'Inconnu';
         }).join(', ');
     }

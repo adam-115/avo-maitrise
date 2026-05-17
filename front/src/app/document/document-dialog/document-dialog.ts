@@ -21,17 +21,16 @@ export class DocumentDialog implements OnInit, OnChanges {
   @Input()
   selectedDocument: Document | null = null;
   fb = inject(FormBuilder);
-  documentDialogFrom!: FormGroup;
+  documentDialogFrom = this.fb.group({
+    title: ["", Validators.required],
+    description: [""],
+  });
   selectedFile: File | null = null;
 
 
 
 
   ngOnInit(): void {
-    this.documentDialogFrom = this.fb.group({
-      title: ["", Validators.required],
-      description: [""],
-    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -58,8 +57,8 @@ export class DocumentDialog implements OnInit, OnChanges {
       // Si vous êtes en mode édition, gardez l'ID existant
       ...(this.selectedDocument && { id: this.selectedDocument.id }),
 
-      title: formValues.title,
-      description: formValues.description,
+      title: formValues.title || '',
+      description: formValues.description || '',
 
       // Le nom du fichier provient de l'objet File
       name: this.selectedFile ? this.selectedFile.name : '',
@@ -68,14 +67,14 @@ export class DocumentDialog implements OnInit, OnChanges {
       file: this.selectedFile as File,
 
       // Optionnel : tags peut être ajouté ici ou via un autre champ
-      tags: ''
+      tags: this.selectedDocument?.tags || ''
     };
   }
 
   private documentToForm(doc: Document): void {
     this.documentDialogFrom.patchValue({
-      title: doc.title,
-      description: doc.description
+      title: doc.title || '',
+      description: doc.description || ''
     });
   }
 
@@ -87,17 +86,26 @@ export class DocumentDialog implements OnInit, OnChanges {
   }
 
   submit() {
-    if (this.documentDialogFrom.valid && this.selectedFile) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64String = (reader.result as string).split(',')[1];
+    if (this.documentDialogFrom.valid) {
+      if (this.selectedFile) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const base64String = (reader.result as string).split(',')[1];
+          const newDocument: Document = this.formToDocument();
+          newDocument.fileData = base64String;
+          newDocument.filename = this.selectedFile?.name;
+          newDocument.nomFichier = this.selectedFile?.name;
+          this.addDocumentEvent.emit(newDocument);
+        };
+        reader.readAsDataURL(this.selectedFile);
+      } else if (this.selectedDocument) {
+        // Edit mode without replacing the file
         const newDocument: Document = this.formToDocument();
-        newDocument.fileData = base64String;
-        newDocument.filename = this.selectedFile?.name;
-        newDocument.nomFichier = this.selectedFile?.name;
+        newDocument.filename = this.selectedDocument.filename;
+        newDocument.nomFichier = this.selectedDocument.nomFichier;
+        newDocument.fileData = this.selectedDocument.fileData;
         this.addDocumentEvent.emit(newDocument);
-      };
-      reader.readAsDataURL(this.selectedFile);
+      }
     }
   }
 

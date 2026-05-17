@@ -27,6 +27,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\mappers\StatutDossierMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\FieldOption.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\SecteurActiviteRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientDiligenceStatus.java
+D:\avo-maitrise\back\src\main\java\com\avo\entities\DocumentType.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\DocumentMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\InstitutionController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\DomaineJuridiqueController.java

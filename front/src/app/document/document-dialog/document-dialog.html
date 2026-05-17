@@ -21,27 +21,27 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">Fichier à Uploader <span class="text-red-500">*</span></label>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Fichier <span class="text-red-500" *ngIf="!selectedDocument">*</span></label>
           <div
             [ngClass]="{
-              'border-red-500 bg-red-50': !selectedFile && documentDialogFrom.get('title')?.touched,
-              'border-gray-300 hover:border-cyan-500': selectedFile || !documentDialogFrom.get('title')?.touched,
-              'border-green-400 bg-green-50': selectedFile
+              'border-red-500 bg-red-50': !selectedFile && !selectedDocument && documentDialogFrom.get('title')?.touched,
+              'border-gray-300 hover:border-cyan-500': selectedFile || selectedDocument || !documentDialogFrom.get('title')?.touched,
+              'border-green-400 bg-green-50': selectedFile || selectedDocument
             }"
             class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition duration-150 relative">
             <div class="space-y-1 text-center">
-              <svg [ngClass]="selectedFile ? 'text-green-500' : 'text-gray-400'" class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg [ngClass]="(selectedFile || selectedDocument) ? 'text-green-500' : 'text-gray-400'" class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v8"></path>
               </svg>
               <div class="flex text-sm text-gray-600">
                 <label for="file-upload" class="relative cursor-pointer bg-transparent rounded-md font-bold text-cyan-600 hover:text-cyan-500 outline-none">
-                  <span>{{ selectedFile ? 'Changer le fichier' : 'Uploader un fichier' }}</span>
+                  <span>{{ (selectedFile || selectedDocument) ? 'Changer le fichier' : 'Uploader un fichier' }}</span>
                   <input id="file-upload" type="file" (change)="onFileSelected($event)" class="sr-only">
                 </label>
                 <p class="pl-1">ou glisser-déposer</p>
               </div>
-              <p class="text-xs" [ngClass]="selectedFile ? 'text-green-600 font-bold' : 'text-gray-500'">
-                {{ selectedFile ? selectedFile.name : 'PDF, DOCX, JPG, XLSX (Max 10MB)' }}
+              <p class="text-xs" [ngClass]="(selectedFile || selectedDocument) ? 'text-green-600 font-bold' : 'text-gray-500'">
+                {{ selectedFile ? selectedFile.name : (selectedDocument ? (selectedDocument.nomFichier || selectedDocument.filename || selectedDocument.name || 'Fichier existant') : 'PDF, DOCX, JPG, XLSX (Max 10MB)') }}
               </p>
             </div>
           </div>
@@ -57,13 +57,13 @@
         <button type="button" (click)="closeModal()" class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100">Annuler</button>
 
         <button type="submit" (click)="submit()"
-          [disabled]="documentDialogFrom.invalid || !selectedFile"
+          [disabled]="documentDialogFrom.invalid || (!selectedFile && !selectedDocument)"
           [ngClass]="{
-            'bg-cyan-600 hover:bg-cyan-700 shadow-md': documentDialogFrom.valid && selectedFile,
-            'bg-slate-300 cursor-not-allowed opacity-70': documentDialogFrom.invalid || !selectedFile
+            'bg-cyan-600 hover:bg-cyan-700 shadow-md': documentDialogFrom.valid && (selectedFile || selectedDocument),
+            'bg-slate-300 cursor-not-allowed opacity-70': documentDialogFrom.invalid || (!selectedFile && !selectedDocument)
           }"
           class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white transition duration-150">
-          Uploader
+          {{ selectedDocument ? 'Enregistrer' : 'Uploader' }}
         </button>
       </div>
 

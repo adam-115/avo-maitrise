@@ -1,12 +1,13 @@
 package com.avo.dtos;
 
 import java.time.LocalDateTime;
+import com.avo.entities.DocumentType;
 
 public class DocumentDTO {
 
     private Long id;
     private String nomFichier;
-    private String typeDocument;
+    private DocumentType typeDocument;
     private String urlStockage;
     private LocalDateTime dateUpload;
     private boolean estValide;
@@ -22,7 +23,7 @@ public class DocumentDTO {
 
     public DocumentDTO() {}
 
-    public DocumentDTO(Long id, String nomFichier, String typeDocument, String urlStockage, LocalDateTime dateUpload, boolean estValide, String title, String name, String label, String description, String tags, String filename, Long clientId, Long dossierId, byte[] fileData) {
+    public DocumentDTO(Long id, String nomFichier, DocumentType typeDocument, String urlStockage, LocalDateTime dateUpload, boolean estValide, String title, String name, String label, String description, String tags, String filename, Long clientId, Long dossierId, byte[] fileData) {
         this.id = id;
         this.nomFichier = nomFichier;
         this.typeDocument = typeDocument;
@@ -46,8 +47,8 @@ public class DocumentDTO {
     public String getNomFichier() { return nomFichier; }
     public void setNomFichier(String nomFichier) { this.nomFichier = nomFichier; }
 
-    public String getTypeDocument() { return typeDocument; }
-    public void setTypeDocument(String typeDocument) { this.typeDocument = typeDocument; }
+    public DocumentType getTypeDocument() { return typeDocument; }
+    public void setTypeDocument(DocumentType typeDocument) { this.typeDocument = typeDocument; }
 
     public String getUrlStockage() { return urlStockage; }
     public void setUrlStockage(String urlStockage) { this.urlStockage = urlStockage; }
@@ -92,7 +93,7 @@ public class DocumentDTO {
     public static class DocumentDTOBuilder {
         private Long id;
         private String nomFichier;
-        private String typeDocument;
+        private DocumentType typeDocument;
         private String urlStockage;
         private LocalDateTime dateUpload;
         private boolean estValide;
@@ -108,7 +109,7 @@ public class DocumentDTO {
 
         public DocumentDTOBuilder id(Long id) { this.id = id; return this; }
         public DocumentDTOBuilder nomFichier(String nomFichier) { this.nomFichier = nomFichier; return this; }
-        public DocumentDTOBuilder typeDocument(String typeDocument) { this.typeDocument = typeDocument; return this; }
+        public DocumentDTOBuilder typeDocument(DocumentType typeDocument) { this.typeDocument = typeDocument; return this; }
         public DocumentDTOBuilder urlStockage(String urlStockage) { this.urlStockage = urlStockage; return this; }
         public DocumentDTOBuilder dateUpload(LocalDateTime dateUpload) { this.dateUpload = dateUpload; return this; }
         public DocumentDTOBuilder estValide(boolean estValide) { this.estValide = estValide; return this; }
