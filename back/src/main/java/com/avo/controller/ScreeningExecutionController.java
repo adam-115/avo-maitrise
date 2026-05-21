@@ -16,9 +16,23 @@ import com.querydsl.core.types.Predicate;
 public class ScreeningExecutionController {
 
     private final ScreeningExecutionService service;
+    private final com.avo.job.YenteClientVerificationJob verificationJob;
 
-    public ScreeningExecutionController(ScreeningExecutionService service) {
+    public ScreeningExecutionController(ScreeningExecutionService service, com.avo.job.YenteClientVerificationJob verificationJob) {
         this.service = service;
+        this.verificationJob = verificationJob;
+    }
+
+    @PostMapping("/trigger-clients")
+    public ResponseEntity<Void> triggerClients() {
+        verificationJob.executeMatchClient();
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/trigger-ubos")
+    public ResponseEntity<Void> triggerUbos() {
+        verificationJob.executeMatchUbos();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping

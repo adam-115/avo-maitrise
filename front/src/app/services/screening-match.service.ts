@@ -33,4 +33,12 @@ export class ScreeningMatchService extends AbstractCrudService<ScreeningMatchDTO
         return this.http.post<ScreeningMatchDTO>(`${this.apiUrl}/${matchId}/process-decision`, null, { params });
     }
 
+    triggerClientScreening(): Observable<void> {
+        return this.http.post<void>(`${this.apiUrl}/execution/trigger-clients`, null);
+    }
+
+    triggerUboScreening(): Observable<void> {
+        return this.http.post<void>(`${this.apiUrl}/execution/trigger-ubos`, null);
+    }
+
 }

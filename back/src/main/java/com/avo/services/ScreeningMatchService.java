@@ -144,11 +144,42 @@ public class ScreeningMatchService {
 
     public ScreeningMatchDTO create(ScreeningMatchDTO dto) {
         ScreeningMatch entity = mapper.toEntity(dto);
+        
+        // Fetch managed client and UBO from DB to avoid transient reference exceptions
+        if (dto.getClientEntityDTO() != null && dto.getClientEntityDTO().getId() != null) {
+            entity.setClient(clientRepository.findById(dto.getClientEntityDTO().getId()).orElse(null));
+        } else if (dto.getUboDTO() != null && dto.getUboDTO().getClientMoralId() != null) {
+            entity.setClient(clientRepository.findById(dto.getUboDTO().getClientMoralId()).orElse(null));
+        }
+        
+        if (dto.getUboDTO() != null && dto.getUboDTO().getId() != null) {
+            entity.setUbo(uboRepository.findById(dto.getUboDTO().getId()).orElse(null));
+        }
+        
+        if (dto.getScreeningExecutionDTO() != null && dto.getScreeningExecutionDTO().getId() != null) {
+            entity.setScreeningExecution(screeningExecutionRepository.findById(dto.getScreeningExecutionDTO().getId()).orElse(null));
+        }
+        
         return mapper.toDto(repository.save(entity));
     }
 
     public ScreeningMatchDTO update(ScreeningMatchDTO dto) {
         ScreeningMatch entity = mapper.toEntity(dto);
+        
+        if (dto.getClientEntityDTO() != null && dto.getClientEntityDTO().getId() != null) {
+            entity.setClient(clientRepository.findById(dto.getClientEntityDTO().getId()).orElse(null));
+        } else if (dto.getUboDTO() != null && dto.getUboDTO().getClientMoralId() != null) {
+            entity.setClient(clientRepository.findById(dto.getUboDTO().getClientMoralId()).orElse(null));
+        }
+        
+        if (dto.getUboDTO() != null && dto.getUboDTO().getId() != null) {
+            entity.setUbo(uboRepository.findById(dto.getUboDTO().getId()).orElse(null));
+        }
+        
+        if (dto.getScreeningExecutionDTO() != null && dto.getScreeningExecutionDTO().getId() != null) {
+            entity.setScreeningExecution(screeningExecutionRepository.findById(dto.getScreeningExecutionDTO().getId()).orElse(null));
+        }
+        
         return mapper.toDto(repository.save(entity));
     }
 

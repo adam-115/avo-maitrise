@@ -39,6 +39,8 @@ export class AmlComplianceComponent implements OnInit {
   matches: ScreeningMatchDTO[] = [];
   clientMatchesMap = new Map<number, ScreeningMatchDTO[]>();
   loading = true;
+  triggeringClients = false;
+  triggeringUbos = false;
 
   // Search & Filter state
   searchTerm = '';
@@ -278,5 +280,39 @@ export class AmlComplianceComponent implements OnInit {
     if (client.id) {
       this.navigationService.navigateToClientDiligenceResults(String(client.id));
     }
+  }
+
+  triggerManualClientScreening(): void {
+    this.triggeringClients = true;
+    this.alertService.displayMessage('Lancement', 'Filtrage des clients en cours...', 'info');
+    this.screeningMatchService.triggerClientScreening().subscribe({
+      next: () => {
+        this.triggeringClients = false;
+        this.alertService.success('Le filtrage manuel des clients a été complété avec succès.');
+        this.loadData();
+      },
+      error: (err) => {
+        console.error('Error triggering client screening:', err);
+        this.triggeringClients = false;
+        this.alertService.displayMessage('Erreur', 'Impossible de lancer le filtrage des clients', 'error');
+      }
+    });
+  }
+
+  triggerManualUboScreening(): void {
+    this.triggeringUbos = true;
+    this.alertService.displayMessage('Lancement', 'Filtrage des UBOs en cours...', 'info');
+    this.screeningMatchService.triggerUboScreening().subscribe({
+      next: () => {
+        this.triggeringUbos = false;
+        this.alertService.success('Le filtrage manuel des UBOs a été complété avec succès.');
+        this.loadData();
+      },
+      error: (err) => {
+        console.error('Error triggering UBO screening:', err);
+        this.triggeringUbos = false;
+        this.alertService.displayMessage('Erreur', 'Impossible de lancer le filtrage des UBOs', 'error');
+      }
+    });
   }
 }

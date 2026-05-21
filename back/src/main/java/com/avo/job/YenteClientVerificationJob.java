@@ -268,6 +268,11 @@ public class YenteClientVerificationJob {
             JsonNode jsonNodeResult = null;
             ScreeningExecutionDTO screeningExecutionDTO = new ScreeningExecutionDTO();
             screeningExecutionDTO.setUboDTO(ubo);
+            if (ubo.getClientMoralId() != null) {
+                clientRepository.findById(ubo.getClientMoralId()).ifPresent(client -> {
+                    screeningExecutionDTO.setClientEntityDTO(clientEntityMapper.toDto(client));
+                });
+            }
             screeningExecutionDTO.setCreatedAt(LocalDateTime.now());
 
             try {
