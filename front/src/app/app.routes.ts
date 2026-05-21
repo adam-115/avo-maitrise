@@ -120,6 +120,10 @@ export const routes: Routes = [
 
       // AML Compliance Paths can be found in NavigationService   
       {
+        path: NavigationService.AML_COMPLIANCE,
+        loadComponent: () => import('./due-diligence/aml-compliance/aml-compliance.component').then(m => m.AmlComplianceComponent)
+      },
+      {
         path: NavigationService.DILIGENCE_FORM_BUILDER,
         loadComponent: () => import('./due-diligence/diligence-form-builder-component/diligence-form-builder-component').then(m => m.DiligenceFormBuilderComponent)
       },

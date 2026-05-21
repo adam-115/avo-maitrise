@@ -14,4 +14,9 @@ public interface ScreeningMatchRepository extends JpaRepository<ScreeningMatch, 
     
     java.util.Optional<com.avo.entities.ScreeningMatch> findFirstByClientIdAndYenteIdOrderByCreatedAtDesc(Long clientId, String yenteId);
     java.util.Optional<com.avo.entities.ScreeningMatch> findFirstByUboIdAndYenteIdOrderByCreatedAtDesc(Long uboId, String yenteId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Query("delete from ScreeningMatch m where m.client.id not in (select c.id from ClientEntity c)")
+    void deleteOrphanedMatches();
 }

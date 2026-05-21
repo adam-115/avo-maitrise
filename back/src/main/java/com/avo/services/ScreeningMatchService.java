@@ -37,6 +37,16 @@ public class ScreeningMatchService {
         this.screeningExecutionRepository = screeningExecutionRepository;
     }
 
+    @jakarta.annotation.PostConstruct
+    @org.springframework.transaction.annotation.Transactional
+    public void initCleanOrphans() {
+        try {
+            repository.deleteOrphanedMatches();
+        } catch (Exception e) {
+            System.err.println("Failed to delete orphaned screening matches: " + e.getMessage());
+        }
+    }
+
     @org.springframework.transaction.annotation.Transactional
     public ScreeningMatchDTO processDecision(Long matchId, com.avo.entities.ScreeningMatchStatus decision, String comment, String reviewer) {
         ScreeningMatch match = repository.findById(matchId)

@@ -60,6 +60,16 @@ export class Home {
     this.activeRoute = NavigationService.ADMINSTRATION;
   }
 
+  navigateToAmlCompliance() {
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.AML_COMPLIANCE);
+    this.activeRoute = NavigationService.AML_COMPLIANCE;
+  }
+
+  navigateToHome() {
+    this.router.navigateByUrl(NavigationService.HOME);
+    this.activeRoute = 'calendrier';
+  }
+
 
 
 

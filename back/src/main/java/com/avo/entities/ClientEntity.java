@@ -44,7 +44,7 @@ public class ClientEntity {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContactPoint> contacts;
 
-    @OneToMany(mappedBy ="client" , cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy ="client" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScreeningMatch> screeningMatchs ;
 
     public ClientEntity() {}
