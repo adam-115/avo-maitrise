@@ -184,7 +184,7 @@
           <h3 class="text-xl font-black text-slate-950 mb-1">Répartition par Catégories</h3>
           <p class="text-sm text-slate-400 font-semibold mb-6">Proportion des clients enregistrés par type d'entité</p>
         </div>
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div *ngFor="let type of clientTypeCounts"
             class="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center">
             <span class="text-2xl font-black text-slate-950">{{ type.count }}</span>

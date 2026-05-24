@@ -112,6 +112,21 @@
     </aside>
 
     <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- Mobile Header Bar -->
+        <header class="lg:hidden bg-slate-900 text-white px-6 py-4 flex items-center justify-between border-b border-slate-800 shadow-md z-10">
+            <div class="flex items-center gap-3">
+                <button (click)="isSidebarOpen = true" class="p-2 -ml-2 text-gray-400 hover:text-white focus:outline-none" aria-label="Ouvrir le menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <span class="text-lg font-bold text-cyan-400">SI Legal</span>
+            </div>
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700">
+                Cabinet
+            </span>
+        </header>
+
         <main class="flex-1 overflow-y-auto p-6 sm:p-10">
             <router-outlet></router-outlet>
         </main>

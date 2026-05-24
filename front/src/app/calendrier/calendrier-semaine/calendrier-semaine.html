@@ -1,6 +1,6 @@
 <div class="p-6 sm:p-8 bg-gray-50 rounded-xl shadow-2xl">
 
-  <div class="mb-6 flex justify-between items-center border-b pb-4">
+  <div class="mb-6 flex flex-col xl:flex-row justify-between xl:items-center border-b pb-4 gap-4">
     <h2 class="text-3xl font-bold text-slate-800 flex items-center">
       <svg class="w-8 h-8 mr-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg">
@@ -11,7 +11,7 @@
       Réunion de la Semaine
     </h2>
 
-    <div class="flex space-x-3 items-center">
+    <div class="flex flex-wrap gap-3 items-center">
 
       <button (click)="openAddAppointementDialog()"
         class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 flex items-center ml-4">
@@ -45,72 +45,74 @@
     </div>
   </div>
 
-  <div class="border border-gray-300 rounded-lg shadow-inner flex">
+  <div class="overflow-x-auto scrollbar-thin pb-4">
+    <div class="border border-gray-300 rounded-lg shadow-inner flex min-w-[750px]">
 
-    <div class="flex-shrink-0 w-20 bg-gray-100 border-r border-gray-300">
-      <div class="h-14 text-xs font-semibold text-gray-700 flex items-center justify-center border-b border-gray-300">
-        Heures</div>
+      <div class="flex-shrink-0 w-20 bg-gray-100 border-r border-gray-300">
+        <div class="h-14 text-xs font-semibold text-gray-700 flex items-center justify-center border-b border-gray-300">
+          Heures</div>
 
-      <div *ngFor="let hour of hours"
-        class="h-16 text-xs text-gray-500 font-medium flex justify-end pr-2 items-start pt-1 border-b border-dashed border-gray-300">
-        {{ hour }}:00
-      </div>
-    </div>
-
-    <div class="flex-grow grid grid-cols-5 divide-x divide-gray-300">
-
-      <div *ngFor="let day of daysOfWeek; let dayIndex = index" class="h-14 p-3 bg-red-100">
-        <p class="text-md font-bold text-red-800">{{ day }}</p>
-        <p class="text-sm font-medium text-gray-600">{{ getFormattedDate(dayIndex) }}</p>
+        <div *ngFor="let hour of hours"
+          class="h-16 text-xs text-gray-500 font-medium flex justify-end pr-2 items-start pt-1 border-b border-dashed border-gray-300">
+          {{ hour }}:00
+        </div>
       </div>
 
-      <div *ngFor="let day of daysOfWeek; let dayIndex = index" (click)="handleGridClick($event, dayIndex)"
-        class="bg-white relative h-[704px] cursor-pointer">
+      <div class="flex-grow grid grid-cols-5 divide-x divide-gray-300">
 
-        <ng-container *ngFor="let hour of hours">
-          <div class="absolute w-full border-b border-solid border-gray-200"
-            [style.top]="((hour - startHour) * 64) + 'px'" [style.height]="'1px'">
-          </div>
-
-          <div class="absolute w-full border-b border-dashed border-gray-100"
-            [style.top]="((hour - startHour) * 64 + 16) + 'px'" [style.height]="'1px'">
-          </div>
-          <div class="absolute w-full border-b border-dashed border-gray-100"
-            [style.top]="((hour - startHour) * 64 + 32) + 'px'" [style.height]="'1px'">
-          </div>
-          <div class="absolute w-full border-b border-dashed border-gray-100"
-            [style.top]="((hour - startHour) * 64 + 48) + 'px'" [style.height]="'1px'">
-          </div>
-        </ng-container>
-
-        <div *ngFor="let hearing of getHearingsForDay(dayIndex)" (click)="$event.stopPropagation()"
-          (click)="openEditAppointementDialog(hearing)"
-          class="absolute p-1.5 rounded-lg border-l-4 shadow-md cursor-pointer hover:shadow-lg transition duration-150 group flex justify-between items-start"
-          [ngClass]="getStatusClass(hearing.status)" [style.top]="hearing.style.top"
-          [style.height]="hearing.style.height" [style.width]="hearing.style.width" [style.left]="hearing.style.left"
-          [style.zIndex]="hearing.style.zIndex">
-
-          <div class="overflow-hidden">
-            <p class="text-[11px] font-bold truncate">{{ hearing.title }}</p>
-            <p class="text-[10px] font-medium mt-0.5 truncate">
-              <span class="font-semibold">Heure :</span> {{ hearing.time }} - {{ hearing.endTime }}
-            </p>
-          </div>
-
-          <button (click)="deleteAppointement(hearing, $event)" title="Supprimer"
-            class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded p-0.5 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 ml-1 mt-0.5">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-              </path>
-            </svg>
-          </button>
+        <div *ngFor="let day of daysOfWeek; let dayIndex = index" class="h-14 p-3 bg-red-100">
+          <p class="text-md font-bold text-red-800">{{ day }}</p>
+          <p class="text-sm font-medium text-gray-600">{{ getFormattedDate(dayIndex) }}</p>
         </div>
 
-        <div *ngIf="getHearingsForDay(dayIndex).length === 0"
-          class="text-center p-8 text-gray-500 italic relative top-0">
-          Aucune audience.
+        <div *ngFor="let day of daysOfWeek; let dayIndex = index" (click)="handleGridClick($event, dayIndex)"
+          class="bg-white relative h-[704px] cursor-pointer">
+
+          <ng-container *ngFor="let hour of hours">
+            <div class="absolute w-full border-b border-solid border-gray-200"
+              [style.top]="((hour - startHour) * 64) + 'px'" [style.height]="'1px'">
+            </div>
+
+            <div class="absolute w-full border-b border-dashed border-gray-100"
+              [style.top]="((hour - startHour) * 64 + 16) + 'px'" [style.height]="'1px'">
+            </div>
+            <div class="absolute w-full border-b border-dashed border-gray-100"
+              [style.top]="((hour - startHour) * 64 + 32) + 'px'" [style.height]="'1px'">
+            </div>
+            <div class="absolute w-full border-b border-dashed border-gray-100"
+              [style.top]="((hour - startHour) * 64 + 48) + 'px'" [style.height]="'1px'">
+            </div>
+          </ng-container>
+
+          <div *ngFor="let hearing of getHearingsForDay(dayIndex)" (click)="$event.stopPropagation()"
+            (click)="openEditAppointementDialog(hearing)"
+            class="absolute p-1.5 rounded-lg border-l-4 shadow-md cursor-pointer hover:shadow-lg transition duration-150 group flex justify-between items-start"
+            [ngClass]="getStatusClass(hearing.status)" [style.top]="hearing.style.top"
+            [style.height]="hearing.style.height" [style.width]="hearing.style.width" [style.left]="hearing.style.left"
+            [style.zIndex]="hearing.style.zIndex">
+
+            <div class="overflow-hidden">
+              <p class="text-[11px] font-bold truncate">{{ hearing.title }}</p>
+              <p class="text-[10px] font-medium mt-0.5 truncate">
+                <span class="font-semibold">Heure :</span> {{ hearing.time }} - {{ hearing.endTime }}
+              </p>
+            </div>
+
+            <button (click)="deleteAppointement(hearing, $event)" title="Supprimer"
+              class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded p-0.5 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity flex-shrink-0 ml-1 mt-0.5">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                </path>
+              </svg>
+            </button>
+          </div>
+
+          <div *ngIf="getHearingsForDay(dayIndex).length === 0"
+            class="text-center p-8 text-gray-500 italic relative top-0">
+            Aucune audience.
+          </div>
         </div>
       </div>
     </div>

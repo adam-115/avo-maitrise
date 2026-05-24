@@ -33,41 +33,49 @@ export class Home {
   navigateTODossier() {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.DOSSIER);
     this.activeRoute = NavigationService.DOSSIER;
+    this.isSidebarOpen = false;
   }
 
   navigateTOClients() {
     this.navigationService.navigateToClients();
     this.activeRoute = NavigationService.CRM;
+    this.isSidebarOpen = false;
   }
 
   navigateToModel() {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.MODEL);
     this.activeRoute = NavigationService.MODEL;
+    this.isSidebarOpen = false;
   }
 
   navigateToFacturation() {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.BILLING);
     this.activeRoute = NavigationService.BILLING;
+    this.isSidebarOpen = false;
   }
 
   navigateToCalendrier() {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.CALENDRIER);
     this.activeRoute = 'calendrier';
+    this.isSidebarOpen = false;
   }
 
   navigateToAdministration() {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.ADMINSTRATION);
     this.activeRoute = NavigationService.ADMINSTRATION;
+    this.isSidebarOpen = false;
   }
 
   navigateToAmlCompliance() {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.AML_COMPLIANCE);
     this.activeRoute = NavigationService.AML_COMPLIANCE;
+    this.isSidebarOpen = false;
   }
 
   navigateToHome() {
     this.router.navigateByUrl(NavigationService.HOME);
     this.activeRoute = 'calendrier';
+    this.isSidebarOpen = false;
   }
 
 

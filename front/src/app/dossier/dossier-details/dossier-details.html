@@ -113,8 +113,8 @@
   </div>
 
   <!-- Tabs Navigation -->
-  <div class="border-b border-gray-200 mb-8 overflow-x-auto">
-    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+  <div class="border-b border-gray-200 mb-8 overflow-x-auto scrollbar-none">
+    <nav class="-mb-px flex space-x-8 flex-nowrap min-w-max" aria-label="Tabs">
       @for (tab of [
         { id: DossierTabType.VUE_ENSEMBLE, label: 'Vue d\'Ensemble' },
         { id: DossierTabType.Document, label: 'Documents', count: selectedDossier?.documents?.length || 0 },

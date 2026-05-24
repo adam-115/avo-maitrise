@@ -46,8 +46,8 @@
     </div>
 
     <!-- Tabbed Navigation -->
-    <div class="mb-8 border-b border-slate-200">
-        <nav class="flex space-x-8" aria-label="Tabs">
+    <div class="mb-8 border-b border-slate-200 overflow-x-auto scrollbar-none">
+        <nav class="flex space-x-8 min-w-max" aria-label="Tabs">
             <button (click)="activeTab = 'ALL'"
                 [ngClass]="activeTab === 'ALL' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
                 class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
