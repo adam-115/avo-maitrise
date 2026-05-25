@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: avo-back-app
+    ports:
+      - "8080:8080"
+    environment:
+      # Database connection settings (routes to the 'mysql' container)
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/si-legale?serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=adam
+      
+      # Yente Configuration (routes to the host machine)
+      - YENTE_API_URL=http://localhost:8000
+      
+      # Active Spring Profiles
+      - SPRING_PROFILES_ACTIVE=prod
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - mysql
+    restart: always
+
+  mysql:
+    image: mysql:8.0
+    container_name: avo-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=si-legale
+      - MYSQL_ROOT_PASSWORD=adam
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: always
+
+volumes:
+  mysql-data:

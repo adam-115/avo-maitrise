@@ -1,0 +1,20 @@
+# Ignore IDE files and git metadata
+.git
+.gitignore
+.vscode
+.idea
+*.log
+*.log.gz
+
+# Ignore front-end modules and build files
+front/node_modules/
+front/dist/
+front/target/
+front/node/
+
+# Ignore back-end target files except the main executable JAR
+back/target/*
+!back/target/back-0.0.1-SNAPSHOT.jar
+back/scratch/
+back/spring.log
+back/application.log

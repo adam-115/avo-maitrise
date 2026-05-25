@@ -1,0 +1,7 @@
+# Ignore all target files except the main JAR
+target/*
+!target/back-0.0.1-SNAPSHOT.jar
+
+# Ignore local logs and scratch files
+*.log
+scratch/
