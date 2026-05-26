@@ -1,0 +1,185 @@
+/* Custom Keycloak Theme for SI Legal */
+
+/* Global styles and page background */
+body {
+    background: radial-gradient(circle at center, #0f172a 0%, #020617 100%) !important;
+    background-color: #020617 !important;
+    color: #e2e8f0 !important;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+}
+
+/* Hide Keycloak's default text header */
+#kc-header, 
+#kc-header-wrapper {
+    display: none !important;
+}
+
+/* Central Login Card Container */
+.login-pf-page .card-pf,
+#kc-content-wrapper {
+    background: rgba(15, 23, 42, 0.75) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+    padding: 2.5rem !important;
+    width: 100% !important;
+    max-width: 440px !important;
+    margin: 2rem auto !important;
+    box-sizing: border-box !important;
+}
+
+/* Custom Brand Logo Injection */
+.login-pf-page .card-pf::before,
+#kc-content-wrapper::before {
+    content: "" !important;
+    display: block !important;
+    width: 220px !important;
+    height: 110px !important;
+    margin: 0 auto 1.5rem auto !important;
+    background-image: url('../img/logo-app.jpg') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    border-radius: 8px !important;
+}
+
+/* Login Page Title */
+#kc-page-title {
+    color: #22d3ee !important; /* cyan-400 */
+    font-size: 1.5rem !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    margin-bottom: 2rem !important;
+    letter-spacing: -0.025em !important;
+    text-transform: capitalize !important;
+}
+
+/* Labels */
+label, 
+.control-label {
+    color: #94a3b8 !important; /* slate-400 */
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    margin-bottom: 0.5rem !important;
+    display: inline-block !important;
+}
+
+/* Inputs styling */
+input[type="text"],
+input[type="password"],
+.form-control {
+    background-color: #0f172a !important; /* slate-900 */
+    border: 1.5px solid #334155 !important; /* slate-700 */
+    border-radius: 8px !important;
+    color: #f8fafc !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.95rem !important;
+    transition: all 0.2s ease-in-out !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+.form-control:focus {
+    border-color: #06b6d4 !important; /* cyan-500 */
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25) !important;
+}
+
+/* Login Button */
+#kc-login,
+.btn-primary,
+input[type="submit"] {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    color: #020617 !important; /* dark text */
+    font-weight: 700 !important;
+    font-size: 1rem !important;
+    padding: 0.8rem 1.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3) !important;
+    width: 100% !important;
+    margin-top: 1rem !important;
+}
+
+#kc-login:hover,
+.btn-primary:hover,
+input[type="submit"]:hover {
+    background: linear-gradient(135deg, #22d3ee 0%, #06b6d4 100%) !important;
+    transform: translateY(-1.5px) !important;
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4) !important;
+}
+
+#kc-login:active,
+.btn-primary:active,
+input[type="submit"]:active {
+    transform: translateY(0) !important;
+}
+
+/* Links (Forgot Password, Register) */
+a, 
+a:hover, 
+a:focus {
+    color: #22d3ee !important; /* cyan-400 */
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    transition: color 0.15s ease !important;
+}
+
+a:hover {
+    color: #06b6d4 !important; /* cyan-500 */
+    text-decoration: underline !important;
+}
+
+/* Alert Boxes (Error / Success messages) */
+.alert {
+    border-radius: 8px !important;
+    border: none !important;
+    border-left: 4px solid !important;
+    padding: 1rem !important;
+    margin-bottom: 1.5rem !important;
+    font-size: 0.875rem !important;
+}
+
+.alert-error,
+.alert-danger {
+    background-color: rgba(239, 68, 68, 0.1) !important;
+    border-color: #ef4444 !important;
+    color: #fca5a5 !important;
+}
+
+.alert-success {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    border-color: #10b981 !important;
+    color: #a7f3d0 !important;
+}
+
+.alert-info,
+.alert-warning {
+    background-color: rgba(245, 158, 11, 0.1) !important;
+    border-color: #f59e0b !important;
+    color: #fde68a !important;
+}
+
+/* Custom checkbox wrapper for PatternFly / Keycloak v2 */
+.checkbox {
+    margin-top: 0.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.checkbox label {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    cursor: pointer !important;
+}

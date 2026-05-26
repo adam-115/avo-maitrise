@@ -9,7 +9,8 @@ import { NavigationService } from './services/navigation-service';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./login/login/login').then(m => m.Login)
+    pathMatch: 'full',
+    redirectTo: NavigationService.HOME
   },
   {
     path: NavigationService.HOME,

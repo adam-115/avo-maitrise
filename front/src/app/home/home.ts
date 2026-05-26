@@ -4,6 +4,7 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { KeycloakService } from './../services/keycloak.service';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +15,7 @@ import { environment } from '../../environments/environment';
 export class Home {
 
   private readonly navigationService = inject(NavigationService);
+  private readonly keycloakService = inject(KeycloakService);
 
   // Variable d'état pour le contrôle de la barre latérale
   isSidebarOpen: boolean = false;
@@ -23,6 +25,10 @@ export class Home {
 
   constructor(private readonly router: Router) {
 
+  }
+
+  logout() {
+    this.keycloakService.logout();
   }
 
   // Cette fonction peut être appelée par le bouton d'ouverture/fermeture

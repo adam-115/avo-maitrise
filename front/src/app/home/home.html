@@ -6,14 +6,11 @@
     <aside [ngClass]="{'translate-x-0 ease-out': isSidebarOpen, '-translate-x-full ease-in': !isSidebarOpen}" class="fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white flex flex-col shadow-2xl
                   transform transition duration-300 lg:translate-x-0 lg:static lg:flex-shrink-0">
 
-        <div class="p-6 border-b border-slate-700 flex justify-between items-center">
-            <div>
-                <h2 class="text-xl font-bold text-cyan-400">
-                    SI Legal
-                </h2>
-                <p class="text-xs text-gray-400 mt-1">Gestion Avocats</p>
+        <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/30 relative">
+            <div class="flex items-center justify-center w-full py-1">
+                <img src="/logo-app.jpg" alt="SI Legal" class="w-44 h-auto rounded-lg shadow-md hover:scale-105 transition-transform duration-300">
             </div>
-            <button (click)="isSidebarOpen = false" class="lg:hidden text-gray-400 hover:text-white">
+            <button (click)="isSidebarOpen = false" class="lg:hidden text-gray-400 hover:text-white absolute right-4 top-4">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
@@ -109,18 +106,28 @@
             </a>
 
         </nav>
+
+        <!-- Sidebar Footer / Logout -->
+        <div class="p-4 border-t border-slate-700">
+            <button (click)="logout()" class="w-full flex items-center space-x-3 p-3 text-red-400 hover:bg-slate-800 rounded-lg duration-150 cursor-pointer border-0 bg-transparent text-left font-semibold">
+                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>Se déconnecter</span>
+            </button>
+        </div>
     </aside>
 
     <div class="flex-1 flex flex-col overflow-hidden">
         <!-- Mobile Header Bar -->
-        <header class="lg:hidden bg-slate-900 text-white px-6 py-4 flex items-center justify-between border-b border-slate-800 shadow-md z-10">
+        <header class="lg:hidden bg-slate-900 text-white px-6 py-3 flex items-center justify-between border-b border-slate-800 shadow-md z-10">
             <div class="flex items-center gap-3">
                 <button (click)="isSidebarOpen = true" class="p-2 -ml-2 text-gray-400 hover:text-white focus:outline-none" aria-label="Ouvrir le menu">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
-                <span class="text-lg font-bold text-cyan-400">SI Legal</span>
+                <img src="/logo-app.jpg" alt="SI Legal" class="h-9 w-auto rounded shadow-sm">
             </div>
             <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700">
                 Cabinet
