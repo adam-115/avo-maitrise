@@ -12,3 +12,7 @@ spring.log.2026-05-08.0.gz
 spring.log.2026-05-01.0.gz
 *.gz
 spring.log
+back/target/classes/com/avo/AvoApplication.class
+back/target/classes/com/avo/AvoApplication.class
+back/target/classes/com/avo/controller/HomeController.class
+back/target/classes/com/avo/controller/TestController.class

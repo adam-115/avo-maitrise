@@ -8,6 +8,7 @@ import { AppointementService } from '../../services/appointement.service';
 import { TaskService } from '../../services/task.service';
 import { NavigationService } from '../../services/navigation-service';
 import { Notification, Client, Dossier, Appointement, Task } from '../../appTypes';
+import { KeycloakService } from '../../services/keycloak.service';
 
 @Component({
   selector: 'app-bord',
@@ -24,8 +25,10 @@ export class Bord implements OnInit {
   private readonly appointementService = inject(AppointementService);
   private readonly taskService = inject(TaskService);
   private readonly navigationService = inject(NavigationService);
+  private readonly keycloakService = inject(KeycloakService);
 
   // States
+  username = '';
   notifications: Notification[] = [];
   recentDossiers: Dossier[] = [];
   upcomingAppointments: Appointement[] = [];
@@ -40,6 +43,7 @@ export class Bord implements OnInit {
   isLoading = true;
 
   ngOnInit(): void {
+    this.username = this.keycloakService.getUsername() || '';
     this.loadDashboardData();
   }
 
