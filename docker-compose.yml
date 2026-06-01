@@ -19,6 +19,9 @@ services:
       
       # Active Spring Profiles
       - SPRING_PROFILES_ACTIVE=prod
+      
+      # Keycloak Configuration
+      - KEYCLOAK_ISSUER_URI=https://keycloak-si-legal.duckdns.org/auth/realms/avo-app-test
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:

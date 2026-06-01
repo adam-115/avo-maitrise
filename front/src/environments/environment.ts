@@ -1,8 +1,8 @@
 export const environment = {
   production: true,
-  apiUrl: '/api/',
+  apiUrl: 'https://si-legal.duckdns.org/api/',
   keycloak: {
-    url: 'http://localhost:7070/',
+    url: 'https://keycloak-si-legal.duckdns.org/auth/',
     realm: 'avo-app-test',
     clientId: 'avo-test-client'
   }
