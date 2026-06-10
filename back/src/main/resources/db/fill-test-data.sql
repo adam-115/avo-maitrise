@@ -121,42 +121,42 @@ INSERT INTO app_users (id, email, username, first_name, last_name, role, is_part
 -- 9. CLIENTS (Base Table: clients)
 -- ============================================================================
 -- 9.1 PERSONNES PHYSIQUES (IDs: 11-30)
-INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur_activite) VALUES 
-(11, 'vladimir.putin@email.ru', '+33612345678', '45 Rue de Courcelles, Paris', 'Russie', 'VERIFICATION_AML_REQUIRED', 'IT'),
-(12, 'sophie.dubois@email.com', '+33698765432', '12 Avenue des Gobelins, Paris', 'France', 'VALIDATED', 'SAN'),
-(13, 'michel.rodriguez@email.com', '+33644556677', '89 Boulevard de la Liberté, Lille', 'France', 'VALIDATED', 'BTP'),
-(14, 'roman.abramovich@email.ru', '+491701234567', 'Kaiserstraße 12, Frankfurt', 'Russie', 'VERIFICATION_AML_REQUIRED', 'FIN'),
-(15, 'sarah.connor@email.com', '+12135550199', '742 Evergreen Terrace, Los Angeles', 'USA', 'VALIDATED', 'IND'),
-(16, 'nicolas.sarkozy@email.fr', '+33600223344', '8 Place de l''Étoile, Paris', 'France', 'VALIDATED', 'IMM'),
-(17, 'viktor.vekselberg@email.ru', '+33688990011', '14 Rue de la Gare, Lyon', 'Russie', 'VERIFICATION_AML_REQUIRED', 'EDU'),
-(18, 'thomas.dubois@email.com', '+33622446688', '56 Avenue Foch, Nice', 'France', 'VALIDATED', 'TRA'),
-(19, 'emma.watson@email.co.uk', '+442079460192', '22 Baker St, London', 'Royaume-Uni', 'VALIDATED', 'COM'),
-(20, 'david.beckham@email.com', '+13105550143', '100 Ocean Drive, Miami', 'USA', 'VALIDATED', 'SAN');
+INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur_activite, created_at) VALUES 
+(11, 'vladimir.putin@email.ru', '+33612345678', '45 Rue de Courcelles, Paris', 'Russie', 'VERIFICATION_AML_REQUIRED', 'IT', '2026-01-05 09:00:00'),
+(12, 'sophie.dubois@email.com', '+33698765432', '12 Avenue des Gobelins, Paris', 'France', 'VALIDATED', 'SAN', '2026-01-15 10:30:00'),
+(13, 'michel.rodriguez@email.com', '+33644556677', '89 Boulevard de la Liberté, Lille', 'France', 'VALIDATED', 'BTP', '2026-02-02 11:15:00'),
+(14, 'roman.abramovich@email.ru', '+491701234567', 'Kaiserstraße 12, Frankfurt', 'Russie', 'VERIFICATION_AML_REQUIRED', 'FIN', '2026-02-14 14:00:00'),
+(15, 'sarah.connor@email.com', '+12135550199', '742 Evergreen Terrace, Los Angeles', 'USA', 'VALIDATED', 'IND', '2026-03-01 16:45:00'),
+(16, 'nicolas.sarkozy@email.fr', '+33600223344', '8 Place de l''Étoile, Paris', 'France', 'VALIDATED', 'IMM', '2026-03-10 08:30:00'),
+(17, 'viktor.vekselberg@email.ru', '+33688990011', '14 Rue de la Gare, Lyon', 'Russie', 'VERIFICATION_AML_REQUIRED', 'EDU', '2026-03-22 13:10:00'),
+(18, 'thomas.dubois@email.com', '+33622446688', '56 Avenue Foch, Nice', 'France', 'VALIDATED', 'TRA', '2026-04-05 09:20:00'),
+(19, 'emma.watson@email.co.uk', '+442079460192', '22 Baker St, London', 'Royaume-Uni', 'VALIDATED', 'COM', '2026-04-18 15:40:00'),
+(20, 'david.beckham@email.com', '+13105550143', '100 Ocean Drive, Miami', 'USA', 'VALIDATED', 'SAN', '2026-05-01 11:00:00');
 
 -- 9.2 CLIENTS MORAUX (IDs: 21-30)
-INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur_activite) VALUES 
-(21, 'contact@novatech.fr', '+33140506070', '102 Rond-Point du Progrès, Lyon', 'France', 'VALIDATED', 'IT'),
-(22, 'finance@sberbank.ru', '+33240302010', 'Z.I. Plaine de l''Ain, Blyes', 'Russie', 'VERIFICATION_AML_REQUIRED', 'BTP'),
-(23, 'info@luxeglobal.ch', '+41223334455', 'Rue du Rhône 42, Genève', 'Suisse', 'VALIDATED', 'COM'),
-(24, 'legal@vtb.ru', '+35226123456', 'Avenue John F. Kennedy, Luxembourg', 'Russie', 'VERIFICATION_AML_REQUIRED', 'FIN'),
-(25, 'ops@redalert.ru', '+7495000000', 'Red Square 5, Moscow', 'Russie', 'VALIDATED', 'TRA'),
-(26, 'contact@solargroup.de', '+49301234567', 'Sonnenallee 89, Berlin', 'Allemagne', 'VALIDATED', 'ENV');
+INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur_activite, created_at) VALUES 
+(21, 'contact@novatech.fr', '+33140506070', '102 Rond-Point du Progrès, Lyon', 'France', 'VALIDATED', 'IT', '2026-05-12 14:15:00'),
+(22, 'finance@sberbank.ru', '+33240302010', 'Z.I. Plaine de l''Ain, Blyes', 'Russie', 'VERIFICATION_AML_REQUIRED', 'BTP', '2026-05-15 10:00:00'),
+(23, 'info@luxeglobal.ch', '+41223334455', 'Rue du Rhône 42, Genève', 'Suisse', 'VALIDATED', 'COM', '2026-05-20 09:30:00'),
+(24, 'legal@vtb.ru', '+35226123456', 'Avenue John F. Kennedy, Luxembourg', 'Russie', 'VERIFICATION_AML_REQUIRED', 'FIN', '2026-05-25 16:00:00'),
+(25, 'ops@redalert.ru', '+7495000000', 'Red Square 5, Moscow', 'Russie', 'VALIDATED', 'TRA', '2026-05-28 11:20:00'),
+(26, 'contact@solargroup.de', '+49301234567', 'Sonnenallee 89, Berlin', 'Allemagne', 'VALIDATED', 'ENV', '2026-05-30 15:50:00');
 
 -- 9.3 ASSOCIATIONS (IDs: 31-40)
-INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur_activite) VALUES 
-(31, 'contact@ecogreen.org', '+33320304050', '5 Rue Verte, Strasbourg', 'France', 'VALIDATED', 'AGR'),
-(32, 'solidarite@humanright.org', '+33177889900', '18 Rue de la Paix, Paris', 'France', 'VALIDATED', 'EDU'),
-(33, 'admin@sportactive.fr', '+33491001122', '45 Traverse de la Pointe, Marseille', 'France', 'VALIDATED', 'SAN'),
-(34, 'contact@artculture.org', '+33144556677', '12 Rue de l''Odéon, Paris', 'France', 'VALIDATED', 'EDU'),
-(35, 'direction@sauvetage.org', '+33298001122', 'Port de Plaisance, Brest', 'France', 'VALIDATED', 'SAN');
+INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur_activite, created_at) VALUES 
+(31, 'contact@ecogreen.org', '+33320304050', '5 Rue Verte, Strasbourg', 'France', 'VALIDATED', 'AGR', '2026-06-01 09:00:00'),
+(32, 'solidarite@humanright.org', '+33177889900', '18 Rue de la Paix, Paris', 'France', 'VALIDATED', 'EDU', '2026-06-02 10:15:00'),
+(33, 'admin@sportactive.fr', '+33491001122', '45 Traverse de la Pointe, Marseille', 'France', 'VALIDATED', 'SAN', '2026-06-03 14:30:00'),
+(34, 'contact@artculture.org', '+33144556677', '12 Rue de l''Odéon, Paris', 'France', 'VALIDATED', 'EDU', '2026-06-04 11:00:00'),
+(35, 'direction@sauvetage.org', '+33298001122', 'Port de Plaisance, Brest', 'France', 'VALIDATED', 'SAN', '2026-06-05 16:45:00');
 
 -- 9.4 INSTITUTIONS (IDs: 41-50)
-INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur_activite) VALUES 
-(41, 'secretariat@mairie-bordeaux.fr', '+33556102030', 'Place Pey-Berland, Bordeaux', 'France', 'VALIDATED', 'EDU'),
-(42, 'contact@ch-universitaire.fr', '+33380293031', '2 Boulevard de Lattre de Tassigny, Dijon', 'France', 'VALIDATED', 'SAN'),
-(43, 'droit@port-autonome.fr', '+33235192021', 'Boulevard de Strasbourg, Le Havre', 'France', 'VALIDATED', 'TRA'),
-(44, 'legal@conseil-regional.fr', '+33472617261', '1 Boulevard des Belges, Lyon', 'France', 'VALIDATED', 'EDU'),
-(45, 'admin@universite-paris.fr', '+33140462015', '17 Rue de la Sorbonne, Paris', 'France', 'VALIDATED', 'EDU');
+INSERT INTO clients (id, email, telephone, adresse, pays, client_status, secteur_activite, created_at) VALUES 
+(41, 'secretariat@mairie-bordeaux.fr', '+33556102030', 'Place Pey-Berland, Bordeaux', 'France', 'VALIDATED', 'EDU', '2026-06-06 08:30:00'),
+(42, 'contact@ch-universitaire.fr', '+33380293031', '2 Boulevard de Lattre de Tassigny, Dijon', 'France', 'VALIDATED', 'SAN', '2026-06-07 10:00:00'),
+(43, 'droit@port-autonome.fr', '+33235192021', 'Boulevard de Strasbourg, Le Havre', 'France', 'VALIDATED', 'TRA', '2026-06-08 13:15:00'),
+(44, 'legal@conseil-regional.fr', '+33472617261', '1 Boulevard des Belges, Lyon', 'France', 'VALIDATED', 'EDU', '2026-06-09 15:40:00'),
+(45, 'admin@universite-paris.fr', '+33140462015', '17 Rue de la Sorbonne, Paris', 'France', 'VALIDATED', 'EDU', '2026-06-10 09:00:00');
 
 -- ============================================================================
 -- 10. CLIENTS SOUS-TABLES (Inheritance Strategy: JOINED)

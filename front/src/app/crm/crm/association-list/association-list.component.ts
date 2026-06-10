@@ -25,7 +25,7 @@ export class AssociationListComponent implements OnInit {
   searchTerm: string = '';
 
   ngOnInit() {
-    this.service.getAll().subscribe((data: PaginatedResponse<Association>) => {
+    this.service.findAll(0, 1000, 'createdAt,desc').subscribe((data: PaginatedResponse<Association>) => {
       this.clients = data.content;
       this.filteredClients = data.content;
     });

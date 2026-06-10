@@ -148,6 +148,7 @@ export interface Client {
   clientStatus?: ClientStatus;
   secteurActivite?: string;
   contacts?: ContactPoint[];
+  createdAt?: Date;
 }
 
 export interface ClientPersonnePhysique extends Client {

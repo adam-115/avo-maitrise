@@ -100,7 +100,7 @@ export class Crm implements OnInit {
   }
 
   loadClients() {
-    this.clientService.getAll().subscribe({
+    this.clientService.findAll(0, 1000, 'createdAt,desc').subscribe({
       next: (data: PaginatedResponse<Client>) => {
         this.clients = data.content;
         this.filteredClients = data.content;

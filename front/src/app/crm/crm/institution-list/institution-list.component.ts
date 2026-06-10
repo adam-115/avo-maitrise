@@ -25,7 +25,7 @@ export class InstitutionListComponent implements OnInit {
   searchTerm: string = '';
 
   ngOnInit() {
-    this.service.getAll().subscribe((data: PaginatedResponse<Institution>) => {
+    this.service.findAll(0, 1000, 'createdAt,desc').subscribe((data: PaginatedResponse<Institution>) => {
       this.clients = data.content;
       this.filteredClients = data.content;
     });

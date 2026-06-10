@@ -25,7 +25,7 @@ export class ClientMoralListComponent implements OnInit {
   searchTerm: string = '';
 
   ngOnInit() {
-    this.service.getAll().subscribe((data: PaginatedResponse<ClientMoral>) => {
+    this.service.findAll(0, 1000, 'createdAt,desc').subscribe((data: PaginatedResponse<ClientMoral>) => {
       this.clients = data.content;
       this.filteredClients = data.content;
     });

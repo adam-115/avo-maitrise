@@ -25,7 +25,7 @@ export class ClientPhysiqueListComponent implements OnInit {
   searchTerm: string = '';
 
   ngOnInit() {
-    this.service.getAll().subscribe((data: PaginatedResponse<ClientPersonnePhysique>) => {
+    this.service.findAll(0, 1000, 'createdAt,desc').subscribe((data: PaginatedResponse<ClientPersonnePhysique>) => {
       this.clients = data.content;
       this.filteredClients = data.content;
     });

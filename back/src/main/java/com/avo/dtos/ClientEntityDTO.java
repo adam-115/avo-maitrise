@@ -17,6 +17,7 @@ public class ClientEntityDTO {
     private List<DocumentDTO> documents;
     private List<ContactPointDTO> contacts;
     private List<ScreeningMatchDTO> screeningMatchDTOs;
+    private Date createdAt;
     
     private String nom;
     private String prenom;
@@ -121,4 +122,7 @@ public class ClientEntityDTO {
 
     public List<UBODTO> getUbos() { return ubos; }
     public void setUbos(List<UBODTO> ubos) { this.ubos = ubos; }
+
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
 }

@@ -12,6 +12,10 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.PrePersist;
+import java.util.Date;
 
 @Entity
 @Table(name = "clients")
@@ -47,6 +51,17 @@ public class ClientEntity {
     @OneToMany(mappedBy ="client" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ScreeningMatch> screeningMatchs ;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Date createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = new Date();
+        }
+    }
+
     public ClientEntity() {}
 
     public Long getId() { return id; }
@@ -78,6 +93,9 @@ public class ClientEntity {
 
     public List<ScreeningMatch> getScreeningMatchs() { return screeningMatchs; }
     public void setScreeningMatchs(List<ScreeningMatch> screeningMatchs) { this.screeningMatchs = screeningMatchs; }
+
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
 
     public String getType() {
         if (this instanceof ClientPersonnePhysique) return "PERSONNE";
