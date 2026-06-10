@@ -68,6 +68,12 @@ export class DossierForm implements OnInit {
       tags: [[]],
       documents: [[]]
     });
+
+    this.dossierForm.valueChanges.subscribe(() => {
+      if (this.dossierForm.dirty) {
+        this.dossierForm.markAllAsTouched();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -288,5 +294,10 @@ export class DossierForm implements OnInit {
 
   navigateToDossier() {
     this.router.navigateByUrl('/home/dossier');
+  }
+
+  isFieldInvalid(fieldName: string): boolean {
+    const control = this.dossierForm.get(fieldName);
+    return !!(control && control.invalid && control.touched);
   }
 }

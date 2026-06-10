@@ -20,17 +20,25 @@
         <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">Informations Générales</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900">Référence Interne</label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200" [ngClass]="isFieldInvalid('referenceInterne') ? 'text-red-500' : 'text-gray-900'">Référence Interne <span class="text-red-500">*</span></label>
             <div class="mt-2">
               <input type="text" formControlName="referenceInterne"
-                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all duration-200">
+                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6 transition-all duration-200"
+                [ngClass]="isFieldInvalid('referenceInterne') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
+              @if (isFieldInvalid('referenceInterne')) {
+                <span class="text-[11px] font-bold text-red-500 mt-1 block">La référence interne est obligatoire</span>
+              }
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900">Titre</label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200" [ngClass]="isFieldInvalid('titre') ? 'text-red-500' : 'text-gray-900'">Titre <span class="text-red-500">*</span></label>
             <div class="mt-2">
               <input type="text" formControlName="titre" placeholder="Ex: Litige Commercial Dupont"
-                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all duration-200">
+                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6 transition-all duration-200"
+                [ngClass]="isFieldInvalid('titre') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
+              @if (isFieldInvalid('titre')) {
+                <span class="text-[11px] font-bold text-red-500 mt-1 block">Le titre est obligatoire</span>
+              }
             </div>
           </div>
           <div class="md:col-span-2">
@@ -74,9 +82,9 @@
           
           <!-- Client Selection -->
           <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Client Principal</label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('clientId') ? 'text-red-500' : 'text-gray-900'">Client Principal <span class="text-red-500">*</span></label>
             
-            <div *ngIf="getSelectedClientName()" class="flex items-center justify-between p-3 border border-indigo-100 rounded-lg bg-indigo-50/50 shadow-sm">
+            <div *ngIf="getSelectedClientName()" class="flex items-center justify-between p-3 border rounded-lg bg-indigo-50/50 shadow-sm" [ngClass]="isFieldInvalid('clientId') ? 'border-red-500' : 'border-indigo-100'">
               <div class="flex items-center gap-3">
                 <div class="h-10 w-10 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 font-bold">
                   {{ getSelectedClientName().charAt(0) | uppercase }}
@@ -92,12 +100,16 @@
             </div>
 
             <button *ngIf="!getSelectedClientName()" type="button" (click)="openClientDialog()"
-              class="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-4 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all">
-              <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              class="relative block w-full rounded-lg border-2 border-dashed p-4 text-center focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all"
+              [ngClass]="isFieldInvalid('clientId') ? 'border-red-500 hover:border-red-600 focus:ring-red-500 text-red-500' : 'border-gray-300 hover:border-gray-400 focus:ring-indigo-500 text-gray-900'">
+              <svg class="mx-auto h-8 w-8 text-gray-400" [class.text-red-400]="isFieldInvalid('clientId')" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <span class="mt-2 block text-sm font-semibold text-gray-900">Sélectionner un client</span>
+              <span class="mt-2 block text-sm font-semibold" [ngClass]="isFieldInvalid('clientId') ? 'text-red-500' : 'text-gray-900'">Sélectionner un client</span>
             </button>
+            @if (isFieldInvalid('clientId')) {
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">Le client principal est obligatoire</span>
+            }
 
             <!-- Status Alert Component -->
             <app-client-status-alert [status]="getSelectedClientStatus()"></app-client-status-alert>
@@ -110,9 +122,9 @@
 
           <!-- Responsable Selection -->
           <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Avocat Responsable</label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('responsableId') ? 'text-red-500' : 'text-gray-900'">Avocat Responsable <span class="text-red-500">*</span></label>
 
-            <div *ngIf="getSelectedResponsableName()" class="flex items-center justify-between p-3 border border-emerald-100 rounded-lg bg-emerald-50/50 shadow-sm">
+            <div *ngIf="getSelectedResponsableName()" class="flex items-center justify-between p-3 border rounded-lg bg-emerald-50/50 shadow-sm" [ngClass]="isFieldInvalid('responsableId') ? 'border-red-500' : 'border-emerald-100'">
               <div class="flex items-center gap-3">
                 <div class="h-10 w-10 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 font-bold">
                   {{ getSelectedResponsableName().charAt(0) | uppercase }}
@@ -128,12 +140,16 @@
             </div>
 
             <button *ngIf="!getSelectedResponsableName()" type="button" (click)="openResponsableDialog()"
-              class="relative block w-full rounded-lg border-2 border-dashed border-gray-300 p-4 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all">
-              <svg class="mx-auto h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              class="relative block w-full rounded-lg border-2 border-dashed p-4 text-center focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all"
+              [ngClass]="isFieldInvalid('responsableId') ? 'border-red-500 hover:border-red-600 focus:ring-red-500 text-red-500' : 'border-gray-300 hover:border-gray-400 focus:ring-emerald-500 text-gray-900'">
+              <svg class="mx-auto h-8 w-8 text-gray-400" [class.text-red-400]="isFieldInvalid('responsableId')" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              <span class="mt-2 block text-sm font-semibold text-gray-900">Assigner un responsable</span>
+              <span class="mt-2 block text-sm font-semibold" [ngClass]="isFieldInvalid('responsableId') ? 'text-red-500' : 'text-gray-900'">Assigner un responsable</span>
             </button>
+            @if (isFieldInvalid('responsableId')) {
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">L'avocat responsable est obligatoire</span>
+            }
 
             <app-user-selection-dialog *ngIf="showResponsableDialog" [users]="users"
               [initialSelection]="dossierForm.get('responsableId')?.value ? [dossierForm.get('responsableId')?.value] : []"
@@ -184,8 +200,8 @@
           
           <!-- Domaine Juridique -->
           <div class="lg:col-span-2">
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Domaine Juridique</label>
-            <div class="flex shadow-sm rounded-md ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600">
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('domaineJuridique') ? 'text-red-500' : 'text-gray-900'">Domaine Juridique <span class="text-red-500">*</span></label>
+            <div class="flex shadow-sm rounded-md ring-1 ring-inset transition-all duration-200" [ngClass]="isFieldInvalid('domaineJuridique') ? 'ring-red-500 focus-within:ring-red-500' : 'ring-gray-300 focus-within:ring-indigo-600'">
               <div *ngIf="dossierForm.get('domaineJuridique')?.value" class="flex-1 flex items-center px-3 bg-gray-50/50 rounded-l-md border-r border-gray-200">
                 <div [style.background-color]="getSelectedDomaineColor()" class="w-2.5 h-2.5 rounded-full mr-2.5 shadow-sm"></div>
                 <span class="text-sm text-gray-900 font-medium">{{ getSelectedDomaineLabel() }}</span>
@@ -198,6 +214,9 @@
               </button>
             </div>
             <input type="hidden" formControlName="domaineJuridique">
+            @if (isFieldInvalid('domaineJuridique')) {
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">Le domaine juridique est obligatoire</span>
+            }
 
             <app-domaine-juridique-selection-dialog *ngIf="showDomaineDialog" [domaines]="domaines"
               [initialSelection]="dossierForm.get('domaineJuridique')?.value" (confirmSelection)="onDomaineSelected($event)"
@@ -207,29 +226,41 @@
 
           <!-- Priorité -->
           <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Priorité</label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('prioriteID') ? 'text-red-500' : 'text-gray-900'">Priorité <span class="text-red-500">*</span></label>
             <select formControlName="prioriteID"
-              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 cursor-pointer">
+              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset cursor-pointer transition-all duration-200"
+              [ngClass]="isFieldInvalid('prioriteID') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
               <option value="">Sélectionner</option>
               <option *ngFor="let priority of priorities" [value]="priority.id">{{ priority.label }}</option>
             </select>
+            @if (isFieldInvalid('prioriteID')) {
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">La priorité est obligatoire</span>
+            }
           </div>
 
           <!-- Statut -->
           <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Statut</label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('statutID') ? 'text-red-500' : 'text-gray-900'">Statut <span class="text-red-500">*</span></label>
             <select formControlName="statutID"
-              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 cursor-pointer">
+              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset cursor-pointer transition-all duration-200"
+              [ngClass]="isFieldInvalid('statutID') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
               <option value="">Sélectionner</option>
               <option *ngFor="let status of statuses" [value]="status.id">{{ status.label }}</option>
             </select>
+            @if (isFieldInvalid('statutID')) {
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">Le statut est obligatoire</span>
+            }
           </div>
 
           <!-- Date Ouverture -->
           <div class="lg:col-span-2 mt-2">
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Date d'Ouverture</label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('dateOuverture') ? 'text-red-500' : 'text-gray-900'">Date d'Ouverture <span class="text-red-500">*</span></label>
             <input type="date" formControlName="dateOuverture"
-              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset transition-all duration-200"
+              [ngClass]="isFieldInvalid('dateOuverture') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
+            @if (isFieldInvalid('dateOuverture')) {
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">La date d'ouverture est obligatoire</span>
+            }
           </div>
         </div>
       </div>

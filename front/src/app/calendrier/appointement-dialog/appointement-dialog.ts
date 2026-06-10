@@ -101,6 +101,12 @@ export class AppointementDialogComponent implements OnInit {
       clientCase: [''] // Helper for standard display
     });
 
+    this.appointementForm.valueChanges.subscribe(() => {
+      if (this.appointementForm.dirty) {
+        this.appointementForm.markAllAsTouched();
+      }
+    });
+
     if (this.selectedAppointement) {
       this.appointementForm.patchValue(this.selectedAppointement);
     }
@@ -173,5 +179,10 @@ export class AppointementDialogComponent implements OnInit {
   closeDialog() {
     this.appointementForm.reset({ status: 'Standard' });
     this.onClose.emit();
+  }
+
+  isFieldInvalid(fieldName: string): boolean {
+    const control = this.appointementForm.get(fieldName);
+    return !!(control && control.invalid && control.touched);
   }
 }
