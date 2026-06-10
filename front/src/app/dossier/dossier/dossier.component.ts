@@ -28,14 +28,13 @@ export class DossierComponent implements OnInit {
   private router = inject(Router);
 
   dossiers: DossierModel[] = [];
+  filteredDossiers: DossierModel[] = [];
   clients: Client[] = [];
   statuses: StatutDossier[] = [];
   priorities: DossierPriorite[] = [];
   users: User[] = [];
 
   navigationService = inject(NavigationService);
-
-
 
   activeDossiersCount = 0;
   urgentDossiersCount = 0;
@@ -50,6 +49,10 @@ export class DossierComponent implements OnInit {
   searchTerm: string = '';
   statusFilter: string = 'Tous';
   lawyerFilter: string = 'Tous';
+
+  // Pagination
+  currentPage = 1;
+  pageSize = 6;
 
   constructor() { }
 
@@ -72,11 +75,46 @@ export class DossierComponent implements OnInit {
       this.users = (users as PaginatedResponse<User>).content;
 
       this.calculateKPIs();
+      this.filterDossiers();
     });
   }
 
-  get filteredDossiers(): DossierModel[] {
-    return this.dossiers.filter(dossier => {
+  get totalPages(): number {
+    return Math.ceil(this.filteredDossiers.length / this.pageSize);
+  }
+
+  get paginatedDossiers(): DossierModel[] {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    return this.filteredDossiers.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  get currentEndIndex(): number {
+    return Math.min(this.currentPage * this.pageSize, this.filteredDossiers.length);
+  }
+
+  get pages(): number[] {
+    const list: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      list.push(i);
+    }
+    return list;
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  filterDossiers() {
+    this.currentPage = 1;
+    this.filteredDossiers = this.dossiers.filter(dossier => {
       // 1. Search term filter
       const term = this.searchTerm ? this.searchTerm.toLowerCase().trim() : '';
       let matchesSearch = true;
