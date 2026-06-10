@@ -123,6 +123,7 @@ com\avo\repositories\MatterActivityRepository.class
 com\avo\mappers\ScreeningExecutionMapperImpl.class
 com\avo\mappers\TestEntityMapperImpl.class
 com\avo\services\DossierPrioriteService.class
+com\avo\config\DevSecurityConfig.class
 com\avo\repositories\DossierContactRepository.class
 com\avo\dtos\ScreeningExecutionDTO$ScreeningExecutionDTOBuilder.class
 com\avo\repositories\NoteRepository.class

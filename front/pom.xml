@@ -94,5 +94,17 @@
                 <npm.build.script>run build:prod</npm.build.script>
             </properties>
         </profile>
+        <profile>
+            <id>staging</id>
+            <properties>
+                <npm.build.script>run build:staging</npm.build.script>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <npm.build.script>run build:dev</npm.build.script>
+            </properties>
+        </profile>
     </profiles>
 </project>

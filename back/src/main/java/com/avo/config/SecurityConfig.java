@@ -15,25 +15,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-// @Configuration
-// @EnableWebSecurity
-// public class SecurityConfig {
 
-//     @Bean
-//     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//         http
-//             .cors(org.springframework.security.config.Customizer.withDefaults())
-//             .csrf(csrf -> csrf.disable())
-//             .authorizeHttpRequests(auth -> auth
-//                 .anyRequest().permitAll()
-//             );
-//         return http.build();
-//     }
-// }
+import org.springframework.context.annotation.Profile;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
+@Profile("!dev")
 public class SecurityConfig {
 
     @Bean

@@ -11,7 +11,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class AvoApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AvoApplication.class, args);
+        org.springframework.context.ConfigurableApplicationContext context = SpringApplication.run(AvoApplication.class, args);
+        System.out.println("Active profiles: " + java.util.Arrays.toString(context.getEnvironment().getActiveProfiles()));
         System.out.println("Application started" + new Date());
     }
 }

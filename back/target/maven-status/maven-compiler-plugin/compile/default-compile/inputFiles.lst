@@ -65,6 +65,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\repositories\FormConfigRepository.jav
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\DomaineJuridiqueRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\TestEntityMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\UBOService.java
+D:\avo-maitrise\back\src\main\java\com\avo\config\DevSecurityConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\ClientMoralController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\FormConfigController.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\ClientMoralMapper.java
