@@ -59,7 +59,7 @@ export class DossierComponent implements OnInit {
 
   loadData(): void {
     forkJoin({
-      dossiers: this.dossierService.getAll(),
+      dossiers: this.dossierService.findAll(0, 1000, 'dateOuverture,desc'),
       clients: this.clientService.getAll(),
       statuses: this.statusService.getAll(),
       priorities: this.priorityService.getAll(),
@@ -72,6 +72,41 @@ export class DossierComponent implements OnInit {
       this.users = (users as PaginatedResponse<User>).content;
 
       this.calculateKPIs();
+    });
+  }
+
+  get filteredDossiers(): DossierModel[] {
+    return this.dossiers.filter(dossier => {
+      // 1. Search term filter
+      const term = this.searchTerm ? this.searchTerm.toLowerCase().trim() : '';
+      let matchesSearch = true;
+      if (term) {
+        const reference = (dossier.referenceInterne || '').toLowerCase();
+        const title = (dossier.titre || '').toLowerCase();
+        const clientName = this.getClientName(dossier.clientId).toLowerCase();
+        
+        matchesSearch = reference.includes(term) ||
+          title.includes(term) ||
+          clientName.includes(term);
+      }
+
+      // 2. Status filter
+      let matchesStatus = true;
+      if (this.statusFilter && this.statusFilter !== 'Tous') {
+        const status = this.getStatus(dossier.statutID);
+        const statusId = status ? String(status.id) : String(dossier.statutID || '');
+        matchesStatus = statusId === String(this.statusFilter);
+      }
+
+      // 3. Lawyer filter
+      let matchesLawyer = true;
+      if (this.lawyerFilter && this.lawyerFilter !== 'Tous') {
+        const responsable = dossier.responsableId;
+        const respId = responsable && typeof responsable === 'object' ? String((responsable as any).id) : String(responsable || '');
+        matchesLawyer = respId === String(this.lawyerFilter);
+      }
+
+      return matchesSearch && matchesStatus && matchesLawyer;
     });
   }
 
