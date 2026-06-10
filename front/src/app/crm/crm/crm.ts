@@ -3,6 +3,8 @@ import { Router, RouterModule } from '@angular/router';
 import { NavigationService } from './../../services/navigation-service';
 import { Client, ClientStatus } from '../../appTypes';
 import { ClientService } from '../../services/client-service';
+import { ScreeningMatchService } from '../../services/screening-match.service';
+import { forkJoin } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -35,7 +37,9 @@ export class Crm implements OnInit {
 
   private readonly navigationService = inject(NavigationService);
   private readonly clientService = inject(ClientService);
+  private readonly screeningMatchService = inject(ScreeningMatchService);
 
+  private clientMatchesMap = new Map<number, any[]>();
 
   // Liste de contacts récupérée depuis le service
   clients: Client[] = [];
@@ -100,31 +104,88 @@ export class Crm implements OnInit {
   }
 
   loadClients() {
-    this.clientService.findAll(0, 1000, 'createdAt,desc').subscribe({
-      next: (data: PaginatedResponse<Client>) => {
-        this.clients = data.content;
-        this.filteredClients = data.content;
+    forkJoin({
+      clientsRes: this.clientService.findAll(0, 1000, 'createdAt,desc'),
+      matchesRes: this.screeningMatchService.findAll(0, 1000)
+    }).subscribe({
+      next: ({ clientsRes, matchesRes }) => {
+        this.clients = clientsRes.content || [];
+        
+        this.clientMatchesMap.clear();
+        const matches = matchesRes.content || [];
+        matches.forEach(match => {
+          const clientId = match.clientEntityDTO?.id;
+          if (clientId) {
+            const list = this.clientMatchesMap.get(clientId) || [];
+            list.push(match);
+            this.clientMatchesMap.set(clientId, list);
+          }
+        });
+
+        this.filteredClients = [...this.clients];
         this.filterClients();
       },
       error: (err) => {
-        console.error('Error loading clients', err);
+        console.error('Error loading clients/matches', err);
       }
     });
   }
 
+  getHighestScore(client: Client): number {
+    if (!client.id) return 0;
+    const clientMatches = this.clientMatchesMap.get(client.id) || [];
+    if (clientMatches.length === 0) return 0;
+    return Math.max(...clientMatches.map(m => m.score || 0));
+  }
+
   filterClients() {
     this.currentPage = 1;
+    const term = this.searchTerm ? this.searchTerm.toLowerCase().trim() : '';
+
     this.filteredClients = this.clients.filter(client => {
-      const matchesSearch = !this.searchTerm ||
-        (client.contacts && client.contacts.some(c => (c.nom + ' ' + c.prenom).toLowerCase().includes(this.searchTerm.toLowerCase()))) ||
-        (client.paysResidance && client.paysResidance.toLowerCase().includes(this.searchTerm.toLowerCase()));
+      let matchesSearch = true;
+      if (term) {
+        const displayName = this.getDisplayName(client).toLowerCase();
+        const cin = ((client as any).cin || '').toLowerCase();
+        const rc = ((client as any).numeroRegistreCommerce || '').toLowerCase();
+        const rn = ((client as any).numeroRegistreNational || '').toLowerCase();
+        const pays = (client.pays || '').toLowerCase();
+        const paysResidance = (client.paysResidance || '').toLowerCase();
+        const email = (client.email || '').toLowerCase();
+        const telephone = (client.telephone || '').toLowerCase();
+        
+        const matchesContacts = client.contacts && client.contacts.some(c => 
+          (c.nom + ' ' + c.prenom).toLowerCase().includes(term) ||
+          (c.email || '').toLowerCase().includes(term) ||
+          (c.telephone || '').toLowerCase().includes(term)
+        );
+
+        matchesSearch = displayName.includes(term) ||
+          cin.includes(term) ||
+          rc.includes(term) ||
+          rn.includes(term) ||
+          pays.includes(term) ||
+          paysResidance.includes(term) ||
+          email.includes(term) ||
+          telephone.includes(term) ||
+          !!matchesContacts;
+      }
 
       const matchesType = !this.selectedType || client.type === this.selectedType;
 
-      // TODO: Implement risk filter once mapping is clear. Currently riskScore is a number.
-      
+      let matchesRisk = true;
+      if (this.selectedRisk) {
+        const maxScore = this.getHighestScore(client);
+        if (this.selectedRisk === 'ELEVEE') {
+          matchesRisk = maxScore >= 0.7;
+        } else if (this.selectedRisk === 'MOYEN') {
+          matchesRisk = maxScore >= 0.4 && maxScore < 0.7;
+        } else if (this.selectedRisk === 'FAIBLE') {
+          matchesRisk = maxScore < 0.4;
+        }
+      }
 
-      return matchesSearch && matchesType;
+      return matchesSearch && matchesType && matchesRisk;
     });
   }
 
