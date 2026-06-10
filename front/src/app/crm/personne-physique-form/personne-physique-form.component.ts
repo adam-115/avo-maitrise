@@ -52,6 +52,12 @@ export class PersonnePhysiqueFormComponent implements OnInit {
             dateNaissance: [''],
             contacts: this.fb.array([])
         });
+
+        this.clientForm.valueChanges.subscribe(() => {
+            if (this.clientForm.dirty) {
+                this.clientForm.markAllAsTouched();
+            }
+        });
     }
 
     ngOnInit(): void {
@@ -163,6 +169,11 @@ export class PersonnePhysiqueFormComponent implements OnInit {
 
     cancel(): void {
         this.router.navigate(['/home/crm']);
+    }
+
+    isFieldInvalid(fieldName: string): boolean {
+        const control = this.clientForm.get(fieldName);
+        return !!(control && control.invalid && control.touched);
     }
 }
 
