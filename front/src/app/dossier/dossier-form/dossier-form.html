@@ -12,7 +12,13 @@
     </div>
   </div>
 
-  <form [formGroup]="dossierForm" (ngSubmit)="onSubmit()" class="space-y-8">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-slate-200 shadow-sm">
+    <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-slate-500 font-bold mt-4">Chargement du formulaire...</p>
+  </div>
+
+  <form *ngIf="!loading" [formGroup]="dossierForm" (ngSubmit)="onSubmit()" class="space-y-8">
 
     <!-- Card: Informations Générales -->
     <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">

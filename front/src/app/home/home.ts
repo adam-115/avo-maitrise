@@ -78,6 +78,12 @@ export class Home {
     this.isSidebarOpen = false;
   }
 
+  navigateToClientDiligenceStatusList() {
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.CLIENT_DILIGENCE_STATUS_LIST);
+    this.activeRoute = NavigationService.CLIENT_DILIGENCE_STATUS_LIST;
+    this.isSidebarOpen = false;
+  }
+
   navigateToHome() {
     this.router.navigateByUrl(NavigationService.HOME);
     this.activeRoute = 'calendrier';

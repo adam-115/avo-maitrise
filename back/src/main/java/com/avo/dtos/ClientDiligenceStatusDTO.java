@@ -20,4 +20,9 @@ public class ClientDiligenceStatusDTO {
     private OffsetDateTime creationDate;
     private OffsetDateTime lastUpdateDate;
     private boolean enabled;
+    
+    // UI Helpers
+    private String clientName;
+    private String formTitle;
+    private String clientType;
 }

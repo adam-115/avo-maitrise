@@ -15,6 +15,7 @@ import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { DomaineJuridiqueSelectionDialog } from '../domaine-juridique-selection-dialog/domaine-juridique-selection-dialog';
 import { ClientStatusAlertComponent } from '../../shared/components/client-status-alert/client-status-alert.component';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-dossier-form',
@@ -37,6 +38,7 @@ export class DossierForm implements OnInit {
   dossierForm: FormGroup;
   isEditMode = false;
   dossierId: string | number | null = null;
+  loading = true;
 
   clients: Client[] = [];
   statuses: StatutDossier[] = [];
@@ -77,30 +79,45 @@ export class DossierForm implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadDependencies();
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
+      this.loading = true;
+
+      const requests: any = {
+        clients: this.clientService.getAll(),
+        statuses: this.statusService.getAll(),
+        priorities: this.priorityService.getAll(),
+        users: this.userService.getAll(),
+        domaines: this.domaineService.getAll()
+      };
+
       if (id) {
         this.isEditMode = true;
         this.dossierId = id;
-        this.loadDossier(this.dossierId);
+        requests.dossier = this.dossierService.findById(id);
       }
-    });
-  }
 
-  loadDependencies(): void {
-    this.clientService.getAll().subscribe((data: PaginatedResponse<Client>) => this.clients = data.content);
-    this.statusService.getAll().subscribe((data: PaginatedResponse<StatutDossier>) => this.statuses = data.content);
-    this.priorityService.getAll().subscribe((data: PaginatedResponse<DossierPriorite>) => this.priorities = data.content);
-    this.userService.getAll().subscribe((data: PaginatedResponse<User>) => this.users = data.content);
-    this.domaineService.getAll().subscribe((data: PaginatedResponse<DomaineJuridique>) => this.domaines = data.content.filter(d => d.active));
-  }
+      forkJoin(requests).subscribe({
+        next: (res: any) => {
+          this.clients = res.clients.content || [];
+          this.statuses = res.statuses.content || [];
+          this.priorities = res.priorities.content || [];
+          this.users = res.users.content || [];
+          this.domaines = (res.domaines.content || []).filter((d: any) => d.active);
 
-  loadDossier(id: string | number): void {
-    this.dossierService.findById(id).subscribe(dossier => {
-      this.dossierForm.patchValue({
-        ...dossier,
-        dateOuverture: dossier.dateOuverture ? new Date(dossier.dateOuverture).toISOString().substring(0, 10) : '',
+          if (res.dossier) {
+            const dossier = res.dossier;
+            this.dossierForm.patchValue({
+              ...dossier,
+              dateOuverture: dossier.dateOuverture ? new Date(dossier.dateOuverture).toISOString().substring(0, 10) : '',
+            });
+          }
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error loading dossier form dependencies', err);
+          this.loading = false;
+        }
       });
     });
   }

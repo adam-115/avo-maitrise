@@ -1,0 +1,201 @@
+<div class="p-6 sm:p-10 bg-slate-50 min-h-screen font-sans">
+  <!-- Header Section -->
+  <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+    <div class="space-y-1">
+      <nav class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">
+        <span class="hover:text-cyan-600 cursor-pointer" routerLink="/home">Tableau de Bord</span>
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+        <span class="text-slate-900">Suivi des Diligences</span>
+      </nav>
+      <h1 class="text-4xl font-black text-slate-900 tracking-tight">
+        Suivi des <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">Diligences KYC</span>
+      </h1>
+      <p class="text-slate-500 font-medium max-w-2xl">
+        Consultez l'état d'avancement des questionnaires de diligence réglementaires assignés aux clients, complétez les réponses en attente ou visualisez les soumissions validées.
+      </p>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm">
+    <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-slate-500 font-bold mt-4">Chargement du suivi de diligence...</p>
+  </div>
+
+  <div *ngIf="!loading" class="space-y-6">
+    <!-- Filter Board -->
+    <div class="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm">
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+        <div>
+          <h3 class="text-lg font-black text-slate-950">Filtres de Recherche</h3>
+          <p class="text-xs text-slate-400 font-bold">Filtrez les statuts de diligence par mot-clé, type de client ou état</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full lg:w-auto">
+          <!-- Search input -->
+          <div class="relative w-full sm:w-64">
+            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
+              class="w-full pl-9 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:border-cyan-500 focus:bg-white outline-none transition-all placeholder:text-slate-400 font-semibold text-sm text-slate-700"
+              placeholder="Rechercher client ou formulaire..." type="search">
+          </div>
+
+          <!-- Type filter -->
+          <select [(ngModel)]="selectedType" (change)="applyFilters()"
+            class="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-600 cursor-pointer appearance-none">
+            <option value="">Tous les Types de Client</option>
+            <option value="PERSONNE">Personne Physique</option>
+            <option value="SOCIETE">Société / Entité</option>
+            <option value="ASSOCIATION">Association</option>
+            <option value="INSTITUTION">Institution</option>
+          </select>
+
+          <!-- Status filter -->
+          <select [(ngModel)]="selectedStatus" (change)="applyFilters()"
+            class="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-600 cursor-pointer appearance-none">
+            <option value="">Tous les Statuts</option>
+            <option value="PENDING">En attente (Pending)</option>
+            <option value="SUBMITTED">Soumis (Submitted)</option>
+            <option value="VALIDATED">Validé (Validated)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table Card -->
+    <div class="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50/70 border-b border-slate-100">
+              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">Client</th>
+              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">Formulaire de Diligence</th>
+              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">Statut</th>
+              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">Dernière mise à jour</th>
+              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of paginatedStatuses"
+              class="hover:bg-slate-50/30 transition-colors border-b border-slate-100 last:border-0">
+              
+              <!-- Client Info -->
+              <td class="px-6 py-4">
+                <div class="flex flex-col gap-1 items-start">
+                  <span class="font-bold text-slate-900 text-sm">{{ item.clientName }}</span>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-500 uppercase tracking-wider">
+                    {{ translateClientType(item.clientType || '') }}
+                  </span>
+                </div>
+              </td>
+
+              <!-- Form Info -->
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-2">
+                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span class="font-semibold text-slate-700 text-sm">{{ item.formTitle }}</span>
+                </div>
+              </td>
+
+              <!-- Status Badge -->
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
+                  [ngClass]="{
+                    'bg-amber-100 text-amber-800 border border-amber-200': item.status === 'PENDING',
+                    'bg-blue-100 text-blue-800 border border-blue-200': item.status === 'SUBMITTED',
+                    'bg-emerald-100 text-emerald-800 border border-emerald-200': item.status === 'VALIDATED'
+                  }">
+                  <span class="w-1.5 h-1.5 rounded-full"
+                    [ngClass]="{
+                      'bg-amber-500': item.status === 'PENDING',
+                      'bg-blue-500': item.status === 'SUBMITTED',
+                      'bg-emerald-500': item.status === 'VALIDATED'
+                    }"></span>
+                  {{ statusDisplayMap[item.status] }}
+                </span>
+              </td>
+
+              <!-- Last Update -->
+              <td class="px-6 py-4 text-sm font-semibold text-slate-500">
+                {{ item.lastUpdateDate | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+
+              <!-- Action Button -->
+              <td class="px-6 py-4 text-right">
+                <button (click)="onAction(item)"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all"
+                  [ngClass]="{
+                    'bg-amber-500 hover:bg-amber-600 text-white shadow-sm shadow-amber-200': item.status === 'PENDING',
+                    'bg-slate-900 hover:bg-slate-800 text-cyan-400 shadow-sm shadow-slate-200': item.status === 'SUBMITTED' || item.status === 'VALIDATED'
+                  }">
+                  <!-- Button Icon -->
+                  <svg *ngIf="item.status === 'PENDING'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  <svg *ngIf="item.status === 'SUBMITTED' || item.status === 'VALIDATED'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  
+                  <span>{{ item.status === 'PENDING' ? 'Remplir' : 'Voir réponse' }}</span>
+                </button>
+              </td>
+
+            </tr>
+            <tr *ngIf="filteredStatuses.length === 0">
+              <td colspan="5" class="px-6 py-16 text-center text-slate-400 font-bold bg-slate-50/20">
+                <div class="flex flex-col items-center justify-center gap-2">
+                  <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>Aucune diligence ne correspond à votre recherche</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Footer -->
+      <div *ngIf="totalPages > 1" class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <span class="text-xs font-bold text-slate-400">
+          Affichage de {{ startIndex }} à {{ endIndex }} sur {{ filteredStatuses.length }} diligences
+        </span>
+
+        <div class="flex items-center gap-1">
+          <!-- Prev Button -->
+          <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
+            class="p-2 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-all disabled:opacity-30 disabled:hover:text-slate-500 disabled:hover:border-slate-200 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <!-- Pages -->
+          <button *ngFor="let page of pages" (click)="onPageChange(page)"
+            class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
+            [ngClass]="currentPage === page ? 'bg-slate-900 text-cyan-400 shadow-md shadow-slate-200' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'">
+            {{ page }}
+          </button>
+
+          <!-- Next Button -->
+          <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
+            class="p-2 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-all disabled:opacity-30 disabled:hover:text-slate-500 disabled:hover:border-slate-200 cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

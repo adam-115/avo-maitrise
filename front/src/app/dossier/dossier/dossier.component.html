@@ -112,80 +112,88 @@
     </select>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-    <div *ngFor="let dossier of paginatedDossiers"
-        class="bg-white p-5 rounded-xl shadow-lg border-t-8 hover:shadow-xl transition duration-200"
-        [style.border-color]="getPriority(dossier.prioriteID)?.color || '#ccc'">
-        <div class="flex justify-between items-start mb-3">
-            <h4 class="text-sm font-semibold text-gray-500">{{ dossier.referenceInterne }}</h4>
-            <span class="px-3 py-1 text-xs leading-5 font-bold rounded-full"
-                [style.background-color]="getStatus(dossier.statutID)?.color + '20'"
-                [style.color]="getStatus(dossier.statutID)?.color">
-                {{ getStatus(dossier.statutID)?.label }}
-            </span>
-        </div>
-
-        <h3 class="text-lg font-bold text-slate-800 mb-4">
-            <a (click)="navigateToDossierDetail(dossier.id!)" class="hover:text-cyan-600 transition cursor-pointer">{{
-                dossier.titre }}</a>
-        </h3>
-
-        <div class="space-y-2 text-sm text-gray-700 border-t pt-3">
-            <div class="flex items-center justify-between">
-                <span class="text-gray-500">Client :</span>
-                <span class="font-medium truncate max-w-[150px]">{{ getClientName(dossier.clientId) }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-gray-500">Avocat Resp. :</span>
-                <span class="font-medium">{{ getResponsableName(dossier.responsableId) }}</span>
-            </div>
-            <div class="flex items-center justify-between">
-                <span class="text-gray-500">Ouverture :</span>
-                <span class="font-medium">{{ dossier.dateOuverture | date:'dd/MM/yyyy' }}</span>
-            </div>
-        </div>
-
-        <a (click)="navigateToDossierDetail(dossier.id!)"
-            class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition cursor-pointer">
-            Voir la Fiche
-        </a>
-    </div>
-
+<!-- Loading State -->
+<div *ngIf="loading" class="py-20 flex flex-col items-center justify-center text-center bg-white rounded-2xl shadow-sm border border-slate-100">
+    <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-slate-500 font-bold mt-4">Chargement des dossiers...</p>
 </div>
 
-<!-- Empty State -->
-<div *ngIf="filteredDossiers.length === 0" class="col-span-full py-20 flex flex-col items-center justify-center text-center bg-white rounded-2xl shadow-sm border-2 border-dashed border-slate-200">
-    <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4">
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
-        </svg>
+<div *ngIf="!loading">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <div *ngFor="let dossier of paginatedDossiers"
+            class="bg-white p-5 rounded-xl shadow-lg border-t-8 hover:shadow-xl transition duration-200"
+            [style.border-color]="getPriority(dossier.prioriteID)?.color || '#ccc'">
+            <div class="flex justify-between items-start mb-3">
+                <h4 class="text-sm font-semibold text-gray-500">{{ dossier.referenceInterne }}</h4>
+                <span class="px-3 py-1 text-xs leading-5 font-bold rounded-full"
+                    [style.background-color]="getStatus(dossier.statutID)?.color + '20'"
+                    [style.color]="getStatus(dossier.statutID)?.color">
+                    {{ getStatus(dossier.statutID)?.label }}
+                </span>
+            </div>
+
+            <h3 class="text-lg font-bold text-slate-800 mb-4">
+                <a (click)="navigateToDossierDetail(dossier.id!)" class="hover:text-cyan-600 transition cursor-pointer">{{
+                    dossier.titre }}</a>
+            </h3>
+
+            <div class="space-y-2 text-sm text-gray-700 border-t pt-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500">Client :</span>
+                    <span class="font-medium truncate max-w-[150px]">{{ getClientName(dossier.clientId) }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500">Avocat Resp. :</span>
+                    <span class="font-medium">{{ getResponsableName(dossier.responsableId) }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-gray-500">Ouverture :</span>
+                    <span class="font-medium">{{ dossier.dateOuverture | date:'dd/MM/yyyy' }}</span>
+                </div>
+            </div>
+
+            <a (click)="navigateToDossierDetail(dossier.id!)"
+                class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition cursor-pointer">
+                Voir la Fiche
+            </a>
+        </div>
+
     </div>
-    <h3 class="text-xl font-bold text-slate-800 mb-1">Aucune affaire trouvée</h3>
-    <p class="text-slate-500 text-sm font-medium">Aucun dossier ne correspond à vos critères de recherche.</p>
-</div>
 
-<div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 border-t pt-4">
-    <p class="text-slate-500 font-bold text-base">
-        Affichage de <span class="text-slate-900 font-black">{{ filteredDossiers.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span> à 
-        <span class="text-slate-900 font-black">{{ currentEndIndex }}</span> sur 
-        <span class="text-slate-900 font-black">{{ filteredDossiers.length }}</span> affaires
-    </p>
-    <div *ngIf="totalPages > 1" class="flex items-center gap-2">
-        <button (click)="prevPage()" [disabled]="currentPage === 1"
-            class="flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-        </button>
-        
-        <button *ngFor="let page of pages" (click)="currentPage = page"
-            [ngClass]="currentPage === page ? 'bg-cyan-600 border-cyan-600 text-white shadow-md shadow-cyan-100 scale-105' : 'border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'"
-            class="flex items-center justify-center w-10 h-10 rounded-xl font-bold text-sm transition-all active:scale-95 cursor-pointer">
-            {{ page }}
-        </button>
+    <!-- Empty State -->
+    <div *ngIf="filteredDossiers.length === 0" class="col-span-full py-20 flex flex-col items-center justify-center text-center bg-white rounded-2xl shadow-sm border-2 border-dashed border-slate-200">
+        <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
+            </svg>
+        </div>
+        <h3 class="text-xl font-bold text-slate-800 mb-1">Aucune affaire trouvée</h3>
+        <p class="text-slate-500 text-sm font-medium">Aucun dossier ne correspond à vos critères de recherche.</p>
+    </div>
 
-        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-            class="flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </button>
+    <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 border-t pt-4">
+        <p class="text-slate-500 font-bold text-base">
+            Affichage de <span class="text-slate-900 font-black">{{ filteredDossiers.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span> à 
+            <span class="text-slate-900 font-black">{{ currentEndIndex }}</span> sur 
+            <span class="text-slate-900 font-black">{{ filteredDossiers.length }}</span> affaires
+        </p>
+        <div *ngIf="totalPages > 1" class="flex items-center gap-2">
+            <button (click)="prevPage()" [disabled]="currentPage === 1"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            
+            <button *ngFor="let page of pages" (click)="currentPage = page"
+                [ngClass]="currentPage === page ? 'bg-cyan-600 border-cyan-600 text-white shadow-md shadow-cyan-100 scale-105' : 'border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'"
+                class="flex items-center justify-center w-10 h-10 rounded-xl font-bold text-sm transition-all active:scale-95 cursor-pointer">
+                {{ page }}
+            </button>
+
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+                class="flex items-center justify-center w-10 h-10 rounded-xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+        </div>
     </div>
 </div>

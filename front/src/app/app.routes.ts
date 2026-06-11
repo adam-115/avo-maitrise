@@ -150,6 +150,10 @@ export const routes: Routes = [
         loadComponent: () => import('./due-diligence/diligence-form-list/diligence-form-list.component').then(m => m.DiligenceFormListComponent)
       },
       {
+        path: NavigationService.CLIENT_DILIGENCE_STATUS_LIST,
+        loadComponent: () => import('./due-diligence/diligence-status-list/diligence-status-list.component').then(m => m.DiligenceStatusListComponent)
+      },
+      {
         path: NavigationService.DOSSIER_STATUS_FORM,
         loadComponent: () => import('./administration/dossier-status-form/dossier-status-form.component').then(m => m.DossierStatusFormComponent)
       },

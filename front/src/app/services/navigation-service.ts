@@ -56,6 +56,7 @@ export class NavigationService {
   public static readonly CLIENT_DILIGENCE_RESULTS = "client-diligence-results/:id";
   public static readonly DILIGENCE_FORM_RESULT_VIEWER = "diligence-form-result-viewer/:id";
   public static readonly DILIGENCE_FORM_LIST = "diligence-form-list";
+  public static readonly CLIENT_DILIGENCE_STATUS_LIST = "client-diligence-status-list";
 
   // Nouvelle Facturation
   public static readonly BILLING = "billing";
@@ -145,6 +146,10 @@ export class NavigationService {
 
   navigateToDiligenceFormList() {
     this.router.navigate(['/home/', NavigationService.DILIGENCE_FORM_LIST]);
+  }
+
+  navigateToClientDiligenceStatusList() {
+    this.router.navigate(['/home/', NavigationService.CLIENT_DILIGENCE_STATUS_LIST]);
   }
 
   navigateToDiligenceFormBuilderEdit(id: string) {

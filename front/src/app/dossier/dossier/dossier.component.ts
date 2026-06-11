@@ -33,6 +33,7 @@ export class DossierComponent implements OnInit {
   statuses: StatutDossier[] = [];
   priorities: DossierPriorite[] = [];
   users: User[] = [];
+  loading = true;
 
   navigationService = inject(NavigationService);
 
@@ -61,21 +62,29 @@ export class DossierComponent implements OnInit {
   }
 
   loadData(): void {
+    this.loading = true;
     forkJoin({
       dossiers: this.dossierService.findAll(0, 1000, 'dateOuverture,desc'),
       clients: this.clientService.getAll(),
       statuses: this.statusService.getAll(),
       priorities: this.priorityService.getAll(),
       users: this.userService.getAll()
-    }).subscribe(({ dossiers, clients, statuses, priorities, users }) => {
-      this.dossiers = (dossiers as PaginatedResponse<DossierModel>).content;
-      this.clients = (clients as PaginatedResponse<Client>).content;
-      this.statuses = (statuses as PaginatedResponse<StatutDossier>).content;
-      this.priorities = (priorities as PaginatedResponse<DossierPriorite>).content;
-      this.users = (users as PaginatedResponse<User>).content;
+    }).subscribe({
+      next: ({ dossiers, clients, statuses, priorities, users }) => {
+        this.dossiers = (dossiers as PaginatedResponse<DossierModel>).content;
+        this.clients = (clients as PaginatedResponse<Client>).content;
+        this.statuses = (statuses as PaginatedResponse<StatutDossier>).content;
+        this.priorities = (priorities as PaginatedResponse<DossierPriorite>).content;
+        this.users = (users as PaginatedResponse<User>).content;
 
-      this.calculateKPIs();
-      this.filterDossiers();
+        this.calculateKPIs();
+        this.filterDossiers();
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error loading dossiers data', err);
+        this.loading = false;
+      }
     });
   }
 

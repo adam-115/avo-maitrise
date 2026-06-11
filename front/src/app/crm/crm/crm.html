@@ -107,8 +107,14 @@
         </div>
     </div>
 
+    <!-- Loading State -->
+    <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 bg-white rounded-[40px] border border-slate-200 shadow-sm">
+        <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-slate-500 font-bold mt-4">Chargement de l'annuaire des clients...</p>
+    </div>
+
     <!-- Content Sections -->
-    <div [ngSwitch]="activeTab">
+    <div *ngIf="!loading" [ngSwitch]="activeTab">
         <!-- ALL TAB -->
         <div *ngSwitchCase="'ALL'">
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">

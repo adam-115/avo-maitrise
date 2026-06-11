@@ -105,6 +105,23 @@ public class ClientEntity {
         return null;
     }
 
+    public String getDisplayName() {
+        if (this instanceof ClientPersonnePhysique) {
+            ClientPersonnePhysique cp = (ClientPersonnePhysique) this;
+            return ((cp.getNom() != null ? cp.getNom() : "") + " " + (cp.getPrenom() != null ? cp.getPrenom() : "")).trim();
+        }
+        if (this instanceof ClientMoral) {
+            return ((ClientMoral) this).getNomCommercial();
+        }
+        if (this instanceof Association) {
+            return ((Association) this).getNom();
+        }
+        if (this instanceof Institution) {
+            return ((Institution) this).getNom();
+        }
+        return null;
+    }
+
     public void linkChildren() {
         if (documents != null) {
             documents.forEach(d -> {

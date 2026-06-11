@@ -4,6 +4,7 @@ import com.avo.dtos.DiligenceFormResultDTO;
 import com.avo.entities.DiligenceFormResult;
 import com.avo.mappers.DiligenceFormResultMapper;
 import com.avo.repositories.DiligenceFormResultRepository;
+import com.avo.repositories.ClientDiligenceStatusRepository;
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ public class DiligenceFormResultService {
 
     private final DiligenceFormResultRepository repository;
     private final DiligenceFormResultMapper mapper;
+    private final ClientDiligenceStatusRepository statusRepository;
 
     public Page<DiligenceFormResultDTO> findAll(Pageable pageable) {
         return repository.findAll(pageable).map(mapper::toDto);
@@ -39,7 +41,19 @@ public class DiligenceFormResultService {
     @Transactional
     public DiligenceFormResultDTO create(DiligenceFormResultDTO dto) {
         DiligenceFormResult entity = mapper.toEntity(dto);
-        return mapper.toDto(repository.save(entity));
+        DiligenceFormResult savedResult = repository.save(entity);
+
+        if (dto.getClientId() != null && dto.getFormConfigId() != null) {
+            statusRepository.findByClientIdAndFormConfigId(dto.getClientId(), dto.getFormConfigId())
+                .filter(status -> status.getStatus() == com.avo.entities.DiligenceStatus.PENDING)
+                .ifPresent(status -> {
+                    status.setStatus(com.avo.entities.DiligenceStatus.SUBMITTED);
+                    status.setResultId(savedResult.getId());
+                    statusRepository.save(status);
+                });
+        }
+
+        return mapper.toDto(savedResult);
     }
 
     @Transactional

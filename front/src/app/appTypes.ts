@@ -361,6 +361,11 @@ export interface ClientDiligenceStatus {
   creationDate?: Date;
   lastUpdateDate?: Date;
   enabled?: boolean;
+  
+  // UI Helpers
+  clientName?: string;
+  formTitle?: string;
+  clientType?: string;
 }
 
 

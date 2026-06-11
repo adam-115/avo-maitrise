@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Client, ClientStatus, DiligenceFormResult, FieldConfig, FieldResult, FormConfig } from '../../appTypes';
+import { Client, DiligenceFormResult, FieldConfig, FieldResult, FormConfig } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
 import { FormConfigService } from '../../services/form-config-service';
 import { NavigationService } from '../../services/navigation-service';
 import { ClientService } from '../../services/client-service';
 import { FormResultService } from '../../services/form-result-service';
-import { ClientDiligenceStatusService } from '../../services/client-diligence-status-service';
 
 @Component({
     selector: 'app-diligence-form-viewer',
@@ -33,7 +32,6 @@ export class DiligenceFormViewerComponent implements OnInit {
     private navigationService = inject(NavigationService);
     private clientService = inject(ClientService);
     private formResultService = inject(FormResultService);
-    private statusService = inject(ClientDiligenceStatusService);
 
 
     ngOnInit(): void {
@@ -164,14 +162,9 @@ export class DiligenceFormViewerComponent implements OnInit {
 
         this.formResultService.create(result).subscribe({
             next: (createdResult) => {
-                this.updateAssignmentStatus(createdResult);
                 this.alertService.displayMessage('Succès', 'Formulaire soumis avec succès', 'success');
-                // Optional: Navigate back to client details if we have a client, otherwise list
-                // For now, keep existing behavior but maybe improve later
                 if (this.selectedClient) {
                     this.navigationService.navigateToClientDiligenceResults(String(this.selectedClient.id!));
-                } else {
-                    // this.navigationService.navigateToFormConfigList();
                 }
             },
             error: (err) => {
@@ -179,32 +172,6 @@ export class DiligenceFormViewerComponent implements OnInit {
                 this.alertService.displayMessage('Erreur', 'Erreur lors de l\'enregistrement', 'error');
             }
         });
-    }
-
-    private updateAssignmentStatus(result: DiligenceFormResult) {
-        if (this.selectedClient?.id && this.formConfig?.id) {
-            this.statusService.findByClientId(String(this.selectedClient.id)).subscribe(statuses => {
-                const assignment = statuses.find(s => s.formConfigId === this.formConfig?.id && s.status === 'PENDING');
-                if (assignment) {
-                    assignment.status = 'SUBMITTED';
-                    assignment.resultId = result.id;
-                    this.statusService.update(assignment).subscribe({
-                        error: (err) => console.error('Error updating assignment status', err)
-                    });
-                }
-                if (statuses.filter(s => s.status === 'PENDING').length === 0) {
-                    this.selectedClient!.clientStatus = ClientStatus.VALIDATED;
-                    this.clientService.update(this.selectedClient!).subscribe({
-                        error: (err) => console.error('Error updating client status', err)
-                    });
-                } else {
-                    this.selectedClient!.clientStatus = ClientStatus.INDULGENCE_REQUIRED;
-                    this.clientService.update(this.selectedClient!).subscribe({
-                        error: (err) => console.error('Error updating client status', err)
-                    });
-                }
-            });
-        }
     }
 
 

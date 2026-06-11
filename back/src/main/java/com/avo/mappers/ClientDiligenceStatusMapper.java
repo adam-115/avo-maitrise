@@ -14,5 +14,8 @@ public interface ClientDiligenceStatusMapper {
 
     @Mapping(target = "clientId", source = "client.id")
     @Mapping(target = "formConfigId", source = "formConfig.id")
+    @Mapping(target = "formTitle", source = "formConfig.title")
+    @Mapping(target = "clientType", expression = "java(entity.getClient() != null ? entity.getClient().getType() : null)")
+    @Mapping(target = "clientName", expression = "java(entity.getClient() != null ? entity.getClient().getDisplayName() : null)")
     ClientDiligenceStatusDTO toDto(ClientDiligenceStatus entity);
 }

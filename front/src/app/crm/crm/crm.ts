@@ -34,6 +34,7 @@ import { ClientCardComponent } from './client-card/client-card.component';
 export class Crm implements OnInit {
   
   activeTab: 'ALL' | 'PERSONNE' | 'SOCIETE' | 'ASSOCIATION' | 'INSTITUTION' = 'ALL';
+  loading = true;
 
   private readonly navigationService = inject(NavigationService);
   private readonly clientService = inject(ClientService);
@@ -104,6 +105,7 @@ export class Crm implements OnInit {
   }
 
   loadClients() {
+    this.loading = true;
     forkJoin({
       clientsRes: this.clientService.findAll(0, 1000, 'createdAt,desc'),
       matchesRes: this.screeningMatchService.findAll(0, 1000)
@@ -124,9 +126,11 @@ export class Crm implements OnInit {
 
         this.filteredClients = [...this.clients];
         this.filterClients();
+        this.loading = false;
       },
       error: (err) => {
-        console.error('Error loading clients/matches', err);
+        console.error('Error loading clients', err);
+        this.loading = false;
       }
     });
   }
