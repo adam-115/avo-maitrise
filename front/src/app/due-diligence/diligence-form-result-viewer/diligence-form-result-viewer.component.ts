@@ -120,20 +120,38 @@ export class DiligenceFormResultViewerComponent implements OnInit {
         return fieldResult ? fieldResult.value : null;
     }
 
+    getFieldResultObj(fieldId: string): FieldResult | null {
+        if (!this.result) return null;
+        return this.result.fieldResults.find(r => r.fieldConfigId === fieldId) || null;
+    }
+
     // For checkboxes where multiple options might be selected
-    getFieldOptionResult(fieldId: string, optionId: string): boolean {
+    getFieldOptionResult(fieldId: string, optionId: string): any {
         if (!this.result) return false;
         const fieldResult = this.result.fieldResults.find(r => r.fieldConfigId === fieldId && r.fieldOptionId === optionId);
-        return fieldResult ? fieldResult.value : false;
+        if (!fieldResult) return false;
+        // Convert to boolean if it is a string representation of boolean
+        if (fieldResult.value === 'true' || fieldResult.value === true) return true;
+        if (fieldResult.value === 'false' || fieldResult.value === false) return false;
+        return fieldResult.value;
     }
 
     getDisplayValue(field: FieldConfig): string {
-        const value = this.getFieldResult(field.id!);
+        const resObj = this.getFieldResultObj(field.id!);
+        if (!resObj) return '-';
+
+        const value = resObj.value;
+        const optionId = resObj.fieldOptionId;
+
         if (value === null || value === undefined) return '-';
 
         if (field.type === 'select' || field.type === 'radio') {
-            const option = field.options?.find(o => o.id === value);
-            return option ? option.value : value;
+            const option = field.options?.find(o => 
+                (optionId && o.id === optionId) || 
+                o.id === value || 
+                o.value === value
+            );
+            return option ? (option.name || option.value) : value;
         }
 
         return value;

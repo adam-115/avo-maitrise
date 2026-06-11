@@ -103,7 +103,7 @@
                                 </div>
                                 <span class="text-sm font-medium"
                                     [ngClass]="getFieldOptionResult(field.id!, opt.id!) ? 'text-slate-800' : 'text-slate-500'">
-                                    {{ opt.value }}
+                                    {{ opt.name || opt.value }}
                                 </span>
                             </div>
                             }

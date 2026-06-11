@@ -31,6 +31,11 @@ TRUNCATE TABLE note_categories;
 TRUNCATE TABLE task_categories;
 TRUNCATE TABLE task_statuses;
 TRUNCATE TABLE secteurs_activite;
+TRUNCATE TABLE field_result;
+TRUNCATE TABLE diligence_form_result;
+TRUNCATE TABLE field_option;
+TRUNCATE TABLE field_config;
+TRUNCATE TABLE form_config;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -423,6 +428,143 @@ INSERT INTO documents (id, nom_fichier, type_document, title, name, label, descr
 INSERT INTO dossier_documents (dossier_id, document_id) VALUES 
 (1001, 101), (1001, 102), (1002, 103), (1003, 104),
 (1021, 106), (1022, 107);
+
+-- ============================================================================
+-- 21. FORM CONFIGURATIONS (FormConfig, FieldConfig, FieldOption)
+-- ============================================================================
+-- 21.1 FORM_CONFIG
+INSERT INTO form_config (id, type, target_client_type, name, title, description, creation_date, last_update_date) VALUES
+('form-001', 'INDULGENCE', 'PERSONNE', 'kyc-person-std', 'KYC Standard - Personne Physique', 'Vigilance standard pour clients particuliers.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('form-002', 'INDULGENCE', 'SOCIETE', 'kyc-company-std', 'KYC Standard - Personne Morale', 'Vigilance standard pour entreprises.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('form-003', 'INDULGENCE', 'INSTITUTION', 'kyc-institution', 'Vigilance Institutions', 'Vérification entités gouvernementales.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('form-004', 'INDULGENCE', 'ASSOCIATION', 'kyc-association', 'Vigilance Associations', 'Contrôle organismes sans but lucratif.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('form-005', 'INDULGENCE', 'PERSONNE', 'ppe-detailed', 'PPE Détaillée', 'Contrôle renforcé pour PPE.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('form-006', 'INDULGENCE', 'SOCIETE', 'ubo-declaration', 'Déclaration UBO', 'Identification des bénéficiaires effectifs.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('form-007', 'INDULGENCE', 'PERSONNE', 'high-risk-res', 'Haut Risque Résidence', 'Juridictions sensibles.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('form-008', 'INDULGENCE', 'SOCIETE', 'offshore-audit', 'Audit Offshore', 'Analyse structures offshore.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('form-009', 'INDULGENCE', 'ASSOCIATION', 'funding-ngo', 'Source Fonds NGO', 'Origine des dons.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+('form-010', 'INDULGENCE', 'PERSONNE', 'wealth-hnwi', 'Fortune HNWI', 'Patrimoine clients fortunés.', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+-- 21.2 FIELD_CONFIG
+INSERT INTO field_config (id, name, type, label, required, error_message, placeholder, form_config_id) VALUES
+('field-001-1', 'full_name', 'text', 'Nom Complet', true, 'Champ requis', 'Entrez votre nom', 'form-001'),
+('field-001-2', 'birth_date', 'text', 'Date de Naissance', true, 'Date requise', 'JJ/MM/AAAA', 'form-001'),
+('field-001-3', 'id_upload', 'file', 'Pièce d''identité', true, 'Fichier requis', NULL, 'form-001'),
+('field-002-1', 'company_name', 'text', 'Raison Sociale', true, 'Champ requis', 'Nom de l''entreprise', 'form-002'),
+('field-002-2', 'tax_id', 'text', 'Numéro de TVA', false, NULL, 'Ex: FR123456789', 'form-002'),
+('field-002-3', 'legal_status', 'select', 'Forme Juridique', true, 'Sélectionnez une option', NULL, 'form-002'),
+('field-005-1', 'is_ppe', 'radio', 'Êtes-vous une PPE ?', true, 'Sélection obligatoire', NULL, 'form-005'),
+('field-005-2', 'ppe_role', 'text', 'Fonction occupée', false, NULL, 'Ex: Ministre', 'form-005'),
+('field-006-1', 'ubo_count', 'number', 'Nombre de bénéficiaires', true, 'Minimum 1', 'Ex: 1', 'form-006'),
+-- Complex Form 007 fields (Haut Risque Résidence)
+('field-007-1', 'source_of_wealth', 'select', 'Source de la Fortune', true, 'Origine obligatoire', NULL, 'form-007'),
+('field-007-2', 'wealth_details', 'text', 'Précision sur l''origine', false, NULL, 'Détaillez la provenance', 'form-007'),
+('field-007-3', 'jurisdiction_reason', 'text', 'Raison de la résidence', true, 'Raison obligatoire', 'Pourquoi cette juridiction ?', 'form-007'),
+('field-007-4', 'annual_income', 'number', 'Revenu Annuel (€)', false, NULL, 'Ex: 500000', 'form-007'),
+('field-007-5', 'expected_volume', 'number', 'Volume estimé (€/an)', true, 'Volume obligatoire', 'Volume de transactions', 'form-007'),
+('field-007-6', 'high_risk_country', 'select', 'Pays Concerné', true, 'Sélectionnez le pays', NULL, 'form-007'),
+('field-007-7', 'sanctions_check', 'radio', 'Sanction Check validé ?', true, 'Vérification obligatoire', NULL, 'form-007'),
+('field-007-8', 'sanctions_details', 'text', 'Détails Sanctions', false, NULL, 'Observations...', 'form-007'),
+-- Complex Form 008 fields (Audit Offshore)
+('field-008-1', 'offshore_jurisdiction', 'select', 'Juridiction Offshore', true, 'Juridiction obligatoire', NULL, 'form-008'),
+('field-008-2', 'offshore_reg_number', 'text', 'N° d''enregistrement', true, 'Numéro obligatoire', 'N° de registre', 'form-008'),
+('field-008-3', 'has_intermediary', 'radio', 'Présence Fiduciary/Intermédiaire', true, 'Sélection obligatoire', NULL, 'form-008'),
+('field-008-4', 'intermediary_name', 'text', 'Nom Intermédiaire', false, NULL, 'Nom du cabinet', 'form-008'),
+('field-008-5', 'layers_count', 'number', 'Nombre de Niveaux (Layers)', true, 'Requis', 'Ex: 2', 'form-008'),
+('field-008-6', 'trust_deed_provided', 'radio', 'Acte de fiducie fourni ?', true, 'Requis', NULL, 'form-008'),
+('field-008-7', 'economic_substance', 'radio', 'Substance Économique locale', true, 'Requis', NULL, 'form-008'),
+('field-008-8', 'substance_details', 'text', 'Détails Activité Réelle', false, NULL, 'Employés, locaux...', 'form-008');
+
+-- Batch generic fields for form-003, form-004, form-009, form-010
+INSERT INTO field_config (id, name, type, label, required, error_message, placeholder, form_config_id) VALUES
+('field-form-003-std', 'general_info', 'text', 'Informations complémentaires', false, NULL, 'Précisez ici...', 'form-003'),
+('field-form-004-std', 'general_info', 'text', 'Informations complémentaires', false, NULL, 'Précisez ici...', 'form-004'),
+('field-form-009-std', 'general_info', 'text', 'Informations complémentaires', false, NULL, 'Précisez ici...', 'form-009'),
+('field-form-010-std', 'general_info', 'text', 'Informations complémentaires', false, NULL, 'Précisez ici...', 'form-010');
+
+-- 21.3 FIELD_OPTION
+INSERT INTO field_option (id, name, value, field_config_id) VALUES
+('opt-002-3-1', 'SARL', 'SARL', 'field-002-3'),
+('opt-002-3-2', 'SA', 'SA', 'field-002-3'),
+('opt-002-3-3', 'SAS', 'SAS', 'field-002-3'),
+('opt-005-1-1', 'Oui', 'YES', 'field-005-1'),
+('opt-005-1-2', 'Non', 'NO', 'field-005-1'),
+-- Options for field-007-1 (Source de la fortune)
+('opt-007-1-1', 'Héritage', 'HERITAGE', 'field-007-1'),
+('opt-007-1-2', 'Épargne Salariale', 'SAVINGS', 'field-007-1'),
+('opt-007-1-3', 'Cession Entreprise', 'BUSINESS_SALE', 'field-007-1'),
+('opt-007-1-4', 'Investissements', 'INVESTMENTS', 'field-007-1'),
+-- Options for field-007-6 (High risk country)
+('opt-007-6-1', 'Russie', 'RUSSIA', 'field-007-6'),
+('opt-007-6-2', 'Iran', 'IRAN', 'field-007-6'),
+('opt-007-6-3', 'Myanmar', 'MYANMAR', 'field-007-6'),
+-- Options for field-007-7 (Sanction Check)
+('opt-007-7-1', 'Oui (Revue OK)', 'YES', 'field-007-7'),
+('opt-007-7-2', 'Non (Alerte)', 'NO', 'field-007-7'),
+-- Options for field-008-1 (Offshore jurisdiction)
+('opt-008-1-1', 'Delaware, USA', 'DELAWARE', 'field-008-1'),
+('opt-008-1-2', 'Îles Caïmans', 'CAYMANS', 'field-008-1'),
+('opt-008-1-3', 'Îles Vierges Britanniques', 'BVI', 'field-008-1'),
+('opt-008-1-4', 'Seychelles', 'SEYCHELLES', 'field-008-1'),
+-- Options for field-008-3 (Has intermediary)
+('opt-008-3-1', 'Oui', 'YES', 'field-008-3'),
+('opt-008-3-2', 'Non', 'NO', 'field-008-3'),
+-- Options for field-008-6 (Trust deed provided)
+('opt-008-6-1', 'Oui', 'YES', 'field-008-6'),
+('opt-008-6-2', 'Non', 'NO', 'field-008-6'),
+('opt-008-6-3', 'N/A', 'NA', 'field-008-6'),
+-- Options for field-008-7 (Substance verified)
+('opt-008-7-1', 'Oui (Validé)', 'YES', 'field-008-7'),
+('opt-008-7-2', 'Non (Sans substance)', 'NO', 'field-008-7');
+
+-- ============================================================================
+-- 22. DILIGENCE FORM RESULTS & ANSWERS (DiligenceFormResult, FieldResult)
+-- ============================================================================
+-- 22.1 DILIGENCE_FORM_RESULT
+INSERT INTO diligence_form_result (id, form_config_id, client_id, creation_date, last_update_date) VALUES
+('res-001', 'form-001', 11, '2026-01-05 09:30:00', '2026-01-05 09:45:00'),
+('res-002', 'form-005', 11, '2026-01-05 09:50:00', '2026-01-05 10:00:00'),
+('res-003', 'form-002', 21, '2026-05-12 14:30:00', '2026-05-12 15:00:00'),
+('res-004', 'form-006', 21, '2026-05-12 15:10:00', '2026-05-12 15:30:00'),
+('res-005', 'form-004', 26, '2026-05-20 10:00:00', '2026-05-20 10:30:00'),
+('res-006', 'form-007', 14, '2026-02-14 14:30:00', '2026-02-14 15:15:00'), -- Roman Abramovich Haut Risque
+('res-007', 'form-008', 22, '2026-05-15 11:00:00', '2026-05-15 12:00:00'); -- Sberbank Audit Offshore
+
+-- 22.2 FIELD_RESULT
+INSERT INTO field_result (id, field_config_id, field_option_id, value, diligence_form_result_id) VALUES
+-- res-001 (form-001 for client 11)
+(1, 'field-001-1', NULL, 'Vladimir Putin', 'res-001'),
+(2, 'field-001-2', NULL, '07/10/1952', 'res-001'),
+(3, 'field-001-3', NULL, 'passport_vp.pdf', 'res-001'),
+-- res-002 (form-005 for client 11)
+(4, 'field-005-1', 'opt-005-1-1', 'YES', 'res-002'),
+(5, 'field-005-2', NULL, 'Président de la Fédération de Russie', 'res-002'),
+-- res-003 (form-002 for client 21)
+(6, 'field-002-1', NULL, 'NovaTech SAS', 'res-003'),
+(7, 'field-002-2', NULL, 'FR99887766554', 'res-003'),
+(8, 'field-002-3', 'opt-002-3-3', 'SAS', 'res-003'),
+-- res-004 (form-006 for client 21)
+(9, 'field-006-1', NULL, '3', 'res-004'),
+-- res-005 (form-004 for client 26)
+(10, 'field-form-004-std', NULL, 'Informations standards pour ONG Écologique', 'res-005'),
+-- res-006 (form-007 for client 14 - Roman Abramovich)
+(11, 'field-007-1', 'opt-007-1-3', 'BUSINESS_SALE', 'res-006'),
+(12, 'field-007-2', NULL, 'Cession d''actifs sidérurgiques historiques (Sibneft, Evraz).', 'res-006'),
+(13, 'field-007-3', NULL, 'Domiciliation et investissements majeurs dans les juridictions concernées.', 'res-006'),
+(14, 'field-007-4', NULL, '25000000', 'res-006'),
+(15, 'field-007-5', NULL, '120000000', 'res-006'),
+(16, 'field-007-6', 'opt-007-6-1', 'RUSSIA', 'res-006'),
+(17, 'field-007-7', 'opt-007-7-1', 'YES', 'res-006'),
+(18, 'field-007-8', NULL, 'Revue effectuée, sous sanctions internationales mais fonds isolés.', 'res-006'),
+-- res-007 (form-008 for client 22 - Sberbank)
+(19, 'field-008-1', 'opt-008-1-2', 'CAYMANS', 'res-007'),
+(20, 'field-008-2', NULL, 'CY-99881122', 'res-007'),
+(21, 'field-008-3', 'opt-008-3-1', 'YES', 'res-007'),
+(22, 'field-008-4', NULL, 'Trident Trust Cayman', 'res-007'),
+(23, 'field-008-5', NULL, '4', 'res-007'),
+(24, 'field-008-6', 'opt-008-6-1', 'YES', 'res-007'),
+(25, 'field-008-7', 'opt-008-7-2', 'NO', 'res-007'),
+(26, 'field-008-8', NULL, 'Simple boîte aux lettres aux Caïmans. Pas de salariés locaux.', 'res-007');
 
 SET SQL_SAFE_UPDATES = 1;
 COMMIT;
