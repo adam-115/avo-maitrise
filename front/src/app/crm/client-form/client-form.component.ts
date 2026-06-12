@@ -223,13 +223,33 @@ export class ClientFormComponent implements OnInit {
         this.documents = this.documents.filter(d => d.id !== id);
     }
 
-    onSubmit(): void {
+    async onSubmit(): Promise<void> {
         if (this.clientForm.invalid) {
             this.clientForm.markAllAsTouched();
             return;
         }
 
         const type = this.clientForm.get('type')?.value;
+
+        if (this.isEditMode) {
+            let title = 'Modifier le client';
+            let message = 'Êtes-vous sûr de vouloir enregistrer les modifications apportées à ce client ?';
+            if (type === ClientTypeEnum.SOCIETE) {
+                title = 'Modifier la société';
+                message = 'Êtes-vous sûr de vouloir enregistrer les modifications apportées à cette société ?';
+            } else if (type === ClientTypeEnum.ASSOCIATION) {
+                title = 'Modifier l\'association';
+                message = 'Êtes-vous sûr de vouloir enregistrer les modifications apportées à cette association ?';
+            } else if (type === ClientTypeEnum.INSTITUTION) {
+                title = 'Modifier l\'institution';
+                message = 'Êtes-vous sûr de vouloir enregistrer les modifications apportées à cette institution ?';
+            }
+
+            const confirmed = await this.alertService.confirmMessage(title, message, 'warning');
+            if (!confirmed) {
+                return;
+            }
+        }
         const formValue = this.clientForm.getRawValue();
         formValue.documents = this.documents;
         formValue.clientStatus = ClientStatus.AML_REQUIRED;
