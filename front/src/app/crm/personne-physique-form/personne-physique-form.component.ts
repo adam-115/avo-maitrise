@@ -120,10 +120,21 @@ export class PersonnePhysiqueFormComponent implements OnInit {
         this.documents = this.documents.filter(d => d.id !== id);
     }
 
-    onSubmit(): void {
+    async onSubmit(): Promise<void> {
         if (this.clientForm.invalid) {
             this.clientForm.markAllAsTouched();
             return;
+        }
+
+        if (this.isEditMode) {
+            const confirmed = await this.alertService.confirmMessage(
+                'Modifier le client',
+                'Êtes-vous sûr de vouloir enregistrer les modifications apportées à ce client ?',
+                'warning'
+            );
+            if (!confirmed) {
+                return;
+            }
         }
 
         const formValue = this.clientForm.getRawValue();

@@ -16,6 +16,7 @@ import { DomaineJuridiqueSelectionDialog } from '../domaine-juridique-selection-
 import { ClientStatusAlertComponent } from '../../shared/components/client-status-alert/client-status-alert.component';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { forkJoin } from 'rxjs';
+import { AlertService } from '../../services/alert-service';
 
 @Component({
   selector: 'app-dossier-form',
@@ -34,6 +35,7 @@ export class DossierForm implements OnInit {
   private priorityService = inject(DossierPrioriteService);
   private userService = inject(UserService);
   private domaineService = inject(DomaineJuridiqueService);
+  private alertService = inject(AlertService);
 
   dossierForm: FormGroup;
   isEditMode = false;
@@ -283,7 +285,7 @@ export class DossierForm implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.dossierForm.invalid) {
       return;
     }
@@ -295,9 +297,16 @@ export class DossierForm implements OnInit {
     };
 
     if (this.isEditMode && this.dossierId) {
-      this.dossierService.update(dossierData).subscribe(() => {
-        this.navigateToDossier();
-      });
+      const confirmed = await this.alertService.confirmMessage(
+        'Modifier le dossier',
+        'Êtes-vous sûr de vouloir enregistrer les modifications apportées à ce dossier ?',
+        'warning'
+      );
+      if (confirmed) {
+        this.dossierService.update(dossierData).subscribe(() => {
+          this.navigateToDossier();
+        });
+      }
     } else {
       this.dossierService.create(dossierData).subscribe(() => {
         this.navigateToDossier();

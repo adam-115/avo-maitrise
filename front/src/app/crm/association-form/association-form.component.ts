@@ -110,10 +110,21 @@ export class AssociationFormComponent implements OnInit {
         this.documents = this.documents.filter(d => d.id !== id);
     }
 
-    onSubmit(): void {
+    async onSubmit(): Promise<void> {
         if (this.clientForm.invalid) {
             this.clientForm.markAllAsTouched();
             return;
+        }
+
+        if (this.isEditMode) {
+            const confirmed = await this.alertService.confirmMessage(
+                'Modifier l\'association',
+                'Êtes-vous sûr de vouloir enregistrer les modifications apportées à cette association ?',
+                'warning'
+            );
+            if (!confirmed) {
+                return;
+            }
         }
 
         const formValue = this.clientForm.getRawValue();

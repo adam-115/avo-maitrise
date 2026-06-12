@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
-@Profile("!dev & !test")
+@Profile("!dev & !test &!staging")
 public class SecurityConfig {
 
     @Bean
