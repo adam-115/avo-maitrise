@@ -48,7 +48,7 @@ public class ClientEntity {
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContactPoint> contacts;
 
-    @OneToMany(mappedBy ="client" , cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy ="client" , cascade = CascadeType.REMOVE)
     private List<ScreeningMatch> screeningMatchs ;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -138,6 +138,33 @@ public class ClientEntity {
                     c.setId(null);
                 }
             });
+        }
+    }
+
+    public void updateBasicFieldsFrom(ClientEntity other) {
+        this.email = other.getEmail();
+        this.telephone = other.getTelephone();
+        this.adresse = other.getAdresse();
+        this.pays = other.getPays();
+        this.clientStatus = other.getClientStatus();
+        this.secteurActivite = other.getSecteurActivite();
+
+        if (other.getDocuments() != null) {
+            if (this.documents == null) {
+                this.documents = new java.util.ArrayList<>();
+            } else {
+                this.documents.clear();
+            }
+            this.documents.addAll(other.getDocuments());
+        }
+
+        if (other.getContacts() != null) {
+            if (this.contacts == null) {
+                this.contacts = new java.util.ArrayList<>();
+            } else {
+                this.contacts.clear();
+            }
+            this.contacts.addAll(other.getContacts());
         }
     }
 }

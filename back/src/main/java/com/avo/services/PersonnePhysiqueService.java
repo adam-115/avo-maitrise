@@ -40,9 +40,12 @@ public class PersonnePhysiqueService {
     }
 
     public ClientPersonnePhysiqueDTO update(ClientPersonnePhysiqueDTO dto) {
-        ClientPersonnePhysique entity = mapper.toEntity(dto);
-        entity.linkChildren();
-        return mapper.toDto(repository.save(entity));
+        ClientPersonnePhysique existing = repository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+        ClientPersonnePhysique incoming = mapper.toEntity(dto);
+        existing.updateFieldsFrom(incoming);
+        existing.linkChildren();
+        return mapper.toDto(repository.save(existing));
     }
     
     public void delete(Long id) {

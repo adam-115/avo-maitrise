@@ -40,9 +40,12 @@ public class AssociationService {
     }
 
     public AssociationDTO update(AssociationDTO dto) {
-        Association entity = mapper.toEntity(dto);
-        entity.linkChildren();
-        return mapper.toDto(repository.save(entity));
+        Association existing = repository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+        Association incoming = mapper.toEntity(dto);
+        existing.updateFieldsFrom(incoming);
+        existing.linkChildren();
+        return mapper.toDto(repository.save(existing));
     }
     
     public void delete(Long id) {

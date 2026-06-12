@@ -40,9 +40,24 @@ public class ClientService {
     }
 
     public ClientEntityDTO update(ClientEntityDTO dto) {
-        ClientEntity entity = mapper.toEntity(dto);
-        entity.linkChildren();
-        return mapper.toDto(repository.save(entity));
+        ClientEntity existing = repository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+        ClientEntity incoming = mapper.toEntity(dto);
+
+        if (existing instanceof com.avo.entities.ClientPersonnePhysique && incoming instanceof com.avo.entities.ClientPersonnePhysique) {
+            ((com.avo.entities.ClientPersonnePhysique) existing).updateFieldsFrom((com.avo.entities.ClientPersonnePhysique) incoming);
+        } else if (existing instanceof com.avo.entities.ClientMoral && incoming instanceof com.avo.entities.ClientMoral) {
+            ((com.avo.entities.ClientMoral) existing).updateFieldsFrom((com.avo.entities.ClientMoral) incoming);
+        } else if (existing instanceof com.avo.entities.Association && incoming instanceof com.avo.entities.Association) {
+            ((com.avo.entities.Association) existing).updateFieldsFrom((com.avo.entities.Association) incoming);
+        } else if (existing instanceof com.avo.entities.Institution && incoming instanceof com.avo.entities.Institution) {
+            ((com.avo.entities.Institution) existing).updateFieldsFrom((com.avo.entities.Institution) incoming);
+        } else {
+            existing.updateBasicFieldsFrom(incoming);
+        }
+
+        existing.linkChildren();
+        return mapper.toDto(repository.save(existing));
     }
     
     public void delete(Long id) {

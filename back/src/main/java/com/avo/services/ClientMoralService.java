@@ -40,9 +40,12 @@ public class ClientMoralService {
     }
 
     public ClientMoralDTO update(ClientMoralDTO dto) {
-        ClientMoral entity = mapper.toEntity(dto);
-        entity.linkChildren();
-        return mapper.toDto(repository.save(entity));
+        ClientMoral existing = repository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+        ClientMoral incoming = mapper.toEntity(dto);
+        existing.updateFieldsFrom(incoming);
+        existing.linkChildren();
+        return mapper.toDto(repository.save(existing));
     }
     
     public void delete(Long id) {

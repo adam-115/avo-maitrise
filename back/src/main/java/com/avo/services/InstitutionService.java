@@ -40,9 +40,12 @@ public class InstitutionService {
     }
 
     public InstitutionDTO update(InstitutionDTO dto) {
-        Institution entity = mapper.toEntity(dto);
-        entity.linkChildren();
-        return mapper.toDto(repository.save(entity));
+        Institution existing = repository.findById(dto.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found"));
+        Institution incoming = mapper.toEntity(dto);
+        existing.updateFieldsFrom(incoming);
+        existing.linkChildren();
+        return mapper.toDto(repository.save(existing));
     }
     
     public void delete(Long id) {

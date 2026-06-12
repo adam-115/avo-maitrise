@@ -33,4 +33,13 @@ public class ClientPersonnePhysique extends ClientEntity {
 
     public Date getDateNaissance() { return dateNaissance; }
     public void setDateNaissance(Date dateNaissance) { this.dateNaissance = dateNaissance; }
+
+    public void updateFieldsFrom(ClientPersonnePhysique other) {
+        super.updateBasicFieldsFrom(other);
+        this.nom = other.getNom();
+        this.prenom = other.getPrenom();
+        this.nationalite = other.getNationalite();
+        this.cin = other.getCin();
+        this.dateNaissance = other.getDateNaissance();
+    }
 }

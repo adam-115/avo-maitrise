@@ -43,4 +43,16 @@ public class Association extends ClientEntity {
 
     public Date getDateNaissanceRepresentantLegal() { return dateNaissanceRepresentantLegal; }
     public void setDateNaissanceRepresentantLegal(Date dateNaissanceRepresentantLegal) { this.dateNaissanceRepresentantLegal = dateNaissanceRepresentantLegal; }
+
+    public void updateFieldsFrom(Association other) {
+        super.updateBasicFieldsFrom(other);
+        this.nom = other.getNom();
+        this.numeroRegistreNational = other.getNumeroRegistreNational();
+        this.numeroIdFiscal = other.getNumeroIdFiscal();
+        this.nomRepresentantLegal = other.getNomRepresentantLegal();
+        this.prenomRepresentantLegal = other.getPrenomRepresentantLegal();
+        this.nationaliteRepresentantLegal = other.getNationaliteRepresentantLegal();
+        this.cinRepresentantLegal = other.getCinRepresentantLegal();
+        this.dateNaissanceRepresentantLegal = other.getDateNaissanceRepresentantLegal();
+    }
 }

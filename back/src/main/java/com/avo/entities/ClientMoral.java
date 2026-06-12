@@ -64,4 +64,26 @@ public class ClientMoral extends ClientEntity {
             ubos.forEach(u -> u.setClientMoral(this));
         }
     }
+
+    public void updateFieldsFrom(ClientMoral other) {
+        super.updateBasicFieldsFrom(other);
+        this.nomCommercial = other.getNomCommercial();
+        this.formeJuridique = other.getFormeJuridique();
+        this.numeroRegistreCommerce = other.getNumeroRegistreCommerce();
+        this.numeroIdFiscal = other.getNumeroIdFiscal();
+        this.nomRepresentantLegal = other.getNomRepresentantLegal();
+        this.prenomRepresentantLegal = other.getPrenomRepresentantLegal();
+        this.nationaliteRepresentantLegal = other.getNationaliteRepresentantLegal();
+        this.cinRepresentantLegal = other.getCinRepresentantLegal();
+        this.dateNaissanceRepresentantLegal = other.getDateNaissanceRepresentantLegal();
+
+        if (other.getUbos() != null) {
+            if (this.ubos == null) {
+                this.ubos = new java.util.ArrayList<>();
+            } else {
+                this.ubos.clear();
+            }
+            this.ubos.addAll(other.getUbos());
+        }
+    }
 }
