@@ -140,22 +140,22 @@
                 <span class="text-slate-500 font-bold text-base">
                     Affichage de <span class="text-slate-900 font-black">{{ (currentPage - 1) * pageSize + 1 }}</span> à 
                     <span class="text-slate-900 font-black">{{ currentEndIndex }}</span> sur 
-                    <span class="text-slate-900 font-black">{{ filteredClients.length }}</span> clients
+                    <span class="text-slate-900 font-black">{{ totalElements }}</span> clients
                 </span>
                 <div class="flex items-center gap-2">
                     <button (click)="prevPage()" [disabled]="currentPage === 1"
-                        class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all">
+                        class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
                     </button>
                     
-                    <button *ngFor="let page of pages" (click)="currentPage = page"
+                    <button *ngFor="let page of pages" (click)="goToPage(page)"
                         [ngClass]="currentPage === page ? 'bg-cyan-600 border-cyan-600 text-white shadow-md shadow-cyan-100 scale-105' : 'border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'"
-                        class="flex items-center justify-center w-12 h-12 rounded-2xl font-black text-base transition-all active:scale-95">
+                        class="flex items-center justify-center w-12 h-12 rounded-2xl font-black text-base transition-all active:scale-95 cursor-pointer">
                         {{ page }}
                     </button>
 
                     <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                        class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all">
+                        class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </button>
                 </div>

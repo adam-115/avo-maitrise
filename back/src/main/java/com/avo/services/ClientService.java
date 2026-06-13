@@ -25,6 +25,10 @@ public class ClientService {
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
+    public Page<ClientEntityDTO> findAllWithFilters(String searchTerm, String type, com.avo.entities.ClientStatus status, String risk, Pageable pageable) {
+        return repository.searchWithFilters(searchTerm, type, status, risk, pageable).map(mapper::toDto);
+    }
+
     public Page<ClientEntityDTO> search(Predicate predicate, Pageable pageable) {
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }

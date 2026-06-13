@@ -21,8 +21,12 @@ public class DossierController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DossierDTO>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(service.findAll(pageable));
+    public ResponseEntity<Page<DossierDTO>> findAll(
+            @RequestParam(required = false) String searchTerm,
+            @RequestParam(required = false) String statusFilter,
+            @RequestParam(required = false) String lawyerFilter,
+            Pageable pageable) {
+        return ResponseEntity.ok(service.findAllWithFilters(searchTerm, statusFilter, lawyerFilter, pageable));
     }
 
     @GetMapping("/search")

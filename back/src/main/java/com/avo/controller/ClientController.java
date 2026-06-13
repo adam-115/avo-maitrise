@@ -23,8 +23,21 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ClientEntityDTO>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(service.findAll(pageable));
+    public ResponseEntity<Page<ClientEntityDTO>> findAll(
+            @RequestParam(required = false) String searchTerm,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String risk,
+            Pageable pageable) {
+        com.avo.entities.ClientStatus clientStatus = null;
+        if (status != null && !status.isEmpty()) {
+            try {
+                clientStatus = com.avo.entities.ClientStatus.valueOf(status);
+            } catch (IllegalArgumentException e) {
+                // Ignore invalid status value
+            }
+        }
+        return ResponseEntity.ok(service.findAllWithFilters(searchTerm, type, clientStatus, risk, pageable));
     }
 
     @GetMapping("/search")

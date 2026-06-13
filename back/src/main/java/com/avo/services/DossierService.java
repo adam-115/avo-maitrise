@@ -42,6 +42,10 @@ public class DossierService {
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
+    public Page<DossierDTO> findAllWithFilters(String searchTerm, String statusFilter, String lawyerFilter, Pageable pageable) {
+        return repository.searchWithFilters(searchTerm, statusFilter, lawyerFilter, pageable).map(mapper::toDto);
+    }
+
     public List<DossierDTO> findAll() {
         return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }

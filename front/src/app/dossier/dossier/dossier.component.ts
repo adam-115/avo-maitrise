@@ -29,6 +29,7 @@ export class DossierComponent implements OnInit {
 
   dossiers: DossierModel[] = [];
   filteredDossiers: DossierModel[] = [];
+  totalElements = 0;
   clients: Client[] = [];
   statuses: StatutDossier[] = [];
   priorities: DossierPriorite[] = [];
@@ -63,22 +64,32 @@ export class DossierComponent implements OnInit {
 
   loadData(): void {
     this.loading = true;
+    
+    const tableFilters = {
+      searchTerm: this.searchTerm,
+      statusFilter: this.statusFilter,
+      lawyerFilter: this.lawyerFilter
+    };
+
     forkJoin({
-      dossiers: this.dossierService.findAll(0, 1000, 'dateOuverture,desc'),
+      dossiersRes: this.dossierService.findAll(this.currentPage - 1, this.pageSize, 'dateOuverture,desc', tableFilters),
+      allDossiersRes: this.dossierService.findAll(0, 1000, 'dateOuverture,desc'),
       clients: this.clientService.getAll(),
       statuses: this.statusService.getAll(),
       priorities: this.priorityService.getAll(),
       users: this.userService.getAll()
     }).subscribe({
-      next: ({ dossiers, clients, statuses, priorities, users }) => {
-        this.dossiers = (dossiers as PaginatedResponse<DossierModel>).content;
+      next: ({ dossiersRes, allDossiersRes, clients, statuses, priorities, users }) => {
+        this.dossiers = (allDossiersRes as PaginatedResponse<DossierModel>).content;
+        this.filteredDossiers = (dossiersRes as PaginatedResponse<DossierModel>).content;
+        this.totalElements = (dossiersRes as PaginatedResponse<DossierModel>).totalElements;
+
         this.clients = (clients as PaginatedResponse<Client>).content;
         this.statuses = (statuses as PaginatedResponse<StatutDossier>).content;
         this.priorities = (priorities as PaginatedResponse<DossierPriorite>).content;
         this.users = (users as PaginatedResponse<User>).content;
 
         this.calculateKPIs();
-        this.filterDossiers();
         this.loading = false;
       },
       error: (err) => {
@@ -89,21 +100,21 @@ export class DossierComponent implements OnInit {
   }
 
   get totalPages(): number {
-    return Math.ceil(this.filteredDossiers.length / this.pageSize);
+    return Math.ceil(this.totalElements / this.pageSize) || 1;
   }
 
   get paginatedDossiers(): DossierModel[] {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.filteredDossiers.slice(startIndex, startIndex + this.pageSize);
+    return this.filteredDossiers;
   }
 
   get currentEndIndex(): number {
-    return Math.min(this.currentPage * this.pageSize, this.filteredDossiers.length);
+    return Math.min(this.currentPage * this.pageSize, this.totalElements);
   }
 
   get pages(): number[] {
     const list: number[] = [];
-    for (let i = 1; i <= this.totalPages; i++) {
+    const total = this.totalPages;
+    for (let i = 1; i <= total; i++) {
       list.push(i);
     }
     return list;
@@ -112,49 +123,27 @@ export class DossierComponent implements OnInit {
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.loadData();
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
+      this.loadData();
+    }
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadData();
     }
   }
 
   filterDossiers() {
     this.currentPage = 1;
-    this.filteredDossiers = this.dossiers.filter(dossier => {
-      // 1. Search term filter
-      const term = this.searchTerm ? this.searchTerm.toLowerCase().trim() : '';
-      let matchesSearch = true;
-      if (term) {
-        const reference = (dossier.referenceInterne || '').toLowerCase();
-        const title = (dossier.titre || '').toLowerCase();
-        const clientName = this.getClientName(dossier.clientId).toLowerCase();
-        
-        matchesSearch = reference.includes(term) ||
-          title.includes(term) ||
-          clientName.includes(term);
-      }
-
-      // 2. Status filter
-      let matchesStatus = true;
-      if (this.statusFilter && this.statusFilter !== 'Tous') {
-        const status = this.getStatus(dossier.statutID);
-        const statusId = status ? String(status.id) : String(dossier.statutID || '');
-        matchesStatus = statusId === String(this.statusFilter);
-      }
-
-      // 3. Lawyer filter
-      let matchesLawyer = true;
-      if (this.lawyerFilter && this.lawyerFilter !== 'Tous') {
-        const responsable = dossier.responsableId;
-        const respId = responsable && typeof responsable === 'object' ? String((responsable as any).id) : String(responsable || '');
-        matchesLawyer = respId === String(this.lawyerFilter);
-      }
-
-      return matchesSearch && matchesStatus && matchesLawyer;
-    });
+    this.loadData();
   }
 
   calculateKPIs(): void {

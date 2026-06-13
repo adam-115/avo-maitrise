@@ -48,6 +48,54 @@ export class AmlComplianceComponent implements OnInit {
   selectedStatus = '';
   selectedRisk = ''; // 'ELEVEE' | 'MOYEN' | 'FAIBLE' | ''
 
+  // Pagination state
+  currentPage = 1;
+  pageSize = 10;
+  pageSizeOptions = [5, 10, 20, 50];
+  totalElements = 0;
+
+  resetPagination(): void {
+    this.currentPage = 1;
+    this.loadData();
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalElements / this.pageSize) || 1;
+  }
+
+  get pages(): number[] {
+    const list: number[] = [];
+    const total = this.totalPages;
+    for (let i = 1; i <= total; i++) {
+      list.push(i);
+    }
+    return list;
+  }
+
+  get currentEndIndex(): number {
+    return Math.min(this.currentPage * this.pageSize, this.totalElements);
+  }
+
+  prevPage(): void {
+    if (this.currentPage > 1) {
+      this.goToPage(this.currentPage - 1);
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.goToPage(this.currentPage + 1);
+    }
+  }
+
+  goToPage(page: number): void {
+    const total = this.totalPages;
+    if (page >= 1 && page <= total) {
+      this.currentPage = page;
+      this.loadData();
+    }
+  }
+
   // Statistics
   totalClients = 0;
   complianceRate = 0;
@@ -67,13 +115,32 @@ export class AmlComplianceComponent implements OnInit {
 
   loadData(): void {
     this.loading = true;
+    
+    const tableFilters = {
+      searchTerm: this.searchTerm,
+      type: this.selectedType,
+      status: this.selectedStatus,
+      risk: this.selectedRisk
+    };
+
     forkJoin({
-      clientsRes: this.clientService.findAll(0, 1000),
-      matchesRes: this.screeningMatchService.findAll(0, 1000)
+      clientsRes: this.clientService.findAll(this.currentPage - 1, this.pageSize, undefined, tableFilters),
+      matchesRes: this.screeningMatchService.findAll(0, 1000),
+      
+      // Fast count queries (size=1) to get system-wide totals for stats cards
+      validatedRes: this.clientService.findAll(0, 1, undefined, { status: ClientStatus.VALIDATED }),
+      amlValidatedRes: this.clientService.findAll(0, 1, undefined, { status: ClientStatus.AML_VALIDATED }),
+      blockedRes: this.clientService.findAll(0, 1, undefined, { status: ClientStatus.BLOCKED }),
+      verificationRes: this.clientService.findAll(0, 1, undefined, { status: ClientStatus.VERIFICATION_AML_REQUIRED }),
+      indulgenceRes: this.clientService.findAll(0, 1, undefined, { status: ClientStatus.INDULGENCE_REQUIRED }),
+      amlRequiredRes: this.clientService.findAll(0, 1, undefined, { status: ClientStatus.AML_REQUIRED }),
+      totalClientsRes: this.clientService.findAll(0, 1)
     }).subscribe({
-      next: ({ clientsRes, matchesRes }) => {
-        this.clients = clientsRes.content || [];
-        this.matches = matchesRes.content || [];
+      next: (res) => {
+        this.clients = res.clientsRes.content || [];
+        this.totalElements = res.clientsRes.totalElements;
+
+        this.matches = res.matchesRes.content || [];
 
         // Build client matches mapping
         this.clientMatchesMap.clear();
@@ -86,6 +153,37 @@ export class AmlComplianceComponent implements OnInit {
           }
         });
 
+        // System-wide statistics
+        const systemTotalClients = res.totalClientsRes.totalElements;
+        const validatedCount = res.validatedRes.totalElements + res.amlValidatedRes.totalElements;
+
+        this.totalClients = systemTotalClients;
+        this.complianceRate = systemTotalClients > 0 ? Math.round((validatedCount / systemTotalClients) * 100) : 0;
+        this.blockedCount = res.blockedRes.totalElements;
+        this.pendingReviewCount = res.verificationRes.totalElements + res.indulgenceRes.totalElements;
+        this.amlRequiredCount = res.amlRequiredRes.totalElements;
+
+        // Unresolved alerts (PENDING or TRUE_POSITIVE matches)
+        this.alertCount = this.matches.filter(m => m.status === 'PENDING' || m.status === 'TRUE_POSITIVE').length;
+
+        // Average Risk Score (system-wide average based on matches)
+        let scoreSum = 0;
+        const clientMaxScoreMap = new Map<number, number>();
+        this.matches.forEach(m => {
+          const clientId = m.clientEntityDTO?.id;
+          if (clientId) {
+            const currentMax = clientMaxScoreMap.get(clientId) || 0;
+            if (m.score && m.score > currentMax) {
+              clientMaxScoreMap.set(clientId, m.score);
+            }
+          }
+        });
+        clientMaxScoreMap.forEach(score => {
+          scoreSum += score;
+        });
+        this.averageRiskScore = systemTotalClients > 0 ? Math.round((scoreSum / systemTotalClients) * 100) : 0;
+
+        // Compute local charts stats based on current page
         this.calculateStats();
         this.loading = false;
       },
@@ -98,47 +196,7 @@ export class AmlComplianceComponent implements OnInit {
   }
 
   calculateStats(): void {
-    this.totalClients = this.clients.length;
-
-    let validatedCount = 0;
-    let blocked = 0;
-    let pendingReview = 0;
-    let amlReq = 0;
-
-    this.clients.forEach(c => {
-      const status = c.clientStatus;
-      if (status === ClientStatus.AML_VALIDATED || status === ClientStatus.VALIDATED) {
-        validatedCount++;
-      } else if (status === ClientStatus.BLOCKED) {
-        blocked++;
-      } else if (status === ClientStatus.VERIFICATION_AML_REQUIRED || status === ClientStatus.INDULGENCE_REQUIRED) {
-        pendingReview++;
-      } else if (status === ClientStatus.AML_REQUIRED) {
-        amlReq++;
-      }
-    });
-
-    this.complianceRate = this.totalClients > 0 ? Math.round((validatedCount / this.totalClients) * 100) : 0;
-    this.blockedCount = blocked;
-    this.pendingReviewCount = pendingReview;
-    this.amlRequiredCount = amlReq;
-
-    // Calculate total unresolved alerts (status PENDING or TRUE_POSITIVE in matches)
-    this.alertCount = this.matches.filter(m => m.status === 'PENDING' || m.status === 'TRUE_POSITIVE').length;
-
-    // Calculate Average Risk Score
-    let scoreSum = 0;
-    let scoreCount = 0;
-    this.clients.forEach(c => {
-      const maxScore = this.getHighestScore(c);
-      if (maxScore > 0) {
-        scoreSum += maxScore;
-        scoreCount++;
-      }
-    });
-    this.averageRiskScore = scoreCount > 0 ? Math.round((scoreSum / scoreCount) * 100) : 0;
-
-    // Calculate stats by sector
+    // Calculate stats by sector (based on the current page's clients)
     const sectorMap = new Map<string, { totalScore: number; count: number }>();
     this.clients.forEach(c => {
       const sector = c.secteurActivite || 'Non renseigné';
@@ -160,7 +218,7 @@ export class AmlComplianceComponent implements OnInit {
       .sort((a, b) => b.avgRisk - a.avgRisk)
       .slice(0, 5); // top 5 sectors by risk/volume
 
-    // Calculate Client Type counts
+    // Calculate Client Type counts (based on the current page's clients)
     const typeMap = new Map<string, number>();
     this.clients.forEach(c => {
       const type = c.type || 'Inconnu';
@@ -205,36 +263,11 @@ export class AmlComplianceComponent implements OnInit {
   }
 
   getFilteredClients(): Client[] {
-    return this.clients.filter(c => {
-      // Search term
-      const name = this.getDisplayName(c).toLowerCase();
-      const email = (c.email || '').toLowerCase();
-      const pays = (c.pays || '').toLowerCase();
-      const sector = (c.secteurActivite || '').toLowerCase();
-      const matchesSearch = name.includes(this.searchTerm.toLowerCase()) ||
-        email.includes(this.searchTerm.toLowerCase()) ||
-        pays.includes(this.searchTerm.toLowerCase()) ||
-        sector.includes(this.searchTerm.toLowerCase());
+    return this.clients;
+  }
 
-      // Type filter
-      const matchesType = !this.selectedType || c.type === this.selectedType;
-
-      // Status filter
-      const matchesStatus = !this.selectedStatus || c.clientStatus === this.selectedStatus;
-
-      // Risk score filter
-      const maxScore = this.getHighestScore(c);
-      let matchesRisk = true;
-      if (this.selectedRisk === 'ELEVEE') {
-        matchesRisk = maxScore >= 0.7;
-      } else if (this.selectedRisk === 'MOYEN') {
-        matchesRisk = maxScore >= 0.4 && maxScore < 0.7;
-      } else if (this.selectedRisk === 'FAIBLE') {
-        matchesRisk = maxScore < 0.4;
-      }
-
-      return matchesSearch && matchesType && matchesStatus && matchesRisk;
-    });
+  getPaginatedClients(): Client[] {
+    return this.clients;
   }
 
   onStatusChange(client: Client, newStatus: ClientStatus): void {
@@ -247,14 +280,8 @@ export class AmlComplianceComponent implements OnInit {
     ).then((confirmed) => {
       if (confirmed) {
         this.clientService.updateClientStatus(client.id!, newStatus).subscribe({
-          next: (updatedClient) => {
-            // Update client in the local array
-            const idx = this.clients.findIndex(c => c.id === client.id);
-            if (idx !== -1) {
-              this.clients[idx] = updatedClient;
-              this.clients = [...this.clients]; // trigger change detection
-            }
-            this.calculateStats();
+          next: () => {
+            this.loadData();
             this.alertService.success('Le statut de conformité a été mis à jour avec succès.');
           },
           error: (err) => {

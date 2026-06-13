@@ -44,7 +44,7 @@ export class Crm implements OnInit {
 
   // Liste de contacts récupérée depuis le service
   clients: Client[] = [];
-  filteredClients: Client[] = [];
+  totalElements = 0;
 
   searchTerm: string = '';
   selectedType: string = '';
@@ -55,21 +55,21 @@ export class Crm implements OnInit {
   pageSize = 6;
 
   get totalPages(): number {
-    return Math.ceil(this.filteredClients.length / this.pageSize);
+    return Math.ceil(this.totalElements / this.pageSize) || 1;
   }
 
   get paginatedClients(): Client[] {
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    return this.filteredClients.slice(startIndex, startIndex + this.pageSize);
+    return this.clients;
   }
 
   get currentEndIndex(): number {
-    return Math.min(this.currentPage * this.pageSize, this.filteredClients.length);
+    return Math.min(this.currentPage * this.pageSize, this.totalElements);
   }
 
   get pages(): number[] {
     const list: number[] = [];
-    for (let i = 1; i <= this.totalPages; i++) {
+    const total = this.totalPages;
+    for (let i = 1; i <= total; i++) {
       list.push(i);
     }
     return list;
@@ -78,12 +78,21 @@ export class Crm implements OnInit {
   prevPage() {
     if (this.currentPage > 1) {
       this.currentPage--;
+      this.loadClients();
     }
   }
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
+      this.loadClients();
+    }
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.loadClients();
     }
   }
 
@@ -106,12 +115,20 @@ export class Crm implements OnInit {
 
   loadClients() {
     this.loading = true;
+
+    const tableFilters = {
+      searchTerm: this.searchTerm,
+      type: this.selectedType,
+      risk: this.selectedRisk
+    };
+
     forkJoin({
-      clientsRes: this.clientService.findAll(0, 1000, 'createdAt,desc'),
+      clientsRes: this.clientService.findAll(this.currentPage - 1, this.pageSize, 'createdAt,desc', tableFilters),
       matchesRes: this.screeningMatchService.findAll(0, 1000)
     }).subscribe({
       next: ({ clientsRes, matchesRes }) => {
         this.clients = clientsRes.content || [];
+        this.totalElements = clientsRes.totalElements;
         
         this.clientMatchesMap.clear();
         const matches = matchesRes.content || [];
@@ -124,8 +141,6 @@ export class Crm implements OnInit {
           }
         });
 
-        this.filteredClients = [...this.clients];
-        this.filterClients();
         this.loading = false;
       },
       error: (err) => {
@@ -144,53 +159,7 @@ export class Crm implements OnInit {
 
   filterClients() {
     this.currentPage = 1;
-    const term = this.searchTerm ? this.searchTerm.toLowerCase().trim() : '';
-
-    this.filteredClients = this.clients.filter(client => {
-      let matchesSearch = true;
-      if (term) {
-        const displayName = this.getDisplayName(client).toLowerCase();
-        const cin = ((client as any).cin || '').toLowerCase();
-        const rc = ((client as any).numeroRegistreCommerce || '').toLowerCase();
-        const rn = ((client as any).numeroRegistreNational || '').toLowerCase();
-        const pays = (client.pays || '').toLowerCase();
-        const paysResidance = (client.paysResidance || '').toLowerCase();
-        const email = (client.email || '').toLowerCase();
-        const telephone = (client.telephone || '').toLowerCase();
-        
-        const matchesContacts = client.contacts && client.contacts.some(c => 
-          (c.nom + ' ' + c.prenom).toLowerCase().includes(term) ||
-          (c.email || '').toLowerCase().includes(term) ||
-          (c.telephone || '').toLowerCase().includes(term)
-        );
-
-        matchesSearch = displayName.includes(term) ||
-          cin.includes(term) ||
-          rc.includes(term) ||
-          rn.includes(term) ||
-          pays.includes(term) ||
-          paysResidance.includes(term) ||
-          email.includes(term) ||
-          telephone.includes(term) ||
-          !!matchesContacts;
-      }
-
-      const matchesType = !this.selectedType || client.type === this.selectedType;
-
-      let matchesRisk = true;
-      if (this.selectedRisk) {
-        const maxScore = this.getHighestScore(client);
-        if (this.selectedRisk === 'ELEVEE') {
-          matchesRisk = maxScore >= 0.7;
-        } else if (this.selectedRisk === 'MOYEN') {
-          matchesRisk = maxScore >= 0.4 && maxScore < 0.7;
-        } else if (this.selectedRisk === 'FAIBLE') {
-          matchesRisk = maxScore < 0.4;
-        }
-      }
-
-      return matchesSearch && matchesType && matchesRisk;
-    });
+    this.loadClients();
   }
 
 
