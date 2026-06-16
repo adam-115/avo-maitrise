@@ -36,7 +36,7 @@ export class InvoiceEditorComponent implements OnInit {
 
     invoiceId = signal<string | null>(null);
 
-    clients: Client[] = [];
+    selectedClient: Client | null = null;
     allDossiers: Dossier[] = [];
     clientDossiers: Dossier[] = [];
     unbilledTasks: Task[] = [];
@@ -74,7 +74,6 @@ export class InvoiceEditorComponent implements OnInit {
     totalTTC = signal(0);
 
     ngOnInit(): void {
-        this.clientService.getAll().subscribe((data:PaginatedResponse<Client>) => this.clients = data.content || []);
         this.dossierService.getAll().subscribe((data:PaginatedResponse<Dossier>) => this.allDossiers = data.content || []);
         this.taskStatusService.getAll().subscribe((data:PaginatedResponse<TaskStatus>) => this.taskStatuses = data.content || []);
         this.taskCategoryService.getAll().subscribe((data:PaginatedResponse<TaskCategory>) => this.taskCategories = data.content || []);
@@ -178,9 +177,9 @@ export class InvoiceEditorComponent implements OnInit {
         this.showClientDialog = false;
     }
 
-    onClientSelected(clientId: string | number): void {
-        this.invoiceForm.patchValue({ clientId: clientId.toString() });
-        const client = this.clients.find(c => String(c.id) === String(clientId));
+    onClientSelected(client: Client): void {
+        this.selectedClient = client;
+        this.invoiceForm.patchValue({ clientId: client.id!.toString() });
         if (client && client.adresse) {
             this.invoiceForm.patchValue({ clientAddress: client.adresse });
         }
@@ -188,10 +187,8 @@ export class InvoiceEditorComponent implements OnInit {
     }
 
     getSelectedClientName(): string {
-        const clientId = this.invoiceForm.get('clientId')?.value;
-        if (!clientId) return '';
-        const client = this.clients.find(c => String(c.id) === String(clientId)) as any;
-        return client ? `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim() : '';
+        const c = this.selectedClient as any;
+        return c ? `${c.nom || c.nomCommercial || ''} ${c.prenom || ''}`.trim() : '';
     }
 
     loadInvoice(id: string) {
@@ -206,6 +203,11 @@ export class InvoiceEditorComponent implements OnInit {
                 status: invoice.status,
                 disbursements: invoice.disbursements
             });
+            if (invoice.clientId) {
+                this.clientService.findById(invoice.clientId).subscribe(client => {
+                    this.selectedClient = client;
+                });
+            }
             invoice.lineItems.forEach(li => this.addLineItem(li));
             this.calculateTotals();
         }

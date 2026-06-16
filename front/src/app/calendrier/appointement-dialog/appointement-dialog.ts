@@ -32,7 +32,7 @@ export class AppointementDialogComponent implements OnInit {
   private dossierService = inject(DossierService);
 
   appointementForm!: FormGroup;
-  clients: Client[] = [];
+  selectedClient: Client | null = null;
   dossiers: Dossier[] = [];
   isLoading = false;
   showClientDialog = false;
@@ -51,16 +51,15 @@ export class AppointementDialogComponent implements OnInit {
     this.showClientDialog = false;
   }
 
-  onClientSelected(clientId: string | number): void {
-    this.appointementForm.patchValue({ clientId: clientId });
+  onClientSelected(client: Client): void {
+    this.selectedClient = client;
+    this.appointementForm.patchValue({ clientId: client.id });
     this.closeClientDialog();
   }
 
   getSelectedClientName(): string {
-    const clientId = this.appointementForm.get('clientId')?.value;
-    if (!clientId) return '';
-    const client = this.clients.find(c => c.id == clientId) as any;
-    return client ? `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim() : '';
+    const c = this.selectedClient as any;
+    return c ? `${c.nom || c.nomCommercial || ''} ${c.prenom || ''}`.trim() : '';
   }
 
   openDossierDialog(): void {
@@ -109,11 +108,15 @@ export class AppointementDialogComponent implements OnInit {
 
     if (this.selectedAppointement) {
       this.appointementForm.patchValue(this.selectedAppointement);
+      if (this.selectedAppointement.clientId) {
+        this.clientService.findById(this.selectedAppointement.clientId).subscribe(client => {
+          this.selectedClient = client;
+        });
+      }
     }
   }
 
   loadData() {
-    this.clientService.getAll().subscribe((clients: PaginatedResponse<Client>) => this.clients = clients.content);
     this.dossierService.getAll().subscribe((dossiers: PaginatedResponse<Dossier>) => this.dossiers = dossiers.content);
   }
 
@@ -131,9 +134,8 @@ export class AppointementDialogComponent implements OnInit {
       if (formValue.dossierId) {
         const dossier = this.dossiers.find(d => String(d.id) === String(formValue.dossierId));
         if (dossier) formValue.clientCase = dossier.titre;
-      } else if (formValue.clientId) {
-        const client = this.clients.find(c => String(c.id) === String(formValue.clientId));
-        if (client) formValue.clientCase = this.getDisplayName(client);
+      } else if (this.selectedClient) {
+        formValue.clientCase = this.getDisplayName(this.selectedClient);
       } else {
         formValue.clientCase = formValue.title;
       }

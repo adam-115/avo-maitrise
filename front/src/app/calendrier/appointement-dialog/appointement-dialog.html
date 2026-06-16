@@ -121,7 +121,7 @@
                 <span class="text-sm font-semibold text-gray-700">Sélectionner un client</span>
               </button>
 
-              <app-client-selection-dialog *ngIf="showClientDialog" [clients]="clients"
+              <app-client-selection-dialog *ngIf="showClientDialog"
                 [initialSelection]="appointementForm.get('clientId')?.value" (confirmSelection)="onClientSelected($event)"
                 (closeDialog)="closeClientDialog()">
               </app-client-selection-dialog>

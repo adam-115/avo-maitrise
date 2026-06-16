@@ -28,7 +28,11 @@
         </div>
 
         <!-- List -->
-        <div class="flex-1 overflow-y-auto p-2">
+        <div class="flex-1 overflow-y-auto p-2 relative min-h-[200px]">
+            <div *ngIf="loading" class="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
+                <div class="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+
             <ul class="divide-y divide-gray-100">
                 @for (client of paginatedClients; track client.id) {
                 <li (click)="selectClient(client.id!)"
@@ -70,7 +74,7 @@
                     </div>
                 </li>
                 }
-                @if (filteredClients.length === 0) {
+                @if (filteredClients.length === 0 && !loading) {
                 <li class="p-4 text-center text-gray-500 italic">
                     Aucun client trouvé.
                 </li>
@@ -79,11 +83,11 @@
         </div>
 
         <!-- Pagination -->
-        <div class="px-6 py-3 border-t border-gray-250 bg-white flex flex-col sm:flex-row justify-between items-center gap-2" *ngIf="filteredClients.length > 0">
+        <div class="px-6 py-3 border-t border-gray-250 bg-white flex flex-col sm:flex-row justify-between items-center gap-2" *ngIf="totalElements > 0">
             <div class="text-xs text-gray-500 font-medium font-sans">
-                Affichage de <b>{{ filteredClients.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</b> à 
+                Affichage de <b>{{ totalElements > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</b> à 
                 <b>{{ currentEndIndex }}</b> sur 
-                <b>{{ filteredClients.length }}</b> clients.
+                <b>{{ totalElements }}</b> clients.
             </div>
             
             <div class="flex items-center space-x-1" *ngIf="totalPages > 1">

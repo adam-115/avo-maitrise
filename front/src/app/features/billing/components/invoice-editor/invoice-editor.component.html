@@ -42,7 +42,7 @@
 
                     <input type="hidden" formControlName="clientId">
 
-                    <app-client-selection-dialog *ngIf="showClientDialog" [clients]="clients"
+                    <app-client-selection-dialog *ngIf="showClientDialog"
                         [initialSelection]="invoiceForm.get('clientId')?.value || null"
                         (confirmSelection)="onClientSelected($event)" (closeDialog)="closeClientDialog()">
                     </app-client-selection-dialog>

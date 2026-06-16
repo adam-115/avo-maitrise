@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Client } from '../../appTypes';
+import { ClientService } from '../../services/client-service';
 
 @Component({
     selector: 'app-client-selection-dialog',
@@ -11,14 +12,17 @@ import { Client } from '../../appTypes';
     styleUrl: './client-selection-dialog.css'
 })
 export class ClientSelectionDialog implements OnInit {
-    @Input() clients: Client[] = [];
     @Input() initialSelection: string | number | null = null;
-    @Output() confirmSelection = new EventEmitter<string | number>();
+    @Output() confirmSelection = new EventEmitter<Client>();
     @Output() closeDialog = new EventEmitter<void>();
 
+    private readonly clientService = inject(ClientService);
+
     filteredClients: Client[] = [];
+    totalElements = 0;
     selectedClientId: string | number | null = null;
     searchTerm: string = '';
+    loading = false;
 
     // Pagination
     currentPage = 1;
@@ -30,49 +34,57 @@ export class ClientSelectionDialog implements OnInit {
     }
 
     ngOnInit(): void {
-        this.filteredClients = [...this.clients];
         this.selectedClientId = this.initialSelection;
         this.currentPage = 1;
+        this.loadClients();
+    }
+
+    loadClients(): void {
+        this.loading = true;
+        const filters = {
+            searchTerm: this.searchTerm
+        };
+        this.clientService.findAll(this.currentPage - 1, this.pageSize, 'createdAt,desc', filters).subscribe({
+            next: (res) => {
+                this.filteredClients = res.content || [];
+                this.totalElements = res.totalElements;
+                this.loading = false;
+            },
+            error: (err) => {
+                console.error('Error loading clients in dialog', err);
+                this.loading = false;
+            }
+        });
     }
 
     filterClients(): void {
         this.currentPage = 1;
-        if (!this.searchTerm) {
-            this.filteredClients = [...this.clients];
-        } else {
-            const lowerTerm = this.searchTerm.toLowerCase();
-            this.filteredClients = this.clients.filter(client => {
-                const c = client as any;
-                return (c.nom && c.nom.toLowerCase().includes(lowerTerm)) ||
-                    (c.nomCommercial && c.nomCommercial.toLowerCase().includes(lowerTerm)) ||
-                    (c.prenom && c.prenom.toLowerCase().includes(lowerTerm)) ||
-                    (c.email && c.email.toLowerCase().includes(lowerTerm));
-            });
-        }
+        this.loadClients();
     }
 
     get totalPages(): number {
-        return Math.ceil(this.filteredClients.length / this.pageSize);
+        return Math.ceil(this.totalElements / this.pageSize) || 1;
     }
 
     get paginatedClients(): Client[] {
-        const startIndex = (this.currentPage - 1) * this.pageSize;
-        return this.filteredClients.slice(startIndex, startIndex + this.pageSize);
+        return this.filteredClients;
     }
 
     get currentEndIndex(): number {
-        return Math.min(this.currentPage * this.pageSize, this.filteredClients.length);
+        return Math.min(this.currentPage * this.pageSize, this.totalElements);
     }
 
     nextPage(): void {
         if (this.currentPage < this.totalPages) {
             this.currentPage++;
+            this.loadClients();
         }
     }
 
     prevPage(): void {
         if (this.currentPage > 1) {
             this.currentPage--;
+            this.loadClients();
         }
     }
 
@@ -86,7 +98,10 @@ export class ClientSelectionDialog implements OnInit {
 
     onConfirm(): void {
         if (this.selectedClientId) {
-            this.confirmSelection.emit(this.selectedClientId);
+            const selectedClient = this.filteredClients.find(c => String(c.id) === String(this.selectedClientId));
+            if (selectedClient) {
+                this.confirmSelection.emit(selectedClient);
+            }
         }
     }
 

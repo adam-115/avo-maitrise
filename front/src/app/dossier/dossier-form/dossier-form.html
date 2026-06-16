@@ -120,7 +120,7 @@
             <!-- Status Alert Component -->
             <app-client-status-alert [status]="getSelectedClientStatus()"></app-client-status-alert>
 
-            <app-client-selection-dialog *ngIf="showClientDialog" [clients]="clients"
+            <app-client-selection-dialog *ngIf="showClientDialog"
               [initialSelection]="dossierForm.get('clientId')?.value" (confirmSelection)="onClientSelected($event)"
               (closeDialog)="closeClientDialog()">
             </app-client-selection-dialog>

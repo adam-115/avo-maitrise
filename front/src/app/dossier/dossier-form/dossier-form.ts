@@ -42,7 +42,7 @@ export class DossierForm implements OnInit {
   dossierId: string | number | null = null;
   loading = true;
 
-  clients: Client[] = [];
+  selectedClient: Client | null = null;
   statuses: StatutDossier[] = [];
   priorities: DossierPriorite[] = [];
   users: User[] = [];
@@ -86,7 +86,6 @@ export class DossierForm implements OnInit {
       this.loading = true;
 
       const requests: any = {
-        clients: this.clientService.getAll(),
         statuses: this.statusService.getAll(),
         priorities: this.priorityService.getAll(),
         users: this.userService.getAll(),
@@ -101,7 +100,6 @@ export class DossierForm implements OnInit {
 
       forkJoin(requests).subscribe({
         next: (res: any) => {
-          this.clients = res.clients.content || [];
           this.statuses = res.statuses.content || [];
           this.priorities = res.priorities.content || [];
           this.users = res.users.content || [];
@@ -113,6 +111,11 @@ export class DossierForm implements OnInit {
               ...dossier,
               dateOuverture: dossier.dateOuverture ? new Date(dossier.dateOuverture).toISOString().substring(0, 10) : '',
             });
+            if (dossier.clientId) {
+              this.clientService.findById(dossier.clientId).subscribe(client => {
+                this.selectedClient = client;
+              });
+            }
           }
           this.loading = false;
         },
@@ -133,25 +136,19 @@ export class DossierForm implements OnInit {
     this.showClientDialog = false;
   }
 
-  onClientSelected(clientId: string | number): void {
-    this.dossierForm.patchValue({ clientId: clientId });
+  onClientSelected(client: Client): void {
+    this.selectedClient = client;
+    this.dossierForm.patchValue({ clientId: client.id });
     this.closeClientDialog();
   }
 
   getSelectedClientName(): string {
-    const clientId = this.dossierForm.get('clientId')?.value;
-    if (!clientId) return '';
-    const client = this.clients.find(c => c.id == clientId) as any;
-    return client ? `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim() : '';
+    const c = this.selectedClient as any;
+    return c ? `${c.nom || c.nomCommercial || ''} ${c.prenom || ''}`.trim() : '';
   }
 
   getSelectedClientStatus(): string | undefined {
-    const clientId = this.dossierForm.get('clientId')?.value;
-    if (!clientId) return undefined;
-    // Use string comparison to be safe with IDs from different sources
-    const client = this.clients.find(c => String(c.id) === String(clientId)) as any;
-    // Fallback to 'status' if 'clientStatus' is not present
-    return client?.clientStatus || client?.status;
+    return this.selectedClient?.clientStatus || (this.selectedClient as any)?.status;
   }
 
   // User Selection Dialog Methods
