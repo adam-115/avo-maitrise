@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="insert-new-test-data" author="adam">
+        <comment>Insertion of newly added test data and operational records</comment>
+        <sqlFile path="insert-new-data.sql" relativeToChangelogFile="true" endDelimiter=";"/>
+        <rollback>
+            <comment>No action required on rollback (tables are dropped in v0.0.1 rollback)</comment>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

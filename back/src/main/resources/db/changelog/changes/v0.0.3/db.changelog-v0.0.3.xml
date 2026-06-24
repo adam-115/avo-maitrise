@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="insert-reference-data" author="adam">
+        <comment>Insertion of reference data (Secteurs, Domaines, Statuts, Priorites, Categories)</comment>
+        <sqlFile path="insert-data.sql" relativeToChangelogFile="true" endDelimiter=";"/>
+        <rollback>
+            <sql>
+                DELETE FROM task_statuses;
+                DELETE FROM task_categories;
+                DELETE FROM note_categories;
+                DELETE FROM dossiers_priorites;
+                DELETE FROM statuts_dossier;
+                DELETE FROM domaines_juridiques;
+                DELETE FROM secteurs_activite;
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

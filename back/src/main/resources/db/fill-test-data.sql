@@ -8,6 +8,9 @@ SET SQL_SAFE_UPDATES = 0;
 
 -- Clean existing data to ensure a clean, repeatable state
 TRUNCATE TABLE task_assignees;
+TRUNCATE TABLE client_diligence_status;
+TRUNCATE TABLE screening_match;
+TRUNCATE TABLE screening_execution;
 TRUNCATE TABLE matter_activities;
 TRUNCATE TABLE dossier_intervenants;
 TRUNCATE TABLE dossier_documents;
