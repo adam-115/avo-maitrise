@@ -13,6 +13,10 @@ export const routes: Routes = [
     redirectTo: NavigationService.HOME
   },
   {
+    path: NavigationService.LOGIN,
+    loadComponent: () => import('./login/login/login').then(m => m.Login)
+  },
+  {
     path: NavigationService.HOME,
     loadComponent: () => import('./home/home').then(m => m.Home),
     children: [

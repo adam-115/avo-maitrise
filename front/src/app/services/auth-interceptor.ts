@@ -24,6 +24,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401 && environment.keycloak.enabled && token) {
         keycloakService.logout();
       }
+      if (error.status === 0) {
+        keycloakService.logout();
+      }
       return throwError(() => error);
     })
   );
