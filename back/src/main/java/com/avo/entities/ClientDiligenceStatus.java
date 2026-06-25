@@ -24,6 +24,7 @@ public class ClientDiligenceStatus {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "form_config_id")
+    @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private FormConfig formConfig;
 
     @Enumerated(EnumType.STRING)

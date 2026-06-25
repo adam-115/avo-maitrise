@@ -33,6 +33,8 @@ export interface User {
   // Sécurité
   twoFactorEnabled: boolean;
   createdAt: Date;
+  keycloakId?: string;
+  tempPassword?: string;
 }
 
 // tab dossier type for dossier details component

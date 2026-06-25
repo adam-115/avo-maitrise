@@ -26,3 +26,4 @@ back/target/classes/com/avo/controller/HomeController.class
 back/target/classes/com/avo/controller/TestController.class
 back/target/classes/com/avo/AvoApplication.class
 *.class
+/back/target/classes

@@ -50,4 +50,22 @@ public class UserController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/disable")
+    public ResponseEntity<Void> disableUser(@PathVariable Long id) {
+        service.disableUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/reset-password")
+    public ResponseEntity<String> resetPassword(@PathVariable Long id) {
+        String newPassword = service.resetPassword(id);
+        return ResponseEntity.ok(newPassword);
+    }
+
+    @PostMapping("/{id}/reconfigure-otp")
+    public ResponseEntity<Void> reconfigureOtp(@PathVariable Long id) {
+        service.requireOtpReconfiguration(id);
+        return ResponseEntity.noContent().build();
+    }
 }

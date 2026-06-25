@@ -13,5 +13,17 @@ export class UserService extends AbstractCrudService<User> {
     constructor(http: HttpClient) {
         super(http);
     }
+
+    disableUser(id: number | string) {
+        return this.http.put(`${this.apiUrl}/${id}/disable`, {});
+    }
+
+    resetPassword(id: number | string) {
+        return this.http.post(`${this.apiUrl}/${id}/reset-password`, {}, { responseType: 'text' });
+    }
+
+    reconfigureOtp(id: number | string) {
+        return this.http.post(`${this.apiUrl}/${id}/reconfigure-otp`, {});
+    }
 }
 

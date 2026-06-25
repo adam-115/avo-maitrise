@@ -24,9 +24,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401 && environment.keycloak.enabled && token) {
         keycloakService.logout();
       }
-      if (error.status === 0) {
-        keycloakService.logout();
-      }
+      // Suppression de la déconnexion automatique sur error.status === 0
+      // car un simple problème réseau ou une erreur CORS 500 provoquerait une déconnexion intempestive.
+      
       return throwError(() => error);
     })
   );

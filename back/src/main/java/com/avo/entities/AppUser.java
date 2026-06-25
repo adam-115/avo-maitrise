@@ -1,12 +1,20 @@
 package com.avo.entities;
 
-import jakarta.persistence.*;
+import java.util.Date;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
 
 @Entity
 @Table(name = "app_users")
@@ -19,6 +27,9 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "keycloak_id", unique = true)
+    private String keycloakId;
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -30,7 +41,7 @@ public class AppUser {
 
     @Column(nullable = false)
     private String lastName;
-
+    
     @Column(nullable = false)
     private String role;
 

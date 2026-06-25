@@ -1,4 +1,5 @@
 com\avo\controller\InstitutionController.class
+com\avo\dtos\UserRoleRequest.class
 com\avo\entities\Dossier.class
 com\avo\services\FormConfigService.class
 com\avo\dtos\ScreeningMatchDTO$ScreeningMatchDTOBuilder.class
@@ -157,6 +158,7 @@ com\avo\dtos\FieldConfigDTO.class
 com\avo\entities\TaskCategory.class
 com\avo\controller\AssociationController.class
 com\avo\entities\QDomaineJuridique.class
+com\avo\dtos\CreateUserRequest.class
 com\avo\dtos\TaskLogDTO.class
 com\avo\dtos\UBODTO$UBODTOBuilder.class
 com\avo\dtos\FormConfigDTO$FormConfigDTOBuilder.class
@@ -200,6 +202,7 @@ com\avo\mappers\StatutDossierMapperImpl.class
 com\avo\dtos\DomaineJuridiqueDTO$DomaineJuridiqueDTOBuilder.class
 com\avo\repositories\EventTypeRepository.class
 com\avo\repositories\TaskStatusRepository.class
+com\avo\dtos\PasswordResetRequest.class
 com\avo\services\MatterEventService.class
 com\avo\entities\TestEntity.class
 com\avo\entities\ScreeningExecutionStatus.class
@@ -252,6 +255,7 @@ com\avo\dtos\InstitutionDTO.class
 com\avo\entities\ClientPersonnePhysique.class
 com\avo\mappers\ClientMoralMapperImpl.class
 com\avo\yente\service\YenteAmlService.class
+com\avo\services\KeycloakUserManagementService.class
 com\avo\entities\FieldConfig.class
 com\avo\mappers\ClientPersonnePhysiqueMapper.class
 com\avo\dtos\TaskDTO.class
@@ -262,6 +266,7 @@ com\avo\repositories\TaskLogRepository.class
 com\avo\entities\QFieldOption.class
 com\avo\repositories\ScreeningExecutionRepository.class
 com\avo\mappers\FormConfigMapperImpl.class
+com\avo\config\KeycloakAdminConfig.class
 com\avo\mappers\AppointementMapperImpl.class
 com\avo\dtos\ScreeningExecutionDTO.class
 com\avo\dtos\TaskStatusDTO.class

@@ -39,9 +39,8 @@ export class UtilisateursFormDialog {
       barreauId: [''],
       phoneNumber: [''],
       gsm: [''],
-      address: ['']
-      // Password handling would typically be more complex (separate change password flow)
-      // For now, we omit it or treat it as optional/separate
+      address: [''],
+      tempPassword: ['']
     });
   }
 
@@ -99,31 +98,63 @@ export class UtilisateursFormDialog {
     }
   }
 
+  generatePassword() {
+    const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    let password = "";
+    for (let i = 0; i < 12; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    this.userForm.patchValue({ tempPassword: password });
+  }
+
   onSubmit() {
     if (this.userForm.invalid) return;
 
     const formValue = this.userForm.value;
+    
+    // Mapping explicite pour garantir les bons types (surtout pour les booléens)
     const userData: Partial<User> = {
-      ...formValue,
+      firstName: formValue.firstName,
+      lastName: formValue.lastName,
+      email: formValue.email,
+      username: formValue.username,
+      role: formValue.role,
+      barreauId: formValue.barreauId,
+      phoneNumber: formValue.phoneNumber,
+      gsm: formValue.gsm,
+      address: formValue.address,
+      
+      // Forcer la conversion en booléen (car les select HTML renvoient parfois des chaînes)
+      isActive: formValue.isActive === true || String(formValue.isActive) === 'true',
+      isPartner: formValue.isPartner === true || String(formValue.isPartner) === 'true',
+      
+      tempPassword: formValue.tempPassword,
+      
       photo: this.photoData || undefined,
       avatarUrl: this.photoPreviewUrl || undefined,
       photoBlob: this.photoPreviewUrl || undefined
     };
 
     if (this.isEditMode && this.currentUserId) {
-      this.userService.update(userData as User).subscribe(() => {
+      // Ajout de l'ID qui manquait pour la mise à jour
+      const userToUpdate: User = { 
+        ...userData, 
+        id: this.currentUserId 
+      } as User;
+
+      this.userService.update(userToUpdate).subscribe(() => {
         this.closeUserForm();
         this.userSaved.emit();
-        // Reload parent or notify
-        location.reload(); // Simple reload for now or emit event to parent
+        location.reload();
       });
     } else {
-      // New user
-      const newUser: any = {
+      // Nouvel utilisateur
+      const newUser: User = {
         ...userData,
         createdAt: new Date(),
-        twoFactorEnabled: false // default
-      };
+        twoFactorEnabled: false
+      } as User;
+
       this.userService.create(newUser).subscribe(() => {
         this.closeUserForm();
         this.userSaved.emit();

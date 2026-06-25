@@ -12,6 +12,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchRequest.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ScreeningMatchStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\StatutDossierService.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\DossierController.java
+D:\avo-maitrise\back\src\main\java\com\avo\services\KeycloakUserManagementService.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\TaskStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\TaskLogMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\ClientRepository.java
@@ -33,6 +34,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\mappers\DocumentMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\InstitutionController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\DomaineJuridiqueController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\ScreeningMatchController.java
+D:\avo-maitrise\back\src\main\java\com\avo\dtos\CreateUserRequest.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\AppointementController.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ScreeningExecution.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\DiligenceFormResult.java
@@ -157,6 +159,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\mappers\MatterEventMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\AppointementRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\AvoApplication.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteQueryResponse.java
+D:\avo-maitrise\back\src\main\java\com\avo\dtos\UserRoleRequest.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\HomeController.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\SecteurActiviteService.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\DomaineJuridiqueDTO.java
@@ -184,6 +187,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\dtos\TestEntityDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ScreeningMatch.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\NoteCategory.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\InstitutionMapper.java
+D:\avo-maitrise\back\src\main\java\com\avo\dtos\KeycloakUserDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\TaskMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ClientDiligenceStatusDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\PersonnePhysiqueController.java
@@ -199,12 +203,14 @@ D:\avo-maitrise\back\src\main\java\com\avo\services\InstitutionService.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\DomaineJuridique.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\TaskStatusRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\UserController.java
+D:\avo-maitrise\back\src\main\java\com\avo\dtos\PasswordResetRequest.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\NoteService.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\ClientController.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\DiligenceFormResultService.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\DossierContact.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\SecteurActiviteMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\FormConfigService.java
+D:\avo-maitrise\back\src\main\java\com\avo\controller\KeycloakUserManagementController.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ClientEntityDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Notification.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\MatterActivityEventListener.java
@@ -214,5 +220,6 @@ D:\avo-maitrise\back\src\main\java\com\avo\services\DossierService.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\TaskLogRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\UserDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\NotificationRepository.java
+D:\avo-maitrise\back\src\main\java\com\avo\config\KeycloakAdminConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\ScreeningMatchService.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientEntity.java
