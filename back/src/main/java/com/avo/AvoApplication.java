@@ -18,3 +18,4 @@ public class AvoApplication {
         System.out.println("Application started" + new Date());
     }
 }
+

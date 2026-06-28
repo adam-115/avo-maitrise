@@ -187,6 +187,7 @@ com\avo\entities\QTaskLog.class
 com\avo\dtos\AppointementDTO.class
 com\avo\yente\models\YenteMatchResult.class
 com\avo\services\EventTypeService.class
+com\avo\services\EmailService.class
 com\avo\controller\DomaineJuridiqueController.class
 com\avo\dtos\FieldResultDTO.class
 com\avo\entities\FieldResult$FieldResultBuilder.class

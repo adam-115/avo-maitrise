@@ -59,8 +59,8 @@ public class UserController {
 
     @PostMapping("/{id}/reset-password")
     public ResponseEntity<String> resetPassword(@PathVariable Long id) {
-        String newPassword = service.resetPassword(id);
-        return ResponseEntity.ok(newPassword);
+        service.resetPassword(id);
+        return ResponseEntity.ok("Mot de passe reinitialisé avec succes");
     }
 
     @PostMapping("/{id}/reconfigure-otp")

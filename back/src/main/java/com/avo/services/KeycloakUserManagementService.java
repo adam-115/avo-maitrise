@@ -27,6 +27,9 @@ public class KeycloakUserManagementService {
     @Autowired
     private RealmResource realmResource;
 
+    @Autowired
+    private EmailService emailService;
+
     public String getUserIdByUsername(String username) {
         if (username == null) return null;
         List<UserRepresentation> users = realmResource.users().searchByUsername(username, true);
@@ -85,10 +88,30 @@ public class KeycloakUserManagementService {
                 assignRoles(userId, request.getRoles());
             }
             log.info("Utilisateur créé dans Keycloak avec l'ID: {}", userId);
+            
+            // Send email
+            if (request.getEmail() != null) {
+                String emailText = "Bonjour " + request.getFirstName() + ",\n\n"
+                    + "Votre compte a été créé avec succès.\n"
+                    + "Votre nom d'utilisateur est : " + request.getUsername() + "\n";
+                if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+                    emailText += "Votre mot de passe temporaire est : " + request.getPassword() + "\n"
+                              + "Veuillez le modifier lors de votre première connexion.\n";
+                }
+                emailText += "\nCordialement,\nL'équipe Avo-Maitrise.";
+                emailService.sendSimpleEmail(request.getEmail(), "Création de votre compte", emailText);
+            }
+            
             return userId;
         } else {
-            log.error("Échec de création de l'utilisateur. Status: {}", response.getStatus());
-            throw new RuntimeException("Failed to create user in Keycloak, status: " + response.getStatus());
+            String errorBody = "";
+            try {
+                errorBody = response.readEntity(String.class);
+            } catch (Exception e) {
+                errorBody = "Could not read response body";
+            }
+            log.error("Échec de création de l'utilisateur. Status: {}, Body: {}", response.getStatus(), errorBody);
+            throw new RuntimeException("Failed to create user in Keycloak, status: " + response.getStatus() + ", details: " + errorBody);
         }
     }
 
@@ -188,6 +211,20 @@ public class KeycloakUserManagementService {
             user.setRequiredActions(requiredActions);
             userResource.update(user);
             log.info("Action requise '{}' ajoutée pour l'utilisateur: {}", action, userId);
+
+            if (user.getEmail() != null) {
+                String actionName = action;
+                if ("CONFIGURE_TOTP".equals(action)) {
+                    actionName = "la configuration de l'Authentification à Double Facteur (2FA)";
+                } else if ("UPDATE_PASSWORD".equals(action)) {
+                    actionName = "la mise à jour de votre mot de passe";
+                }
+                
+                String emailText = "Bonjour " + user.getFirstName() + ",\n\n"
+                    + "Une action est requise sur votre compte. Vous devez effectuer " + actionName + " lors de votre prochaine connexion.\n\n"
+                    + "Cordialement,\nL'équipe Avo-Maitrise.";
+                emailService.sendSimpleEmail(user.getEmail(), "Action requise sur votre compte", emailText);
+            }
         }
     }
 }

@@ -63,7 +63,8 @@ export class UtilisateursFormDialog {
         barreauId: user.barreauId,
         phoneNumber: user.phoneNumber,
         gsm: user.gsm,
-        address: user.address
+        address: user.address,
+        tempPassword: ''
       });
     } else {
       this.currentUserId = null;

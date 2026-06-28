@@ -12,18 +12,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.avo.dtos.CreateUserRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class UserService {
 
     private final UserRepository repository;
     private final UserMapper mapper;
     private final KeycloakUserManagementService keycloakService;
+    private final EmailService emailService;
 
-    public UserService(UserRepository repository, UserMapper mapper, KeycloakUserManagementService keycloakService) {
+    public UserService(UserRepository repository, UserMapper mapper, KeycloakUserManagementService keycloakService, EmailService emailService) {
         this.repository = repository;
         this.mapper = mapper;
         this.keycloakService = keycloakService;
+        this.emailService = emailService;
     }
 
     public Page<UserDTO> findAll(Pageable pageable) {
@@ -113,9 +117,24 @@ public class UserService {
                 kcRequest.setEmail(dto.getEmail());
                 kcRequest.setEnabled(dto.isActive());
                 keycloakService.updateUser(kcUserId, kcRequest);
+
+                // Process manual password reset during update
+                if (dto.getTempPassword() != null && !dto.getTempPassword().trim().isEmpty()) {
+                    com.avo.dtos.PasswordResetRequest req = new com.avo.dtos.PasswordResetRequest(kcUserId, dto.getTempPassword(), true);
+                    keycloakService.resetPassword(req);
+
+                    if (dto.getEmail() != null) {
+                        String emailText = "Bonjour " + dto.getFirstName() + ",\n\n"
+                            + "Votre mot de passe a été réinitialisé par un administrateur.\n"
+                            + "Votre nouveau mot de passe temporaire est : " + dto.getTempPassword() + "\n"
+                            + "Veuillez vous connecter et le modifier immédiatement.\n\n"
+                            + "Cordialement,\nL'équipe Avo-Maitrise.";
+                        emailService.sendSimpleEmail(dto.getEmail(), "Réinitialisation de votre mot de passe", emailText);
+                    }
+                }
             }
         } catch (Exception e) {
-            System.err.println("Failed to update user in Keycloak: " + e.getMessage());
+            log.error("Failed to update user in Keycloak", e);
         } 
 
         return saved;
@@ -141,7 +160,13 @@ public class UserService {
 
         // Auto-create in Keycloak for resilience against manual DB inserts
         CreateUserRequest kcRequest = new CreateUserRequest();
-        kcRequest.setUsername(dto.getUsername());
+        
+        // Nettoyage du username pour éviter "error-username-invalid-character"
+        String safeUsername = dto.getUsername() != null 
+            ? dto.getUsername().replaceAll("[^a-zA-Z0-9\\-_\\.]", "_") 
+            : "user_" + dto.getId();
+        kcRequest.setUsername(safeUsername);
+        
         kcRequest.setEmail(dto.getEmail());
         kcRequest.setFirstName(dto.getFirstName());
         kcRequest.setLastName(dto.getLastName());
@@ -157,7 +182,8 @@ public class UserService {
             return newKcId;
         } catch (Exception e) {
             System.err.println("Failed to auto-create user in Keycloak: " + e.getMessage());
-            return null;
+            e.printStackTrace();
+            throw new RuntimeException("Impossible de synchroniser avec Keycloak: " + e.getMessage(), e);
         }
     }
 
@@ -249,6 +275,17 @@ public class UserService {
                 
                 com.avo.dtos.PasswordResetRequest req = new com.avo.dtos.PasswordResetRequest(kcUserId, newPassword, true);
                 keycloakService.resetPassword(req);
+                
+                // Envoi de l'e-mail avec le mot de passe temporaire
+                if (user.getEmail() != null) {
+                    String emailText = "Bonjour " + user.getFirstName() + ",\n\n"
+                        + "Votre mot de passe a été réinitialisé par un administrateur.\n"
+                        + "Votre nouveau mot de passe temporaire est : " + newPassword + "\n"
+                        + "Veuillez vous connecter et le modifier immédiatement.\n\n"
+                        + "Cordialement,\nL'équipe Avo-Maitrise.";
+                    emailService.sendSimpleEmail(user.getEmail(), "Réinitialisation de votre mot de passe", emailText);
+                }
+                
                 return newPassword;
             }
         }

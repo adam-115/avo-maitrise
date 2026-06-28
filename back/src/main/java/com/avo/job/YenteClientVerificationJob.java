@@ -82,7 +82,7 @@ public class YenteClientVerificationJob {
      * Scheduled task to execute AML compliance checks for all registered Clients.
      * Runs every 10 minutes (600,000 milliseconds) and processes clients in batches/pages.
      */
-    // @Scheduled(fixedRate = 600000)
+    // @Scheduled(fixedRate = 180000)
     @Transactional
     public void executeMatchClient() {
         System.out.println("executeMatchClient executed at " + LocalDateTime.now());
@@ -289,7 +289,7 @@ public class YenteClientVerificationJob {
      * Scheduled task to execute AML compliance checks for all Ultimate Beneficial Owners (UBOs).
      * Runs every 10 minutes (600,000 milliseconds) and processes UBOs in batches.
      */
-    // @Scheduled(fixedRate = 600000)
+    // @Scheduled(fixedRate = 180000)
     @Transactional
     public void executeMatchUbos() {
         System.out.println("executeMatchUbos executed at " + LocalDateTime.now());

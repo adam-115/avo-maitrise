@@ -72,7 +72,7 @@ export class Utilisateur implements OnInit {
         next: (newPassword) => {
           this.alertService.displayMessage(
             'Succès',
-            `Nouveau mot de passe temporaire généré: ${newPassword}`,
+            `Nouveau mot de passe temporaire généré`,
             'success'
           );
         },

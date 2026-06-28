@@ -27,3 +27,10 @@ back/target/classes/com/avo/controller/TestController.class
 back/target/classes/com/avo/AvoApplication.class
 *.class
 /back/target/classes
+*.class
+*.lst
+*.lst
+*.class
+*.class
+*.lst
+*.lst
