@@ -112,12 +112,15 @@ public class AppointementService {
 
     private void attachRelatedEntities(Appointement entity, AppointementDTO dto) {
         if (dto.getDossierId() != null) {
-            entity.setDossier(entityManager.getReference(Dossier.class, dto.getDossierId()));
+            Dossier d = entityManager.find(Dossier.class, dto.getDossierId());
+            entity.setDossier(d);
         } else {
             entity.setDossier(null);
         }
+        
         if (dto.getClientId() != null) {
-            entity.setClient(entityManager.getReference(ClientEntity.class, dto.getClientId()));
+            ClientEntity c = entityManager.find(ClientEntity.class, dto.getClientId());
+            entity.setClient(c);
         } else {
             entity.setClient(null);
         }

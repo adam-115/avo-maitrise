@@ -2,6 +2,8 @@ package com.avo.entities;
 
 import jakarta.persistence.*;
 import java.util.Date;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "appointements")
@@ -19,10 +21,12 @@ public class Appointement {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "client_id", nullable = true)
+    @NotFound(action = NotFoundAction.IGNORE)
     private ClientEntity client;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "dossier_id", nullable = true)
+    @NotFound(action = NotFoundAction.IGNORE)
     private Dossier dossier;
 
     @Column(nullable = false)

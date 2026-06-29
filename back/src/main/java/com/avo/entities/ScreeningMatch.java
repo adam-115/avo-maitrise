@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -30,7 +32,8 @@ public class ScreeningMatch {
     private ScreeningExecution screeningExecution;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", nullable = false)
+    @JoinColumn(name = "client_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     private ClientEntity client;
 
     @ManyToOne(fetch = FetchType.LAZY)

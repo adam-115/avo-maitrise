@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class DiligenceFormResult {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     private ClientEntity client;
 
     private OffsetDateTime creationDate;

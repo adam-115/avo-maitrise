@@ -6,12 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "client_diligence_status")
 public class ClientDiligenceStatus {
 
     @Id
@@ -20,6 +23,7 @@ public class ClientDiligenceStatus {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
+    @NotFound(action = NotFoundAction.IGNORE)
     private ClientEntity client;
 
     @ManyToOne(fetch = FetchType.LAZY)
