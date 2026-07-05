@@ -1,5 +1,6 @@
 package com.avo.yente.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import com.avo.repositories.UBORepository;
 import com.querydsl.core.types.Predicate;
 
 @Service
+@Slf4j
 public class ScreeningExecutionService {
 
     private final ScreeningExecutionRepository screeningExecutionRepository;
@@ -31,18 +33,22 @@ public class ScreeningExecutionService {
     }
 
     public Page<ScreeningExecutionDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return screeningExecutionRepository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<ScreeningExecutionDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return screeningExecutionRepository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public ScreeningExecutionDTO findById(Long id) {
+        log.info("[ENTER] Executing findById");
         return screeningExecutionRepository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public ScreeningExecutionDTO create(ScreeningExecutionDTO dto) {
+        log.info("[ENTER] Executing create");
         ScreeningExecution entity = mapper.toEntity(dto);
         
         // Fetch managed client and UBO from DB to avoid PropertyValueException or transient state errors
@@ -60,10 +66,12 @@ public class ScreeningExecutionService {
     }
 
     public ScreeningExecutionDTO update(ScreeningExecutionDTO dto) {
+        log.info("[ENTER] Executing update");
         throw new RuntimeException("this method is not allowed ");
     }
     
     public void delete(Long id) {
+        log.info("[ENTER] Executing delete");
         screeningExecutionRepository.deleteById(id);
     }
 }

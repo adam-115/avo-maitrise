@@ -1,5 +1,6 @@
 package com.avo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class NoteService {
 
     private final NoteRepository repository;
@@ -37,24 +39,29 @@ public class NoteService {
     }
 
     public Page<NoteDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<NoteDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public NoteDTO findById(Long id) {
+        log.info("[ENTER] Executing findById");
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public List<NoteDTO> findByDossierId(Long dossierId) {
+        log.info("[ENTER] Executing findByDossierId");
         return repository.findByDossier_Id(dossierId).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public NoteDTO create(NoteDTO dto) {
+        log.info("[ENTER] Executing create");
         Note entity = mapper.toEntity(dto);
         attachRelatedEntities(entity, dto);
         Note saved = repository.save(entity);
@@ -68,6 +75,7 @@ public class NoteService {
     }
 
     public NoteDTO update(NoteDTO dto) {
+        log.info("[ENTER] Executing update");
         if (dto.getId() == null) return null;
         Note existing = repository.findById(dto.getId()).orElse(null);
         if (existing == null) return null;
@@ -111,6 +119,7 @@ public class NoteService {
     }
 
     public void delete(Long id) {
+        log.info("[ENTER] Executing delete");
         repository.findById(id).ifPresent(note -> {
             String author = getCurrentUsername();
             eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(

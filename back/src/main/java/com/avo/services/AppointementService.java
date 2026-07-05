@@ -1,5 +1,6 @@
 package com.avo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 @Transactional
+@Slf4j
 public class AppointementService {
 
     private final AppointementRepository repository;
@@ -34,18 +36,22 @@ public class AppointementService {
     }
 
     public Page<AppointementDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<AppointementDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public AppointementDTO findById(Long id) {
+        log.info("[ENTER] Executing findById");
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public AppointementDTO create(AppointementDTO dto) {
+        log.info("[ENTER] Executing create");
         Appointement entity = mapper.toEntity(dto);
         attachRelatedEntities(entity, dto);
         Appointement saved = repository.save(entity);
@@ -61,6 +67,7 @@ public class AppointementService {
     }
 
     public AppointementDTO update(AppointementDTO dto) {
+        log.info("[ENTER] Executing update");
         if (dto.getId() == null) return null;
         Appointement existing = repository.findById(dto.getId()).orElse(null);
         if (existing == null) return null;
@@ -87,6 +94,7 @@ public class AppointementService {
     }
 
     public void delete(Long id) {
+        log.info("[ENTER] Executing delete");
         repository.findById(id).ifPresent(entity -> {
             if (entity.getDossier() != null) {
                 String author = getCurrentUsername();

@@ -1,5 +1,6 @@
 package com.avo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class DossierService {
 
     private final DossierRepository repository;
@@ -39,26 +41,32 @@ public class DossierService {
     }
 
     public Page<DossierDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<DossierDTO> findAllWithFilters(String searchTerm, String statusFilter, String lawyerFilter, Pageable pageable) {
+        log.info("[ENTER] Executing findAllWithFilters");
         return repository.searchWithFilters(searchTerm, statusFilter, lawyerFilter, pageable).map(mapper::toDto);
     }
 
     public List<DossierDTO> findAll() {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     public Page<DossierDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public DossierDTO findById(Long id) {
+        log.info("[ENTER] Executing findById");
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public DossierDTO create(DossierDTO dto) {
+        log.info("[ENTER] Executing create");
         Dossier entity = mapper.toEntity(dto);
         linkDocuments(entity);
         Dossier saved = repository.save(entity);
@@ -71,6 +79,7 @@ public class DossierService {
     }
 
     public DossierDTO update(DossierDTO dto) {
+        log.info("[ENTER] Executing update");
         Dossier entity = mapper.toEntity(dto);
         linkDocuments(entity);
         Dossier saved = repository.save(entity);
@@ -103,6 +112,7 @@ public class DossierService {
     }
 
     public void delete(Long id) {
+        log.info("[ENTER] Executing delete");
         repository.deleteById(id);
     }
 }

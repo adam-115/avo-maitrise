@@ -37,3 +37,8 @@ back/target/classes/com/avo/AvoApplication.class
 /back/target/classes
 *.lst
 *.class
+*.class
+back/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+back/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+*.lst
+*.class

@@ -1,5 +1,6 @@
 package com.avo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
@@ -14,6 +15,7 @@ import com.querydsl.core.types.Predicate;
 import com.avo.entities.DocumentType;
 
 @Service
+@Slf4j
 public class DocumentService {
 
     private final DocumentRepository repository;
@@ -34,18 +36,22 @@ public class DocumentService {
     }
 
     public Page<DocumentDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<DocumentDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public DocumentDTO findById(Long id) {
+        log.info("[ENTER] Executing findById");
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public DocumentDTO create(DocumentDTO dto) {
+        log.info("[ENTER] Executing create");
         Document entity = mapper.toEntity(dto);
         entity.setDateUpload(LocalDateTime.now());
         
@@ -78,6 +84,7 @@ public class DocumentService {
     }
 
     public DocumentDTO update(DocumentDTO dto) {
+        log.info("[ENTER] Executing update");
         Document entity = mapper.toEntity(dto);
 
         if (dto.getClientId() != null) {
@@ -109,6 +116,7 @@ public class DocumentService {
     }
     
     public void delete(Long id) {
+        log.info("[ENTER] Executing delete");
         repository.findById(id).ifPresent(doc -> {
             if (doc.getTypeDocument() == DocumentType.DOSSIER) {
                 eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(

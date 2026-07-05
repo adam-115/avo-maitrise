@@ -1,5 +1,6 @@
 package com.avo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class TaskService {
 
     private final TaskRepository repository;
@@ -27,22 +29,27 @@ public class TaskService {
     }
 
     public Page<TaskDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public List<TaskDTO> findAll() {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     public Page<TaskDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public TaskDTO findById(Long id) {
+        log.info("[ENTER] Executing findById");
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public TaskDTO create(TaskDTO dto) {
+        log.info("[ENTER] Executing create");
         Task entity = mapper.toEntity(dto);
         Task saved = repository.save(entity);
         
@@ -55,6 +62,7 @@ public class TaskService {
     }
 
     public TaskDTO update(TaskDTO dto) {
+        log.info("[ENTER] Executing update");
         Task entity = mapper.toEntity(dto);
         Task saved = repository.save(entity);
         
@@ -79,6 +87,7 @@ public class TaskService {
     }
 
     public void delete(Long id) {
+        log.info("[ENTER] Executing delete");
         repository.findById(id).ifPresent(task -> {
             String author = getCurrentUsername();
             eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
@@ -89,6 +98,7 @@ public class TaskService {
     }
 
     public List<TaskDTO> findByDossierId(Long dossierId) {
+        log.info("[ENTER] Executing findByDossierId");
         return repository.findByDossierId(dossierId).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());

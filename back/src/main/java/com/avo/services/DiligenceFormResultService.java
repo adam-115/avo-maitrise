@@ -1,5 +1,6 @@
 package com.avo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import com.avo.dtos.DiligenceFormResultDTO;
 import com.avo.entities.DiligenceFormResult;
 import com.avo.mappers.DiligenceFormResultMapper;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DiligenceFormResultService {
 
     private final DiligenceFormResultRepository repository;
@@ -23,23 +25,28 @@ public class DiligenceFormResultService {
     private final ClientDiligenceStatusRepository statusRepository;
 
     public Page<DiligenceFormResultDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<DiligenceFormResultDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public List<DiligenceFormResultDTO> findByClientId(Long clientId) {
+        log.info("[ENTER] Executing findByClientId");
         return repository.findByClientId(clientId).stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     public DiligenceFormResultDTO findById(String id) {
+        log.info("[ENTER] Executing findById");
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     @Transactional
     public DiligenceFormResultDTO create(DiligenceFormResultDTO dto) {
+        log.info("[ENTER] Executing create");
         DiligenceFormResult entity = mapper.toEntity(dto);
         DiligenceFormResult savedResult = repository.save(entity);
 
@@ -58,12 +65,14 @@ public class DiligenceFormResultService {
 
     @Transactional
     public DiligenceFormResultDTO update(DiligenceFormResultDTO dto) {
+        log.info("[ENTER] Executing update");
         DiligenceFormResult entity = mapper.toEntity(dto);
         return mapper.toDto(repository.save(entity));
     }
 
     @Transactional
     public void delete(String id) {
+        log.info("[ENTER] Executing delete");
         repository.deleteById(id);
     }
 }

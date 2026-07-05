@@ -1,5 +1,6 @@
 package com.avo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
+@Slf4j
 public class DossierContactService {
 
     private final DossierContactRepository repository;
@@ -33,24 +35,29 @@ public class DossierContactService {
     }
 
     public Page<DossierContactDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<DossierContactDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public DossierContactDTO findById(Long id) {
+        log.info("[ENTER] Executing findById");
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public List<DossierContactDTO> findByDossierId(Long dossierId) {
+        log.info("[ENTER] Executing findByDossierId");
         return repository.findByDossier_Id(dossierId).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
     }
 
     public DossierContactDTO create(DossierContactDTO dto) {
+        log.info("[ENTER] Executing create");
         DossierContact entity = mapper.toEntity(dto);
         attachRelatedEntities(entity, dto);
         DossierContact saved = repository.save(entity);
@@ -63,6 +70,7 @@ public class DossierContactService {
     }
 
     public DossierContactDTO update(DossierContactDTO dto) {
+        log.info("[ENTER] Executing update");
         if (dto.getId() == null) return null;
         DossierContact existing = repository.findById(dto.getId()).orElse(null);
         if (existing == null) return null;
@@ -105,6 +113,7 @@ public class DossierContactService {
     }
 
     public void delete(Long id) {
+        log.info("[ENTER] Executing delete");
         repository.findById(id).ifPresent(contact -> {
             eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
                 this, contact.getDossier().getId(), getCurrentUsername(), "Suppression", "Contact", contact.getId(), "Contact supprimé : " + contact.getNom() + " " + contact.getPrenom()

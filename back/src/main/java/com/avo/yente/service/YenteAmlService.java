@@ -1,5 +1,6 @@
 package com.avo.yente.service;
 
+import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import com.avo.yente.models.YenteMatchResult;
 import com.avo.yente.models.YenteQueryResponse;
 
 @Service
+@Slf4j
 public class YenteAmlService {
 
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(YenteAmlService.class);
@@ -53,6 +55,7 @@ public class YenteAmlService {
      * @return The complete AML analysis result
      */
     public AmlAnalysisResult checkClientAndSave(Long clientId) {
+        log.info("[ENTER] Executing checkClientAndSave");
         log.info("Starting AML verification for client ID: {}", clientId);
         ClientEntity client = clientrepository.findById(clientId)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
@@ -81,6 +84,7 @@ public class YenteAmlService {
      * @return true if the API is reachable and healthy, false otherwise
      */
     public boolean checkYenteHealth() {
+        log.info("[ENTER] Executing checkYenteHealth");
         return yenteApiClient.checkHealth();
     }
 
@@ -93,6 +97,7 @@ public class YenteAmlService {
      * @return The AML match results retrieved from Yente
      */
     public List<AmlAnalysisResult> checkClientStatus(ClientEntity client) {
+        log.info("[ENTER] Executing checkClientStatus");
         if (client instanceof com.avo.entities.ClientPersonnePhysique p) {
             log.info("Checking AML status for PersonnePhysique: {} {}", p.getPrenom(), p.getNom());
             return matchPerson(p.getPrenom(), p.getNom(), p.getNationalite());
@@ -122,6 +127,7 @@ public class YenteAmlService {
      * @return The outcome of the matching operation
      */
     public List<AmlAnalysisResult> matchPerson(String firstName, String lastName, String country) {
+        log.info("[ENTER] Executing matchPerson");
         Map<String, List<String>> properties = new HashMap<>();
         String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
         fullName = fullName.trim();
@@ -142,6 +148,7 @@ public class YenteAmlService {
      * @return The outcome of the matching operation
      */
     public List<AmlAnalysisResult> matchCompany(String name, String country) {
+        log.info("[ENTER] Executing matchCompany");
         Map<String, List<String>> properties = new HashMap<>();
         if (name != null && !name.isEmpty()) {
             properties.put("name", List.of(name));
@@ -161,6 +168,7 @@ public class YenteAmlService {
      * @return The outcome of the matching operation
      */
     public List<AmlAnalysisResult> matchOrganization(String name, String country) {
+        log.info("[ENTER] Executing matchOrganization");
         Map<String, List<String>> properties = new HashMap<>();
         if (name != null && !name.isEmpty()) {
             properties.put("name", List.of(name));
@@ -181,6 +189,7 @@ public class YenteAmlService {
      * @return The outcome of the matching operation
      */
     public List<AmlAnalysisResult> matchVessel(String name, String imoNumber, String country) {
+        log.info("[ENTER] Executing matchVessel");
         Map<String, List<String>> properties = new HashMap<>();
         if (name != null && !name.isEmpty()) {
             properties.put("name", List.of(name));
@@ -203,6 +212,7 @@ public class YenteAmlService {
      * @return The outcome of the matching operation
      */
     public List<AmlAnalysisResult> matchAirplane(String name, String registrationNumber, String country) {
+        log.info("[ENTER] Executing matchAirplane");
         Map<String, List<String>> properties = new HashMap<>();
         if (name != null && !name.isEmpty()) {
             properties.put("name", List.of(name));
@@ -383,6 +393,7 @@ public class YenteAmlService {
     }
 
     public String exuteTheMathAsString(String clientId, String schema, Map<String, List<String>> properties) {
+        log.info("[ENTER] Executing exuteTheMathAsString");
         log.debug("Executing match query for schema: {}, properties: {}", schema, properties);
         YenteMatchQuery query = new YenteMatchQuery(schema, properties);
         Map<String, YenteMatchQuery> queries = new HashMap<>();
@@ -401,6 +412,7 @@ public class YenteAmlService {
     }
 
     public String checkClientStatusAsString(ClientEntity client) {
+        log.info("[ENTER] Executing checkClientStatusAsString");
         if (client instanceof com.avo.entities.ClientPersonnePhysique p) {
             log.info("Checking AML status for PersonnePhysique: {} {}", p.getPrenom(), p.getNom());
             return matchPersonAsString(p.getPrenom(), p.getNom(), p.getNationalite());
@@ -422,6 +434,7 @@ public class YenteAmlService {
     }
 
     public String matchPersonAsString(String firstName, String lastName, String country) {
+        log.info("[ENTER] Executing matchPersonAsString");
         Map<String, List<String>> properties = new HashMap<>();
         String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
         fullName = fullName.trim();
@@ -453,6 +466,7 @@ public class YenteAmlService {
     }
 
     public String matchCompanyAsString(String name, String country) {
+        log.info("[ENTER] Executing matchCompanyAsString");
         Map<String, List<String>> properties = new HashMap<>();
         if (name != null && !name.isEmpty()) {
             properties.put("name", List.of(name));
@@ -464,6 +478,7 @@ public class YenteAmlService {
     }
 
     public String matchOrganizationAsString(String name, String country) {
+        log.info("[ENTER] Executing matchOrganizationAsString");
         Map<String, List<String>> properties = new HashMap<>();
         if (name != null && !name.isEmpty()) {
             properties.put("name", List.of(name));

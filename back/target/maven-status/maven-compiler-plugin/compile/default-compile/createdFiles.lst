@@ -284,7 +284,6 @@ com\avo\dtos\TestEntityDTO.class
 com\avo\controller\NoteCategoryController.class
 com\avo\repositories\TaskCategoryRepository.class
 com\avo\entities\Appointement.class
-com\avo\config\LoggingAspect.class
 com\avo\repositories\ScreeningMatchRepository.class
 com\avo\mappers\TaskStatusMapperImpl.class
 com\avo\entities\DossierContact.class

@@ -1,5 +1,6 @@
 package com.avo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import com.avo.repositories.InstitutionRepository;
 import com.querydsl.core.types.Predicate;
 
 @Service
+@Slf4j
 public class InstitutionService {
 
     private final InstitutionRepository repository;
@@ -22,24 +24,29 @@ public class InstitutionService {
     }
 
     public Page<InstitutionDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<InstitutionDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public InstitutionDTO findById(Long id) {
+        log.info("[ENTER] Executing findById");
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public InstitutionDTO create(InstitutionDTO dto) {
+        log.info("[ENTER] Executing create");
         Institution entity = mapper.toEntity(dto);
         entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
 
     public InstitutionDTO update(InstitutionDTO dto) {
+        log.info("[ENTER] Executing update");
         Institution existing = repository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Client not found"));
         Institution incoming = mapper.toEntity(dto);
@@ -49,6 +56,7 @@ public class InstitutionService {
     }
     
     public void delete(Long id) {
+        log.info("[ENTER] Executing delete");
         repository.deleteById(id);
     }
 }

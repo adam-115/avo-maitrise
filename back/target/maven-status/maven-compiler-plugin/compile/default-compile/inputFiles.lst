@@ -19,7 +19,6 @@ D:\avo-maitrise\back\src\main\java\com\avo\repositories\ClientRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\DiligenceFormResultMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\EventTypeRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\UBODTO.java
-D:\avo-maitrise\back\src\main\java\com\avo\config\LoggingAspect.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\ContactPointDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\MatterEvent.java

@@ -1,5 +1,6 @@
 package com.avo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import com.avo.repositories.ScreeningMatchRepository;
 import com.querydsl.core.types.Predicate;
 
 @Service
+@Slf4j
 public class ScreeningMatchService {
 
     private final ScreeningMatchRepository repository;
@@ -40,6 +42,7 @@ public class ScreeningMatchService {
     @jakarta.annotation.PostConstruct
     @org.springframework.transaction.annotation.Transactional
     public void initCleanOrphans() {
+        log.info("[ENTER] Executing initCleanOrphans");
         try {
             repository.deleteOrphanedMatches();
         } catch (Exception e) {
@@ -49,6 +52,7 @@ public class ScreeningMatchService {
 
     @org.springframework.transaction.annotation.Transactional
     public ScreeningMatchDTO processDecision(Long matchId, com.avo.entities.ScreeningMatchStatus decision, String comment, String reviewer) {
+        log.info("[ENTER] Executing processDecision");
         ScreeningMatch match = repository.findById(matchId)
                 .orElseThrow(() -> new RuntimeException("Match not found"));
 
@@ -131,18 +135,22 @@ public class ScreeningMatchService {
     }
 
     public Page<ScreeningMatchDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<ScreeningMatchDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public ScreeningMatchDTO findById(Long id) {
+        log.info("[ENTER] Executing findById");
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public ScreeningMatchDTO create(ScreeningMatchDTO dto) {
+        log.info("[ENTER] Executing create");
         ScreeningMatch entity = mapper.toEntity(dto);
         
         // Fetch managed client and UBO from DB to avoid transient reference exceptions
@@ -164,6 +172,7 @@ public class ScreeningMatchService {
     }
 
     public ScreeningMatchDTO update(ScreeningMatchDTO dto) {
+        log.info("[ENTER] Executing update");
         ScreeningMatch entity = mapper.toEntity(dto);
         
         if (dto.getClientEntityDTO() != null && dto.getClientEntityDTO().getId() != null) {
@@ -179,7 +188,6 @@ public class ScreeningMatchService {
         if (dto.getScreeningExecutionDTO() != null && dto.getScreeningExecutionDTO().getId() != null) {
             entity.setScreeningExecution(screeningExecutionRepository.findById(dto.getScreeningExecutionDTO().getId()).orElse(null));
         }
-        
         return mapper.toDto(repository.save(entity));
     }
 

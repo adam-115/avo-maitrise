@@ -1,5 +1,6 @@
 package com.avo.services;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import com.avo.repositories.PersonnePhysiqueRepository;
 import com.querydsl.core.types.Predicate;
 
 @Service
+@Slf4j
 public class PersonnePhysiqueService {
 
     private final PersonnePhysiqueRepository repository;
@@ -22,24 +24,29 @@ public class PersonnePhysiqueService {
     }
 
     public Page<ClientPersonnePhysiqueDTO> findAll(Pageable pageable) {
+        log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<ClientPersonnePhysiqueDTO> search(Predicate predicate, Pageable pageable) {
+        log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);
     }
 
     public ClientPersonnePhysiqueDTO findById(Long id) {
+        log.info("[ENTER] Executing findById");
         return repository.findById(id).map(mapper::toDto).orElse(null);
     }
 
     public ClientPersonnePhysiqueDTO create(ClientPersonnePhysiqueDTO dto) {
+        log.info("[ENTER] Executing create");
         ClientPersonnePhysique entity = mapper.toEntity(dto);
         entity.linkChildren();
         return mapper.toDto(repository.save(entity));
     }
 
     public ClientPersonnePhysiqueDTO update(ClientPersonnePhysiqueDTO dto) {
+        log.info("[ENTER] Executing update");
         ClientPersonnePhysique existing = repository.findById(dto.getId())
                 .orElseThrow(() -> new RuntimeException("Client not found"));
         ClientPersonnePhysique incoming = mapper.toEntity(dto);
@@ -49,6 +56,7 @@ public class PersonnePhysiqueService {
     }
     
     public void delete(Long id) {
+        log.info("[ENTER] Executing delete");
         repository.deleteById(id);
     }
 }
