@@ -49,4 +49,8 @@ export class Preferences {
     this.navigationService.navigateToEventType();
   }
 
+  navigateToInvoiceTypeOfServiceForm() {
+    this.navigationService.navigateToInvoiceTypeOfServiceForm();
+  }
+
 }

@@ -1,0 +1,97 @@
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-4">Gestion des Types de Service (Facturation)</h2>
+
+    <!-- Formulaire d'ajout/édition -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h3 class="text-xl font-semibold mb-2">{{ isEditing ? 'Modifier' : 'Ajouter' }} un Type de Service</h3>
+
+        <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
+            <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="code">Code</label>
+                    <input id="code" type="text" formControlName="code"
+                        class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors"
+                        placeholder="Ex: RDV" />
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="description">Description</label>
+                    <input id="description" type="text" formControlName="description"
+                        class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors"
+                        placeholder="Ex: Rendez-vous physique" />
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="price5min">Prix (par 5 min)</label>
+                    <input id="price5min" type="number" formControlName="price5min"
+                        class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors" />
+                </div>
+
+                <div class="flex items-center mt-6">
+                    <input id="actif" type="checkbox" formControlName="actif"
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
+                    <label for="actif" class="ml-2 block text-sm text-gray-900">Actif</label>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <button
+                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    type="submit" [disabled]="serviceForm.invalid">
+                    {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+                </button>
+                <button *ngIf="isEditing" type="button" (click)="cancelEdit()"
+                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Annuler
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Liste des types de service -->
+    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
+        <h3 class="text-xl font-semibold mb-4">Liste des Types de Service</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full leading-normal">
+                <thead>
+                    <tr>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Code</th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Description</th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Prix (5 min)</th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Statut</th>
+                        <th
+                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let service of typesOfService">
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm font-bold">{{ service.code }}</td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ service.description }}</td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ service.price5min }}</td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                [ngClass]="service.actif ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                                {{ service.actif ? 'Actif' : 'Inactif' }}
+                            </span>
+                        </td>
+                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                            <button (click)="editService(service)"
+                                class="text-blue-600 hover:text-blue-900 mr-4">Éditer</button>
+                            <button (click)="service.id ? deleteService(service.id) : null"
+                                class="text-red-600 hover:text-red-900">Supprimer</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

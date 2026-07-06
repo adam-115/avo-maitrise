@@ -687,3 +687,13 @@ export interface MatterActivity {
     description: string;
     createdAt: Date | string;
 }
+
+export interface InvoiceTypeOfService {
+  id?: number;
+  code: string;
+  description: string;
+  actif: boolean;
+  price5min: number;
+  creationDate?: Date;
+  updateDate?: Date;
+}

@@ -185,6 +185,11 @@ export const routes: Routes = [
         path: NavigationService.EVENT_TYPE,
         loadComponent: () => import('./administration/event-type/event-type.component').then(m => m.EventTypeComponent)
       },
+      {
+        path: NavigationService.INVOICE_TYPE_OF_SERVICE_FORM,
+        loadComponent: () => import('./administration/invoice-type-of-service-form/invoice-type-of-service-form.component').then(m => m.InvoiceTypeOfServiceFormComponent)
+      },
+
       // Routes Nouveau Module Facturation
       {
         path: NavigationService.BILLING,
