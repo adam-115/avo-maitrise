@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -15,21 +16,23 @@ import lombok.NoArgsConstructor;
 @Table(name = "invoice_dossier_services")
 @Data
 @NoArgsConstructor
-public class InvoiceDossierServie {
+public class InvoiceDossierService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String detaille ;
+    private String info;
     private Date creationDate = new Date();
-    private int nbrOfMinutes ; 
-    @OneToOne
-    private Dossier dossier; 
-    @OneToOne
+    private int nbrOfMinutes;
+    @ManyToOne
+    private Dossier dossier;
+    @ManyToOne
     private InvoiceTypeOfService invoiceTypeOfService;
+    @ManyToOne
+    private InvoiceDossierServieStatus invoiceDossierServieStatus;
+
     @OneToOne
     private AppUser createdBy;
     @OneToOne
     private AppUser doneBy;
-    
 
 }
