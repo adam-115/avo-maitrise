@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-invoice_types_of_service-table" author="antigravity">
+        <createTable tableName="invoice_types_of_service">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="actif" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price5min" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="insert-invoice_types_of_service-data" author="antigravity">
+        <!-- 1. Rendez-vous et Echanges -->
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="RDV"/>
+            <column name="description" value="Rendez-vous physique ou visio avec le client."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="TEL"/>
+            <column name="description" value="Entretien téléphonique (client, juridiction, confrère)."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="COR"/>
+            <column name="description" value="Traitement, lecture et rédaction d'emails ou de courriers."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="REU"/>
+            <column name="description" value="Réunion de travail interne au cabinet sur le dossier."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="CON"/>
+            <column name="description" value="Fourniture d'un conseil juridique oral ou écrit court."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+
+        <!-- 2. Rédaction, Analyse et Production -->
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="RED"/>
+            <column name="description" value="Rédaction d'actes, de contrats, de conclusions ou de mémorandums."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="REV"/>
+            <column name="description" value="Examen, relecture et correction de documents ou de pièces adverses."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="RCH"/>
+            <column name="description" value="Recherche juridique, analyse de jurisprudence ou de doctrine."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="TRD"/>
+            <column name="description" value="Traduction de documents juridiques ou de correspondances."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+
+        <!-- 3. Procédure et Représentation -->
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="AUD"/>
+            <column name="description" value="Assistance, représentation ou plaidoirie devant une juridiction."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="DEP"/>
+            <column name="description" value="Dépôt de dossier au greffe, démarches auprès des tribunaux."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="EXP"/>
+            <column name="description" value="Assistance à une réunion d'expertise (judiciaire ou amiable)."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="MEC"/>
+            <column name="description" value="Suivi de la procédure de mise en état."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+
+        <!-- 4. Administratif, Compliance et Gestion -->
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="OUV"/>
+            <column name="description" value="Création du dossier, conflit d'intérêts, paramétrage initial."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="KYC"/>
+            <column name="description" value="Vérification d'identité, analyse des bénéficiaires effectifs, filtrage de sanctions (Anti-Blanchiment)."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="FAC"/>
+            <column name="description" value="Préparation, révision des timesheets et émission des factures."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="VOY"/>
+            <column name="description" value="Temps de déplacement (souvent facturé à un taux réduit)."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="CLO"/>
+            <column name="description" value="Fermeture du dossier et archivage des pièces."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
