@@ -73,6 +73,7 @@ export class NavigationService {
   public static readonly NOTE_CATEGORY = "note-category";
   public static readonly EVENT_TYPE = "event-type";
   public static readonly INVOICE_TYPE_OF_SERVICE_FORM = "invoice-type-of-service-form";
+  public static readonly INVOICE_DOSSIER_SERVIE_STATUS_FORM = "invoice-dossier-servie-status-form";
 
   
 
@@ -187,6 +188,11 @@ export class NavigationService {
   navigateToInvoiceTypeOfServiceForm() {
     this.router.navigate([NavigationService.HOME, NavigationService.INVOICE_TYPE_OF_SERVICE_FORM]);
   }
+
+  navigateToInvoiceDossierServieStatusForm() {
+    this.router.navigate([NavigationService.HOME, NavigationService.INVOICE_DOSSIER_SERVIE_STATUS_FORM]);
+  }
+
 
   navigateToDossierDetails(id: string) {
     let targetUrl = NavigationService.DOSSIER_DETAIL.replace(":id", id);

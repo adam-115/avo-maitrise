@@ -697,3 +697,14 @@ export interface InvoiceTypeOfService {
   creationDate?: Date;
   updateDate?: Date;
 }
+
+export interface InvoiceDossierServieStatus {
+  id?: number;
+  color?: string;
+  name?: string;
+  code: string;
+  description?: string;
+  active: boolean;
+  createdByUser?: User;
+}
+

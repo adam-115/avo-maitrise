@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="create-invoice-dossier-service-status-table" author="antigravity">
+        <createTable tableName="invoice_dossier_service_status">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="color" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="code" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="created_by_user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="insert-invoice-dossier-service-statuses" author="antigravity">
+        <insert tableName="invoice_dossier_service_status">
+            <column name="code" value="FACTURE"/>
+            <column name="name" value="Facturé"/>
+            <column name="description" value="Facturé"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="invoice_dossier_service_status">
+            <column name="code" value="EN_ATTENTE"/>
+            <column name="name" value="En attente"/>
+            <column name="description" value="En attente"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="invoice_dossier_service_status">
+            <column name="code" value="ANNULEE"/>
+            <column name="name" value="Annulée"/>
+            <column name="description" value="Annulée"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="invoice_dossier_service_status">
+            <column name="code" value="REPORTED"/>
+            <column name="name" value="Reported"/>
+            <column name="description" value="Reported"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="invoice_dossier_service_status">
+            <column name="code" value="REPORTE"/>
+            <column name="name" value="Reporté"/>
+            <column name="description" value="Reporté"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
