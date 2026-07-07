@@ -122,6 +122,7 @@
         { id: DossierTabType.TACHE, label: 'Tâches' },
         { id: DossierTabType.NOTE, label: 'Notes' },
         { id: DossierTabType.CONTACT, label: 'Contacts' },
+        { id: DossierTabType.PRESTATION, label: 'Prestations' },
         { id: DossierTabType.ACTIVITY, label: 'Journal' }
       ]; track tab.id) {
         <button (click)="updateSelectedTab(tab.id)"
@@ -167,6 +168,12 @@
     @if (selectedTab === DossierTabType.CONTACT) {
       <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden p-6">
         <app-contact [dossierID]="selectedDossier?.id || ''" [dossierNumber]="selectedDossier?.referenceInterne || ''"></app-contact>
+      </div>
+    }
+
+    @if (selectedTab === DossierTabType.PRESTATION) {
+      <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden p-6">
+        <app-invoice-dossier-service [dossierId]="selectedDossier?.id || ''"></app-invoice-dossier-service>
       </div>
     }
 

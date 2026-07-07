@@ -46,6 +46,7 @@ export enum DossierTabType {
   TACHE = 'TACHE',
   NOTE = 'NOTE',
   CONTACT = 'CONTACT',
+  PRESTATION = 'PRESTATION',
   ACTIVITY = 'ACTIVITY'
 }
 // contact type for contact Dialog component
@@ -706,5 +707,17 @@ export interface InvoiceDossierServieStatus {
   description?: string;
   active: boolean;
   createdByUser?: User;
+}
+
+export interface InvoiceDossierService {
+  id?: number;
+  info?: string;
+  creationDate?: Date;
+  nbrOfMinutes?: number;
+  dossier?: Dossier;
+  invoiceTypeOfService?: InvoiceTypeOfService;
+  invoiceDossierServieStatus?: InvoiceDossierServieStatus;
+  createdBy?: User;
+  doneBy?: User;
 }
 

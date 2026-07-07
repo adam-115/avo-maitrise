@@ -15,11 +15,12 @@ import { ClientStatusAlertComponent } from "../../shared/components/client-statu
 import { DossierInfo } from "../dossier-info/dossier-info";
 import { MatterActivityComponent } from "../matter-activity/matter-activity";
 import { TaskManagerComponent } from "../task-manager/task-manager.component";
+import { InvoiceDossierServiceComponent } from '../invoice-dossier-service/invoice-dossier-service.component';
 
 @Component({
   selector: 'app-dossier-details',
   imports: [DocumentComponent, CommonModule, EvenementComponent, TaskManagerComponent, NoteComponent, ContactComponent
-    , DossierInfo, ClientStatusAlertComponent, RouterModule, MatterActivityComponent],
+    , DossierInfo, ClientStatusAlertComponent, RouterModule, MatterActivityComponent, InvoiceDossierServiceComponent],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })

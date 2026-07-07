@@ -1,0 +1,145 @@
+<div class="flex justify-between items-center mb-6">
+  <h2 class="text-xl font-bold text-slate-800">Prestations</h2>
+  <button (click)="openAddModal()"
+    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-semibold text-sm transition flex items-center gap-2">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+    </svg>
+    Ajouter une prestation
+  </button>
+</div>
+
+<!-- Table of prestations -->
+<div class="overflow-x-auto bg-white rounded-lg border border-slate-200">
+  <table class="w-full text-left text-sm text-slate-600">
+    <thead class="bg-slate-50 border-b border-slate-200 text-slate-700">
+      <tr>
+        <th class="px-4 py-3 font-semibold">Date</th>
+        <th class="px-4 py-3 font-semibold">Type de Service</th>
+        <th class="px-4 py-3 font-semibold">Statut</th>
+        <th class="px-4 py-3 font-semibold">Avocat</th>
+        <th class="px-4 py-3 font-semibold">Détails</th>
+        <th class="px-4 py-3 font-semibold">Durée (min)</th>
+        <th class="px-4 py-3 font-semibold text-right">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of prestations" class="border-b border-slate-100 hover:bg-slate-50 transition">
+        <td class="px-4 py-3">{{ p.creationDate | date:'short' }}</td>
+        <td class="px-4 py-3 font-medium">{{ p.invoiceTypeOfService?.description || '-' }}</td>
+        <td class="px-4 py-3">
+          <span *ngIf="p.invoiceDossierServieStatus" 
+                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border"
+                [ngStyle]="{'background-color': p.invoiceDossierServieStatus.color ? p.invoiceDossierServieStatus.color + '1A' : '#f1f5f9', 'color': p.invoiceDossierServieStatus.color || '#475569', 'border-color': p.invoiceDossierServieStatus.color ? p.invoiceDossierServieStatus.color + '33' : '#cbd5e1'}">
+            {{ p.invoiceDossierServieStatus.name || p.invoiceDossierServieStatus.code }}
+          </span>
+          <span *ngIf="!p.invoiceDossierServieStatus" class="text-slate-400">-</span>
+        </td>
+        <td class="px-4 py-3 font-medium">
+          <span *ngIf="p.doneBy">{{ p.doneBy.firstName }} {{ p.doneBy.lastName }}</span>
+          <span *ngIf="!p.doneBy" class="text-slate-400 italic">Non assigné</span>
+        </td>
+        <td class="px-4 py-3">{{ p.info }}</td>
+        <td class="px-4 py-3">{{ p.nbrOfMinutes }}</td>
+        <td class="px-4 py-3 text-right">
+          <button (click)="openEditModal(p)" class="text-indigo-500 hover:text-indigo-700 transition" title="Éditer">
+            <svg class="w-5 h-5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="prestations.length === 0">
+        <td colspan="7" class="px-4 py-8 text-center text-slate-400 italic">Aucune prestation enregistrée pour ce dossier.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal Ajout -->
+<div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+      <h3 class="text-lg font-bold text-slate-800">{{ editingPrestationId ? 'Modifier la prestation' : 'Ajouter une prestation' }}</h3>
+      <button (click)="closeModal()" class="text-slate-400 hover:text-slate-600 transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    
+    <div class="p-6">
+      <form [formGroup]="prestationForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Type de Service *</label>
+          <select formControlName="invoiceTypeOfServiceId" 
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+            <option [ngValue]="null" disabled>Sélectionnez un type</option>
+            <option *ngFor="let t of typesOfService" [value]="t.id">{{ t.description }} ({{ t.code }})</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Statut *</label>
+          <select formControlName="invoiceDossierServieStatusId" 
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+            <option [ngValue]="null" disabled>Sélectionnez un statut</option>
+            <option *ngFor="let s of statuses" [value]="s.id">{{ s.name || s.code }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Description (Détails) *</label>
+          <textarea formControlName="info" rows="3" placeholder="Description de la prestation..."
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Durée (en minutes) *</label>
+          <input type="number" formControlName="nbrOfMinutes" min="5" step="5"
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
+        </div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Réalisé par (Avocat) *</label>
+          <div class="flex items-center gap-3">
+            <div class="flex-1 flex items-center justify-between border px-3 py-2 rounded-lg transition"
+                 [ngClass]="{'bg-indigo-50 border-indigo-200': selectedDoneByUser?.id === currentUser?.id, 'bg-slate-50 border-slate-300': selectedDoneByUser?.id !== currentUser?.id}">
+              <span class="text-sm font-medium" 
+                    [ngClass]="{'text-indigo-700': selectedDoneByUser?.id === currentUser?.id, 'text-slate-700': selectedDoneByUser?.id !== currentUser?.id}">
+                <ng-container *ngIf="selectedDoneByUser">
+                  {{ selectedDoneByUser.firstName }} {{ selectedDoneByUser.lastName }}
+                  <span *ngIf="selectedDoneByUser.id === currentUser?.id" class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-200 text-indigo-800">
+                    Moi-même
+                  </span>
+                </ng-container>
+                <span *ngIf="!selectedDoneByUser" class="text-slate-400 italic">Non assigné</span>
+              </span>
+              <button type="button" (click)="openUserSelection()" class="text-indigo-600 hover:text-indigo-700 text-sm font-semibold transition">
+                Sélectionner
+              </button>
+            </div>
+            <button type="button" (click)="assignToMe()" [disabled]="selectedDoneByUser?.id === currentUser?.id"
+              class="px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2" title="M'assigner cette prestation">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+              Moi-même
+            </button>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 mt-6">
+          <button type="button" (click)="closeModal()" class="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Annuler</button>
+          <button type="submit" [disabled]="prestationForm.invalid || !selectedDoneByUser" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition">{{ editingPrestationId ? 'Mettre à jour' : 'Enregistrer' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- User Selection Dialog -->
+<app-user-selection-dialog *ngIf="showUserSelectionDialog"
+  [users]="users"
+  [singleSelection]="true"
+  [initialSelection]="selectedDoneByUser ? [selectedDoneByUser.id.toString()] : []"
+  (confirmSelection)="onUserSelectionConfirmed($event)"
+  (closeDialog)="onUserSelectionClosed()">
+</app-user-selection-dialog>

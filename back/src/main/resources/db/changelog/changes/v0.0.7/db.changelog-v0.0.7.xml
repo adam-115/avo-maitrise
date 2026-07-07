@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="create-invoice-dossier-services-table" author="antigravity">
+        <createTable tableName="invoice_dossier_services">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT"/>
+            <column name="creation_date" type="DATETIME"/>
+            <column name="done_by_id" type="BIGINT"/>
+            <column name="dossier_id" type="BIGINT"/>
+            <column name="info" type="VARCHAR(255)"/>
+            <column name="invoice_dossier_servie_status_id" type="BIGINT"/>
+            <column name="invoice_type_of_service_id" type="BIGINT"/>
+            <column name="nbr_of_minutes" type="INT"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
