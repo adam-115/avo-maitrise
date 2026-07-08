@@ -128,8 +128,9 @@ export class DossierDetails implements OnInit {
     this.activatedRoute.params.subscribe((params: any) => {
       this.dossierService.findById(params['id']).subscribe((res: any) => {
         this.selectedDossier = res;
-        if (this.selectedDossier?.clientId) {
-          this.clientService.findById(this.selectedDossier.clientId).subscribe(client => {
+        if (this.selectedDossier?.client?.id || this.selectedDossier?.clientId) {
+          const cid = this.selectedDossier?.client?.id || this.selectedDossier?.clientId;
+          this.clientService.findById(cid).subscribe(client => {
             this.selectedClient = client;
           });
         }

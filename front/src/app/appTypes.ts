@@ -411,7 +411,8 @@ export interface Dossier {
   description?: string;
 
   // Relations
-  clientId: number;   // ID du client rattaché
+  client?: Client;   // Client rattaché (remplace clientId)
+  clientId?: number; // Maintenu pour rétrocompatibilité dans certains formulaires
   responsableId: User;       // L'avocat responsable (associé)
   intervenantsIds: User[];   // Liste des collaborateurs travaillant sur le dossier
 

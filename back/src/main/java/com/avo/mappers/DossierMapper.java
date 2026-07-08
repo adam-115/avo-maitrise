@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import com.avo.dtos.DossierDTO;
 import com.avo.entities.Dossier;
 
-@Mapper(componentModel = "spring", uses = {DocumentMapper.class})
+@Mapper(componentModel = "spring", uses = {DocumentMapper.class, ClientEntityMapper.class})
 public interface DossierMapper {
 
     DossierMapper INSTANCE = Mappers.getMapper(DossierMapper.class);

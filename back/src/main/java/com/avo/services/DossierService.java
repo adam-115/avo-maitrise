@@ -33,8 +33,8 @@ public class DossierService {
         if (entity.getDocuments() != null) {
             entity.getDocuments().forEach(doc -> {
                 doc.setDossier(entity);
-                if (doc.getClient() == null && entity.getClientId() != null) {
-                    clientRepository.findById(entity.getClientId()).ifPresent(doc::setClient);
+                if (doc.getClient() == null && entity.getClient() != null && entity.getClient().getId() != null) {
+                    clientRepository.findById(entity.getClient().getId()).ifPresent(doc::setClient);
                 }
             });
         }

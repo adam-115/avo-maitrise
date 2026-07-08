@@ -7,3 +7,5 @@ spring.log
 *.gz
 *.class
 *.lst
+back/target/classes/com/avo/AvoApplication.class
+*.class

@@ -94,7 +94,7 @@ export class InvoiceEditorComponent implements OnInit {
         // Réagir au changement de client pour filtrer les dossiers
         this.invoiceForm.get('clientId')?.valueChanges.subscribe(clientId => {
             if (clientId) {
-                this.clientDossiers = this.allDossiers.filter(d => String(d.clientId) === String(clientId));
+                this.clientDossiers = this.allDossiers.filter(d => String(d.client?.id || d.clientId) === String(clientId));
                 // Reset dossier if not in list
                 const currentDossierId = this.invoiceForm.get('dossierId')?.value;
                 if (currentDossierId && !this.clientDossiers.find(d => String(d.id) === String(currentDossierId))) {

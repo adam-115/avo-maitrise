@@ -22,8 +22,9 @@ public class Dossier {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "client_id")
-    private Long clientId;
+    @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
+    @JoinColumn(name = "client_id")
+    private ClientEntity client;
 
     @Column(name = "responsable_id")
     private String responsableId;
@@ -78,8 +79,8 @@ public class Dossier {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public Long getClientId() { return clientId; }
-    public void setClientId(Long clientId) { this.clientId = clientId; }
+    public ClientEntity getClient() { return client; }
+    public void setClient(ClientEntity client) { this.client = client; }
 
     public String getResponsableId() { return responsableId; }
     public void setResponsableId(String responsableId) { this.responsableId = responsableId; }

@@ -17,7 +17,7 @@ public class DossierDTO {
     private String referenceInterne;
     private String titre;
     private String description;
-    private Long clientId;
+    private ClientEntityDTO client;
     private String responsableId;
     private List<String> intervenantsIds = new ArrayList<>();
     private String domaineJuridique;

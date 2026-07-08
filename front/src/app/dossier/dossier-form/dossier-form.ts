@@ -111,9 +111,11 @@ export class DossierForm implements OnInit {
               ...dossier,
               dateOuverture: dossier.dateOuverture ? new Date(dossier.dateOuverture).toISOString().substring(0, 10) : '',
             });
-            if (dossier.clientId) {
-              this.clientService.findById(dossier.clientId).subscribe(client => {
+            if (dossier.client?.id || dossier.clientId) {
+              const cid = dossier.client?.id || dossier.clientId;
+              this.clientService.findById(cid).subscribe(client => {
                 this.selectedClient = client;
+                this.dossierForm.patchValue({ clientId: client.id });
               });
             }
           }
@@ -289,6 +291,7 @@ export class DossierForm implements OnInit {
 
     const dossierData: Dossier = {
       ...this.dossierForm.value,
+      client: { id: this.dossierForm.value.clientId },
       id: this.dossierId,
       updated_at: new Date()
     };

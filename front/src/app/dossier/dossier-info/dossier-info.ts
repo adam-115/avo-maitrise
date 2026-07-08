@@ -77,9 +77,12 @@ export class DossierInfo implements OnInit, OnChanges {
         }
     }
 
-    getClientName(clientId: string | number | undefined): string {
-        if (!clientId) return 'Non spécifié';
-        const client = this.clients.find(c => c.id == clientId) as any;
+    getDossierClientName(dossier: Dossier | undefined | null): string {
+        if (!dossier || (!dossier.client && !dossier.clientId)) return 'Non spécifié';
+        let client: any = dossier.client;
+        if (!client && dossier.clientId) {
+            client = this.clients.find(c => c.id == dossier.clientId);
+        }
         return client ? (client.nom || client.nomCommercial || client.prenom || 'Nom Inconnu') : 'Inconnu';
     }
 

@@ -12,7 +12,7 @@ public interface DossierRepository extends JpaRepository<Dossier, Long>, Queryds
            "(:searchTerm IS NULL OR :searchTerm = '' OR " +
            " LOWER(d.referenceInterne) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            " LOWER(d.titre) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           " EXISTS (SELECT c FROM ClientEntity c WHERE c.id = d.clientId AND (" +
+           " EXISTS (SELECT c FROM ClientEntity c WHERE c.id = d.client.id AND (" +
            "    LOWER(c.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            "    (TYPE(c) = ClientPersonnePhysique AND (LOWER(TREAT(c AS ClientPersonnePhysique).nom) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(TREAT(c AS ClientPersonnePhysique).prenom) LIKE LOWER(CONCAT('%', :searchTerm, '%')))) OR " +
            "    (TYPE(c) = ClientMoral AND LOWER(TREAT(c AS ClientMoral).nomCommercial) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +

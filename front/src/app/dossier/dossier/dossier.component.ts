@@ -184,9 +184,10 @@ export class DossierComponent implements OnInit {
     this.closureRate = totalThisMonth > 0 ? Math.round((this.closedThisMonthCount / totalThisMonth) * 100) : 75; // 75% default baseline representation
   }
 
-  getClientName(clientId: string | number): string {
-    const client = this.clients.find(c => c.id == clientId) as any;
-    return client ? (client.nom || client.nomCommercial || client.prenom || 'Client Inconnu') : 'Client Inconnu';
+  getDossierClientName(dossier: DossierModel): string {
+    const client = dossier.client as any;
+    if (!client) return 'Non assigné';
+    return client.nom || client.nomCommercial || client.email || 'Client inconnu';
   }
 
   getResponsableName(userOrId: any): string {

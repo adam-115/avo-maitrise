@@ -25,19 +25,34 @@ public interface ClientEntityMapper {
 
     default ClientEntity toEntity(ClientEntityDTO clientDTO) {
         if (clientDTO == null) return null;
-        if (clientDTO.getType() == null) return null;
+        if (clientDTO.getType() == null) {
+            ClientEntity entity = new ClientEntity();
+            entity.setId(clientDTO.getId());
+            return entity;
+        }
 
         return switch (clientDTO.getType()) {
             case "PERSONNE" -> toPersonnePhysique(clientDTO);
             case "SOCIETE" -> toClientMoral(clientDTO);
             case "ASSOCIATION" -> toAssociation(clientDTO);
             case "INSTITUTION" -> toInstitution(clientDTO);
-            default -> null;
+            default -> {
+                ClientEntity entity = new ClientEntity();
+                entity.setId(clientDTO.getId());
+                yield entity;
+            }
         };
     }
 
+    @org.mapstruct.Named("toPersonnePhysique")
     ClientPersonnePhysique toPersonnePhysique(ClientEntityDTO dto);
+    
+    @org.mapstruct.Named("toClientMoral")
     ClientMoral toClientMoral(ClientEntityDTO dto);
+    
+    @org.mapstruct.Named("toAssociation")
     Association toAssociation(ClientEntityDTO dto);
+    
+    @org.mapstruct.Named("toInstitution")
     Institution toInstitution(ClientEntityDTO dto);
 }
