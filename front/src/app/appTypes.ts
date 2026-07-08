@@ -722,3 +722,36 @@ export interface InvoiceDossierService {
   doneBy?: User;
 }
 
+export enum InvoiceStatusEnum {
+  DRAFT = 'DRAFT',
+  ISSUED = 'ISSUED',
+  PARTIALLY_PAID = 'PARTIALLY_PAID',
+  PAID = 'PAID',
+  OVERDUE = 'OVERDUE',
+  CANCELLED = 'CANCELLED',
+  WRITTEN_OFF = 'WRITTEN_OFF'
+}
+
+export interface InvoiceEntity {
+  id?: number;
+  numeroFacture?: string;
+  status: InvoiceStatusEnum;
+  issueDate?: Date | string;
+  dueDate: Date | string;
+  invoiceTimeEntries?: InvoiceTimeEntry[];
+  subtotalAmount: number;
+  taxAmount: number;
+  totalAmount: number;
+  dunningLevel: number;
+  isDisputed: boolean;
+  dossier?: Dossier;
+  note?: string;
+}
+
+export interface InvoiceTimeEntry {
+  id?: number;
+  invoice?: InvoiceEntity;
+  invoiceDossierService?: InvoiceDossierService;
+  nbrOfMinutes: number;
+  price5min: number;
+}

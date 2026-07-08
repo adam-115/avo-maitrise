@@ -4,16 +4,17 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { InvoiceDossierServiceService } from '../../services/invoice-dossier-service.service';
 import { InvoiceTypeOfServiceService } from '../../services/invoice-type-of-service.service';
 import { InvoiceDossierServieStatusService } from '../../services/invoice-dossier-servie-status.service';
-import { InvoiceDossierService, InvoiceTypeOfService, InvoiceDossierServieStatus, User } from '../../appTypes';
+import { InvoiceDossierService, InvoiceTypeOfService, InvoiceDossierServieStatus, User, InvoiceTimeEntry } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
 import { UserService } from '../../services/user.service';
 import { KeycloakService } from '../../services/keycloak.service';
 import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
+import { GenerateInvoiceDialog } from '../generate-invoice-dialog/generate-invoice-dialog';
 
 @Component({
   selector: 'app-invoice-dossier-service',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, UserSelectionDialog],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, UserSelectionDialog, GenerateInvoiceDialog],
   templateUrl: './invoice-dossier-service.component.html',
   styleUrls: []
 })
@@ -30,6 +31,8 @@ export class InvoiceDossierServiceComponent implements OnInit {
   
   showModal = false;
   showUserSelectionDialog = false;
+  showGenerateInvoiceModal = false;
+  generatedTimeEntries: InvoiceTimeEntry[] = [];
   editingPrestationId: number | null = null;
   prestationForm: FormGroup;
   
@@ -148,6 +151,33 @@ export class InvoiceDossierServiceComponent implements OnInit {
     }
   }
 
+  generateInvoice(): void {
+    if (!this.prestations || this.prestations.length === 0) {
+      this.alertService.displayMessage('Info', 'Aucune prestation à facturer.', 'info');
+      return;
+    }
+    
+    this.generatedTimeEntries = this.prestations.map((p) => {
+      return {
+        invoiceDossierService: p,
+        nbrOfMinutes: p.nbrOfMinutes || 0,
+        price5min: p.invoiceTypeOfService?.price5min || 0,
+      } as InvoiceTimeEntry;
+    });
+
+    this.showGenerateInvoiceModal = true;
+  }
+
+  closeGenerateInvoiceModal(): void {
+    this.showGenerateInvoiceModal = false;
+  }
+
+  onConfirmGeneration(): void {
+    this.alertService.success('Création de la facture initiée...');
+    this.closeGenerateInvoiceModal();
+    // Intégrer l'appel API de création de facture ici plus tard
+  }
+
   onSubmit(): void {
     if (this.prestationForm.valid) {
       const formValue = this.prestationForm.value;
@@ -207,3 +237,4 @@ export class InvoiceDossierServiceComponent implements OnInit {
     });
   }
 }
+
