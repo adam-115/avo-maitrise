@@ -1,0 +1,174 @@
+<div class="min-h-screen bg-slate-50 p-4 md:p-8">
+    <div class="max-w-5xl mx-auto space-y-6">
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button (click)="goBack()" class="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Nouvelle Facture</h1>
+                    <p class="text-sm text-slate-500">Sélectionnez le client, le dossier, et les prestations à facturer.</p>
+                </div>
+            </div>
+            
+            <button (click)="generateInvoice()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Générer la facture
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Choix du Client -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">1. Client concerné</h3>
+                
+                <div *ngIf="selectedClientName()" class="flex items-center justify-between p-3 border border-indigo-100 rounded-lg bg-indigo-50/50 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-bold">
+                            {{ selectedClientName()?.charAt(0) | uppercase }}
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-900 leading-tight">{{ selectedClientName() }}</p>
+                            <p class="text-xs text-slate-500 font-medium leading-tight">Réf: #{{ selectedClientId() }}</p>
+                        </div>
+                    </div>
+                    <button type="button" (click)="openClientDialog()" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500 transition-colors px-3 py-1.5 rounded-md hover:bg-indigo-50">
+                        Modifier
+                    </button>
+                </div>
+
+                <button *ngIf="!selectedClientName()" type="button" (click)="openClientDialog()"
+                    class="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 p-4 text-center hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none transition-all">
+                    <svg class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span class="text-sm font-semibold text-slate-700">Sélectionner un client</span>
+                </button>
+            </div>
+
+            <!-- Choix du Dossier -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">2. Dossier concerné</h3>
+                
+                <div *ngIf="selectedDossierName()" class="flex items-center justify-between p-3 border border-cyan-100 rounded-lg bg-cyan-50/50 shadow-sm">
+                    <div class="flex items-center gap-3 max-w-[70%]">
+                        <div class="h-10 w-10 flex items-center justify-center rounded-full bg-cyan-100 text-cyan-600 text-sm font-bold flex-shrink-0">
+                            {{ selectedDossierName()?.charAt(0) | uppercase }}
+                        </div>
+                        <div class="truncate">
+                            <p class="text-sm font-semibold text-slate-900 leading-tight truncate" [title]="selectedDossierName()">{{ selectedDossierName() }}</p>
+                            <p class="text-xs text-slate-500 font-medium leading-tight">Réf: #{{ selectedDossierId() }}</p>
+                        </div>
+                    </div>
+                    <button type="button" (click)="openDossierDialog()" class="text-sm font-semibold text-cyan-600 hover:text-cyan-500 transition-colors px-3 py-1.5 rounded-md hover:bg-cyan-50">
+                        Modifier
+                    </button>
+                </div>
+
+                <button *ngIf="!selectedDossierName()" type="button" (click)="openDossierDialog()"
+                    class="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 p-4 text-center hover:border-cyan-400 hover:bg-cyan-50 hover:text-cyan-600 focus:outline-none transition-all"
+                    [class.opacity-50]="!selectedClientId()" [class.cursor-not-allowed]="!selectedClientId()">
+                    <svg class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span class="text-sm font-semibold text-slate-700">Sélectionner un dossier</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Section Prestations -->
+        <div *ngIf="selectedDossierId()" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                <h3 class="text-lg font-bold text-slate-800">3. Prestations à facturer</h3>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 w-10 text-center"></th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Service</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Durée (min)</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Prix (5 min)</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Total HT</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-slate-100">
+                        <tr *ngFor="let entry of unbilledEntries(); let i = index" class="hover:bg-slate-50 transition" [class.bg-indigo-50]="entry.selected">
+                            <td class="px-6 py-4 text-center">
+                                <input type="checkbox" [checked]="entry.selected" (change)="toggleEntrySelection(i)"
+                                    class="w-5 h-5 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer">
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-slate-900">
+                                    {{ entry.invoiceDossierService?.invoiceTypeOfService?.code }} - {{ entry.invoiceDossierService?.invoiceTypeOfService?.description }}
+                                </div>
+                                <div class="text-xs text-slate-500 mt-1">
+                                    Effectué par: {{ entry.invoiceDossierService?.responsable?.nom }} {{ entry.invoiceDossierService?.responsable?.prenom }}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-center whitespace-nowrap text-sm text-slate-500">
+                                <div class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 font-medium">
+                                    <svg class="w-4 h-4 mr-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                    {{ entry.nbrOfMinutes }} min
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-right whitespace-nowrap text-sm text-slate-500">
+                                {{ entry.price5min | currency:'EUR' }}
+                            </td>
+                            <td class="px-6 py-4 text-right whitespace-nowrap text-sm font-semibold text-emerald-600 font-mono">
+                                {{ (entry.nbrOfMinutes / 5) * entry.price5min | currency:'EUR' }}
+                            </td>
+                        </tr>
+                        <tr *ngIf="unbilledEntries().length === 0">
+                            <td colspan="5" class="px-6 py-12 text-center text-slate-500 text-sm">
+                                <svg class="mx-auto h-12 w-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                Aucune prestation "En attente" trouvée pour ce dossier.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Totaux -->
+            <div class="bg-slate-50 px-6 py-6 border-t border-slate-200">
+                <div class="max-w-md ml-auto space-y-4">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="font-medium text-slate-500">Sous-total HT</span>
+                        <span class="font-semibold text-slate-900 font-mono">{{ subtotalAmount() | currency:'EUR' }}</span>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm">
+                        <div class="flex items-center gap-2">
+                            <span class="font-medium text-slate-500">Taux TVA (%)</span>
+                            <input type="number" [ngModel]="vatRate()" (ngModelChange)="vatRate.set($event)" min="0" max="100" step="0.1" 
+                                class="w-20 px-2 py-1 text-sm border border-slate-300 rounded focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <span class="font-semibold text-slate-900 font-mono">{{ taxAmount() | currency:'EUR' }}</span>
+                    </div>
+                    
+                    <div class="pt-4 border-t border-slate-200 flex justify-between items-center">
+                        <span class="text-base font-bold text-slate-900">Total TTC</span>
+                        <span class="text-2xl font-black text-emerald-600 font-mono">{{ totalAmount() | currency:'EUR' }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<app-client-selection-dialog *ngIf="showClientDialog()"
+    [initialSelection]="selectedClientId()" 
+    (confirmSelection)="onClientSelected($event)"
+    (closeDialog)="closeClientDialog()">
+</app-client-selection-dialog>
+
+<app-dossier-selection-dialog *ngIf="showDossierDialog()" 
+    [dossiers]="clientDossiers()"
+    [initialSelection]="selectedDossierId()" 
+    (confirmSelection)="onDossierSelected($event)"
+    (closeDialog)="closeDossierDialog()">
+</app-dossier-selection-dialog>

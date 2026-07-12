@@ -56,6 +56,10 @@ public class InvoiceDossierServieStatusService {
         return mapper.toDto(repository.save(entity));
     }
 
+    public InvoiceDossierServieStatus findEntityByCode(String code) {
+        return repository.findByCode(code).orElse(null);
+    }
+
     public void delete(Long id) {
         log.info("[ENTER] Executing delete (soft delete)");
         repository.findById(id).ifPresent(entity -> {

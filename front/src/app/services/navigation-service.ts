@@ -60,6 +60,7 @@ export class NavigationService {
 
   // Nouvelle Facturation
   public static readonly BILLING = "billing";
+  public static readonly BILLING_NEW = "billing/new";
   public static readonly BILLING_EDITOR = "billing/editor";
   public static readonly BILLING_EDITOR_EDIT = "billing/editor/:id";
   public static readonly BILLING_PREVIEW = "billing/preview/:id";

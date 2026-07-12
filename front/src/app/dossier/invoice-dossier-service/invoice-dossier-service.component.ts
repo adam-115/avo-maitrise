@@ -10,6 +10,7 @@ import { UserService } from '../../services/user.service';
 import { KeycloakService } from '../../services/keycloak.service';
 import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
 import { GenerateInvoiceDialog } from '../generate-invoice-dialog/generate-invoice-dialog';
+import { InvoiceService } from '../../features/billing/services/invoice.service';
 
 @Component({
   selector: 'app-invoice-dossier-service',
@@ -43,6 +44,7 @@ export class InvoiceDossierServiceComponent implements OnInit {
   private alertService = inject(AlertService);
   private userService = inject(UserService);
   private keycloakService = inject(KeycloakService);
+  private invoiceService = inject(InvoiceService);
 
   constructor() {
     this.prestationForm = this.fb.group({
@@ -112,7 +114,17 @@ export class InvoiceDossierServiceComponent implements OnInit {
     this.showModal = true;
   }
 
+  canEditPrestation(prestation: InvoiceDossierService): boolean {
+    const code = prestation.invoiceDossierServieStatus?.code;
+    return code !== 'FACTURE' && code !== 'EN_COURS_DE_FACTURATION';
+  }
+
   openEditModal(prestation: InvoiceDossierService): void {
+    if (!this.canEditPrestation(prestation)) {
+      this.alertService.displayMessage('Action non autorisée', 'Impossible de modifier une prestation déjà facturée ou en cours de facturation.', 'warning');
+      return;
+    }
+
     this.editingPrestationId = prestation.id || null;
     this.prestationForm.patchValue({
       info: prestation.info,
@@ -172,10 +184,10 @@ export class InvoiceDossierServiceComponent implements OnInit {
     this.showGenerateInvoiceModal = false;
   }
 
-  onConfirmGeneration(): void {
-    this.alertService.success('Création de la facture initiée...');
+  onConfirmGeneration(selectedItems: InvoiceTimeEntry[]): void {
+    // La création de facture est maintenant gérée directement dans la modale
     this.closeGenerateInvoiceModal();
-    // Intégrer l'appel API de création de facture ici plus tard
+    this.loadPrestations();
   }
 
   onSubmit(): void {

@@ -17,6 +17,7 @@ export interface SelectableTimeEntry {
 })
 export class GenerateInvoiceDialog implements OnChanges {
   @Input() generatedTimeEntries: InvoiceTimeEntry[] = [];
+  @Input() dossier: any;
   
   @Output() closeDialog = new EventEmitter<void>();
   @Output() confirmGeneration = new EventEmitter<InvoiceTimeEntry[]>();

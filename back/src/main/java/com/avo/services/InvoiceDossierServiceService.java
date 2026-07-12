@@ -60,19 +60,37 @@ public class InvoiceDossierServiceService {
 
     public InvoiceDossierServiceDTO update(InvoiceDossierServiceDTO dto) {
         log.info("[ENTER] Executing update");
+        InvoiceDossierService existing = repository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("Prestation non trouvée"));
+        
+        if (existing.getInvoiceDossierServieStatus() != null) {
+            String code = existing.getInvoiceDossierServieStatus().getCode();
+            if ("FACTURE".equals(code) || "EN_COURS_DE_FACTURATION".equals(code)) {
+                throw new RuntimeException("Impossible de modifier une prestation facturée ou en cours de facturation");
+            }
+        }
+        
         InvoiceDossierService entity = mapper.toEntity(dto);
+        entity.setCreationDate(existing.getCreationDate());
+        entity.setCreatedBy(existing.getCreatedBy());
+        
         return mapper.toDto(repository.save(entity));
     }
 
-    public void delete(Long id) {
+    public InvoiceDossierService saveEntity(InvoiceDossierService entity) {
+        return repository.save(entity);
+    }
 
+    public void delete(Long id) {
+        log.info("[ENTER] Executing delete");
+        InvoiceDossierService entity = repository.findById(id).orElseThrow(() -> new RuntimeException("Prestation non trouvée"));
         
-        // log.info("[ENTER] Executing delete");
-        // InvoiceDossierService entity = this.repository.findById(id).get();
+        if (entity.getInvoiceDossierServieStatus() != null) {
+            String code = entity.getInvoiceDossierServieStatus().getCode();
+            if ("FACTURE".equals(code) || "EN_COURS_DE_FACTURATION".equals(code)) {
+                throw new RuntimeException("Impossible de supprimer une prestation facturée ou en cours de facturation");
+            }
+        }
         
-        // if(entity.getInvoiceDossierServieStatus().getCode().equals("FACTURE") ) {
-        //     throw new RuntimeException("Impossible de supprimer la prestation");
-        // }
-        // repository.deleteById(id);
+        repository.deleteById(id);
     }
 }

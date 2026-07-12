@@ -10,12 +10,14 @@ com\avo\repositories\AssociationRepository.class
 com\avo\entities\FieldConfig$FieldConfigBuilder.class
 com\avo\repositories\AppointementRepository.class
 com\avo\entities\DocumentType.class
+com\avo\controller\InvoiceController.class
 com\avo\yente\service\ScreeningExecutionService.class
 com\avo\mappers\SecteurActiviteMapperImpl.class
 com\avo\entities\InvoiceDossierServieStatus.class
 com\avo\controller\DossierPrioriteController.class
 com\avo\entities\QDossierPriorite.class
 com\avo\mappers\TestEntityMapper.class
+com\avo\repositories\InvoiceRepository.class
 com\avo\controller\StatutDossierController.class
 com\avo\entities\FieldOption.class
 com\avo\mappers\ClientMoralMapper.class
@@ -37,6 +39,7 @@ com\avo\mappers\DossierMapper.class
 com\avo\entities\FieldResult.class
 com\avo\services\ClientMoralService.class
 com\avo\services\ClientDiligenceStatusService.class
+com\avo\dtos\InvoiceTimeEntryDTO$InvoiceTimeEntryDTOBuilder.class
 com\avo\entities\QMatterEvent.class
 com\avo\controller\InvoiceDossierServieStatusController.class
 com\avo\services\DiligenceFormResultService.class
@@ -71,6 +74,7 @@ com\avo\config\SecurityConfig.class
 com\avo\dtos\DiligenceFormResultDTO$DiligenceFormResultDTOBuilder.class
 com\avo\dtos\FieldConfigDTO$FieldConfigDTOBuilder.class
 com\avo\entities\QTask.class
+com\avo\mappers\InvoiceTimeEntryMapper.class
 com\avo\dtos\ClientMoralDTO.class
 com\avo\dtos\DocumentDTO$DocumentDTOBuilder.class
 com\avo\dtos\NoteCategoryDTO.class
@@ -101,6 +105,7 @@ com\avo\entities\UBO.class
 com\avo\dtos\UserDTO.class
 com\avo\mappers\StatutDossierMapper.class
 com\avo\services\ClientService.class
+com\avo\repositories\InvoiceTimeEntryRepository.class
 com\avo\services\TaskService.class
 com\avo\dtos\DiligenceFormResultDTO.class
 com\avo\entities\Document.class
@@ -116,6 +121,7 @@ com\avo\mappers\UserMapperImpl.class
 com\avo\dtos\TaskCategoryDTO.class
 com\avo\AvoApplication.class
 com\avo\entities\MatterEvent.class
+com\avo\dtos\InvoiceDTO$InvoiceDTOBuilder.class
 com\avo\controller\MatterEventController.class
 com\avo\mappers\ContactPointMapper.class
 com\avo\services\CurrentUserInfoService.class
@@ -130,6 +136,7 @@ com\avo\mappers\TaskLogMapperImpl.class
 com\avo\mappers\TaskStatusMapper.class
 com\avo\entities\QInvoiceTypeOfService.class
 com\avo\entities\StatutDossier.class
+com\avo\entities\QInvoiceTimeEntry.class
 com\avo\repositories\MatterActivityRepository.class
 com\avo\mappers\ScreeningExecutionMapperImpl.class
 com\avo\mappers\TestEntityMapperImpl.class
@@ -148,6 +155,7 @@ com\avo\dtos\ClientEntityDTO.class
 com\avo\mappers\InvoiceDossierServieStatusMapper.class
 com\avo\entities\FormConfig$FormConfigBuilder.class
 com\avo\dtos\StatutDossierDTO$StatutDossierDTOBuilder.class
+com\avo\services\InvoiceService.class
 com\avo\services\AppointementService.class
 com\avo\entities\QScreeningExecution.class
 com\avo\entities\ScreeningExecution.class
@@ -188,6 +196,7 @@ com\avo\mappers\DiligenceFormResultMapper.class
 com\avo\mappers\InvoiceTypeOfServiceMapper.class
 com\avo\dtos\MatterEventDTO.class
 com\avo\repositories\StatutDossierRepository.class
+com\avo\services\InvoiceTimeEntryService.class
 com\avo\dtos\NoteDTO.class
 com\avo\entities\QTestEntity.class
 com\avo\mappers\EventTypeMapperImpl.class
@@ -227,6 +236,7 @@ com\avo\services\MatterEventService.class
 com\avo\entities\TestEntity.class
 com\avo\entities\ScreeningExecutionStatus.class
 com\avo\repositories\SecteurActiviteRepository.class
+com\avo\dtos\InvoiceTimeEntryDTO.class
 com\avo\entities\Note.class
 com\avo\mappers\DocumentMapper.class
 com\avo\mappers\InvoiceDossierServiceMapperImpl.class
@@ -280,13 +290,16 @@ com\avo\entities\ClientPersonnePhysique.class
 com\avo\mappers\ClientMoralMapperImpl.class
 com\avo\yente\service\YenteAmlService.class
 com\avo\services\KeycloakUserManagementService.class
+com\avo\entities\QInvoice.class
 com\avo\entities\FieldConfig.class
 com\avo\mappers\ClientPersonnePhysiqueMapper.class
+com\avo\controller\InvoiceTimeEntryController.class
 com\avo\dtos\TaskDTO.class
 com\avo\controller\SecteurActiviteController.class
 com\avo\repositories\TaskRepository.class
 com\avo\controller\InvoiceTypeOfServiceController.class
 com\avo\config\GlobalExceptionHandler.class
+com\avo\mappers\InvoiceMapper.class
 com\avo\repositories\TaskLogRepository.class
 com\avo\entities\QFieldOption.class
 com\avo\repositories\ScreeningExecutionRepository.class
@@ -296,12 +309,15 @@ com\avo\mappers\AppointementMapperImpl.class
 com\avo\dtos\ScreeningExecutionDTO.class
 com\avo\dtos\TaskStatusDTO.class
 com\avo\mappers\MatterEventMapper.class
+com\avo\mappers\InvoiceMapperImpl.class
+com\avo\entities\InvoiceStatusEnum.class
 com\avo\entities\EventType.class
 com\avo\dtos\SecteurActiviteDTO$SecteurActiviteDTOBuilder.class
 com\avo\entities\AppUser.class
 com\avo\mappers\ScreeningMatchMapper.class
 com\avo\services\TestService.class
 com\avo\controller\TaskCategoryController.class
+com\avo\mappers\InvoiceTimeEntryMapperImpl.class
 com\avo\entities\InvoiceTypeOfService.class
 com\avo\services\UBOService.class
 com\avo\entities\QUBO.class
@@ -319,8 +335,10 @@ com\avo\mappers\EventTypeMapper.class
 com\avo\controller\DiligenceFormResultController.class
 com\avo\entities\QSecteurActivite.class
 com\avo\mappers\NoteMapper.class
+com\avo\dtos\InvoiceDTO.class
 com\avo\entities\QTaskStatus.class
 com\avo\entities\QClientPersonnePhysique.class
+com\avo\entities\InvoiceTimeEntry.class
 com\avo\mappers\FormConfigMapper.class
 com\avo\dtos\UserDTO$UserDTOBuilder.class
 com\avo\dtos\AssociationDTO.class
@@ -331,6 +349,7 @@ com\avo\entities\ClientStatus.class
 com\avo\repositories\TestRepository.class
 com\avo\mappers\SecteurActiviteMapper.class
 com\avo\services\MatterActivityEventListener.class
+com\avo\entities\Invoice.class
 com\avo\mappers\AssociationMapper.class
 com\avo\dtos\InvoiceTypeOfServiceDTO$InvoiceTypeOfServiceDTOBuilder.class
 com\avo\entities\DiligenceFormResult.class

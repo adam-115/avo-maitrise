@@ -16,83 +16,8 @@
         </div>
     </div>
 
-    <!-- KPIs -->
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
-        <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-200">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-indigo-100 rounded-md p-3">
-                        <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Revenu Encaissé (HT)</dt>
-                            <dd class="text-2xl font-semibold text-gray-900">{{ totalRevenue() |
-                                currency:'EUR':'symbol':'1.2-2':'fr' }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-200">
-            <div class="p-5">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-blue-100 rounded-md p-3">
-                        <svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Total Factures</dt>
-                            <dd class="text-2xl font-semibold text-gray-900">{{ totalInvoices() }}</dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Plus de KPIs si besoin -->
-    </div>
-
-    <!-- Filters -->
-    <div class="bg-white p-4 rounded-t-xl border border-b-0 border-gray-200">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-
-            <!-- Recherche -->
-            <div class="relative w-full sm:max-w-xs">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                </div>
-                <input type="text" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)"
-                    placeholder="Facture, Client..."
-                    class="block w-full pl-10 pr-3 py-2 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-
-            <!-- Statut -->
-            <div class="relative w-full sm:w-48">
-                <select [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event)"
-                    class="block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg transition duration-150 ease-in-out appearance-none border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                    <option value="ALL">Tous les statuts</option>
-                    <option value="DRAFT">Brouillon</option>
-                    <option value="SENT">Envoyée</option>
-                    <option value="PAID">Payée</option>
-                </select>
-            </div>
-
-        </div>
-    </div>
-
     <!-- Table -->
-    <div class="bg-white shadow-sm border border-gray-200 rounded-b-xl overflow-hidden">
+    <div class="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden mt-6">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -103,6 +28,9 @@
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Client</th>
+                        <th scope="col"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Dossier</th>
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date
                         </th>
@@ -117,24 +45,33 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
 
-                    @for (invoice of filteredInvoices(); track invoice.id) {
+                    @for (invoice of invoices(); track invoice.id) {
                     <tr class="hover:bg-gray-50 transition-colors">
                         <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-indigo-600 cursor-pointer hover:text-indigo-900"
                                 (click)="previewInvoice(invoice.id)">
-                                {{ invoice.invoiceNumber }}
+                                {{ invoice.numeroFacture }}
                             </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900 font-medium">{{ invoice.clientId }}</div>
+                            <a [routerLink]="['/home/client-details']" [queryParams]="{ id: invoice.dossier?.client?.id }" 
+                               class="text-sm font-medium text-indigo-600 hover:text-indigo-900 transition">
+                                {{ getClientName(invoice.dossier?.client) }}
+                            </a>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-500">{{ invoice.date | date:'shortDate' }}</div>
+                            <a [routerLink]="['/home/dossier-detail', invoice.dossier?.id]" 
+                               class="text-sm font-medium text-indigo-600 hover:text-indigo-900 transition">
+                                {{ invoice.dossier?.titre || invoice.dossier?.referenceInterne || 'N/A' }}
+                            </a>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-semibold text-gray-900">{{ invoice.totalTTC |
+                            <div class="text-sm text-gray-500">{{ invoice.issueDate | date:'shortDate' }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-semibold text-gray-900">{{ invoice.totalAmount |
                                 currency:'EUR':'symbol':'1.2-2':'fr' }}</div>
-                            <div class="text-xs text-gray-500">HT: {{ invoice.totalHT | currency:'EUR' }}</div>
+                            <div class="text-xs text-gray-500">HT: {{ invoice.subtotalAmount | currency:'EUR' }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @let badge = getStatusBadge(invoice.status);
@@ -174,7 +111,7 @@
                     </tr>
                     } @empty {
                     <tr>
-                        <td colspan="6" class="px-6 py-12 text-center">
+                        <td colspan="7" class="px-6 py-12 text-center">
                             <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -188,6 +125,36 @@
                     }
                 </tbody>
             </table>
+        </div>
+        
+        <!-- Pagination Controls -->
+        <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6 flex items-center justify-between">
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        Page <span class="font-medium">{{ currentPage() + 1 }}</span> sur <span class="font-medium">{{ totalPages() }}</span>
+                        (Total: {{ totalElements() }})
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        <button (click)="prevPage()" [disabled]="currentPage() === 0"
+                            class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="sr-only">Précédent</span>
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <button (click)="nextPage()" [disabled]="currentPage() >= totalPages() - 1"
+                            class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span class="sr-only">Suivant</span>
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </nav>
+                </div>
+            </div>
         </div>
     </div>
 </div>

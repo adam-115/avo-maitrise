@@ -201,6 +201,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/billing/components/invoice-list/invoice-list.component').then(m => m.InvoiceListComponent)
       },
       {
+        path: NavigationService.BILLING_NEW,
+        loadComponent: () => import('./features/billing/components/invoice-frm/invoice-frm.component').then(m => m.InvoiceFrmComponent)
+      },
+      {
         path: NavigationService.BILLING_EDITOR,
         loadComponent: () => import('./features/billing/components/invoice-editor/invoice-editor.component').then(m => m.InvoiceEditorComponent)
       },

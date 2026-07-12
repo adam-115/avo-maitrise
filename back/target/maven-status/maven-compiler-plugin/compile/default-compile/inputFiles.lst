@@ -30,6 +30,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\entities\InvoiceDossierService.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\StatutDossierMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\FieldOption.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\SecteurActiviteRepository.java
+D:\avo-maitrise\back\src\main\java\com\avo\controller\InvoiceController.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\ClientDiligenceStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\DocumentType.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\DocumentMapper.java
@@ -53,6 +54,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\mappers\DossierContactMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\FieldResultDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\InvoiceDossierServieStatus.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Association.java
+D:\avo-maitrise\back\src\main\java\com\avo\services\InvoiceService.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\SecteurActiviteDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\service\ScreeningExecutionService.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\AppointementDTO.java
@@ -63,6 +65,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\mappers\EventTypeMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\NoteCategoryController.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\client\YenteApiClient.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\NoteCategoryMapper.java
+D:\avo-maitrise\back\src\main\java\com\avo\dtos\InvoiceDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\AssociationRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\GlobalExceptionHandler.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\MatterEventDTO.java
@@ -79,6 +82,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\controller\FormConfigController.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\ClientMoralMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\InstitutionDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\events\MatterActionEvent.java
+D:\avo-maitrise\back\src\main\java\com\avo\mappers\InvoiceMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\InvoiceTypeOfServiceService.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\FormConfigDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\InvoiceDossierServiceController.java
@@ -103,6 +107,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\dtos\ScreeningMatchDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\UBOController.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\ClientPersonnePhysiqueMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\NotificationController.java
+D:\avo-maitrise\back\src\main\java\com\avo\mappers\InvoiceTimeEntryMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\FieldOptionDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteMatchResponse.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\DocumentRepository.java
@@ -117,6 +122,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\services\TaskLogService.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\TaskStatusMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\TaskStatusService.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Note.java
+D:\avo-maitrise\back\src\main\java\com\avo\repositories\InvoiceRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\TaskDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\UBORepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\UBOMapper.java
@@ -126,11 +132,14 @@ D:\avo-maitrise\back\src\main\java\com\avo\mappers\DossierPrioriteMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\DomaineJuridiqueMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\MatterEventRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\InvoiceDossierServiceRepository.java
+D:\avo-maitrise\back\src\main\java\com\avo\services\InvoiceTimeEntryService.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\InvoiceDossierServieStatusMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\AppUser.java
+D:\avo-maitrise\back\src\main\java\com\avo\entities\InvoiceStatusEnum.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\DossierPrioriteService.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Institution.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\DossierPrioriteRepository.java
+D:\avo-maitrise\back\src\main\java\com\avo\entities\Invoice.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\NoteCategoryDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\UserService.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\DocumentService.java
@@ -157,6 +166,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\repositories\StatutDossierRepository.
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\DocumentDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\ClientMoralService.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\TestRepository.java
+D:\avo-maitrise\back\src\main\java\com\avo\controller\InvoiceTimeEntryController.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\AssociationMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\service\YenteAmlService.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\PersonnePhysiqueRepository.java
@@ -172,6 +182,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\repositories\AppointementRepository.j
 D:\avo-maitrise\back\src\main\java\com\avo\AvoApplication.java
 D:\avo-maitrise\back\src\main\java\com\avo\yente\models\YenteQueryResponse.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\UserRoleRequest.java
+D:\avo-maitrise\back\src\main\java\com\avo\repositories\InvoiceTimeEntryRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\HomeController.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\InvoiceTypeOfService.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\SecteurActiviteService.java
@@ -216,6 +227,8 @@ D:\avo-maitrise\back\src\main\java\com\avo\controller\InvoiceDossierServieStatus
 D:\avo-maitrise\back\src\main\java\com\avo\config\CorsConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\UBO.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\InstitutionService.java
+D:\avo-maitrise\back\src\main\java\com\avo\entities\InvoiceTimeEntry.java
+D:\avo-maitrise\back\src\main\java\com\avo\dtos\InvoiceTimeEntryDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\DomaineJuridique.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\TaskStatusRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\UserController.java

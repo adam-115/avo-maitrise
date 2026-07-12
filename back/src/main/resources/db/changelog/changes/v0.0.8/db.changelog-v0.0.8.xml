@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="antigravity">
+        <createTable tableName="invoice">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="numero_facture" type="varchar(255)"/>
+            <column name="status" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="issue_date" type="date"/>
+            <column name="due_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subtotal_amount" type="decimal(18, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tax_amount" type="decimal(18, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_amount" type="decimal(18, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dunning_level" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_disputed" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dossier_id" type="bigint"/>
+            <column name="note" type="varchar(500)"/>
+        </createTable>
+
+        <createTable tableName="invoice_time_entry">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="invoice_id" type="bigint"/>
+            <column name="invoice_dossier_service_id" type="bigint"/>
+            <column name="nbr_of_minutes" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price5min" type="decimal(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="dossier_id" baseTableName="invoice" constraintName="fk_invoice_dossier" referencedColumnNames="id" referencedTableName="dossiers"/>
+        <addForeignKeyConstraint baseColumnNames="invoice_id" baseTableName="invoice_time_entry" constraintName="fk_time_entry_invoice" referencedColumnNames="id" referencedTableName="invoice"/>
+        <addForeignKeyConstraint baseColumnNames="invoice_dossier_service_id" baseTableName="invoice_time_entry" constraintName="fk_time_entry_dossier_service" referencedColumnNames="id" referencedTableName="invoice_dossier_services"/>
+    </changeSet>
+
+</databaseChangeLog>

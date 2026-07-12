@@ -1,360 +1,195 @@
-<div class="px-4 py-8 sm:px-6 lg:px-8 max-w-5xl mx-auto">
-
-    <div class="mb-8 flex items-center space-x-4">
-        <a routerLink="/home/billing" class="text-gray-500 hover:text-indigo-600 transition">
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-        </a>
-        <h1 class="text-3xl font-bold text-gray-900">
-            {{ invoiceId() ? 'Modifier la Facture' : 'Créer une Nouvelle Facture' }}
-        </h1>
+<div class="p-6 max-w-7xl mx-auto" *ngIf="invoice()">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div class="flex items-center gap-4">
+            <button (click)="goBack()" class="p-2 rounded-full hover:bg-slate-100 text-slate-500 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </button>
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-900">Facture {{ invoice()?.numeroFacture }}</h1>
+                <p class="text-sm text-slate-500 mt-1">Date de création : {{ invoice()?.issueDate | date:'shortDate' }}</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button (click)="goBack()" class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
+                Annuler
+            </button>
+            <button (click)="saveInvoice()" class="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition">
+                Sauvegarder les modifications
+            </button>
+        </div>
     </div>
 
-    <form [formGroup]="invoiceForm" (ngSubmit)="save()" class="space-y-8">
-
-        <!-- Informations Générales -->
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <h2 class="text-lg font-medium text-gray-900 mb-6 border-b pb-2">Informations Générales</h2>
-
-            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Client</label>
-
-                    <div *ngIf="getSelectedClientName()"
-                        class="mt-1 flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-50 sm:text-sm">
-                        <div class="truncate pr-2">
-                            <p class="text-gray-900 truncate">{{ getSelectedClientName() }}</p>
-                        </div>
-                        <button type="button" (click)="openClientDialog()"
-                            class="flex-shrink-0 text-indigo-600 hover:text-indigo-800 font-medium">
-                            Changer
-                        </button>
-                    </div>
-
-                    <button *ngIf="!getSelectedClientName()" type="button" (click)="openClientDialog()"
-                        class="mt-1 w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md shadow-sm text-gray-500 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm">
-                        <span>Sélectionner un client</span>
-                        <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-
-                    <input type="hidden" formControlName="clientId">
-
-                    <app-client-selection-dialog *ngIf="showClientDialog"
-                        [initialSelection]="invoiceForm.get('clientId')?.value || null"
-                        (confirmSelection)="onClientSelected($event)" (closeDialog)="closeClientDialog()">
-                    </app-client-selection-dialog>
-                </div>
-
-                <div class="sm:col-span-2 lg:col-span-3">
-                    <label class="block text-sm font-medium text-gray-700">Adresse de Facturation</label>
-                    <textarea formControlName="clientAddress" rows="2"
-                        placeholder="Adresse complète du client pour cette facture..."
-                        class="mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
-                </div>
-
-                <div *ngIf="invoiceForm.get('clientId')?.value">
-                    <label class="block text-sm font-medium text-gray-700">Dossier Associé (Optionnel)</label>
-                    <select formControlName="dossierId"
-                        class="mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                        <option value="">Aucun Dossier Spécifique</option>
-                        <option *ngFor="let dossier of clientDossiers" [value]="dossier.id">
-                            {{ dossier.referenceInterne }} - {{ dossier.titre }}
-                        </option>
-                    </select>
+    <!-- Contenu principal -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Colonne gauche: Infos -->
+        <div class="lg:col-span-1 space-y-6">
+            
+            <!-- Carte Client & Dossier -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Dossier & Client</h3>
+                
+                <div class="mb-4">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Client facturé</span>
+                    <p class="text-sm font-medium text-slate-800 mt-1">{{ getClientName(invoice()?.dossier?.client) }}</p>
+                    <p class="text-xs text-slate-500 mt-1" *ngIf="invoice()?.dossier?.client?.email">{{ invoice()?.dossier?.client?.email }}</p>
+                    <p class="text-xs text-slate-500 mt-0.5" *ngIf="invoice()?.dossier?.client?.telephone">{{ invoice()?.dossier?.client?.telephone }}</p>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Numéro de Facture</label>
-                    <input type="text" formControlName="invoiceNumber"
-                        class="mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Date d'émission</label>
-                    <input type="date" formControlName="date"
-                        class="mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Statut</label>
-                    <select formControlName="status"
-                        class="mt-1 block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                        <option value="DRAFT">Brouillon</option>
-                        <option value="SENT">Envoyée</option>
-                        <option value="PAID">Payée</option>
-                    </select>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dossier lié</span>
+                    <p class="text-sm font-medium text-indigo-600 mt-1 cursor-pointer hover:underline" [routerLink]="['/home/dossier-detail', invoice()?.dossier?.id]">
+                        {{ invoice()?.dossier?.referenceInterne }}
+                    </p>
+                    <p class="text-xs text-slate-600 mt-1">{{ invoice()?.dossier?.titre }}</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Prestations non facturées (Tâches & Evénements) -->
-        <div *ngIf="invoiceForm.get('dossierId')?.value && (unbilledTasks.length > 0 || unbilledEvents.length > 0)"
-            class="bg-indigo-50 p-6 rounded-xl shadow-sm border border-indigo-100">
-            <h2 class="text-lg font-bold text-indigo-900 mb-4 border-b border-indigo-200 pb-2">Prestations du dossier à
-                facturer</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Tâches -->
-                <div *ngIf="unbilledTasks.length > 0">
-                    <h3 class="text-sm font-semibold text-indigo-800 mb-3 flex items-center">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                        </svg>
-                        Tâches Terminé/En cours
-                    </h3>
-                    <ul class="space-y-3">
-                        <li *ngFor="let task of unbilledTasks"
-                            class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm flex items-center justify-between group">
-                            <div class="flex flex-col pr-4 flex-grow">
-                                <span class="text-sm font-medium text-gray-900">{{ task.titre }}</span>
-                                <div class="flex items-center space-x-2 mt-1">
-                                    <span *ngIf="task.category"
-                                        class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
-                                        {{ task.category.libelle }}
-                                    </span>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
-                                        [ngClass]="{
-                                              'bg-green-100 text-green-800': task.status?.code === 'TERMINE' || task.status?.libelle?.toLowerCase() === 'terminé',
-                                              'bg-blue-100 text-blue-800': task.status?.code === 'EN_COURS' || task.status?.libelle?.toLowerCase() === 'en cours',
-                                              'bg-gray-100 text-gray-800': task.status?.code !== 'TERMINE' && task.status?.code !== 'EN_COURS' && task.status?.libelle?.toLowerCase() !== 'terminé' && task.status?.libelle?.toLowerCase() !== 'en cours'
-                                          }">
-                                        {{ task.status?.libelle }}
-                                    </span>
-                                    <span *ngIf="task.estimatedTimeMinutes"
-                                        class="bg-indigo-50 text-indigo-700 border-indigo-100 px-2.5 py-1 rounded-full text-[11px] font-bold inline-flex items-center gap-1.5 border shadow-sm">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                        </svg>
-                                        {{ formatMinutesToHours(task.estimatedTimeMinutes) }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <button type="button" (click)="openTaskDetails(task)"
-                                    class="shrink-0 p-1.5 text-gray-400 hover:text-indigo-600 transition-colors"
-                                    title="Voir les détails">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </button>
-                                <div class="flex items-center h-5">
-                                    <input type="checkbox" [checked]="selectedTaskIds.has(task.id!)"
-                                        (change)="toggleTaskSelection(task.id, $event)"
-                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Événements -->
-                <div *ngIf="unbilledEvents.length > 0">
-                    <h3 class="text-sm font-semibold text-indigo-800 mb-3 flex items-center">
-                        <svg class="w-4 h-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        Événements / Audiences
-                    </h3>
-                    <ul class="space-y-3">
-                        <li *ngFor="let event of unbilledEvents"
-                            class="bg-white p-3 rounded-lg border border-indigo-100 shadow-sm flex items-center justify-between group">
-                            <div class="flex flex-col pr-4 flex-grow">
-                                <span class="text-sm font-medium text-gray-900">{{ event.titre }}</span>
-                                <div class="flex items-center space-x-2 mt-1">
-                                    <span class="text-xs text-gray-500">{{ event.startDate | date:'dd/MM/yyyy' }}</span>
-                                    <span *ngIf="event.categorie"
-                                        class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
-                                        {{ event.categorie.label }}
-                                    </span>
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
-                                        [ngClass]="{
-                                              'bg-green-100 text-green-800': event.statut === 'TERMINE',
-                                              'bg-blue-100 text-blue-800': event.statut === 'CONFIRME',
-                                              'bg-red-100 text-red-800': event.statut === 'ANNULE',
-                                              'bg-yellow-100 text-yellow-800': event.statut === 'REPORTE'
-                                          }">
-                                        {{ event.statut }}
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                <button type="button" (click)="openEventDetails(event)"
-                                    class="shrink-0 p-1.5 text-gray-400 hover:text-indigo-600 transition-colors"
-                                    title="Voir les détails">
-                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </button>
-                                <div class="flex items-center h-5">
-                                    <input type="checkbox" [checked]="selectedEventIds.has(event.id!)"
-                                        (change)="toggleEventSelection(event.id, $event)"
-                                        class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Lignes de facturation -->
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <div class="flex justify-between items-center mb-6 border-b pb-2">
-                <h2 class="text-lg font-medium text-gray-900">Prestations & Lignes</h2>
-                <button type="button" (click)="addLineItem()"
-                    class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">
-                    <svg class="-ml-0.5 mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Ajouter une ligne
-                </button>
-            </div>
-
-            <div formArrayName="lineItems" class="space-y-4">
-                @for (item of lineItemsArr.controls; track $index; let i = $index) {
-                <div [formGroupName]="i"
-                    class="flex flex-wrap items-end gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100 relative group">
-
-                    <div class="flex-grow min-w-[200px]">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Description</label>
-                        <input type="text" formControlName="description"
-                            placeholder="Abonnement mensuel, consultation..."
-                            class="block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                    </div>
-
-                    <div class="w-24">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Qté / H</label>
-                        <input type="number" step="0.5" formControlName="quantity"
-                            class="block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                    </div>
-
-                    <div class="w-32">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">Taux (€)</label>
-                        <input type="number" step="1" formControlName="hourlyRate"
-                            class="block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                    </div>
-
-                    <div class="w-24">
-                        <label class="block text-xs font-medium text-gray-500 mb-1">TVA (%)</label>
-                        <select formControlName="vatRate"
-                            class="block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                            <option [value]="20">20%</option>
-                            <option [value]="10">10%</option>
-                            <option [value]="5.5">5.5%</option>
-                            <option [value]="0">0%</option>
+            <!-- Carte Paramètres -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Paramètres</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Statut</label>
+                        <select [ngModel]="status()" (ngModelChange)="status.set($event)"
+                            class="block w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
                         </select>
                     </div>
 
-                    <!-- Sous-Total dynamique pour la ligne -->
-                    <div class="w-24 pb-2 text-right">
-                        <span class="text-sm font-semibold text-gray-900 block">
-                            {{ (item.get('quantity')?.value * item.get('hourlyRate')?.value) |
-                            currency:'EUR':'symbol':'1.2-2':'fr' }}
-                        </span>
-                        <span class="text-[10px] text-gray-500 uppercase tracking-widest">HT</span>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Date d'échéance</label>
+                        <input type="date" [ngModel]="dueDate()" (ngModelChange)="dueDate.set($event)"
+                            [disabled]="invoice()?.status !== 'DRAFT'"
+                            class="block w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200">
                     </div>
+                </div>
+            </div>
 
-                    <button type="button" (click)="removeLineItem(i)"
-                        class="absolute -right-3 -top-3 hidden group-hover:flex items-center justify-center h-6 w-6 rounded-full bg-red-100 text-red-600 hover:bg-red-200 shadow-sm transition">
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+            <!-- Carte Totaux -->
+            <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Résumé financier</h3>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-slate-600">Sous-total HT</span>
+                        <span class="text-sm font-semibold text-slate-800 font-mono">{{ subtotalAmount() | currency:'EUR' }}</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm text-slate-600">TVA</span>
+                            <div class="relative w-20">
+                                <input type="number" [ngModel]="vatRate()" (ngModelChange)="vatRate.set($event)" min="0" step="0.5"
+                                    [disabled]="invoice()?.status !== 'DRAFT'"
+                                    class="block w-full text-right pr-6 pl-2 py-1 border border-slate-300 rounded-md text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200" />
+                                <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                                    <span class="text-slate-500 text-xs">%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-800 font-mono">{{ taxAmount() | currency:'EUR' }}</span>
+                    </div>
+                    <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
+                        <span class="text-base font-bold text-slate-800">Total TTC</span>
+                        <span class="text-xl font-black text-indigo-700 font-mono">{{ totalAmount() | currency:'EUR' }}</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+        <!-- Colonne droite: Lignes et Notes -->
+        <div class="lg:col-span-2 space-y-6">
+            
+            <!-- Prestations -->
+            <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-slate-800">Lignes de facturation</h3>
+                    <button type="button" *ngIf="invoice()?.status === 'DRAFT'" (click)="openAddPrestations()" class="px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-md text-sm font-semibold transition flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Modifier prestations
                     </button>
                 </div>
-                }
-            </div>
-
-            @if (lineItemsArr.length === 0) {
-            <div class="text-center py-6 border-2 border-dashed border-gray-300 rounded-lg">
-                <p class="text-sm text-gray-500">Aucune prestation n'a été ajoutée. La facture est vide.</p>
-            </div>
-            }
-        </div>
-
-        <!-- Totaux & Débours -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 align-top">
-                <h2 class="text-lg font-medium text-gray-900 mb-4 border-b pb-2">Débours & Frais</h2>
-                <p class="text-sm text-gray-500 mb-4">Montants avancés au nom du client n'entrant pas dans la base de
-                    calcul de la TVA.</p>
-                <div class="relative rounded-md shadow-sm w-1/2">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span class="text-gray-500 sm:text-sm">€</span>
-                    </div>
-                    <input type="number" formControlName="disbursements"
-                        class="form-input block w-full pl-7 pr-12 sm:text-sm rounded-md focus:ring-indigo-500 focus:border-indigo-500 border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                        placeholder="0.00">
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-slate-200">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Description</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Durée (min)</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Prix (5 min)</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Total HT</th>
+                                <th scope="col" class="px-6 py-3 w-10 text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-slate-100">
+                            <tr *ngFor="let entry of timeEntries(); let i = index" class="hover:bg-slate-50 transition">
+                                <td class="px-6 py-4">
+                                    <div class="text-sm font-medium text-slate-900">
+                                        {{ entry.invoiceDossierService?.invoiceTypeOfService?.code }} - {{ entry.invoiceDossierService?.invoiceTypeOfService?.description }}
+                                    </div>
+                                    <div class="text-xs text-slate-500 mt-1" *ngIf="entry.invoiceDossierService?.info">
+                                        {{ entry.invoiceDossierService?.info }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <input type="number" [(ngModel)]="entry.nbrOfMinutes" (ngModelChange)="onEntryChange()" min="0" step="5"
+                                        [disabled]="invoice()?.status !== 'DRAFT'"
+                                        class="block w-20 mx-auto text-center px-2 py-1 border border-slate-300 rounded-md text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200" />
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="relative w-28 ml-auto">
+                                        <input type="number" [(ngModel)]="entry.price5min" (ngModelChange)="onEntryChange()" min="0" step="0.01"
+                                            [disabled]="invoice()?.status !== 'DRAFT'"
+                                            class="block w-full text-right pr-6 pl-2 py-1 border border-slate-300 rounded-md text-sm font-mono focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200" />
+                                        <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                                            <span class="text-slate-500 text-xs font-mono">€</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-right font-semibold text-emerald-600 font-mono">
+                                    {{ (entry.nbrOfMinutes / 5) * entry.price5min | currency:'EUR' }}
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <button type="button" *ngIf="invoice()?.status === 'DRAFT'" (click)="removeEntry(i)" class="text-slate-400 hover:text-red-500 transition" title="Retirer de la facture">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr *ngIf="timeEntries().length === 0">
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-500 text-sm">
+                                    Aucune ligne de facturation associée à cette facture.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <div class="p-6 rounded-xl shadow-sm border border-gray-200 bg-gray-50/50">
-                <h2 class="text-lg font-medium text-gray-900 mb-4 border-b pb-2">Récapitulatif (Temps Réel)</h2>
-                <dl class="space-y-3 text-sm text-gray-600">
-                    <div class="flex justify-between">
-                        <dt>Total HT prestations</dt>
-                        <dd class="font-medium text-gray-900">{{ totalHT() | currency:'EUR':'symbol':'1.2-2':'fr' }}
-                        </dd>
-                    </div>
-
-                    <div class="flex justify-between">
-                        <dt>Total TVA</dt>
-                        <dd class="font-medium text-gray-900">{{ totalVAT() | currency:'EUR':'symbol':'1.2-2':'fr' }}
-                        </dd>
-                    </div>
-
-                    <div class="flex justify-between" *ngIf="invoiceForm.get('disbursements')?.value">
-                        <dt>Débours TTC</dt>
-                        <dd class="font-medium text-gray-900">{{ invoiceForm.get('disbursements')?.value |
-                            currency:'EUR':'symbol':'1.2-2':'fr' }}</dd>
-                    </div>
-
-                    <div class="flex justify-between border-t border-gray-200 pt-3">
-                        <dt class="text-base font-bold text-gray-900">Total net à payer</dt>
-                        <dd class="text-xl font-bold text-indigo-600">{{ totalTTC() |
-                            currency:'EUR':'symbol':'1.2-2':'fr' }}</dd>
-                    </div>
-                </dl>
+            <!-- Notes -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Notes</h3>
+                <textarea [ngModel]="note()" (ngModelChange)="note.set($event)" rows="4"
+                    [disabled]="invoice()?.status !== 'DRAFT'"
+                    class="shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-slate-300 rounded-md p-3 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200"
+                    placeholder="Ajoutez une note interne ou un commentaire visible pour cette facture..."></textarea>
             </div>
+            
         </div>
-
-        <!-- Actions -->
-        <div class="flex justify-end space-x-4 border-t pt-6">
-            <a routerLink="/home/billing"
-                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Annuler
-            </a>
-            <button type="submit" [disabled]="invoiceForm.invalid"
-                class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-400 disabled:cursor-not-allowed">
-                Enregistrer la Facture
-            </button>
-        </div>
-    </form>
-
-    <!-- Task Details Modal -->
-    @if(showTaskDialog){
-    <app-task-details-dialog [task]="detailTask" [categoryLabel]="detailTask?.category?.libelle || ''"
-        [statusLabel]="detailTask?.status?.libelle || ''" (closeDialog)="closeTaskDetails()">
-    </app-task-details-dialog>
-    }
-    <!-- Event Details Modal -->
-    @if(showEventDialog){
-    <app-event-details-dialog [event]="detailEvent" [typeLabel]="detailEvent?.categorie?.label || ''"
-        [statusLabel]="detailEvent!.statut" (closeDialog)="closeEventDetails()">
-    </app-event-details-dialog>
-    }
-
+    </div>
 </div>
+
+<div *ngIf="!invoice()" class="p-12 flex justify-center items-center">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+</div>
+
+@if (showGenerateInvoiceModal()) {
+    <app-generate-invoice-dialog 
+        [generatedTimeEntries]="unbilledEntries()"
+        [dossier]="invoice()?.dossier"
+        (closeDialog)="showGenerateInvoiceModal.set(false)"
+        (confirmGeneration)="onConfirmAddPrestations($event)">
+    </app-generate-invoice-dialog>
+}
