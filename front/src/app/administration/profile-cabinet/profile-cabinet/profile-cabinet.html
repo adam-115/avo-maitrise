@@ -30,7 +30,7 @@
 
         <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-2xl">
 
-            <form class="space-y-8">
+            <form class="space-y-8" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
 
                 <div>
                     <h3 class="text-xl font-semibold text-red-600 mb-4 pb-2 border-b border-gray-200">
@@ -40,40 +40,34 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">Nom Légal du Cabinet / Entreprise</label>
-                            <input type="text" id="companyName" name="companyName" required
-                                   value="SCP Juris Consultes & Associés"
+                            <input type="text" id="companyName" formControlName="name" required
                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                             <p class="text-xs text-gray-500 mt-1">Ce nom sera utilisé sur les rapports et en-têtes.</p>
                         </div>
 
                         <div>
                             <label for="siret" class="block text-sm font-medium text-gray-700 mb-1">SIRET / Numéro d'Ordre (Optionnel)</label>
-                            <input type="text" id="siret" name="siret"
-                                   value="502 447 386 00019"
+                            <input type="text" id="siret" formControlName="siret"
                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         </div>
 
                         <div>
                             <label for="emailContact" class="block text-sm font-medium text-gray-700 mb-1">Email de Contact Public</label>
-                            <input type="email" id="emailContact" name="emailContact" required
-                                   value="contact@jurisconsultes.fr"
+                            <input type="email" id="emailContact" formControlName="email" required
                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         </div>
 
                          <div>
                             <label for="phoneContact" class="block text-sm font-medium text-gray-700 mb-1">Téléphone de Contact</label>
-                            <input type="tel" id="phoneContact" name="phoneContact"
-                                   value="+33 1 40 12 34 56"
+                            <input type="tel" id="phoneContact" formControlName="phone"
                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         </div>
                     </div>
 
                     <div class="mt-6">
                         <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Adresse Complète</label>
-                        <textarea id="address" name="address" rows="3"
-                                  class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">12 Rue du Barreau
-75001 Paris
-France</textarea>
+                        <textarea id="address" formControlName="address" rows="3"
+                                  class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
                     </div>
                 </div>
 
@@ -87,7 +81,8 @@ France</textarea>
                         <div class="flex flex-col items-center flex-shrink-0 w-32 space-y-2">
                             <p class="text-xs font-semibold text-gray-600">Logo Actuel</p>
                             <div class="w-24 h-24 border-2 border-gray-300 rounded-lg flex items-center justify-center p-2 bg-white overflow-hidden shadow-sm">
-
+                                <img *ngIf="logoPreview" [src]="logoPreview" alt="Logo Cabinet" class="max-w-full max-h-full object-contain">
+                                <span *ngIf="!logoPreview" class="text-xs text-gray-400 text-center">Aucun<br>logo</span>
                             </div>
                         </div>
 
@@ -96,7 +91,7 @@ France</textarea>
 
                             <label class="block">
                                 <span class="sr-only">Choisir un fichier</span>
-                                <input type="file" id="logoFile" name="logoFile" accept=".png, .jpg, .jpeg, .svg"
+                                <input type="file" id="logoFile" accept=".png, .jpg, .jpeg, .svg" (change)="onLogoSelected($event)"
                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"/>
                             </label>
 
@@ -106,9 +101,9 @@ France</textarea>
                 </div>
 
                 <div class="pt-6 border-t border-gray-200 flex justify-end">
-                    <button type="submit"
-                            class="px-6 py-2.5 text-lg font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 shadow-lg">
-                        Sauvegarder les Paramètres
+                    <button type="submit" [disabled]="profileForm.invalid || isLoading"
+                            class="px-6 py-2.5 text-lg font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 shadow-lg">
+                        {{ isLoading ? 'Chargement...' : 'Sauvegarder les Paramètres' }}
                     </button>
                 </div>
             </form>

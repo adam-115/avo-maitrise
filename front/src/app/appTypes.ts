@@ -755,3 +755,21 @@ export interface InvoiceTimeEntry {
   nbrOfMinutes: number;
   price5min: number;
 }
+
+export interface CabinetProfile {
+  id?: number;
+  name?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  country?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  siret?: string;
+  vatNumber?: string;
+  iban?: string;
+  bic?: string;
+  logo?: string; // base64 encoded byte[]
+  logoContentType?: string;
+}
