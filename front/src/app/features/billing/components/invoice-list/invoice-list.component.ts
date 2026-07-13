@@ -4,16 +4,23 @@ import { FormsModule } from '@angular/forms';
 import { InvoiceService } from '../../services/invoice.service';
 import { InvoiceEntity, InvoiceStatusEnum } from '../../../../appTypes';
 import { Router, RouterModule } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { ClientSelectionDialog } from '../../../../dossier/client-selection-dialog/client-selection-dialog';
+import { DossierSelectionDialog } from '../../../../dossier/dossier-selection-dialog/dossier-selection-dialog';
+import { Client, Dossier } from '../../../../appTypes';
+import { DossierService } from '../../../../services/dossier.service';
 
 @Component({
     selector: 'app-invoice-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule],
+    imports: [CommonModule, FormsModule, RouterModule, ClientSelectionDialog, DossierSelectionDialog],
     templateUrl: './invoice-list.component.html'
 })
 export class InvoiceListComponent implements OnInit {
     invoiceService = inject(InvoiceService);
     router = inject(Router);
+    dossierService = inject(DossierService);
     
     // Pagination (0-indexed pour Spring Boot)
     currentPage = signal(0);
@@ -25,13 +32,122 @@ export class InvoiceListComponent implements OnInit {
     // Liste paginée pour l'affichage
     invoices = signal<InvoiceEntity[]>([]);
 
+    // Filtres de recherche
+    filters = {
+        numeroFacture: '',
+        'dossier.client.id': null as any,
+        'dossier.id': null as any,
+        issueDate: ''
+    };
+
+    // Sorting
+    sortColumn = signal<string>('issueDate');
+    sortDirection = signal<'asc' | 'desc'>('desc');
+
+    // Dialog state
+    showClientDialog = signal<boolean>(false);
+    showDossierDialog = signal<boolean>(false);
+    selectedClientName = signal<string | null>(null);
+    selectedDossierName = signal<string | null>(null);
+    clientDossiers = signal<Dossier[]>([]);
+
+    // Subject for debouncing search input
+    private searchSubject = new Subject<void>();
+
     ngOnInit() {
         this.loadInvoices();
+        
+        // Setup debounced search
+        this.searchSubject.pipe(
+            debounceTime(400)
+        ).subscribe(() => {
+            this.currentPage.set(0); // Reset to first page on new search
+            this.loadInvoices();
+        });
+    }
+
+    onFilterChange() {
+        this.searchSubject.next();
+    }
+
+    resetFilters() {
+        this.filters = {
+            numeroFacture: '',
+            'dossier.client.id': null,
+            'dossier.id': null,
+            issueDate: ''
+        };
+        this.selectedClientName.set(null);
+        this.selectedDossierName.set(null);
+        this.clientDossiers.set([]);
+        this.currentPage.set(0);
+        this.loadInvoices();
+    }
+
+    sortBy(column: string) {
+        if (this.sortColumn() === column) {
+            this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+        } else {
+            this.sortColumn.set(column);
+            this.sortDirection.set('asc');
+        }
+        this.currentPage.set(0);
+        this.loadInvoices();
+    }
+
+    openClientDialog() {
+        this.showClientDialog.set(true);
+    }
+
+    onClientSelected(client: Client) {
+        this.filters['dossier.client.id'] = client.id;
+        this.selectedClientName.set(this.getClientName(client));
+        this.showClientDialog.set(false);
+        this.filters['dossier.id'] = null; // reset dossier when client changes
+        this.selectedDossierName.set(null);
+        
+        // Load dossiers for this client
+        this.dossierService.search({ 'client.id': client.id }, 0, 100, '').subscribe(res => {
+            this.clientDossiers.set(res.content || []);
+        });
+
+        this.onFilterChange();
+    }
+
+    openDossierDialog() {
+        this.showDossierDialog.set(true);
+    }
+
+    onDossierSelected(dossierId: string | number) {
+        this.filters['dossier.id'] = dossierId;
+        const d = this.clientDossiers().find(d => d.id === dossierId);
+        if (d) {
+            this.selectedDossierName.set(d.referenceInterne || `Dossier ${d.id}`);
+        }
+        this.showDossierDialog.set(false);
+        this.onFilterChange();
     }
 
     loadInvoices() {
         // OrderBy issueDate descending with pagination
-        this.invoiceService.findAll(this.currentPage(), this.pageSize(), 'issueDate,desc')
+        // Using the search endpoint if filters exist, otherwise fallback to findAll (or just always use search if supported)
+        const currentFilters = this.filters;
+        let queryFilters: any = {};
+        
+        // Clean up empty filters
+        Object.keys(currentFilters).forEach(key => {
+            if ((currentFilters as any)[key]) {
+                queryFilters[key] = (currentFilters as any)[key];
+            }
+        });
+
+        const sortParam = `${this.sortColumn()},${this.sortDirection()}`;
+
+        // Use search endpoint which should map to GET /api/invoice/search?{params}
+        // Since invoiceService inherits searchByCriteria (which is POST /search), we will just use a direct http call 
+        // or add it to invoiceService.
+        
+        this.invoiceService.search(queryFilters, this.currentPage(), this.pageSize(), sortParam)
             .subscribe({
                 next: (res) => {
                     this.invoices.set(res.content || []);

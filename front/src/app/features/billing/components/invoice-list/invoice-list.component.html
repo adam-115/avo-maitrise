@@ -16,30 +16,181 @@
         </div>
     </div>
 
+    <!-- Filters / Search -->
+    <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 mb-6 transition-all">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2 text-gray-700">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <h2 class="text-sm font-semibold uppercase tracking-wider">Recherche Avancée</h2>
+            </div>
+            <button (click)="resetFilters()" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1 transition">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Réinitialiser
+            </button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- N° Facture -->
+            <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">N° Facture</label>
+                <input type="text" [(ngModel)]="filters.numeroFacture" (ngModelChange)="onFilterChange()"
+                    class="block w-full rounded-lg border-gray-300 bg-gray-50 text-gray-900 shadow-sm focus:bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition-colors" placeholder="ex: FAC-2025-001">
+            </div>
+            <!-- Date d'émission -->
+            <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">Date d'émission</label>
+                <input type="date" [(ngModel)]="filters.issueDate" (ngModelChange)="onFilterChange()"
+                    class="block w-full rounded-lg border-gray-300 bg-gray-50 text-gray-900 shadow-sm focus:bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm transition-colors">
+            </div>
+            <!-- Client -->
+            <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">Client</label>
+                <div class="relative">
+                    <button type="button" (click)="openClientDialog()"
+                        class="w-full text-left rounded-lg border border-gray-300 bg-gray-50 text-gray-900 shadow-sm focus:bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 transition-colors">
+                        {{ selectedClientName() || 'Sélectionner un client...' }}
+                    </button>
+                    @if (selectedClientName()) {
+                        <button type="button" (click)="filters['dossier.client.id'] = null; selectedClientName.set(null); onFilterChange()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    }
+                </div>
+            </div>
+            <!-- Dossier -->
+            <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">N° Dossier</label>
+                <div class="relative">
+                    <button type="button" (click)="openDossierDialog()" [disabled]="!filters['dossier.client.id']"
+                        class="w-full text-left rounded-lg border border-gray-300 bg-gray-50 text-gray-900 shadow-sm focus:bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        {{ selectedDossierName() || 'Sélectionner un dossier...' }}
+                    </button>
+                    @if (selectedDossierName()) {
+                        <button type="button" (click)="filters['dossier.id'] = null; selectedDossierName.set(null); onFilterChange()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    @if (showClientDialog()) {
+        <app-client-selection-dialog
+            [initialSelection]="filters['dossier.client.id']"
+            (confirmSelection)="onClientSelected($event)"
+            (closeDialog)="showClientDialog.set(false)">
+        </app-client-selection-dialog>
+    }
+
+    @if (showDossierDialog()) {
+        <app-dossier-selection-dialog
+            [dossiers]="clientDossiers()"
+            [initialSelection]="filters['dossier.id']"
+            (confirmSelection)="onDossierSelected($event)"
+            (closeDialog)="showDossierDialog.set(false)">
+        </app-dossier-selection-dialog>
+    }
+
     <!-- Table -->
     <div class="bg-white shadow-sm border border-gray-200 rounded-xl overflow-hidden mt-6">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">N°
-                            Facture</th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Client</th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Dossier</th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date
+                        <th scope="col" (click)="sortBy('numeroFacture')"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
+                            <div class="flex items-center gap-1">
+                                N° Facture
+                                <span class="text-gray-400 group-hover:text-gray-600">
+                                    @if (sortColumn() === 'numeroFacture') {
+                                        <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                                        <svg *ngIf="sortDirection() === 'desc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    } @else {
+                                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+                                    }
+                                </span>
+                            </div>
                         </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Montant TTC</th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Statut</th>
+                        <th scope="col" (click)="sortBy('dossier.client.id')"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
+                            <div class="flex items-center gap-1">
+                                Client
+                                <span class="text-gray-400 group-hover:text-gray-600">
+                                    @if (sortColumn() === 'dossier.client.id') {
+                                        <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                                        <svg *ngIf="sortDirection() === 'desc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    } @else {
+                                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+                                    }
+                                </span>
+                            </div>
+                        </th>
+                        <th scope="col" (click)="sortBy('dossier.referenceInterne')"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
+                            <div class="flex items-center gap-1">
+                                Dossier
+                                <span class="text-gray-400 group-hover:text-gray-600">
+                                    @if (sortColumn() === 'dossier.referenceInterne') {
+                                        <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                                        <svg *ngIf="sortDirection() === 'desc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    } @else {
+                                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+                                    }
+                                </span>
+                            </div>
+                        </th>
+                        <th scope="col" (click)="sortBy('issueDate')"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
+                            <div class="flex items-center gap-1">
+                                Date
+                                <span class="text-gray-400 group-hover:text-gray-600">
+                                    @if (sortColumn() === 'issueDate') {
+                                        <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                                        <svg *ngIf="sortDirection() === 'desc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    } @else {
+                                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+                                    }
+                                </span>
+                            </div>
+                        </th>
+                        <th scope="col" (click)="sortBy('totalAmount')"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
+                            <div class="flex items-center gap-1">
+                                Montant TTC
+                                <span class="text-gray-400 group-hover:text-gray-600">
+                                    @if (sortColumn() === 'totalAmount') {
+                                        <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                                        <svg *ngIf="sortDirection() === 'desc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    } @else {
+                                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+                                    }
+                                </span>
+                            </div>
+                        </th>
+                        <th scope="col" (click)="sortBy('status')"
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
+                            <div class="flex items-center gap-1">
+                                Statut
+                                <span class="text-gray-400 group-hover:text-gray-600">
+                                    @if (sortColumn() === 'status') {
+                                        <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                                        <svg *ngIf="sortDirection() === 'desc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                    } @else {
+                                        <svg class="w-4 h-4 opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4"></path></svg>
+                                    }
+                                </span>
+                            </div>
+                        </th>
                         <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
                     </tr>
                 </thead>

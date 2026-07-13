@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AbstractCrudService } from './genericService/abstract-crud.service';
+import { AbstractCrudService, PaginatedResponse } from './genericService/abstract-crud.service';
 import { environment } from '../../environments/environment';
 import { Dossier } from '../appTypes';
 
@@ -51,5 +51,25 @@ export class DossierService extends AbstractCrudService<Dossier> {
     override update(item: Dossier): Observable<Dossier> {
         const flat = this.flattenDossier(item);
         return this.http.put<Dossier>(this.apiUrl, flat);
+    }
+
+    search(filters: any, page: number = 0, size: number = 10, sort?: string): Observable<PaginatedResponse<Dossier>> {
+        let params = new HttpParams()
+            .set('page', page.toString())
+            .set('size', size.toString());
+
+        if (sort) {
+            params = params.set('sort', sort);
+        }
+
+        if (filters) {
+            Object.keys(filters).forEach(key => {
+                if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
+                    params = params.set(key, filters[key]);
+                }
+            });
+        }
+
+        return this.http.get<PaginatedResponse<Dossier>>(`${this.apiUrl}/search`, { params });
     }
 }
