@@ -182,7 +182,7 @@
             </div>
             <div class="flex justify-between">
               <span>TVA ({{ vatRate() }}%)</span>
-              <span class="font-semibold text-slate-800">{{ invoice()?.taxAmount | number:'1.2-2' }} €</span>
+              <span class="font-semibold text-slate-800">{{ taxAmount() | number:'1.2-2' }} €</span>
             </div>
           </div>
           

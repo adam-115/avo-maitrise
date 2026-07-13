@@ -10,5 +10,7 @@ import { environment } from '../../../../environments/environment';
 export class InvoiceService extends AbstractCrudService<InvoiceEntity> {
     protected override apiUrl = environment.apiUrl + 'invoice';
 
-   
+    downloadInvoicePdf(id: string | number) {
+        return this.http.get(`${this.apiUrl}/${id}/pdf`, { responseType: 'blob' });
+    }
 }

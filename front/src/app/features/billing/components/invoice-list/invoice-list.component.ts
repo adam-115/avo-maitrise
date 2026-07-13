@@ -80,6 +80,23 @@ export class InvoiceListComponent implements OnInit {
         }
     }
 
+    printInvoice(id: string | number | undefined) {
+        if (!id) return;
+        this.invoiceService.downloadInvoicePdf(id).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                window.open(url, '_blank');
+                // Note: It's good practice to revoke the object URL later, 
+                // but since it's opening in a new tab, the browser manages it, 
+                // or we could do setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+            },
+            error: (err) => {
+                console.error('Erreur lors du téléchargement du PDF', err);
+                alert('Erreur lors de la génération de la facture PDF.');
+            }
+        });
+    }
+
     getStatusBadge(status: InvoiceStatusEnum) {
         switch (status) {
             case InvoiceStatusEnum.DRAFT: return { label: 'Brouillon', classes: 'bg-gray-100 text-gray-800 border-gray-200' };

@@ -21,7 +21,7 @@ public class InvoiceDTO {
     private LocalDate dueDate;
     private List<InvoiceTimeEntryDTO> invoiceTimeEntries;
     private BigDecimal subtotalAmount;
-    private BigDecimal taxAmount;
+    private BigDecimal taxRate;
     private BigDecimal totalAmount;
     private int dunningLevel;
     private boolean isDisputed;

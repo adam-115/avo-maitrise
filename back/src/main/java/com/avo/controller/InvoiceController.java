@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.avo.dtos.InvoiceDTO;
 import com.avo.entities.Invoice;
 import com.avo.services.InvoiceService;
+import com.avo.services.ReportingService;
 import com.querydsl.core.types.Predicate;
 
 @RestController
@@ -15,9 +16,11 @@ import com.querydsl.core.types.Predicate;
 public class InvoiceController {
 
     private final InvoiceService service;
+    private final ReportingService reportingService;
 
-    public InvoiceController(InvoiceService service) {
+    public InvoiceController(InvoiceService service, ReportingService reportingService) {
         this.service = service;
+        this.reportingService = reportingService;
     }
 
     @GetMapping
@@ -55,5 +58,14 @@ public class InvoiceController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> generatePdf(@PathVariable Long id) {
+        byte[] pdfBytes = reportingService.generateInvoicePdf(id);
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "facture_" + id + ".pdf");
+        return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 }

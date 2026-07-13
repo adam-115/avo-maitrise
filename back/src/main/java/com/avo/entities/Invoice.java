@@ -42,8 +42,8 @@ public class Invoice {
     @Column(name = "subtotal_amount", nullable = false, precision = 18, scale = 2)
     private BigDecimal subtotalAmount = BigDecimal.ZERO;
 
-    @Column(name = "tax_amount", nullable = false, precision = 18, scale = 2)
-    private BigDecimal taxAmount = BigDecimal.ZERO;
+    @Column(name = "tax_rate", nullable = false, precision = 5, scale = 2)
+    private BigDecimal taxRate = new BigDecimal("17.00");
 
     @Column(name = "total_amount", nullable = false, precision = 18, scale = 2)
     private BigDecimal totalAmount = BigDecimal.ZERO;

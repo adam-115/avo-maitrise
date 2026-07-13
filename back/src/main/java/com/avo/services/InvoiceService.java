@@ -92,7 +92,7 @@ public class InvoiceService {
             // Block modification of time entries and billing fields if invoice is not DRAFT
             if (existingInvoice != null) {
                 entity.setInvoiceTimeEntries(existingInvoice.getInvoiceTimeEntries());
-                entity.setTaxAmount(existingInvoice.getTaxAmount());
+                entity.setTaxRate(existingInvoice.getTaxRate());
                 entity.setSubtotalAmount(existingInvoice.getSubtotalAmount());
                 entity.setTotalAmount(existingInvoice.getTotalAmount());
                 entity.setDueDate(existingInvoice.getDueDate());

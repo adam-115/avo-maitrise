@@ -740,7 +740,7 @@ export interface InvoiceEntity {
   dueDate: Date | string;
   invoiceTimeEntries?: InvoiceTimeEntry[];
   subtotalAmount: number;
-  taxAmount: number;
+  taxRate: number;
   totalAmount: number;
   dunningLevel: number;
   isDisputed: boolean;

@@ -191,7 +191,7 @@ export class InvoiceFrmComponent {
             issueDate: new Date().toISOString(),
             dueDate: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(), // Default: 1 month later
             subtotalAmount: this.subtotalAmount(),
-            taxAmount: this.taxAmount(),
+            taxRate: this.vatRate(),
             totalAmount: this.totalAmount(),
             invoiceTimeEntries: entriesToBill.map((e: any) => {
                 // Remove the UI specific 'selected' property

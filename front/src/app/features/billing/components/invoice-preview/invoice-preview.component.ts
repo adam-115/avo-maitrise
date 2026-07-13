@@ -26,8 +26,14 @@ export class InvoicePreviewComponent implements OnInit {
   // Let's compute it if we can, or just hardcode 20% for display if subtotal is available
   vatRate = computed(() => {
     const inv = this.invoice();
-    if (!inv || !inv.subtotalAmount || inv.subtotalAmount === 0) return 20;
-    return Math.round((inv.taxAmount / inv.subtotalAmount) * 100);
+    if (!inv || typeof inv.taxRate !== 'number') return 20;
+    return inv.taxRate;
+  });
+
+  taxAmount = computed(() => {
+      const inv = this.invoice();
+      if (!inv) return 0;
+      return (inv.subtotalAmount || 0) * (this.vatRate() / 100);
   });
 
   ngOnInit(): void {

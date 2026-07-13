@@ -59,7 +59,7 @@ export class InvoiceEditorComponent implements OnInit {
                     this.dueDate.set(dateObj.toISOString().split('T')[0]);
                 }
                 if (data.subtotalAmount > 0) {
-                   this.vatRate.set(Math.round((data.taxAmount / data.subtotalAmount) * 100 * 100) / 100);
+                   this.vatRate.set(data.taxRate);
                 }
                 
                 if (data.invoiceTimeEntries) {
@@ -166,7 +166,7 @@ export class InvoiceEditorComponent implements OnInit {
                     dueDate: new Date(this.dueDate()),
                     note: this.note(),
                     subtotalAmount: this.subtotalAmount(),
-                    taxAmount: this.taxAmount(),
+                    taxRate: this.vatRate(),
                     totalAmount: this.totalAmount(),
                     invoiceTimeEntries: this.timeEntries()
                 };
