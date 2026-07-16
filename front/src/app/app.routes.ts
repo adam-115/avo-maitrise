@@ -189,16 +189,16 @@ export const routes: Routes = [
         path: NavigationService.INVOICE_TYPE_OF_SERVICE_FORM,
         loadComponent: () => import('./administration/invoice-type-of-service-form/invoice-type-of-service-form.component').then(m => m.InvoiceTypeOfServiceFormComponent)
       },
-      {
-        path: NavigationService.INVOICE_DOSSIER_SERVIE_STATUS_FORM,
-        loadComponent: () => import('./administration/invoice-dossier-servie-status-form/invoice-dossier-servie-status-form.component').then(m => m.InvoiceDossierServieStatusFormComponent)
-      },
 
 
-      // Routes Nouveau Module Facturation
+      // Routes      // Nouvelle Facturation
       {
         path: NavigationService.BILLING,
         loadComponent: () => import('./features/billing/components/invoice-list/invoice-list.component').then(m => m.InvoiceListComponent)
+      },
+      {
+        path: NavigationService.BILLING_DASHBOARD,
+        loadComponent: () => import('./features/billing/components/billing-dashboard/billing-dashboard.component').then(m => m.BillingDashboardComponent)
       },
       {
         path: NavigationService.BILLING_NEW,

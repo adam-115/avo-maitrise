@@ -35,7 +35,9 @@ export class ProfileCabinet implements OnInit {
       iban: [''],
       bic: [''],
       logo: [null],
-      logoContentType: [null]
+      logoContentType: [null],
+      currency: ['EUR', Validators.required],
+      tvaRate: [20, [Validators.required, Validators.min(0), Validators.max(100)]]
     });
 
     this.loadProfile();

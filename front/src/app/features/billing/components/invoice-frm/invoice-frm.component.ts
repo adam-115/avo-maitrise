@@ -141,8 +141,7 @@ export class InvoiceFrmComponent {
             next: (res) => {
                 const prestations = res.content || res || [];
                 const eligible = prestations.filter((p: any) => 
-                    p.invoiceDossierServieStatus?.code === 'EN_ATTENTE' || 
-                    p.invoiceDossierServieStatus?.code === 'REPORTED'
+                    p.status === 'A_FACTURE'
                 );
 
                 const mappedEntries: any[] = eligible.map((p: any) => ({

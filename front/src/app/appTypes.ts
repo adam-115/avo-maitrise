@@ -700,14 +700,12 @@ export interface InvoiceTypeOfService {
   updateDate?: Date;
 }
 
-export interface InvoiceDossierServieStatus {
-  id?: number;
-  color?: string;
-  name?: string;
-  code: string;
-  description?: string;
-  active: boolean;
-  createdByUser?: User;
+export enum InvoiceDossierServiceStatusEnum {
+  A_FACTURE = 'A_FACTURE',
+  EN_COURS_DE_FACTURATION = 'EN_COURS_DE_FACTURATION',
+  FACTUREE = 'FACTUREE',
+  PAS_PRISE_EN_CHARGE = 'PAS_PRISE_EN_CHARGE',
+  ANNULEE = 'ANNULEE'
 }
 
 export interface InvoiceDossierService {
@@ -717,7 +715,7 @@ export interface InvoiceDossierService {
   nbrOfMinutes?: number;
   dossier?: Dossier;
   invoiceTypeOfService?: InvoiceTypeOfService;
-  invoiceDossierServieStatus?: InvoiceDossierServieStatus;
+  status?: InvoiceDossierServiceStatusEnum;
   createdBy?: User;
   doneBy?: User;
 }
@@ -772,4 +770,6 @@ export interface CabinetProfile {
   bic?: string;
   logo?: string; // base64 encoded byte[]
   logoContentType?: string;
+  currency?: string;
+  tvaRate?: number;
 }

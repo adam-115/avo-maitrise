@@ -14,6 +14,11 @@ export class InvoiceService extends AbstractCrudService<InvoiceEntity> {
         return this.http.get(`${this.apiUrl}/${id}/pdf`, { responseType: 'blob' });
     }
 
+    downloadBulkInvoicePdf(ids: (string | number)[]) {
+        const params = new HttpParams().set('ids', ids.join(','));
+        return this.http.get(`${this.apiUrl}/bulk-pdf`, { params, responseType: 'blob' });
+    }
+
     search(filters: any, page: number = 0, size: number = 10, sort?: string) {
         let params = new HttpParams()
             .set('page', page.toString())
@@ -26,7 +31,15 @@ export class InvoiceService extends AbstractCrudService<InvoiceEntity> {
         if (filters) {
             Object.keys(filters).forEach(key => {
                 if (filters[key] !== undefined && filters[key] !== null && filters[key] !== '') {
-                    params = params.set(key, filters[key]);
+                    if (Array.isArray(filters[key])) {
+                        filters[key].forEach((val: any) => {
+                            if (val !== null && val !== '') {
+                                params = params.append(key, val);
+                            }
+                        });
+                    } else {
+                        params = params.set(key, filters[key]);
+                    }
                 }
             });
         }

@@ -9,6 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -27,8 +29,9 @@ public class InvoiceDossierService {
     private Dossier dossier;
     @ManyToOne
     private InvoiceTypeOfService invoiceTypeOfService;
-    @ManyToOne
-    private InvoiceDossierServieStatus invoiceDossierServieStatus;
+    
+    @Enumerated(EnumType.STRING)
+    private InvoiceDossierServiceStatusEnum status;
 
     @OneToOne
     private AppUser createdBy;

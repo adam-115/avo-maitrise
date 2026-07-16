@@ -60,6 +60,7 @@ export class NavigationService {
 
   // Nouvelle Facturation
   public static readonly BILLING = "billing";
+  public static readonly BILLING_DASHBOARD = "billing/dashboard";
   public static readonly BILLING_NEW = "billing/new";
   public static readonly BILLING_EDITOR = "billing/editor";
   public static readonly BILLING_EDITOR_EDIT = "billing/editor/:id";
@@ -73,8 +74,7 @@ export class NavigationService {
   public static readonly TASK_STATUS = "task-status";
   public static readonly NOTE_CATEGORY = "note-category";
   public static readonly EVENT_TYPE = "event-type";
-  public static readonly INVOICE_TYPE_OF_SERVICE_FORM = "invoice-type-of-service-form";
-  public static readonly INVOICE_DOSSIER_SERVIE_STATUS_FORM = "invoice-dossier-servie-status-form";
+  public  static readonly INVOICE_TYPE_OF_SERVICE_FORM = "administration/invoice-type-of-service";
 
   
 
@@ -187,11 +187,7 @@ export class NavigationService {
   }
 
   navigateToInvoiceTypeOfServiceForm() {
-    this.router.navigate([NavigationService.HOME, NavigationService.INVOICE_TYPE_OF_SERVICE_FORM]);
-  }
-
-  navigateToInvoiceDossierServieStatusForm() {
-    this.router.navigate([NavigationService.HOME, NavigationService.INVOICE_DOSSIER_SERVIE_STATUS_FORM]);
+    this.router.navigate([`${NavigationService.HOME}/${NavigationService.INVOICE_TYPE_OF_SERVICE_FORM}`]);
   }
 
 

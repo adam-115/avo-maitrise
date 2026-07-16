@@ -6,12 +6,7 @@
                 Administration
             </h1>
             <nav class="hidden md:flex space-x-4">
-                <a href="#" class="text-gray-600 font-medium hover:text-red-600 transition duration-150 border-b-2 border-transparent hover:border-red-600 pb-1">
-                    Tableau de Bord
-                </a>
-                <a href="#" class="text-gray-600 font-medium hover:text-red-600 transition duration-150 border-b-2 border-transparent hover:border-red-600 pb-1">
-                    Utilisateurs
-                </a>
+               
                 <a href="#" class="text-red-600 font-semibold border-b-2 border-red-600 pb-1 transition duration-150">
                     Configurations
                 </a>
@@ -68,6 +63,31 @@
                         <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Adresse Complète</label>
                         <textarea id="address" formControlName="address" rows="3"
                                   class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-semibold text-red-600 mb-4 pb-2 border-b border-gray-200">
+                        Paramètres de Facturation
+                    </h3>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Devise de facturation</label>
+                            <select id="currency" formControlName="currency" required
+                                   class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+                                <option value="EUR">Euro (€)</option>
+                                <option value="USD">Dollar Américain ($)</option>
+                                <option value="MAD">Dirham Marocain (MAD)</option>
+                                <option value="CHF">Franc Suisse (CHF)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="tvaRate" class="block text-sm font-medium text-gray-700 mb-1">Taux de TVA par défaut (%)</label>
+                            <input type="number" id="tvaRate" formControlName="tvaRate" required min="0" max="100" step="0.1"
+                                   class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+                        </div>
                     </div>
                 </div>
 

@@ -8,7 +8,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE, uses = {
     DossierMapper.class, 
     InvoiceTypeOfServiceMapper.class, 
-    InvoiceDossierServieStatusMapper.class, 
     UserMapper.class
 })
 public interface InvoiceDossierServiceMapper {

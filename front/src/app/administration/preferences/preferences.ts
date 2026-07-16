@@ -53,8 +53,4 @@ export class Preferences {
     this.navigationService.navigateToInvoiceTypeOfServiceForm();
   }
 
-  navigateToInvoiceDossierServieStatusForm() {
-    this.navigationService.navigateToInvoiceDossierServieStatusForm();
-  }
-
 }

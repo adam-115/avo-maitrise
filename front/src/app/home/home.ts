@@ -60,6 +60,12 @@ export class Home {
     this.isSidebarOpen = false;
   }
 
+  navigateToBillingDashboard() {
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.BILLING_DASHBOARD);
+    this.activeRoute = NavigationService.BILLING_DASHBOARD;
+    this.isSidebarOpen = false;
+  }
+
   navigateToCalendrier() {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.CALENDRIER);
     this.activeRoute = 'calendrier';

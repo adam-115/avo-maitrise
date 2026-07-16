@@ -60,4 +60,10 @@ public class CabinetProfile {
 
     @Column(name = "logo_content_type")
     private String logoContentType;
+
+    @Column(name = "currency", length = 10)
+    private String currency = "EUR";
+
+    @Column(name = "tva_rate")
+    private Double tvaRate = 20.0;
 }

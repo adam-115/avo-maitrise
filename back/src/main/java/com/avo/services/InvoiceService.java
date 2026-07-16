@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.avo.dtos.InvoiceDTO;
 import com.avo.entities.Invoice;
-import com.avo.entities.InvoiceDossierServieStatus;
+import com.avo.entities.InvoiceDossierServiceStatusEnum;
 import com.avo.entities.InvoiceStatusEnum;
 import com.avo.entities.InvoiceTimeEntry;
 import com.avo.mappers.InvoiceMapper;
@@ -24,17 +24,14 @@ public class InvoiceService {
     private final InvoiceRepository repository;
     private final InvoiceMapper mapper;
     private final InvoiceTimeEntryService timeEntryService;
-    private final InvoiceDossierServieStatusService statusService;
     private final InvoiceDossierServiceService dossierServiceService;
 
     public InvoiceService(InvoiceRepository repository, InvoiceMapper mapper, 
                           InvoiceTimeEntryService timeEntryService, 
-                          InvoiceDossierServieStatusService statusService,
                           InvoiceDossierServiceService dossierServiceService) {
         this.repository = repository;
         this.mapper = mapper;
         this.timeEntryService = timeEntryService;
-        this.statusService = statusService;
         this.dossierServiceService = dossierServiceService;
     }
 
@@ -65,13 +62,11 @@ public class InvoiceService {
         Invoice savedInvoice = repository.save(entity);
         
         if (entity.getInvoiceTimeEntries() != null) {
-            InvoiceDossierServieStatus inProgressStatus = statusService.findEntityByCode("EN_COURS_DE_FACTURATION");
-            
             for (InvoiceTimeEntry entry : entity.getInvoiceTimeEntries()) {
                 entry.setInvoice(savedInvoice);
                 
-                if (entry.getInvoiceDossierService() != null && inProgressStatus != null) {
-                    entry.getInvoiceDossierService().setInvoiceDossierServieStatus(inProgressStatus);
+                if (entry.getInvoiceDossierService() != null) {
+                    entry.getInvoiceDossierService().setStatus(InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION);
                     dossierServiceService.saveEntity(entry.getInvoiceDossierService());
                 }
                 
@@ -110,12 +105,10 @@ public class InvoiceService {
                         .collect(java.util.stream.Collectors.toList());
             }
             
-            InvoiceDossierServieStatus enAttenteStatus = statusService.findEntityByCode("EN_ATTENTE");
-            
             for (InvoiceTimeEntry existingEntry : existingInvoice.getInvoiceTimeEntries()) {
                 if (!incomingIds.contains(existingEntry.getId())) {
-                    if (existingEntry.getInvoiceDossierService() != null && enAttenteStatus != null) {
-                        existingEntry.getInvoiceDossierService().setInvoiceDossierServieStatus(enAttenteStatus);
+                    if (existingEntry.getInvoiceDossierService() != null) {
+                        existingEntry.getInvoiceDossierService().setStatus(InvoiceDossierServiceStatusEnum.A_FACTURE);
                         dossierServiceService.saveEntity(existingEntry.getInvoiceDossierService());
                     }
                     timeEntryService.delete(existingEntry.getId());
@@ -126,14 +119,12 @@ public class InvoiceService {
         Invoice savedInvoice = repository.save(entity);
         
         if (isDraft) {
-            InvoiceDossierServieStatus inProgressStatus = statusService.findEntityByCode("EN_COURS_DE_FACTURATION");
-            
             if (entity.getInvoiceTimeEntries() != null) {
                 for (InvoiceTimeEntry entry : entity.getInvoiceTimeEntries()) {
                     entry.setInvoice(savedInvoice);
                     
-                    if (entry.getInvoiceDossierService() != null && inProgressStatus != null) {
-                        entry.getInvoiceDossierService().setInvoiceDossierServieStatus(inProgressStatus);
+                    if (entry.getInvoiceDossierService() != null) {
+                        entry.getInvoiceDossierService().setStatus(InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION);
                         dossierServiceService.saveEntity(entry.getInvoiceDossierService());
                     }
                     

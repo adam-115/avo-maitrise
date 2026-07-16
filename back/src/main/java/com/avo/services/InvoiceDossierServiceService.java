@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.avo.dtos.InvoiceDossierServiceDTO;
 import com.avo.entities.InvoiceDossierService;
+import com.avo.entities.InvoiceDossierServiceStatusEnum;
 import com.avo.mappers.InvoiceDossierServiceMapper;
 import com.avo.repositories.InvoiceDossierServiceRepository;
 import com.querydsl.core.types.Predicate;
@@ -62,9 +63,9 @@ public class InvoiceDossierServiceService {
         log.info("[ENTER] Executing update");
         InvoiceDossierService existing = repository.findById(dto.getId()).orElseThrow(() -> new RuntimeException("Prestation non trouvée"));
         
-        if (existing.getInvoiceDossierServieStatus() != null) {
-            String code = existing.getInvoiceDossierServieStatus().getCode();
-            if ("FACTURE".equals(code) || "EN_COURS_DE_FACTURATION".equals(code)) {
+        if (existing.getStatus() != null) {
+            InvoiceDossierServiceStatusEnum status = existing.getStatus();
+            if (InvoiceDossierServiceStatusEnum.FACTUREE.equals(status) || InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION.equals(status)) {
                 throw new RuntimeException("Impossible de modifier une prestation facturée ou en cours de facturation");
             }
         }
@@ -84,9 +85,9 @@ public class InvoiceDossierServiceService {
         log.info("[ENTER] Executing delete");
         InvoiceDossierService entity = repository.findById(id).orElseThrow(() -> new RuntimeException("Prestation non trouvée"));
         
-        if (entity.getInvoiceDossierServieStatus() != null) {
-            String code = entity.getInvoiceDossierServieStatus().getCode();
-            if ("FACTURE".equals(code) || "EN_COURS_DE_FACTURATION".equals(code)) {
+        if (entity.getStatus() != null) {
+            InvoiceDossierServiceStatusEnum status = entity.getStatus();
+            if (InvoiceDossierServiceStatusEnum.FACTUREE.equals(status) || InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION.equals(status)) {
                 throw new RuntimeException("Impossible de supprimer une prestation facturée ou en cours de facturation");
             }
         }

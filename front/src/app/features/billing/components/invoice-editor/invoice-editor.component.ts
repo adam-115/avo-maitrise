@@ -102,8 +102,7 @@ export class InvoiceEditorComponent implements OnInit {
             next: (res) => {
                 const prestations = res.content || [];
                 const eligible = prestations.filter((p: any) => 
-                    p.invoiceDossierServieStatus?.code === 'EN_ATTENTE' || 
-                    p.invoiceDossierServieStatus?.code === 'REPORTED'
+                    p.status === 'A_FACTURE'
                 );
 
                 const mappedEntries: InvoiceTimeEntry[] = eligible.map((p: any) => ({

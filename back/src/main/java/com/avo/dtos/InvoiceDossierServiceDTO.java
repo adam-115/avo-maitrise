@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.Date;
+import com.avo.entities.InvoiceDossierServiceStatusEnum;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +18,7 @@ public class InvoiceDossierServiceDTO {
     private int nbrOfMinutes;
     private DossierDTO dossier;
     private InvoiceTypeOfServiceDTO invoiceTypeOfService;
-    private InvoiceDossierServieStatusDTO invoiceDossierServieStatus;
+    private InvoiceDossierServiceStatusEnum status;
     private UserDTO createdBy;
     private UserDTO doneBy;
 }

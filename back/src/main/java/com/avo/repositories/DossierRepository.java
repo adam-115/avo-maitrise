@@ -5,8 +5,19 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 import com.avo.entities.Dossier;
 
+import java.util.List;
+
 @Repository
 public interface DossierRepository extends JpaRepository<Dossier, Long>, QuerydslPredicateExecutor<Dossier> {
+
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
+    long countDistinctClientIdByStatutIDNotIn(List<String> statutIds);
+
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d")
+    long countDistinctClientId();
+
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
+    long countByStatutIDNotIn(List<String> statutIds);
 
     @org.springframework.data.jpa.repository.Query("SELECT d FROM Dossier d WHERE " +
            "(:searchTerm IS NULL OR :searchTerm = '' OR " +

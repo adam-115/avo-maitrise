@@ -99,6 +99,17 @@
                 </svg>
                 <span>Facturation</span>
             </a>
+            <a (click)="navigateToBillingDashboard()"
+                [ngClass]="activeRoute === paths.BILLING_DASHBOARD ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
+                class="flex items-center space-x-3 p-3 cursor-pointer transition duration-150">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                    </path>
+                </svg>
+                <span>Tableau de bord (Facturation)</span>
+            </a>
             <a (click)="navigateToAdministration()"
                 [ngClass]="activeRoute === paths.ADMINSTRATION ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
                 class="flex items-center cursor-pointer space-x-3 p-3 rounded-lg transition duration-150">

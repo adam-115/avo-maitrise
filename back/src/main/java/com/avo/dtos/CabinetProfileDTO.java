@@ -23,4 +23,6 @@ public class CabinetProfileDTO {
     // Actually, including byte[] in DTO is fine for Jackson to serialize as Base64 automatically.
     private byte[] logo;
     private String logoContentType;
+    private String currency = "EUR";
+    private Double tvaRate = 20.0;
 }

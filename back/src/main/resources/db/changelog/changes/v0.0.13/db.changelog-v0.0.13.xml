@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="add-currency-tva-to-cabinet" author="antigravity">
+        <addColumn tableName="cabinet_profile">
+            <column name="currency" type="VARCHAR(10)" defaultValue="EUR"/>
+            <column name="tva_rate" type="DOUBLE" defaultValue="20.0"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

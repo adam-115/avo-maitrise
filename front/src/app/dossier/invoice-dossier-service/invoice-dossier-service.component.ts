@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InvoiceDossierServiceService } from '../../services/invoice-dossier-service.service';
 import { InvoiceTypeOfServiceService } from '../../services/invoice-type-of-service.service';
-import { InvoiceDossierServieStatusService } from '../../services/invoice-dossier-servie-status.service';
-import { InvoiceDossierService, InvoiceTypeOfService, InvoiceDossierServieStatus, User, InvoiceTimeEntry } from '../../appTypes';
+import { InvoiceDossierService, InvoiceTypeOfService, User, InvoiceTimeEntry, InvoiceDossierServiceStatusEnum } from '../../appTypes';
 import { AlertService } from '../../services/alert-service';
 import { UserService } from '../../services/user.service';
 import { KeycloakService } from '../../services/keycloak.service';
@@ -24,8 +23,9 @@ export class InvoiceDossierServiceComponent implements OnInit {
 
   prestations: InvoiceDossierService[] = [];
   typesOfService: InvoiceTypeOfService[] = [];
-  statuses: InvoiceDossierServieStatus[] = [];
   users: User[] = [];
+  
+  statusOptions = Object.values(InvoiceDossierServiceStatusEnum);
   
   currentUser: User | null = null;
   selectedDoneByUser: User | null = null;
@@ -39,7 +39,6 @@ export class InvoiceDossierServiceComponent implements OnInit {
   
   private prestationService = inject(InvoiceDossierServiceService);
   private typeOfService = inject(InvoiceTypeOfServiceService);
-  private statusService = inject(InvoiceDossierServieStatusService);
   private fb = inject(FormBuilder);
   private alertService = inject(AlertService);
   private userService = inject(UserService);
@@ -51,14 +50,13 @@ export class InvoiceDossierServiceComponent implements OnInit {
       info: ['', Validators.required],
       nbrOfMinutes: [5, [Validators.required, Validators.min(5)]],
       invoiceTypeOfServiceId: [null, Validators.required],
-      invoiceDossierServieStatusId: [null, Validators.required]
+      status: [InvoiceDossierServiceStatusEnum.A_FACTURE, Validators.required]
     });
   }
 
   ngOnInit(): void {
     this.loadPrestations();
     this.loadTypesOfService();
-    this.loadStatuses();
     this.loadUsers();
   }
 
@@ -78,14 +76,7 @@ export class InvoiceDossierServiceComponent implements OnInit {
     });
   }
 
-  loadStatuses(): void {
-    this.statusService.getAll().subscribe({
-      next: (res: any) => {
-        this.statuses = res.content || [];
-      },
-      error: (err) => console.error(err)
-    });
-  }
+
 
   loadPrestations(): void {
     if (!this.dossierId) return;
@@ -109,14 +100,17 @@ export class InvoiceDossierServiceComponent implements OnInit {
 
   openAddModal(): void {
     this.editingPrestationId = null;
-    this.prestationForm.reset({ nbrOfMinutes: 5 });
+    this.prestationForm.reset({ 
+      nbrOfMinutes: 5,
+      status: InvoiceDossierServiceStatusEnum.A_FACTURE
+    });
     this.selectedDoneByUser = this.currentUser;
     this.showModal = true;
   }
 
   canEditPrestation(prestation: InvoiceDossierService): boolean {
-    const code = prestation.invoiceDossierServieStatus?.code;
-    return code !== 'FACTURE' && code !== 'EN_COURS_DE_FACTURATION';
+    const code = prestation.status;
+    return code !== InvoiceDossierServiceStatusEnum.FACTUREE && code !== InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION;
   }
 
   openEditModal(prestation: InvoiceDossierService): void {
@@ -130,7 +124,7 @@ export class InvoiceDossierServiceComponent implements OnInit {
       info: prestation.info,
       nbrOfMinutes: prestation.nbrOfMinutes,
       invoiceTypeOfServiceId: prestation.invoiceTypeOfService?.id,
-      invoiceDossierServieStatusId: prestation.invoiceDossierServieStatus?.id
+      status: prestation.status || InvoiceDossierServiceStatusEnum.A_FACTURE
     });
     this.selectedDoneByUser = prestation.doneBy || null;
     this.showModal = true;
@@ -185,24 +179,57 @@ export class InvoiceDossierServiceComponent implements OnInit {
   }
 
   onConfirmGeneration(selectedItems: InvoiceTimeEntry[]): void {
-    // La création de facture est maintenant gérée directement dans la modale
-    this.closeGenerateInvoiceModal();
-    this.loadPrestations();
+    if (selectedItems.length === 0) {
+      this.closeGenerateInvoiceModal();
+      return;
+    }
+
+    const subtotalAmount = selectedItems.reduce((sum, item) => {
+      const minutes = item.nbrOfMinutes || 0;
+      const price = item.price5min || 0;
+      return sum + ((minutes / 5) * price);
+    }, 0);
+
+    const taxRate = 20; // Default VAT
+    const totalAmount = subtotalAmount + (subtotalAmount * (taxRate / 100));
+    
+    const newInvoice: any = {
+      status: 'DRAFT',
+      issueDate: new Date().toISOString(),
+      dueDate: new Date(new Date().setDate(new Date().getDate() + 30)).toISOString(), // 30 days later
+      invoiceTimeEntries: selectedItems,
+      subtotalAmount: subtotalAmount,
+      taxRate: taxRate,
+      totalAmount: totalAmount,
+      dunningLevel: 0,
+      isDisputed: false,
+      dossier: { id: Number(this.dossierId) }
+    };
+
+    this.invoiceService.create(newInvoice).subscribe({
+      next: () => {
+        this.alertService.displayMessage('Succès', 'Facture brouillon générée avec succès.', 'success');
+        this.closeGenerateInvoiceModal();
+        this.loadPrestations();
+      },
+      error: (err) => {
+        console.error('Erreur lors de la génération de la facture:', err);
+        this.alertService.displayMessage('Erreur', 'Erreur lors de la génération de la facture.', 'error');
+      }
+    });
   }
 
   onSubmit(): void {
     if (this.prestationForm.valid) {
       const formValue = this.prestationForm.value;
       const type = this.typesOfService.find(t => String(t.id) === String(formValue.invoiceTypeOfServiceId));
-      const status = this.statuses.find(s => String(s.id) === String(formValue.invoiceDossierServieStatusId));
-      
       const newPrestation: InvoiceDossierService = {
         id: this.editingPrestationId || undefined,
         info: formValue.info,
         nbrOfMinutes: formValue.nbrOfMinutes,
         dossier: { id: Number(this.dossierId) } as any,
         invoiceTypeOfService: type,
-        invoiceDossierServieStatus: status,
+        status: formValue.status,
         doneBy: this.selectedDoneByUser || undefined
       };
 

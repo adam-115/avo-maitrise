@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.io.ByteArrayOutputStream;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,10 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,16 +47,51 @@ public class ReportingService {
     public byte[] generateInvoicePdf(Long invoiceId) {
         try {
             log.info("[ENTER] generateInvoicePdf for invoice id: {}", invoiceId);
-            Invoice invoice = invoiceRepository.findById(invoiceId)
-                    .orElseThrow(() -> new RuntimeException("Invoice not found: " + invoiceId));
+            JasperPrint jasperPrint = generateJasperPrint(invoiceId);
+            return JasperExportManager.exportReportToPdf(jasperPrint);
+        } catch (Exception e) {
+            log.error("Failed to generate PDF for invoice {}", invoiceId, e);
+            throw new RuntimeException("Error generating PDF", e);
+        }
+    }
 
-            CabinetProfileDTO cabinetProfile = cabinetProfileService.getProfile();
+    public byte[] generateBulkInvoicePdf(List<Long> invoiceIds) {
+        try {
+            log.info("[ENTER] generateBulkInvoicePdf for invoices: {}", invoiceIds);
+            List<JasperPrint> jasperPrintList = new ArrayList<>();
+            for (Long id : invoiceIds) {
+                jasperPrintList.add(generateJasperPrint(id));
+            }
 
-            // Load and compile the template
-            InputStream reportStream = new ClassPathResource("report/templates/invoice.jrxml").getInputStream();
-            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            JRPdfExporter exporter = new JRPdfExporter();
+            exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrintList));
+            exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(outputStream));
+            
+            SimplePdfExporterConfiguration configuration = new SimplePdfExporterConfiguration();
+            configuration.setCreatingBatchModeBookmarks(true);
+            exporter.setConfiguration(configuration);
+            
+            exporter.exportReport();
+            return outputStream.toByteArray();
 
-            // Prepare Parameters
+        } catch (Exception e) {
+            log.error("Failed to generate bulk PDF for invoices {}", invoiceIds, e);
+            throw new RuntimeException("Error generating bulk PDF", e);
+        }
+    }
+
+    private JasperPrint generateJasperPrint(Long invoiceId) throws Exception {
+        Invoice invoice = invoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new RuntimeException("Invoice not found: " + invoiceId));
+
+        CabinetProfileDTO cabinetProfile = cabinetProfileService.getProfile();
+
+        // Load and compile the template
+        InputStream reportStream = new ClassPathResource("report/templates/invoice.jrxml").getInputStream();
+        JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+        // Prepare Parameters
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("cabinetName", cabinetProfile.getName() != null ? cabinetProfile.getName() : "");
             parameters.put("cabinetAddress", cabinetProfile.getAddress() != null ? cabinetProfile.getAddress() : "");
@@ -113,12 +153,7 @@ public class ReportingService {
             JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataSourceList);
 
             // Fill and Export
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-            return JasperExportManager.exportReportToPdf(jasperPrint);
+            return JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
-        } catch (Exception e) {
-            log.error("Failed to generate PDF for invoice {}", invoiceId, e);
-            throw new RuntimeException("Error generating PDF", e);
-        }
     }
 }

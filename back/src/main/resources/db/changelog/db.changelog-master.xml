@@ -15,4 +15,6 @@
     <include file="changes/v0.0.9/db.changelog-v0.0.9.xml" relativeToChangelogFile="true"/>
     <include file="changes/v0.0.10/db.changelog-v0.0.10.xml" relativeToChangelogFile="true"/>
     <include file="changes/v0.0.11/db.changelog-v0.0.11.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.12/change_status_to_enum.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.13/db.changelog-v0.0.13.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

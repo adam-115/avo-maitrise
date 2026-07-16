@@ -28,8 +28,8 @@ export class GenerateInvoiceDialog implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['generatedTimeEntries'] && changes['generatedTimeEntries'].currentValue) {
       this.selectableEntries = this.generatedTimeEntries.map(entry => {
-        const statusCode = entry.invoiceDossierService?.invoiceDossierServieStatus?.code;
-        const isEligible = statusCode === 'EN_ATTENTE' || statusCode === 'REPORTED';
+        const statusCode = entry.invoiceDossierService?.status;
+        const isEligible = statusCode === 'A_FACTURE';
         
         return {
           entry,
