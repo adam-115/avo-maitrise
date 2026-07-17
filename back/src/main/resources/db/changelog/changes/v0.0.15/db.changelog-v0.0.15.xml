@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="update-invoice_types_of_service-descriptions" author="antigravity">
+        <sql>
+            UPDATE invoice_types_of_service SET price5min = 20.00 WHERE code = 'RDV';
+            UPDATE invoice_types_of_service SET description = 'Entretien téléphonique (client, juridiction, confrère).', price5min = 15.00 WHERE code = 'TEL';
+            UPDATE invoice_types_of_service SET description = 'Traitement, lecture et rédaction d''emails ou de courriers.', price5min = 15.00 WHERE code = 'COR';
+            UPDATE invoice_types_of_service SET description = 'Réunion de travail interne au cabinet sur le dossier.', price5min = 25.00 WHERE code = 'REU';
+            UPDATE invoice_types_of_service SET description = 'Fourniture d''un conseil juridique oral ou écrit court.', price5min = 20.00 WHERE code = 'CON';
+            UPDATE invoice_types_of_service SET description = 'Rédaction d''actes, de contrats, de conclusions ou de mémorandums.', price5min = 25.00 WHERE code = 'RED';
+            UPDATE invoice_types_of_service SET description = 'Examen, relecture et correction de documents ou de pièces adverses.', price5min = 25.00 WHERE code = 'REV';
+            UPDATE invoice_types_of_service SET description = 'Recherche juridique, analyse de jurisprudence ou de doctrine.', price5min = 20.00 WHERE code = 'RCH';
+            UPDATE invoice_types_of_service SET description = 'Traduction de documents juridiques ou de correspondances.', price5min = 15.00 WHERE code = 'TRD';
+            UPDATE invoice_types_of_service SET description = 'Assistance, représentation ou plaidoirie devant une juridiction.', price5min = 30.00 WHERE code = 'AUD';
+            UPDATE invoice_types_of_service SET description = 'Dépôt de dossier au greffe, démarches auprès des tribunaux.', price5min = 10.00 WHERE code = 'DEP';
+            UPDATE invoice_types_of_service SET description = 'Assistance à une réunion d''expertise (judiciaire ou amiable).', price5min = 30.00 WHERE code = 'EXP';
+            UPDATE invoice_types_of_service SET description = 'Suivi de la procédure de mise en état.', price5min = 15.00 WHERE code = 'MEC';
+            UPDATE invoice_types_of_service SET description = 'Création du dossier, conflit d''intérêts, paramétrage initial.', price5min = 10.00 WHERE code = 'OUV';
+            UPDATE invoice_types_of_service SET description = 'Vérification d''identité, analyse des bénéficiaires effectifs, filtrage de sanctions (Anti-Blanchiment).', price5min = 10.00 WHERE code = 'KYC';
+            UPDATE invoice_types_of_service SET description = 'Préparation, révision des timesheets et émission des factures.', price5min = 5.00 WHERE code = 'FAC';
+            UPDATE invoice_types_of_service SET description = 'Temps de déplacement (souvent facturé à un taux réduit).', price5min = 10.00 WHERE code = 'VOY';
+            UPDATE invoice_types_of_service SET description = 'Fermeture du dossier et archivage des pièces.', price5min = 5.00 WHERE code = 'CLO';
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -7,14 +7,6 @@
     <include file="changes/v0.0.1/db.changelog-v0.0.1.xml" relativeToChangelogFile="true"/>
     <!-- <include file="changes/v0.0.2/db.changelog-v0.0.2.xml" relativeToChangelogFile="true"/> -->
     <include file="changes/v0.0.3/db.changelog-v0.0.3.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0.4/db.changelog-v0.0.4.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0.5/db.changelog-v0.0.5.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0.6/db.changelog-v0.0.6.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0.7/db.changelog-v0.0.7.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0.8/db.changelog-v0.0.8.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0.9/db.changelog-v0.0.9.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0.10/db.changelog-v0.0.10.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0.11/db.changelog-v0.0.11.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0.12/change_status_to_enum.xml" relativeToChangelogFile="true"/>
-    <include file="changes/v0.0.13/db.changelog-v0.0.13.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.14/db.changelog-squashed.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.15/db.changelog-v0.0.15.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <include file="../v0.0.4/add-keycloak-id.sql" relativeToChangelogFile="true"/>
+    <changeSet logicalFilePath="changes/v0.0.5/db.changelog-v0.0.5.xml" id="create-invoice_types_of_service-table" author="antigravity">
+        <createTable tableName="invoice_types_of_service">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="actif" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price5min" type="DECIMAL(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.5/db.changelog-v0.0.5.xml" id="insert-invoice_types_of_service-data" author="antigravity">
+        <!-- 1. Rendez-vous et Echanges -->
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="RDV"/>
+            <column name="description" value="Rendez-vous physique ou visio avec le client."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="TEL"/>
+            <column name="description" value="Entretien téléphonique (client, juridiction, confrère)."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="COR"/>
+            <column name="description" value="Traitement, lecture et rédaction d'emails ou de courriers."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="REU"/>
+            <column name="description" value="Réunion de travail interne au cabinet sur le dossier."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="CON"/>
+            <column name="description" value="Fourniture d'un conseil juridique oral ou écrit court."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+
+        <!-- 2. Rédaction, Analyse et Production -->
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="RED"/>
+            <column name="description" value="Rédaction d'actes, de contrats, de conclusions ou de mémorandums."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="REV"/>
+            <column name="description" value="Examen, relecture et correction de documents ou de pièces adverses."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="RCH"/>
+            <column name="description" value="Recherche juridique, analyse de jurisprudence ou de doctrine."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="TRD"/>
+            <column name="description" value="Traduction de documents juridiques ou de correspondances."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+
+        <!-- 3. Procédure et Représentation -->
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="AUD"/>
+            <column name="description" value="Assistance, représentation ou plaidoirie devant une juridiction."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="DEP"/>
+            <column name="description" value="Dépôt de dossier au greffe, démarches auprès des tribunaux."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="EXP"/>
+            <column name="description" value="Assistance à une réunion d'expertise (judiciaire ou amiable)."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="MEC"/>
+            <column name="description" value="Suivi de la procédure de mise en état."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+
+        <!-- 4. Administratif, Compliance et Gestion -->
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="OUV"/>
+            <column name="description" value="Création du dossier, conflit d'intérêts, paramétrage initial."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="KYC"/>
+            <column name="description" value="Vérification d'identité, analyse des bénéficiaires effectifs, filtrage de sanctions (Anti-Blanchiment)."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="FAC"/>
+            <column name="description" value="Préparation, révision des timesheets et émission des factures."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="VOY"/>
+            <column name="description" value="Temps de déplacement (souvent facturé à un taux réduit)."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+        <insert tableName="invoice_types_of_service">
+            <column name="code" value="CLO"/>
+            <column name="description" value="Fermeture du dossier et archivage des pièces."/>
+            <column name="price5min" valueNumeric="0.00"/>
+        </insert>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.6/db.changelog-v0.0.6.xml" id="create-invoice-dossier-service-status-table" author="antigravity">
+        <createTable tableName="invoice_dossier_service_status">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="color" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="code" type="VARCHAR(255)">
+                <constraints unique="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true"/>
+            <column name="created_by_user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.6/db.changelog-v0.0.6.xml" id="insert-invoice-dossier-service-statuses" author="antigravity">
+        <insert tableName="invoice_dossier_service_status">
+            <column name="code" value="FACTURE"/>
+            <column name="name" value="Facturé"/>
+            <column name="description" value="Facturé"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="invoice_dossier_service_status">
+            <column name="code" value="EN_ATTENTE"/>
+            <column name="name" value="En attente"/>
+            <column name="description" value="En attente"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="invoice_dossier_service_status">
+            <column name="code" value="ANNULEE"/>
+            <column name="name" value="Annulée"/>
+            <column name="description" value="Annulée"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="invoice_dossier_service_status">
+            <column name="code" value="REPORTED"/>
+            <column name="name" value="Reported"/>
+            <column name="description" value="Reported"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+        <insert tableName="invoice_dossier_service_status">
+            <column name="code" value="REPORTE"/>
+            <column name="name" value="Reporté"/>
+            <column name="description" value="Reporté"/>
+            <column name="active" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.7/db.changelog-v0.0.7.xml" id="create-invoice-dossier-services-table" author="antigravity">
+        <createTable tableName="invoice_dossier_services">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_by_id" type="BIGINT"/>
+            <column name="creation_date" type="DATETIME"/>
+            <column name="done_by_id" type="BIGINT"/>
+            <column name="dossier_id" type="BIGINT"/>
+            <column name="info" type="VARCHAR(255)"/>
+            <column name="invoice_dossier_servie_status_id" type="BIGINT"/>
+            <column name="invoice_type_of_service_id" type="BIGINT"/>
+            <column name="nbr_of_minutes" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.8/db.changelog-v0.0.8.xml" id="1" author="antigravity">
+        <createTable tableName="invoice">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="numero_facture" type="varchar(255)"/>
+            <column name="status" type="varchar(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="issue_date" type="date"/>
+            <column name="due_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subtotal_amount" type="decimal(18, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tax_amount" type="decimal(18, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_amount" type="decimal(18, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dunning_level" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_disputed" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="dossier_id" type="bigint"/>
+            <column name="note" type="varchar(500)"/>
+        </createTable>
+
+        <createTable tableName="invoice_time_entry">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="invoice_id" type="bigint"/>
+            <column name="invoice_dossier_service_id" type="bigint"/>
+            <column name="nbr_of_minutes" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price5min" type="decimal(19, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="dossier_id" baseTableName="invoice" constraintName="fk_invoice_dossier" referencedColumnNames="id" referencedTableName="dossiers"/>
+        <addForeignKeyConstraint baseColumnNames="invoice_id" baseTableName="invoice_time_entry" constraintName="fk_time_entry_invoice" referencedColumnNames="id" referencedTableName="invoice"/>
+        <addForeignKeyConstraint baseColumnNames="invoice_dossier_service_id" baseTableName="invoice_time_entry" constraintName="fk_time_entry_dossier_service" referencedColumnNames="id" referencedTableName="invoice_dossier_services"/>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.9/db.changelog-v0.0.9.xml" id="create-cabinet-profile-table" author="antigravity">
+        <createTable tableName="cabinet_profile">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(255)"/>
+            <column name="postal_code" type="VARCHAR(255)"/>
+            <column name="country" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="website" type="VARCHAR(255)"/>
+            <column name="siret" type="VARCHAR(255)"/>
+            <column name="vat_number" type="VARCHAR(255)"/>
+            <column name="iban" type="VARCHAR(255)"/>
+            <column name="bic" type="VARCHAR(255)"/>
+            <column name="logo" type="BLOB"/>
+            <column name="logo_content_type" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.10/db.changelog-v0.0.10.xml" id="alter-cabinet-profile-logo-type" author="antigravity">
+        <modifyDataType tableName="cabinet_profile" columnName="logo" newDataType="LONGBLOB"/>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.11/db.changelog-v0.0.11.xml" id="rename-taxamount-to-taxrate" author="antigravity">
+        <renameColumn tableName="invoice" oldColumnName="tax_amount" newColumnName="tax_rate" columnDataType="decimal(5, 2)"/>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.12/change_status_to_enum.xml" id="1" author="antigravity">
+        <!-- Add the new enum column to invoice_dossier_services -->
+        <addColumn tableName="invoice_dossier_services">
+            <column name="status" type="VARCHAR(50)">
+            </column>
+        </addColumn>
+
+        <update tableName="invoice_dossier_services">
+            <column name="status" value="A_FACTURE" />
+        </update>
+
+        <addNotNullConstraint tableName="invoice_dossier_services" columnName="status" columnDataType="VARCHAR(50)" />
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.12/change_status_to_enum.xml" id="2" author="antigravity" dbms="mysql">
+        <!-- Execute raw SQL to drop foreign key for MySQL since the constraint name is auto-generated by Hibernate -->
+        <sql>
+            SET @constraint_name = (
+                SELECT CONSTRAINT_NAME
+                FROM information_schema.KEY_COLUMN_USAGE
+                WHERE TABLE_SCHEMA = DATABASE() 
+                  AND TABLE_NAME = 'invoice_dossier_services' 
+                  AND COLUMN_NAME = 'invoice_dossier_servie_status_id'
+            );
+            
+            SET @query = IF(@constraint_name IS NOT NULL, CONCAT('ALTER TABLE invoice_dossier_services DROP FOREIGN KEY ', @constraint_name), 'SELECT 1');
+            PREPARE stmt FROM @query;
+            EXECUTE stmt;
+            DEALLOCATE PREPARE stmt;
+        </sql>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.12/change_status_to_enum.xml" id="3" author="antigravity">
+        <!-- Drop the column -->
+        <dropColumn tableName="invoice_dossier_services" columnName="invoice_dossier_servie_status_id"/>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.12/change_status_to_enum.xml" id="4" author="antigravity">
+        <!-- Drop the table -->
+        <dropTable tableName="invoice_dossier_service_status" cascadeConstraints="true"/>
+    </changeSet>
+
+    <changeSet logicalFilePath="changes/v0.0.13/db.changelog-v0.0.13.xml" id="add-currency-tva-to-cabinet" author="antigravity">
+        <addColumn tableName="cabinet_profile">
+            <column name="currency" type="VARCHAR(10)" defaultValue="EUR"/>
+            <column name="tva_rate" type="DOUBLE" defaultValue="20.0"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

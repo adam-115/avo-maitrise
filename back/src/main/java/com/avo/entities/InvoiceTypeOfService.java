@@ -28,7 +28,7 @@ public class InvoiceTypeOfService  {
     private boolean actif = true;
     // peer 5 min
     @Column(nullable = false)
-    private BigDecimal price5min; 
+    private BigDecimal price5min = BigDecimal.ZERO; 
     @Column(nullable = false)
     private Date creationDate = new Date();
     private Date updateDate = null ;
