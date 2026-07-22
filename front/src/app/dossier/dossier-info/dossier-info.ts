@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, inject, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Dossier, Client, User, StatutDossier, DossierPriorite, DomaineJuridique, MatterActivity } from '../../appTypes';
 import { ClientService } from '../../services/client-service';
 import { UserService } from '../../services/user.service';
@@ -13,7 +14,7 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
 @Component({
     selector: 'app-dossier-info',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, RouterModule],
     templateUrl: './dossier-info.html',
     styleUrl: './dossier-info.css'
 })
@@ -136,6 +137,24 @@ export class DossierInfo implements OnInit, OnChanges {
             const user = this.users.find(u => String(u.id) === String(item));
             return user ? user.username : 'Inconnu';
         }).join(', ');
+    }
+
+    getClientName(client: any): string {
+        if (!client) return 'Inconnu';
+        if (client.type === 'SOCIETE') return client.nomCommercial || client.nom || 'Société';
+        if (client.nom || client.prenom) return `${client.prenom || ''} ${client.nom || ''}`.trim();
+        return 'Inconnu';
+    }
+
+    getClientInitials(client: any): string {
+        if (!client) return '?';
+        if (client.type === 'SOCIETE' && client.nomCommercial) {
+            return client.nomCommercial.substring(0, 2).toUpperCase();
+        }
+        const first = client.prenom ? client.prenom.charAt(0) : '';
+        const last = client.nom ? client.nom.charAt(0) : '';
+        const initials = (first + last).toUpperCase();
+        return initials || '?';
     }
 
     getBillingInfo(dossier: Dossier): string {

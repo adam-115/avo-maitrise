@@ -111,6 +111,10 @@ export class ClientCardComponent {
     this.navigationService.navigateToClientDetails(String(this.client.id));
   }
 
+  navigateToConformity() {
+    this.navigationService.navigateToClientConformity(String(this.client.id));
+  }
+
   navigateToEdit() {
     this.navigationService.navigateToClientEdit(String(this.client.id));
   }

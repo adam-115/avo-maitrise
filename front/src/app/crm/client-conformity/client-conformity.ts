@@ -19,13 +19,13 @@ import { AssignFormModalComponent } from '../../due-diligence/assign-form-modal/
 import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 
 @Component({
-  selector: 'app-client-details',
+  selector: 'app-client-conformity',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, MatchAnalysisModal, AssignFormModalComponent, DocumentDialog],
-  templateUrl: './client-details.html',
-  styleUrl: './client-details.css'
+  templateUrl: './client-conformity.html',
+  styleUrl: './client-conformity.css'
 })
-export class ClientDetails implements OnInit {
+export class ClientConformity implements OnInit {
 
   clientService = inject(ClientService);
   screeningExecutionService = inject(ScreeningExecutionService);

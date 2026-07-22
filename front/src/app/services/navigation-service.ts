@@ -30,6 +30,7 @@ export class NavigationService {
   // static readonly ASSOCIATION_EDIT = 'crm/association/edit/:id';
   // static readonly INSTITUTION_EDIT = 'crm/institution/edit/:id';
 
+  static readonly CLIENT_CONFORMITY = 'client-conformity';
   static readonly CLIENT_DETAILS = 'client-details';
   static readonly MODEL = 'model';
   static readonly FACTURATION = 'facturation';
@@ -105,9 +106,11 @@ export class NavigationService {
     this.router.navigate(['/home/', ...NavigationService.NEW_CLIENT.split('/')]);
   }
   navigateToClientDetails(id: string) {
-    // let targetUrl = NavigationService.CLIENT_DETAILS.replace(":id", id);
-    // this.router.navigate(['/home/', ...targetUrl.split("/")]);
     this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS], { queryParams: { id: id } });
+  }
+
+  navigateToClientConformity(id: string) {
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_CONFORMITY], { queryParams: { id: id } });
   }
 
   navigateToClientEdit(id: string) {

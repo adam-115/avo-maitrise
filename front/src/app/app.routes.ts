@@ -38,7 +38,18 @@ export const routes: Routes = [
       },
       {
         path: NavigationService.DOSSIER_DETAIL,
-        loadComponent: () => import('./dossier/dossier-details/dossier-details').then(m => m.DossierDetails)
+        loadComponent: () => import('./dossier/dossier-details/dossier-details').then(m => m.DossierDetails),
+        children: [
+          { path: '', redirectTo: 'vue-ensemble', pathMatch: 'full' },
+          { path: 'vue-ensemble', loadComponent: () => import('./dossier/dossier-vue-ensemble/dossier-vue-ensemble').then(m => m.DossierVueEnsemble) },
+          { path: 'documents', loadComponent: () => import('./document/document/document.component').then(m => m.DocumentComponent) },
+          { path: 'evenements', loadComponent: () => import('./evenement/evenement/evenement.component').then(m => m.EvenementComponent) },
+          { path: 'taches', loadComponent: () => import('./dossier/task-manager/task-manager.component').then(m => m.TaskManagerComponent) },
+          { path: 'notes', loadComponent: () => import('./note/note/note.component').then(m => m.NoteComponent) },
+          { path: 'contacts', loadComponent: () => import('./contact/contact/contact.component').then(m => m.ContactComponent) },
+          { path: 'prestations', loadComponent: () => import('./dossier/invoice-dossier-service/invoice-dossier-service.component').then(m => m.InvoiceDossierServiceComponent) },
+          { path: 'journal', loadComponent: () => import('./dossier/matter-activity/matter-activity').then(m => m.MatterActivityComponent) }
+        ]
       },
       {
         path: NavigationService.CRM,
@@ -85,8 +96,12 @@ export const routes: Routes = [
       //   loadComponent: () => import('./crm/institution-form/institution-form.component').then(m => m.InstitutionFormComponent),
       // },
       {
+        path: NavigationService.CLIENT_CONFORMITY,
+        loadComponent: () => import('./crm/client-conformity/client-conformity').then(m => m.ClientConformity)
+      },
+      {
         path: NavigationService.CLIENT_DETAILS,
-        loadComponent: () => import('./crm/client-details/client-details').then(m => m.ClientDetails)
+        loadComponent: () => import('./crm/client-details/client-details.component').then(m => m.ClientDetailsComponent)
       },
 
 

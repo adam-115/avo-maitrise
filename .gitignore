@@ -13,3 +13,7 @@ back/target/classes/com/avo/controller/HomeController.class
 back/target/classes/com/avo/controller/TestController.class
 back/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
 back/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+back/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+back/target/classes/com/avo/controller/TestController.class
+back/target/classes/com/avo/controller/HomeController.class
+back/target/classes/com/avo/AvoApplication.class

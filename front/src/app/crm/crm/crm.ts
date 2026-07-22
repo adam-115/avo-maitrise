@@ -164,7 +164,7 @@ export class Crm implements OnInit {
 
 
   viewAmlDetails(client: any) {
-    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_DETAILS], { queryParams: { id: client.id } });
+    this.router.navigate([NavigationService.HOME, NavigationService.CLIENT_CONFORMITY], { queryParams: { id: client.id } });
   }
 
 

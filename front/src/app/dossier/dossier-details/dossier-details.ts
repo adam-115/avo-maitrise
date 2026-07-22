@@ -19,8 +19,7 @@ import { InvoiceDossierServiceComponent } from '../invoice-dossier-service/invoi
 
 @Component({
   selector: 'app-dossier-details',
-  imports: [DocumentComponent, CommonModule, EvenementComponent, TaskManagerComponent, NoteComponent, ContactComponent
-    , DossierInfo, ClientStatusAlertComponent, RouterModule, MatterActivityComponent, InvoiceDossierServiceComponent],
+  imports: [CommonModule, ClientStatusAlertComponent, RouterModule],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })
@@ -40,8 +39,7 @@ export class DossierDetails implements OnInit {
   users: User[] = [];
   statuses: StatutDossier[] = [];
 
-  DossierTabType = DossierTabType;
-  selectedTab: DossierTabType = DossierTabType.VUE_ENSEMBLE;
+  activeChild: any;
   shwoDocumentDialog = false;
 
   showStatusDropdown = false;
@@ -50,7 +48,6 @@ export class DossierDetails implements OnInit {
   dossierDetails: any;
 
   ngOnInit(): void {
-    this.selectedTab = DossierTabType.VUE_ENSEMBLE;
     this.getDossierById();
     this.loadUsers();
     this.loadStatuses();
@@ -121,6 +118,7 @@ export class DossierDetails implements OnInit {
   loadUsers(): void {
     this.userService.getAll().subscribe((data: any) => {
       this.users = data.content || [];
+      this.updateChildComponent();
     });
   }
 
@@ -128,6 +126,7 @@ export class DossierDetails implements OnInit {
     this.activatedRoute.params.subscribe((params: any) => {
       this.dossierService.findById(params['id']).subscribe((res: any) => {
         this.selectedDossier = res;
+        this.updateChildComponent();
         if (this.selectedDossier?.client?.id || this.selectedDossier?.clientId) {
           const cid = this.selectedDossier?.client?.id || this.selectedDossier?.clientId;
           this.clientService.findById(cid).subscribe(client => {
@@ -138,21 +137,45 @@ export class DossierDetails implements OnInit {
     });
   }
 
-  getResponsable(): User | undefined {
-    if (!this.selectedDossier || !this.selectedDossier.responsableId) return undefined;
-    return this.users.find(u => String(u.id) === String(this.selectedDossier?.responsableId));
+  onActivate(component: any) {
+    this.activeChild = component;
+    this.updateChildComponent();
   }
 
-  getIntervenants(): User[] {
-    if (!this.selectedDossier || !this.selectedDossier.intervenantsIds) return [];
-    const ids = this.selectedDossier.intervenantsIds.map(id => String(id));
-    return this.users.filter(u => ids.includes(String(u.id)));
-  }
+  updateChildComponent() {
+    if (!this.activeChild) return;
+    
+    const changes: any = {};
+    let hasChanges = false;
 
+    const setInput = (key: string, value: any) => {
+      if (this.activeChild[key] !== value) {
+        changes[key] = {
+          previousValue: this.activeChild[key],
+          currentValue: value,
+          firstChange: this.activeChild[key] === undefined,
+          isFirstChange: () => this.activeChild[key] === undefined
+        };
+        this.activeChild[key] = value;
+        hasChanges = true;
+      }
+    };
 
+    setInput('selectedDossier', this.selectedDossier);
+    setInput('dossierId', this.selectedDossier?.id || '');
+    setInput('dossierID', this.selectedDossier?.id || '');
+    setInput('dossierNumber', this.selectedDossier?.referenceInterne || '');
+    setInput('userId', this.userid);
+    setInput('dossier', this.selectedDossier);
+    setInput('users', this.users);
 
-  updateSelectedTab(tab: DossierTabType) {
-    this.selectedTab = tab;
+    if (hasChanges) {
+      if (typeof this.activeChild.ngOnChanges === 'function') {
+        this.activeChild.ngOnChanges(changes);
+      } else if (typeof this.activeChild.ngOnInit === 'function') {
+        this.activeChild.ngOnInit();
+      }
+    }
   }
 
   openDocumentDilog() {
@@ -167,5 +190,20 @@ export class DossierDetails implements OnInit {
     if (!this.selectedClient) return undefined;
     const client = this.selectedClient as any;
     return client.clientStatus || client.status;
+  }
+
+  getClientName(): string {
+    if (!this.selectedClient) return '';
+    const c: any = this.selectedClient;
+    if (c.type === 'SOCIETE' && c.nomCommercial) {
+      return c.nomCommercial;
+    }
+    if (c.prenom && c.nom) {
+      return `${c.prenom} ${c.nom}`;
+    }
+    if (c.nom) {
+      return c.nom;
+    }
+    return 'Client inconnu';
   }
 }
