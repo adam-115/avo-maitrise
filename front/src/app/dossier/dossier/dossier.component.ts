@@ -114,7 +114,20 @@ export class DossierComponent implements OnInit {
   get pages(): number[] {
     const list: number[] = [];
     const total = this.totalPages;
-    for (let i = 1; i <= total; i++) {
+    
+    let start = Math.max(1, this.currentPage - 2);
+    let end = Math.min(total, this.currentPage + 2);
+
+    // Ajuster si on est près des bords (début ou fin) pour toujours afficher 5 pages si possible
+    if (end - start < 4) {
+      if (start === 1) {
+        end = Math.min(total, start + 4);
+      } else if (end === total) {
+        start = Math.max(1, end - 4);
+      }
+    }
+
+    for (let i = start; i <= end; i++) {
       list.push(i);
     }
     return list;

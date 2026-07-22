@@ -1,2 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+/* 
+ * Ajustement global pour les écrans de 14 pouces (laptops) et plus petits.
+ * La plupart des éléments Tailwind utilisent l'unité "rem" qui dépend de la taille de police de l'élément html.
+ * En réduisant la taille de police globale, on réduit automatiquement toutes les marges, paddings et tailles de polices proportionnellement.
+ */
+@media (max-width: 1440px) {
+  html {
+    /* Par défaut 16px. On réduit à 14px pour compenser les petites résolutions ou les zooms Windows (125%). */
+    font-size: 14px; 
+  }
+}
+
+@media (max-width: 1024px) {
+  html {
+    /* Pour les écrans encore plus petits (tablettes) */
+    font-size: 12px; 
+  }
+}
