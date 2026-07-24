@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InvoiceTimeEntry } from '../../appTypes';
+import { CabinetProfileService } from '../../services/cabinet-profile.service';
 
 export interface SelectableTimeEntry {
   entry: InvoiceTimeEntry;
@@ -15,15 +16,28 @@ export interface SelectableTimeEntry {
   imports: [CommonModule, FormsModule],
   templateUrl: './generate-invoice-dialog.html'
 })
-export class GenerateInvoiceDialog implements OnChanges {
+export class GenerateInvoiceDialog implements OnChanges, OnInit {
   @Input() generatedTimeEntries: InvoiceTimeEntry[] = [];
   @Input() dossier: any;
   
   @Output() closeDialog = new EventEmitter<void>();
   @Output() confirmGeneration = new EventEmitter<InvoiceTimeEntry[]>();
 
+  cabinetProfileService = inject(CabinetProfileService);
+
   selectableEntries: SelectableTimeEntry[] = [];
   vatRate: number = 20;
+
+  ngOnInit(): void {
+    this.cabinetProfileService.getProfile().subscribe({
+      next: (profile) => {
+        if (profile && typeof profile.tvaRate === 'number') {
+          this.vatRate = profile.tvaRate;
+        }
+      },
+      error: (err) => console.error('Erreur chargement profil cabinet', err)
+    });
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['generatedTimeEntries'] && changes['generatedTimeEntries'].currentValue) {
