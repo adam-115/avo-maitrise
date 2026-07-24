@@ -201,14 +201,14 @@ export class InvoiceListComponent implements OnInit {
         if(id) this.router.navigate(['/home/billing/preview', id]);
     }
 
-    deleteInvoice(id: string | number | undefined) {
-        if (!id) return;
-        if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
-            this.invoiceService.delete(id).subscribe(() => {
-                this.loadInvoices();
-            });
-        }
-    }
+    // deleteInvoice(id: string | number | undefined) {
+    //     if (!id) return;
+    //     if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
+    //         this.invoiceService.delete(id).subscribe(() => {
+    //             this.loadInvoices();
+    //         });
+    //     }
+    // }
 
     printInvoice(id: string | number | undefined) {
         if (!id) return;

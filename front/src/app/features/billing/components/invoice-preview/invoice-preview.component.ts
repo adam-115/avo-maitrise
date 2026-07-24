@@ -76,7 +76,19 @@ export class InvoicePreviewComponent implements OnInit {
   }
 
   printInvoice(): void {
-    window.print();
+    const inv = this.invoice();
+    if (!inv || !inv.id) return;
+
+    this.invoiceService.downloadInvoicePdf(inv.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+      },
+      error: (err) => {
+        console.error('Erreur lors du téléchargement du PDF', err);
+        alert('Erreur lors de la génération de la facture PDF.');
+      }
+    });
   }
 
   get clientName(): string {
