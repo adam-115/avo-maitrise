@@ -56,6 +56,7 @@ export class ClientConformity implements OnInit {
   }
 
   isLoading = true;
+  isVerifying = false;
   selectedMatch: ScreeningMatchDTO | null = null;
   isAnalysisModalOpen = false;
   showAddDocumentDialog = false;
@@ -372,6 +373,23 @@ export class ClientConformity implements OnInit {
         this.isAmlLoading = false;
         console.error(err);
         this.alertService.displayMessage('Erreur', 'Impossible de contacter le service Yente.', 'error');
+      }
+    });
+  }
+
+  triggerClientVerification() {
+    if (!this.client || !this.client.id) return;
+    this.isVerifying = true;
+    this.screeningExecutionService.triggerClient(this.client.id).subscribe({
+      next: (result) => {
+        this.isVerifying = false;
+        this.alertService.success('Vérification AML terminée pour le client.');
+        this.loadClient(String(this.client!.id));
+      },
+      error: (err) => {
+        this.isVerifying = false;
+        console.error(err);
+        this.alertService.displayMessage('Erreur', 'Erreur lors de la vérification AML du client.', 'error');
       }
     });
   }

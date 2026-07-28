@@ -17,12 +17,11 @@ export class ScreeningMatchService extends AbstractCrudService<ScreeningMatchDTO
 
     getByClientId(clientId: string | number, page: number = 0, size: number = 10, sort: string = 'createdAt,desc'): Observable<PaginatedResponse<ScreeningMatchDTO>> {
         const params = new HttpParams()
-            .set('client.id', clientId.toString())
             .set('page', page.toString())
             .set('size', size.toString())
             .append('sort', sort)
             .append('sort', 'id,desc');
-        return this.http.get<PaginatedResponse<ScreeningMatchDTO>>(`${this.apiUrl}/search`, { params });
+        return this.http.get<PaginatedResponse<ScreeningMatchDTO>>(`${this.apiUrl}/by-client/${clientId}`, { params });
     }
 
     processDecision(matchId: number, decision: string, comment: string, reviewer: string): Observable<ScreeningMatchDTO> {

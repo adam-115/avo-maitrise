@@ -55,7 +55,15 @@ public class ScreeningMatchController {
         return ResponseEntity.ok(service.processDecision(id, decision, comment, reviewer));
     }
 
+    @GetMapping("/by-client/{clientId}")
+    public ResponseEntity<Page<ScreeningMatchDTO>> findByClientId(@PathVariable Long clientId, Pageable pageable) {
+        return ResponseEntity.ok(service.findByClientId(clientId, pageable));
+    }
 
+    @GetMapping("/by-ubo/{uboId}")
+    public ResponseEntity<Page<ScreeningMatchDTO>> findByUboId(@PathVariable Long uboId, Pageable pageable) {
+        return ResponseEntity.ok(service.findByUboId(uboId, pageable));
+    }
 
     // @DeleteMapping("/{id}")
     // public ResponseEntity<Void> delete(@PathVariable Long id) {

@@ -1,8 +1,6 @@
 package com.avo.yente.service;
 
-import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +17,8 @@ import com.avo.yente.models.YenteMatchRequest;
 import com.avo.yente.models.YenteMatchResponse;
 import com.avo.yente.models.YenteMatchResult;
 import com.avo.yente.models.YenteQueryResponse;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -61,16 +61,25 @@ public class YenteAmlService {
                 .orElseThrow(() -> new RuntimeException("Client not found"));
 
         List<AmlAnalysisResult> result = checkClientStatus(client);
-        AmlAnalysisResult bestResult = result.get(0);
+        AmlAnalysisResult bestResult;
 
-        // Map AML status string to ClientStatus enum
-        String amlStatus = bestResult.getStatus();
-        if ("OK".equalsIgnoreCase(amlStatus)) {
+        if (result == null || result.isEmpty()) {
+            log.info("No AML matches found for client ID: {}", clientId);
+            bestResult = new AmlAnalysisResult();
+            bestResult.setStatus("OK");
+            bestResult.setMatchScore(0.0);
             client.setClientStatus(com.avo.entities.ClientStatus.AML_VALIDATED);
-        } else if ("SUSPECT".equalsIgnoreCase(amlStatus)) {
-            client.setClientStatus(com.avo.entities.ClientStatus.VERIFICATION_AML_REQUIRED);
-        } else if ("BLOCKED".equalsIgnoreCase(amlStatus)) {
-            client.setClientStatus(com.avo.entities.ClientStatus.BLOCKED);
+        } else {
+            bestResult = result.get(0);
+            // Map AML status string to ClientStatus enum
+            String amlStatus = bestResult.getStatus();
+            if ("OK".equalsIgnoreCase(amlStatus)) {
+                client.setClientStatus(com.avo.entities.ClientStatus.AML_VALIDATED);
+            } else if ("SUSPECT".equalsIgnoreCase(amlStatus)) {
+                client.setClientStatus(com.avo.entities.ClientStatus.VERIFICATION_AML_REQUIRED);
+            } else if ("BLOCKED".equalsIgnoreCase(amlStatus)) {
+                client.setClientStatus(com.avo.entities.ClientStatus.BLOCKED);
+            }
         }
 
         clientrepository.save(client);

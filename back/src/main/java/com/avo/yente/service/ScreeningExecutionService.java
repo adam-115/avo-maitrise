@@ -70,6 +70,16 @@ public class ScreeningExecutionService {
         throw new RuntimeException("this method is not allowed ");
     }
     
+    public Page<ScreeningExecutionDTO> findByClientId(Long clientId, Pageable pageable) {
+        log.info("[ENTER] Executing findByClientId for client: {}", clientId);
+        return screeningExecutionRepository.findPageByClientId(clientId, pageable).map(mapper::toDto);
+    }
+
+    public Page<ScreeningExecutionDTO> findByUboId(Long uboId, Pageable pageable) {
+        log.info("[ENTER] Executing findByUboId for ubo: {}", uboId);
+        return screeningExecutionRepository.findPageByUboId(uboId, pageable).map(mapper::toDto);
+    }
+
     public void delete(Long id) {
         log.info("[ENTER] Executing delete");
         screeningExecutionRepository.deleteById(id);

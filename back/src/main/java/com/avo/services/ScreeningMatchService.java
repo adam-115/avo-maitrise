@@ -191,22 +191,17 @@ public class ScreeningMatchService {
         return mapper.toDto(repository.save(entity));
     }
 
+    public Page<ScreeningMatchDTO> findByClientId(Long clientId, Pageable pageable) {
+        log.info("[ENTER] Executing findByClientId for client: {}", clientId);
+        return repository.findPageByClientId(clientId, pageable).map(mapper::toDto);
+    }
 
-    // public Page<ScreeningMatchDTO> getMatchesByClientId(Long clientId, Pageable pageable) {
-    //     QScreeningMatch qMatch = QScreeningMatch.screeningMatch;
-        
-    //     // On définit la condition (Predicate)
-    //     Predicate condition = qMatch.client.id.eq(clientId);
-        
-    //     // On exécute avec la pagination et le tri inclus dans l'objet pageable
-    //     return repository.findAll(condition, pageable).map(mapper::toDto);
-        
-    // }
-    
-    // public void delete(Long id) {
-    //     repository.deleteById(id);
-    // }
+    public Page<ScreeningMatchDTO> findByUboId(Long uboId, Pageable pageable) {
+        log.info("[ENTER] Executing findByUboId for ubo: {}", uboId);
+        return repository.findPageByUboId(uboId, pageable).map(mapper::toDto);
+    }
 
-
-
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
 }
