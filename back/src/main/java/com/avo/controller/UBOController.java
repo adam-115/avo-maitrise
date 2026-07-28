@@ -16,9 +16,22 @@ import com.querydsl.core.types.Predicate;
 public class UBOController {
 
     private final UBOService service;
+    private final com.avo.services.ReportingService reportingService;
 
-    public UBOController(UBOService service) {
+    public UBOController(UBOService service, com.avo.services.ReportingService reportingService) {
         this.service = service;
+        this.reportingService = reportingService;
+    }
+
+    @GetMapping("/aml-report/pdf")
+    public ResponseEntity<byte[]> generateAmlReportPdf(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+        byte[] pdfBytes = reportingService.generateGlobalUboAmlReport(startDate, endDate);
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "audit_lcb_ft_ubos_" + java.time.LocalDate.now() + ".pdf");
+        return ResponseEntity.ok().headers(headers).body(pdfBytes);
     }
 
     @GetMapping

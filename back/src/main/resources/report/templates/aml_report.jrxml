@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+              name="aml_global_report" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30" whenNoDataType="AllSectionsNoDetail" uuid="a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d">
+    
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+
+    <!-- Styles -->
+    <style name="Base" isDefault="true" fontName="SansSerif" fontSize="9" forecolor="#334155"/>
+    <style name="HeaderTitle" fontName="SansSerif" fontSize="20" isBold="true" forecolor="#0F172A"/>
+    <style name="HeaderSubtitle" fontName="SansSerif" fontSize="10" isBold="true" forecolor="#0E7490"/>
+    <style name="CabinetName" fontName="SansSerif" fontSize="13" isBold="true" forecolor="#0F172A"/>
+    <style name="KpiTitle" fontName="SansSerif" fontSize="8" isBold="true" forecolor="#64748B"/>
+    <style name="KpiValue" fontName="SansSerif" fontSize="16" isBold="true" forecolor="#0F172A"/>
+    <style name="TableColumnHeader" fontName="SansSerif" fontSize="9" isBold="true" forecolor="#FFFFFF" backcolor="#1E293B" vTextAlign="Middle"/>
+    <style name="TableCell" fontName="SansSerif" fontSize="9" forecolor="#334155" vTextAlign="Middle">
+        <box topPadding="4" leftPadding="5" bottomPadding="4" rightPadding="5">
+            <bottomPen lineWidth="0.5" lineColor="#E2E8F0"/>
+        </box>
+    </style>
+
+    <!-- Parameters -->
+    <parameter name="cabinetName" class="java.lang.String"/>
+    <parameter name="cabinetAddress" class="java.lang.String"/>
+    <parameter name="cabinetPhone" class="java.lang.String"/>
+    <parameter name="cabinetEmail" class="java.lang.String"/>
+    <parameter name="logo" class="java.io.InputStream"/>
+    <parameter name="reportDate" class="java.lang.String"/>
+    <parameter name="periodText" class="java.lang.String"/>
+    <parameter name="totalClients" class="java.lang.String"/>
+    <parameter name="complianceRate" class="java.lang.String"/>
+    <parameter name="highRiskCount" class="java.lang.String"/>
+    <parameter name="blockedCount" class="java.lang.String"/>
+    <parameter name="expertComment" class="java.lang.String"/>
+    <parameter name="lastScreeningDate" class="java.lang.String"/>
+
+    <!-- Fields (DataSource) -->
+    <field name="clientName" class="java.lang.String"/>
+    <field name="clientType" class="java.lang.String"/>
+    <field name="countrySector" class="java.lang.String"/>
+    <field name="createdDate" class="java.lang.String"/>
+    <field name="riskLevel" class="java.lang.String"/>
+    <field name="amlStatus" class="java.lang.String"/>
+
+    <!-- Title & Executive Summary Band -->
+    <title>
+        <band height="255" splitType="Stretch">
+            <!-- Logo -->
+            <image scaleImage="RetainShape" hAlign="Left" vAlign="Top">
+                <reportElement x="0" y="0" width="130" height="50" uuid="b1111111-2222-3333-4444-555555555555">
+                    <printWhenExpression><![CDATA[$P{logo} != null]]></printWhenExpression>
+                </reportElement>
+                <imageExpression><![CDATA[$P{logo}]]></imageExpression>
+            </image>
+
+            <!-- Left: Cabinet Info -->
+            <textField textAdjust="StretchHeight">
+                <reportElement style="CabinetName" positionType="Float" x="0" y="55" width="220" height="18" uuid="c2222222-3333-4444-5555-666666666666"/>
+                <textFieldExpression><![CDATA[$P{cabinetName} != null ? $P{cabinetName} : "Cabinet d'Avocats"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" positionType="Float" x="0" y="74" width="220" height="35" forecolor="#64748B" uuid="d3333333-4444-5555-6666-777777777777"/>
+                <textFieldExpression><![CDATA[($P{cabinetAddress} != null ? $P{cabinetAddress} + "\n" : "") +
+"Tél: " + ($P{cabinetPhone} != null ? $P{cabinetPhone} : "") + " | Email: " + ($P{cabinetEmail} != null ? $P{cabinetEmail} : "")]]></textFieldExpression>
+            </textField>
+
+            <!-- Top Right: Title and Subtitle -->
+            <staticText>
+                <reportElement style="HeaderTitle" x="230" y="0" width="305" height="28" uuid="e4444444-5555-6666-7777-888888888888"/>
+                <textElement textAlignment="Right" verticalAlignment="Top"/>
+                <text><![CDATA[AUDIT DE CONFORMITÉ AML]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="HeaderSubtitle" x="230" y="28" width="305" height="16" uuid="f5555555-6666-7777-8888-999999999999"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Lutte contre le blanchiment d'argent & financement du terrorisme]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="230" y="50" width="305" height="14" forecolor="#334155" uuid="a6666666-7777-8888-9999-000000000001"/>
+                <textElement textAlignment="Right">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Date de génération : " + ($P{reportDate} != null ? $P{reportDate} : "")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="230" y="66" width="305" height="16" forecolor="#0E7490" uuid="a7777777-8888-9999-0000-111111111111"/>
+                <textElement textAlignment="Right">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Période d'audit : " + ($P{periodText} != null ? $P{periodText} : "2 dernières années (Défaut)")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="150" y="83" width="385" height="24" forecolor="#475569" uuid="a8888888-8888-9999-0000-222222222222"/>
+                <textElement textAlignment="Right">
+                    <font size="8" isItalic="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Moteur LCB-FT : OpenSanctions via Yente (Sanctions, PPE & Watchlists)\nDernier contrôle : " + ($P{lastScreeningDate} != null ? $P{lastScreeningDate} : "Contrôle en continu")]]></textFieldExpression>
+            </textField>
+
+            <!-- KPI BOXES (Y: 115, height: 48) -->
+            <!-- Box 1: Total Clients -->
+            <rectangle radius="6">
+                <reportElement x="0" y="112" width="125" height="48" backcolor="#F8FAFC" uuid="b2222222-1111-0000-2222-333333333333"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#CBD5E1"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="KpiTitle" x="8" y="117" width="110" height="12" uuid="b3333333-2222-1111-3333-444444444444"/>
+                <text><![CDATA[TOTAL CLIENTS AUDITÉS]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="KpiValue" x="8" y="132" width="110" height="22" uuid="b4444444-3333-2222-4444-555555555555"/>
+                <textFieldExpression><![CDATA[$P{totalClients} != null ? $P{totalClients} : "0"]]></textFieldExpression>
+            </textField>
+
+            <!-- Box 2: Compliance Rate -->
+            <rectangle radius="6">
+                <reportElement x="135" y="112" width="125" height="48" backcolor="#F0FDF4" uuid="c1111111-2222-3333-4444-111111111111"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#86EFAC"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="KpiTitle" x="143" y="117" width="110" height="12" forecolor="#16A34A" uuid="c2222222-3333-4444-5555-222222222222"/>
+                <text><![CDATA[TAUX DE CONFORMITÉ]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="KpiValue" x="143" y="132" width="110" height="22" forecolor="#15803D" uuid="c3333333-4444-5555-6666-333333333333"/>
+                <textFieldExpression><![CDATA[$P{complianceRate} != null ? $P{complianceRate} : "0%"]]></textFieldExpression>
+            </textField>
+
+            <!-- Box 3: High Risk Count -->
+            <rectangle radius="6">
+                <reportElement x="270" y="112" width="125" height="48" backcolor="#FFFBEB" uuid="d1111111-2222-3333-4444-444444444444"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#FCD34D"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="KpiTitle" x="278" y="117" width="110" height="12" forecolor="#D97706" uuid="d2222222-3333-4444-5555-555555555555"/>
+                <text><![CDATA[RISQUE ÉLEVÉ (ALERTES)]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="KpiValue" x="278" y="132" width="110" height="22" forecolor="#B45309" uuid="d3333333-4444-5555-6666-666666666666"/>
+                <textFieldExpression><![CDATA[$P{highRiskCount} != null ? $P{highRiskCount} : "0"]]></textFieldExpression>
+            </textField>
+
+            <!-- Box 4: Blocked Count -->
+            <rectangle radius="6">
+                <reportElement x="405" y="112" width="130" height="48" backcolor="#FFF1F2" uuid="e1111111-2222-3333-4444-777777777777"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#FDA4AF"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="KpiTitle" x="413" y="117" width="115" height="12" forecolor="#E11D48" uuid="e2222222-3333-4444-5555-888888888888"/>
+                <text><![CDATA[DOSSIERS BLOQUÉS]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="KpiValue" x="413" y="132" width="115" height="22" forecolor="#BE123C" uuid="e3333333-4444-5555-6666-999999999999"/>
+                <textFieldExpression><![CDATA[$P{blockedCount} != null ? $P{blockedCount} : "0"]]></textFieldExpression>
+            </textField>
+
+            <!-- Expert Assessment Section (Y: 170 to 235) -->
+            <rectangle radius="6">
+                <reportElement x="0" y="172" width="535" height="65" backcolor="#F8FAFC" uuid="f1111111-2222-3333-4444-000000000001"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#CBD5E1"/></graphicElement>
+            </rectangle>
+            <!-- Cyan left accent bar -->
+            <rectangle>
+                <reportElement x="0" y="172" width="5" height="65" backcolor="#0E7490" uuid="f2222222-3333-4444-5555-000000000002"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="HeaderSubtitle" x="15" y="178" width="500" height="14" uuid="f3333333-4444-5555-6666-000000000003"/>
+                <textElement><font isBold="true"/></textElement>
+                <text><![CDATA[AVIS & ÉVALUATION DU RESPONSABLE DE CONFORMITÉ (EXPERT AML)]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="15" y="196" width="510" height="36" forecolor="#334155" uuid="f4444444-5555-6666-7777-000000000004"/>
+                <textElement>
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{expertComment} != null ? $P{expertComment} : "Évaluation globale de conformité conforme aux directives de vigilance de la réglementation LCB-FT."]]></textFieldExpression>
+            </textField>
+
+            <!-- Bottom separator line -->
+            <line>
+                <reportElement positionType="Float" x="0" y="248" width="535" height="1" forecolor="#CBD5E1" uuid="f5555555-6666-7777-8888-000000000005"/>
+                <graphicElement>
+                    <pen lineWidth="1.5" lineColor="#CBD5E1"/>
+                </graphicElement>
+            </line>
+        </band>
+    </title>
+
+    <!-- Column Header -->
+    <columnHeader>
+        <band height="26" splitType="Stretch">
+            <rectangle>
+                <reportElement x="0" y="0" width="535" height="26" backcolor="#1E293B" uuid="11111111-0000-0000-0000-111111111111"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="6" y="0" width="134" height="26" uuid="22222222-0000-0000-0000-222222222222"/>
+                <text><![CDATA[Client / Entité]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="140" y="0" width="80" height="26" uuid="33333333-0000-0000-0000-333333333333"/>
+                <text><![CDATA[Catégorie]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="220" y="0" width="110" height="26" uuid="44444444-0000-0000-0000-444444444444"/>
+                <text><![CDATA[Pays & Secteur]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="330" y="0" width="65" height="26" uuid="55555555-0000-0000-0000-555555555555"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA[Date entrée]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="395" y="0" width="70" height="26" uuid="66666666-0000-0000-0000-666666666666"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA[Risque (Score)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="465" y="0" width="70" height="26" uuid="77777777-0000-0000-0000-777777777777"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Statut AML]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <!-- Detail Band (Table Rows) -->
+    <detail>
+        <band height="24" splitType="Stretch">
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="TableCell" x="6" y="0" width="134" height="24" forecolor="#0F172A" uuid="88888888-1111-2222-3333-444444444444"/>
+                <textElement><font isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{clientName}]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="TableCell" x="140" y="0" width="80" height="24" forecolor="#475569" uuid="99999999-1111-2222-3333-444444444444"/>
+                <textFieldExpression><![CDATA[$F{clientType}]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="TableCell" x="220" y="0" width="110" height="24" forecolor="#475569" uuid="aaaaaaa0-1111-2222-3333-444444444444"/>
+                <textFieldExpression><![CDATA[$F{countrySector}]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="TableCell" x="330" y="0" width="65" height="24" forecolor="#64748B" uuid="aaaaaaa1-1111-2222-3333-444444444444"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$F{createdDate}]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="TableCell" x="395" y="0" width="70" height="24" uuid="aaaaaaa2-1111-2222-3333-444444444444"/>
+                <textElement textAlignment="Center"><font isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{riskLevel}]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="TableCell" x="465" y="0" width="70" height="24" forecolor="#0E7490" uuid="aaaaaaa3-1111-2222-3333-444444444444"/>
+                <textElement textAlignment="Right"><font isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{amlStatus}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- Page Footer -->
+    <pageFooter>
+        <band height="32" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="2" width="535" height="1" forecolor="#E2E8F0" uuid="bbbbbbbb-0000-0000-0000-000000000001"/>
+            </line>
+            <staticText>
+                <reportElement style="Base" x="0" y="8" width="350" height="16" forecolor="#94A3B8" uuid="bbbbbbbb-0000-0000-0000-000000000002"/>
+                <textElement><font size="8"/></textElement>
+                <text><![CDATA[Avo Maîtrise - Audit LCB-FT confidentiel à usage exclusif du cabinet]]></text>
+            </staticText>
+            <textField>
+                <reportElement style="Base" x="380" y="8" width="155" height="16" forecolor="#64748B" uuid="bbbbbbbb-0000-0000-0000-000000000003"/>
+                <textElement textAlignment="Right"><font size="8"/></textElement>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+</jasperReport>

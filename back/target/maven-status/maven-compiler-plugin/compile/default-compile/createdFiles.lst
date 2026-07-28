@@ -225,6 +225,7 @@ com\avo\entities\FieldResult$FieldResultBuilder.class
 com\avo\config\QueryDslConfig.class
 com\avo\services\BillingDashboardService.class
 com\avo\dtos\NotificationDTO.class
+com\avo\services\ReportingService$1.class
 com\avo\controller\NotificationController.class
 com\avo\mappers\ContactPointMapperImpl.class
 com\avo\mappers\NoteCategoryMapperImpl.class

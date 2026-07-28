@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ClientService } from '../../services/client-service';
+import { UBOService } from '../../services/ubo.service';
 import { ScreeningMatchService } from '../../services/screening-match.service';
 import { NavigationService } from '../../services/navigation-service';
 import { AlertService } from '../../services/alert-service';
@@ -17,6 +18,7 @@ import { Client, ClientStatus, ScreeningMatchDTO, ClientTypeEnum } from '../../a
 })
 export class AmlComplianceComponent implements OnInit {
   private readonly clientService = inject(ClientService);
+  private readonly uboService = inject(UBOService);
   private readonly screeningMatchService = inject(ScreeningMatchService);
   private readonly navigationService = inject(NavigationService);
   private readonly alertService = inject(AlertService);
@@ -354,4 +356,52 @@ export class AmlComplianceComponent implements OnInit {
       }
     });
   }
+
+  // Report generation state and actions
+  showReportModal = false;
+  reportType: 'CLIENT' | 'UBO' = 'CLIENT';
+  reportStartDate = '';
+  reportEndDate = '';
+  generatingReport = false;
+
+  openReportModal(type: 'CLIENT' | 'UBO' = 'CLIENT'): void {
+    this.reportType = type;
+    this.showReportModal = true;
+  }
+
+  closeReportModal(): void {
+    this.showReportModal = false;
+  }
+
+  generateAmlReport(): void {
+    this.generatingReport = true;
+    const isUbo = this.reportType === 'UBO';
+    const msg = isUbo ? 'Création du rapport d\'audit AML UBOs (JasperReports)...' : 'Création du rapport d\'audit AML Clients (JasperReports)...';
+    this.alertService.displayMessage('Génération', msg, 'info');
+
+    const reportObs = isUbo
+      ? this.uboService.generateUboAmlReportPdf(this.reportStartDate, this.reportEndDate)
+      : this.clientService.generateAmlReportPdf(this.reportStartDate, this.reportEndDate);
+
+    reportObs.subscribe({
+      next: (blob: Blob) => {
+        this.generatingReport = false;
+        this.closeReportModal();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const prefix = isUbo ? 'Rapport_Audit_AML_UBOs_' : 'Rapport_Audit_AML_Clients_';
+        link.download = `${prefix}${new Date().toISOString().slice(0, 10)}.pdf`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+        this.alertService.success(isUbo ? 'Rapport AML UBOs généré et téléchargé avec succès.' : 'Rapport AML Clients généré et téléchargé avec succès.');
+      },
+      error: (err) => {
+        this.generatingReport = false;
+        this.alertService.displayMessage('Erreur', isUbo ? 'Impossible de générer le rapport UBOs' : 'Impossible de générer le rapport Clients', 'error');
+        console.error('Erreur de génération PDF:', err);
+      }
+    });
+  }
 }
+

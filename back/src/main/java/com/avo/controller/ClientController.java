@@ -10,6 +10,7 @@ import com.avo.dtos.ClientEntityDTO;
 import com.avo.entities.ClientEntity;
 import com.avo.entities.ClientStatus;
 import com.avo.services.ClientService;
+import com.avo.services.ReportingService;
 import com.querydsl.core.types.Predicate;
 
 @RestController
@@ -17,10 +18,24 @@ import com.querydsl.core.types.Predicate;
 public class ClientController {
 
     private final ClientService service;
+    private final ReportingService reportingService;
 
-    public ClientController(ClientService service) {
+    public ClientController(ClientService service, ReportingService reportingService) {
         this.service = service;
+        this.reportingService = reportingService;
     }
+
+    @GetMapping("/aml-report/pdf")
+    public ResponseEntity<byte[]> generateAmlReport(
+            @RequestParam(required = false) String startDate,
+            @RequestParam(required = false) String endDate) {
+        byte[] pdfBytes = reportingService.generateGlobalAmlReport(startDate, endDate);
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "Rapport_Statut_Global_AML.pdf");
+        return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
+    }
+
 
     @GetMapping
     public ResponseEntity<Page<ClientEntityDTO>> findAll(

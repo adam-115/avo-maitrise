@@ -38,4 +38,16 @@ export class ClientService extends AbstractCrudService<Client> {
     updateClientStatus(id: string | number, status: ClientStatus): Observable<Client> {
         return this.http.patch<Client>(`${this.apiUrl}/${id}`, { clientStatus: status });
     }
+
+    generateAmlReportPdf(startDate?: string, endDate?: string): Observable<Blob> {
+        let params = new HttpParams();
+        if (startDate) {
+            params = params.set('startDate', startDate);
+        }
+        if (endDate) {
+            params = params.set('endDate', endDate);
+        }
+        return this.http.get(`${this.apiUrl}/aml-report/pdf`, { params, responseType: 'blob' });
+    }
 }
+
