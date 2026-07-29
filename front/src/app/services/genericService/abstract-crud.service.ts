@@ -64,6 +64,10 @@ export abstract class AbstractCrudService<T> {
    * @returns An Observable of the updated item.
    */
   update(item: T): Observable<T> {
+    const id = (item as any).id;
+    if (id) {
+      return this.http.put<T>(`${this.apiUrl}/${id}`, item);
+    }
     return this.http.put<T>(this.apiUrl, item);
   }
 

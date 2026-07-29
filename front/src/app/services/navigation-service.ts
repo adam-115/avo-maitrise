@@ -125,9 +125,11 @@ export class NavigationService {
     this.router.navigate(['/home/', NavigationService.DILIGENCE_FORM_BUILDER]);
   }
 
-  navigateToDiligenceFormViewer(id: string, clientId?: string) {
-    if (clientId) {
-      this.router.navigate(['/home/', ...NavigationService.DILIGENCE_FORM_VIEWER.replace(":id", id).split("/")], { queryParams: { clientId: clientId } });
+  navigateToDiligenceFormViewer(id: string, clientId?: string, uboId?: number) {
+    if(clientId) {
+      const queryParams: any = { clientId: clientId };
+      if (uboId) queryParams.uboId = uboId;
+      this.router.navigate(['/home/', ...NavigationService.DILIGENCE_FORM_VIEWER.replace(":id", id).split("/")], { queryParams: queryParams });
     } else {
       let targetUrl = NavigationService.DILIGENCE_FORM_VIEWER.replace(":id", id);
       this.router.navigate(['/home/', ...targetUrl.split("/")]);

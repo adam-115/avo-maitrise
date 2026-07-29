@@ -10,10 +10,13 @@ import org.mapstruct.MappingConstants;
 public interface ClientDiligenceStatusMapper {
     @Mapping(target = "client.id", source = "clientId")
     @Mapping(target = "formConfig.id", source = "formConfigId")
+    @Mapping(target = "ubo.id", source = "uboId")
     ClientDiligenceStatus toEntity(ClientDiligenceStatusDTO dto);
 
     @Mapping(target = "clientId", source = "client.id")
     @Mapping(target = "formConfigId", source = "formConfig.id")
+    @Mapping(target = "uboId", source = "ubo.id")
+    @Mapping(target = "uboName", source = "ubo.fullName")
     @Mapping(target = "formTitle", source = "formConfig.title")
     @Mapping(target = "clientType", expression = "java(entity.getClient() != null ? entity.getClient().getType() : null)")
     @Mapping(target = "clientName", expression = "java(entity.getClient() != null ? entity.getClient().getDisplayName() : null)")

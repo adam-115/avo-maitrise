@@ -55,4 +55,15 @@ public class DiligenceFormResultController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    private final com.avo.services.ReportingService reportingService;
+
+    @GetMapping("/{id}/pdf")
+    public ResponseEntity<byte[]> generatePdf(@PathVariable String id) {
+        byte[] pdfBytes = reportingService.generateDiligenceFormResultReport(id);
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("filename", "diligence_form_result.pdf");
+        return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
+    }
 }

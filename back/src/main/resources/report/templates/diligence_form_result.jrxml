@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+              name="diligence_form_result" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30" whenNoDataType="AllSectionsNoDetail" uuid="d2e3f4a5-6789-0abc-def1-234567890abc">
+    
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+
+    <!-- Styles -->
+    <style name="Base" isDefault="true" fontName="SansSerif" fontSize="9" forecolor="#334155"/>
+    <style name="HeaderTitle" fontName="SansSerif" fontSize="18" isBold="true" forecolor="#0F172A"/>
+    <style name="HeaderSubtitle" fontName="SansSerif" fontSize="9.5" isBold="true" forecolor="#0E7490"/>
+    <style name="CabinetName" fontName="SansSerif" fontSize="13" isBold="true" forecolor="#0F172A"/>
+    <style name="SectionTitle" fontName="SansSerif" fontSize="11" isBold="true" forecolor="#0F172A"/>
+
+    <!-- Parameters -->
+    <parameter name="cabinetName" class="java.lang.String"/>
+    <parameter name="cabinetAddress" class="java.lang.String"/>
+    <parameter name="cabinetPhone" class="java.lang.String"/>
+    <parameter name="cabinetEmail" class="java.lang.String"/>
+    <parameter name="logo" class="java.io.InputStream"/>
+    
+    <parameter name="clientName" class="java.lang.String"/>
+    <parameter name="clientEmail" class="java.lang.String"/>
+    <parameter name="clientPhone" class="java.lang.String"/>
+    
+    <parameter name="formTitle" class="java.lang.String"/>
+    <parameter name="formDescription" class="java.lang.String"/>
+    <parameter name="submitDate" class="java.lang.String"/>
+    
+    <parameter name="diligenceFormDetails" class="java.lang.String"/>
+
+    <title>
+        <band height="200" splitType="Stretch">
+            <!-- Logo -->
+            <image scaleImage="RetainShape" hAlign="Left" vAlign="Top">
+                <reportElement x="0" y="0" width="130" height="50" uuid="10000000-0000-0000-0000-000000000001">
+                    <printWhenExpression><![CDATA[$P{logo} != null]]></printWhenExpression>
+                </reportElement>
+                <imageExpression><![CDATA[$P{logo}]]></imageExpression>
+            </image>
+
+            <!-- Cabinet Info -->
+            <textField textAdjust="StretchHeight">
+                <reportElement style="CabinetName" positionType="Float" x="0" y="55" width="220" height="18" uuid="10000000-0000-0000-0000-000000000002"/>
+                <textFieldExpression><![CDATA[$P{cabinetName} != null ? $P{cabinetName} : "Cabinet d'Avocats"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" positionType="Float" x="0" y="74" width="220" height="32" forecolor="#64748B" uuid="10000000-0000-0000-0000-000000000003"/>
+                <textFieldExpression><![CDATA[($P{cabinetAddress} != null ? $P{cabinetAddress} + "\n" : "") +
+"Tél: " + ($P{cabinetPhone} != null ? $P{cabinetPhone} : "") + " | Email: " + ($P{cabinetEmail} != null ? $P{cabinetEmail} : "")]]></textFieldExpression>
+            </textField>
+
+            <!-- Top Right: Title and Subtitle -->
+            <staticText>
+                <reportElement style="HeaderTitle" x="225" y="0" width="310" height="28" uuid="10000000-0000-0000-0000-000000000004"/>
+                <textElement textAlignment="Right" verticalAlignment="Top"/>
+                <text><![CDATA[RÉSULTAT DE DILIGENCE]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="225" y="30" width="310" height="15" forecolor="#334155" uuid="10000000-0000-0000-0000-000000000006"/>
+                <textElement textAlignment="Right">
+                    <font isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Soumis le : " + ($P{submitDate} != null ? $P{submitDate} : "")]]></textFieldExpression>
+            </textField>
+
+            <!-- Form Title -->
+            <textField textAdjust="StretchHeight">
+                <reportElement style="HeaderTitle" x="0" y="120" width="535" height="25" forecolor="#0F172A" uuid="10000000-0000-0000-0000-000000000007"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="16"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{formTitle} != null ? $P{formTitle} : "Formulaire"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="0" y="145" width="535" height="15" forecolor="#64748B" uuid="10000000-0000-0000-0000-000000000008"/>
+                <textElement textAlignment="Center"/>
+                <textFieldExpression><![CDATA[$P{formDescription} != null ? $P{formDescription} : ""]]></textFieldExpression>
+            </textField>
+
+            <!-- Client Info (Optional) -->
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="Base" mode="Opaque" backcolor="#F1F5F9" forecolor="#334155" x="0" y="170" width="535" height="25" uuid="10000000-0000-0000-0000-000000000009">
+                    <printWhenExpression><![CDATA[$P{clientName} != null && !$P{clientName}.isEmpty()]]></printWhenExpression>
+                </reportElement>
+                <box leftPadding="10" rightPadding="10" topPadding="5" bottomPadding="5">
+                    <pen lineWidth="0.5" lineColor="#E2E8F0"/>
+                </box>
+                <textElement verticalAlignment="Middle">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Client : " + $P{clientName} + ($P{clientEmail} != null && !$P{clientEmail}.isEmpty() ? (" | Email: " + $P{clientEmail}) : "") + ($P{clientPhone} != null && !$P{clientPhone}.isEmpty() ? (" | Tél: " + $P{clientPhone}) : "")]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <pageFooter>
+        <band height="30" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="5" width="535" height="1" forecolor="#CBD5E1" uuid="50000000-0000-0000-0000-000000000001"/>
+                <graphicElement><pen lineWidth="0.5"/></graphicElement>
+            </line>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="0" y="10" width="400" height="20" forecolor="#94A3B8" uuid="50000000-0000-0000-0000-000000000002"/>
+                <textElement><font size="7"/></textElement>
+                <textFieldExpression><![CDATA["Rapport de diligence généré de manière sécurisée et confidentielle - Avo-Maitrise\nLe " + new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(new java.util.Date())]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="430" y="10" width="100" height="14" forecolor="#64748B" uuid="50000000-0000-0000-0000-000000000003"/>
+                <textElement textAlignment="Right"><font size="8" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+    <summary>
+        <band height="50" splitType="Stretch">
+            <!-- Diligence Form Details HTML Section -->
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="Base" positionType="Float" x="0" y="10" width="535" height="30" forecolor="#334155" uuid="50000000-0000-0000-0000-000000000005"/>
+                <textElement markup="html">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{diligenceFormDetails}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

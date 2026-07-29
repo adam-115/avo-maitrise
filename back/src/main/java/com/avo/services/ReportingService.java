@@ -45,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@lombok.RequiredArgsConstructor
 public class ReportingService {
 
     private final InvoiceRepository invoiceRepository;
@@ -52,16 +53,7 @@ public class ReportingService {
     private final ClientRepository clientRepository;
     private final UBORepository uboRepository;
     private final ScreeningMatchRepository screeningMatchRepository;
-
-    public ReportingService(InvoiceRepository invoiceRepository, CabinetProfileService cabinetProfileService, 
-                            ClientRepository clientRepository, UBORepository uboRepository, 
-                            ScreeningMatchRepository screeningMatchRepository) {
-        this.invoiceRepository = invoiceRepository;
-        this.cabinetProfileService = cabinetProfileService;
-        this.clientRepository = clientRepository;
-        this.uboRepository = uboRepository;
-        this.screeningMatchRepository = screeningMatchRepository;
-    }
+    private final com.avo.repositories.DiligenceFormResultRepository diligenceFormResultRepository;
 
     public byte[] generateGlobalAmlReport(String startDateStr, String endDateStr) {
         try {
@@ -517,6 +509,307 @@ public class ReportingService {
         } catch (Exception e) {
             log.error("Error generating UBO AML report PDF", e);
             throw new RuntimeException("Error generating UBO AML report PDF", e);
+        }
+    }
+
+    public byte[] generateClientKycAuditReport(Long clientId) {
+        try {
+            log.info("[ENTER] generateClientKycAuditReport for client id: {}", clientId);
+            ClientEntity c = clientRepository.findById(clientId)
+                .orElseThrow(() -> new RuntimeException("Client not found with id: " + clientId));
+
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            String reportDate = df.format(new Date());
+
+            // 1. Client identification and screening score
+            int hitCount = 0;
+            double maxScore = 0.0;
+            java.time.LocalDateTime latestScreening = null;
+            if (c.getScreeningMatchs() != null) {
+                hitCount = c.getScreeningMatchs().size();
+                for (ScreeningMatch m : c.getScreeningMatchs()) {
+                    if (m.getScore() != null && m.getScore() > maxScore) {
+                        maxScore = m.getScore();
+                    }
+                    if (m.getCreatedAt() != null && (latestScreening == null || m.getCreatedAt().isAfter(latestScreening))) {
+                        latestScreening = m.getCreatedAt();
+                    }
+                }
+            }
+
+            String riskStr;
+            if (maxScore >= 0.7) {
+                riskStr = "ÉLEVÉ (" + Math.round(maxScore * 100) + "%)";
+            } else if (maxScore >= 0.4) {
+                riskStr = "MOYEN (" + Math.round(maxScore * 100) + "%)";
+            } else {
+                riskStr = hitCount > 0 ? "FAIBLE (" + Math.round(maxScore * 100) + "%)" : "0% (Aucune alerte)";
+            }
+
+            String typeStr = c.getType() != null ? c.getType() : "CLIENT";
+            switch (typeStr) {
+                case "PERSONNE": typeStr = "Personne Physique"; break;
+                case "SOCIETE": typeStr = "Société Commerciale / Personne Morale"; break;
+                case "ASSOCIATION": typeStr = "Association / Structure Non-Lucrative"; break;
+                case "INSTITUTION": typeStr = "Institution / Collectivité"; break;
+            }
+
+            // 2. Fetch UBOs of this client (if applicable)
+            List<UBO> ubos = uboRepository.findByClientMoralId(c.getId());
+            List<Map<String, ?>> dataSourceList = new ArrayList<>();
+            
+            int uboHighRisk = 0;
+            if (ubos != null && !ubos.isEmpty()) {
+                for (UBO u : ubos) {
+                    Map<String, Object> row = new HashMap<>();
+                    row.put("uboName", u.getFullName() != null ? u.getFullName() : "UBO Inconnu");
+                    
+                    String role = u.getRoleInCompany() != null ? u.getRoleInCompany() : "";
+                    if (u.getPercentageOfOwnership() != null) {
+                        role = (role.isEmpty() ? "" : role + " - ") + u.getPercentageOfOwnership() + "%";
+                    }
+                    row.put("roleAndOwnership", role.isEmpty() ? "N/R" : role);
+                    row.put("nationality", u.getNationality() != null ? u.getNationality() : "N/D");
+
+                    List<ScreeningMatch> uboMatches = screeningMatchRepository.findByUboId(u.getId());
+                    double uboMaxScore = 0.0;
+                    if (uboMatches != null) {
+                        for (ScreeningMatch sm : uboMatches) {
+                            if (sm.getScore() != null && sm.getScore() > uboMaxScore) {
+                                uboMaxScore = sm.getScore();
+                            }
+                            if (sm.getCreatedAt() != null && (latestScreening == null || sm.getCreatedAt().isAfter(latestScreening))) {
+                                latestScreening = sm.getCreatedAt();
+                            }
+                        }
+                    }
+
+                    String uboRisk = "Aucune alerte";
+                    if (uboMaxScore >= 0.8) {
+                        uboRisk = "Elevé (" + Math.round(uboMaxScore * 100) + "%)";
+                        uboHighRisk++;
+                    } else if (uboMaxScore >= 0.5) {
+                        uboRisk = "Moyen (" + Math.round(uboMaxScore * 100) + "%)";
+                    } else if (uboMaxScore > 0) {
+                        uboRisk = "Faible (" + Math.round(uboMaxScore * 100) + "%)";
+                    }
+                    row.put("riskLevel", uboRisk);
+
+                    String status = u.getAmlAnalysisStatus() != null ? u.getAmlAnalysisStatus() : ((uboMaxScore > 0) ? "SUSPECT" : "OK");
+                    row.put("amlStatus", status);
+                    
+                    dataSourceList.add(row);
+                }
+            }
+
+            if (dataSourceList.isEmpty()) {
+                Map<String, Object> emptyRow = new HashMap<>();
+                if ("PERSONNE".equalsIgnoreCase(c.getType())) {
+                    emptyRow.put("uboName", "Client Personne Physique (Pas d'UBO applicable)");
+                } else {
+                    emptyRow.put("uboName", "Aucun bénéficiaire effectif déclaré au dossier");
+                }
+                emptyRow.put("roleAndOwnership", "-");
+                emptyRow.put("nationality", "-");
+                emptyRow.put("riskLevel", "-");
+                emptyRow.put("amlStatus", "N/A");
+                dataSourceList.add(emptyRow);
+            }
+
+            String lastScreeningStr = (latestScreening != null) 
+                ? latestScreening.format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm"))
+                : java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy à HH:mm")) + " (Contrôle à jour)";
+
+            // 3. Expert conclusion
+            StringBuilder comment = new StringBuilder();
+            comment.append("Fiche d'évaluation individuelle établie conformément aux obligations de vigilance (Art. L.561-4 et L.561-5 du CMF). ");
+            comment.append("Le client présente actuellement un niveau de risque évalué comme : ").append(riskStr).append(". ");
+            if (maxScore >= 0.7 || uboHighRisk > 0) {
+                comment.append("ATTENTION : Au vu du profil ou des alertes sanction/PPE relevées sur le client ou ses bénéficiaires effectifs, l'application de mesures de VIGILANCE RENFORCÉE est impérative (Article L.561-10 CMF). ");
+            } else {
+                comment.append("Aucun élément d'alerte critique sur listes de sanctions ou de PPE n'est actif au dossier. Le niveau de vigilance standard / normale est préconisé pour l'entrée en relation ou la continuation de mission. ");
+            }
+            comment.append("\n[CERTIFICATION LCB-FT] : Criblage d'alertes opéré via le moteur de vérification Yente / OpenSanctions (Sanctions Internationales GEL, UE, OFAC, ONU & registres PPE).");
+
+            // Diligence Form Details
+            List<com.avo.entities.DiligenceFormResult> forms = diligenceFormResultRepository.findByClientId(clientId);
+            String formDetails = "";
+            if (forms != null && !forms.isEmpty()) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("<br><br><font color='#0E7490'><b>--- DONNÉES DES FORMULAIRES DE DILIGENCE ---</b></font><br><br>");
+                for (com.avo.entities.DiligenceFormResult form : forms) {
+                    if (form.getFieldResults() != null && form.getFormConfig() != null) {
+                        sb.append("<b>Formulaire :</b> ").append(form.getFormConfig().getTitle()).append("<br>");
+                        if (form.getUbo() != null) {
+                            sb.append("<b>Ciblé pour le bénéficiaire effectif :</b> ").append(form.getUbo().getFullName()).append("<br>");
+                        }
+                        sb.append("<br>");
+                        for (com.avo.entities.FieldResult fr : form.getFieldResults()) {
+                            String label = fr.getFieldConfigId();
+                            boolean isFile = false;
+                            if (form.getFormConfig().getFields() != null) {
+                                for (com.avo.entities.FieldConfig fc : form.getFormConfig().getFields()) {
+                                    if (fc.getId().equals(fr.getFieldConfigId())) {
+                                        label = fc.getLabel();
+                                        if ("file".equalsIgnoreCase(fc.getType())) {
+                                            isFile = true;
+                                        }
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            // On exclut les fichiers et les longues chaines base64
+                            if (!isFile && fr.getValue() != null && !fr.getValue().startsWith("data:")) {
+                                sb.append("&#8226; <i>").append(label).append("</i> : ").append(fr.getValue()).append("<br>");
+                            }
+                        }
+                        sb.append("<br><hr><br>");
+                    }
+                }
+                formDetails = sb.toString();
+            }
+
+            // 4. Cabinet Info & Parameters
+            CabinetProfileDTO cabinetProfile = cabinetProfileService.getProfile();
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("diligenceFormDetails", formDetails);
+            parameters.put("cabinetName", cabinetProfile.getName() != null ? cabinetProfile.getName() : "Cabinet d'Avocats");
+            parameters.put("cabinetAddress", cabinetProfile.getAddress() != null ? cabinetProfile.getAddress() : "");
+            parameters.put("cabinetPhone", cabinetProfile.getPhone() != null ? cabinetProfile.getPhone() : "");
+            parameters.put("cabinetEmail", cabinetProfile.getEmail() != null ? cabinetProfile.getEmail() : "");
+            
+            parameters.put("reportDate", reportDate);
+            parameters.put("clientName", c.getDisplayName() != null ? c.getDisplayName() : (c.getEmail() != null ? c.getEmail() : "Client #" + c.getId()));
+            parameters.put("clientType", typeStr);
+            parameters.put("clientEmail", c.getEmail() != null ? c.getEmail() : "");
+            parameters.put("clientPhone", c.getTelephone() != null ? c.getTelephone() : "");
+            parameters.put("clientAddress", c.getAdresse() != null ? c.getAdresse() : "");
+            parameters.put("clientCountry", c.getPays() != null ? c.getPays() : "N/D");
+            parameters.put("clientSector", c.getSecteurActivite() != null ? c.getSecteurActivite() : "N/D");
+            parameters.put("clientCreationDate", c.getCreatedAt() != null ? df.format(c.getCreatedAt()) : "N/D");
+            
+            String stDisplay = "EN ATTENTE";
+            if (c.getClientStatus() != null) {
+                switch (c.getClientStatus()) {
+                    case VALIDATED: stDisplay = "VALIDÉ"; break;
+                    case AML_VALIDATED: stDisplay = "CONFORME LCB-FT"; break;
+                    case BLOCKED: stDisplay = "BLOQUÉ (ALERTES)"; break;
+                    case INDULGENCE_REQUIRED: stDisplay = "INDULGENCE REQUISE"; break;
+                    case AML_REQUIRED: stDisplay = "CRIBLAGE REQUIS"; break;
+                    case VERIFICATION_AML_REQUIRED: stDisplay = "VÉRIf. EN COURS"; break;
+                    default: stDisplay = c.getClientStatus().toString(); break;
+                }
+            }
+            parameters.put("clientStatus", stDisplay);
+            parameters.put("riskLevel", riskStr);
+            parameters.put("matchesCount", hitCount + " alerte(s)");
+            parameters.put("lastScreeningDate", lastScreeningStr);
+            parameters.put("expertComment", comment.toString());
+
+            try {
+                InputStream logoStream = new ClassPathResource("report/templates/logo.png").getInputStream();
+                parameters.put("logo", logoStream);
+            } catch (Exception e) {
+                log.warn("Could not load logo.png for report: {}", e.getMessage());
+                parameters.put("logo", null);
+            }
+
+            InputStream reportStream = new ClassPathResource("report/templates/client_kyc_audit.jrxml").getInputStream();
+            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+            JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(dataSourceList);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+
+            return JasperExportManager.exportReportToPdf(jasperPrint);
+
+        } catch (Exception e) {
+            log.error("Failed to generate client KYC audit report for clientId: {}", clientId, e);
+            throw new RuntimeException("Error generating client KYC audit report PDF", e);
+        }
+    }
+
+    public byte[] generateDiligenceFormResultReport(String resultId) {
+        try {
+            log.info("[ENTER] generateDiligenceFormResultReport for resultId: {}", resultId);
+            com.avo.entities.DiligenceFormResult form = diligenceFormResultRepository.findById(resultId)
+                .orElseThrow(() -> new RuntimeException("Form Result not found: " + resultId));
+
+            CabinetProfileDTO cabinetProfile = cabinetProfileService.getProfile();
+            Map<String, Object> parameters = new HashMap<>();
+            
+            parameters.put("cabinetName", cabinetProfile.getName() != null ? cabinetProfile.getName() : "");
+            parameters.put("cabinetAddress", cabinetProfile.getAddress() != null ? cabinetProfile.getAddress() : "");
+            parameters.put("cabinetPhone", cabinetProfile.getPhone() != null ? cabinetProfile.getPhone() : "");
+            parameters.put("cabinetEmail", cabinetProfile.getEmail() != null ? cabinetProfile.getEmail() : "");
+            
+            try {
+                InputStream logoStream = new ClassPathResource("report/templates/logo.png").getInputStream();
+                parameters.put("logo", logoStream);
+            } catch (Exception e) {
+                log.warn("Could not load logo.png for report: {}", e.getMessage());
+                parameters.put("logo", null);
+            }
+            
+            java.time.format.DateTimeFormatter df = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            parameters.put("submitDate", form.getCreationDate() != null ? form.getCreationDate().format(df) : "");
+            
+            if (form.getFormConfig() != null) {
+                parameters.put("formTitle", form.getFormConfig().getTitle());
+                parameters.put("formDescription", form.getFormConfig().getDescription());
+            } else {
+                parameters.put("formTitle", "Résultat de formulaire");
+            }
+            
+            if (form.getClient() != null) {
+                ClientEntity c = form.getClient();
+                if (c != null) {
+                    parameters.put("clientName", c.getDisplayName() != null ? c.getDisplayName() : c.getEmail());
+                    parameters.put("clientEmail", c.getEmail() != null ? c.getEmail() : "");
+                    parameters.put("clientPhone", c.getTelephone() != null ? c.getTelephone() : "");
+                }
+            }
+            
+            StringBuilder sb = new StringBuilder();
+            sb.append("<font color='#0F172A' size='5'><b>Données du Formulaire</b></font><br>");
+            sb.append("<font color='#E2E8F0'>____________________________________________________________________</font><br><br>");
+            
+            if (form.getFieldResults() != null && form.getFormConfig() != null) {
+                for (com.avo.entities.FieldResult fr : form.getFieldResults()) {
+                    String label = fr.getFieldConfigId();
+                    boolean isFile = false;
+                    for (com.avo.entities.FieldConfig fc : form.getFormConfig().getFields()) {
+                        if (fc.getId().equals(fr.getFieldConfigId())) {
+                            label = fc.getLabel();
+                            if ("file".equalsIgnoreCase(fc.getType())) {
+                                isFile = true;
+                            }
+                            break;
+                        }
+                    }
+                    if (!isFile && fr.getValue() != null && !fr.getValue().startsWith("data:")) {
+                        sb.append("<font color='#64748B' size='3'>").append(label).append("</font><br>");
+                        sb.append("<font color='#0F172A' size='3'><b>").append(fr.getValue()).append("</b></font><br><br>");
+                    }
+                }
+            }
+            parameters.put("diligenceFormDetails", sb.toString());
+
+            InputStream reportStream = new ClassPathResource("report/templates/diligence_form_result.jrxml").getInputStream();
+            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+
+            // Pass an empty data source with 1 empty record so the summary band renders
+            java.util.List<Map<String, ?>> emptyList = new ArrayList<>();
+            emptyList.add(new HashMap<>());
+            JRMapCollectionDataSource dataSource = new JRMapCollectionDataSource(emptyList);
+            
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+
+            return JasperExportManager.exportReportToPdf(jasperPrint);
+
+        } catch (Exception e) {
+            log.error("Error generating Form Result PDF", e);
+            throw new RuntimeException("Error generating Form Result PDF", e);
         }
     }
 }

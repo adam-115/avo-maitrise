@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface ClientDiligenceStatusRepository extends JpaRepository<ClientDiligenceStatus, String>, QuerydslPredicateExecutor<ClientDiligenceStatus> {
     List<ClientDiligenceStatus> findByClientId(Long clientId);
-    Optional<ClientDiligenceStatus> findByClientIdAndFormConfigId(Long clientId, String formConfigId);
+    List<ClientDiligenceStatus> findByClientIdAndFormConfigId(Long clientId, String formConfigId);
 }

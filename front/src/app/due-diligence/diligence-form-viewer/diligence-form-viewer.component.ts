@@ -19,6 +19,7 @@ export class DiligenceFormViewerComponent implements OnInit {
     formConfig: FormConfig | null = null;
     diligenceForm: FormGroup = new FormGroup({});
     selectedClient: Client | null = null;
+    targetUboId: number | undefined = undefined;
 
     getDisplayName(client: any): string {
         if (!client) return '';
@@ -45,11 +46,14 @@ export class DiligenceFormViewerComponent implements OnInit {
             }
         });
 
-        // Get clientId from query params
+        // Get clientId and uboId from query params
         this.route.queryParams.subscribe(params => {
             const clientId = params['clientId'];
             if (clientId) {
                 this.loadClient(clientId);
+            }
+            if (params['uboId']) {
+                this.targetUboId = Number(params['uboId']);
             }
         });
     }
@@ -154,9 +158,10 @@ export class DiligenceFormViewerComponent implements OnInit {
 
         const result: DiligenceFormResult = {
             formConfigId: this.formConfig!.id!,
-            clientId: this.selectedClient?.id,
-            creationDate: new Date(),
-            lastUpdateDate: new Date(),
+            clientId: this.selectedClient?.id as number,
+            uboId: this.targetUboId,
+            creationDate: new Date().toISOString(),
+            lastUpdateDate: new Date().toISOString(),
             fieldResults: fieldResults
         };
 

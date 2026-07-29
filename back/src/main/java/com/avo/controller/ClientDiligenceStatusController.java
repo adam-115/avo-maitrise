@@ -34,7 +34,7 @@ public class ClientDiligenceStatusController {
     }
 
     @GetMapping("/client/{clientId}/form/{formConfigId}")
-    public ResponseEntity<ClientDiligenceStatusDTO> findByClientAndForm(@PathVariable Long clientId, @PathVariable String formConfigId) {
+    public ResponseEntity<List<ClientDiligenceStatusDTO>> findByClientAndForm(@PathVariable Long clientId, @PathVariable String formConfigId) {
         return ResponseEntity.ok(service.findByClientIdAndFormConfigId(clientId, formConfigId));
     }
 

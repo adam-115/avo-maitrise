@@ -53,7 +53,30 @@ export class DiligenceFormResultViewerComponent implements OnInit {
     loading = true;
 
     printResult() {
-        window.print();
+        if (!this.result?.id) {
+            window.print();
+            return;
+        }
+
+        this.loading = true;
+        this.formResultService.generatePdf(this.result.id).subscribe({
+            next: (blob) => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Resultat_Formulaire_${this.formConfig?.title || 'Diligence'}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                this.loading = false;
+            },
+            error: (err) => {
+                console.error('Error downloading PDF', err);
+                this.loading = false;
+                window.print(); // Fallback on browser print
+            }
+        });
     }
 
     getDisplayName(client: any): string {

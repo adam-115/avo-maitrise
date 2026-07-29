@@ -211,13 +211,15 @@ export class ClientConformity implements OnInit {
     }
   }
 
-  assignForm(formId: string) {
-    if (!formId || !this.client) return;
+  assignForm(event: { formId: string; uboId?: number }) {
+    if (!event.formId || !this.client) return;
 
     const assignment: ClientDiligenceStatus = {
       clientId: this.client.id!,
-      formConfigId: formId,
-      status: 'PENDING'
+      formConfigId: event.formId,
+      uboId: event.uboId,
+      status: 'PENDING',
+      enabled: true
     };
 
     this.diligenceStatusService.create(assignment).subscribe({

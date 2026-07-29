@@ -27,6 +27,11 @@ public class ClientDiligenceStatus {
     private ClientEntity client;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ubo_id")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private UBO ubo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "form_config_id")
     @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private FormConfig formConfig;

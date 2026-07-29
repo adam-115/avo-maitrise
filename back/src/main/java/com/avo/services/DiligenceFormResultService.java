@@ -23,6 +23,7 @@ public class DiligenceFormResultService {
     private final DiligenceFormResultRepository repository;
     private final DiligenceFormResultMapper mapper;
     private final ClientDiligenceStatusRepository statusRepository;
+    private final jakarta.persistence.EntityManager entityManager;
 
     public Page<DiligenceFormResultDTO> findAll(Pageable pageable) {
         log.info("[ENTER] Executing findAll");
@@ -48,11 +49,35 @@ public class DiligenceFormResultService {
     public DiligenceFormResultDTO create(DiligenceFormResultDTO dto) {
         log.info("[ENTER] Executing create");
         DiligenceFormResult entity = mapper.toEntity(dto);
+        if (dto.getUboId() != null) {
+            entity.setUbo(entityManager.getReference(com.avo.entities.UBO.class, dto.getUboId()));
+        } else {
+            entity.setUbo(null);
+        }
+        if (dto.getClientId() != null) {
+            entity.setClient(entityManager.getReference(com.avo.entities.ClientEntity.class, dto.getClientId()));
+        } else {
+            entity.setClient(null);
+        }
+        if (dto.getFormConfigId() != null) {
+            entity.setFormConfig(entityManager.getReference(com.avo.entities.FormConfig.class, dto.getFormConfigId()));
+        } else {
+            entity.setFormConfig(null);
+        }
         DiligenceFormResult savedResult = repository.save(entity);
 
         if (dto.getClientId() != null && dto.getFormConfigId() != null) {
-            statusRepository.findByClientIdAndFormConfigId(dto.getClientId(), dto.getFormConfigId())
+            List<com.avo.entities.ClientDiligenceStatus> statuses = statusRepository.findByClientIdAndFormConfigId(dto.getClientId(), dto.getFormConfigId());
+            statuses.stream()
                 .filter(status -> status.getStatus() == com.avo.entities.DiligenceStatus.PENDING)
+                .filter(status -> {
+                    if (dto.getUboId() == null) {
+                        return status.getUbo() == null;
+                    } else {
+                        return status.getUbo() != null && status.getUbo().getId().equals(dto.getUboId());
+                    }
+                })
+                .findFirst()
                 .ifPresent(status -> {
                     status.setStatus(com.avo.entities.DiligenceStatus.SUBMITTED);
                     status.setResultId(savedResult.getId());

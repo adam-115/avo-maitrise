@@ -347,28 +347,31 @@ export interface FieldResult {
 
 
 export interface DiligenceFormResult {
-  id?: string;
-  formConfigId: string;
-  clientId?: number;
-  creationDate: Date;
-  lastUpdateDate: Date;
-  fieldResults: FieldResult[];
+    id?: string;
+    formConfigId: string;
+    clientId: number;
+    uboId?: number;
+    uboName?: string;
+    creationDate?: string;
+    lastUpdateDate?: string;
+    fieldResults: FieldResult[];
 }
 
 export interface ClientDiligenceStatus {
-  id?: string;
-  clientId: number;
-  formConfigId: string;
-  status: 'PENDING' | 'SUBMITTED' | 'VALIDATED';
-  resultId?: string; // Optional, link to the submission
-  creationDate?: Date;
-  lastUpdateDate?: Date;
-  enabled?: boolean;
-  
-  // UI Helpers
-  clientName?: string;
-  formTitle?: string;
-  clientType?: string;
+    id?: string;
+    clientId: number;
+    formConfigId: string;
+    uboId?: number;
+    status: 'PENDING' | 'SUBMITTED' | 'VALIDATED';
+    resultId?: string;
+    creationDate?: string;
+    lastUpdateDate?: string;
+    enabled: boolean;
+    // UI Helpers
+    clientName?: string;
+    uboName?: string;
+    formTitle?: string;
+    clientType?: string;
 }
 
 

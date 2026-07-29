@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="add-ubo-id-to-diligence-tables" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="client_diligence_status" columnName="ubo_id"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="client_diligence_status">
+            <column name="ubo_id" type="BIGINT">
+                <constraints nullable="true" foreignKeyName="fk_client_diligence_status_ubo" references="ubos(id)"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="diligence_form_result">
+            <column name="ubo_id" type="BIGINT">
+                <constraints nullable="true" foreignKeyName="fk_diligence_form_result_ubo" references="ubos(id)"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

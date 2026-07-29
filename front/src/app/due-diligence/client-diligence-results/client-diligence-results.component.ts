@@ -38,6 +38,7 @@ export class ClientDiligenceResultsComponent implements OnInit {
     availableForms: FormConfig[] = [];
     loading = true;
     showAssignDialog = false;
+    downloadingPdf = false;
 
     getDisplayName(client: any): string {
         if (!client) return '';
@@ -123,16 +124,7 @@ export class ClientDiligenceResultsComponent implements OnInit {
     }
 
     fillForm(assignment: ClientDiligenceStatus) {
-        // Navigate to form viewer with clientId query param
-        // construct URL manually or add method to NavigationService
-        // Using direct router navigation or adding to NavigationService
-        // Ideally add to NavigationService, but for now I will inject Router or just use URL construction if navigationService supports queryParams
-        // NavigationService usually wraps Router.
-        // Let's assume we can navigate to form viewer and pass query params.
-        // Since NavigationService.navigateToDiligenceFormResultViewer takes ID (result ID), we need a new method or use the generic one.
-        // Actually, we need to navigate to the *Form Viewer* (to fill it), not the *Result Viewer*.
-        // The Form Viewer route is `diligence-form-viewer/:id` (where ID is form config ID).
-        this.navigationService.navigateToDiligenceFormViewer(String(assignment.formConfigId), String(this.client?.id));
+        this.navigationService.navigateToDiligenceFormViewer(String(assignment.formConfigId), String(this.client?.id), assignment.uboId);
     }
 
     backToClient() {
@@ -151,12 +143,13 @@ export class ClientDiligenceResultsComponent implements OnInit {
         this.showAssignDialog = false;
     }
 
-    assignForm(formId: string) {
-        if (!formId || !this.client) return;
+    assignForm(assignmentData: {formId: string, uboId?: number}) {
+        if (!assignmentData.formId || !this.client) return;
 
         const newAssignment: ClientDiligenceStatus = {
             clientId: this.client.id!,
-            formConfigId: formId,
+            formConfigId: assignmentData.formId,
+            uboId: assignmentData.uboId,
             status: 'PENDING', 
             enabled:true
         };
@@ -202,6 +195,32 @@ export class ClientDiligenceResultsComponent implements OnInit {
                 }
             });
         }
+    }
+
+    downloadKycAuditPdf() {
+        if (!this.client || !this.client.id) return;
+        this.downloadingPdf = true;
+        this.alertService.displayMessage('Génération en cours', 'Préparation de la Fiche de Vigilance KYC en cours...', 'info');
+        
+        this.clientService.generateClientKycAuditReportPdf(this.client.id).subscribe({
+            next: (blob) => {
+                this.downloadingPdf = false;
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Fiche_Vigilance_KYC_${this.getDisplayName(this.client).replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                this.alertService.success('Fiche de Vigilance LCB-FT (PDF) téléchargée avec succès.');
+            },
+            error: (err) => {
+                console.error('Error generating KYC audit PDF', err);
+                this.downloadingPdf = false;
+                this.alertService.displayMessage('Erreur', 'Impossible de générer le rapport LCB-FT (PDF)', 'error');
+            }
+        });
     }
 }
 

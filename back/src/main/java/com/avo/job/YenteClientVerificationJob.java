@@ -362,6 +362,16 @@ public class YenteClientVerificationJob {
                         // 5. If the match score meets the AML suspect warning threshold
                         if (matchScore >= suspectThreshold && yenteId != null) {
                             
+                            // Mettre à jour le statut du client moral à VERIFICATION_AML_REQUIRED suite à une alerte UBO
+                            if (ubo.getClientMoralId() != null) {
+                                clientRepository.findById(ubo.getClientMoralId()).ifPresent(client -> {
+                                    if (client.getClientStatus() != com.avo.entities.ClientStatus.VERIFICATION_AML_REQUIRED) {
+                                        client.setClientStatus(com.avo.entities.ClientStatus.VERIFICATION_AML_REQUIRED);
+                                        clientRepository.save(client);
+                                    }
+                                });
+                            }
+
                             // Check if this UBO sanction match was already logged previously
                             java.util.Optional<com.avo.entities.ScreeningMatch> lastMatchOpt = screeningMatchRepository
                                     .findFirstByUboIdAndYenteIdOrderByCreatedAtDesc(ubo.getId(), yenteId);

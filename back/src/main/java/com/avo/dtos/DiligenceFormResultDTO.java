@@ -7,20 +7,30 @@ public class DiligenceFormResultDTO {
     private String id;
     private String formConfigId;
     private Long clientId;
+    private Long uboId;
+    private String uboName;
     private OffsetDateTime creationDate;
     private OffsetDateTime lastUpdateDate;
     private List<FieldResultDTO> fieldResults;
 
     public DiligenceFormResultDTO() {}
 
-    public DiligenceFormResultDTO(String id, String formConfigId, Long clientId, OffsetDateTime creationDate, OffsetDateTime lastUpdateDate, List<FieldResultDTO> fieldResults) {
+    public DiligenceFormResultDTO(String id, String formConfigId, Long clientId, Long uboId, String uboName, OffsetDateTime creationDate, OffsetDateTime lastUpdateDate, List<FieldResultDTO> fieldResults) {
         this.id = id;
         this.formConfigId = formConfigId;
         this.clientId = clientId;
+        this.uboId = uboId;
+        this.uboName = uboName;
         this.creationDate = creationDate;
         this.lastUpdateDate = lastUpdateDate;
         this.fieldResults = fieldResults;
     }
+
+    public Long getUboId() { return uboId; }
+    public void setUboId(Long uboId) { this.uboId = uboId; }
+
+    public String getUboName() { return uboName; }
+    public void setUboName(String uboName) { this.uboName = uboName; }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -48,6 +58,8 @@ public class DiligenceFormResultDTO {
         private String id;
         private String formConfigId;
         private Long clientId;
+        private Long uboId;
+        private String uboName;
         private OffsetDateTime creationDate;
         private OffsetDateTime lastUpdateDate;
         private List<FieldResultDTO> fieldResults;
@@ -55,12 +67,14 @@ public class DiligenceFormResultDTO {
         public DiligenceFormResultDTOBuilder id(String id) { this.id = id; return this; }
         public DiligenceFormResultDTOBuilder formConfigId(String formConfigId) { this.formConfigId = formConfigId; return this; }
         public DiligenceFormResultDTOBuilder clientId(Long clientId) { this.clientId = clientId; return this; }
+        public DiligenceFormResultDTOBuilder uboId(Long uboId) { this.uboId = uboId; return this; }
+        public DiligenceFormResultDTOBuilder uboName(String uboName) { this.uboName = uboName; return this; }
         public DiligenceFormResultDTOBuilder creationDate(OffsetDateTime creationDate) { this.creationDate = creationDate; return this; }
         public DiligenceFormResultDTOBuilder lastUpdateDate(OffsetDateTime lastUpdateDate) { this.lastUpdateDate = lastUpdateDate; return this; }
         public DiligenceFormResultDTOBuilder fieldResults(List<FieldResultDTO> fieldResults) { this.fieldResults = fieldResults; return this; }
 
         public DiligenceFormResultDTO build() {
-            return new DiligenceFormResultDTO(id, formConfigId, clientId, creationDate, lastUpdateDate, fieldResults);
+            return new DiligenceFormResultDTO(id, formConfigId, clientId, uboId, uboName, creationDate, lastUpdateDate, fieldResults);
         }
     }
 }

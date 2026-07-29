@@ -323,6 +323,28 @@ export class AmlComplianceComponent implements OnInit {
     }
   }
 
+  downloadClientKycAudit(client: Client): void {
+    if (!client.id) return;
+    this.alertService.displayMessage('Génération en cours', `Préparation de la Fiche LCB-FT pour ${this.getDisplayName(client)}...`, 'info');
+    this.clientService.generateClientKycAuditReportPdf(client.id).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Fiche_Vigilance_KYC_${this.getDisplayName(client).replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        this.alertService.success('Fiche LCB-FT téléchargée.');
+      },
+      error: (err) => {
+        console.error('Error downloading KYC audit report', err);
+        this.alertService.displayMessage('Erreur', 'Erreur de téléchargement du rapport', 'error');
+      }
+    });
+  }
+
   triggerManualClientScreening(): void {
     this.triggeringClients = true;
     this.alertService.displayMessage('Lancement', 'Filtrage des clients en cours...', 'info');

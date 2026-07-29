@@ -10,4 +10,5 @@
     <include file="changes/v0.0.14/db.changelog-squashed.xml" relativeToChangelogFile="true"/>
     <include file="changes/v0.0.15/db.changelog-v0.0.15.xml" relativeToChangelogFile="true"/>
     <include file="changes/v0.0.16/db.changelog-v0.0.16.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.17/db.changelog-v0.0.17.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

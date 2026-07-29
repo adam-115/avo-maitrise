@@ -36,6 +36,15 @@ public class ClientController {
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/kyc-audit-report/pdf")
+    public ResponseEntity<byte[]> generateClientKycAuditReport(@PathVariable Long id) {
+        byte[] pdfBytes = reportingService.generateClientKycAuditReport(id);
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "Fiche_Vigilance_KYC_Client_" + id + ".pdf");
+        return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
+    }
+
 
     @GetMapping
     public ResponseEntity<Page<ClientEntityDTO>> findAll(

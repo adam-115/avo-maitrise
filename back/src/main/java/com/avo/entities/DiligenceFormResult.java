@@ -31,6 +31,11 @@ public class DiligenceFormResult {
     @NotFound(action = NotFoundAction.IGNORE)
     private ClientEntity client;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ubo_id")
+    @NotFound(action = NotFoundAction.IGNORE)
+    private UBO ubo;
+
     private OffsetDateTime creationDate;
     private OffsetDateTime lastUpdateDate;
 

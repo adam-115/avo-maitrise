@@ -18,4 +18,8 @@ export class FormResultService extends AbstractCrudService<DiligenceFormResult> 
     findByClientId(clientId: string): Observable<DiligenceFormResult[]> {
         return this.http.get<DiligenceFormResult[]>(`${this.apiUrl}/client/${clientId}`);
     }
+
+    generatePdf(id: string): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}/${id}/pdf`, { responseType: 'blob' });
+    }
 }

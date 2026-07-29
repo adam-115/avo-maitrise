@@ -15,6 +15,7 @@ public class ClientDiligenceStatusDTO {
     private String id;
     private Long clientId;
     private String formConfigId;
+    private Long uboId;
     private String status;
     private String resultId;
     private OffsetDateTime creationDate;
@@ -23,6 +24,7 @@ public class ClientDiligenceStatusDTO {
     
     // UI Helpers
     private String clientName;
+    private String uboName;
     private String formTitle;
     private String clientType;
 }

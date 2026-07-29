@@ -36,6 +36,7 @@ public class ScreeningExecutionController {
     @PostMapping("/trigger-clients")
     public ResponseEntity<Void> triggerClients() {
         verificationJob.executeMatchClient();
+        verificationJob.executeMatchUbos();
         return ResponseEntity.ok().build();
     }
 

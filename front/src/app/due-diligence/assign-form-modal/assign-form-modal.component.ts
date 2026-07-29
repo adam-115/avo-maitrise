@@ -11,10 +11,12 @@ import { FormsModule } from '@angular/forms';
 })
 export class AssignFormModalComponent {
   @Input() availableForms: FormConfig[] = [];
+  @Input() clientUbos: any[] = [];
   @Output() close = new EventEmitter<void>();
-  @Output() assign = new EventEmitter<string>();
+  @Output() assign = new EventEmitter<{formId: string, uboId?: number}>();
 
   selectedFormId: string = '';
+  selectedUboId: number | undefined = undefined;
   searchTerm: string = '';
   currentPage: number = 1;
   pageSize: number = 5;
@@ -50,7 +52,10 @@ export class AssignFormModalComponent {
 
   onAssign() {
     if (this.selectedFormId) {
-      this.assign.emit(this.selectedFormId);
+      this.assign.emit({
+        formId: this.selectedFormId, 
+        uboId: this.selectedUboId ? Number(this.selectedUboId) : undefined
+      });
     }
   }
 

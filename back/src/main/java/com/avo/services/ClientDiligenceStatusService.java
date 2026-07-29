@@ -22,6 +22,7 @@ public class ClientDiligenceStatusService {
 
     private final ClientDiligenceStatusRepository repository;
     private final ClientDiligenceStatusMapper mapper;
+    private final jakarta.persistence.EntityManager entityManager;
 
     public Page<ClientDiligenceStatusDTO> findAll(Pageable pageable) {
         log.info("[ENTER] Executing findAll");
@@ -38,15 +39,30 @@ public class ClientDiligenceStatusService {
         return repository.findByClientId(clientId).stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
-    public ClientDiligenceStatusDTO findByClientIdAndFormConfigId(Long clientId, String formConfigId) {
+    public List<ClientDiligenceStatusDTO> findByClientIdAndFormConfigId(Long clientId, String formConfigId) {
         log.info("[ENTER] Executing findByClientIdAndFormConfigId");
-        return repository.findByClientIdAndFormConfigId(clientId, formConfigId).map(mapper::toDto).orElse(null);
+        return repository.findByClientIdAndFormConfigId(clientId, formConfigId).stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     @Transactional
     public ClientDiligenceStatusDTO create(ClientDiligenceStatusDTO dto) {
         log.info("[ENTER] Executing create");
         ClientDiligenceStatus entity = mapper.toEntity(dto);
+        if (dto.getUboId() != null) {
+            entity.setUbo(entityManager.getReference(com.avo.entities.UBO.class, dto.getUboId()));
+        } else {
+            entity.setUbo(null);
+        }
+        if (dto.getClientId() != null) {
+            entity.setClient(entityManager.getReference(com.avo.entities.ClientEntity.class, dto.getClientId()));
+        } else {
+            entity.setClient(null);
+        }
+        if (dto.getFormConfigId() != null) {
+            entity.setFormConfig(entityManager.getReference(com.avo.entities.FormConfig.class, dto.getFormConfigId()));
+        } else {
+            entity.setFormConfig(null);
+        }
         return mapper.toDto(repository.save(entity));
     }
 
@@ -54,6 +70,21 @@ public class ClientDiligenceStatusService {
     public ClientDiligenceStatusDTO update(ClientDiligenceStatusDTO dto) {
         log.info("[ENTER] Executing update");
         ClientDiligenceStatus entity = mapper.toEntity(dto);
+        if (dto.getUboId() != null) {
+            entity.setUbo(entityManager.getReference(com.avo.entities.UBO.class, dto.getUboId()));
+        } else {
+            entity.setUbo(null);
+        }
+        if (dto.getClientId() != null) {
+            entity.setClient(entityManager.getReference(com.avo.entities.ClientEntity.class, dto.getClientId()));
+        } else {
+            entity.setClient(null);
+        }
+        if (dto.getFormConfigId() != null) {
+            entity.setFormConfig(entityManager.getReference(com.avo.entities.FormConfig.class, dto.getFormConfigId()));
+        } else {
+            entity.setFormConfig(null);
+        }
         return mapper.toDto(repository.save(entity));
     }
 
