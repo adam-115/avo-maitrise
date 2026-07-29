@@ -83,6 +83,7 @@ export class DossierForm implements OnInit {
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
+      const clientId = this.route.snapshot.queryParamMap.get('clientId');
       this.loading = true;
 
       const requests: any = {
@@ -96,6 +97,8 @@ export class DossierForm implements OnInit {
         this.isEditMode = true;
         this.dossierId = id;
         requests.dossier = this.dossierService.findById(id);
+      } else if (clientId) {
+        requests.client = this.clientService.findById(clientId);
       }
 
       forkJoin(requests).subscribe({
@@ -116,8 +119,13 @@ export class DossierForm implements OnInit {
               this.clientService.findById(cid).subscribe(client => {
                 this.selectedClient = client;
                 this.dossierForm.patchValue({ clientId: client.id });
+                this.checkClientStatus();
               });
             }
+          } else if (res.client) {
+             this.selectedClient = res.client;
+             this.dossierForm.patchValue({ clientId: res.client.id });
+             this.checkClientStatus();
           }
           this.loading = false;
         },
@@ -127,6 +135,18 @@ export class DossierForm implements OnInit {
         }
       });
     });
+  }
+
+  checkClientStatus(): void {
+    if (this.isClientBlocked) {
+      this.dossierForm.disable();
+    } else {
+      this.dossierForm.enable();
+    }
+  }
+
+  get isClientBlocked(): boolean {
+    return this.getSelectedClientStatus() === 'BLOCKED';
   }
 
   // Client Selection Dialog Methods
@@ -141,6 +161,7 @@ export class DossierForm implements OnInit {
   onClientSelected(client: Client): void {
     this.selectedClient = client;
     this.dossierForm.patchValue({ clientId: client.id });
+    this.checkClientStatus();
     this.closeClientDialog();
   }
 

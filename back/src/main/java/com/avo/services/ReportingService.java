@@ -669,6 +669,13 @@ public class ReportingService {
                 }
                 formDetails = sb.toString();
             }
+            
+            // Add Screening Matches to the form details (if any)
+            StringBuilder sf = new StringBuilder(formDetails);
+            if (c.getScreeningMatchs() != null && !c.getScreeningMatchs().isEmpty()) {
+                sf.append(formatScreeningMatchesHtml(c.getScreeningMatchs()));
+            }
+            formDetails = sf.toString();
 
             // 4. Cabinet Info & Parameters
             CabinetProfileDTO cabinetProfile = cabinetProfileService.getProfile();
@@ -793,6 +800,14 @@ public class ReportingService {
                     }
                 }
             }
+            
+            // Ajout des résultats du Screening AML (ScreeningMatch)
+            if (form.getClient() != null && form.getClient().getId() != null) {
+                java.util.List<com.avo.entities.ScreeningMatch> matches = screeningMatchRepository.findByClientId(form.getClient().getId());
+                if (matches != null && !matches.isEmpty()) {
+                    sb.append(formatScreeningMatchesHtml(matches));
+                }
+            }
             parameters.put("diligenceFormDetails", sb.toString());
 
             InputStream reportStream = new ClassPathResource("report/templates/diligence_form_result.jrxml").getInputStream();
@@ -811,6 +826,60 @@ public class ReportingService {
             log.error("Error generating Form Result PDF", e);
             throw new RuntimeException("Error generating Form Result PDF", e);
         }
+    }
+
+    private String formatScreeningMatchesHtml(List<ScreeningMatch> matches) {
+        if (matches == null || matches.isEmpty()) return "";
+        StringBuilder sf = new StringBuilder();
+        sf.append("<br><br><font color='#0F172A' size='5'><b>Résultats du Screening AML</b></font><br>");
+        sf.append("<font color='#E2E8F0'>____________________________________________________________________</font><br><br>");
+        
+        java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        int count = 1;
+        for (ScreeningMatch match : matches) {
+            String targetName = match.getTargetName();
+            if ((targetName == null || targetName.trim().isEmpty()) && match.getRawResponse() != null) {
+                if (match.getRawResponse().has("caption")) {
+                    targetName = match.getRawResponse().get("caption").asText();
+                } else if (match.getRawResponse().has("properties") && match.getRawResponse().get("properties").has("name")) {
+                    targetName = match.getRawResponse().get("properties").get("name").elements().next().asText();
+                }
+            }
+            if (targetName == null || targetName.trim().isEmpty()) {
+                targetName = "Entité " + (match.getYenteId() != null ? match.getYenteId() : "Inconnue");
+            }
+
+            sf.append("<font color='#334155' size='4'><b>#").append(count++).append(" - ").append(targetName).append("</b></font><br>");
+            
+            String yenteLink = match.getYenteId() != null ? 
+                "<a href='https://www.opensanctions.org/entities/" + match.getYenteId() + "'><font color='#2563EB'><u>" + match.getYenteId() + "</u></font></a>" : "N/D";
+            sf.append("<i><font color='#64748B' size='3'>Identifiant Yente : </font></i><font color='#0F172A' size='3'>").append(yenteLink).append("</font><br>");
+            
+            String scoreStr = match.getScore() != null ? String.format("%.2f%%", match.getScore() * 100) : "N/A";
+            String scoreColor = match.getScore() != null && match.getScore() > 0.8 ? "#EF4444" : "#F59E0B";
+            sf.append("<i><font color='#64748B' size='3'>Score de similarité : </font></i><font color='").append(scoreColor).append("' size='3'><b>").append(scoreStr).append("</b></font><br>");
+            
+            String statusStr = match.getStatus() != null ? match.getStatus().name() : "PENDING";
+            String statusColor = "REJECTED".equals(statusStr) || "TRUE_POSITIVE".equals(statusStr) ? "#EF4444" : ("CLEARED".equals(statusStr) || "FALSE_POSITIVE".equals(statusStr) ? "#10B981" : "#F59E0B");
+            sf.append("<i><font color='#64748B' size='3'>Statut : </font></i><font color='").append(statusColor).append("' size='3'><b>").append(statusStr).append("</b></font><br>");
+            
+            if (match.getMatchReason() != null && !match.getMatchReason().trim().isEmpty()) {
+                sf.append("<i><font color='#64748B' size='3'>Motif : </font></i><font color='#0F172A' size='3'>").append(match.getMatchReason().replace("\n", " ")).append("</font><br>");
+            }
+            if (match.getCreatedAt() != null) {
+                sf.append("<i><font color='#64748B' size='3'>Date de détection : </font></i><font color='#0F172A' size='3'>").append(match.getCreatedAt().format(dtf)).append("</font><br>");
+            }
+            if (match.getReviewerComment() != null && !match.getReviewerComment().trim().isEmpty()) {
+                sf.append("<i><font color='#64748B' size='3'>Commentaire expert : </font></i><font color='#0F172A' size='3'><b>").append(match.getReviewerComment().replace("\n", " ")).append("</b></font><br>");
+            }
+            if (match.getReviewedBy() != null) {
+                sf.append("<i><font color='#64748B' size='3'>Revu par : </font></i><font color='#0F172A' size='3'>").append(match.getReviewedBy());
+                if (match.getReviewedAt() != null) sf.append(" le ").append(match.getReviewedAt().format(dtf));
+                sf.append("</font><br>");
+            }
+            sf.append("<br><font color='#E2E8F0'>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</font><br><br>");
+        }
+        return sf.toString();
     }
 }
 
