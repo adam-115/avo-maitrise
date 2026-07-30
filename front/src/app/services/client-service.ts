@@ -50,8 +50,15 @@ export class ClientService extends AbstractCrudService<Client> {
         return this.http.get(`${this.apiUrl}/aml-report/pdf`, { params, responseType: 'blob' });
     }
 
-    generateClientKycAuditReportPdf(clientId: number | string): Observable<Blob> {
-        return this.http.get(`${this.apiUrl}/${clientId}/kyc-audit-report/pdf`, { responseType: 'blob' });
+    generateClientKycAuditReportPdf(clientId: number | string, startDate?: string, endDate?: string): Observable<Blob> {
+        let params = new HttpParams();
+        if (startDate) {
+            params = params.set('startDate', startDate);
+        }
+        if (endDate) {
+            params = params.set('endDate', endDate);
+        }
+        return this.http.get(`${this.apiUrl}/${clientId}/kyc-audit-report/pdf`, { params, responseType: 'blob' });
     }
 }
 

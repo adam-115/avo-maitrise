@@ -60,6 +60,34 @@ export class ClientConformity implements OnInit {
   selectedMatch: ScreeningMatchDTO | null = null;
   isAnalysisModalOpen = false;
   showAddDocumentDialog = false;
+  downloadingPdf = false;
+  showReportModal = false;
+  reportStartDate: string = '';
+  reportEndDate: string = '';
+  matchesCurrentPage = 1;
+  matchesItemsPerPage = 5;
+
+  get paginatedMatches() {
+    const filtered = this.getFilteredMatches();
+    const startIndex = (this.matchesCurrentPage - 1) * this.matchesItemsPerPage;
+    return filtered.slice(startIndex, startIndex + this.matchesItemsPerPage);
+  }
+  
+  get totalMatchesPages() {
+    return Math.ceil(this.getFilteredMatches().length / this.matchesItemsPerPage);
+  }
+
+  executionsCurrentPage = 1;
+  executionsItemsPerPage = 5;
+
+  get paginatedExecutions() {
+    const startIndex = (this.executionsCurrentPage - 1) * this.executionsItemsPerPage;
+    return this.executions.slice(startIndex, startIndex + this.executionsItemsPerPage);
+  }
+
+  get totalExecutionsPages() {
+    return Math.ceil(this.executions.length / this.executionsItemsPerPage);
+  }
 
   getDisplayName(client: any): string {
     if (!client) return '';
@@ -467,6 +495,44 @@ export class ClientConformity implements OnInit {
         default: return { label: topic.toUpperCase(), description: 'Catégorie signalée', colorClass: 'bg-slate-100 text-slate-800' };
       }
     });
+  }
+
+  downloadKycAuditPdf() {
+    if (!this.client || !this.client.id) return;
+    this.downloadingPdf = true;
+    this.alertService.displayMessage('Génération en cours', 'Préparation de la Fiche de Vigilance KYC en cours...', 'info');
+    
+    this.clientService.generateClientKycAuditReportPdf(this.client.id, this.reportStartDate, this.reportEndDate).subscribe({
+        next: (blob) => {
+            this.downloadingPdf = false;
+            this.closeReportModal();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Fiche_Vigilance_KYC_${this.getDisplayName(this.client).replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            this.alertService.success('Fiche de Vigilance LCB-FT (PDF) téléchargée avec succès.');
+        },
+        error: (err) => {
+            console.error('Error generating KYC audit PDF', err);
+            this.downloadingPdf = false;
+            this.closeReportModal();
+            this.alertService.displayMessage('Erreur', 'Impossible de générer la Fiche de Vigilance KYC. Veuillez réessayer plus tard.', 'error');
+        }
+    });
+  }
+
+  openReportModal() {
+    this.showReportModal = true;
+  }
+
+  closeReportModal() {
+    this.showReportModal = false;
+    this.reportStartDate = '';
+    this.reportEndDate = '';
   }
 }
 
