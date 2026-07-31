@@ -1,118 +1,88 @@
-<div class="flex flex-col bg-gray-100">
+<div class="min-h-screen pb-12 animate-fadeIn">
+    <main class="max-w-[1600px] mx-auto space-y-6">
 
-    <header class="flex items-center justify-between h-16 bg-white shadow-md px-6 sm:px-8">
-        <h1 class="text-2xl font-extrabold text-slate-800 tracking-wide">
-            Tableau de Bord Administration
-        </h1>
-    </header>
+        <!-- Header Section -->
+        <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-xs">
+            <nav class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">
+                <a routerLink="/home" class="hover:text-indigo-900 cursor-pointer transition-colors">Cabinet</a>
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <span class="text-indigo-900">Administration</span>
+            </nav>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-950 tracking-tight font-heading">
+                Centre de Configuration du <span class="text-indigo-900">Cabinet</span>
+            </h1>
+            <p class="text-xs text-slate-500 font-medium mt-1 max-w-xl">
+                Gestion des accès utilisateurs, listes de référence juridiques et paramètres généraux du cabinet.
+            </p>
+        </div>
 
-    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6 sm:p-10">
-
-        <h2 class="text-3xl font-bold text-slate-800 mb-2">Centre de Configuration de l'Application</h2>
-        <p class="text-gray-600 mb-10">Gérez les utilisateurs, personnalisez les données de référence et configurez les
-            paramètres globaux.</p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <!-- Options Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
             <a (click)="navigateToUserManagement()"
-                class="block cursor-pointer bg-white p-6 rounded-xl shadow-lg border-t-4 border-red-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20v-2a3 3 0 015.356-1.857M7 20h4m-4 0v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M10 11a3 3 0 100-6 3 3 0 000 6zm7-3a1 1 0 11-2 0 1 1 0 012 0zm-7 4a1 1 0 100-2 1 1 0 000 2zm7 0a1 1 0 100-2 1 1 0 000 2z">
-                        </path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">Gestion des Utilisateurs</h3>
+                class="glass-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
+                <div class="flex items-center space-x-3.5 mb-3">
+                    <div class="p-2.5 bg-rose-50 border border-rose-100 rounded-xl text-rose-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20v-2a3 3 0 015.356-1.857M7 20h4m-4 0v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M10 11a3 3 0 100-6 3 3 0 000 6zm7-3a1 1 0 11-2 0 1 1 0 012 0zm-7 4a1 1 0 100-2 1 1 0 000 2zm7 0a1 1 0 100-2 1 1 0 000 2z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-black text-slate-950 group-hover:text-indigo-900 transition-colors font-heading">Utilisateurs & Rôles</h3>
                 </div>
-                <p class="text-sm text-gray-500 mt-3">Ajouter, modifier ou supprimer les comptes utilisateurs et définir
-                    leurs rôles d'accès.</p>
+                <p class="text-xs text-slate-500 font-medium">Créer et gérer les accès des avocats, juristes et collaborateurs du cabinet.</p>
             </a>
 
             <a (click)="navigateToAdministrationPrefrences()"
-                class="block cursor-pointer bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h7"></path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">Listes de Référence</h3>
+                class="glass-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
+                <div class="flex items-center space-x-3.5 mb-3">
+                    <div class="p-2.5 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-900">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-black text-slate-950 group-hover:text-indigo-900 transition-colors font-heading">Listes de Référence</h3>
                 </div>
-                <p class="text-sm text-gray-500 mt-3">Gérer les types d'audiences, les lieux, les statuts et autres
-                    options de listes déroulantes.</p>
+                <p class="text-xs text-slate-500 font-medium">Types d'audiences, juridictions, statuts de dossiers et catégories juridiques.</p>
             </a>
 
             <a (click)="navigateToProfileCabinet()"
-                class="block cursor-pointer bg-white p-6 rounded-xl shadow-lg border-t-4 border-yellow-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                        </path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">Profil du Cabinet/Logo</h3>
+                class="glass-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
+                <div class="flex items-center space-x-3.5 mb-3">
+                    <div class="p-2.5 bg-amber-50 border border-amber-100 rounded-xl text-amber-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-black text-slate-950 group-hover:text-indigo-900 transition-colors font-heading">Profil du Cabinet</h3>
                 </div>
-                <p class="text-sm text-gray-500 mt-3">Mettre à jour le nom de l'entreprise, le logo et les informations
-                    de contact légales.</p>
+                <p class="text-xs text-slate-500 font-medium">Informations légales du cabinet, adresse, logo et coordonnées des factures.</p>
             </a>
-
-            <!-- <a href="#"
-                class="block bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.227.424 2.572-1.065z">
-                        </path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">Paramètres Généraux</h3>
-                </div>
-                <p class="text-sm text-gray-500 mt-3">Définir les plages horaires par défaut, les règles de sécurité et
-                    les options de sauvegarde.</p>
-            </a> -->
 
             <a (click)="navigateToIndulgence()"
-                class="block cursor-pointer bg-white p-6 rounded-xl shadow-lg border-t-4 border-purple-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
-                        </path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">Configuration Indulgence</h3>
+                class="glass-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
+                <div class="flex items-center space-x-3.5 mb-3">
+                    <div class="p-2.5 bg-purple-50 border border-purple-100 rounded-xl text-purple-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-sm font-black text-slate-950 group-hover:text-indigo-900 transition-colors font-heading">Formulaires Diligence</h3>
                 </div>
-                <p class="text-sm text-gray-500 mt-3">Créer et gérer les formulaires de diligence et d'indulgence
-                    personnalisés.</p>
+                <p class="text-xs text-slate-500 font-medium">Personnalisation des questionnaires LCB-FT et formulaires KYC.</p>
             </a>
-
-            <a href="#"
-                class="block bg-white p-6 rounded-xl shadow-lg border-t-4 border-gray-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">Journal d'Audit</h3>
-                </div>
-                <p class="text-sm text-gray-500 mt-3">Consulter l'historique détaillé des actions, modifications et
-                    connexions des utilisateurs.</p>
-            </a>
-
         </div>
 
-        <div class="mt-12 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-            <h3 class="text-xl font-semibold text-slate-800 mb-3">Statut du Système</h3>
-            <p class="text-sm text-gray-700">Version de l'application : <span
-                    class="font-bold text-green-600">v2.1.0</span>. Dernière mise à jour le 1er Octobre 2025.</p>
-            <p class="text-sm text-gray-700 mt-1">Base de données : <span class="font-bold text-green-600">Connectée et
-                    stable.</span></p>
+        <!-- System Status Banner -->
+        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-2xs flex items-center justify-between">
+            <div>
+                <h3 class="text-sm font-black text-slate-950 font-heading">Statut de la Plateforme</h3>
+                <p class="text-xs text-slate-500 font-medium mt-0.5">Version SI-LÉGALE PRO v2.1.0 • Module LCB-FT Actif</p>
+            </div>
+            <span class="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black rounded-full">
+                Base Stable & Sécurisée
+            </span>
         </div>
 
     </main>

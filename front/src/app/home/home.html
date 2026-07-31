@@ -1,160 +1,166 @@
-<div class="flex h-screen bg-gray-100">
-    <div *ngIf="isSidebarOpen" (click)="isSidebarOpen = false"
-        class="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden">
-    </div>
+<div class="min-h-screen bg-[#F0F4F8] flex flex-col font-sans text-[#1B263B]">
 
-    <aside [ngClass]="{'translate-x-0 ease-out': isSidebarOpen, '-translate-x-full ease-in': !isSidebarOpen}" class="fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white flex flex-col shadow-2xl
-                  transform transition duration-300 lg:translate-x-0 lg:static lg:flex-shrink-0">
-
-        <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/30 relative">
-            <div class="flex items-center justify-center w-full py-1">
-                <img src="/logo-app.jpg" alt="SI Legal" class="w-44 h-auto rounded-lg shadow-md hover:scale-105 transition-transform duration-300">
+    <!-- Executive Modern Top Horizontal Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-[#0F172A] text-white shadow-xl border-b border-[#1E293B]">
+        <!-- Upper TopBar: Brand, Global Status & User Profile -->
+        <div class="max-w-[1700px] mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+            
+            <!-- Brand Logo & Cabinet Title -->
+            <div class="flex items-center gap-3 cursor-pointer select-none" (click)="navigateToHome()">
+                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#0077B6] via-[#0284C7] to-[#48CAE4] text-[#0F172A] shadow-md flex items-center justify-center shrink-0">
+                    <svg class="w-5.5 h-5.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 6l9-3 9 3v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V6z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5 leading-none">
+                        <span class="font-heading font-black text-lg text-white tracking-tight">SI-LÉGALE</span>
+                        <span class="text-[9px] font-black uppercase tracking-widest text-[#0F172A] bg-[#48CAE4] px-1.5 py-0.5 rounded font-extrabold">CABINET</span>
+                    </div>
+                    <p class="text-[10px] font-extrabold text-[#48CAE4] tracking-wider uppercase mt-0.5">Avocats Associés</p>
+                </div>
             </div>
-            <button (click)="isSidebarOpen = false" class="lg:hidden text-gray-400 hover:text-white absolute right-4 top-4">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
-                </svg>
-            </button>
-        </div>
 
-        <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
-            <a (click)="navigateToHome()"
-                [ngClass]="activeRoute === 'calendrier' ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center space-x-3 p-3 cursor-pointer rounded-lg duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l7 7m-7-7v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                    </path>
-                </svg>
-                <span>Accueil</span>
-            </a>
-            <a (click)="navigateToAmlCompliance()"
-                [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center cursor-pointer space-x-3 p-3 rounded-lg duration-150">
-                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618"></path></svg>
-                <span>Conformité (AML)</span>
-            </a>
-            <a (click)="navigateToClientDiligenceStatusList()"
-                [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center cursor-pointer space-x-3 p-3 rounded-lg duration-150">
-                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                 </svg>
-                 <span>Suivi des Diligences</span>
-            </a>
-            <a (click)="navigateToCalendrier()"
-                [ngClass]="activeRoute === paths.CALENDRIER ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center space-x-3 p-3 cursor-pointer rounded-lg duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                    </path>
-                </svg>
-                <span>Calendrier Judiciaire</span>
-            </a>
-            <a (click)="navigateTODossier()"
-                [ngClass]="activeRoute === paths.DOSSIER ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center space-x-3 p-3 cursor-pointer rounded-lg  transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
-                </svg>
-                <span>Gestion des Dossiers</span>
-            </a>
-            <a (click)="navigateTOClients()"
-                [ngClass]="activeRoute === paths.CRM ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center space-x-3 p-3 rounded-lg transition duration-150 cursor-pointer">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z">
-                    </path>
-                </svg>
-                <span>Gestion des Clients</span>
-            </a>
-            <a (click)="navigateToModel()"
-                [ngClass]="activeRoute === paths.MODEL ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center space-x-3 p-3 rounded-lg  transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                    </path>
-                </svg>
-                <span>Gestion Documentaire (GED)</span>
-            </a>
-            <a (click)="navigateToFacturation()"
-                [ngClass]="activeRoute === paths.FACTURATION ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center space-x-3 p-3 cursor-pointer transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z">
-                    </path>
-                </svg>
-                <span>Facturation</span>
-            </a>
-            <a (click)="navigateToBillingDashboard()"
-                [ngClass]="activeRoute === paths.BILLING_DASHBOARD ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center space-x-3 p-3 cursor-pointer transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                    </path>
-                </svg>
-                <span>Tableau de bord (Facturation)</span>
-            </a>
-            <a (click)="navigateToAdministration()"
-                [ngClass]="activeRoute === paths.ADMINSTRATION ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center cursor-pointer space-x-3 p-3 rounded-lg transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                    </path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                <span>Administration</span>
-            </a>
-
-        </nav>
-
-        <!-- Sidebar Footer / Logout -->
-        <div class="p-4 border-t border-slate-700">
-            <button (click)="logout()" class="w-full flex items-center space-x-3 p-3 text-red-400 hover:bg-slate-800 rounded-lg duration-150 cursor-pointer border-0 bg-transparent text-left font-semibold">
-                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span>Se déconnecter</span>
-            </button>
-        </div>
-    </aside>
-
-    <div class="flex-1 flex flex-col overflow-hidden">
-        <!-- Mobile Header Bar -->
-        <header class="lg:hidden bg-slate-900 text-white px-6 py-3 flex items-center justify-between border-b border-slate-800 shadow-md z-10">
+            <!-- Right Controls: Status, Notifications & Profile -->
             <div class="flex items-center gap-3">
-                <button (click)="isSidebarOpen = true" class="p-2 -ml-2 text-gray-400 hover:text-white focus:outline-none" aria-label="Ouvrir le menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                <!-- LCB-FT Connected Status Badge -->
+                <div class="hidden md:flex items-center gap-2 bg-[#2A9D8F]/20 px-3 py-1 rounded-full border border-[#2A9D8F]/40 text-[#48CAE4]">
+                    <span class="w-2 h-2 rounded-full bg-[#2A9D8F] animate-pulse"></span>
+                    <span class="text-[10px] font-black uppercase tracking-wider">LCB-FT Opérationnelle</span>
+                </div>
+
+                <!-- AML Notification Trigger -->
+                <button (click)="navigateToAmlCompliance()" title="Alertes Conformité AML" 
+                    class="p-2 text-slate-300 hover:text-[#48CAE4] hover:bg-[#1E293B] rounded-xl transition-all relative cursor-pointer">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 01-6 0v-1m6 0H9"/>
                     </svg>
                 </button>
-                <img src="/logo-app.jpg" alt="SI Legal" class="h-9 w-auto rounded shadow-sm">
-            </div>
-            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700">
-                Cabinet
-            </span>
-        </header>
 
-        <main class="flex-1 overflow-y-auto p-6 sm:p-10">
-            <router-outlet></router-outlet>
-        </main>
-    </div>
+                <!-- Divider -->
+                <div class="h-6 w-px bg-slate-700/60 hidden sm:block"></div>
+
+                <!-- User Profile Pill -->
+                <div class="flex items-center gap-2.5 bg-[#1E293B] pl-2 pr-3 py-1 rounded-xl border border-slate-700/60">
+                    <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#0077B6] to-[#48CAE4] text-[#0F172A] font-black text-xs flex items-center justify-center">
+                        M
+                    </div>
+                    <span class="text-xs font-black text-white hidden sm:inline">Maître Avocat</span>
+                </div>
+
+                <!-- Logout Button -->
+                <button (click)="logout()" title="Se déconnecter" 
+                    class="p-2 text-[#E63946] hover:bg-[#E63946]/20 rounded-xl transition-all cursor-pointer">
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Lower Navigation Bar: Main Categories Horizontal Scrollable Menu -->
+        <div class="bg-[#1E293B]/90 border-t border-slate-800/80 px-4 sm:px-6">
+            <div class="max-w-[1700px] mx-auto flex items-center justify-between overflow-x-auto custom-scrollbar">
+                <nav class="flex items-center space-x-1.5 py-1.5 min-w-max">
+
+                    <!-- Home -->
+                    <a (click)="navigateToHome()"
+                        [ngClass]="activeRoute === 'calendrier' ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l7 7m-7-7v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        <span>Accueil Cabinet</span>
+                    </a>
+
+                    <!-- Dossiers -->
+                    <a (click)="navigateTODossier()"
+                        [ngClass]="activeRoute === paths.DOSSIER ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                        </svg>
+                        <span>Dossiers & Affaires</span>
+                    </a>
+
+                    <!-- CRM Clients -->
+                    <a (click)="navigateTOClients()"
+                        [ngClass]="activeRoute === paths.CRM ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z"/>
+                        </svg>
+                        <span>Répertoire Clients</span>
+                    </a>
+
+                    <!-- LCB-FT AML Compliance -->
+                    <a (click)="navigateToAmlCompliance()"
+                        [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618"/>
+                        </svg>
+                        <span>Conformité LCB-FT</span>
+                    </a>
+
+                    <!-- Diligences -->
+                    <a (click)="navigateToClientDiligenceStatusList()"
+                        [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                        </svg>
+                        <span>Suivi Diligences</span>
+                    </a>
+
+                    <!-- Calendrier Judiciaire -->
+                    <a (click)="navigateToCalendrier()"
+                        [ngClass]="activeRoute === paths.CALENDRIER ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        <span>Agenda Judiciaire</span>
+                    </a>
+
+                    <!-- GED Modèles -->
+                    <a (click)="navigateToModel()"
+                        [ngClass]="activeRoute === paths.MODEL ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span>GED Modèles</span>
+                    </a>
+
+                    <!-- Facturation -->
+                    <a (click)="navigateToFacturation()"
+                        [ngClass]="activeRoute === paths.BILLING ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/>
+                        </svg>
+                        <span>Facturation</span>
+                    </a>
+
+                    <!-- Admin -->
+                    <a (click)="navigateToAdministration()"
+                        [ngClass]="activeRoute === paths.ADMINSTRATION ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        </svg>
+                        <span>Administration</span>
+                    </a>
+
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Full Width Page Area -->
+    <main class="flex-1 w-full max-w-[1700px] mx-auto p-4 sm:p-6 lg:p-8 animate-fadeIn">
+        <router-outlet></router-outlet>
+    </main>
 </div>
