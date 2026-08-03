@@ -1,121 +1,141 @@
-<div class="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-7xl mx-auto space-y-8">
+<div class="min-h-screen bg-[#F8FAFC] pb-12 animate-fadeIn font-sans text-[#0F172A]">
+  <div class="max-w-[1600px] mx-auto space-y-6">
     
     <!-- Loading State -->
-    <div *ngIf="isLoading" class="flex justify-center items-center h-64">
-      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+    <div *ngIf="isLoading" class="flex flex-col justify-center items-center h-64 bg-white rounded-3xl border border-slate-200 shadow-xs">
+      <div class="animate-spin rounded-full h-10 w-10 border-3 border-[#1E3A8A] border-t-transparent"></div>
+      <p class="text-xs font-bold text-slate-500 mt-3">Chargement de la fiche client...</p>
     </div>
 
     <!-- Error State -->
-    <div *ngIf="error && !isLoading" class="bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow-sm">
-      <div class="flex">
-        <div class="flex-shrink-0">
-          <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+    <div *ngIf="error && !isLoading" class="bg-rose-50 border-l-4 border-[#EF4444] p-5 rounded-2xl shadow-xs border border-rose-200">
+      <div class="flex items-center gap-3">
+        <div class="p-2 bg-[#EF4444] text-white rounded-xl">
+          <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
           </svg>
         </div>
-        <div class="ml-3">
-          <p class="text-sm text-red-700 font-medium">{{ error }}</p>
-        </div>
+        <p class="text-xs text-[#0F172A] font-bold">{{ error }}</p>
       </div>
     </div>
 
-    <!-- Dashboard Content -->
+    <!-- Main Client Profile Dashboard -->
     <ng-container *ngIf="!isLoading && client">
       
-      <!-- Header Section -->
-      <div class="bg-white shadow-sm rounded-2xl overflow-hidden border border-slate-200/60">
-        <div class="px-6 py-8 sm:p-10 flex flex-col md:flex-row items-center md:items-start md:justify-between gap-6">
-          <div class="flex flex-col md:flex-row items-center md:items-start gap-6 w-full">
-            <!-- Avatar -->
-            <div class="h-24 w-24 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-3xl font-bold text-white shadow-lg shadow-indigo-200">
+      <!-- Top High-Contrast Clear Header Section -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-7 space-y-4">
+        <!-- Breadcrumb Bar -->
+        <nav class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+          <a routerLink="/home" class="hover:text-[#1E3A8A] cursor-pointer transition-colors">Cabinet</a>
+          <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+          <a routerLink="/home/crm" class="hover:text-[#1E3A8A] cursor-pointer transition-colors">Répertoire Clients</a>
+          <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+          <span class="text-[#1E3A8A] font-black">Fiche Client</span>
+        </nav>
+
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 pt-1">
+          
+          <!-- Avatar + Main Identity Info -->
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 w-full lg:w-auto">
+            <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl bg-[#1E3A8A] border-2 border-[#F59E0B] text-white flex items-center justify-center text-xl sm:text-2xl font-black shadow-md shrink-0">
               {{ getClientInitials() }}
             </div>
             
-            <!-- Info -->
-            <div class="text-center md:text-left flex-1">
-              <div class="flex flex-col md:flex-row md:items-center gap-3 mb-2">
-                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">{{ getClientName() }}</h1>
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
-                  {{ client.type === 'PERSONNE' ? 'Particulier' : 'Société' }}
+            <div class="space-y-1.5 min-w-0">
+              <div class="flex flex-wrap items-center gap-2.5">
+                <h1 class="text-xl sm:text-2.5xl font-black text-[#0F172A] tracking-tight font-heading leading-tight">
+                  {{ getClientName() }}
+                </h1>
+                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-[#1E3A8A] text-white shadow-2xs">
+                  {{ client.type === 'PERSONNE' ? 'Personne Physique' : 'Société / Entité' }}
+                </span>
+                <span class="px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider bg-slate-900 text-white shadow-2xs">
+                  ID: #{{ client.id }}
                 </span>
               </div>
               
-              <div class="mt-4 flex flex-col sm:flex-row gap-4 sm:gap-8 text-sm text-slate-600">
-                <div class="flex items-center gap-2 justify-center md:justify-start">
-                  <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <!-- Contact Detail Pills -->
+              <div class="flex flex-wrap items-center gap-3 pt-1">
+                <div class="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-xl border border-slate-200 text-xs font-bold text-[#0F172A]">
+                  <svg class="h-4 w-4 text-[#F59E0B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  <span>{{ client.email || 'Non renseigné' }}</span>
+                  <span>{{ client.email || 'Email non renseigné' }}</span>
                 </div>
-                <div class="flex items-center gap-2 justify-center md:justify-start">
-                  <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="flex items-center gap-1.5 px-3 py-1 bg-slate-50 rounded-xl border border-slate-200 text-xs font-bold text-[#0F172A]">
+                  <svg class="h-4 w-4 text-[#F59E0B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                   </svg>
-                  <span>{{ client.telephone || 'Non renseigné' }}</span>
+                  <span>{{ client.telephone || 'Téléphone non renseigné' }}</span>
                 </div>
               </div>
             </div>
           </div>
           
-          <!-- Actions -->
-          <div class="flex flex-col sm:flex-row shrink-0 gap-3">
-             <button [routerLink]="['/home/client-conformity']" [queryParams]="{ id: client.id }" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 hover:text-indigo-600 transition-colors shadow-sm">
-                <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <!-- Clear Action CTAs -->
+          <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto shrink-0 pt-2 lg:pt-0">
+             <button [routerLink]="['/home/client-conformity']" [queryParams]="{ id: client.id }" 
+              class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4.5 py-2.5 rounded-xl bg-white border border-slate-200 text-[#1E3A8A] hover:bg-[#1E3A8A] hover:text-white font-black text-xs transition-all shadow-2xs cursor-pointer">
+                <svg class="h-4 w-4 text-[#F59E0B]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
                 Fiche Conformité
              </button>
              
-             <button [routerLink]="['/home/dossier-form']" [queryParams]="{ clientId: client.id }" class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 border border-transparent text-white text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm shadow-indigo-200">
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+             <button [routerLink]="['/home/dossier-form']" [queryParams]="{ clientId: client.id }" 
+              class="btn-gold flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-black shadow-md cursor-pointer">
+                <svg class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                 </svg>
-                Créer un dossier
+                Nouveau Dossier
              </button>
           </div>
+
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+      <!-- Detail Grid Columns -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <!-- Left Column: Dossiers & AML -->
-        <div class="lg:col-span-2 space-y-8">
+        <!-- Left Column: Active Dossiers (2 Cols) -->
+        <div class="lg:col-span-2 space-y-6">
           
-          <!-- Dossiers Card -->
-          <div class="bg-white shadow-sm border border-slate-200/60 rounded-2xl overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-              <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-                Dossiers Actifs
+          <!-- Active Cases Card -->
+          <div class="bg-white shadow-sm border border-slate-200 rounded-3xl overflow-hidden">
+            <div class="px-6 py-4.5 border-b border-slate-100 flex justify-between items-center bg-slate-50/60">
+              <h2 class="text-base font-black text-[#0F172A] flex items-center gap-2.5 font-heading">
+                <div class="p-2 bg-[#1E3A8A]/10 text-[#1E3A8A] rounded-xl border border-[#1E3A8A]/20">
+                  <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+                </div>
+                Dossiers du Client
               </h2>
-              <span class="bg-indigo-100 text-indigo-700 py-1 px-3 rounded-full text-xs font-bold">{{ dossiers.length }}</span>
+              <span class="bg-[#1E3A8A] text-white py-1 px-3 rounded-full text-xs font-black">{{ dossiers.length }} affaires</span>
             </div>
             
             <div class="overflow-x-auto">
-              <table class="w-full text-left text-sm text-slate-600">
-                <thead class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider">
+              <table class="w-full text-left text-xs text-[#0F172A]">
+                <thead class="bg-slate-50 text-slate-500 uppercase tracking-widest text-[9px] font-black border-b border-slate-100">
                   <tr>
-                    <th class="px-6 py-4 font-semibold">Référence</th>
-                    <th class="px-6 py-4 font-semibold">Titre</th>
-                    <th class="px-6 py-4 font-semibold">Date d'ouverture</th>
-                    <th class="px-6 py-4 font-semibold text-right">Action</th>
+                    <th class="px-6 py-3.5">Référence</th>
+                    <th class="px-6 py-3.5">Intitulé du Dossier</th>
+                    <th class="px-6 py-3.5">Date d'Ouverture</th>
+                    <th class="px-6 py-3.5 text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                  <tr *ngFor="let dossier of dossiers" class="hover:bg-slate-50/80 transition-colors group">
-                    <td class="px-6 py-4 font-medium text-slate-900">{{ dossier.referenceInterne || 'N/A' }}</td>
-                    <td class="px-6 py-4">{{ dossier.titre || 'Sans titre' }}</td>
-                    <td class="px-6 py-4 text-slate-500">{{ dossier.dateOuverture ? (dossier.dateOuverture | date:'dd/MM/yyyy') : '-' }}</td>
+                  <tr *ngFor="let dossier of dossiers" class="hover:bg-slate-50 transition-colors group">
+                    <td class="px-6 py-4 font-black text-[#1E3A8A]">{{ dossier.referenceInterne || 'N/A' }}</td>
+                    <td class="px-6 py-4 font-bold">{{ dossier.titre || 'Sans titre' }}</td>
+                    <td class="px-6 py-4 text-slate-500 font-medium">{{ dossier.dateOuverture ? (dossier.dateOuverture | date:'dd/MM/yyyy') : '-' }}</td>
                     <td class="px-6 py-4 text-right">
-                      <button [routerLink]="['/home/dossier-detail', dossier.id]" class="text-indigo-600 hover:text-indigo-900 font-medium opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end gap-1 w-full">
-                        Voir <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                      <button [routerLink]="['/home/dossier-detail', dossier.id]" class="text-[#D97706] hover:text-[#1E3A8A] font-black transition-colors flex items-center justify-end gap-1 w-full cursor-pointer">
+                        Consulter <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                       </button>
                     </td>
                   </tr>
                   <tr *ngIf="dossiers.length === 0">
-                    <td colspan="4" class="px-6 py-12 text-center text-slate-500 italic">
-                      Aucun dossier trouvé pour ce client.
+                    <td colspan="4" class="px-6 py-12 text-center text-slate-400 font-medium italic">
+                      Aucun dossier enregistré pour ce client.
                     </td>
                   </tr>
                 </tbody>
@@ -125,83 +145,81 @@
 
         </div>
 
-        <!-- Right Column: AML & Invoices -->
-        <div class="space-y-8">
+        <!-- Right Column: AML Compliance & Invoices (1 Col) -->
+        <div class="space-y-6">
           
-          <!-- AML Compliance Card -->
-          <div class="bg-white shadow-sm border border-slate-200/60 rounded-2xl overflow-hidden relative overflow-hidden">
-            <!-- Decorative background blob -->
-            <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-slate-50 opacity-50"></div>
-            
-            <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center relative z-10">
-              <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          <!-- LCB-FT Compliance Status Panel -->
+          <div class="bg-white shadow-sm border border-slate-200 rounded-3xl overflow-hidden p-6 space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 class="text-base font-black text-[#0F172A] flex items-center gap-2.5 font-heading">
+                <div class="p-2 bg-[#10B981]/10 text-[#10B981] rounded-xl border border-[#10B981]/20">
+                  <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                </div>
                 Statut LCB-FT
               </h2>
             </div>
             
-            <div class="p-6 relative z-10">
-              <div *ngIf="latestAmlStatus; else noAml" class="space-y-5">
-                <div class="flex items-center justify-between">
-                  <span class="text-sm font-medium text-slate-500">Statut Global</span>
-                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border" [ngClass]="getAmlBadgeClass()">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="getAmlStatusIcon()"></path>
-                    </svg>
-                    {{ latestAmlStatus.status || 'Inconnu' }}
-                  </span>
-                </div>
-                
-                <div class="flex items-center justify-between pt-4 border-t border-slate-100">
-                  <span class="text-sm font-medium text-slate-500">Dernière vérif.</span>
-                  <span class="text-sm font-semibold text-slate-700">{{ latestAmlStatus.lastUpdateDate ? (latestAmlStatus.lastUpdateDate | date:'dd/MM/yyyy') : 'Jamais' }}</span>
-                </div>
+            <div *ngIf="latestAmlStatus; else noAml" class="space-y-4">
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-200">
+                <span class="text-xs font-bold text-slate-500">Statut Global</span>
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border" [ngClass]="getAmlBadgeClass()">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" [attr.d]="getAmlStatusIcon()"></path>
+                  </svg>
+                  {{ latestAmlStatus.status || 'Inconnu' }}
+                </span>
               </div>
               
-              <ng-template #noAml>
-                <div class="text-center py-6">
-                  <div class="mx-auto w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
-                    <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                  </div>
-                  <p class="text-sm text-slate-500 mb-4">Aucune vérification de conformité effectuée.</p>
-                  <button [routerLink]="['/home/client-conformity']" [queryParams]="{ id: client.id }" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">
-                    Lancer l'évaluation &rarr;
-                  </button>
-                </div>
-              </ng-template>
+              <div class="flex items-center justify-between px-1">
+                <span class="text-xs font-bold text-slate-500">Dernière Vérification</span>
+                <span class="text-xs font-black text-[#0F172A]">{{ latestAmlStatus.lastUpdateDate ? (latestAmlStatus.lastUpdateDate | date:'dd/MM/yyyy') : 'Jamais' }}</span>
+              </div>
             </div>
+            
+            <ng-template #noAml>
+              <div class="text-center py-5 space-y-3">
+                <div class="mx-auto w-10 h-10 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <p class="text-xs text-slate-500 font-bold">Aucune évaluation de conformité disponible.</p>
+                <button [routerLink]="['/home/client-conformity']" [queryParams]="{ id: client.id }" class="text-xs font-black text-[#D97706] hover:text-[#1E3A8A] cursor-pointer">
+                  Lancer l'évaluation KYC &rarr;
+                </button>
+              </div>
+            </ng-template>
           </div>
 
-          <!-- Invoices Card -->
-          <div class="bg-white shadow-sm border border-slate-200/60 rounded-2xl overflow-hidden">
-            <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-              <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                Facturation
+          <!-- Billing & Invoices Panel -->
+          <div class="bg-white shadow-sm border border-slate-200 rounded-3xl overflow-hidden">
+            <div class="px-6 py-4.5 border-b border-slate-100 flex justify-between items-center bg-slate-50/60">
+              <h2 class="text-base font-black text-[#0F172A] flex items-center gap-2.5 font-heading">
+                <div class="p-2 bg-[#F59E0B]/10 text-[#D97706] rounded-xl border border-[#F59E0B]/20">
+                  <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+                Facturation & Honoraires
               </h2>
             </div>
             
-            <div class="divide-y divide-slate-100 max-h-[400px] overflow-y-auto">
-              <div *ngFor="let invoice of invoices" class="p-5 hover:bg-slate-50 transition-colors">
-                <div class="flex justify-between items-start mb-2">
-                  <span class="font-bold text-slate-800 text-sm">{{ invoice.numeroFacture || 'Brouillon' }}</span>
-                  <span class="inline-flex px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border" [ngClass]="getInvoiceStatusBadge(invoice.status)">
+            <div class="divide-y divide-slate-100 max-h-[380px] overflow-y-auto">
+              <div *ngFor="let invoice of invoices" class="p-4.5 hover:bg-slate-50 transition-colors">
+                <div class="flex justify-between items-start mb-1.5">
+                  <span class="font-black text-[#0F172A] text-xs">{{ invoice.numeroFacture || 'Brouillon' }}</span>
+                  <span class="inline-flex px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider border" [ngClass]="getInvoiceStatusBadge(invoice.status)">
                     {{ getInvoiceStatusLabel(invoice.status) }}
                   </span>
                 </div>
-                <div class="flex justify-between items-center mt-3">
-                  <span class="text-xs font-medium text-slate-500 flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    {{ invoice.dueDate ? (invoice.dueDate | date:'dd/MM/yyyy') : '-' }}
+                <div class="flex justify-between items-center mt-2.5">
+                  <span class="text-[10px] font-bold text-slate-500 flex items-center gap-1">
+                    Échéance : {{ invoice.dueDate ? (invoice.dueDate | date:'dd/MM/yyyy') : '-' }}
                   </span>
-                  <button [routerLink]="['/home/billing/editor', invoice.id]" class="text-indigo-600 hover:text-indigo-800 text-xs font-semibold flex items-center gap-1">
-                    Détails <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                  <button [routerLink]="['/home/billing/editor', invoice.id]" class="text-[#D97706] hover:text-[#1E3A8A] text-xs font-black flex items-center gap-1 cursor-pointer">
+                    Détails →
                   </button>
                 </div>
               </div>
               
-              <div *ngIf="invoices.length === 0" class="p-8 text-center text-slate-500 italic text-sm">
-                Aucune facture émise.
+              <div *ngIf="invoices.length === 0" class="p-8 text-center text-slate-400 font-medium text-xs italic">
+                Aucune facture émise pour ce client.
               </div>
             </div>
           </div>

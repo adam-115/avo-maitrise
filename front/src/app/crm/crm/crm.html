@@ -2,15 +2,15 @@
     <main class="max-w-[1600px] mx-auto space-y-6">
         
         <!-- Header Section -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#F0F4F8] p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-xs">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-xs">
             <div class="space-y-1">
                 <nav class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                    <a (click)="activeTab = 'ALL'" class="hover:text-[#0077B6] cursor-pointer transition-colors">Cabinet</a>
+                    <a (click)="activeTab = 'ALL'" class="hover:text-[#1E3A8A] cursor-pointer transition-colors">Cabinet</a>
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    <span class="text-[#0077B6] font-black">Répertoire Clients</span>
+                    <span class="text-[#1E3A8A] font-black">Répertoire Clients</span>
                 </nav>
-                <h1 class="text-xl sm:text-2xl font-black text-[#1B263B] tracking-tight font-heading">
-                    Annuaire <span class="text-[#0077B6]">Clients & Entités</span>
+                <h1 class="text-xl sm:text-2xl font-black text-[#0F172A] tracking-tight font-heading">
+                    Annuaire <span class="text-[#D97706]">Clients & Entités</span>
                 </h1>
                 <p class="text-xs text-slate-600 font-medium max-w-xl">
                     Gestion centralisée de la base clients, suivi KYC et conformité LCB-FT.
@@ -19,18 +19,18 @@
             
             <div class="flex items-center gap-3">
                 <div *ngIf="alertCount > 0" 
-                    class="hidden sm:flex items-center gap-3 bg-red-50 px-4 py-2 rounded-2xl border border-[#E63946] shadow-xs">
+                    class="hidden sm:flex items-center gap-3 bg-rose-50 px-4 py-2 rounded-2xl border border-[#EF4444] shadow-xs">
                     <div class="flex flex-col items-end">
-                        <span class="text-[9px] uppercase font-black text-[#E63946] tracking-wider">Alertes AML</span>
-                        <span class="text-lg font-black text-[#E63946] leading-none">{{ alertCount }}</span>
+                        <span class="text-[9px] uppercase font-black text-[#EF4444] tracking-wider">Alertes AML</span>
+                        <span class="text-lg font-black text-[#EF4444] leading-none">{{ alertCount }}</span>
                     </div>
-                    <div class="w-8 h-8 rounded-xl bg-[#E63946] flex items-center justify-center text-white shrink-0 shadow-xs">
+                    <div class="w-8 h-8 rounded-xl bg-[#EF4444] flex items-center justify-center text-white shrink-0 shadow-xs">
                         <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     </div>
                 </div>
 
                 <button (click)="navigateToNewClient()"
-                    class="btn-azur inline-flex items-center justify-center px-4 py-2.5 rounded-xl shadow-md cursor-pointer text-xs">
+                    class="btn-gold inline-flex items-center justify-center px-4.5 py-2.5 rounded-xl shadow-md cursor-pointer text-xs">
                     <svg class="w-4 h-4 mr-1.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
                     Nouveau Client
                 </button>
@@ -38,30 +38,30 @@
         </div>
 
         <!-- Tabbed Navigation Bar -->
-        <div class="bg-[#F0F4F8] p-2 rounded-2xl border border-slate-200 shadow-xs overflow-x-auto">
+        <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-xs overflow-x-auto">
             <nav class="flex space-x-2 min-w-max" aria-label="Tabs">
                 <button (click)="activeTab = 'ALL'"
-                    [ngClass]="activeTab === 'ALL' ? 'bg-[#0077B6] text-white font-black shadow-md' : 'text-[#1B263B] hover:bg-white font-bold'"
+                    [ngClass]="activeTab === 'ALL' ? 'bg-[#1E3A8A] text-white font-black shadow-md' : 'text-[#0F172A] hover:bg-slate-100 font-bold'"
                     class="px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer">
                     Tous les Clients
                 </button>
                 <button (click)="activeTab = 'PERSONNE'"
-                    [ngClass]="activeTab === 'PERSONNE' ? 'bg-[#0077B6] text-white font-black shadow-md' : 'text-[#1B263B] hover:bg-white font-bold'"
+                    [ngClass]="activeTab === 'PERSONNE' ? 'bg-[#1E3A8A] text-white font-black shadow-md' : 'text-[#0F172A] hover:bg-slate-100 font-bold'"
                     class="px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer">
                     Personnes Physiques
                 </button>
                 <button (click)="activeTab = 'SOCIETE'"
-                    [ngClass]="activeTab === 'SOCIETE' ? 'bg-[#0077B6] text-white font-black shadow-md' : 'text-[#1B263B] hover:bg-white font-bold'"
+                    [ngClass]="activeTab === 'SOCIETE' ? 'bg-[#1E3A8A] text-white font-black shadow-md' : 'text-[#0F172A] hover:bg-slate-100 font-bold'"
                     class="px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer">
                     Sociétés / Moral
                 </button>
                 <button (click)="activeTab = 'ASSOCIATION'"
-                    [ngClass]="activeTab === 'ASSOCIATION' ? 'bg-[#0077B6] text-white font-black shadow-md' : 'text-[#1B263B] hover:bg-white font-bold'"
+                    [ngClass]="activeTab === 'ASSOCIATION' ? 'bg-[#1E3A8A] text-white font-black shadow-md' : 'text-[#0F172A] hover:bg-slate-100 font-bold'"
                     class="px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer">
                     Associations
                 </button>
                 <button (click)="activeTab = 'INSTITUTION'"
-                    [ngClass]="activeTab === 'INSTITUTION' ? 'bg-[#0077B6] text-white font-black shadow-md' : 'text-[#1B263B] hover:bg-white font-bold'"
+                    [ngClass]="activeTab === 'INSTITUTION' ? 'bg-[#1E3A8A] text-white font-black shadow-md' : 'text-[#0F172A] hover:bg-slate-100 font-bold'"
                     class="px-4 py-2 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer">
                     Institutions
                 </button>
@@ -75,12 +75,12 @@
                     <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
                 <input [(ngModel)]="searchTerm" (input)="filterClients()"
-                    class="w-full pl-10 pr-4 py-2.5 bg-[#F0F4F8] rounded-2xl border border-slate-200 shadow-xs focus:border-[#0077B6] focus:bg-white outline-none transition-all placeholder:text-slate-400 font-bold text-xs text-[#1B263B]"
+                    class="w-full pl-10 pr-4 py-2.5 bg-white rounded-2xl border border-slate-200 shadow-xs focus:border-[#F59E0B] outline-none transition-all placeholder:text-slate-400 font-bold text-xs text-[#0F172A]"
                     placeholder="Rechercher par nom, CIN, RC ou pays..." type="search">
             </div>
             <div class="lg:col-span-3">
                 <select [(ngModel)]="selectedType" (change)="filterClients()"
-                    class="w-full px-3.5 py-2.5 bg-[#F0F4F8] rounded-2xl border border-slate-200 shadow-xs focus:border-[#0077B6] focus:bg-white outline-none font-bold text-xs text-[#1B263B] cursor-pointer">
+                    class="w-full px-3.5 py-2.5 bg-white rounded-2xl border border-slate-200 shadow-xs focus:border-[#F59E0B] outline-none font-bold text-xs text-[#0F172A] cursor-pointer">
                     <option value="">Tous les Types</option>
                     <option value="PERSONNE">Personne Physique</option>
                     <option value="SOCIETE">Société / Entité</option>
@@ -90,7 +90,7 @@
             </div>
             <div class="lg:col-span-3">
                 <select [(ngModel)]="selectedRisk" (change)="filterClients()"
-                    class="w-full px-3.5 py-2.5 bg-[#F0F4F8] rounded-2xl border border-slate-200 shadow-xs focus:border-[#0077B6] focus:bg-white outline-none font-bold text-xs text-[#1B263B] cursor-pointer">
+                    class="w-full px-3.5 py-2.5 bg-white rounded-2xl border border-slate-200 shadow-xs focus:border-[#F59E0B] outline-none font-bold text-xs text-[#0F172A] cursor-pointer">
                     <option value="">Risque AML (Tous)</option>
                     <option value="ELEVEE">Risque Élevé</option>
                     <option value="MOYEN">Risque Moyen</option>
@@ -100,8 +100,8 @@
         </div>
 
         <!-- Loading State -->
-        <div *ngIf="loading" class="flex flex-col items-center justify-center py-16 bg-[#F0F4F8] rounded-3xl border border-slate-200 shadow-xs">
-            <div class="w-10 h-10 border-3 border-[#0077B6] border-t-transparent rounded-full animate-spin"></div>
+        <div *ngIf="loading" class="flex flex-col items-center justify-center py-16 bg-white rounded-3xl border border-slate-200 shadow-xs">
+            <div class="w-10 h-10 border-3 border-[#1E3A8A] border-t-transparent rounded-full animate-spin"></div>
             <p class="text-slate-500 font-bold text-xs mt-3">Chargement des clients...</p>
         </div>
 
@@ -113,14 +113,14 @@
                     @for (client of paginatedClients; track client.id) {
                         <app-client-card [client]="client"></app-client-card>
                     } @empty {
-                        <div class="col-span-full py-16 flex flex-col items-center justify-center text-center bg-[#F0F4F8] rounded-3xl shadow-xs border-2 border-dashed border-slate-200">
-                            <div class="w-14 h-14 bg-white rounded-full flex items-center justify-center text-slate-300 mb-4">
+                        <div class="col-span-full py-16 flex flex-col items-center justify-center text-center bg-white rounded-3xl shadow-xs border-2 border-dashed border-slate-200">
+                            <div class="w-14 h-14 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-4">
                                 <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
                             </div>
-                            <h3 class="text-base font-black text-[#1B263B] mb-1">Aucun client trouvé</h3>
+                            <h3 class="text-base font-black text-[#0F172A] mb-1">Aucun client trouvé</h3>
                             <p class="text-xs text-slate-500 font-medium mb-6">Ajoutez votre premier dossier client à l'annuaire.</p>
                             <button (click)="navigateToNewClient()"
-                                class="btn-azur px-5 py-2.5 rounded-xl shadow-md cursor-pointer text-xs">
+                                class="btn-gold px-5 py-2.5 rounded-xl shadow-md cursor-pointer text-xs">
                                 Créer un Client
                             </button>
                         </div>
@@ -128,26 +128,26 @@
                 </div>
 
                 <!-- Pagination Toolbar -->
-                <div *ngIf="totalPages > 1" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#F0F4F8] px-6 py-4 rounded-2xl border border-slate-200 shadow-xs">
+                <div *ngIf="totalPages > 1" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white px-6 py-4 rounded-2xl border border-slate-200 shadow-xs">
                     <span class="text-slate-500 font-bold text-xs">
-                        Affichage de <span class="text-[#0077B6] font-black">{{ (currentPage - 1) * pageSize + 1 }}</span> à 
-                        <span class="text-[#0077B6] font-black">{{ currentEndIndex }}</span> sur 
-                        <span class="text-[#0077B6] font-black">{{ totalElements }}</span> clients
+                        Affichage de <span class="text-[#1E3A8A] font-black">{{ (currentPage - 1) * pageSize + 1 }}</span> à 
+                        <span class="text-[#1E3A8A] font-black">{{ currentEndIndex }}</span> sur 
+                        <span class="text-[#1E3A8A] font-black">{{ totalElements }}</span> clients
                     </span>
                     <div class="flex items-center gap-1.5">
                         <button (click)="prevPage()" [disabled]="currentPage === 1"
-                            class="flex items-center justify-center px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-white disabled:opacity-40 transition-all cursor-pointer text-xs font-bold">
+                            class="flex items-center justify-center px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition-all cursor-pointer text-xs font-bold">
                             Précédent
                         </button>
                         
                         <button *ngFor="let page of pages" (click)="goToPage(page)"
-                            [ngClass]="currentPage === page ? 'bg-[#0077B6] text-white shadow-xs font-black' : 'border border-slate-200 text-slate-600 hover:bg-white font-bold'"
+                            [ngClass]="currentPage === page ? 'bg-[#1E3A8A] text-white shadow-xs font-black' : 'border border-slate-200 text-slate-600 hover:bg-slate-50 font-bold'"
                             class="flex items-center justify-center w-8 h-8 rounded-xl text-xs transition-all cursor-pointer">
                             {{ page }}
                         </button>
 
                         <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                            class="flex items-center justify-center px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-white disabled:opacity-40 transition-all cursor-pointer text-xs font-bold">
+                            class="flex items-center justify-center px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 transition-all cursor-pointer text-xs font-bold">
                             Suivant
                         </button>
                     </div>

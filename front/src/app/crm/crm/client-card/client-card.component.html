@@ -1,18 +1,18 @@
 <div (click)="navigateToDetails()"
-    class="group relative rounded-3xl p-1 glass-card hover-lift transition-all duration-300 cursor-pointer overflow-hidden"
-    [ngClass]="[getCardThemeClass(), client.clientStatus === 'AML_REQUIRED' ? '!border-[#E63946] shadow-md shadow-red-500/10' : '']">
+    class="group relative rounded-3xl p-1 glass-card hover-lift transition-all duration-300 cursor-pointer overflow-hidden bg-white"
+    [ngClass]="[getCardThemeClass(), client.clientStatus === 'AML_REQUIRED' ? '!border-[#EF4444] shadow-md shadow-rose-500/10' : '']">
     
     <!-- Type Indicator Badge -->
     <div class="absolute top-5 right-5 flex items-center gap-2 z-10">
         <!-- AML REQUIRED URGENT BADGE -->
         <div *ngIf="client.clientStatus === 'AML_REQUIRED'" 
-            class="px-2.5 py-1 rounded-full bg-[#E63946] text-white text-[9px] font-black uppercase tracking-widest shadow-xs flex items-center gap-1 animate-pulse">
+            class="px-2.5 py-1 rounded-full bg-[#EF4444] text-white text-[9px] font-black uppercase tracking-widest shadow-xs flex items-center gap-1 animate-pulse">
             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
             AML REQUIS
         </div>
 
-        <div class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-2xs border border-[#0077B6]/20 bg-[#0077B6] text-white flex items-center gap-1.5">
-            <svg class="w-3 h-3 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-2xs border border-[#1E3A8A]/20 bg-[#1E3A8A] text-white flex items-center gap-1.5">
+            <svg class="w-3 h-3 text-[#F59E0B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" [attr.d]="getTypeIcon()"></path>
             </svg>
             {{ getTypeLabel() }}
@@ -23,7 +23,7 @@
         <!-- Avatar and Title -->
         <div class="flex items-center gap-4 mb-5">
             <div class="relative shrink-0">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black transition-transform group-hover:scale-105 duration-300 shadow-2xs border border-slate-200 bg-[#0077B6] text-white">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black transition-transform group-hover:scale-105 duration-300 shadow-2xs border border-slate-200 bg-[#1E3A8A] text-white">
                     {{ getDisplayName().charAt(0) }}
                 </div>
                 <div class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white shadow-2xs"
@@ -31,7 +31,7 @@
             </div>
             <div class="min-w-0 pr-16">
                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5 block">Identification</span>
-                <h3 class="text-base font-black text-[#1B263B] leading-snug group-hover:text-[#0077B6] transition-colors truncate font-heading">
+                <h3 class="text-base font-black text-[#0F172A] leading-snug group-hover:text-[#D97706] transition-colors truncate font-heading">
                     {{ getDisplayName() }}
                 </h3>
                 <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
@@ -42,44 +42,44 @@
 
         <!-- Info Grid -->
         <div class="grid grid-cols-2 gap-2.5 mb-4">
-            <div class="p-2.5 bg-[#F0F4F8] rounded-xl border border-slate-200 group-hover:bg-white transition-colors col-span-2">
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 group-hover:bg-white transition-colors col-span-2">
                 <span class="block text-[9px] font-black text-slate-400 uppercase mb-0.5">Email</span>
-                <span class="block text-xs font-bold text-[#1B263B] truncate">{{ client.email || 'Non renseigné' }}</span>
+                <span class="block text-xs font-bold text-[#0F172A] truncate">{{ client.email || 'Non renseigné' }}</span>
             </div>
-            <div class="p-2.5 bg-[#F0F4F8] rounded-xl border border-slate-200 group-hover:bg-white transition-colors">
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 group-hover:bg-white transition-colors">
                 <span class="block text-[9px] font-black text-slate-400 uppercase mb-0.5">Téléphone</span>
-                <span class="block text-xs font-bold text-[#1B263B] truncate">{{ client.telephone || 'Non renseigné' }}</span>
+                <span class="block text-xs font-bold text-[#0F172A] truncate">{{ client.telephone || 'Non renseigné' }}</span>
             </div>
-            <div class="p-2.5 bg-[#F0F4F8] rounded-xl border border-slate-200 group-hover:bg-white transition-colors">
+            <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 group-hover:bg-white transition-colors">
                 <span class="block text-[9px] font-black text-slate-400 uppercase mb-0.5">Localisation</span>
-                <span class="block text-xs font-bold text-[#1B263B] truncate">{{ client.pays || 'International' }}</span>
+                <span class="block text-xs font-bold text-[#0F172A] truncate">{{ client.pays || 'International' }}</span>
             </div>
         </div>
 
         <!-- Status Section -->
-        <div class="flex items-center justify-between p-2.5 bg-[#F0F4F8] rounded-xl border border-slate-200 group-hover:bg-white transition-colors">
+        <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-xl border border-slate-200 group-hover:bg-white transition-colors">
             <div class="flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full bg-[#2A9D8F]"></span>
+                <span class="w-2 h-2 rounded-full bg-[#10B981]"></span>
                 <span class="text-[9px] font-black text-slate-400 uppercase">Statut LCB-FT</span>
             </div>
-            <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-[#2A9D8F]/15 text-[#2A9D8F] border border-[#2A9D8F]/30">
+            <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30">
                 {{ client.clientStatus?.replace('_', ' ') }}
             </span>
         </div>
     </div>
 
     <!-- Actions Bar -->
-    <div class="p-3 bg-[#F0F4F8] border-t border-slate-200 flex justify-between gap-2 group-hover:bg-white transition-colors">
+    <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-between gap-2 group-hover:bg-white transition-colors">
         <button (click)="$event.stopPropagation(); navigateToConformity()"
-            class="flex-1 py-2 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase text-[#1B263B] hover:bg-[#0077B6] hover:text-white transition-all cursor-pointer">
+            class="flex-1 py-2 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase text-[#0F172A] hover:bg-[#1E3A8A] hover:text-white transition-all cursor-pointer">
             Conformité
         </button>
         <button (click)="$event.stopPropagation(); navigateToEdit()"
-            class="flex-1 py-2 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase text-[#1B263B] hover:bg-[#0077B6] hover:text-white transition-all cursor-pointer">
+            class="flex-1 py-2 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase text-[#0F172A] hover:bg-[#1E3A8A] hover:text-white transition-all cursor-pointer">
             Modifier
         </button>
         <button (click)="$event.stopPropagation(); navigateToDiligence()"
-            class="btn-cyan flex-1 py-2 rounded-xl text-[10px] font-black uppercase shadow-2xs transition-all cursor-pointer">
+            class="btn-gold flex-1 py-2 rounded-xl text-[10px] font-black uppercase shadow-2xs transition-all cursor-pointer">
             Diligence
         </button>
     </div>

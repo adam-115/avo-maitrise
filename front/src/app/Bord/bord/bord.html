@@ -1,75 +1,75 @@
 <div class="space-y-7 animate-fadeIn">
     
-    <!-- Welcome Hero Banner in Sleek Azur (#0077B6) & Cyan (#48CAE4) -->
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-gradient-to-r from-[#0F172A] via-[#0077B6] to-[#0284C7] p-6 sm:p-8 rounded-3xl shadow-xl relative overflow-hidden border border-[#005f93]">
+    <!-- Welcome Hero Banner in Executive Sapphire & Champagne Gold -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-gradient-to-r from-[#0F172A] via-[#1E3A8A] to-[#1E40AF] p-6 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden border border-slate-700/80">
         <!-- Ambient Decorative Lighting -->
-        <div class="absolute -right-20 -top-20 w-80 h-80 bg-[#48CAE4]/20 rounded-full blur-[100px] pointer-events-none"></div>
-        <div class="absolute left-1/3 -bottom-20 w-80 h-80 bg-[#2A9D8F]/15 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-[#F59E0B]/25 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute left-1/3 -bottom-20 w-80 h-80 bg-[#10B981]/20 rounded-full blur-[100px] pointer-events-none"></div>
         
         <div class="space-y-2 relative z-10">
             <div class="flex items-center gap-3">
-                <span class="px-3 py-1 bg-[#48CAE4] text-[#0F172A] font-black text-[10px] uppercase tracking-widest rounded-full">
+                <span class="px-3.5 py-1 bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-black text-[10px] uppercase tracking-widest rounded-full shadow-sm">
                     Espace Avocats
                 </span>
-                <span class="flex items-center gap-1.5 px-2.5 py-0.5 bg-[#2A9D8F]/25 text-[#48CAE4] text-[10px] font-bold rounded-full border border-[#2A9D8F]/40">
-                    <span class="w-1.5 h-1.5 bg-[#2A9D8F] rounded-full animate-ping"></span>
+                <span class="flex items-center gap-1.5 px-3 py-0.5 bg-[#10B981]/25 text-[#10B981] text-[10px] font-bold rounded-full border border-[#10B981]/40">
+                    <span class="w-1.5 h-1.5 bg-[#10B981] rounded-full animate-ping"></span>
                     Cabinet Connecté
                 </span>
             </div>
             <h1 class="text-2xl sm:text-3.5xl font-black text-white tracking-tight font-heading">
                 Bonjour, Maître {{ username }}
             </h1>
-            <p class="text-white/90 font-medium text-xs sm:text-sm max-w-xl">
-                Tableau de bord centralisé pour le suivi des dossiers juridiques, la conformité LCB-FT et l'agenda judiciaire.
+            <p class="text-slate-200 font-medium text-xs sm:text-sm max-w-xl leading-relaxed">
+                Tableau de bord centralisé de gestion du cabinet, suivi KYC des diligences LCB-FT et de l'agenda judiciaire.
             </p>
         </div>
         
         <!-- Quick Actions Bar -->
         <div class="flex flex-wrap items-center gap-3 relative z-10">
             <button (click)="navigateToNewClient()"
-                class="btn-cyan flex items-center gap-2 px-4.5 py-2.5 rounded-xl text-xs cursor-pointer shadow-md">
-                <svg class="w-4 h-4 text-[#1B263B]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                class="btn-gold flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs cursor-pointer shadow-md">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
                 Nouveau Client
             </button>
 
             <button (click)="navigateToNewDossier()"
-                class="flex items-center gap-2 px-4.5 py-2.5 bg-white text-[#0077B6] font-black text-xs rounded-xl hover:bg-slate-100 transition-all shadow-md cursor-pointer">
-                <svg class="w-4 h-4 text-[#0077B6]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 13h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                class="flex items-center gap-2 px-5 py-2.5 bg-white text-[#1E3A8A] font-black text-xs rounded-xl hover:bg-slate-100 transition-all shadow-md cursor-pointer">
+                <svg class="w-4 h-4 text-[#1E3A8A]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 13h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
                 Nouveau Dossier
             </button>
 
             <button (click)="navigateToCalendar()"
-                class="flex items-center justify-center w-10.5 h-10.5 bg-white/10 text-[#48CAE4] hover:text-white rounded-xl border border-white/20 transition-all cursor-pointer"
+                class="flex items-center justify-center w-11 h-11 bg-white/15 text-[#F59E0B] hover:text-white rounded-xl border border-white/20 transition-all cursor-pointer"
                 title="Agenda Judiciaire">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </button>
         </div>
     </div>
 
-    <!-- Compliance Status / Alerts Banner in Rouge (#E63946) -->
+    <!-- Compliance Status / Alerts Banner in Ruby Crimson (#EF4444) -->
     <div>
         @if (notifications.length > 0) {
             <div class="space-y-3">
-                <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-[#E63946] flex items-center gap-2 pl-1">
-                    <span class="w-2 h-2 bg-[#E63946] rounded-full animate-pulse"></span>
+                <h2 class="text-[10px] font-black uppercase tracking-[0.2em] text-[#EF4444] flex items-center gap-2 pl-1">
+                    <span class="w-2 h-2 bg-[#EF4444] rounded-full animate-pulse"></span>
                     Alertes Conformité & Actions Urgentes ({{ notifications.length }})
                 </h2>
                 @for (notif of notifications; track notif.id) {
-                    <div class="bg-red-50/90 border-l-4 border-[#E63946] text-[#1B263B] p-4.5 rounded-2xl shadow-xs border border-red-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all">
+                    <div class="bg-rose-50/90 border-l-4 border-[#EF4444] text-[#0F172A] p-4.5 rounded-2xl shadow-xs border border-rose-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all">
                         <div class="flex items-center gap-3.5">
-                            <div class="p-2.5 bg-[#E63946] text-white rounded-xl shadow-xs shrink-0">
+                            <div class="p-2.5 bg-[#EF4444] text-white rounded-xl shadow-xs shrink-0">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"/></svg>
                             </div>
                             <div>
-                                <h4 class="font-black text-xs uppercase tracking-tight text-[#E63946]">{{ notif.title }}</h4>
-                                <p class="text-xs text-[#1B263B] font-semibold mt-0.5">{{ notif.message }}</p>
+                                <h4 class="font-black text-xs uppercase tracking-tight text-[#EF4444]">{{ notif.title }}</h4>
+                                <p class="text-xs text-[#0F172A] font-semibold mt-0.5">{{ notif.message }}</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2 shrink-0">
-                            <button (click)="markAsRead(notif)" class="px-3.5 py-1.5 hover:bg-red-100 text-[#1B263B] text-xs font-black rounded-lg transition-all cursor-pointer">
+                            <button (click)="markAsRead(notif)" class="px-3.5 py-1.5 hover:bg-rose-100 text-[#0F172A] text-xs font-black rounded-lg transition-all cursor-pointer">
                                 Masquer
                             </button>
-                            <button (click)="navigateToClientDetails(notif?.clientId!)" class="px-4 py-2 bg-[#E63946] hover:bg-red-700 text-white text-xs font-black rounded-xl shadow-sm transition-all cursor-pointer">
+                            <button (click)="navigateToClientDetails(notif?.clientId!)" class="px-4 py-2 bg-[#EF4444] hover:bg-rose-700 text-white text-xs font-black rounded-xl shadow-sm transition-all cursor-pointer">
                                 Analyser Client
                             </button>
                         </div>
@@ -77,14 +77,14 @@
                 }
             </div>
         } @else {
-            <div class="bg-[#F0F4F8] border-l-4 border-[#2A9D8F] p-4 rounded-2xl shadow-xs border border-slate-200 flex items-center justify-between gap-4">
+            <div class="bg-white border-l-4 border-[#10B981] p-4.5 rounded-2xl shadow-xs border border-slate-200 flex items-center justify-between gap-4">
                 <div class="flex items-center gap-3.5">
-                    <div class="p-2.5 bg-[#2A9D8F] text-white rounded-xl shadow-xs shrink-0 font-black">
+                    <div class="p-2.5 bg-[#10B981] text-white rounded-xl shadow-xs shrink-0 font-black">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     </div>
                     <div>
-                        <h4 class="font-black text-xs uppercase tracking-tight text-[#0077B6]">Statut Conformité LCB-FT Global</h4>
-                        <p class="text-xs text-[#1B263B] font-semibold">Tout est conforme. Aucun dossier en attente de revue AML urgente.</p>
+                        <h4 class="font-black text-xs uppercase tracking-tight text-[#1E3A8A]">Statut Conformité LCB-FT Global</h4>
+                        <p class="text-xs text-[#0F172A] font-semibold">Tout est conforme. Aucun dossier en attente de revue AML urgente.</p>
                     </div>
                 </div>
             </div>
@@ -96,47 +96,47 @@
         
         <!-- Card 1: Dossiers Actifs -->
         <div (click)="navigateToDossiers()"
-            class="glass-card p-5 rounded-3xl flex items-center justify-between cursor-pointer group hover-lift border-t-4 border-[#0077B6]">
+            class="glass-card p-5.5 rounded-3xl flex items-center justify-between cursor-pointer group hover-lift border-t-4 border-[#1E3A8A]">
             <div class="space-y-1">
                 <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Dossiers Actifs</p>
-                <p class="text-3.5xl font-black text-[#0077B6] font-heading">{{ totalDossiersCount }}</p>
+                <p class="text-3.5xl font-black text-[#1E3A8A] font-heading">{{ totalDossiersCount }}</p>
             </div>
-            <div class="w-12 h-12 bg-[#0077B6] text-white rounded-2xl flex items-center justify-center shadow-md group-hover:bg-[#48CAE4] group-hover:text-[#1B263B] transition-colors font-black">
+            <div class="w-12 h-12 bg-[#1E3A8A] text-white rounded-2xl flex items-center justify-center shadow-md group-hover:bg-[#F59E0B] group-hover:text-white transition-colors font-black">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2h2m4 0V7a2 2 0 012-2h2m-4 4h.01"/></svg>
             </div>
         </div>
 
         <!-- Card 2: Risk Warnings -->
-        <div class="glass-card p-5 rounded-3xl flex items-center justify-between cursor-pointer group hover-lift border-t-4 border-[#E63946]">
+        <div class="glass-card p-5.5 rounded-3xl flex items-center justify-between cursor-pointer group hover-lift border-t-4 border-[#EF4444]">
             <div class="space-y-1">
                 <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Risques / Alertes</p>
-                <p class="text-3.5xl font-black text-[#E63946] font-heading">{{ notifications.length }}</p>
+                <p class="text-3.5xl font-black text-[#EF4444] font-heading">{{ notifications.length }}</p>
             </div>
-            <div class="w-12 h-12 bg-red-100 text-[#E63946] rounded-2xl flex items-center justify-center shadow-md group-hover:bg-[#E63946] group-hover:text-white transition-colors font-black">
+            <div class="w-12 h-12 bg-rose-100 text-[#EF4444] rounded-2xl flex items-center justify-center shadow-md group-hover:bg-[#EF4444] group-hover:text-white transition-colors font-black">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"/></svg>
             </div>
         </div>
 
         <!-- Card 3: Calendar Appointments -->
         <div (click)="navigateToCalendar()"
-            class="glass-card p-5 rounded-3xl flex items-center justify-between cursor-pointer group hover-lift border-t-4 border-[#F4A261]">
+            class="glass-card p-5.5 rounded-3xl flex items-center justify-between cursor-pointer group hover-lift border-t-4 border-[#F59E0B]">
             <div class="space-y-1">
                 <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Agenda Judiciaire</p>
-                <p class="text-3.5xl font-black text-[#F4A261] font-heading">{{ totalAppointmentsCount }}</p>
+                <p class="text-3.5xl font-black text-[#F59E0B] font-heading">{{ totalAppointmentsCount }}</p>
             </div>
-            <div class="w-12 h-12 bg-[#F4A261]/20 text-[#F4A261] rounded-2xl flex items-center justify-center shadow-md group-hover:bg-[#F4A261] group-hover:text-white transition-colors font-black">
+            <div class="w-12 h-12 bg-[#F59E0B]/20 text-[#D97706] rounded-2xl flex items-center justify-center shadow-md group-hover:bg-[#F59E0B] group-hover:text-white transition-colors font-black">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
         </div>
 
         <!-- Card 4: Clients -->
         <div (click)="navigateToClients()"
-            class="glass-card p-5 rounded-3xl flex items-center justify-between cursor-pointer group hover-lift border-t-4 border-[#2A9D8F]">
+            class="glass-card p-5.5 rounded-3xl flex items-center justify-between cursor-pointer group hover-lift border-t-4 border-[#10B981]">
             <div class="space-y-1">
                 <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Clients Enregistrés</p>
-                <p class="text-3.5xl font-black text-[#2A9D8F] font-heading">{{ totalClientsCount }}</p>
+                <p class="text-3.5xl font-black text-[#10B981] font-heading">{{ totalClientsCount }}</p>
             </div>
-            <div class="w-12 h-12 bg-[#2A9D8F]/15 text-[#2A9D8F] rounded-2xl flex items-center justify-center shadow-md group-hover:bg-[#2A9D8F] group-hover:text-white transition-colors font-black">
+            <div class="w-12 h-12 bg-[#10B981]/15 text-[#10B981] rounded-2xl flex items-center justify-center shadow-md group-hover:bg-[#10B981] group-hover:text-white transition-colors font-black">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             </div>
         </div>
@@ -149,40 +149,40 @@
         <!-- Left Side: Appointments & Tasks (7 Cols) -->
         <div class="lg:col-span-7 space-y-6">
             <!-- Timeline Calendar Panel -->
-            <div class="bg-[#F0F4F8] p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-3.5">
                     <div class="flex items-center gap-3">
-                        <div class="p-2.5 bg-[#0077B6]/15 text-[#0077B6] rounded-2xl border border-[#0077B6]/30">
+                        <div class="p-2.5 bg-[#1E3A8A]/10 text-[#1E3A8A] rounded-2xl border border-[#1E3A8A]/20">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
                         <div>
-                            <h3 class="text-base font-black text-[#1B263B] tracking-tight font-heading">Agenda & Audiences</h3>
+                            <h3 class="text-base font-black text-[#0F172A] tracking-tight font-heading">Agenda & Audiences</h3>
                             <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Prochaines échéances judiciaires</p>
                         </div>
                     </div>
-                    <button (click)="navigateToCalendar()" class="text-[10px] font-black text-[#0077B6] hover:text-[#48CAE4] transition-colors uppercase tracking-widest cursor-pointer">
+                    <button (click)="navigateToCalendar()" class="text-[10px] font-black text-[#1E3A8A] hover:text-[#F59E0B] transition-colors uppercase tracking-widest cursor-pointer">
                         Voir Tout →
                     </button>
                 </div>
 
                 <div class="space-y-3.5 relative pl-5 border-l-2 border-slate-200">
                     @for (app of upcomingAppointments; track app.id) {
-                        <div class="relative space-y-1 hover:bg-white p-3.5 rounded-2xl transition-all border border-transparent hover:border-slate-200">
+                        <div class="relative space-y-1 hover:bg-slate-50 p-3.5 rounded-2xl transition-all border border-transparent hover:border-slate-200">
                             <div class="absolute -left-[27px] top-4 w-3.5 h-3.5 rounded-full border-2 border-white shadow-xs"
-                                 [ngClass]="app.status === 'Urgent' ? 'bg-[#E63946]' : app.status === 'Reporté' ? 'bg-[#F4A261]' : 'bg-[#0077B6]'">
+                                 [ngClass]="app.status === 'Urgent' ? 'bg-[#EF4444]' : app.status === 'Reporté' ? 'bg-[#F59E0B]' : 'bg-[#1E3A8A]'">
                             </div>
                             
                             <div class="flex flex-wrap items-center justify-between gap-2">
                                 <span class="text-[10px] font-black uppercase tracking-wider text-slate-500">
                                     {{ app.date | date:'dd MMM yyyy' }} • {{ app.time }}
                                 </span>
-                                <span class="px-2 py-0.5 font-black text-[9px] rounded-full uppercase border"
-                                    [ngClass]="app.status === 'Urgent' ? 'bg-red-50 border-red-200 text-[#E63946]' : app.status === 'Reporté' ? 'bg-amber-50 border-amber-200 text-[#F4A261]' : 'bg-blue-50 border-blue-200 text-[#0077B6]'">
+                                <span class="px-2.5 py-0.5 font-black text-[9px] rounded-full uppercase border"
+                                    [ngClass]="app.status === 'Urgent' ? 'bg-rose-50 border-rose-200 text-[#EF4444]' : app.status === 'Reporté' ? 'bg-amber-50 border-amber-200 text-[#D97706]' : 'bg-blue-50 border-blue-200 text-[#1E3A8A]'">
                                     {{ app.status }}
                                 </span>
                             </div>
                             
-                            <h4 class="text-xs font-black text-[#1B263B]">{{ app.title }}</h4>
+                            <h4 class="text-xs font-black text-[#0F172A]">{{ app.title }}</h4>
                             <p class="text-xs text-slate-500 font-medium flex items-center gap-1">
                                 <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                 {{ app.location || 'Bureau' }}
@@ -190,7 +190,7 @@
                         </div>
                     } @empty {
                         <div class="py-6 text-center space-y-2">
-                            <div class="w-12 h-12 bg-white text-slate-300 rounded-full flex items-center justify-center mx-auto">
+                            <div class="w-12 h-12 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             </div>
                             <p class="text-xs font-bold text-slate-500">Aucun rendez-vous planifié aujourd'hui</p>
@@ -200,49 +200,49 @@
             </div>
 
             <!-- Interactive Tasks Panel -->
-            <div class="bg-[#F0F4F8] p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-3.5">
                     <div class="flex items-center gap-3">
-                        <div class="p-2.5 bg-white text-[#0077B6] rounded-2xl border border-slate-200">
+                        <div class="p-2.5 bg-slate-100 text-[#1E3A8A] rounded-2xl border border-slate-200">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                         </div>
                         <div>
-                            <h3 class="text-base font-black text-[#1B263B] tracking-tight font-heading">Tâches Prioritaires</h3>
+                            <h3 class="text-base font-black text-[#0F172A] tracking-tight font-heading">Tâches Prioritaires</h3>
                             <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Plan de travail des affaires</p>
                         </div>
                     </div>
-                    <span class="px-2.5 py-0.5 bg-white text-[#0077B6] font-black text-[9px] uppercase tracking-widest rounded-full border border-slate-200">
+                    <span class="px-3 py-0.5 bg-slate-100 text-[#1E3A8A] font-black text-[9px] uppercase tracking-widest rounded-full border border-slate-200">
                         {{ pendingTasks.length }} restants
                     </span>
                 </div>
 
                 <div class="space-y-3">
                     @for (task of pendingTasks; track task.id) {
-                        <div class="flex items-start justify-between gap-3 p-3.5 border border-slate-200 rounded-2xl bg-white hover:border-[#0077B6] transition-all group">
+                        <div class="flex items-start justify-between gap-3 p-3.5 border border-slate-200 rounded-2xl bg-white hover:border-[#1E3A8A] transition-all group">
                             <div class="flex items-start gap-3">
                                 <button (click)="completeTask(task)"
-                                    class="w-5 h-5 border-2 border-slate-300 hover:border-[#2A9D8F] rounded-md flex items-center justify-center bg-white transition-all text-transparent hover:text-[#2A9D8F] active:scale-90 mt-0.5 cursor-pointer"
+                                    class="w-5 h-5 border-2 border-slate-300 hover:border-[#10B981] rounded-md flex items-center justify-center bg-white transition-all text-transparent hover:text-[#10B981] active:scale-90 mt-0.5 cursor-pointer"
                                     title="Marquer accomplie">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                                 </button>
                                 <div>
-                                    <h4 class="text-xs font-black text-[#1B263B] group-hover:text-[#0077B6] transition-colors">{{ task.titre }}</h4>
+                                    <h4 class="text-xs font-black text-[#0F172A] group-hover:text-[#1E3A8A] transition-colors">{{ task.titre }}</h4>
                                     <p class="text-[10px] text-slate-500 font-medium mt-0.5">
                                         Échéance : {{ task.dateEcheance | date:'dd MMM yyyy' }} • Priorité : 
                                         <span class="font-black"
-                                            [ngClass]="task.priorite === 'URGENTE' || task.priorite === 'HAUTE' ? 'text-[#E63946]' : 'text-slate-500'">
+                                            [ngClass]="task.priorite === 'URGENTE' || task.priorite === 'HAUTE' ? 'text-[#EF4444]' : 'text-slate-500'">
                                             {{ task.priorite }}
                                         </span>
                                     </p>
                                 </div>
                             </div>
-                            <span class="px-2 py-0.5 bg-[#F0F4F8] text-[#1B263B] font-black text-[9px] uppercase tracking-wider rounded-lg shrink-0">
+                            <span class="px-2.5 py-0.5 bg-slate-100 text-[#0F172A] font-black text-[9px] uppercase tracking-wider rounded-lg shrink-0">
                                 {{ task.category?.libelle || 'Dossier' }}
                             </span>
                         </div>
                     } @empty {
                         <div class="py-6 text-center space-y-2">
-                            <div class="w-12 h-12 bg-white text-slate-300 rounded-full flex items-center justify-center mx-auto">
+                            <div class="w-12 h-12 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                             </div>
                             <p class="text-xs font-bold text-slate-500">Toutes les tâches sont terminées !</p>
@@ -255,18 +255,18 @@
         <!-- Right Side: Recent Cases Catalog (5 Cols) -->
         <div class="lg:col-span-5 space-y-6">
             <!-- Cases Panel -->
-            <div class="bg-[#F0F4F8] p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-3.5">
                     <div class="flex items-center gap-3">
-                        <div class="p-2.5 bg-white text-[#0077B6] rounded-2xl border border-slate-200">
+                        <div class="p-2.5 bg-slate-100 text-[#1E3A8A] rounded-2xl border border-slate-200">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
                         </div>
                         <div>
-                            <h3 class="text-base font-black text-[#1B263B] tracking-tight font-heading">Dossiers Récents</h3>
+                            <h3 class="text-base font-black text-[#0F172A] tracking-tight font-heading">Dossiers Récents</h3>
                             <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Activité du cabinet</p>
                         </div>
                     </div>
-                    <button (click)="navigateToDossiers()" class="text-[10px] font-black text-[#0077B6] hover:text-[#48CAE4] transition-colors uppercase tracking-widest cursor-pointer">
+                    <button (click)="navigateToDossiers()" class="text-[10px] font-black text-[#1E3A8A] hover:text-[#F59E0B] transition-colors uppercase tracking-widest cursor-pointer">
                         Voir Tout →
                     </button>
                 </div>
@@ -274,21 +274,21 @@
                 <div class="space-y-3">
                     @for (dossier of recentDossiers; track dossier.id) {
                         <div (click)="navigateToDossierDetails(dossier.id!)"
-                            class="p-3.5 bg-white border border-slate-200 rounded-2xl hover:border-[#48CAE4] transition-all cursor-pointer group flex flex-col gap-2">
+                            class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl hover:border-[#F59E0B] hover:bg-white transition-all cursor-pointer group flex flex-col gap-2">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="space-y-0.5 min-w-0">
-                                    <h4 class="text-xs font-black text-[#1B263B] group-hover:text-[#0077B6] transition-colors leading-snug truncate">
+                                    <h4 class="text-xs font-black text-[#0F172A] group-hover:text-[#1E3A8A] transition-colors leading-snug truncate">
                                         {{ dossier.titre }}
                                     </h4>
                                     <p class="text-[10px] text-slate-500 font-bold">Réf: {{ dossier.referenceInterne }}</p>
                                 </div>
-                                <span class="px-2 py-0.5 bg-[#F0F4F8] text-[#1B263B] font-black text-[8px] uppercase tracking-widest rounded border border-slate-200 shrink-0">
+                                <span class="px-2 py-0.5 bg-white text-[#0F172A] font-black text-[8px] uppercase tracking-widest rounded border border-slate-200 shrink-0">
                                     {{ dossier.statutID?.label || 'OUVERT' }}
                                 </span>
                             </div>
                             
-                            <div class="flex items-center justify-between border-t border-slate-100 pt-2">
-                                <span class="text-[9px] font-black uppercase text-[#0077B6] bg-blue-50 px-2 py-0.5 rounded">
+                            <div class="flex items-center justify-between border-t border-slate-200/60 pt-2">
+                                <span class="text-[9px] font-black uppercase text-[#1E3A8A] bg-blue-50 px-2 py-0.5 rounded">
                                     ⚖️ {{ dossier.domaineJuridique?.label || 'Droit Général' }}
                                 </span>
                                 <span class="text-[10px] text-slate-500 font-bold">
@@ -298,12 +298,12 @@
                         </div>
                     } @empty {
                         <div class="py-8 text-center space-y-3">
-                            <div class="w-12 h-12 bg-white text-slate-300 rounded-full flex items-center justify-center mx-auto">
+                            <div class="w-12 h-12 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
                             </div>
                             <p class="text-xs font-bold text-slate-500">Aucun dossier dans le cabinet</p>
                             <button (click)="navigateToNewDossier()"
-                                class="btn-azur px-4 py-2 text-xs rounded-xl cursor-pointer">
+                                class="btn-gold px-4.5 py-2 text-xs rounded-xl cursor-pointer">
                                 Créer Premier Dossier
                             </button>
                         </div>

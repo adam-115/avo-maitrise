@@ -1,107 +1,114 @@
-<div class="p-6 sm:p-8 bg-gray-50 rounded-xl shadow-2xl">
+<div class="p-6 sm:p-8 bg-white rounded-3xl shadow-sm border border-slate-200 animate-fadeIn font-sans text-[#0F172A]">
 
-  <div class="mb-6 flex flex-col xl:flex-row justify-between xl:items-center border-b pb-4 gap-4">
-    <h2 class="text-3xl font-bold text-slate-800 flex items-center">
-      <svg class="w-8 h-8 mr-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
-        </path>
-      </svg>
-      Réunion de la Semaine
+  <div class="mb-6 flex flex-col xl:flex-row justify-between xl:items-center border-b border-slate-100 pb-4 gap-4">
+    <h2 class="text-2xl font-black text-[#0F172A] flex items-center font-heading">
+      <div class="p-2.5 bg-[#1E3A8A]/10 text-[#1E3A8A] rounded-2xl border border-[#1E3A8A]/20 mr-3">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+          </path>
+        </svg>
+      </div>
+      Planning de la Semaine
     </h2>
 
     <div class="flex flex-wrap gap-3 items-center">
 
       <button (click)="openAddAppointementDialog()"
-        class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 flex items-center ml-4">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        class="btn-gold px-4.5 py-2.5 rounded-xl text-xs font-black shadow-md flex items-center cursor-pointer">
+        <svg class="w-4 h-4 mr-1.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
         </svg>
-        Ajouter une réunion
+        Ajouter une audience
       </button>
 
       <button (click)="goToCurrentWeek()"
-        class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150 flex items-center">
+        class="px-4 py-2 text-xs font-black rounded-xl text-white bg-[#1E3A8A] hover:bg-[#1E40AF] transition-all shadow-2xs flex items-center cursor-pointer">
         Semaine en Cours
       </button>
 
-      <button (click)="changeWeek(-1)"
-        class="px-3 py-2 text-sm font-medium rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 transition duration-150">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-        </svg>
-      </button>
-      <span class="text-lg font-semibold text-slate-800 whitespace-nowrap">
-        {{ weekStart | date:'dd MMM' }} - {{ getDateForDay(4, weekStart) | date:'dd MMM yyyy' }}
-      </span>
-      <button (click)="changeWeek(1)"
-        class="px-3 py-2 text-sm font-medium rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 transition duration-150">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-      </button>
+      <div class="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+        <button (click)="changeWeek(-1)"
+          class="p-1.5 text-slate-600 hover:text-[#1E3A8A] hover:bg-white rounded-lg transition-all cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+
+        <span class="text-xs font-black text-[#0F172A] px-3 whitespace-nowrap">
+          {{ weekStart | date:'dd MMM' }} - {{ getDateForDay(4, weekStart) | date:'dd MMM yyyy' }}
+        </span>
+
+        <button (click)="changeWeek(1)"
+          class="p-1.5 text-slate-600 hover:text-[#1E3A8A] hover:bg-white rounded-lg transition-all cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 
-  <div class="overflow-x-auto scrollbar-thin pb-4">
-    <div class="border border-gray-300 rounded-lg shadow-inner flex min-w-[750px]">
+  <div class="overflow-x-auto custom-scrollbar pb-4">
+    <div class="border border-slate-200 rounded-2xl overflow-hidden shadow-2xs flex min-w-[750px]">
 
-      <div class="flex-shrink-0 w-20 bg-gray-100 border-r border-gray-300">
-        <div class="h-14 text-xs font-semibold text-gray-700 flex items-center justify-center border-b border-gray-300">
+      <!-- Hours column -->
+      <div class="flex-shrink-0 w-20 bg-slate-50 border-r border-slate-200">
+        <div class="h-14 text-[10px] font-black uppercase tracking-widest text-slate-400 flex items-center justify-center border-b border-slate-200">
           Heures</div>
 
         <div *ngFor="let hour of hours"
-          class="h-16 text-xs text-gray-500 font-medium flex justify-end pr-2 items-start pt-1 border-b border-dashed border-gray-300">
+          class="h-16 text-xs text-slate-500 font-bold flex justify-end pr-2.5 items-start pt-1 border-b border-dashed border-slate-200">
           {{ hour }}:00
         </div>
       </div>
 
-      <div class="flex-grow grid grid-cols-5 divide-x divide-gray-300">
+      <!-- Days Grid -->
+      <div class="flex-grow grid grid-cols-5 divide-x divide-slate-200">
 
-        <div *ngFor="let day of daysOfWeek; let dayIndex = index" class="h-14 p-3 bg-red-100">
-          <p class="text-md font-bold text-red-800">{{ day }}</p>
-          <p class="text-sm font-medium text-gray-600">{{ getFormattedDate(dayIndex) }}</p>
+        <!-- Day Headers -->
+        <div *ngFor="let day of daysOfWeek; let dayIndex = index" class="h-14 p-2.5 bg-[#1E3A8A] text-white flex flex-col justify-center">
+          <p class="text-xs font-black uppercase tracking-wider text-[#F59E0B]">{{ day }}</p>
+          <p class="text-[10px] font-bold text-slate-200">{{ getFormattedDate(dayIndex) }}</p>
         </div>
 
+        <!-- Day Content Grid -->
         <div *ngFor="let day of daysOfWeek; let dayIndex = index" (click)="handleGridClick($event, dayIndex)"
           class="bg-white relative h-[704px] cursor-pointer">
 
           <ng-container *ngFor="let hour of hours">
-            <div class="absolute w-full border-b border-solid border-gray-200"
+            <div class="absolute w-full border-b border-solid border-slate-200"
               [style.top]="((hour - startHour) * 64) + 'px'" [style.height]="'1px'">
             </div>
 
-            <div class="absolute w-full border-b border-dashed border-gray-100"
+            <div class="absolute w-full border-b border-dashed border-slate-100"
               [style.top]="((hour - startHour) * 64 + 16) + 'px'" [style.height]="'1px'">
             </div>
-            <div class="absolute w-full border-b border-dashed border-gray-100"
+            <div class="absolute w-full border-b border-dashed border-slate-100"
               [style.top]="((hour - startHour) * 64 + 32) + 'px'" [style.height]="'1px'">
             </div>
-            <div class="absolute w-full border-b border-dashed border-gray-100"
+            <div class="absolute w-full border-b border-dashed border-slate-100"
               [style.top]="((hour - startHour) * 64 + 48) + 'px'" [style.height]="'1px'">
             </div>
           </ng-container>
 
           <div *ngFor="let hearing of getHearingsForDay(dayIndex)" (click)="$event.stopPropagation()"
             (click)="openEditAppointementDialog(hearing)"
-            class="absolute p-1.5 rounded-lg border-l-4 shadow-md cursor-pointer hover:shadow-lg transition duration-150 group flex justify-between items-start"
+            class="absolute p-2 rounded-xl border-l-4 shadow-sm cursor-pointer hover:shadow-md transition duration-150 group flex justify-between items-start"
             [ngClass]="getStatusClass(hearing.status)" [style.top]="hearing.style.top"
             [style.height]="hearing.style.height" [style.width]="hearing.style.width" [style.left]="hearing.style.left"
             [style.zIndex]="hearing.style.zIndex">
 
             <div class="overflow-hidden">
-              <p class="text-[11px] font-bold truncate">{{ hearing.title }}</p>
-              <p class="text-[10px] font-medium mt-0.5 truncate">
-                <span class="font-semibold">Heure :</span> {{ hearing.time }} - {{ hearing.endTime }}
+              <p class="text-[11px] font-black truncate leading-tight">{{ hearing.title }}</p>
+              <p class="text-[10px] font-bold mt-0.5 truncate opacity-90">
+                <span>Heure :</span> {{ hearing.time }} - {{ hearing.endTime }}
               </p>
             </div>
 
             <button (click)="deleteAppointement(hearing, $event)" title="Supprimer"
-              class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded p-0.5 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity flex-shrink-0 ml-1 mt-0.5">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
+              class="text-[#EF4444] hover:bg-rose-50 rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-1 cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                 </path>
@@ -110,7 +117,7 @@
           </div>
 
           <div *ngIf="getHearingsForDay(dayIndex).length === 0"
-            class="text-center p-8 text-gray-500 italic relative top-0">
+            class="text-center p-6 text-slate-400 font-bold text-[10px] italic relative top-0">
             Aucune audience.
           </div>
         </div>
@@ -118,14 +125,11 @@
     </div>
   </div>
 
-  <div class="mt-6 text-sm text-gray-600">
-    <p class="font-semibold">Légende Statut :</p>
-    <span
-      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-400 mr-2">Urgent</span>
-    <span
-      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-400 mr-2">Standard</span>
-    <span
-      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-400">Reporté</span>
+  <div class="mt-5 text-xs text-slate-500 flex items-center gap-3">
+    <span class="font-black uppercase text-[10px] tracking-wider text-slate-400">Légende Statut :</span>
+    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-rose-50 text-[#EF4444] border border-rose-200">Urgent</span>
+    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-blue-50 text-[#1E3A8A] border border-blue-200">Standard</span>
+    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-50 text-[#D97706] border border-amber-200">Reporté</span>
   </div>
 </div>
 

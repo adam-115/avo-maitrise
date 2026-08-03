@@ -1,57 +1,57 @@
-<div class="min-h-screen bg-[#F0F4F8] flex flex-col font-sans text-[#1B263B]">
+<div class="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-[#0F172A]">
 
-    <!-- Executive Modern Top Horizontal Navigation Bar -->
-    <header class="sticky top-0 z-50 bg-[#0F172A] text-white shadow-xl border-b border-[#1E293B]">
+    <!-- Executive Luxury Top Horizontal Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-[#0F172A] text-white shadow-2xl border-b border-slate-800">
         <!-- Upper TopBar: Brand, Global Status & User Profile -->
-        <div class="max-w-[1700px] mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between gap-4">
+        <div class="max-w-[1700px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
             
             <!-- Brand Logo & Cabinet Title -->
-            <div class="flex items-center gap-3 cursor-pointer select-none" (click)="navigateToHome()">
-                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-[#0077B6] via-[#0284C7] to-[#48CAE4] text-[#0F172A] shadow-md flex items-center justify-center shrink-0">
-                    <svg class="w-5.5 h-5.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M3 6l9-3 9 3v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V6z"/>
+            <div class="flex items-center gap-3.5 cursor-pointer select-none" (click)="navigateToHome()">
+                <div class="h-11 w-11 rounded-2xl bg-gradient-to-tr from-[#D97706] via-[#F59E0B] to-[#FBBF24] text-[#0F172A] shadow-lg flex items-center justify-center shrink-0">
+                    <svg class="w-6 h-6 text-[#0F172A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.3" d="M3 6l9-3 9 3v6c0 5.55-3.84 10.74-9 12-5.16-1.26-9-6.45-9-12V6z"/>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"/>
                     </svg>
                 </div>
                 <div>
-                    <div class="flex items-center gap-1.5 leading-none">
-                        <span class="font-heading font-black text-lg text-white tracking-tight">SI-LÉGALE</span>
-                        <span class="text-[9px] font-black uppercase tracking-widest text-[#0F172A] bg-[#48CAE4] px-1.5 py-0.5 rounded font-extrabold">CABINET</span>
+                    <div class="flex items-center gap-2 leading-none">
+                        <span class="font-heading font-black text-xl text-white tracking-tight">SI-LÉGALE</span>
+                        <span class="text-[9px] font-black uppercase tracking-widest text-[#0F172A] bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-2 py-0.5 rounded-md font-extrabold shadow-xs">CABINET</span>
                     </div>
-                    <p class="text-[10px] font-extrabold text-[#48CAE4] tracking-wider uppercase mt-0.5">Avocats Associés</p>
+                    <p class="text-[10px] font-extrabold text-[#F59E0B] tracking-widest uppercase mt-1">Avocats Associés & Conseil</p>
                 </div>
             </div>
 
             <!-- Right Controls: Status, Notifications & Profile -->
-            <div class="flex items-center gap-3">
-                <!-- LCB-FT Connected Status Badge -->
-                <div class="hidden md:flex items-center gap-2 bg-[#2A9D8F]/20 px-3 py-1 rounded-full border border-[#2A9D8F]/40 text-[#48CAE4]">
-                    <span class="w-2 h-2 rounded-full bg-[#2A9D8F] animate-pulse"></span>
+            <div class="flex items-center gap-3.5">
+                <!-- LCB-FT Connected Status Badge in Emerald Shield (#10B981) -->
+                <div class="hidden md:flex items-center gap-2 bg-[#10B981]/20 px-3.5 py-1.5 rounded-full border border-[#10B981]/40 text-[#10B981]">
+                    <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
                     <span class="text-[10px] font-black uppercase tracking-wider">LCB-FT Opérationnelle</span>
                 </div>
 
                 <!-- AML Notification Trigger -->
                 <button (click)="navigateToAmlCompliance()" title="Alertes Conformité AML" 
-                    class="p-2 text-slate-300 hover:text-[#48CAE4] hover:bg-[#1E293B] rounded-xl transition-all relative cursor-pointer">
+                    class="p-2.5 text-slate-300 hover:text-[#F59E0B] hover:bg-white/10 rounded-xl transition-all relative cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 01-6 0v-1m6 0H9"/>
                     </svg>
                 </button>
 
                 <!-- Divider -->
-                <div class="h-6 w-px bg-slate-700/60 hidden sm:block"></div>
+                <div class="h-6 w-px bg-slate-700/80 hidden sm:block"></div>
 
                 <!-- User Profile Pill -->
-                <div class="flex items-center gap-2.5 bg-[#1E293B] pl-2 pr-3 py-1 rounded-xl border border-slate-700/60">
-                    <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-[#0077B6] to-[#48CAE4] text-[#0F172A] font-black text-xs flex items-center justify-center">
+                <div class="flex items-center gap-2.5 bg-slate-800/90 pl-2 pr-3.5 py-1.5 rounded-xl border border-slate-700">
+                    <div class="w-7.5 h-7.5 rounded-lg bg-gradient-to-tr from-[#1E3A8A] to-[#3B82F6] text-white font-black text-xs flex items-center justify-center shadow-xs">
                         M
                     </div>
                     <span class="text-xs font-black text-white hidden sm:inline">Maître Avocat</span>
                 </div>
 
-                <!-- Logout Button -->
+                <!-- Logout Button in Ruby Crimson (#EF4444) -->
                 <button (click)="logout()" title="Se déconnecter" 
-                    class="p-2 text-[#E63946] hover:bg-[#E63946]/20 rounded-xl transition-all cursor-pointer">
+                    class="p-2 text-[#EF4444] hover:bg-[#EF4444]/15 rounded-xl transition-all cursor-pointer">
                     <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                     </svg>
@@ -60,15 +60,15 @@
         </div>
 
         <!-- Lower Navigation Bar: Main Categories Horizontal Scrollable Menu -->
-        <div class="bg-[#1E293B]/90 border-t border-slate-800/80 px-4 sm:px-6">
+        <div class="bg-[#1E293B]/95 border-t border-slate-800 px-4 sm:px-6">
             <div class="max-w-[1700px] mx-auto flex items-center justify-between overflow-x-auto custom-scrollbar">
-                <nav class="flex items-center space-x-1.5 py-1.5 min-w-max">
+                <nav class="flex items-center space-x-1.5 py-2 min-w-max">
 
                     <!-- Home -->
                     <a (click)="navigateToHome()"
-                        [ngClass]="activeRoute === 'calendrier' ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
-                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
-                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        [ngClass]="activeRoute === 'calendrier' ? 'bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-black shadow-md' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4" [ngClass]="activeRoute === 'calendrier' ? 'text-white' : 'text-[#F59E0B]'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l7 7m-7-7v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                         </svg>
                         <span>Accueil Cabinet</span>
@@ -76,9 +76,9 @@
 
                     <!-- Dossiers -->
                     <a (click)="navigateTODossier()"
-                        [ngClass]="activeRoute === paths.DOSSIER ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
-                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
-                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        [ngClass]="activeRoute === paths.DOSSIER ? 'bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-black shadow-md' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4" [ngClass]="activeRoute === paths.DOSSIER ? 'text-white' : 'text-[#F59E0B]'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
                         </svg>
                         <span>Dossiers & Affaires</span>
@@ -86,9 +86,9 @@
 
                     <!-- CRM Clients -->
                     <a (click)="navigateTOClients()"
-                        [ngClass]="activeRoute === paths.CRM ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
-                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
-                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        [ngClass]="activeRoute === paths.CRM ? 'bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-black shadow-md' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4" [ngClass]="activeRoute === paths.CRM ? 'text-white' : 'text-[#F59E0B]'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z"/>
                         </svg>
                         <span>Répertoire Clients</span>
@@ -96,9 +96,9 @@
 
                     <!-- LCB-FT AML Compliance -->
                     <a (click)="navigateToAmlCompliance()"
-                        [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
-                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
-                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-black shadow-md' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4" [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'text-white' : 'text-[#F59E0B]'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618"/>
                         </svg>
                         <span>Conformité LCB-FT</span>
@@ -106,9 +106,9 @@
 
                     <!-- Diligences -->
                     <a (click)="navigateToClientDiligenceStatusList()"
-                        [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
-                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
-                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-black shadow-md' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4" [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'text-white' : 'text-[#F59E0B]'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                         </svg>
                         <span>Suivi Diligences</span>
@@ -116,9 +116,9 @@
 
                     <!-- Calendrier Judiciaire -->
                     <a (click)="navigateToCalendrier()"
-                        [ngClass]="activeRoute === paths.CALENDRIER ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
-                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
-                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        [ngClass]="activeRoute === paths.CALENDRIER ? 'bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-black shadow-md' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4" [ngClass]="activeRoute === paths.CALENDRIER ? 'text-white' : 'text-[#F59E0B]'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                         </svg>
                         <span>Agenda Judiciaire</span>
@@ -126,9 +126,9 @@
 
                     <!-- GED Modèles -->
                     <a (click)="navigateToModel()"
-                        [ngClass]="activeRoute === paths.MODEL ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
-                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
-                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        [ngClass]="activeRoute === paths.MODEL ? 'bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-black shadow-md' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4" [ngClass]="activeRoute === paths.MODEL ? 'text-white' : 'text-[#F59E0B]'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 01-2-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         <span>GED Modèles</span>
@@ -136,9 +136,9 @@
 
                     <!-- Facturation -->
                     <a (click)="navigateToFacturation()"
-                        [ngClass]="activeRoute === paths.BILLING ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
-                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
-                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        [ngClass]="activeRoute === paths.BILLING ? 'bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white font-black shadow-md' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4" [ngClass]="activeRoute === paths.BILLING ? 'text-white' : 'text-[#F59E0B]'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/>
                         </svg>
                         <span>Facturation</span>
@@ -146,9 +146,9 @@
 
                     <!-- Admin -->
                     <a (click)="navigateToAdministration()"
-                        [ngClass]="activeRoute === paths.ADMINSTRATION ? 'bg-[#0077B6] text-white font-black shadow-md shadow-sky-900/30' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
-                        class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs transition-all cursor-pointer">
-                        <svg class="w-4 h-4 text-[#48CAE4]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        [ngClass]="activeRoute === paths.ADMINSTRATION ? 'bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-[#FFFFFF] font-black shadow-md' : 'text-slate-300 hover:bg-[#0F172A] hover:text-white font-bold'"
+                        class="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs transition-all cursor-pointer">
+                        <svg class="w-4 h-4" [ngClass]="activeRoute === paths.ADMINSTRATION ? 'text-white' : 'text-[#F59E0B]'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
                         </svg>
                         <span>Administration</span>
