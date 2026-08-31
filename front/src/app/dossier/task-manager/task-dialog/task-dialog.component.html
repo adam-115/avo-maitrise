@@ -1,34 +1,41 @@
 <div
-    class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl mx-4 flex flex-col max-h-[90vh]">
+    class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-slate-900/60 backdrop-blur-sm animate-fade-in p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-auto flex flex-col max-h-[90vh] border border-slate-300">
         <!-- Header -->
-        <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white rounded-t-2xl">
-            <h3 class="text-xl font-bold text-slate-800">{{ isEditing ? 'Modifier la Tâche' : 'Nouvelle Tâche' }}</h3>
+        <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-emerald-600 rounded-t-2xl shrink-0">
+            <h3 class="text-lg font-black text-white flex items-center gap-3">
+                <div class="p-2 bg-emerald-500 rounded-xl text-white shadow-sm">
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                </div>
+                {{ isEditing ? 'Modifier la Tâche' : 'Nouvelle Tâche' }}
+            </h3>
             <button (click)="onClose()"
-                class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 p-2 rounded-full transition-colors focus:outline-none">
+                class="text-emerald-100 hover:text-white hover:bg-emerald-500 p-2 rounded-xl transition-all focus:outline-none cursor-pointer">
                 <span class="sr-only">Fermer</span>
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
         <!-- Tabs -->
-        <div *ngIf="isEditing" class="flex border-b border-slate-200 bg-slate-50">
+        <div *ngIf="isEditing" class="flex border-b border-slate-200 bg-slate-50 shrink-0">
             <button type="button" (click)="switchTab('DETAILS')"
-                [ngClass]="activeTab === 'DETAILS' ? 'border-b-2 border-indigo-600 text-indigo-700 bg-white' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'"
-                class="flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider flex items-center justify-center transition-colors">
+                [ngClass]="activeTab === 'DETAILS' ? 'border-b-2 border-emerald-600 text-emerald-700 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.02)]' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'"
+                class="flex-1 py-3 px-4 text-xs font-black uppercase tracking-widest flex items-center justify-center transition-colors cursor-pointer">
                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 Détails
             </button>
             <button type="button" (click)="switchTab('COMMENTS')"
-                [ngClass]="activeTab === 'COMMENTS' ? 'border-b-2 border-indigo-600 text-indigo-700 bg-white' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'"
-                class="flex-1 py-3 px-4 text-xs font-bold uppercase tracking-wider flex items-center justify-center transition-colors border-l border-slate-200">
+                [ngClass]="activeTab === 'COMMENTS' ? 'border-b-2 border-emerald-600 text-emerald-700 bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.02)]' : 'text-slate-500 hover:bg-slate-100 hover:text-slate-700'"
+                class="flex-1 py-3 px-4 text-xs font-black uppercase tracking-widest flex items-center justify-center transition-colors border-l border-slate-200 cursor-pointer">
                 <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                         d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
                     </path>
                 </svg>
@@ -37,135 +44,145 @@
         </div>
 
         <!-- Form fields logic -->
-        <div class="p-6 overflow-y-auto flex-1 h-[60vh]">
+        <div class="p-6 overflow-y-auto flex-1 bg-slate-50">
             <div [class.hidden]="activeTab !== 'DETAILS'">
                 <form [formGroup]="taskForm" id="taskForm" (ngSubmit)="onSubmit()">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Titre de la tâche</label>
-                            <input type="text" formControlName="titre"
-                                class="w-full p-3 bg-slate-50 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800 border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                                placeholder="Ex: Rédaction des conclusions...">
-                        </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        
+                        <!-- Informations Principales Block -->
+                        <div class="md:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                            <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                Informations Principales
+                            </h4>
 
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Description</label>
-                            <textarea formControlName="description" rows="3"
-                                class="w-full p-3 bg-slate-50 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800 border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                                placeholder="Détails supplémentaires..."></textarea>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Catégorie</label>
-                            <select formControlName="categoryId"
-                                class="w-full p-3 bg-slate-50 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                                <option value="" disabled selected>Sélectionner une catégorie</option>
-                                <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Statut initial</label>
-                            <select formControlName="statusId"
-                                class="w-full p-3 bg-slate-50 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                                <option value="" disabled selected>Sélectionner un statut</option>
-                                <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Priorité</label>
-                            <select formControlName="priorite"
-                                class="w-full p-3 bg-slate-50 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                                <option value="BASSE">Basse</option>
-                                <option value="NORMALE">Normale</option>
-                                <option value="HAUTE">Haute</option>
-                                <option value="URGENTE">Urgente</option>
-                            </select>
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Assigné à</label>
-                            <div class="flex flex-wrap gap-2 mb-2">
-                                <div *ngFor="let user of getSelectedAssignees()"
-                                    class="inline-flex items-center bg-cyan-50 border border-cyan-200 text-cyan-800 rounded-xl px-3 py-1.5 text-xs font-bold shadow-sm">
-                                    <div
-                                        class="w-4 h-4 rounded-full bg-cyan-200 text-cyan-800 flex items-center justify-center mr-2 text-[8px]">
-                                        {{ (user.firstName.charAt(0) || '') + (user.lastName.charAt(0) || '') }}
-                                    </div>
-                                    {{ user.firstName }} {{ user.lastName }}
-                                    <button *ngIf="!isViewOnly" type="button" (click)="removeAssignee(user.id!)"
-                                        class="ml-2 text-cyan-600 hover:text-cyan-800 focus:outline-none transition-colors">
-                                        <span class="sr-only">Retirer</span>
-                                        <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd"
-                                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Titre de la tâche</label>
+                                <input type="text" formControlName="titre"
+                                    class="w-full p-3 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm text-slate-800 border border-slate-300 hover:border-slate-400 transition-colors outline-none placeholder:text-slate-400"
+                                    placeholder="Ex: Rédaction des conclusions...">
                             </div>
 
-                            <button *ngIf="!isViewOnly" type="button" (click)="openUserDialog()"
-                                class="inline-flex items-center px-4 py-2 border border-slate-200 shadow-sm text-sm font-bold rounded-xl text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-colors">
-                                <svg class="-ml-1 mr-2 h-4 w-4 text-slate-500" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                                </svg>
-                                Gérer les intervenants
-                            </button>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Catégorie</label>
+                                    <select formControlName="categoryId"
+                                        class="w-full p-3 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm font-medium text-slate-800 border border-slate-300 hover:border-slate-400 transition-colors outline-none cursor-pointer">
+                                        <option value="" disabled selected>Sélectionner une catégorie</option>
+                                        <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Statut initial</label>
+                                    <select formControlName="statusId"
+                                        class="w-full p-3 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm font-medium text-slate-800 border border-slate-300 hover:border-slate-400 transition-colors outline-none cursor-pointer">
+                                        <option value="" disabled selected>Sélectionner un statut</option>
+                                        <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Date d'échéance</label>
-                            <input type="date" formControlName="dateEcheance"
-                                class="w-full p-3 bg-slate-50 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+                        <!-- Paramètres et Détails Block -->
+                        <div class="md:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                            <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                                Configuration
+                            </h4>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Date d'échéance</label>
+                                    <input type="date" formControlName="dateEcheance"
+                                        class="w-full p-3 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm font-medium text-slate-800 border border-slate-300 hover:border-slate-400 transition-colors outline-none cursor-text">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Priorité</label>
+                                    <select formControlName="priorite"
+                                        class="w-full p-3 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm font-black uppercase tracking-widest text-slate-700 border border-slate-300 hover:border-slate-400 transition-colors outline-none cursor-pointer">
+                                        <option value="BASSE">Basse</option>
+                                        <option value="NORMALE">Normale</option>
+                                        <option value="HAUTE">Haute</option>
+                                        <option value="URGENTE">Urgente</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Temps estimé (minutes)</label>
+                                <input type="number" formControlName="estimatedTimeMinutes"
+                                    class="w-full p-3 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm text-slate-800 border border-slate-300 hover:border-slate-400 transition-colors outline-none placeholder:text-slate-400"
+                                    placeholder="Ex: 60">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Assigné à</label>
+                                <div class="flex flex-wrap gap-2 mb-2">
+                                    <div *ngFor="let user of getSelectedAssignees()"
+                                        class="inline-flex items-center bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg px-2.5 py-1.5 text-xs font-bold shadow-sm">
+                                        {{ user.firstName }} {{ user.lastName }}
+                                        <button *ngIf="!isViewOnly" type="button" (click)="removeAssignee(user.id!)"
+                                            class="ml-2 text-emerald-500 hover:text-rose-600 focus:outline-none transition-colors cursor-pointer">
+                                            <span class="sr-only">Retirer</span>
+                                            <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button *ngIf="!isViewOnly" type="button" (click)="openUserDialog()"
+                                    class="w-full flex items-center justify-between p-3 border border-slate-300 bg-slate-50 rounded-xl text-slate-600 hover:border-emerald-400 hover:bg-emerald-50 hover:text-emerald-700 transition-colors focus:outline-none focus:ring-4 focus:ring-emerald-500/10 cursor-pointer shadow-sm">
+                                    <span class="text-sm font-medium">Gérer les intervenants</span>
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-bold text-slate-700 mb-2">Temps estimé (minutes)</label>
-                            <input type="number" formControlName="estimatedTimeMinutes"
-                                class="w-full p-3 bg-slate-50 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-800 border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                                placeholder="Ex: 60">
+                        <div class="md:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                            <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                                Description & Notes
+                            </h4>
+                            <textarea formControlName="description" rows="3"
+                                class="w-full p-3 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 text-sm text-slate-800 border border-slate-300 hover:border-slate-400 transition-colors outline-none placeholder:text-slate-400"
+                                placeholder="Détails supplémentaires..."></textarea>
                         </div>
                     </div>
                 </form>
             </div>
 
             <!-- Tab Panel: COMMENTS -->
-            <div *ngIf="activeTab === 'COMMENTS'" class="flex flex-col h-full">
+            <div *ngIf="activeTab === 'COMMENTS'" class="flex flex-col h-full bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
                 <div
-                    class="flex-1 space-y-3 overflow-y-auto pr-2 pb-4 scrollbar-thin scrollbar-thumb-slate-300 min-h-[300px]">
+                    class="flex-1 space-y-3 overflow-y-auto pr-2 pb-4 scrollbar-thin scrollbar-thumb-slate-200 min-h-[300px]">
                     <div *ngIf="currentTaskLogs.length === 0"
-                        class="text-xs text-center text-slate-400 italic py-8 bg-slate-50 rounded-xl border border-slate-100 border-dashed">
-                        Aucun commentaire pour cette tâche.
+                        class="text-xs text-center font-bold text-slate-400 uppercase tracking-widest italic py-8 bg-slate-50 rounded-xl border border-slate-100 border-dashed">
+                        Aucune activité pour cette tâche.
                     </div>
                     <div *ngFor="let log of currentTaskLogs"
-                        class="bg-slate-50 p-4 rounded-xl shadow-sm border border-slate-100 relative">
+                        class="bg-slate-50 p-4 rounded-xl shadow-sm border border-slate-100 relative group/log hover:bg-white hover:border-slate-200 transition-all">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-[13px] font-extrabold text-slate-800 flex items-center gap-2">
-                                <div
-                                    class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-[9px]">
-                                    {{ log.createdBy?.firstName ? (log.createdBy?.firstName?.charAt(0) || '') +
-                                    (log.createdBy?.lastName?.charAt(0) || '') : 'M' }}
-                                </div>
-                                {{ log.createdBy?.firstName || 'Moi (Avocat)' }}
+                            <span class="text-[11px] font-black text-slate-600 flex items-center gap-1.5 uppercase tracking-wider">
+                                <div class="w-1.5 h-1.5 rounded-full bg-emerald-400"></div>
+                                {{ log.createdBy?.firstName || 'Système' }}
                             </span>
-                            <span class="text-[10px] text-slate-400 font-bold tracking-wide">{{ log.createdAt |
-                                date:'dd/MM/yyyy HH:mm' }}</span>
+                            <span class="text-[10px] text-slate-400 font-bold tracking-widest">{{ log.createdAt | date:'dd/MM HH:mm' }}</span>
                         </div>
-                        <p class="text-[13px] text-slate-600 leading-relaxed font-medium pl-7">{{ log.description }}</p>
+                        <p class="text-xs text-slate-600 leading-relaxed font-medium pl-3 border-l-2 border-emerald-100">{{ log.description }}</p>
                     </div>
                 </div>
-                <div *ngIf="!isViewOnly" class="mt-4 border-t border-slate-100 pt-4 relative">
-                    <textarea [(ngModel)]="commentText" rows="2" placeholder="Ajouter un nouveau commentaire..."
-                        class="w-full text-sm p-3 pr-12 bg-white rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-sm transition-all resize-none border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
+                <div *ngIf="!isViewOnly" class="mt-4 border-t border-slate-100 pt-5 relative">
+                    <textarea [(ngModel)]="commentText" rows="2" placeholder="Ajouter un commentaire..."
+                        class="w-full text-sm p-4 pr-14 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 shadow-sm transition-all resize-none border border-slate-300 hover:border-slate-400 outline-none"></textarea>
                     <button type="button" (click)="addComment()" [disabled]="!commentText.trim()"
-                        class="absolute bottom-6 right-2 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-md hover:shadow-lg disabled:opacity-50 disabled:shadow-none transition-all cursor-pointer">
+                        class="absolute bottom-5 right-3 w-10 h-10 flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white rounded-xl shadow-md disabled:opacity-50 disabled:shadow-none transition-all cursor-pointer">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                         </svg>
                     </button>
                 </div>
@@ -173,12 +190,14 @@
         </div>
 
         <!-- Footer -->
-        <div class="px-6 py-4 border-t border-slate-100 bg-gray-50 rounded-b-2xl flex justify-end gap-3 p-4">
+        <div class="px-6 py-5 border-t border-slate-100 bg-white rounded-b-2xl flex justify-end gap-3 shrink-0">
             <button type="button" (click)="onClose()"
-                class="px-6 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold hover:bg-slate-50 transition-colors">Fermer</button>
+                class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 transition-colors focus:outline-none border border-transparent cursor-pointer">
+                Annuler
+            </button>
             <button *ngIf="activeTab === 'DETAILS' && !isViewOnly" type="submit" form="taskForm"
                 [disabled]="taskForm.invalid"
-                class="px-6 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-700 text-white font-bold shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-black shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer">
                 {{ isEditing ? 'Mettre à jour' : 'Enregistrer' }}
             </button>
         </div>

@@ -1,4 +1,4 @@
-<div class="flex justify-between items-center mb-6">
+﻿<div class="flex justify-between items-center mb-6">
   <h2 class="text-xl font-bold text-slate-800">Prestations </h2>
   <div class="flex items-center gap-3">
     <button (click)="generateInvoice()"
@@ -9,7 +9,7 @@
       Générer facture
     </button>
     <button (click)="openAddModal()"
-      class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-semibold text-sm transition flex items-center gap-2 shadow-sm">
+      class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-md font-semibold text-sm transition flex items-center gap-2 shadow-sm">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
       </svg>
@@ -57,7 +57,7 @@
         <td class="px-4 py-3">{{ p.info }}</td>
         <td class="px-4 py-3">{{ p.nbrOfMinutes }}</td>
         <td class="px-4 py-3 text-right">
-          <button *ngIf="canEditPrestation(p)" (click)="openEditModal(p)" class="text-indigo-500 hover:text-indigo-700 transition" title="Éditer">
+          <button *ngIf="canEditPrestation(p)" (click)="openEditModal(p)" class="text-emerald-500 hover:text-emerald-700 transition" title="Éditer">
             <svg class="w-5 h-5 inline-block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
             </svg>
@@ -87,7 +87,7 @@
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Type de Service *</label>
           <select formControlName="invoiceTypeOfServiceId" 
-            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
             <option [ngValue]="null" disabled>Sélectionnez un type</option>
             <option *ngFor="let t of typesOfService" [value]="t.id">{{ t.description }} ({{ t.code }})</option>
           </select>
@@ -96,7 +96,7 @@
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Statut *</label>
           <select formControlName="status" 
-            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm">
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm">
             <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
           </select>
         </div>
@@ -104,31 +104,31 @@
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Description (Détails) *</label>
           <textarea formControlName="info" rows="3" placeholder="Description de la prestation..."
-            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"></textarea>
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm"></textarea>
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Durée (en minutes) *</label>
           <input type="number" formControlName="nbrOfMinutes" min="5" step="5"
-            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
+            class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm" />
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-slate-700 mb-1">Réalisé par (Avocat) *</label>
           <div class="flex items-center gap-3">
             <div class="flex-1 flex items-center justify-between border px-3 py-2 rounded-lg transition"
-                 [ngClass]="{'bg-indigo-50 border-indigo-200': selectedDoneByUser?.id === currentUser?.id, 'bg-slate-50 border-slate-300': selectedDoneByUser?.id !== currentUser?.id}">
+                 [ngClass]="{'bg-emerald-50 border-slate-200': selectedDoneByUser?.id === currentUser?.id, 'bg-slate-50 border-slate-300': selectedDoneByUser?.id !== currentUser?.id}">
               <span class="text-sm font-medium" 
-                    [ngClass]="{'text-indigo-700': selectedDoneByUser?.id === currentUser?.id, 'text-slate-700': selectedDoneByUser?.id !== currentUser?.id}">
+                    [ngClass]="{'text-emerald-700': selectedDoneByUser?.id === currentUser?.id, 'text-slate-700': selectedDoneByUser?.id !== currentUser?.id}">
                 <ng-container *ngIf="selectedDoneByUser">
                   {{ selectedDoneByUser.firstName }} {{ selectedDoneByUser.lastName }}
-                  <span *ngIf="selectedDoneByUser.id === currentUser?.id" class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-200 text-indigo-800">
+                  <span *ngIf="selectedDoneByUser.id === currentUser?.id" class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-indigo-200 text-slate-800">
                     Moi-même
                   </span>
                 </ng-container>
                 <span *ngIf="!selectedDoneByUser" class="text-slate-400 italic">Non assigné</span>
               </span>
-              <button type="button" (click)="openUserSelection()" class="text-indigo-600 hover:text-indigo-700 text-sm font-semibold transition">
+              <button type="button" (click)="openUserSelection()" class="text-emerald-600 hover:text-emerald-700 text-sm font-semibold transition">
                 Sélectionner
               </button>
             </div>
@@ -142,7 +142,7 @@
 
         <div class="flex justify-end gap-3 mt-6">
           <button type="button" (click)="closeModal()" class="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Annuler</button>
-          <button type="submit" [disabled]="prestationForm.invalid || !selectedDoneByUser" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition">{{ editingPrestationId ? 'Mettre à jour' : 'Enregistrer' }}</button>
+          <button type="submit" [disabled]="prestationForm.invalid || !selectedDoneByUser" class="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg transition">{{ editingPrestationId ? 'Mettre à jour' : 'Enregistrer' }}</button>
         </div>
       </form>
     </div>
@@ -166,3 +166,8 @@
   (closeDialog)="closeGenerateInvoiceModal()"
   (confirmGeneration)="onConfirmGeneration($event)">
 </app-generate-invoice-dialog>
+
+
+
+
+

@@ -1,105 +1,122 @@
-<div class="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8 font-sans">
-    <div class="max-w-6xl mx-auto">
+<div class="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8 animate-fade-in font-sans text-slate-900">
+    <div class="max-w-[1200px] mx-auto space-y-8">
 
         <!-- En-tête -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-            <div>
-                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Résultats Due Diligence</h1>
-                @if (client) {
-                <p class="text-slate-500 font-medium mt-1">
-                    Historique pour <span class="text-cyan-600 font-bold">{{ getDisplayName(client) }}</span>
-                </p>
-                } @else {
-                <p class="text-slate-500 font-medium mt-1">Chargement du client...</p>
-                }
-            </div>
-
-            <div class="flex flex-wrap items-center gap-3">
-                <button (click)="downloadKycAuditPdf()" [disabled]="downloadingPdf"
-                    class="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 cursor-pointer">
-                    @if (downloadingPdf) {
-                    <div class="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+        <header class="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 sm:p-8 relative overflow-hidden group">
+            <!-- Decorative gradient -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-400/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-transform duration-1000 group-hover:scale-110"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+                        <div class="p-2.5 bg-slate-900 text-white rounded-xl shadow-md">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        </div>
+                        Résultats Due Diligence
+                    </h1>
+                    @if (client) {
+                    <p class="text-slate-500 text-sm font-bold mt-2 ml-14 uppercase tracking-widest flex items-center gap-2">
+                        Historique pour <span class="text-emerald-600 font-black">{{ getDisplayName(client) }}</span>
+                    </p>
                     } @else {
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-cyan-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
+                    <p class="text-slate-500 text-sm font-bold mt-2 ml-14 uppercase tracking-widest">Chargement du client...</p>
                     }
-                    Fiche de Vigilance (PDF)
-                </button>
+                </div>
 
-                <button (click)="backToClient()"
-                    class="inline-flex items-center px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors shadow-sm cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Retour au client
-                </button>
+                <div class="flex flex-wrap items-center gap-3">
+                    <button (click)="downloadKycAuditPdf()" [disabled]="downloadingPdf"
+                        class="inline-flex items-center px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[11px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20 transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+                        @if (downloadingPdf) {
+                        <div class="w-4 h-4 mr-2 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        } @else {
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-emerald-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        }
+                        Fiche de Vigilance (PDF)
+                    </button>
+
+                    <button (click)="backToClient()"
+                        class="inline-flex items-center px-6 py-3 bg-white border border-slate-200 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all shadow-sm cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Retour au client
+                    </button>
+                </div>
             </div>
-        </div>
+        </header>
 
         @if (loading) {
-        <div class="flex justify-center py-20">
-            <div class="spinner border-4 border-slate-200 border-t-cyan-500 rounded-full w-12 h-12 animate-spin"></div>
+        <div class="flex justify-center py-24">
+            <div class="w-12 h-12 border-4 border-slate-200 border-t-emerald-500 rounded-full animate-spin shadow-sm"></div>
         </div>
         } @else {
 
         <!-- Section: Formulaires à remplir (Assignments) -->
-        <div class="mb-8">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-slate-800">Actions Requises</h2>
+        <div class="bg-white rounded-[2rem] border border-slate-200 shadow-sm p-6 sm:p-8">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-slate-100">
+                <h2 class="text-sm font-black text-slate-900 flex items-center gap-3">
+                    <div class="p-2 bg-amber-100 text-amber-600 rounded-lg shadow-inner">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    Actions Requises
+                </h2>
                 <button (click)="openAssignDialog()"
-                    class="inline-flex items-center px-4 py-2 bg-slate-900 text-cyan-400 rounded-lg hover:bg-slate-800 transition-colors text-sm font-bold shadow-md shadow-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    class="inline-flex items-center px-5 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all text-[11px] font-black uppercase tracking-widest shadow-lg shadow-slate-900/20 hover:-translate-y-0.5 cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                     </svg>
                     Assigner un formulaire
                 </button>
             </div>
 
             @if (assignments.length === 0) {
-            <div class="bg-white rounded-xl p-6 border border-slate-200 text-center">
-                <p class="text-slate-500 text-sm">Aucune action requise pour ce client.</p>
+            <div class="bg-slate-50 rounded-2xl p-8 border border-slate-100 border-dashed text-center">
+                <div class="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-200 flex items-center justify-center mx-auto mb-3 text-emerald-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <p class="text-slate-900 text-xs font-black uppercase tracking-widest mb-1">Aucune action requise</p>
+                <p class="text-[10px] text-slate-500 font-bold">Tous les formulaires assignés ont été complétés pour ce client.</p>
             </div>
             } @else {
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 @for (assignment of assignments; track assignment.id) {
                 @if (assignment.status === 'PENDING' && assignment.enabled !== false) {
-                <div
-                    class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm hover:border-cyan-300 transition-all group blink-red-border">
-                    <div class="flex justify-between items-start mb-3">
-                        <span
-                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">
+                <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition-all group flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="inline-flex items-center px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-[0.2em] bg-amber-100 text-amber-700 border border-amber-200 shadow-sm">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span>
                             À FAIRE
                         </span>
-                        <button (click)="deleteAssignment(assignment.id!)" class="text-slate-400 hover:text-rose-500 p-1 hover:bg-rose-50 rounded-lg transition-all">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <button (click)="deleteAssignment(assignment.id!)" class="text-slate-400 hover:text-rose-600 p-1.5 hover:bg-white rounded-xl border border-transparent hover:border-rose-100 shadow-none hover:shadow-sm transition-all cursor-pointer" title="Supprimer">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                         </button>
                     </div>
-                    <h3 class="font-bold text-slate-800 mb-1 group-hover:text-cyan-600 transition-colors">
+                    <h3 class="font-black text-slate-900 mb-2 group-hover:text-emerald-600 transition-colors text-sm">
                         {{ getFormTitle(assignment.formConfigId) }}
                     </h3>
                     @if (assignment.uboName) {
-                        <div class="mb-2">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                        <div class="mb-3">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-white text-emerald-700 border border-emerald-200 shadow-sm">
                                 🎯 Cible: {{ assignment.uboName }}
                             </span>
                         </div>
                     }
-                    <div class="space-y-1 mb-4">
-                        <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="mt-auto pt-4 space-y-3">
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                             Assigné le: {{ assignment.creationDate | date:'dd/MM/yyyy HH:mm' }}
                         </p>
+                        <button (click)="fillForm(assignment)"
+                            class="w-full py-2.5 bg-white hover:bg-emerald-600 text-slate-900 hover:text-white font-black uppercase tracking-widest rounded-xl text-[10px] transition-colors border border-slate-200 hover:border-emerald-600 shadow-sm cursor-pointer">
+                            Remplir maintenant
+                        </button>
                     </div>
-                    <button (click)="fillForm(assignment)"
-                        class="w-full py-2 bg-slate-50 hover:bg-cyan-50 text-slate-700 hover:text-cyan-700 font-bold rounded-lg text-sm transition-colors border border-slate-200 hover:border-cyan-200">
-                        Remplir maintenant
-                    </button>
                 </div>
                 }
                 }
@@ -108,64 +125,70 @@
         </div>
 
         <!-- Section: Historique (Results) -->
-        <h2 class="text-xl font-bold text-slate-800 mb-4">Historique des Soumissions</h2>
-
-        @if (results.length === 0) {
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
-            <div
-                class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 text-slate-400 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
+        <div class="bg-white rounded-[2rem] border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-6 sm:p-8 border-b border-slate-100 flex items-center gap-3">
+                <div class="p-2 bg-blue-100 text-blue-600 rounded-lg shadow-inner">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                </div>
+                <h2 class="text-sm font-black text-slate-900">Historique des Soumissions</h2>
             </div>
-            <h3 class="text-lg font-bold text-slate-900 mb-1">Aucun résultat trouvé</h3>
-            <p class="text-slate-500">Aucun formulaire de vigilance n'a été soumis pour ce client.</p>
-        </div>
-        } @else {
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+
+            @if (results.length === 0) {
+            <div class="bg-slate-50 p-12 text-center m-6 rounded-2xl border border-slate-100 border-dashed">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-white text-slate-400 mb-3 border border-slate-200 shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-xs font-black uppercase tracking-widest text-slate-900 mb-1">Aucun résultat trouvé</h3>
+                <p class="text-[10px] text-slate-500 font-bold">Aucun formulaire de vigilance n'a été soumis pour ce client.</p>
+            </div>
+            } @else {
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
                     <thead>
-                        <tr
-                            class="bg-slate-50 border-b border-slate-100 text-xs uppercase tracking-wider text-slate-500 font-bold">
-                            <th class="px-6 py-4">Formulaire</th>
-                            <th class="px-6 py-4">Date de Création</th>
-                            <th class="px-6 py-4">Dernière Mise à Jour</th>
-                            <!-- <th class="px-6 py-4 text-right">Actions</th> -->
+                        <tr class="bg-slate-50 border-y border-slate-200">
+                            <th class="px-8 py-4 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Formulaire</th>
+                            <th class="px-8 py-4 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Date de Création</th>
+                            <th class="px-8 py-4 text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">Dernière Mise à Jour</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @for (result of results; track result.id) {
-                        <tr class="hover:bg-slate-50/50 transition-colors group cursor-pointer"
+                        <tr class="hover:bg-slate-50/80 transition-colors group cursor-pointer"
                             (click)="viewResult(result.id!)">
-                            <td class="px-6 py-4">
-                                <div class="font-bold text-slate-800 group-hover:text-cyan-600 transition-colors">
+                            <td class="px-8 py-4">
+                                <div class="font-black text-xs text-slate-900 group-hover:text-emerald-600 transition-colors mb-1">
                                     {{ getFormTitle(result.formConfigId) }}
                                 </div>
                                 @if (result.uboName) {
-                                    <div class="mt-1">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+                                    <div class="mt-1.5 mb-1">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-white text-emerald-700 border border-emerald-200 shadow-sm">
                                             🎯 Cible: {{ result.uboName }}
                                         </span>
                                     </div>
                                 }
-                                <div class="text-xs text-slate-400 font-mono mt-0.5">ID: {{ result.id }}</div>
+                                <div class="text-[9px] font-black text-slate-400 tracking-widest uppercase">ID: {{ result.id }}</div>
                             </td>
-                            <td class="px-6 py-4 text-sm font-medium text-slate-600">
-                                {{ result.creationDate | date:'dd/MM/yyyy HH:mm' }}
+                            <td class="px-8 py-4">
+                                <span class="text-[11px] font-bold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                                    {{ result.creationDate | date:'dd/MM/yyyy HH:mm' }}
+                                </span>
                             </td>
-                            <td class="px-6 py-4 text-sm font-medium text-slate-600">
-                                {{ result.lastUpdateDate | date:'dd/MM/yyyy HH:mm' }}
+                            <td class="px-8 py-4">
+                                <span class="text-[11px] font-bold text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200">
+                                    {{ result.lastUpdateDate | date:'dd/MM/yyyy HH:mm' }}
+                                </span>
                             </td>
                         </tr>
                         }
                     </tbody>
                 </table>
             </div>
+            }
         </div>
-        }
 
         }
 

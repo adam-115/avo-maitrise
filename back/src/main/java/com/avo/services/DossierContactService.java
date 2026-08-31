@@ -10,6 +10,7 @@ import com.avo.entities.DossierContact;
 import com.avo.entities.Dossier;
 import com.avo.mappers.DossierContactMapper;
 import com.avo.repositories.DossierContactRepository;
+import com.avo.repositories.DossierRepository;
 import com.querydsl.core.types.Predicate;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -22,14 +23,19 @@ import java.util.stream.Collectors;
 public class DossierContactService {
 
     private final DossierContactRepository repository;
+    private final DossierRepository dossierRepository;
     private final DossierContactMapper mapper;
     private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public DossierContactService(DossierContactRepository repository, DossierContactMapper mapper, org.springframework.context.ApplicationEventPublisher eventPublisher) {
+    public DossierContactService(DossierContactRepository repository, 
+                                 DossierRepository dossierRepository, 
+                                 DossierContactMapper mapper, 
+                                 org.springframework.context.ApplicationEventPublisher eventPublisher) {
         this.repository = repository;
+        this.dossierRepository = dossierRepository;
         this.mapper = mapper;
         this.eventPublisher = eventPublisher;
     }
@@ -107,9 +113,12 @@ public class DossierContactService {
     }
 
     private void attachRelatedEntities(DossierContact entity, DossierContactDTO dto) {
-        if (dto.getDossierId() != null) {
-            entity.setDossier(entityManager.getReference(Dossier.class, dto.getDossierId()));
+        if (dto.getDossierId() == null) {
+            throw new IllegalArgumentException("Dossier ID is required to link a contact.");
         }
+        Dossier dossier = dossierRepository.findById(dto.getDossierId())
+            .orElseThrow(() -> new RuntimeException("Dossier not found"));
+        entity.setDossier(dossier);
     }
 
     public void delete(Long id) {

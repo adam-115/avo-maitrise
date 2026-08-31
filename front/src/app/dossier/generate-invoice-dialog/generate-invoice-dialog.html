@@ -1,4 +1,4 @@
-<!-- Modal Génération de Facture -->
+﻿<!-- Modal Génération de Facture -->
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
   <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl overflow-hidden animate-in fade-in zoom-in-95 duration-200 flex flex-col max-h-[90vh]">
     <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -18,7 +18,7 @@
           <label class="text-sm font-semibold text-slate-700">Taux TVA (%)</label>
           <div class="relative w-24">
             <input type="number" [(ngModel)]="vatRate" min="0" max="100" step="0.1"
-              class="block w-full px-3 py-2 border border-slate-300 rounded-md text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors outline-none" />
+              class="block w-full px-3 py-2 border border-slate-300 rounded-md text-sm font-bold focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors outline-none" />
           </div>
         </div>
         
@@ -39,7 +39,7 @@
           <thead class="bg-slate-50 border-b border-slate-200 text-slate-700">
             <tr>
               <th class="px-4 py-3 font-semibold w-12 text-center">
-                <input type="checkbox" checked disabled class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" title="Sélection" />
+                <input type="checkbox" checked disabled class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500" title="Sélection" />
               </th>
               <th class="px-4 py-3 font-semibold">Description</th>
               <th class="px-4 py-3 font-semibold text-center">Durée (min)</th>
@@ -50,7 +50,7 @@
           <tbody class="divide-y divide-slate-100">
             <tr *ngFor="let itemWrapper of selectableEntries" class="hover:bg-slate-50 transition" [class.opacity-50]="!itemWrapper.selected && !itemWrapper.disabled" [class.opacity-40]="itemWrapper.disabled" [class.bg-slate-50]="itemWrapper.disabled">
               <td class="px-4 py-3 text-center">
-                <input type="checkbox" [(ngModel)]="itemWrapper.selected" [disabled]="itemWrapper.disabled" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-200" />
+                <input type="checkbox" [(ngModel)]="itemWrapper.selected" [disabled]="itemWrapper.disabled" class="rounded border-slate-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-200" />
               </td>
               <td class="px-4 py-3 font-medium flex items-center gap-2">
                 <span *ngIf="itemWrapper.disabled" class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-200 text-slate-600">Non éligible</span>
@@ -60,14 +60,14 @@
                 <div class="relative w-20 mx-auto">
                   <input type="number" [(ngModel)]="itemWrapper.entry.nbrOfMinutes" min="0" step="1"
                     [disabled]="!itemWrapper.selected"
-                    class="block w-full text-center px-2 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-md text-xs font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors outline-none disabled:opacity-50 disabled:bg-slate-100 disabled:text-slate-500 disabled:border-slate-200" />
+                    class="block w-full text-center px-2 py-1 bg-emerald-50 text-emerald-700 border border-slate-200 rounded-md text-xs font-bold focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors outline-none disabled:opacity-50 disabled:bg-slate-100 disabled:text-slate-500 disabled:border-slate-200" />
                 </div>
               </td>
               <td class="px-4 py-3 text-right">
                 <div class="relative w-28 ml-auto">
                   <input type="number" [(ngModel)]="itemWrapper.entry.price5min" min="0" step="0.01"
                     [disabled]="!itemWrapper.selected"
-                    class="block w-full text-right pr-6 pl-2 py-1 border border-slate-300 rounded-md text-sm font-mono focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors outline-none disabled:opacity-50 disabled:bg-slate-50" />
+                    class="block w-full text-right pr-6 pl-2 py-1 border border-slate-300 rounded-md text-sm font-mono focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors outline-none disabled:opacity-50 disabled:bg-slate-50" />
                   <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
                     <span class="text-slate-500 text-xs font-mono">€</span>
                   </div>
@@ -91,3 +91,8 @@
     </div>
   </div>
 </div>
+
+
+
+
+

@@ -1,15 +1,15 @@
-<div class="space-y-6">
+﻿<div class="space-y-6">
   <!-- Filters Section -->
   <div class="flex flex-wrap items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
     <div class="flex flex-col">
       <label class="text-xs font-semibold text-gray-500 uppercase mb-1">Du</label>
       <input type="date" [(ngModel)]="startDate" (change)="onFilter()"
-        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm">
     </div>
     <div class="flex flex-col">
       <label class="text-xs font-semibold text-gray-500 uppercase mb-1">Au</label>
       <input type="date" [(ngModel)]="endDate" (change)="onFilter()"
-        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm">
     </div>
     <div class="flex items-end flex-1">
       <button (click)="onFilter()" 
@@ -98,7 +98,7 @@
           </button>
           <button *ngFor="let p of [].constructor(totalPages); let i = index"
             (click)="onPageChange(i)"
-            [ngClass]="i === currentPage ? 'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600' : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'"
+            [ngClass]="i === currentPage ? 'z-10 bg-emerald-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600' : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'"
             class="relative inline-flex items-center px-4 py-2 text-sm font-semibold">
             {{ i + 1 }}
           </button>
@@ -114,3 +114,8 @@
     </div>
   </div>
 </div>
+
+
+
+
+

@@ -1,119 +1,42 @@
 <div id="link-contact-modal"
-  class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 flex items-center justify-center ">
+  class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 flex items-center justify-center p-4 backdrop-blur-sm">
 
-  <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 my-8 transform transition-all scale-100 opacity-100"
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-auto flex flex-col border border-slate-200"
     role="dialog" aria-modal="true" aria-labelledby="modal-title">
 
-    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-cyan-50 rounded-t-xl">
-      <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
+    <!-- Header -->
+    <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-emerald-600 rounded-t-2xl shrink-0">
+      <h3 id="modal-title" class="text-lg font-black text-white flex items-center gap-3">
+          <div class="p-2 bg-emerald-500 rounded-xl text-white shadow-sm">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+              </svg>
+          </div>
         Lier un Contact au Dossier {{ dossierNumber }}
       </h3>
-      <button type="button" (click)="closeDialog()" class="text-gray-400 hover:text-gray-600 transition">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      <button type="button" (click)="closeDialog()" class="text-emerald-100 hover:text-white hover:bg-emerald-500 p-2 rounded-xl transition-all cursor-pointer">
+        <span class="sr-only">Fermer</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
     </div>
 
-    <div class="p-6">
-
-      <div id="tab-create-new" class="mt-2 space-y-5">
-
-        <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 rounded-lg text-sm">
-          Attention : Ce contact sera **ajouté de façon permanente** à la base de données de tous les contacts du
-          cabinet.
+    <div class="p-6 bg-slate-50 flex-1 overflow-y-auto max-h-[75vh]">
+      <div id="tab-create-new" class="space-y-5 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-sm font-medium flex gap-3 items-start">
+          <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+          <div>
+            <span class="font-bold">Attention :</span> Ce contact sera ajouté de façon permanente à la base de données de tous les contacts du cabinet.
+          </div>
         </div>
 
         <form id="create-new-contact-form" class="space-y-4" [formGroup]="contactForm" (ngSubmit)="submitForm()">
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="new_contact_type" class="block text-sm font-medium text-gray-700 mb-1">Civilité <span
-                  class="text-red-500">*</span></label>
-              <select id="new_contact_type" formControlName="civilite" required
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                <option value="M.">Monsieur</option>
-                <option value="Mme">Madame</option>
-                <option value="Me">Maître</option>
-              </select>
-            </div>
-            <div>
-              <label for="new_contact_company" class="block text-sm font-medium text-gray-700 mb-1">Société/Organisation
-                (Optionnel)</label>
-              <input type="text" formControlName="entreprise" id="new_contact_company"
-                placeholder="Ex: SCP Tiers-Avocats, SARL Beta..."
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="new_contact_last_name" class="block text-sm font-medium text-gray-700 mb-1">Nom <span
-                  class="text-red-500">*</span></label>
-              <input type="text" formControlName="nom" id="new_contact_last_name" required placeholder="Ex: Durand"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-            <div>
-              <label for="new_contact_first_name" class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-              <input type="text" formControlName="prenom" id="new_contact_first_name" placeholder="Ex: Luc"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="new_contact_email" class="block text-sm font-medium text-gray-700 mb-1">Adresse
-                Email</label>
-              <input type="email" formControlName="email" id="new_contact_email" placeholder="contact@exemple.com"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-            <div>
-              <label for="new_contact_phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone
-                Principal</label>
-              <input type="tel" formControlName="telephoneMobile" id="new_contact_phone"
-                placeholder="+33 XX XX XX XX XX"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="new_contact_toque" class="block text-sm font-medium text-gray-700 mb-1">Numéro de Toque (Si Avocat)</label>
-              <input type="text" formControlName="numToque" id="new_contact_toque" placeholder="Ex: 1234"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-            <div>
-              <label for="new_contact_web" class="block text-sm font-medium text-gray-700 mb-1">Site Web</label>
-              <input type="url" formControlName="siteWeb" id="new_contact_web" placeholder="https://..."
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="new_contact_profession" class="block text-sm font-medium text-gray-700 mb-1">Profession</label>
-              <input type="text" formControlName="profession" id="new_contact_profession" placeholder="Ex: Notaire, Expert..."
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-            <div>
-              <label for="new_contact_pays" class="block text-sm font-medium text-gray-700 mb-1">Pays</label>
-              <input type="text" formControlName="pays" id="new_contact_pays" placeholder="Ex: France"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-          </div>
-
-          <div>
-            <label for="new_contact_observation" class="block text-sm font-medium text-gray-700 mb-1">Observations / Commentaires</label>
-            <textarea formControlName="observation" id="new_contact_observation" rows="2"
-              placeholder="Notes complémentaires sur ce contact..."
-              class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
-          </div>
-
-          <div class="pt-2">
-            <label for="new_contact_role" class="block text-sm font-medium text-gray-700 mb-1">Rôle de ce nouveau
-              contact dans ce dossier <span class="text-red-500">*</span></label>
+          
+          <div class="pt-2 mb-4">
+            <label for="new_contact_role" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Rôle de ce contact dans ce dossier <span class="text-rose-500">*</span></label>
             <select id="new_contact_role" formControlName="notes" required
-              class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+              class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm font-bold text-slate-800 outline-none cursor-pointer">
               <option value="Partie Adverse">Partie Adverse</option>
               <option value="Avocat Adverse">Avocat Adverse</option>
               <option value="Expert / Tiers">Expert / Tiers</option>
@@ -121,20 +44,106 @@
               <option value="Client Principal">Client Principal</option>
             </select>
           </div>
+          
+          <hr class="border-slate-100 my-6">
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="new_contact_type" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Civilité <span
+                  class="text-rose-500">*</span></label>
+              <select id="new_contact_type" formControlName="civilite" required
+                class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm font-medium text-slate-800 outline-none cursor-pointer">
+                <option value="M.">Monsieur</option>
+                <option value="Mme">Madame</option>
+                <option value="Me">Maître</option>
+              </select>
+            </div>
+            <div>
+              <label for="new_contact_company" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Société/Organisation
+                (Optionnel)</label>
+              <input type="text" formControlName="entreprise" id="new_contact_company"
+                placeholder="Ex: SCP Tiers-Avocats..."
+                class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm text-slate-800 outline-none placeholder:text-slate-400">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="new_contact_last_name" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Nom <span
+                  class="text-rose-500">*</span></label>
+              <input type="text" formControlName="nom" id="new_contact_last_name" required placeholder="Ex: Durand"
+                class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm text-slate-800 outline-none placeholder:text-slate-400">
+            </div>
+            <div>
+              <label for="new_contact_first_name" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Prénom</label>
+              <input type="text" formControlName="prenom" id="new_contact_first_name" placeholder="Ex: Luc"
+                class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm text-slate-800 outline-none placeholder:text-slate-400">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="new_contact_email" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Adresse Email</label>
+              <input type="email" formControlName="email" id="new_contact_email" placeholder="contact@exemple.com"
+                class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm text-slate-800 outline-none placeholder:text-slate-400">
+            </div>
+            <div>
+              <label for="new_contact_phone" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Téléphone Principal</label>
+              <input type="tel" formControlName="telephoneMobile" id="new_contact_phone"
+                placeholder="+33 6 XX XX XX XX"
+                class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm text-slate-800 outline-none placeholder:text-slate-400">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="new_contact_profession" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Profession</label>
+              <input type="text" formControlName="profession" id="new_contact_profession" placeholder="Ex: Notaire, Expert..."
+                class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm text-slate-800 outline-none placeholder:text-slate-400">
+            </div>
+            <div>
+              <label for="new_contact_pays" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Pays</label>
+              <input type="text" formControlName="pays" id="new_contact_pays" placeholder="Ex: France"
+                class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm text-slate-800 outline-none placeholder:text-slate-400">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="new_contact_toque" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Numéro de Toque (Si Avocat)</label>
+              <input type="text" formControlName="numToque" id="new_contact_toque" placeholder="Ex: 1234"
+                class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm text-slate-800 outline-none placeholder:text-slate-400">
+            </div>
+            <div>
+              <label for="new_contact_web" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Site Web</label>
+              <input type="url" formControlName="siteWeb" id="new_contact_web" placeholder="https://..."
+                class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm text-slate-800 outline-none placeholder:text-slate-400">
+            </div>
+          </div>
+
+          <div>
+            <label for="new_contact_observation" class="block text-sm font-medium text-slate-700 mb-1.5 ml-1">Observations / Commentaires</label>
+            <textarea formControlName="observation" id="new_contact_observation" rows="3"
+              placeholder="Notes complémentaires sur ce contact..."
+              class="block w-full rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 p-3 bg-slate-50 border border-slate-300 hover:border-slate-400 transition-colors text-sm text-slate-800 outline-none placeholder:text-slate-400 resize-none"></textarea>
+          </div>
 
         </form>
       </div>
 
     </div>
 
-    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3 rounded-b-xl">
+    <!-- Footer -->
+    <div class="px-6 py-5 bg-white border-t border-slate-100 flex justify-end gap-3 rounded-b-2xl shrink-0">
       <button type="button" (click)="closeDialog()"
-        class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
+        class="px-5 py-2.5 border border-transparent rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 transition-colors cursor-pointer">
         Annuler
       </button>
-      <button type="submit" form="create-new-contact-form"
-        class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-cyan-600 shadow-md hover:bg-cyan-700 transition duration-150">
-        Lier le Contact au Dossier
+      <button type="submit" form="create-new-contact-form" [disabled]="!contactForm.valid"
+        class="px-6 py-2.5 border border-transparent rounded-xl text-sm font-black text-white shadow-md transition-all flex items-center gap-2"
+        [ngClass]="contactForm.valid ? 'bg-slate-900 hover:bg-slate-800 cursor-pointer' : 'bg-slate-300 text-slate-400 cursor-not-allowed shadow-none'">
+        <svg *ngIf="contactForm.valid" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+        Lier le Contact
       </button>
     </div>
 

@@ -1,22 +1,22 @@
-<div class="min-h-screen pb-12 animate-fadeIn">
+<div class="art-page-bg p-4 sm:p-8 animate-fadeIn">
     <main class="max-w-[1600px] mx-auto space-y-6">
 
         <!-- Header Section -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-xs">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm">
             <div>
                 <nav class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">
-                    <a routerLink="/home" class="hover:text-indigo-900 cursor-pointer transition-colors">Cabinet</a>
+                    <a routerLink="/home" class="hover:text-emerald-600 cursor-pointer transition-colors">Cabinet</a>
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    <span class="text-indigo-900">Dossiers & Affaires</span>
+                    <span class="text-slate-900">Dossiers & Affaires</span>
                 </nav>
-                <h1 class="text-xl sm:text-2xl font-black text-slate-950 tracking-tight font-heading">
-                    Repertoire des <span class="text-indigo-900">Affaires du Cabinet</span>
+                <h1 class="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">
+                    Répertoire des <span class="text-emerald-600">Affaires</span>
                 </h1>
             </div>
 
             <button (click)="nviagteToDossierForm()"
-                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-900 text-white font-black text-xs rounded-xl hover:bg-indigo-950 shadow-2xs transition-all cursor-pointer w-full sm:w-auto">
-                <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-bold text-sm rounded-xl hover:bg-emerald-700 shadow-sm transition-all cursor-pointer w-full sm:w-auto">
+                <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                 <span>Nouveau Dossier</span>
             </button>
         </div>
@@ -24,98 +24,98 @@
         <!-- Performance Stats Dashboard -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <!-- Card 1: Nouveaux Dossiers -->
-            <div class="glass-card p-5 rounded-3xl flex flex-col justify-between">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nouveaux Dossiers</span>
-                    <div class="p-2 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-900">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Nouveaux Dossiers</span>
+                    <div class="p-2 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
                     </div>
                 </div>
                 <div>
-                    <span class="text-3xl font-black text-slate-950 font-heading">{{ createdThisMonthCount }}</span>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1">Ouverts ce mois</p>
+                    <span class="text-3xl font-black text-slate-900">{{ createdThisMonthCount }}</span>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1">Ouverts ce mois</p>
                 </div>
             </div>
 
             <!-- Card 2: Dossiers Clos -->
-            <div class="glass-card p-5 rounded-3xl flex flex-col justify-between">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Dossiers Clos</span>
-                    <div class="p-2 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-700">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Dossiers Clos</span>
+                    <div class="p-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                 </div>
                 <div>
-                    <span class="text-3xl font-black text-slate-950 font-heading">{{ closedThisMonthCount }}</span>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1">Résolus avec succès ce mois</p>
+                    <span class="text-3xl font-black text-slate-900">{{ closedThisMonthCount }}</span>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1">Résolus avec succès ce mois</p>
                 </div>
             </div>
 
             <!-- Card 3: Heures Enregistrées -->
-            <div class="glass-card p-5 rounded-3xl flex flex-col justify-between">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Temps Facturable</span>
-                    <div class="p-2 bg-amber-50 border border-amber-100 rounded-xl text-amber-700">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Temps Facturable</span>
+                    <div class="p-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </div>
                 </div>
                 <div>
-                    <span class="text-3xl font-black text-slate-950 font-heading">{{ unbilledHours }} h</span>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1">Heures prêtes à facturer</p>
+                    <span class="text-3xl font-black text-slate-900">{{ unbilledHours }} h</span>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1">Heures prêtes à facturer</p>
                 </div>
             </div>
 
             <!-- Card 4: Taux d'Efficacité -->
-            <div class="glass-card p-5 rounded-3xl flex flex-col justify-between">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Taux de Clôture</span>
-                    <div class="p-2 bg-cyan-50 border border-cyan-100 rounded-xl text-cyan-700">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Taux de Clôture</span>
+                    <div class="p-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-600">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                     </div>
                 </div>
                 <div>
-                    <span class="text-3xl font-black text-slate-950 font-heading">{{ closureRate }}%</span>
-                    <p class="text-[10px] text-slate-400 font-medium mt-1">Ratio de résolution des affaires</p>
+                    <span class="text-3xl font-black text-slate-900">{{ closureRate }}%</span>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1">Ratio de résolution des affaires</p>
                 </div>
             </div>
         </div>
 
         <!-- Filters & Search Bar -->
-        <div class="flex flex-col sm:flex-row gap-3 bg-white p-4 rounded-2xl shadow-2xs border border-slate-200">
+        <div class="flex flex-col sm:flex-row gap-3 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
             <div class="relative flex-grow">
                 <input type="text" [(ngModel)]="searchTerm" (input)="filterDossiers()" placeholder="Rechercher par Référence, Client ou Titre..."
-                    class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-indigo-600 outline-none transition-all placeholder:text-slate-400">
-                <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-900 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all placeholder:text-slate-400">
+                <svg class="absolute left-3.5 top-1/2 transform -translate-y-1/2 w-4.5 h-4.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                 </svg>
             </div>
             <select [(ngModel)]="statusFilter" (change)="filterDossiers()"
-                class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none cursor-pointer">
+                class="px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-700 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all cursor-pointer">
                 <option value="Tous">Statut : Tous</option>
                 <option *ngFor="let s of statuses" [value]="s.id">{{ s.label }}</option>
             </select>
             <select [(ngModel)]="lawyerFilter" (change)="filterDossiers()"
-                class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 outline-none cursor-pointer">
+                class="px-4 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold text-slate-700 focus:bg-white focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 outline-none transition-all cursor-pointer">
                 <option value="Tous">Avocat : Tous</option>
                 <option *ngFor="let u of users" [value]="u.id">{{ u.username }}</option>
             </select>
         </div>
 
         <!-- Loading State -->
-        <div *ngIf="loading" class="py-16 flex flex-col items-center justify-center text-center bg-white rounded-3xl border border-slate-200 shadow-2xs">
-            <div class="w-10 h-10 border-3 border-indigo-900 border-t-transparent rounded-full animate-spin"></div>
-            <p class="text-slate-500 font-bold text-xs mt-3">Chargement des affaires du cabinet...</p>
+        <div *ngIf="loading" class="py-16 flex flex-col items-center justify-center text-center bg-white rounded-2xl border border-slate-200 shadow-sm">
+            <div class="w-10 h-10 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-slate-500 font-bold text-sm mt-3">Chargement des affaires du cabinet...</p>
         </div>
 
         <div *ngIf="!loading">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 <div *ngFor="let dossier of paginatedDossiers"
-                    class="bg-white p-5 rounded-2xl shadow-2xs border-t-4 border border-slate-200 hover:shadow-md transition duration-200 flex flex-col justify-between"
-                    [style.border-top-color]="getPriority(dossier.prioriteID)?.color || '#334155'">
+                    class="bg-white p-5 rounded-2xl shadow-sm border-t-4 border border-slate-200 hover:border-emerald-400 hover:shadow-md transition duration-200 flex flex-col justify-between"
+                    [style.border-top-color]="getPriority(dossier.prioriteID)?.color || '#e2e8f0'">
                     <div>
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ dossier.referenceInterne }}</span>
-                            <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full border"
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-xs font-black text-slate-400 uppercase tracking-widest">{{ dossier.referenceInterne }}</span>
+                            <span class="px-2.5 py-0.5 text-[10px] font-black uppercase rounded-full border"
                                 [style.background-color]="getStatus(dossier.statutID)?.color + '15'"
                                 [style.color]="getStatus(dossier.statutID)?.color"
                                 [style.border-color]="getStatus(dossier.statutID)?.color + '30'">
@@ -123,68 +123,68 @@
                             </span>
                         </div>
 
-                        <h3 class="text-sm font-black text-slate-950 mb-3 leading-snug">
-                            <a (click)="navigateToDossierDetail(dossier.id!)" class="hover:text-indigo-900 transition cursor-pointer font-heading">
+                        <h3 class="text-base font-black text-slate-900 mb-4 leading-snug">
+                            <a (click)="navigateToDossierDetail(dossier.id!)" class="hover:text-emerald-700 transition cursor-pointer">
                                 {{ dossier.titre }}
                             </a>
                         </h3>
 
-                        <div class="space-y-1.5 text-xs text-slate-600 border-t border-slate-100 pt-3">
+                        <div class="space-y-2 text-xs text-slate-600 border-t border-slate-100 pt-3">
                             <div class="flex items-center justify-between">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase">Client</span>
+                                <span class="font-bold text-slate-400 uppercase">Client</span>
                                 <span class="font-bold text-slate-900 truncate max-w-[160px]">{{ getDossierClientName(dossier) }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase">Avocat Resp.</span>
-                                <span class="font-bold text-slate-800">{{ getResponsableName(dossier.responsableId) }}</span>
+                                <span class="font-bold text-slate-400 uppercase">Avocat Resp.</span>
+                                <span class="font-bold text-slate-700">{{ getResponsableName(dossier.responsableId) }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase">Ouverture</span>
+                                <span class="font-bold text-slate-400 uppercase">Ouverture</span>
                                 <span class="font-medium text-slate-500">{{ dossier.dateOuverture | date:'dd/MM/yyyy' }}</span>
                             </div>
                         </div>
                     </div>
 
                     <a (click)="navigateToDossierDetail(dossier.id!)"
-                        class="mt-4 block w-full text-center py-2 bg-slate-50 hover:bg-indigo-50 text-indigo-900 font-black text-xs rounded-xl border border-slate-200 transition cursor-pointer">
+                        class="mt-5 block w-full text-center py-2.5 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition cursor-pointer">
                         Consulter le Dossier
                     </a>
                 </div>
             </div>
 
             <!-- Empty State -->
-            <div *ngIf="totalElements === 0" class="py-16 flex flex-col items-center justify-center text-center bg-white rounded-3xl shadow-2xs border-2 border-dashed border-slate-200">
-                <div class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-3">
+            <div *ngIf="totalElements === 0" class="py-16 flex flex-col items-center justify-center text-center bg-white rounded-2xl shadow-sm border border-slate-200">
+                <div class="w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center text-slate-400 mb-3 border border-slate-100">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
                     </svg>
                 </div>
-                <h3 class="text-base font-black text-slate-950 mb-1">Aucune affaire trouvée</h3>
-                <p class="text-slate-500 text-xs font-medium">Aucun dossier ne correspond à la recherche.</p>
+                <h3 class="text-base font-black text-slate-900 mb-1">Aucune affaire trouvée</h3>
+                <p class="text-slate-500 text-sm font-medium">Aucun dossier ne correspond à votre recherche.</p>
             </div>
 
             <!-- Pagination -->
-            <div *ngIf="totalPages > 1" class="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
-                <p class="text-slate-500 font-bold text-xs">
-                    Affichage de <span class="text-slate-900 font-black">{{ totalElements > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span> à 
-                    <span class="text-slate-900 font-black">{{ currentEndIndex }}</span> sur 
-                    <span class="text-slate-900 font-black">{{ totalElements }}</span> affaires
+            <div *ngIf="totalPages > 1" class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                <p class="text-slate-500 font-medium text-sm">
+                    Affichage de <span class="text-slate-900 font-bold">{{ totalElements > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span> à 
+                    <span class="text-slate-900 font-bold">{{ currentEndIndex }}</span> sur 
+                    <span class="text-slate-900 font-bold">{{ totalElements }}</span> affaires
                 </p>
                 <div class="flex items-center gap-1.5">
                     <button (click)="prevPage()" [disabled]="currentPage === 1"
-                        class="px-2.5 py-1 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 text-xs font-bold transition-all cursor-pointer">
-                        Préc.
+                        class="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 text-sm font-bold transition-all cursor-pointer">
+                        Précédent
                     </button>
                     
                     <button *ngFor="let page of pages" (click)="goToPage(page)"
-                        [ngClass]="currentPage === page ? 'bg-indigo-900 text-white font-black' : 'border border-slate-200 text-slate-600 hover:bg-slate-50'"
-                        class="w-8 h-8 rounded-xl font-bold text-xs transition-all cursor-pointer">
+                        [ngClass]="currentPage === page ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'"
+                        class="w-8 h-8 rounded-xl font-bold text-sm border transition-all cursor-pointer flex items-center justify-center">
                         {{ page }}
                     </button>
 
                     <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                        class="px-2.5 py-1 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 disabled:opacity-40 text-xs font-bold transition-all cursor-pointer">
-                        Suiv.
+                        class="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 text-sm font-bold transition-all cursor-pointer">
+                        Suivant
                     </button>
                 </div>
             </div>

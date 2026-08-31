@@ -1,48 +1,54 @@
-<div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-gray-900/40 backdrop-blur-sm transition-opacity duration-300">
-    <div class="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 flex flex-col max-h-[90vh]">
+<div class="fixed inset-0 z-50 flex items-center justify-center overflow-auto bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 p-4">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-auto flex flex-col max-h-[90vh] border border-slate-200">
 
         <!-- Header -->
-        <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-gray-50 rounded-t-lg">
-            <h3 class="text-lg font-semibold text-gray-900">Sélectionner des Intervenants</h3>
-            <button (click)="onCancel()" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+        <div class="px-6 py-5 border-b border-slate-100 flex justify-between items-center shrink-0">
+            <h3 class="text-lg font-black text-slate-800 flex items-center gap-3">
+                <div class="p-2 bg-slate-100 rounded-xl text-slate-500">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+                Sélectionner des Intervenants
+            </h3>
+            <button (click)="onCancel()" class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all focus:outline-none">
                 <span class="sr-only">Fermer</span>
-                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
         <!-- Search -->
-        <div class="p-4 border-b border-gray-200">
+        <div class="p-5 border-b border-slate-100 bg-slate-50/50">
             <div class="relative">
                 <input type="text" [(ngModel)]="searchTerm" (input)="filterUsers()"
                     placeholder="Rechercher par nom ou email..."
-                    class="w-full pl-10 pr-4 py-2 rounded-md focus:ring-blue-500 focus:border-blue-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    class="w-full pl-11 pr-4 py-3 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 border border-slate-300 bg-slate-50 hover:bg-white hover:border-slate-400 transition-all text-sm font-normal text-slate-800 placeholder-slate-400">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
             </div>
         </div>
 
         <!-- List -->
-        <div class="flex-1 overflow-y-auto p-2">
-            <ul class="divide-y divide-gray-100">
+        <div class="flex-1 overflow-y-auto p-3 bg-white">
+            <ul class="space-y-1">
                 @for (user of filteredUsers; track user.id) {
                 <li (click)="toggleSelection(user.id)"
-                    class="flex items-center p-3 hover:bg-gray-50 cursor-pointer rounded-md transition-colors duration-150">
+                    class="flex items-center p-3 cursor-pointer rounded-xl transition-all duration-200 border border-transparent"
+                    [ngClass]="isSelected(user.id!) ? 'bg-emerald-50/50 border-emerald-100' : 'hover:bg-slate-50'">
 
                     <div class="flex-shrink-0 mr-4">
-                        <div [class.bg-blue-600]="isSelected(user.id!)" [class.border-gray-300]="!isSelected(user.id!)"
-                            [class.rounded-full]="singleSelection" [class.rounded]="!singleSelection"
-                            class="h-5 w-5 border flex items-center justify-center transition-colors duration-200">
+                        <div [class.bg-emerald-500]="isSelected(user.id!)" [class.border-emerald-500]="isSelected(user.id!)"
+                             [class.border-slate-300]="!isSelected(user.id!)" [class.bg-white]="!isSelected(user.id!)"
+                            [class.rounded-full]="singleSelection" [class.rounded-md]="!singleSelection"
+                            class="h-5 w-5 border-2 flex items-center justify-center transition-colors duration-200 shadow-sm">
                             @if (isSelected(user.id!) && !singleSelection) {
-                            <svg class="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd" />
+                            <svg class="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                             </svg>
                             }
                             @if (isSelected(user.id) && singleSelection) {
@@ -53,32 +59,38 @@
                     </div>
 
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-gray-900 truncate">
+                        <p class="text-sm font-bold truncate" [ngClass]="isSelected(user.id!) ? 'text-emerald-900' : 'text-slate-800'">
                             {{ user.username }}
                         </p>
-                        <p class="text-sm text-gray-500 truncate">
+                        <p class="text-xs font-medium truncate mt-0.5" [ngClass]="isSelected(user.id!) ? 'text-emerald-600' : 'text-slate-500'">
                             {{ user.email }}
                         </p>
                     </div>
                 </li>
                 }
                 @if (filteredUsers.length === 0) {
-                <li class="p-4 text-center text-gray-500 italic">
-                    Aucun utilisateur trouvé.
+                <li class="p-8 text-center flex flex-col items-center justify-center">
+                    <div class="h-12 w-12 rounded-full bg-slate-50 flex items-center justify-center mb-3 border border-slate-100">
+                        <svg class="h-6 w-6 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </div>
+                    <p class="text-sm font-bold text-slate-600">Aucun utilisateur trouvé.</p>
                 </li>
                 }
             </ul>
         </div>
 
         <!-- Footer -->
-        <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-lg flex justify-end space-x-3">
+        <div class="px-6 py-5 border-t border-slate-100 bg-white rounded-b-2xl flex justify-end space-x-3 shrink-0">
             <button (click)="onCancel()"
-                class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                class="px-5 py-2.5 rounded-xl text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 transition-colors focus:outline-none border border-transparent">
                 Annuler
             </button>
             <button (click)="onConfirm()"
-                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                Confirmer selection ({{ selectedUserIds.size }})
+                class="px-6 py-2.5 rounded-xl shadow-md text-sm font-black text-white bg-slate-900 hover:bg-slate-800 focus:outline-none transition-all flex items-center gap-2">
+                Confirmer
+                <span class="inline-flex items-center justify-center bg-white/20 px-2 py-0.5 rounded-md text-xs">{{ selectedUserIds.size }}</span>
             </button>
         </div>
 

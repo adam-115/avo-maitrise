@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-slate-50 p-4 md:p-8">
+﻿<div class="art-page-bg p-4 sm:p-8 animate-fadeIn">
     <div class="max-w-5xl mx-auto space-y-6">
         
         <!-- Header -->
@@ -13,7 +13,7 @@
                 </div>
             </div>
             
-            <button (click)="generateInvoice()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm transition flex items-center gap-2">
+            <button (click)="generateInvoice()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-sm transition flex items-center gap-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                 Générer la facture
             </button>
@@ -24,9 +24,9 @@
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">1. Client concerné</h3>
                 
-                <div *ngIf="selectedClientName()" class="flex items-center justify-between p-3 border border-indigo-100 rounded-lg bg-indigo-50/50 shadow-sm">
+                <div *ngIf="selectedClientName()" class="flex items-center justify-between p-3 border border-emerald-100 rounded-lg bg-emerald-50/50 shadow-sm">
                     <div class="flex items-center gap-3">
-                        <div class="h-10 w-10 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 text-sm font-bold">
+                        <div class="h-10 w-10 flex items-center justify-center rounded-full bg-slate-100 text-emerald-600 text-sm font-bold">
                             {{ selectedClientName()?.charAt(0) | uppercase }}
                         </div>
                         <div>
@@ -34,13 +34,13 @@
                             <p class="text-xs text-slate-500 font-medium leading-tight">Réf: #{{ selectedClientId() }}</p>
                         </div>
                     </div>
-                    <button type="button" (click)="openClientDialog()" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500 transition-colors px-3 py-1.5 rounded-md hover:bg-indigo-50">
+                    <button type="button" (click)="openClientDialog()" class="text-sm font-semibold text-emerald-600 hover:text-emerald-500 transition-colors px-3 py-1.5 rounded-md hover:bg-emerald-50">
                         Modifier
                     </button>
                 </div>
 
                 <button *ngIf="!selectedClientName()" type="button" (click)="openClientDialog()"
-                    class="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 p-4 text-center hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none transition-all">
+                    class="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-slate-300 p-4 text-center hover:border-indigo-400 hover:bg-emerald-50 hover:text-emerald-600 focus:outline-none transition-all">
                     <svg class="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
@@ -96,10 +96,10 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-slate-100">
-                        <tr *ngFor="let entry of unbilledEntries(); let i = index" class="hover:bg-slate-50 transition" [class.bg-indigo-50]="entry.selected">
+                        <tr *ngFor="let entry of unbilledEntries(); let i = index" class="hover:bg-slate-50 transition" [class.bg-emerald-50]="entry.selected">
                             <td class="px-6 py-4 text-center">
                                 <input type="checkbox" [checked]="entry.selected" (change)="toggleEntrySelection(i)"
-                                    class="w-5 h-5 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer">
+                                    class="w-5 h-5 text-emerald-600 bg-gray-100 border-gray-300 rounded focus:ring-emerald-500 cursor-pointer">
                             </td>
                             <td class="px-6 py-4">
                                 <div class="text-sm font-medium text-slate-900">
@@ -144,7 +144,7 @@
                         <div class="flex items-center gap-2">
                             <span class="font-medium text-slate-500">Taux TVA (%)</span>
                             <input type="number" [ngModel]="vatRate()" (ngModelChange)="vatRate.set($event)" min="0" max="100" step="0.1" 
-                                class="w-20 px-2 py-1 text-sm border border-slate-300 rounded focus:ring-indigo-500 focus:border-indigo-500">
+                                class="w-20 px-2 py-1 text-sm border border-slate-300 rounded focus:ring-emerald-500 focus:border-emerald-500">
                         </div>
                         <span class="font-semibold text-slate-900 font-mono">{{ taxAmount() | currency:'EUR' }}</span>
                     </div>
@@ -172,3 +172,8 @@
     (confirmSelection)="onDossierSelected($event)"
     (closeDialog)="closeDossierDialog()">
 </app-dossier-selection-dialog>
+
+
+
+
+

@@ -1,21 +1,21 @@
-<div class="min-h-screen pb-12 animate-fadeIn">
+﻿<div class="art-page-bg p-4 sm:p-8 animate-fadeIn">
     <main class="max-w-[1600px] mx-auto space-y-6">
 
         <!-- Header Section -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-xs">
             <div>
                 <nav class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">
-                    <a routerLink="/home" class="hover:text-indigo-900 cursor-pointer transition-colors">Cabinet</a>
+                    <a routerLink="/home" class="hover:text-slate-900 cursor-pointer transition-colors">Cabinet</a>
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                    <span class="text-indigo-900">Gestion Documentaire (GED)</span>
+                    <span class="text-slate-900">Gestion Documentaire (GED)</span>
                 </nav>
-                <h1 class="text-xl sm:text-2xl font-black text-slate-950 tracking-tight font-heading">
-                    Bibliothèque des <span class="text-indigo-900">Modèles & Politiques Internes</span>
+                <h1 class="text-2xl sm:text-3xl art-heading">
+                    Bibliothèque des <span class="text-slate-900">Modèles & Politiques Internes</span>
                 </h1>
             </div>
 
             <button (click)="openCreateDialog()"
-                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-900 text-white font-black text-xs rounded-xl hover:bg-indigo-950 shadow-2xs transition-all cursor-pointer w-full sm:w-auto">
+                class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 text-white font-black text-xs rounded-xl hover:bg-indigo-950 shadow-2xs transition-all cursor-pointer w-full sm:w-auto">
                 <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
                 <span>Nouveau Modèle</span>
             </button>
@@ -28,7 +28,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <div class="relative">
                     <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()" placeholder="Rechercher par nom, description..."
-                        class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-indigo-900 outline-none transition-all placeholder:text-slate-400">
+                        class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:bg-white focus:border-emerald-900 outline-none transition-all placeholder:text-slate-400">
                     <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
 
@@ -66,10 +66,10 @@
 
         <!-- Grid of documents -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            <div *ngFor="let doc of filteredDocuments" class="glass-card p-5 rounded-3xl flex flex-col justify-between border border-slate-200 hover-lift">
+            <div *ngFor="let doc of filteredDocuments" class="art-card p-5 rounded-3xl flex flex-col justify-between border border-slate-200 hover-lift">
                 <div>
                     <div class="flex items-center justify-between mb-2">
-                        <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">ACTIF</span>
+                        <span class="px-2 py-0.5 text-[9px] font-black uppercase rounded-full bg-emerald-50 text-slate-800 border border-emerald-200">ACTIF</span>
                         <span class="text-[10px] text-slate-400 font-bold">MàJ: {{ doc.dateUpload || doc.date || 'Récent' | date:'dd/MM/yyyy' }}</span>
                     </div>
                     <h3 class="text-sm font-black text-slate-950 truncate leading-snug font-heading" [title]="doc.title">{{ doc.title }}</h3>
@@ -83,7 +83,7 @@
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-[10px] font-bold text-slate-400 uppercase">Fichier</span>
-                            <span class="font-bold text-indigo-900 truncate max-w-[150px]" [title]="doc.nomFichier || doc.filename || doc.name">{{ doc.nomFichier || doc.filename || doc.name || 'document' }}</span>
+                            <span class="font-bold text-slate-900 truncate max-w-[150px]" [title]="doc.nomFichier || doc.filename || doc.name">{{ doc.nomFichier || doc.filename || doc.name || 'document' }}</span>
                         </div>
                     </div>
                 </div>
@@ -92,7 +92,7 @@
                     <button (click)="downloadModel(doc)" class="flex-1 py-1.5 px-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 transition">
                         Télécharger
                     </button>
-                    <button (click)="openEditDialog(doc)" class="py-1.5 px-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-xl text-xs font-bold text-indigo-900 transition">
+                    <button (click)="openEditDialog(doc)" class="py-1.5 px-3 bg-emerald-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 transition">
                         Éditer
                     </button>
                     <button (click)="deleteModel(doc)" class="py-1.5 px-3 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl text-xs font-bold text-rose-700 transition">
@@ -112,3 +112,8 @@
     (addDocumentEvent)="saveDocument($event)" 
     (closeDialogEvent)="closeDialog()">
 </app-document-dialog>
+
+
+
+
+

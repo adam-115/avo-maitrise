@@ -1,4 +1,4 @@
-/* Modern Dashboard Aesthetic Tokens */
+﻿/* Modern Dashboard Aesthetic Tokens */
 
 .dashboard-gradient-bg {
   background: radial-gradient(circle at 10% 20%, rgba(243, 244, 246, 1) 0%, rgba(229, 231, 235, 0.4) 90%);
@@ -31,7 +31,7 @@
   border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-.glow-card-indigo {
+.glow-card-slate {
   box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.15);
 }
 
@@ -72,3 +72,4 @@
 .pulse-glow-red {
   animation: pulseGlow 2s infinite;
 }
+

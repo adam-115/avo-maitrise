@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-screen">
+﻿<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-screen">
   
   <!-- Header Section -->
   <div class="md:flex md:items-center md:justify-between mb-8">
@@ -47,7 +47,7 @@
             <div class="mt-2">
               <input type="text" formControlName="referenceInterne"
                 class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6 transition-all duration-200"
-                [ngClass]="isFieldInvalid('referenceInterne') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
+                [ngClass]="isFieldInvalid('referenceInterne') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-emerald-600'">
               @if (isFieldInvalid('referenceInterne')) {
                 <span class="text-[11px] font-bold text-red-500 mt-1 block">La référence interne est obligatoire</span>
               }
@@ -58,7 +58,7 @@
             <div class="mt-2">
               <input type="text" formControlName="titre" placeholder="Ex: Litige Commercial Dupont"
                 class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6 transition-all duration-200"
-                [ngClass]="isFieldInvalid('titre') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
+                [ngClass]="isFieldInvalid('titre') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-emerald-600'">
               @if (isFieldInvalid('titre')) {
                 <span class="text-[11px] font-bold text-red-500 mt-1 block">Le titre est obligatoire</span>
               }
@@ -68,7 +68,7 @@
             <label class="block text-sm font-medium leading-6 text-gray-900">Description</label>
             <div class="mt-2">
               <textarea formControlName="description" rows="3" placeholder="Description détaillée du dossier..."
-                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all duration-200"></textarea>
+                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all duration-200"></textarea>
             </div>
           </div>
           <div class="md:col-span-2">
@@ -76,16 +76,16 @@
             <div class="mt-2">
               <input type="text" (keydown.enter)="$event.preventDefault(); addTag($event)"
                 placeholder="Ajouter un tag et appuyer sur Entrée"
-                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all duration-200">
+                class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 transition-all duration-200">
             </div>
             <!-- Tags display -->
             <div class="mt-3 flex flex-wrap gap-2">
               @for (tag of tags; track tag; let i = $index) {
-              <span class="inline-flex items-center gap-x-1.5 rounded-full bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10 shadow-sm">
+              <span class="inline-flex items-center gap-x-1.5 rounded-full bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 ring-1 ring-inset ring-emerald-700/10 shadow-sm">
                 {{ tag }}
-                <button type="button" (click)="removeTag(i)" class="group relative -mr-1 h-4 w-4 rounded-full hover:bg-indigo-600/20 transition-colors">
+                <button type="button" (click)="removeTag(i)" class="group relative -mr-1 h-4 w-4 rounded-full hover:bg-emerald-600/20 transition-colors">
                   <span class="sr-only">Retirer</span>
-                  <svg viewBox="0 0 14 14" class="h-4 w-4 stroke-indigo-700/50 group-hover:stroke-indigo-700/75">
+                  <svg viewBox="0 0 14 14" class="h-4 w-4 stroke-emerald-700/50 group-hover:stroke-emerald-700/75">
                     <path d="M4 4l6 6m0-6l-6 6" stroke-width="1.5" stroke-linecap="round" />
                   </svg>
                 </button>
@@ -107,9 +107,9 @@
           <div>
             <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('clientId') ? 'text-red-500' : 'text-gray-900'">Client Principal <span class="text-red-500">*</span></label>
             
-            <div *ngIf="getSelectedClientName()" class="flex items-center justify-between p-3 border rounded-lg bg-indigo-50/50 shadow-sm" [ngClass]="isFieldInvalid('clientId') ? 'border-red-500' : 'border-indigo-100'">
+            <div *ngIf="getSelectedClientName()" class="flex items-center justify-between p-3 border rounded-lg bg-emerald-50/50 shadow-sm" [ngClass]="isFieldInvalid('clientId') ? 'border-red-500' : 'border-emerald-100'">
               <div class="flex items-center gap-3">
-                <div class="h-10 w-10 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 font-bold">
+                <div class="h-10 w-10 flex items-center justify-center rounded-full bg-slate-100 text-emerald-600 font-bold">
                   {{ getSelectedClientName().charAt(0) | uppercase }}
                 </div>
                 <div>
@@ -117,14 +117,14 @@
                   <p class="text-xs text-gray-500 font-medium">Ref: #{{ dossierForm.get('clientId')?.value }}</p>
                 </div>
               </div>
-              <button type="button" (click)="openClientDialog()" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500 transition-colors px-3 py-1.5 rounded-md hover:bg-indigo-50">
+              <button type="button" (click)="openClientDialog()" class="text-sm font-semibold text-emerald-600 hover:text-emerald-500 transition-colors px-3 py-1.5 rounded-md hover:bg-emerald-50">
                 Modifier
               </button>
             </div>
 
             <button *ngIf="!getSelectedClientName()" type="button" (click)="openClientDialog()"
               class="relative block w-full rounded-lg border-2 border-dashed p-4 text-center focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all"
-              [ngClass]="isFieldInvalid('clientId') ? 'border-red-500 hover:border-red-600 focus:ring-red-500 text-red-500' : 'border-gray-300 hover:border-gray-400 focus:ring-indigo-500 text-gray-900'">
+              [ngClass]="isFieldInvalid('clientId') ? 'border-red-500 hover:border-red-600 focus:ring-red-500 text-red-500' : 'border-gray-300 hover:border-gray-400 focus:ring-emerald-500 text-gray-900'">
               <svg class="mx-auto h-8 w-8 text-gray-400" [class.text-red-400]="isFieldInvalid('clientId')" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
@@ -149,7 +149,7 @@
 
             <div *ngIf="getSelectedResponsableName()" class="flex items-center justify-between p-3 border rounded-lg bg-emerald-50/50 shadow-sm" [ngClass]="isFieldInvalid('responsableId') ? 'border-red-500' : 'border-emerald-100'">
               <div class="flex items-center gap-3">
-                <div class="h-10 w-10 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 font-bold">
+                <div class="h-10 w-10 flex items-center justify-center rounded-full bg-slate-100 text-emerald-600 font-bold">
                   {{ getSelectedResponsableName().charAt(0) | uppercase }}
                 </div>
                 <div>
@@ -199,7 +199,7 @@
             </div>
 
             <button type="button" (click)="openUserDialog()"
-              class="inline-flex items-center px-4 py-2 text-sm font-semibold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              class="inline-flex items-center px-4 py-2 text-sm font-semibold text-emerald-600 bg-emerald-50 hover:bg-slate-100 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
               <svg class="-ml-0.5 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
@@ -224,7 +224,7 @@
           <!-- Domaine Juridique -->
           <div class="lg:col-span-2">
             <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('domaineJuridique') ? 'text-red-500' : 'text-gray-900'">Domaine Juridique <span class="text-red-500">*</span></label>
-            <div class="flex shadow-sm rounded-md ring-1 ring-inset transition-all duration-200" [ngClass]="isFieldInvalid('domaineJuridique') ? 'ring-red-500 focus-within:ring-red-500' : 'ring-gray-300 focus-within:ring-indigo-600'">
+            <div class="flex shadow-sm rounded-md ring-1 ring-inset transition-all duration-200" [ngClass]="isFieldInvalid('domaineJuridique') ? 'ring-red-500 focus-within:ring-red-500' : 'ring-gray-300 focus-within:ring-emerald-600'">
               <div *ngIf="dossierForm.get('domaineJuridique')?.value" class="flex-1 flex items-center px-3 bg-gray-50/50 rounded-l-md border-r border-gray-200">
                 <div [style.background-color]="getSelectedDomaineColor()" class="w-2.5 h-2.5 rounded-full mr-2.5 shadow-sm"></div>
                 <span class="text-sm text-gray-900 font-medium">{{ getSelectedDomaineLabel() }}</span>
@@ -252,7 +252,7 @@
             <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('prioriteID') ? 'text-red-500' : 'text-gray-900'">Priorité <span class="text-red-500">*</span></label>
             <select formControlName="prioriteID"
               class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset cursor-pointer transition-all duration-200"
-              [ngClass]="isFieldInvalid('prioriteID') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
+              [ngClass]="isFieldInvalid('prioriteID') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-emerald-600'">
               <option value="">Sélectionner</option>
               <option *ngFor="let priority of priorities" [value]="priority.id">{{ priority.label }}</option>
             </select>
@@ -266,7 +266,7 @@
             <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('statutID') ? 'text-red-500' : 'text-gray-900'">Statut <span class="text-red-500">*</span></label>
             <select formControlName="statutID"
               class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset cursor-pointer transition-all duration-200"
-              [ngClass]="isFieldInvalid('statutID') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
+              [ngClass]="isFieldInvalid('statutID') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-emerald-600'">
               <option value="">Sélectionner</option>
               <option *ngFor="let status of statuses" [value]="status.id">{{ status.label }}</option>
             </select>
@@ -280,7 +280,7 @@
             <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('dateOuverture') ? 'text-red-500' : 'text-gray-900'">Date d'Ouverture <span class="text-red-500">*</span></label>
             <input type="date" formControlName="dateOuverture"
               class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset transition-all duration-200"
-              [ngClass]="isFieldInvalid('dateOuverture') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
+              [ngClass]="isFieldInvalid('dateOuverture') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-emerald-600'">
             @if (isFieldInvalid('dateOuverture')) {
               <span class="text-[11px] font-bold text-red-500 mt-1 block">La date d'ouverture est obligatoire</span>
             }
@@ -297,7 +297,7 @@
           <div>
             <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Méthode de Facturation</label>
             <select formControlName="methodeFacturation"
-              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 cursor-pointer">
+              class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6 cursor-pointer">
               <option value="HORAIRE">Facturation Horaire</option>
               <option value="FORFAIT">Au Forfait</option>
               <option value="RESULTAT">Au Résultat</option>
@@ -307,7 +307,7 @@
             <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Budget Estimé</label>
             <div class="relative rounded-md shadow-sm">
               <input type="number" formControlName="budgetEstime" placeholder="0.00"
-                class="block w-full rounded-md border-0 py-2.5 pl-3 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                class="block w-full rounded-md border-0 py-2.5 pl-3 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6">
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                 <span class="text-gray-500 sm:text-sm">EUR</span>
               </div>
@@ -317,7 +317,7 @@
             <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Taux Horaire</label>
             <div class="relative rounded-md shadow-sm">
               <input type="number" formControlName="tauxHoraireApplique" placeholder="0.00"
-                class="block w-full rounded-md border-0 py-2.5 pl-3 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                class="block w-full rounded-md border-0 py-2.5 pl-3 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-emerald-600 sm:text-sm sm:leading-6">
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                 <span class="text-gray-500 sm:text-sm">€ / h</span>
               </div>
@@ -333,7 +333,7 @@
         <div class="flex items-center justify-between mb-4 border-b pb-2">
           <h3 class="text-base font-semibold leading-6 text-gray-900">Documents Associés</h3>
           <button type="button" (click)="openDocumentDialog()"
-            class="inline-flex items-center gap-x-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-500">
+            class="inline-flex items-center gap-x-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-500">
             <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
             </svg>
@@ -384,10 +384,14 @@
         Annuler
       </button>
       <button type="submit" [disabled]="dossierForm.invalid || isClientBlocked"
-        class="w-full sm:w-auto rounded-md bg-indigo-600 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+        class="w-full sm:w-auto rounded-md bg-emerald-600 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
         {{ isEditMode ? 'Enregistrer les modifications' : 'Créer le Dossier' }}
       </button>
     </div>
 
   </form>
 </div>
+
+
+
+

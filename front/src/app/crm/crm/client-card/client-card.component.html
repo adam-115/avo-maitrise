@@ -1,5 +1,5 @@
-<div (click)="navigateToDetails()"
-    class="group relative rounded-3xl p-1 glass-card hover-lift transition-all duration-300 cursor-pointer overflow-hidden bg-white"
+﻿<div (click)="navigateToDetails()"
+    class="group relative rounded-3xl p-1 art-card hover-lift transition-all duration-300 cursor-pointer overflow-hidden bg-white"
     [ngClass]="[getCardThemeClass(), client.clientStatus === 'AML_REQUIRED' ? '!border-[#EF4444] shadow-md shadow-rose-500/10' : '']">
     
     <!-- Type Indicator Badge -->
@@ -11,7 +11,7 @@
             AML REQUIS
         </div>
 
-        <div class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-2xs border border-[#1E3A8A]/20 bg-[#1E3A8A] text-white flex items-center gap-1.5">
+        <div class="px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-2xs border border-emerald-900/20 bg-slate-900 text-white flex items-center gap-1.5">
             <svg class="w-3 h-3 text-[#F59E0B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" [attr.d]="getTypeIcon()"></path>
             </svg>
@@ -23,7 +23,7 @@
         <!-- Avatar and Title -->
         <div class="flex items-center gap-4 mb-5">
             <div class="relative shrink-0">
-                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black transition-transform group-hover:scale-105 duration-300 shadow-2xs border border-slate-200 bg-[#1E3A8A] text-white">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black transition-transform group-hover:scale-105 duration-300 shadow-2xs border border-slate-200 bg-slate-900 text-white">
                     {{ getDisplayName().charAt(0) }}
                 </div>
                 <div class="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full border-2 border-white shadow-2xs"
@@ -31,7 +31,7 @@
             </div>
             <div class="min-w-0 pr-16">
                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-0.5 block">Identification</span>
-                <h3 class="text-base font-black text-[#0F172A] leading-snug group-hover:text-[#D97706] transition-colors truncate font-heading">
+                <h3 class="text-base font-black text-slate-900 leading-snug group-hover:text-[#D97706] transition-colors truncate font-heading">
                     {{ getDisplayName() }}
                 </h3>
                 <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
@@ -44,15 +44,15 @@
         <div class="grid grid-cols-2 gap-2.5 mb-4">
             <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 group-hover:bg-white transition-colors col-span-2">
                 <span class="block text-[9px] font-black text-slate-400 uppercase mb-0.5">Email</span>
-                <span class="block text-xs font-bold text-[#0F172A] truncate">{{ client.email || 'Non renseigné' }}</span>
+                <span class="block text-xs font-bold text-slate-900 truncate">{{ client.email || 'Non renseigné' }}</span>
             </div>
             <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 group-hover:bg-white transition-colors">
                 <span class="block text-[9px] font-black text-slate-400 uppercase mb-0.5">Téléphone</span>
-                <span class="block text-xs font-bold text-[#0F172A] truncate">{{ client.telephone || 'Non renseigné' }}</span>
+                <span class="block text-xs font-bold text-slate-900 truncate">{{ client.telephone || 'Non renseigné' }}</span>
             </div>
             <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-200 group-hover:bg-white transition-colors">
                 <span class="block text-[9px] font-black text-slate-400 uppercase mb-0.5">Localisation</span>
-                <span class="block text-xs font-bold text-[#0F172A] truncate">{{ client.pays || 'International' }}</span>
+                <span class="block text-xs font-bold text-slate-900 truncate">{{ client.pays || 'International' }}</span>
             </div>
         </div>
 
@@ -71,16 +71,21 @@
     <!-- Actions Bar -->
     <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-between gap-2 group-hover:bg-white transition-colors">
         <button (click)="$event.stopPropagation(); navigateToConformity()"
-            class="flex-1 py-2 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase text-[#0F172A] hover:bg-[#1E3A8A] hover:text-white transition-all cursor-pointer">
+            class="flex-1 py-2 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase text-slate-900 hover:bg-slate-900 hover:text-white transition-all cursor-pointer">
             Conformité
         </button>
         <button (click)="$event.stopPropagation(); navigateToEdit()"
-            class="flex-1 py-2 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase text-[#0F172A] hover:bg-[#1E3A8A] hover:text-white transition-all cursor-pointer">
+            class="flex-1 py-2 rounded-xl bg-white border border-slate-200 text-[10px] font-black uppercase text-slate-900 hover:bg-slate-900 hover:text-white transition-all cursor-pointer">
             Modifier
         </button>
         <button (click)="$event.stopPropagation(); navigateToDiligence()"
-            class="btn-gold flex-1 py-2 rounded-xl text-[10px] font-black uppercase shadow-2xs transition-all cursor-pointer">
+            class="bg-emerald-600 hover:bg-emerald-700 flex-1 py-2 rounded-xl text-[10px] font-black uppercase shadow-2xs transition-all cursor-pointer">
             Diligence
         </button>
     </div>
 </div>
+
+
+
+
+

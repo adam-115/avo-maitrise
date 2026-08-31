@@ -54,6 +54,12 @@ public class InvoiceController {
         return ResponseEntity.ok(service.update(dto));
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<InvoiceDTO> update(@PathVariable Long id, @RequestBody InvoiceDTO dto) {
+        dto.setId(id);
+        return ResponseEntity.ok(service.update(dto));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);

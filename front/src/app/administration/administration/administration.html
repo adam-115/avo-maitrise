@@ -1,15 +1,15 @@
-<div class="min-h-screen pb-12 animate-fadeIn">
+﻿<div class="art-page-bg p-4 sm:p-8 animate-fadeIn">
     <main class="max-w-[1600px] mx-auto space-y-6">
 
         <!-- Header Section -->
-        <div class="bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-xs">
+        <div class="art-card p-6">
             <nav class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-1">
-                <a routerLink="/home" class="hover:text-indigo-900 cursor-pointer transition-colors">Cabinet</a>
+                <a routerLink="/home" class="hover:text-slate-900 cursor-pointer transition-colors">Cabinet</a>
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
-                <span class="text-indigo-900">Administration</span>
+                <span class="text-slate-900">Administration</span>
             </nav>
-            <h1 class="text-xl sm:text-2xl font-black text-slate-950 tracking-tight font-heading">
-                Centre de Configuration du <span class="text-indigo-900">Cabinet</span>
+            <h1 class="text-2xl sm:text-3xl art-heading">
+                Centre de Configuration du <span class="text-slate-900">Cabinet</span>
             </h1>
             <p class="text-xs text-slate-500 font-medium mt-1 max-w-xl">
                 Gestion des accès utilisateurs, listes de référence juridiques et paramètres généraux du cabinet.
@@ -20,7 +20,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
             <a (click)="navigateToUserManagement()"
-                class="glass-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
+                class="art-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
                 <div class="flex items-center space-x-3.5 mb-3">
                     <div class="p-2.5 bg-rose-50 border border-rose-100 rounded-xl text-rose-700">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -29,46 +29,46 @@
                             </path>
                         </svg>
                     </div>
-                    <h3 class="text-sm font-black text-slate-950 group-hover:text-indigo-900 transition-colors font-heading">Utilisateurs & Rôles</h3>
+                    <h3 class="text-sm font-black text-slate-950 group-hover:text-slate-900 transition-colors font-heading">Utilisateurs & Rôles</h3>
                 </div>
                 <p class="text-xs text-slate-500 font-medium">Créer et gérer les accès des avocats, juristes et collaborateurs du cabinet.</p>
             </a>
 
             <a (click)="navigateToAdministrationPrefrences()"
-                class="glass-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
+                class="art-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
                 <div class="flex items-center space-x-3.5 mb-3">
-                    <div class="p-2.5 bg-indigo-50 border border-indigo-100 rounded-xl text-indigo-900">
+                    <div class="p-2.5 bg-emerald-50 border border-emerald-100 rounded-xl text-slate-900">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
                         </svg>
                     </div>
-                    <h3 class="text-sm font-black text-slate-950 group-hover:text-indigo-900 transition-colors font-heading">Listes de Référence</h3>
+                    <h3 class="text-sm font-black text-slate-950 group-hover:text-slate-900 transition-colors font-heading">Listes de Référence</h3>
                 </div>
                 <p class="text-xs text-slate-500 font-medium">Types d'audiences, juridictions, statuts de dossiers et catégories juridiques.</p>
             </a>
 
             <a (click)="navigateToProfileCabinet()"
-                class="glass-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
+                class="art-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
                 <div class="flex items-center space-x-3.5 mb-3">
                     <div class="p-2.5 bg-amber-50 border border-amber-100 rounded-xl text-amber-700">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                         </svg>
                     </div>
-                    <h3 class="text-sm font-black text-slate-950 group-hover:text-indigo-900 transition-colors font-heading">Profil du Cabinet</h3>
+                    <h3 class="text-sm font-black text-slate-950 group-hover:text-slate-900 transition-colors font-heading">Profil du Cabinet</h3>
                 </div>
                 <p class="text-xs text-slate-500 font-medium">Informations légales du cabinet, adresse, logo et coordonnées des factures.</p>
             </a>
 
             <a (click)="navigateToIndulgence()"
-                class="glass-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
+                class="art-card p-5 rounded-3xl cursor-pointer hover-lift group border border-slate-200">
                 <div class="flex items-center space-x-3.5 mb-3">
                     <div class="p-2.5 bg-purple-50 border border-purple-100 rounded-xl text-purple-700">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                         </svg>
                     </div>
-                    <h3 class="text-sm font-black text-slate-950 group-hover:text-indigo-900 transition-colors font-heading">Formulaires Diligence</h3>
+                    <h3 class="text-sm font-black text-slate-950 group-hover:text-slate-900 transition-colors font-heading">Formulaires Diligence</h3>
                 </div>
                 <p class="text-xs text-slate-500 font-medium">Personnalisation des questionnaires LCB-FT et formulaires KYC.</p>
             </a>
@@ -80,10 +80,14 @@
                 <h3 class="text-sm font-black text-slate-950 font-heading">Statut de la Plateforme</h3>
                 <p class="text-xs text-slate-500 font-medium mt-0.5">Version SI-LÉGALE PRO v2.1.0 • Module LCB-FT Actif</p>
             </div>
-            <span class="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-black rounded-full">
+            <span class="px-3 py-1 bg-emerald-50 text-slate-800 border border-emerald-200 text-xs font-black rounded-full">
                 Base Stable & Sécurisée
             </span>
         </div>
 
     </main>
 </div>
+
+
+
+
