@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { Appointement } from '../../appTypes';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +11,7 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
 
 @Component({
   selector: 'app-calendrier-semaine',
-  imports: [CommonModule, FormsModule, RouterModule, AppointementDialogComponent],
+  imports: [CommonModule, FormsModule, RouterModule, AppointementDialogComponent, TranslatePipe, TranslateDirective],
   templateUrl: './calendrier-semaine.html',
   styleUrl: './calendrier-semaine.css'
 })
@@ -251,3 +252,4 @@ export class CalendrierSemaine implements OnInit {
   }
 
 }
+

@@ -11,13 +11,13 @@
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
-        Retour
+        {{ 'INVOICE_PREVIEW.BACK' | translate }}
       </button>
       <button (click)="printInvoice()" class="bg-red-600 text-white px-5 py-2 rounded-lg font-semibold shadow-md hover:bg-red-700 transition-colors flex items-center">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
         </svg>
-        Imprimer / PDF
+        {{ 'INVOICE_PREVIEW.PRINT_PDF' | translate }}
       </button>
     </div>
 
@@ -33,25 +33,25 @@
             <img [src]="'data:' + cabinetProfile()!.logoContentType + ';base64,' + cabinetProfile()!.logo" alt="Logo Cabinet" class="max-w-full max-h-full object-contain">
           </div>
           <div>
-            <h1 class="text-2xl font-bold text-slate-800">{{ cabinetProfile()?.name || 'Nom du Cabinet' }}</h1>
+            <h1 class="text-2xl font-bold text-slate-800">{{ cabinetProfile()?.name || ('INVOICE_PREVIEW.FIRM_NAME_PLACEHOLDER' | translate) }}</h1>
             <p class="text-gray-600 whitespace-pre-line mt-1">{{ cabinetProfile()?.address }}</p>
             <p class="text-gray-600">{{ cabinetProfile()?.postalCode }} {{ cabinetProfile()?.city }}</p>
             <div class="mt-2 text-sm text-gray-500">
-              <p *ngIf="cabinetProfile()?.phone">Tél : {{ cabinetProfile()?.phone }}</p>
+              <p *ngIf="cabinetProfile()?.phone">{{ 'INVOICE_PREVIEW.PHONE' | translate }} {{ cabinetProfile()?.phone }}</p>
               <p *ngIf="cabinetProfile()?.email">Email : {{ cabinetProfile()?.email }}</p>
-              <p *ngIf="cabinetProfile()?.siret">SIRET : {{ cabinetProfile()?.siret }}</p>
-              <p *ngIf="cabinetProfile()?.vatNumber">TVA Intra : {{ cabinetProfile()?.vatNumber }}</p>
+              <p *ngIf="cabinetProfile()?.siret">{{ 'INVOICE_PREVIEW.SIRET' | translate }} {{ cabinetProfile()?.siret }}</p>
+              <p *ngIf="cabinetProfile()?.vatNumber">{{ 'INVOICE_PREVIEW.VAT_INTRA' | translate }} {{ cabinetProfile()?.vatNumber }}</p>
             </div>
           </div>
         </div>
 
         <!-- Invoice Details -->
         <div class="mt-8 sm:mt-0 text-left sm:text-right">
-          <h2 class="text-4xl font-black text-red-600 tracking-wider uppercase mb-2">Facture</h2>
-          <p class="text-lg text-slate-700 font-semibold">N° {{ invoice()?.numeroFacture || 'Brouillon' }}</p>
+          <h2 class="text-4xl font-black text-red-600 tracking-wider uppercase mb-2">{{ 'INVOICE_PREVIEW.INVOICE' | translate }}</h2>
+          <p class="text-lg text-slate-700 font-semibold">N° {{ invoice()?.numeroFacture || ('INVOICE_PREVIEW.DRAFT' | translate) }}</p>
           <div class="mt-4 text-sm text-gray-600 space-y-1">
-            <p><span class="font-medium text-gray-800">Date d'émission :</span> {{ invoice()?.issueDate || 'Non émise' }}</p>
-            <p><span class="font-medium text-gray-800">Date d'échéance :</span> {{ invoice()?.dueDate }}</p>
+            <p><span class="font-medium text-gray-800">{{ 'INVOICE_PREVIEW.ISSUE_DATE' | translate }}</span> {{ invoice()?.issueDate || ('INVOICE_PREVIEW.NOT_ISSUED' | translate) }}</p>
+            <p><span class="font-medium text-gray-800">{{ 'INVOICE_PREVIEW.DUE_DATE' | translate }}</span> {{ invoice()?.dueDate }}</p>
             <div class="mt-2 inline-block px-3 py-1 rounded-full text-xs font-bold"
                  [ngClass]="{
                    'bg-gray-100 text-gray-600': invoice()?.status === 'DRAFT',
@@ -68,13 +68,13 @@
       <!-- Client & Dossier Info Section -->
       <div class="flex flex-col md:flex-row justify-between mb-10 gap-8">
         <div class="bg-slate-50 p-6 rounded-lg flex-1 border border-slate-100">
-          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Facturé à</h3>
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ 'INVOICE_PREVIEW.BILLED_TO' | translate }}</h3>
           <p class="text-lg font-bold text-slate-800">{{ clientName }}</p>
           <p class="text-gray-600 mt-1 whitespace-pre-line">{{ clientAddress }}</p>
         </div>
         
         <div class="bg-slate-50 p-6 rounded-lg flex-1 border border-slate-100">
-          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Référence Dossier</h3>
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{{ 'INVOICE_PREVIEW.DOSSIER_REF' | translate }}</h3>
           <p class="text-lg font-bold text-slate-800">{{ invoice()?.dossier?.referenceInterne }}</p>
           <p class="text-gray-600 mt-1 truncate">{{ invoice()?.dossier?.titre }}</p>
         </div>
@@ -85,17 +85,17 @@
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="border-b-2 border-slate-200 text-sm font-semibold text-slate-600">
-              <th class="py-3 px-2">Description de la prestation</th>
-              <th class="py-3 px-2 text-center w-24">Temps</th>
-              <th class="py-3 px-2 text-right w-32">Tarif (5 min)</th>
-              <th class="py-3 px-2 text-right w-32">Montant HT</th>
+              <th class="py-3 px-2">{{ 'INVOICE_PREVIEW.SERVICE_DESCRIPTION' | translate }}</th>
+              <th class="py-3 px-2 text-center w-24">{{ 'INVOICE_PREVIEW.TIME' | translate }}</th>
+              <th class="py-3 px-2 text-right w-32">{{ 'INVOICE_PREVIEW.RATE_5_MIN' | translate }}</th>
+              <th class="py-3 px-2 text-right w-32">{{ 'INVOICE_PREVIEW.AMOUNT_HT' | translate }}</th>
             </tr>
           </thead>
           <tbody class="text-slate-800">
             <tr *ngFor="let entry of invoice()?.invoiceTimeEntries" class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
               <td class="py-4 px-2">
                 <div class="flex items-center gap-2">
-                  <p class="font-medium">{{ entry.invoiceDossierService?.invoiceTypeOfService?.code || 'Prestation' }}</p>
+                  <p class="font-medium">{{ entry.invoiceDossierService?.invoiceTypeOfService?.code || ('INVOICE_PREVIEW.SERVICE_PLACEHOLDER' | translate) }}</p>
                   <!-- Badge for Price Modification -->
                   <ng-container *ngIf="entry.invoiceDossierService?.invoiceTypeOfService?.price5min != null && entry.invoiceDossierService?.invoiceTypeOfService?.price5min !== entry.price5min">
                     <span class="text-xs px-2 py-0.5 rounded-full font-semibold"
@@ -103,8 +103,8 @@
                             'bg-green-100 text-green-700': entry.price5min < (entry.invoiceDossierService?.invoiceTypeOfService?.price5min || 0),
                             'bg-red-100 text-red-700': entry.price5min > (entry.invoiceDossierService?.invoiceTypeOfService?.price5min || 0)
                           }">
-                      <ng-container *ngIf="entry.price5min < (entry.invoiceDossierService?.invoiceTypeOfService?.price5min || 0)">Réduction (Prix)</ng-container>
-                      <ng-container *ngIf="entry.price5min > (entry.invoiceDossierService?.invoiceTypeOfService?.price5min || 0)">Majoration (Prix)</ng-container>
+                      <ng-container *ngIf="entry.price5min < (entry.invoiceDossierService?.invoiceTypeOfService?.price5min || 0)">{{ 'INVOICE_PREVIEW.PRICE_REDUCTION' | translate }}</ng-container>
+                      <ng-container *ngIf="entry.price5min > (entry.invoiceDossierService?.invoiceTypeOfService?.price5min || 0)">{{ 'INVOICE_PREVIEW.PRICE_INCREASE' | translate }}</ng-container>
                     </span>
                   </ng-container>
                   <!-- Badge for Time Modification -->
@@ -114,8 +114,8 @@
                             'bg-green-100 text-green-700': entry.nbrOfMinutes < (entry.invoiceDossierService?.nbrOfMinutes || 0),
                             'bg-red-100 text-red-700': entry.nbrOfMinutes > (entry.invoiceDossierService?.nbrOfMinutes || 0)
                           }">
-                      <ng-container *ngIf="entry.nbrOfMinutes < (entry.invoiceDossierService?.nbrOfMinutes || 0)">Réduction (Temps)</ng-container>
-                      <ng-container *ngIf="entry.nbrOfMinutes > (entry.invoiceDossierService?.nbrOfMinutes || 0)">Majoration (Temps)</ng-container>
+                      <ng-container *ngIf="entry.nbrOfMinutes < (entry.invoiceDossierService?.nbrOfMinutes || 0)">{{ 'INVOICE_PREVIEW.TIME_REDUCTION' | translate }}</ng-container>
+                      <ng-container *ngIf="entry.nbrOfMinutes > (entry.invoiceDossierService?.nbrOfMinutes || 0)">{{ 'INVOICE_PREVIEW.TIME_INCREASE' | translate }}</ng-container>
                     </span>
                   </ng-container>
                 </div>
@@ -152,7 +152,7 @@
               </td>
             </tr>
             <tr *ngIf="!invoice()?.invoiceTimeEntries?.length">
-              <td colspan="4" class="py-8 text-center text-gray-500">Aucune prestation associée à cette facture.</td>
+              <td colspan="4" class="py-8 text-center text-gray-500">{{ 'INVOICE_PREVIEW.NO_SERVICES' | translate }}</td>
             </tr>
           </tbody>
         </table>
@@ -163,9 +163,9 @@
         
         <!-- Notes / Mentions Légales -->
         <div class="flex-1 pr-0 md:pr-12 mb-8 md:mb-0">
-          <h3 class="text-sm font-bold text-slate-800 mb-2">Notes & Mentions Légales</h3>
+          <h3 class="text-sm font-bold text-slate-800 mb-2">{{ 'INVOICE_PREVIEW.LEGAL_NOTES' | translate }}</h3>
           <p class="text-sm text-gray-600 whitespace-pre-line bg-gray-50 p-4 rounded-lg border border-gray-100 min-h-[100px]">
-            {{ invoice()?.note || 'Aucune note supplémentaire.' }}
+            {{ invoice()?.note || ('INVOICE_PREVIEW.NO_ADDITIONAL_NOTES' | translate) }}
           </p>
           <div class="mt-4 text-xs text-gray-500 space-y-1">
             <p *ngIf="cabinetProfile()?.iban"><strong>IBAN :</strong> {{ cabinetProfile()?.iban }}</p>
@@ -177,18 +177,18 @@
         <div class="w-full md:w-80 bg-slate-50 p-6 rounded-xl border border-slate-200">
           <div class="space-y-3 text-sm text-slate-600">
             <div class="flex justify-between">
-              <span>Total HT</span>
+              <span>{{ 'INVOICE_PREVIEW.TOTAL_HT' | translate }}</span>
               <span class="font-semibold text-slate-800">{{ invoice()?.subtotalAmount | number:'1.2-2' }} €</span>
             </div>
             <div class="flex justify-between">
-              <span>TVA ({{ vatRate() }}%)</span>
+              <span>{{ 'INVOICE_PREVIEW.VAT' | translate }} ({{ vatRate() }}%)</span>
               <span class="font-semibold text-slate-800">{{ taxAmount() | number:'1.2-2' }} €</span>
             </div>
           </div>
           
           <div class="mt-4 pt-4 border-t border-slate-200">
             <div class="flex justify-between items-center text-lg font-black text-red-600">
-              <span>Total TTC</span>
+              <span>{{ 'INVOICE_PREVIEW.TOTAL_TTC' | translate }}</span>
               <span>{{ invoice()?.totalAmount | number:'1.2-2' }} €</span>
             </div>
           </div>
@@ -197,7 +197,7 @@
       
       <!-- Footer Signature -->
       <div class="mt-16 pt-8 border-t border-gray-200 text-center text-xs text-gray-400">
-        <p>Merci pour votre confiance. En cas de retard de paiement, des pénalités de retard pourront être appliquées selon les conditions générales.</p>
+        <p>{{ 'INVOICE_PREVIEW.FOOTER_THANKS' | translate }}</p>
         <p class="mt-1 font-semibold">{{ cabinetProfile()?.name }}</p>
       </div>
 

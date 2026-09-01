@@ -7,11 +7,12 @@ import { InvoiceEntity, InvoiceStatusEnum, InvoiceTimeEntry } from '../../../../
 import { AlertService } from '../../../../services/alert-service';
 import { GenerateInvoiceDialog } from '../../../../dossier/generate-invoice-dialog/generate-invoice-dialog';
 import { InvoiceDossierServiceService } from '../../../../services/invoice-dossier-service.service';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-invoice-editor',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule, GenerateInvoiceDialog],
+    imports: [CommonModule, FormsModule, RouterModule, GenerateInvoiceDialog, TranslatePipe, TranslateDirective],
     templateUrl: './invoice-editor.component.html'
 })
 export class InvoiceEditorComponent implements OnInit {

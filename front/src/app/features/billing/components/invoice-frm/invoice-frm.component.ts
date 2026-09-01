@@ -1,7 +1,8 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 import { InvoiceService } from '../../services/invoice.service';
 import { AlertService } from '../../../../services/alert-service';
@@ -17,7 +18,7 @@ import { Dossier, InvoiceStatusEnum, InvoiceTimeEntry } from '../../../../appTyp
 @Component({
     selector: 'app-invoice-frm',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule, ClientSelectionDialog, DossierSelectionDialog],
+    imports: [CommonModule, FormsModule, RouterModule, ClientSelectionDialog, DossierSelectionDialog, TranslatePipe, TranslateDirective],
     templateUrl: './invoice-frm.component.html'
 })
 export class InvoiceFrmComponent {

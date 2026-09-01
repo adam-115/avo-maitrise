@@ -5,10 +5,11 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterOutlet } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { KeycloakService } from './../services/keycloak.service';
+import { TranslatePipe, TranslateDirective, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterOutlet, FormsModule, CommonModule],
+  imports: [RouterOutlet, FormsModule, CommonModule, TranslatePipe, TranslateDirective],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
@@ -16,15 +17,25 @@ export class Home {
 
   private readonly navigationService = inject(NavigationService);
   private readonly keycloakService = inject(KeycloakService);
+  public readonly translate = inject(TranslateService);
 
   // Variable d'état pour le contrôle de la barre latérale
   isSidebarOpen: boolean = false;
   activeRoute: string = 'calendrier';
   paths = NavigationService;
   environment = environment;
+  currentLang: string = 'fr';
 
   constructor(private readonly router: Router) {
+    this.translate.addLangs(['fr', 'en', 'es', 'de', 'it']);
+    this.translate.setFallbackLang('fr');
+    this.translate.use('fr');
+  }
 
+  changeLanguage(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.currentLang = selectElement.value;
+    this.translate.use(this.currentLang);
   }
 
   logout() {

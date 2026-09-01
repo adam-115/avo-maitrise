@@ -1,25 +1,25 @@
 <header class="mb-8 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
     <h1 class="text-3xl font-bold text-slate-800">
-        Liste des Affaires
+        {{ 'DOSSIER.TITLE_LIST' | translate }}
     </h1>
     <button (click)="nviagteToDossierForm()"
         class="flex items-center justify-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150 w-full sm:w-auto">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
         </svg>
-        <span>Nouveau Dossier</span>
+        <span>{{ 'DOSSIER.NEW_MATTER' | translate }}</span>
     </button>
 </header>
 
 <!-- Stats Dashboard Header -->
 <div class="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
     <div>
-        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Indicateurs de Performance (Mai 2026)</h2>
-        <p class="text-xs text-slate-500">Données en temps réel calculées pour le mois en cours</p>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'DOSSIER.KPI_HEADER' | translate }}</h2>
+        <p class="text-xs text-slate-500">{{ 'DOSSIER.KPI_SUB' | translate }}</p>
     </div>
     <span class="inline-flex items-center self-start sm:self-auto gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-700/10">
         <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-        Synchronisé
+        {{ 'DOSSIER.SYNCED' | translate }}
     </span>
 </div>
 
@@ -35,9 +35,9 @@
             </div>
             <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+12% vs avr.</span>
         </div>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nouveaux Dossiers</p>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'DOSSIER.NEW_MATTERS_MONTH' | translate }}</p>
         <p class="text-3xl font-extrabold text-slate-800 mt-1">{{ createdThisMonthCount }}</p>
-        <p class="text-xs text-slate-500 mt-2 font-medium">Ouverts au cours de ce mois</p>
+        <p class="text-xs text-slate-500 mt-2 font-medium">{{ 'DOSSIER.OPEN_THIS_MONTH' | translate }}</p>
     </div>
 
     <!-- Card 2: Dossiers Clos -->
@@ -49,11 +49,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
-            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">Objectif : 10</span>
+            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{{ 'DOSSIER.OBJECTIVE' | translate }} 10</span>
         </div>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Dossiers Clos</p>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'DOSSIER.MATTERS_CLOSED' | translate }}</p>
         <p class="text-3xl font-extrabold text-slate-800 mt-1">{{ closedThisMonthCount }}</p>
-        <p class="text-xs text-slate-500 mt-2 font-medium">Résolus avec succès ce mois</p>
+        <p class="text-xs text-slate-500 mt-2 font-medium">{{ 'DOSSIER.CLOSED_SUCCESSFULLY' | translate }}</p>
     </div>
 
     <!-- Card 3: Heures Enregistrées -->
@@ -65,11 +65,11 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
             </div>
-            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">Est. {{ unbilledHours * 150 }} €</span>
+            <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full">{{ 'DOSSIER.EST_REVENUE' | translate }} {{ unbilledHours * 150 }} €</span>
         </div>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Facturable Mensuel</p>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'DOSSIER.BILLABLE_MONTHLY' | translate }}</p>
         <p class="text-3xl font-extrabold text-slate-800 mt-1">{{ unbilledHours }} h</p>
-        <p class="text-xs text-slate-500 mt-2 font-medium">Heures prêtes à facturer</p>
+        <p class="text-xs text-slate-500 mt-2 font-medium">{{ 'DOSSIER.HOURS_READY' | translate }}</p>
     </div>
 
     <!-- Card 4: Taux de Clôture -->
@@ -81,18 +81,18 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                 </svg>
             </div>
-            <span class="text-xs font-bold text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-full">Optimal &gt; 70%</span>
+            <span class="text-xs font-bold text-cyan-600 bg-cyan-50 px-2 py-0.5 rounded-full">{{ 'DOSSIER.OPTIMAL' | translate }}</span>
         </div>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Taux d'Efficacité</p>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'DOSSIER.EFFICIENCY_RATE' | translate }}</p>
         <p class="text-3xl font-extrabold text-slate-800 mt-1">{{ closureRate }}%</p>
-        <p class="text-xs text-slate-500 mt-2 font-medium">Clôtures vs Créations ce mois</p>
+        <p class="text-xs text-slate-500 mt-2 font-medium">{{ 'DOSSIER.CLOSURES_VS_CREATIONS' | translate }}</p>
     </div>
 </div>
 
 
 <div class="flex flex-col sm:flex-row gap-4 mb-8 bg-white p-4 rounded-xl shadow-sm border border-gray-200">
     <div class="relative flex-grow">
-        <input type="text" [(ngModel)]="searchTerm" (input)="filterDossiers()" placeholder="Rechercher par Référence, Client ou Titre..."
+        <input type="text" [(ngModel)]="searchTerm" (input)="filterDossiers()" [placeholder]="'DOSSIER.SEARCH_PLACEHOLDER' | translate"
             class="w-full pl-10 pr-4 py-2 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
         <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
             stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -102,12 +102,12 @@
     </div>
     <select [(ngModel)]="statusFilter" (change)="filterDossiers()"
         class="p-2 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-        <option value="Tous">Statut : Tous</option>
+        <option value="Tous">{{ 'DOSSIER.STATUS_ALL' | translate }}</option>
         <option *ngFor="let s of statuses" [value]="s.id">{{ s.label }}</option>
     </select>
     <select [(ngModel)]="lawyerFilter" (change)="filterDossiers()"
         class="p-2 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-        <option value="Tous">Avocat : Tous</option>
+        <option value="Tous">{{ 'DOSSIER.LAWYER_ALL' | translate }}</option>
         <option *ngFor="let u of users" [value]="u.id">{{ u.username }}</option>
     </select>
 </div>
@@ -115,7 +115,7 @@
 <!-- Loading State -->
 <div *ngIf="loading" class="py-20 flex flex-col items-center justify-center text-center bg-white rounded-2xl shadow-sm border border-slate-100">
     <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
-    <p class="text-slate-500 font-bold mt-4">Chargement des dossiers...</p>
+    <p class="text-slate-500 font-bold mt-4">{{ 'DOSSIER.LOADING' | translate }}</p>
 </div>
 
 <div *ngIf="!loading">
@@ -140,22 +140,22 @@
 
             <div class="space-y-2 text-sm text-gray-700 border-t pt-3">
                 <div class="flex items-center justify-between">
-                    <span class="text-gray-500">Client :</span>
+                    <span class="text-gray-500">{{ 'DOSSIER.CLIENT' | translate }}</span>
                     <span class="font-medium truncate max-w-[150px]">{{ getDossierClientName(dossier) }}</span>
                 </div>
                 <div class="flex items-center justify-between">
-                    <span class="text-gray-500">Avocat Resp. :</span>
+                    <span class="text-gray-500">{{ 'DOSSIER.LAWYER_RESP' | translate }}</span>
                     <span class="font-medium">{{ getResponsableName(dossier.responsableId) }}</span>
                 </div>
                 <div class="flex items-center justify-between">
-                    <span class="text-gray-500">Ouverture :</span>
+                    <span class="text-gray-500">{{ 'DOSSIER.OPENING_DATE' | translate }}</span>
                     <span class="font-medium">{{ dossier.dateOuverture | date:'dd/MM/yyyy' }}</span>
                 </div>
             </div>
 
             <a (click)="navigateToDossierDetail(dossier.id!)"
                 class="mt-4 block w-full text-center py-2 bg-gray-100 text-cyan-600 font-semibold rounded-lg hover:bg-cyan-100 transition cursor-pointer">
-                Voir la Fiche
+                {{ 'DOSSIER.VIEW_CARD' | translate }}
             </a>
         </div>
 
@@ -168,15 +168,15 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v7a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
             </svg>
         </div>
-        <h3 class="text-xl font-bold text-slate-800 mb-1">Aucune affaire trouvée</h3>
-        <p class="text-slate-500 text-sm font-medium">Aucun dossier ne correspond à vos critères de recherche.</p>
+        <h3 class="text-xl font-bold text-slate-800 mb-1">{{ 'DOSSIER.NO_MATTER_FOUND' | translate }}</h3>
+        <p class="text-slate-500 text-sm font-medium">{{ 'DOSSIER.NO_MATTER_CRITERIA' | translate }}</p>
     </div>
 
     <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 border-t pt-4">
         <p class="text-slate-500 font-bold text-base">
-            Affichage de <span class="text-slate-900 font-black">{{ totalElements > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span> à 
-            <span class="text-slate-900 font-black">{{ currentEndIndex }}</span> sur 
-            <span class="text-slate-900 font-black">{{ totalElements }}</span> affaires
+            {{ 'DOSSIER.SHOWING' | translate }} <span class="text-slate-900 font-black">{{ totalElements > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</span> {{ 'DOSSIER.TO' | translate }} 
+            <span class="text-slate-900 font-black">{{ currentEndIndex }}</span> {{ 'DOSSIER.OUT_OF' | translate }} 
+            <span class="text-slate-900 font-black">{{ totalElements }}</span> {{ 'DOSSIER.MATTERS_LC' | translate }}
         </p>
         <div *ngIf="totalPages > 1" class="flex items-center gap-2">
             <button (click)="prevPage()" [disabled]="currentPage === 1"

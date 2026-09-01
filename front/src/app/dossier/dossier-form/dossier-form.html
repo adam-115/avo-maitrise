@@ -4,10 +4,10 @@
   <div class="md:flex md:items-center md:justify-between mb-8">
     <div class="min-w-0 flex-1">
       <h2 class="text-3xl font-bold leading-7 text-gray-900 sm:truncate sm:text-4xl sm:tracking-tight">
-        {{ isEditMode ? 'Modifier le Dossier' : 'Créer un Nouveau Dossier' }}
+        {{ (isEditMode ? 'DOSSIER_FORM.TITLE_EDIT' : 'DOSSIER_FORM.TITLE_NEW') | translate }}
       </h2>
       <p class="mt-2 text-sm text-gray-500">
-        Remplissez les informations ci-dessous pour configurer le dossier client.
+        {{ 'DOSSIER_FORM.SUBTITLE' | translate }}
       </p>
     </div>
   </div>
@@ -15,7 +15,7 @@
   <!-- Loading State -->
   <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 bg-white rounded-xl border border-slate-200 shadow-sm">
     <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
-    <p class="text-slate-500 font-bold mt-4">Chargement du formulaire...</p>
+    <p class="text-slate-500 font-bold mt-4">{{ 'DOSSIER_FORM.LOADING_FORM' | translate }}</p>
   </div>
 
   <form *ngIf="!loading" [formGroup]="dossierForm" (ngSubmit)="onSubmit()" class="space-y-8">
@@ -29,9 +29,9 @@
           </svg>
         </div>
         <div class="ml-3">
-          <h3 class="text-sm font-medium text-red-800">Client sous sanction</h3>
+          <h3 class="text-sm font-medium text-red-800">{{ 'DOSSIER_FORM.BLOCKED_CLIENT_TITLE' | translate }}</h3>
           <p class="mt-2 text-sm text-red-700">
-            Ce client est actuellement bloqué. La création ou la modification de dossier est désactivée.
+            {{ 'DOSSIER_FORM.BLOCKED_CLIENT_DESC' | translate }}
           </p>
         </div>
       </div>
@@ -40,42 +40,42 @@
     <!-- Card: Informations Générales -->
     <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
       <div class="px-4 py-5 sm:p-6">
-        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">Informations Générales</h3>
+        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">{{ 'DOSSIER_FORM.GENERAL_INFO' | translate }}</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label class="block text-sm font-medium leading-6 transition-colors duration-200" [ngClass]="isFieldInvalid('referenceInterne') ? 'text-red-500' : 'text-gray-900'">Référence Interne <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200" [ngClass]="isFieldInvalid('referenceInterne') ? 'text-red-500' : 'text-gray-900'">{{ 'DOSSIER_FORM.INTERNAL_REF' | translate }} <span class="text-red-500">*</span></label>
             <div class="mt-2">
               <input type="text" formControlName="referenceInterne"
                 class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6 transition-all duration-200"
                 [ngClass]="isFieldInvalid('referenceInterne') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
               @if (isFieldInvalid('referenceInterne')) {
-                <span class="text-[11px] font-bold text-red-500 mt-1 block">La référence interne est obligatoire</span>
+                <span class="text-[11px] font-bold text-red-500 mt-1 block">{{ 'DOSSIER_FORM.INTERNAL_REF_REQUIRED' | translate }}</span>
               }
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium leading-6 transition-colors duration-200" [ngClass]="isFieldInvalid('titre') ? 'text-red-500' : 'text-gray-900'">Titre <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200" [ngClass]="isFieldInvalid('titre') ? 'text-red-500' : 'text-gray-900'">{{ 'DOSSIER_FORM.MATTER_TITLE' | translate }} <span class="text-red-500">*</span></label>
             <div class="mt-2">
-              <input type="text" formControlName="titre" placeholder="Ex: Litige Commercial Dupont"
+              <input type="text" formControlName="titre" [placeholder]="'DOSSIER_FORM.MATTER_TITLE_PLACEHOLDER' | translate"
                 class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset placeholder:text-gray-400 sm:text-sm sm:leading-6 transition-all duration-200"
                 [ngClass]="isFieldInvalid('titre') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
               @if (isFieldInvalid('titre')) {
-                <span class="text-[11px] font-bold text-red-500 mt-1 block">Le titre est obligatoire</span>
+                <span class="text-[11px] font-bold text-red-500 mt-1 block">{{ 'DOSSIER_FORM.MATTER_TITLE_REQUIRED' | translate }}</span>
               }
             </div>
           </div>
           <div class="md:col-span-2">
-            <label class="block text-sm font-medium leading-6 text-gray-900">Description</label>
+            <label class="block text-sm font-medium leading-6 text-gray-900">{{ 'DOSSIER_FORM.DESCRIPTION' | translate }}</label>
             <div class="mt-2">
-              <textarea formControlName="description" rows="3" placeholder="Description détaillée du dossier..."
+              <textarea formControlName="description" rows="3" [placeholder]="'DOSSIER_FORM.DESCRIPTION_PLACEHOLDER' | translate"
                 class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all duration-200"></textarea>
             </div>
           </div>
           <div class="md:col-span-2">
-            <label class="block text-sm font-medium leading-6 text-gray-900">Tags</label>
+            <label class="block text-sm font-medium leading-6 text-gray-900">{{ 'DOSSIER_FORM.TAGS' | translate }}</label>
             <div class="mt-2">
               <input type="text" (keydown.enter)="$event.preventDefault(); addTag($event)"
-                placeholder="Ajouter un tag et appuyer sur Entrée"
+                [placeholder]="'DOSSIER_FORM.TAGS_PLACEHOLDER' | translate"
                 class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 transition-all duration-200">
             </div>
             <!-- Tags display -->
@@ -84,7 +84,7 @@
               <span class="inline-flex items-center gap-x-1.5 rounded-full bg-indigo-50 px-3 py-1.5 text-sm font-medium text-indigo-700 ring-1 ring-inset ring-indigo-700/10 shadow-sm">
                 {{ tag }}
                 <button type="button" (click)="removeTag(i)" class="group relative -mr-1 h-4 w-4 rounded-full hover:bg-indigo-600/20 transition-colors">
-                  <span class="sr-only">Retirer</span>
+                  <span class="sr-only">{{ 'DOSSIER_FORM.REMOVE' | translate }}</span>
                   <svg viewBox="0 0 14 14" class="h-4 w-4 stroke-indigo-700/50 group-hover:stroke-indigo-700/75">
                     <path d="M4 4l6 6m0-6l-6 6" stroke-width="1.5" stroke-linecap="round" />
                   </svg>
@@ -100,12 +100,12 @@
     <!-- Card: Relations -->
     <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
       <div class="px-4 py-5 sm:p-6">
-        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">Parties Prenantes</h3>
+        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">{{ 'DOSSIER_FORM.STAKEHOLDERS' | translate }}</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           <!-- Client Selection -->
           <div>
-            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('clientId') ? 'text-red-500' : 'text-gray-900'">Client Principal <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('clientId') ? 'text-red-500' : 'text-gray-900'">{{ 'DOSSIER_FORM.MAIN_CLIENT' | translate }} <span class="text-red-500">*</span></label>
             
             <div *ngIf="getSelectedClientName()" class="flex items-center justify-between p-3 border rounded-lg bg-indigo-50/50 shadow-sm" [ngClass]="isFieldInvalid('clientId') ? 'border-red-500' : 'border-indigo-100'">
               <div class="flex items-center gap-3">
@@ -118,7 +118,7 @@
                 </div>
               </div>
               <button type="button" (click)="openClientDialog()" class="text-sm font-semibold text-indigo-600 hover:text-indigo-500 transition-colors px-3 py-1.5 rounded-md hover:bg-indigo-50">
-                Modifier
+                {{ 'DOSSIER_FORM.MODIFY' | translate }}
               </button>
             </div>
 
@@ -128,10 +128,10 @@
               <svg class="mx-auto h-8 w-8 text-gray-400" [class.text-red-400]="isFieldInvalid('clientId')" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <span class="mt-2 block text-sm font-semibold" [ngClass]="isFieldInvalid('clientId') ? 'text-red-500' : 'text-gray-900'">Sélectionner un client</span>
+              <span class="mt-2 block text-sm font-semibold" [ngClass]="isFieldInvalid('clientId') ? 'text-red-500' : 'text-gray-900'">{{ 'DOSSIER_FORM.SELECT_CLIENT' | translate }}</span>
             </button>
             @if (isFieldInvalid('clientId')) {
-              <span class="text-[11px] font-bold text-red-500 mt-1 block">Le client principal est obligatoire</span>
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">{{ 'DOSSIER_FORM.MAIN_CLIENT_REQUIRED' | translate }}</span>
             }
 
             <!-- Status Alert Component -->
@@ -145,7 +145,7 @@
 
           <!-- Responsable Selection -->
           <div>
-            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('responsableId') ? 'text-red-500' : 'text-gray-900'">Avocat Responsable <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('responsableId') ? 'text-red-500' : 'text-gray-900'">{{ 'DOSSIER_FORM.LEAD_LAWYER' | translate }} <span class="text-red-500">*</span></label>
 
             <div *ngIf="getSelectedResponsableName()" class="flex items-center justify-between p-3 border rounded-lg bg-emerald-50/50 shadow-sm" [ngClass]="isFieldInvalid('responsableId') ? 'border-red-500' : 'border-emerald-100'">
               <div class="flex items-center gap-3">
@@ -158,7 +158,7 @@
                 </div>
               </div>
               <button type="button" (click)="openResponsableDialog()" class="text-sm font-semibold text-emerald-600 hover:text-emerald-500 transition-colors px-3 py-1.5 rounded-md hover:bg-emerald-50">
-                Modifier
+                {{ 'DOSSIER_FORM.MODIFY' | translate }}
               </button>
             </div>
 
@@ -168,10 +168,10 @@
               <svg class="mx-auto h-8 w-8 text-gray-400" [class.text-red-400]="isFieldInvalid('responsableId')" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              <span class="mt-2 block text-sm font-semibold" [ngClass]="isFieldInvalid('responsableId') ? 'text-red-500' : 'text-gray-900'">Assigner un responsable</span>
+              <span class="mt-2 block text-sm font-semibold" [ngClass]="isFieldInvalid('responsableId') ? 'text-red-500' : 'text-gray-900'">{{ 'DOSSIER_FORM.ASSIGN_LEAD_LAWYER' | translate }}</span>
             </button>
             @if (isFieldInvalid('responsableId')) {
-              <span class="text-[11px] font-bold text-red-500 mt-1 block">L'avocat responsable est obligatoire</span>
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">{{ 'DOSSIER_FORM.LEAD_LAWYER_REQUIRED' | translate }}</span>
             }
 
             <app-user-selection-dialog *ngIf="showResponsableDialog" [users]="users"
@@ -183,14 +183,14 @@
 
           <!-- Intervenants -->
           <div class="md:col-span-2">
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Équipe (Intervenants)</label>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">{{ 'DOSSIER_FORM.TEAM_MEMBERS' | translate }}</label>
 
             <div class="flex flex-wrap gap-2 mb-3">
               <div *ngFor="let user of getSelectedIntervenants()" class="inline-flex items-center gap-x-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 shadow-sm">
                 <div class="h-4 w-4 rounded-full bg-blue-200 flex items-center justify-center text-[10px] font-bold">{{ user.username.charAt(0) | uppercase }}</div>
                 {{ user.username }}
                 <button type="button" (click)="removeIntervenant(user.id!)" class="group relative -mr-1 h-4 w-4 rounded-full hover:bg-blue-600/20 transition-colors">
-                  <span class="sr-only">Retirer</span>
+                  <span class="sr-only">{{ 'DOSSIER_FORM.REMOVE' | translate }}</span>
                   <svg viewBox="0 0 14 14" class="h-4 w-4 stroke-blue-700/50 group-hover:stroke-blue-700/75">
                     <path d="M4 4l6 6m0-6l-6 6" stroke-width="1.5" stroke-linecap="round" />
                   </svg>
@@ -203,7 +203,7 @@
               <svg class="-ml-0.5 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
-              Ajouter des intervenants
+              {{ 'DOSSIER_FORM.ADD_MEMBERS' | translate }}
             </button>
 
             <app-user-selection-dialog *ngIf="showUserDialog" [users]="users"
@@ -218,12 +218,12 @@
     <!-- Card: Classification & Dates -->
     <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
       <div class="px-4 py-5 sm:p-6">
-        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">Classification & Paramètres</h3>
+        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">{{ 'DOSSIER_FORM.CLASS_AND_PARAMS' | translate }}</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
           <!-- Domaine Juridique -->
           <div class="lg:col-span-2">
-            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('domaineJuridique') ? 'text-red-500' : 'text-gray-900'">Domaine Juridique <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('domaineJuridique') ? 'text-red-500' : 'text-gray-900'">{{ 'DOSSIER_FORM.LEGAL_DOMAIN' | translate }} <span class="text-red-500">*</span></label>
             <div class="flex shadow-sm rounded-md ring-1 ring-inset transition-all duration-200" [ngClass]="isFieldInvalid('domaineJuridique') ? 'ring-red-500 focus-within:ring-red-500' : 'ring-gray-300 focus-within:ring-indigo-600'">
               <div *ngIf="dossierForm.get('domaineJuridique')?.value" class="flex-1 flex items-center px-3 bg-gray-50/50 rounded-l-md border-r border-gray-200">
                 <div [style.background-color]="getSelectedDomaineColor()" class="w-2.5 h-2.5 rounded-full mr-2.5 shadow-sm"></div>
@@ -233,12 +233,12 @@
                 [class.rounded-l-md]="!dossierForm.get('domaineJuridique')?.value"
                 class="flex-shrink-0 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-gray-50 hover:bg-gray-100 rounded-r-md transition-colors border-l border-gray-200 focus:outline-none"
                 [ngClass]="{'w-full justify-center': !dossierForm.get('domaineJuridique')?.value}">
-                {{ dossierForm.get('domaineJuridique')?.value ? 'Modifier' : 'Sélectionner un domaine' }}
+                {{ dossierForm.get('domaineJuridique')?.value ? ('DOSSIER_FORM.MODIFY' | translate) : ('DOSSIER_FORM.SELECT_DOMAIN' | translate) }}
               </button>
             </div>
             <input type="hidden" formControlName="domaineJuridique">
             @if (isFieldInvalid('domaineJuridique')) {
-              <span class="text-[11px] font-bold text-red-500 mt-1 block">Le domaine juridique est obligatoire</span>
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">{{ 'DOSSIER_FORM.LEGAL_DOMAIN_REQUIRED' | translate }}</span>
             }
 
             <app-domaine-juridique-selection-dialog *ngIf="showDomaineDialog" [domaines]="domaines"
@@ -249,40 +249,40 @@
 
           <!-- Priorité -->
           <div>
-            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('prioriteID') ? 'text-red-500' : 'text-gray-900'">Priorité <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('prioriteID') ? 'text-red-500' : 'text-gray-900'">{{ 'DOSSIER_FORM.PRIORITY' | translate }} <span class="text-red-500">*</span></label>
             <select formControlName="prioriteID"
               class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset cursor-pointer transition-all duration-200"
               [ngClass]="isFieldInvalid('prioriteID') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
-              <option value="">Sélectionner</option>
+              <option value="">{{ 'DOSSIER_FORM.SELECT' | translate }}</option>
               <option *ngFor="let priority of priorities" [value]="priority.id">{{ priority.label }}</option>
             </select>
             @if (isFieldInvalid('prioriteID')) {
-              <span class="text-[11px] font-bold text-red-500 mt-1 block">La priorité est obligatoire</span>
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">{{ 'DOSSIER_FORM.PRIORITY_REQUIRED' | translate }}</span>
             }
           </div>
 
           <!-- Statut -->
           <div>
-            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('statutID') ? 'text-red-500' : 'text-gray-900'">Statut <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('statutID') ? 'text-red-500' : 'text-gray-900'">{{ 'DOSSIER_DETAILS.STATUS' | translate }} <span class="text-red-500">*</span></label>
             <select formControlName="statutID"
               class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset cursor-pointer transition-all duration-200"
               [ngClass]="isFieldInvalid('statutID') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
-              <option value="">Sélectionner</option>
+              <option value="">{{ 'DOSSIER_FORM.SELECT' | translate }}</option>
               <option *ngFor="let status of statuses" [value]="status.id">{{ status.label }}</option>
             </select>
             @if (isFieldInvalid('statutID')) {
-              <span class="text-[11px] font-bold text-red-500 mt-1 block">Le statut est obligatoire</span>
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">{{ 'DOSSIER_FORM.STATUS_REQUIRED' | translate }}</span>
             }
           </div>
 
           <!-- Date Ouverture -->
           <div class="lg:col-span-2 mt-2">
-            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('dateOuverture') ? 'text-red-500' : 'text-gray-900'">Date d'Ouverture <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium leading-6 transition-colors duration-200 mb-2" [ngClass]="isFieldInvalid('dateOuverture') ? 'text-red-500' : 'text-gray-900'">{{ 'DOSSIER_DETAILS.OPENED_ON' | translate }} <span class="text-red-500">*</span></label>
             <input type="date" formControlName="dateOuverture"
               class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset transition-all duration-200"
               [ngClass]="isFieldInvalid('dateOuverture') ? 'ring-red-500 focus:ring-red-500' : 'ring-gray-300 focus:ring-indigo-600'">
             @if (isFieldInvalid('dateOuverture')) {
-              <span class="text-[11px] font-bold text-red-500 mt-1 block">La date d'ouverture est obligatoire</span>
+              <span class="text-[11px] font-bold text-red-500 mt-1 block">{{ 'DOSSIER_FORM.OPENING_DATE_REQUIRED' | translate }}</span>
             }
           </div>
         </div>
@@ -292,19 +292,19 @@
     <!-- Card: Facturation -->
     <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
       <div class="px-4 py-5 sm:p-6">
-        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">Facturation & Finance</h3>
+        <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4 border-b pb-2">{{ 'DOSSIER_FORM.BILLING_AND_FINANCE' | translate }}</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Méthode de Facturation</label>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">{{ 'DOSSIER_FORM.BILLING_METHOD' | translate }}</label>
             <select formControlName="methodeFacturation"
               class="block w-full rounded-md border-0 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 cursor-pointer">
-              <option value="HORAIRE">Facturation Horaire</option>
-              <option value="FORFAIT">Au Forfait</option>
-              <option value="RESULTAT">Au Résultat</option>
+              <option value="HORAIRE">{{ 'DOSSIER_FORM.HOURLY_BILLING' | translate }}</option>
+              <option value="FORFAIT">{{ 'DOSSIER_FORM.FLAT_FEE' | translate }}</option>
+              <option value="RESULTAT">{{ 'DOSSIER_FORM.CONTINGENCY_FEE' | translate }}</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Budget Estimé</label>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">{{ 'DOSSIER_FORM.ESTIMATED_BUDGET' | translate }}</label>
             <div class="relative rounded-md shadow-sm">
               <input type="number" formControlName="budgetEstime" placeholder="0.00"
                 class="block w-full rounded-md border-0 py-2.5 pl-3 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -314,7 +314,7 @@
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">Taux Horaire</label>
+            <label class="block text-sm font-medium leading-6 text-gray-900 mb-2">{{ 'DOSSIER_FORM.HOURLY_RATE' | translate }}</label>
             <div class="relative rounded-md shadow-sm">
               <input type="number" formControlName="tauxHoraireApplique" placeholder="0.00"
                 class="block w-full rounded-md border-0 py-2.5 pl-3 pr-12 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
@@ -331,17 +331,17 @@
     <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
       <div class="px-4 py-5 sm:p-6">
         <div class="flex items-center justify-between mb-4 border-b pb-2">
-          <h3 class="text-base font-semibold leading-6 text-gray-900">Documents Associés</h3>
+          <h3 class="text-base font-semibold leading-6 text-gray-900">{{ 'DOSSIER_FORM.ATTACHED_DOCS' | translate }}</h3>
           <button type="button" (click)="openDocumentDialog()"
             class="inline-flex items-center gap-x-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-500">
             <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
             </svg>
-            Ajouter
+            {{ 'DOSSIER_FORM.ADD_DOCUMENT' | translate }}
           </button>
         </div>
 
-        <app-document-dialog *ngIf="showDocumentDialog" [dialogTitle]="'Ajouter un document'"
+        <app-document-dialog *ngIf="showDocumentDialog" [dialogTitle]="'DOSSIER_FORM.ADD_DOCUMENT' | translate"
           (addDocumentEvent)="onDocumentAdded($event)" (closeDialogEvent)="closeDocumentDialog()">
         </app-document-dialog>
 
@@ -359,7 +359,7 @@
               </div>
             </div>
             <div class="ml-4 flex-shrink-0">
-              <button type="button" (click)="removeDocument(i)" class="font-medium text-red-600 hover:text-red-500 transition-colors">Retirer</button>
+              <button type="button" (click)="removeDocument(i)" class="font-medium text-red-600 hover:text-red-500 transition-colors">{{ 'DOSSIER_FORM.REMOVE' | translate }}</button>
             </div>
           </li>
           }
@@ -370,8 +370,8 @@
             <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zM12.75 12a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V18a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V12z" clip-rule="evenodd" />
             <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
           </svg>
-          <h3 class="mt-2 text-sm font-semibold text-gray-900">Aucun document</h3>
-          <p class="mt-1 text-sm text-gray-500">Ajoutez des pièces jointes ou des fichiers à ce dossier.</p>
+          <h3 class="mt-2 text-sm font-semibold text-gray-900">{{ 'DOSSIER_FORM.NO_DOCUMENT' | translate }}</h3>
+          <p class="mt-1 text-sm text-gray-500">{{ 'DOSSIER_FORM.NO_DOCUMENT_DESC' | translate }}</p>
         </div>
         }
       </div>
@@ -381,11 +381,11 @@
     <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-4 border-t border-gray-900/10 pt-6 mt-8">
       <button type="button" (click)="navigateToDossier()"
         class="w-full sm:w-auto text-center py-2.5 text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors">
-        Annuler
+        {{ 'CLIENT_FORM.CANCEL' | translate }}
       </button>
       <button type="submit" [disabled]="dossierForm.invalid || isClientBlocked"
         class="w-full sm:w-auto rounded-md bg-indigo-600 px-8 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
-        {{ isEditMode ? 'Enregistrer les modifications' : 'Créer le Dossier' }}
+        {{ (isEditMode ? 'DOSSIER_FORM.TITLE_EDIT' : 'DOSSIER_FORM.SAVE_MATTER') | translate }}
       </button>
     </div>
 

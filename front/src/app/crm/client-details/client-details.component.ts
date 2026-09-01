@@ -11,10 +11,12 @@ import { ClientDiligenceStatusService } from '../../services/client-diligence-st
 
 import { Client, Dossier, InvoiceEntity, ClientDiligenceStatus } from '../../appTypes';
 
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-client-details',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslatePipe, TranslateDirective],
   templateUrl: './client-details.component.html',
   styleUrl: './client-details.component.css'
 })
@@ -41,7 +43,7 @@ export class ClientDetailsComponent implements OnInit {
       if (this.clientId) {
         this.loadClientData(this.clientId);
       } else {
-        this.error = "Aucun identifiant de client fourni.";
+        this.error = "CLIENT_DETAILS.NO_ID";
         this.isLoading = false;
       }
     });
@@ -72,14 +74,14 @@ export class ClientDetailsComponent implements OnInit {
         }
 
         if (!this.client) {
-          this.error = "Impossible de charger les informations du client.";
+          this.error = "CLIENT_DETAILS.LOAD_ERROR";
         }
         
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Erreur lors du chargement des données client', err);
-        this.error = "Une erreur s'est produite lors du chargement des données.";
+        this.error = "CLIENT_DETAILS.LOAD_ERROR_GENERIC";
         this.isLoading = false;
       }
     });
@@ -142,14 +144,14 @@ export class ClientDetailsComponent implements OnInit {
   }
 
   getInvoiceStatusLabel(status: string | undefined): string {
-    if (!status) return 'Inconnu';
+    if (!status) return 'CLIENT_DETAILS.UNKNOWN';
     
     switch (status) {
-      case 'PAID': return 'Payée';
-      case 'DRAFT': return 'Brouillon';
-      case 'SENT': return 'Envoyée';
-      case 'OVERDUE': return 'En retard';
-      case 'PARTIALLY_PAID': return 'Partiel';
+      case 'PAID': return 'CLIENT_DETAILS.INVOICE_STATUS_PAID';
+      case 'DRAFT': return 'CLIENT_DETAILS.INVOICE_STATUS_DRAFT';
+      case 'SENT': return 'CLIENT_DETAILS.INVOICE_STATUS_SENT';
+      case 'OVERDUE': return 'CLIENT_DETAILS.INVOICE_STATUS_OVERDUE';
+      case 'PARTIALLY_PAID': return 'CLIENT_DETAILS.INVOICE_STATUS_PARTIAL';
       default: return status;
     }
   }

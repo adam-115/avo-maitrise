@@ -2,18 +2,18 @@
 
     <div class="lg:col-span-2 space-y-8">
         <div class="bg-white p-6 rounded-xl shadow-md">
-            <h3 class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">Résumé Détaillé</h3>
+            <h3 class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">{{ 'DOSSIER_INFO.DETAILED_SUMMARY' | translate }}</h3>
             <p class="text-gray-700 text-sm leading-relaxed">
-                {{ dossier.description || 'Aucune description disponible pour ce dossier.' }}
+                {{ dossier.description || ('DOSSIER_INFO.NO_DESC' | translate) }}
             </p>
             <div class="mt-4">
-                <span class="text-sm font-semibold text-cyan-600">Type : {{ getDomaineLabel(dossier.domaineJuridique)
+                <span class="text-sm font-semibold text-cyan-600">{{ 'DOSSIER_INFO.TYPE' | translate }} : {{ getDomaineLabel(dossier.domaineJuridique)
                     }}</span> |
            
             </div>
         </div>
         <div class="bg-white p-6 rounded-xl shadow-md">
-            <h3 class="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">Journal d'Activité Récente</h3>
+            <h3 class="text-lg font-semibold text-slate-800 mb-4 border-b pb-2">{{ 'DOSSIER_INFO.RECENT_ACTIVITY' | translate }}</h3>
             <ul class="space-y-4">
                 <li *ngFor="let activity of activities.slice(0, 5)" class="flex items-start space-x-3">
                     <div [class]="'flex-shrink-0 w-2 h-2 mt-2 rounded-full ' + getActivityColor(activity.targetType)">
@@ -36,8 +36,8 @@
 
         <div class="bg-white p-6 rounded-xl shadow-md">
             <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h3 class="text-lg font-semibold text-slate-800">Informations Client</h3>
-                <a *ngIf="dossier.client" [routerLink]="['/home/client-details']" [queryParams]="{ id: dossier.client.id }" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Voir fiche</a>
+                <h3 class="text-lg font-semibold text-slate-800">{{ 'DOSSIER_INFO.CLIENT_INFO' | translate }}</h3>
+                <a *ngIf="dossier.client" [routerLink]="['/home/client-details']" [queryParams]="{ id: dossier.client.id }" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">{{ 'DOSSIER_INFO.VIEW_FILE' | translate }}</a>
             </div>
             
             <div *ngIf="dossier.client" class="space-y-4">
@@ -47,7 +47,7 @@
                     </div>
                     <div>
                         <p class="text-slate-800 font-semibold">{{ getClientName(dossier.client) }}</p>
-                        <p class="text-xs text-gray-500">{{ dossier.client.type === 'PERSONNE' ? 'Personne Physique' : (dossier.client.type === 'SOCIETE' ? 'Société' : dossier.client.type) }}</p>
+                        <p class="text-xs text-gray-500">{{ dossier.client.type === 'PERSONNE' ? ('DOSSIER_INFO.INDIVIDUAL' | translate) : (dossier.client.type === 'SOCIETE' ? ('DOSSIER_INFO.COMPANY' | translate) : dossier.client.type) }}</p>
                     </div>
                 </div>
                 
@@ -74,32 +74,32 @@
                 </dl>
             </div>
             <div *ngIf="!dossier.client" class="text-sm text-gray-500 italic">
-                Aucun client rattaché à ce dossier.
+                {{ 'DOSSIER_INFO.NO_CLIENT' | translate }}
             </div>
         </div>
 
         <div class="bg-white p-6 rounded-xl shadow-md">
-            <h3 class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">Détails Administratifs</h3>
+            <h3 class="text-lg font-semibold text-slate-800 mb-3 border-b pb-2">{{ 'DOSSIER_INFO.ADMIN_DETAILS' | translate }}</h3>
             <dl class="space-y-3 text-sm">
                 <div class="flex justify-between">
-                    <dt class="font-medium text-gray-500">Avocat Responsable :</dt>
+                    <dt class="font-medium text-gray-500">{{ 'DOSSIER_INFO.LEAD_LAWYER' | translate }}</dt>
                     <dd class="text-slate-800 font-semibold">{{ getResponsableName(dossier.responsableId) }}</dd>
                 </div>
                 <div class="flex justify-between">
-                    <dt class="font-medium text-gray-500">Avocats Collaborateurs :</dt>
+                    <dt class="font-medium text-gray-500">{{ 'DOSSIER_INFO.ASSOCIATE_LAWYERS' | translate }}</dt>
                     <dd class="text-slate-800">{{ getCollaborateursNames(dossier.intervenantsIds) }}</dd>
                 </div>
                 <div class="flex justify-between">
-                    <dt class="font-medium text-gray-500">Date d'Ouverture :</dt>
+                    <dt class="font-medium text-gray-500">{{ 'DOSSIER_INFO.OPENING_DATE' | translate }}</dt>
                     <dd class="text-slate-800">{{ dossier.dateOuverture | date:'dd/MM/yyyy' }}</dd>
                 </div>
                 <div class="flex justify-between">
-                    <dt class="font-medium text-gray-500">Mode de Facturation :</dt>
+                    <dt class="font-medium text-gray-500">{{ 'DOSSIER_INFO.BILLING_MODE' | translate }}</dt>
                     <dd class="text-slate-800">{{ getBillingInfo(dossier) }}</dd>
                 </div>
                 <!-- Placeholder for billing data -->
                 <div class="flex justify-between">
-                    <dt class="font-medium text-gray-500">Total Heures (à facturer) :</dt>
+                    <dt class="font-medium text-gray-500">{{ 'DOSSIER_INFO.TOTAL_HOURS' | translate }}</dt>
                     <dd class="text-red-600 font-bold">124 h</dd>
                 </div>
             </dl>
@@ -108,5 +108,5 @@
 </div>
 
 <div *ngIf="!dossier" class="text-center p-6 text-gray-500">
-    Aucun dossier sélectionné.
+    {{ 'DOSSIER_INFO.NO_DOSSIER' | translate }}
 </div>

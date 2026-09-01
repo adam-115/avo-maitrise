@@ -8,7 +8,7 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
       </svg>
-      Agenda du Jour
+      {{ 'CALENDAR.AGENDA_DAY' | translate }}
     </h2>
 
     <div class="flex flex-wrap gap-3 items-center">
@@ -18,11 +18,11 @@
           xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
         </svg>
-        Ajouter une réunion
+        {{ 'CALENDAR.ADD_MEETING' | translate }}
       </button>
       <button (click)="goToToday()"
         class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150 flex items-center">
-        Aujourd'hui
+        {{ 'CALENDAR.TODAY' | translate }}
       </button>
 
       <button (click)="changeDay(-1)"
@@ -49,7 +49,7 @@
 
     <div class="flex-shrink-0 w-20 bg-gray-100 border-r border-gray-300">
       <div class="h-14 text-xs font-semibold text-gray-700 flex items-center justify-center border-b border-gray-300">
-        Heures</div>
+        {{ 'CALENDAR.HOURS' | translate }}</div>
 
       <div *ngFor="let hour of hours"
         class="h-16 text-xs text-gray-500 font-medium flex justify-end pr-2 items-start pt-1 border-b border-dashed border-gray-300">
@@ -71,12 +71,12 @@
         <div class="overflow-hidden">
           <p class="text-[11px] font-bold truncate">{{ hearing.title }}</p>
           <p class="text-[10px] font-medium mt-0.5 truncate">
-            <span class="font-semibold">Heure :</span> {{ hearing.time }} - {{ hearing.endTime }}
+            <span class="font-semibold">{{ 'CALENDAR.TIME' | translate }}</span> {{ hearing.time }} - {{ hearing.endTime }}
           </p>
           <p class="text-[10px] text-gray-500 font-medium truncate">{{ hearing.clientCase }}</p>
         </div>
 
-        <button (click)="deleteAppointement(hearing, $event)" title="Supprimer"
+        <button (click)="deleteAppointement(hearing, $event)" [title]="'CALENDAR.DELETE' | translate"
           class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded p-0.5 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity flex-shrink-0 ml-1 mt-0.5">
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg">
@@ -89,19 +89,19 @@
 
       <div *ngIf="dayHearings.length === 0"
         class="text-center p-8 text-gray-500 italic absolute top-1/2 left-0 right-0 transform -translate-y-1/2">
-        Aucune audience prévue pour ce jour.
+        {{ 'CALENDAR.NO_HEARINGS_TODAY' | translate }}
       </div>
     </div>
   </div>
 
   <div class="mt-6 text-sm text-gray-600">
-    <p class="font-semibold">Légende Statut :</p>
+    <p class="font-semibold">{{ 'CALENDAR.STATUS_LEGEND' | translate }}</p>
     <span
-      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-400 mr-2">Urgent</span>
+      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-400 mr-2">{{ 'CALENDAR.URGENT' | translate }}</span>
     <span
-      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-400 mr-2">Standard</span>
+      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-400 mr-2">{{ 'CALENDAR.STANDARD' | translate }}</span>
     <span
-      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-400">Reporté</span>
+      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-400">{{ 'CALENDAR.POSTPONED' | translate }}</span>
   </div>
 </div>
 

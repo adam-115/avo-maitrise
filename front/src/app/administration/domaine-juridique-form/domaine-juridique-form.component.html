@@ -1,34 +1,34 @@
 <div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4">Gestion des Domaines Juridiques</h2>
+    <h2 class="text-2xl font-bold mb-4">{{ 'DOMAINE_JURIDIQUE_FORM.TITLE' | translate }}</h2>
 
     <!-- Formulaire d'ajout/édition -->
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h3 class="text-xl font-semibold mb-2">{{ isEditing ? 'Modifier' : 'Ajouter' }} un Domaine Juridique</h3>
+        <h3 class="text-xl font-semibold mb-2">{{ isEditing ? ('DOMAINE_JURIDIQUE_FORM.EDIT_DOMAIN' | translate) : ('DOMAINE_JURIDIQUE_FORM.ADD_DOMAIN' | translate) }}</h3>
 
         <form [formGroup]="domaineForm" (ngSubmit)="onSubmit()">
             <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="label">Libellé</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="label">{{ 'DOMAINE_JURIDIQUE_FORM.LABEL' | translate }}</label>
                     <input id="label" type="text" formControlName="label"
                         class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                        placeholder="Ex: Droit des Affaires" />
+                        [placeholder]="'DOMAINE_JURIDIQUE_FORM.LABEL_PLACEHOLDER' | translate" />
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="code">Code</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="code">{{ 'DOMAINE_JURIDIQUE_FORM.CODE' | translate }}</label>
                     <input id="code" type="text" formControlName="code"
                         class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                        placeholder="Ex: DROIT_AFFAIRES" />
+                        [placeholder]="'DOMAINE_JURIDIQUE_FORM.CODE_PLACEHOLDER' | translate" />
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="color">Couleur</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="color">{{ 'DOMAINE_JURIDIQUE_FORM.COLOR' | translate }}</label>
                     <input id="color" type="color" formControlName="color"
                         class="h-10 w-full rounded cursor-pointer border-2 border-slate-300 hover:border-slate-400 transition-colors" />
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="order">Ordre d'affichage</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="order">{{ 'DOMAINE_JURIDIQUE_FORM.DISPLAY_ORDER' | translate }}</label>
                     <input id="order" type="number" formControlName="order"
                         class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors" />
                 </div>
@@ -36,7 +36,7 @@
                 <div class="flex items-center mt-6">
                     <input id="active" type="checkbox" formControlName="active"
                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
-                    <label for="active" class="ml-2 block text-sm text-gray-900">Actif</label>
+                    <label for="active" class="ml-2 block text-sm text-gray-900">{{ 'DOMAINE_JURIDIQUE_FORM.ACTIVE' | translate }}</label>
                 </div>
             </div>
 
@@ -44,11 +44,11 @@
                 <button
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     type="submit" [disabled]="domaineForm.invalid">
-                    {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+                    {{ isEditing ? ('DOMAINE_JURIDIQUE_FORM.UPDATE' | translate) : ('DOMAINE_JURIDIQUE_FORM.ADD' | translate) }}
                 </button>
                 <button *ngIf="isEditing" type="button" (click)="cancelEdit()"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Annuler
+                    {{ 'DOMAINE_JURIDIQUE_FORM.CANCEL' | translate }}
                 </button>
             </div>
         </form>
@@ -56,29 +56,29 @@
 
     <!-- Liste des domaines -->
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
-        <h3 class="text-xl font-semibold mb-4">Liste des Domaines Juridiques</h3>
+        <h3 class="text-xl font-semibold mb-4">{{ 'DOMAINE_JURIDIQUE_FORM.LIST_TITLE' | translate }}</h3>
         <div class="overflow-x-auto">
             <table class="min-w-full leading-normal">
                 <thead>
                     <tr>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Ordre</th>
+                            {{ 'DOMAINE_JURIDIQUE_FORM.TABLE_ORDER' | translate }}</th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Couleur</th>
+                            {{ 'DOMAINE_JURIDIQUE_FORM.TABLE_COLOR' | translate }}</th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Libellé</th>
+                            {{ 'DOMAINE_JURIDIQUE_FORM.TABLE_LABEL' | translate }}</th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Code</th>
+                            {{ 'DOMAINE_JURIDIQUE_FORM.TABLE_CODE' | translate }}</th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Statut</th>
+                            {{ 'DOMAINE_JURIDIQUE_FORM.TABLE_STATUS' | translate }}</th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Actions</th>
+                            {{ 'DOMAINE_JURIDIQUE_FORM.TABLE_ACTIONS' | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -94,14 +94,14 @@
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                                 [ngClass]="domaine.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-                                {{ domaine.active ? 'Actif' : 'Inactif' }}
+                                {{ domaine.active ? ('DOMAINE_JURIDIQUE_FORM.STATUS_ACTIVE' | translate) : ('DOMAINE_JURIDIQUE_FORM.STATUS_INACTIVE' | translate) }}
                             </span>
                         </td>
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <button (click)="editDomaine(domaine)"
-                                class="text-blue-600 hover:text-blue-900 mr-4">Éditer</button>
+                                class="text-blue-600 hover:text-blue-900 mr-4">{{ 'DOMAINE_JURIDIQUE_FORM.ACTION_EDIT' | translate }}</button>
                             <button (click)="deleteDomaine(domaine.id)"
-                                class="text-red-600 hover:text-red-900">Supprimer</button>
+                                class="text-red-600 hover:text-red-900">{{ 'DOMAINE_JURIDIQUE_FORM.ACTION_DELETE' | translate }}</button>
 
                         </td>
                     </tr>

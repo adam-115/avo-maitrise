@@ -9,12 +9,12 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
             </svg>
-            <span>Uploader un Nouveau Document</span>
+            <span>{{ 'DOCUMENT.UPLOAD' | translate }}</span>
         </button>
 
         <div class="flex flex-grow space-x-3 w-full sm:w-auto">
             <div class="relative flex-grow">
-                <input type="text" placeholder="Rechercher par Titre ou Contenu..."
+                <input type="text" [placeholder]="'DOCUMENT.SEARCH' | translate"
                     class="w-full pl-10 pr-4 py-2 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                 <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -24,10 +24,10 @@
             </div>
             <select
                 class="p-2 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500 flex-shrink-0 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                <option>Filtrer par Type</option>
-                <option>Contrats</option>
-                <option>Actes de procédure</option>
-                <option>Pièces adverses</option>
+                <option>{{ 'DOCUMENT.FILTER_TYPE' | translate }}</option>
+                <option>{{ 'DOCUMENT.CONTRACTS' | translate }}</option>
+                <option>{{ 'DOCUMENT.PROCEDURES' | translate }}</option>
+                <option>{{ 'DOCUMENT.EVIDENCE' | translate }}</option>
             </select>
         </div>
     </div>
@@ -36,12 +36,12 @@
 
         <div
             class="hidden md:grid grid-cols-12 text-xs font-semibold uppercase text-gray-500 bg-gray-100 p-4 border-b border-gray-200">
-            <div class="col-span-4">Titre du Document</div>
-            <div class="col-span-2">Type</div>
-            <div class="col-span-2">Ajouté par</div>
-            <div class="col-span-2">Date d'Upload</div>
-            <div class="col-span-1 text-center">Taille</div>
-            <div class="col-span-1 text-right">Actions</div>
+            <div class="col-span-4">{{ 'DOCUMENT.DOC_TITLE' | translate }}</div>
+            <div class="col-span-2">{{ 'DOCUMENT.TYPE' | translate }}</div>
+            <div class="col-span-2">{{ 'DOCUMENT.ADDED_BY' | translate }}</div>
+            <div class="col-span-2">{{ 'DOCUMENT.UPLOAD_DATE' | translate }}</div>
+            <div class="col-span-1 text-center">{{ 'DOCUMENT.SIZE' | translate }}</div>
+            <div class="col-span-1 text-right">{{ 'DOCUMENT.ACTIONS' | translate }}</div>
         </div>
 
         @if(documents && documents.length > 0) {
@@ -57,9 +57,9 @@
                     </path>
                 </svg>
                 <div>
-                    <p class="font-semibold text-slate-800">{{ doc.title || doc.name || 'Document Sans Titre' }}</p>
+                    <p class="font-semibold text-slate-800">{{ doc.title || doc.name || ('DOCUMENT.NO_TITLE' | translate) }}</p>
                     <p class="text-xs text-gray-500 truncate md:hidden">
-                        {{ doc.label || 'Inconnu' }} · {{ (doc.date | date:'dd/MM/yyyy') || 'N/A' }}
+                        {{ doc.label || ('DOCUMENT.UNKNOWN' | translate) }} · {{ (doc.date | date:'dd/MM/yyyy') || ('DOCUMENT.NA' | translate) }}
                     </p>
                 </div>
             </div>
@@ -67,19 +67,19 @@
             <div class="col-span-2 text-sm text-gray-700 hidden md:block">{{ doc.label || '-' }}</div>
             <div class="col-span-2 text-sm text-gray-700 hidden md:block">-</div>
             <div class="col-span-2 text-sm font-medium text-cyan-600 hidden md:block">
-                {{ doc.dateUpload ? (doc.dateUpload | date:'dd/MM/yyyy') : 'N/A' }}
+                {{ doc.dateUpload ? (doc.dateUpload | date:'dd/MM/yyyy') : ('DOCUMENT.NA' | translate) }}
             </div>
             <div class="col-span-1 text-sm text-gray-700 text-center hidden md:block">-</div>
 
             <div class="col-span-1 flex justify-end space-x-2">
-                <button (click)="downloadDocument(doc)" title="Télécharger" class="p-1 text-gray-500 hover:text-cyan-600 transition-colors">
+                <button (click)="downloadDocument(doc)" [title]="'DOCUMENT.DOWNLOAD' | translate" class="p-1 text-gray-500 hover:text-cyan-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
                 </button>
-                <button (click)="deleteDocument(doc, i)" title="Supprimer" class="p-1 text-gray-500 hover:text-red-600 transition-colors">
+                <button (click)="deleteDocument(doc, i)" [title]="'DOCUMENT.DELETE' | translate" class="p-1 text-gray-500 hover:text-red-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -92,22 +92,22 @@
         }
         } @else {
         <div class="p-8 text-center text-gray-500">
-            <p>Aucun document disponible pour le moment.</p>
+            <p>{{ 'DOCUMENT.NO_DOCUMENT' | translate }}</p>
         </div>
         }
     </div>
 
     <div class="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div class="text-sm text-gray-600 order-2 sm:order-1">
-            Affichage de <b>{{ documents.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</b> à 
-            <b>{{ (currentPage - 1) * pageSize + documents.length }}</b> sur 
+            {{ 'MATTER_ACTIVITY.SHOWING' | translate }} <b>{{ documents.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</b> {{ 'MATTER_ACTIVITY.TO_LOWER' | translate }} 
+            <b>{{ (currentPage - 1) * pageSize + documents.length }}</b> {{ 'MATTER_ACTIVITY.OUT_OF' | translate }} 
             <b>{{ totalElements }}</b> documents.
         </div>
         
         <div class="flex items-center space-x-2 order-1 sm:order-2" *ngIf="totalPages > 1">
             <button (click)="prevPage()" [disabled]="currentPage === 1"
                 class="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
-                Précédent
+                {{ 'MATTER_ACTIVITY.PREV' | translate }}
             </button>
             
             <div class="flex items-center space-x-1">
@@ -120,7 +120,7 @@
 
             <button (click)="nextPage()" [disabled]="currentPage === totalPages"
                 class="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
-                Suivant
+                {{ 'MATTER_ACTIVITY.NEXT' | translate }}
             </button>
         </div>
     </div>

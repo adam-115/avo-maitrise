@@ -2,19 +2,19 @@
   <!-- Filters Section -->
   <div class="flex flex-wrap items-center gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
     <div class="flex flex-col">
-      <label class="text-xs font-semibold text-gray-500 uppercase mb-1">Du</label>
+      <label class="text-xs font-semibold text-gray-500 uppercase mb-1">{{ 'MATTER_ACTIVITY.FROM' | translate }}</label>
       <input type="date" [(ngModel)]="startDate" (change)="onFilter()"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
     </div>
     <div class="flex flex-col">
-      <label class="text-xs font-semibold text-gray-500 uppercase mb-1">Au</label>
+      <label class="text-xs font-semibold text-gray-500 uppercase mb-1">{{ 'MATTER_ACTIVITY.TO' | translate }}</label>
       <input type="date" [(ngModel)]="endDate" (change)="onFilter()"
         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
     </div>
     <div class="flex items-end flex-1">
       <button (click)="onFilter()" 
         class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-        Rafraîchir
+        {{ 'MATTER_ACTIVITY.REFRESH' | translate }}
       </button>
     </div>
   </div>
@@ -24,11 +24,11 @@
     <table class="min-w-full divide-y divide-gray-300">
       <thead class="bg-gray-50">
         <tr>
-          <th class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Date</th>
-          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Auteur</th>
-          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Action</th>
-          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Type</th>
-          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Description</th>
+          <th class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">{{ 'MATTER_ACTIVITY.DATE' | translate }}</th>
+          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">{{ 'MATTER_ACTIVITY.AUTHOR' | translate }}</th>
+          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">{{ 'MATTER_ACTIVITY.ACTION' | translate }}</th>
+          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">{{ 'MATTER_ACTIVITY.TYPE' | translate }}</th>
+          <th class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">{{ 'MATTER_ACTIVITY.DESCRIPTION' | translate }}</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
@@ -60,7 +60,7 @@
         </tr>
         <tr *ngIf="activities.length === 0">
           <td colspan="5" class="py-12 text-center text-sm text-gray-500 italic">
-            Aucune activité trouvée pour cette période.
+            {{ 'MATTER_ACTIVITY.NO_ACTIVITY' | translate }}
           </td>
         </tr>
       </tbody>
@@ -72,26 +72,26 @@
     <div class="flex flex-1 justify-between sm:hidden">
       <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0"
         class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
-        Précédent
+        {{ 'MATTER_ACTIVITY.PREV' | translate }}
       </button>
       <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages - 1"
         class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50">
-        Suivant
+        {{ 'MATTER_ACTIVITY.NEXT' | translate }}
       </button>
     </div>
     <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
       <div>
         <p class="text-sm text-gray-700">
-          Affichage de <span class="font-medium">{{ currentPage * pageSize + 1 }}</span> à 
-          <span class="font-medium">{{ Math.min((currentPage + 1) * pageSize, totalElements) }}</span> sur 
-          <span class="font-medium">{{ totalElements }}</span> résultats
+          {{ 'MATTER_ACTIVITY.SHOWING' | translate }} <span class="font-medium">{{ currentPage * pageSize + 1 }}</span> {{ 'MATTER_ACTIVITY.TO_LOWER' | translate }} 
+          <span class="font-medium">{{ Math.min((currentPage + 1) * pageSize, totalElements) }}</span> {{ 'MATTER_ACTIVITY.OUT_OF' | translate }} 
+          <span class="font-medium">{{ totalElements }}</span> {{ 'MATTER_ACTIVITY.RESULTS' | translate }}
         </p>
       </div>
       <div>
         <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
           <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0"
             class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50">
-            <span class="sr-only">Précédent</span>
+            <span class="sr-only">{{ 'MATTER_ACTIVITY.PREV' | translate }}</span>
             <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01.02 1.06L8.832 10l3.978 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
             </svg>
@@ -104,7 +104,7 @@
           </button>
           <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages - 1"
             class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 disabled:opacity-50">
-            <span class="sr-only">Suivant</span>
+            <span class="sr-only">{{ 'MATTER_ACTIVITY.NEXT' | translate }}</span>
             <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
               <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.19 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
             </svg>

@@ -5,11 +5,12 @@ import { StatutDossierService } from '../../services/statut-dossier.service';
 import { StatutDossier } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { AlertService } from '../../services/alert-service';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-dossier-status-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, TranslateDirective],
     templateUrl: './dossier-status-form.component.html',
     styleUrls: ['./dossier-status-form.component.css']
 })

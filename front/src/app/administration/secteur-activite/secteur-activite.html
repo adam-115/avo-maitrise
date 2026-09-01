@@ -4,7 +4,7 @@
     <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
       <div>
         <h1 class="text-4xl font-black text-slate-900 tracking-tighter">
-          Référentiel : <span class="text-cyan-500">Secteurs d'Activité</span>
+          {{ 'SECTEUR_ACTIVITE_FORM.TITLE' | translate }}<span class="text-cyan-500">{{ 'SECTEUR_ACTIVITE_FORM.SUBTITLE' | translate }}</span>
         </h1>
       </div>
 
@@ -17,12 +17,12 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
           </svg>
-          Importer CSV
+          {{ 'SECTEUR_ACTIVITE_FORM.IMPORT_CSV' | translate }}
         </button>
 
         <button (click)="resetForm()" *ngIf="selectedSecteurActivite"
           class="px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg">
-          Nouveau Secteur
+          {{ 'SECTEUR_ACTIVITE_FORM.NEW_SECTOR' | translate }}
         </button>
       </div>
     </div>
@@ -34,11 +34,10 @@
           <table class="w-full text-left">
             <thead>
               <tr class="border-b border-slate-100 bg-slate-50/50">
-                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Ordre</th>
-                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Libellé & Code
-                </th>
+                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">{{ 'SECTEUR_ACTIVITE_FORM.TABLE_ORDER' | translate }}</th>
+                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">{{ 'SECTEUR_ACTIVITE_FORM.TABLE_LABEL_CODE' | translate }}</th>
 
-                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">Statut</th>
+                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">{{ 'SECTEUR_ACTIVITE_FORM.TABLE_STATUS' | translate }}</th>
                 <th class="px-6 py-4"></th>
               </tr>
             </thead>
@@ -73,7 +72,7 @@
                 <td class="px-6 py-4">
                   <span [class]="secteur.actif ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'"
                     class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest">
-                    {{ secteur.actif ? 'Actif' : 'Inactif' }}
+                    {{ secteur.actif ? ('SECTEUR_ACTIVITE_FORM.STATUS_ACTIVE' | translate) : ('SECTEUR_ACTIVITE_FORM.STATUS_INACTIVE' | translate) }}
                   </span>
                 </td>
 
@@ -95,27 +94,27 @@
         <div
           class="sticky top-8 bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden">
           <div class="p-6 bg-slate-900 flex justify-between items-center">
-            <h2 class="text-white font-black text-xs uppercase tracking-[0.2em]">Ajout/Update Secteur</h2>
-            <span class="text-cyan-400 font-mono text-[10px]">#{{ selectedSecteurActivite?.id || 'NOUVEAU' }}</span>
+            <h2 class="text-white font-black text-xs uppercase tracking-[0.2em]">{{ 'SECTEUR_ACTIVITE_FORM.FORM_TITLE' | translate }}</h2>
+            <span class="text-cyan-400 font-mono text-[10px]">#{{ selectedSecteurActivite?.id || ('SECTEUR_ACTIVITE_FORM.NEW' | translate) }}</span>
           </div>
 
           <form [formGroup]="secteurForm!" class="p-8 space-y-6">
             <div>
-              <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Nom du Secteur</label>
-              <input type="text" formControlName="libelle" placeholder="Ex: Promotion Immobilière..."
+              <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">{{ 'SECTEUR_ACTIVITE_FORM.LABEL' | translate }}</label>
+              <input type="text" formControlName="libelle" [placeholder]="'SECTEUR_ACTIVITE_FORM.LABEL_PLACEHOLDER' | translate"
                 [ngClass]="(secteurForm.get('libelle')?.invalid && secteurForm.get('libelle')?.touched) ? 'border-red-500 focus:ring-red-500/10' : 'border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/10'"
                 class="w-full bg-slate-50 rounded-xl p-4 text-sm font-bold text-slate-800 outline-none transition-all focus:ring-4 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Code Système</label>
-                <input type="text" formControlName="code" placeholder="IMMOBILIER"
+                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">{{ 'SECTEUR_ACTIVITE_FORM.CODE' | translate }}</label>
+                <input type="text" formControlName="code" [placeholder]="'SECTEUR_ACTIVITE_FORM.CODE_PLACEHOLDER' | translate"
                   [ngClass]="(secteurForm.get('code')?.invalid && secteurForm.get('code')?.touched) ? 'border-red-500' : 'border-slate-200 focus:border-cyan-500'"
                   class="w-full bg-slate-50 rounded-xl p-4 text-xs font-black text-slate-900 uppercase outline-none transition-all focus:ring-4 border-2 border-slate-300 hover:border-slate-400 transition-colors">
               </div>
               <div>
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">Position</label>
+                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-1">{{ 'SECTEUR_ACTIVITE_FORM.POSITION' | translate }}</label>
                 <input type="number" formControlName="ordre_affichage"
                   class="w-full bg-slate-50 rounded-xl p-4 text-sm font-black text-slate-900 focus:border-cyan-500 outline-none border-2 border-slate-300 hover:border-slate-400 transition-colors">
               </div>
@@ -126,8 +125,8 @@
 
             <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
               <div class="flex flex-col">
-                <span class="text-[10px] font-black text-slate-900 uppercase">Statut Opérationnel</span>
-                <span class="text-[9px] text-slate-400 font-bold uppercase">Actif dans les formulaires</span>
+                <span class="text-[10px] font-black text-slate-900 uppercase">{{ 'SECTEUR_ACTIVITE_FORM.OPERATIONAL_STATUS' | translate }}</span>
+                <span class="text-[9px] text-slate-400 font-bold uppercase">{{ 'SECTEUR_ACTIVITE_FORM.ACTIVE_IN_FORMS' | translate }}</span>
               </div>
               <label class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" formControlName="actif" class="sr-only peer">
@@ -141,11 +140,11 @@
             <div class="pt-4 space-y-3">
               <button type="submit" (click)="submit()" [disabled]="secteurForm.invalid"
                 class="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-100 hover:bg-cyan-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none disabled:cursor-not-allowed">
-                {{ selectedSecteurActivite ? "Mettre à jour le secteur" : "Ajouter le secteur" }}
+                {{ selectedSecteurActivite ? ('SECTEUR_ACTIVITE_FORM.UPDATE' | translate) : ('SECTEUR_ACTIVITE_FORM.ADD' | translate) }}
               </button>
               <button type="button" (click)="resetForm()"
                 class="w-full text-slate-400 font-black text-[10px] uppercase tracking-widest hover:text-red-500 transition-colors py-2">
-                Réinitialiser les champs
+                {{ 'SECTEUR_ACTIVITE_FORM.RESET' | translate }}
               </button>
             </div>
           </form>

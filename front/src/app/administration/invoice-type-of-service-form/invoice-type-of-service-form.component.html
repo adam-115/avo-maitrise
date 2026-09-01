@@ -1,28 +1,28 @@
 <div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4">Gestion des Types de Prestations (Facturation)</h2>
+    <h2 class="text-2xl font-bold mb-4">{{ 'INVOICE_TYPE_OF_SERVICE.TITLE' | translate }}</h2>
 
     <!-- Formulaire d'ajout/édition -->
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h3 class="text-xl font-semibold mb-2">{{ isEditing ? 'Modifier' : 'Ajouter' }} un Type de Prestations</h3>
+        <h3 class="text-xl font-semibold mb-2">{{ isEditing ? ('INVOICE_TYPE_OF_SERVICE.EDIT_TYPE' | translate) : ('INVOICE_TYPE_OF_SERVICE.ADD_TYPE' | translate) }}</h3>
 
         <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
             <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="code">Code</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="code">{{ 'INVOICE_TYPE_OF_SERVICE.CODE' | translate }}</label>
                     <input id="code" type="text" formControlName="code"
                         class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                        placeholder="Ex: RDV" />
+                        [placeholder]="'INVOICE_TYPE_OF_SERVICE.CODE_PLACEHOLDER' | translate" />
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="description">Description</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="description">{{ 'INVOICE_TYPE_OF_SERVICE.DESCRIPTION' | translate }}</label>
                     <input id="description" type="text" formControlName="description"
                         class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                        placeholder="Ex: Rendez-vous physique" />
+                        [placeholder]="'INVOICE_TYPE_OF_SERVICE.DESCRIPTION_PLACEHOLDER' | translate" />
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="price5min">Prix (par 5 min)</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="price5min">{{ 'INVOICE_TYPE_OF_SERVICE.PRICE_5_MIN' | translate }}</label>
                     <input id="price5min" type="number" formControlName="price5min"
                         class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors" />
                 </div>
@@ -30,7 +30,7 @@
                 <div class="flex items-center mt-6">
                     <input id="actif" type="checkbox" formControlName="actif"
                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
-                    <label for="actif" class="ml-2 block text-sm text-gray-900">Actif</label>
+                    <label for="actif" class="ml-2 block text-sm text-gray-900">{{ 'INVOICE_TYPE_OF_SERVICE.ACTIVE' | translate }}</label>
                 </div>
             </div>
 
@@ -38,11 +38,11 @@
                 <button
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     type="submit" [disabled]="serviceForm.invalid">
-                    {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+                    {{ isEditing ? ('INVOICE_TYPE_OF_SERVICE.UPDATE' | translate) : ('INVOICE_TYPE_OF_SERVICE.ADD' | translate) }}
                 </button>
                 <button *ngIf="isEditing" type="button" (click)="cancelEdit()"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    Annuler
+                    {{ 'INVOICE_TYPE_OF_SERVICE.CANCEL' | translate }}
                 </button>
             </div>
         </form>
@@ -50,26 +50,26 @@
 
     <!-- Liste des types de service -->
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
-        <h3 class="text-xl font-semibold mb-4">Liste des Types de Service</h3>
+        <h3 class="text-xl font-semibold mb-4">{{ 'INVOICE_TYPE_OF_SERVICE.LIST_TITLE' | translate }}</h3>
         <div class="overflow-x-auto">
             <table class="min-w-full leading-normal">
                 <thead>
                     <tr>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Code</th>
+                            {{ 'INVOICE_TYPE_OF_SERVICE.TABLE_CODE' | translate }}</th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Description</th>
+                            {{ 'INVOICE_TYPE_OF_SERVICE.TABLE_DESCRIPTION' | translate }}</th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Prix (5 min)</th>
+                            {{ 'INVOICE_TYPE_OF_SERVICE.TABLE_PRICE' | translate }}</th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Statut</th>
+                            {{ 'INVOICE_TYPE_OF_SERVICE.TABLE_STATUS' | translate }}</th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Actions</th>
+                            {{ 'INVOICE_TYPE_OF_SERVICE.TABLE_ACTIONS' | translate }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -80,14 +80,14 @@
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                                 [ngClass]="service.actif ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-                                {{ service.actif ? 'Actif' : 'Inactif' }}
+                                {{ service.actif ? ('INVOICE_TYPE_OF_SERVICE.STATUS_ACTIVE' | translate) : ('INVOICE_TYPE_OF_SERVICE.STATUS_INACTIVE' | translate) }}
                             </span>
                         </td>
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <button (click)="editService(service)"
-                                class="text-blue-600 hover:text-blue-900 mr-4">Éditer</button>
+                                class="text-blue-600 hover:text-blue-900 mr-4">{{ 'INVOICE_TYPE_OF_SERVICE.ACTION_EDIT' | translate }}</button>
                             <button (click)="service.id ? deleteService(service.id) : null"
-                                class="text-red-600 hover:text-red-900">Supprimer</button>
+                                class="text-red-600 hover:text-red-900">{{ 'INVOICE_TYPE_OF_SERVICE.ACTION_DELETE' | translate }}</button>
                         </td>
                     </tr>
                 </tbody>

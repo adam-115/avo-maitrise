@@ -10,11 +10,12 @@ import { DomaineJuridiqueService } from '../../services/domaine-juridique.servic
 import { MatterActivityService } from '../../services/matter-activity.service';
 import { forkJoin } from 'rxjs';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-dossier-info',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, TranslatePipe, TranslateDirective],
     templateUrl: './dossier-info.html',
     styleUrl: './dossier-info.css'
 })

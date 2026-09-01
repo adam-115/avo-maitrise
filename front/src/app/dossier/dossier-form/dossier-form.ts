@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { DossierService } from '../../services/dossier.service';
 import { ClientService } from '../../services/client-service';
@@ -17,11 +17,12 @@ import { ClientStatusAlertComponent } from '../../shared/components/client-statu
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { forkJoin } from 'rxjs';
 import { AlertService } from '../../services/alert-service';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dossier-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, UserSelectionDialog, ClientSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, UserSelectionDialog, ClientSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent, TranslatePipe, TranslateDirective],
   templateUrl: './dossier-form.html',
   styleUrl: './dossier-form.css'
 })

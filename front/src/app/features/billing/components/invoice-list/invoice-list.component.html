@@ -2,8 +2,8 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900">Facturation</h1>
-            <p class="text-sm text-gray-500 mt-1">Gérez vos factures, suivez les paiements et relancez vos clients.</p>
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900">{{ 'INVOICE_LIST.TITLE' | translate }}</h1>
+            <p class="text-sm text-gray-500 mt-1">{{ 'INVOICE_LIST.SUBTITLE' | translate }}</p>
         </div>
         <div class="flex w-full sm:w-auto gap-3">
             <button (click)="generateBulkPdf()"
@@ -14,14 +14,14 @@
                 <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                Générer PDF ({{selectedInvoiceIds().length}})
+                {{ 'INVOICE_LIST.GENERATE_PDF' | translate }} ({{selectedInvoiceIds().length}})
             </button>
             <button (click)="createInvoice()"
                 class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
                 <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                Nouvelle Facture
+                {{ 'INVOICE_LIST.NEW_INVOICE' | translate }}
             </button>
         </div>
     </div>
@@ -33,62 +33,62 @@
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <h2 class="text-sm font-semibold uppercase tracking-wider">Recherche Avancée</h2>
+                <h2 class="text-sm font-semibold uppercase tracking-wider">{{ 'INVOICE_LIST.ADVANCED_SEARCH' | translate }}</h2>
             </div>
             <button (click)="resetFilters()" class="text-xs font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1 transition">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                Réinitialiser
+                {{ 'INVOICE_LIST.RESET' | translate }}
             </button>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-4">
             <!-- N° Facture -->
             <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1.5">N° Facture</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">{{ 'INVOICE_LIST.INVOICE_NUMBER' | translate }}</label>
                 <div class="flex items-center bg-white border border-gray-300 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-shadow overflow-hidden">
                     <span class="text-gray-400 px-3 bg-gray-50 border-r border-gray-200 h-full flex items-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </span>
                     <input type="text" [(ngModel)]="filters.numeroFacture" (ngModelChange)="onFilterChange()"
-                        class="block w-full border-0 bg-transparent text-gray-900 focus:ring-0 sm:text-sm p-2" placeholder="ex: FAC-2025-001">
+                        class="block w-full border-0 bg-transparent text-gray-900 focus:ring-0 sm:text-sm p-2" [placeholder]="'INVOICE_LIST.INVOICE_NUMBER_PLACEHOLDER' | translate">
                 </div>
             </div>
             <!-- Période d'émission -->
             <div class="col-span-1 md:col-span-2">
-                <label class="block text-xs font-medium text-gray-700 mb-1.5">Période d'émission</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">{{ 'INVOICE_LIST.ISSUE_PERIOD' | translate }}</label>
                 <div class="flex items-center bg-white border border-gray-300 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-shadow overflow-hidden">
-                    <span class="text-xs font-medium text-gray-500 px-3 bg-gray-50 border-r border-gray-200 h-full flex items-center">Du</span>
+                    <span class="text-xs font-medium text-gray-500 px-3 bg-gray-50 border-r border-gray-200 h-full flex items-center">{{ 'INVOICE_LIST.FROM' | translate }}</span>
                     <input type="date" [(ngModel)]="filters.issueDateFrom" (ngModelChange)="onFilterChange()"
                         class="block w-full border-0 bg-transparent text-gray-900 focus:ring-0 sm:text-sm cursor-pointer p-2">
                     
-                    <span class="text-xs font-medium text-gray-500 px-3 bg-gray-50 border-x border-gray-200 h-full flex items-center">Au</span>
+                    <span class="text-xs font-medium text-gray-500 px-3 bg-gray-50 border-x border-gray-200 h-full flex items-center">{{ 'INVOICE_LIST.TO' | translate }}</span>
                     <input type="date" [(ngModel)]="filters.issueDateTo" (ngModelChange)="onFilterChange()"
                         class="block w-full border-0 bg-transparent text-gray-900 focus:ring-0 sm:text-sm cursor-pointer p-2">
                 </div>
             </div>
             <!-- Statut Facture -->
             <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1.5">Statut</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">{{ 'INVOICE_LIST.STATUS' | translate }}</label>
                 <div class="flex items-center bg-white border border-gray-300 rounded-lg shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-shadow overflow-hidden">
                     <span class="text-gray-400 px-3 bg-gray-50 border-r border-gray-200 h-full flex items-center">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
                     </span>
                     <select [(ngModel)]="filters.status" (ngModelChange)="onFilterChange()"
                         class="block w-full border-0 bg-transparent text-gray-900 focus:ring-0 sm:text-sm p-2 cursor-pointer">
-                        <option [ngValue]="''">Tous</option>
+                        <option [ngValue]="''">{{ 'INVOICE_LIST.ALL' | translate }}</option>
                         <option *ngFor="let s of invoiceStatusOptions" [value]="s">{{ s }}</option>
                     </select>
                 </div>
             </div>
             <!-- Client -->
             <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1.5">Client</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">{{ 'INVOICE_LIST.CLIENT' | translate }}</label>
                 <div class="relative">
                     <button type="button" (click)="openClientDialog()"
                         class="w-full text-left rounded-lg border border-gray-300 bg-gray-50 text-gray-900 shadow-sm focus:bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 transition-colors">
-                        {{ selectedClientName() || 'Sélectionner un client...' }}
+                        {{ selectedClientName() || ('INVOICE_LIST.SELECT_CLIENT' | translate) }}
                     </button>
                     @if (selectedClientName()) {
                         <button type="button" (click)="filters['dossier.client.id'] = null; selectedClientName.set(null); onFilterChange()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
@@ -101,11 +101,11 @@
             </div>
             <!-- Dossier -->
             <div>
-                <label class="block text-xs font-medium text-gray-700 mb-1.5">N° Dossier</label>
+                <label class="block text-xs font-medium text-gray-700 mb-1.5">{{ 'INVOICE_LIST.DOSSIER_NUMBER' | translate }}</label>
                 <div class="relative">
                     <button type="button" (click)="openDossierDialog()" [disabled]="!filters['dossier.client.id']"
                         class="w-full text-left rounded-lg border border-gray-300 bg-gray-50 text-gray-900 shadow-sm focus:bg-white focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                        {{ selectedDossierName() || 'Sélectionner un dossier...' }}
+                        {{ selectedDossierName() || ('INVOICE_LIST.SELECT_DOSSIER' | translate) }}
                     </button>
                     @if (selectedDossierName()) {
                         <button type="button" (click)="filters['dossier.id'] = null; selectedDossierName.set(null); onFilterChange()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600">
@@ -152,7 +152,7 @@
                         <th scope="col" (click)="sortBy('numeroFacture')"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
                             <div class="flex items-center gap-1">
-                                N° Facture
+                                {{ 'INVOICE_LIST.INVOICE_NUMBER' | translate }}
                                 <span class="text-gray-400 group-hover:text-gray-600">
                                     @if (sortColumn() === 'numeroFacture') {
                                         <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
@@ -166,7 +166,7 @@
                         <th scope="col" (click)="sortBy('dossier.client.id')"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
                             <div class="flex items-center gap-1">
-                                Client
+                                {{ 'INVOICE_LIST.CLIENT' | translate }}
                                 <span class="text-gray-400 group-hover:text-gray-600">
                                     @if (sortColumn() === 'dossier.client.id') {
                                         <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
@@ -180,7 +180,7 @@
                         <th scope="col" (click)="sortBy('dossier.referenceInterne')"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
                             <div class="flex items-center gap-1">
-                                Dossier
+                                {{ 'INVOICE_LIST.DOSSIER_NUMBER' | translate }}
                                 <span class="text-gray-400 group-hover:text-gray-600">
                                     @if (sortColumn() === 'dossier.referenceInterne') {
                                         <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
@@ -194,7 +194,7 @@
                         <th scope="col" (click)="sortBy('issueDate')"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
                             <div class="flex items-center gap-1">
-                                Date
+                                {{ 'INVOICE_LIST.DATE' | translate }}
                                 <span class="text-gray-400 group-hover:text-gray-600">
                                     @if (sortColumn() === 'issueDate') {
                                         <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
@@ -208,7 +208,7 @@
                         <th scope="col" (click)="sortBy('totalAmount')"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
                             <div class="flex items-center gap-1">
-                                Montant TTC
+                                {{ 'INVOICE_LIST.AMOUNT_TTC' | translate }}
                                 <span class="text-gray-400 group-hover:text-gray-600">
                                     @if (sortColumn() === 'totalAmount') {
                                         <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
@@ -222,7 +222,7 @@
                         <th scope="col" (click)="sortBy('status')"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors group">
                             <div class="flex items-center gap-1">
-                                Statut
+                                {{ 'INVOICE_LIST.STATUS' | translate }}
                                 <span class="text-gray-400 group-hover:text-gray-600">
                                     @if (sortColumn() === 'status') {
                                         <svg *ngIf="sortDirection() === 'asc'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
@@ -233,7 +233,7 @@
                                 </span>
                             </div>
                         </th>
-                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">{{ 'INVOICE_LIST.ACTIONS' | translate }}</span></th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -283,14 +283,14 @@
                             <!-- Dropdown / Actions -->
                             <div class="flex items-center justify-end space-x-3">
                                 <button (click)="printInvoice(invoice.id)"
-                                    class="text-teal-500 hover:text-teal-900 transition" title="Imprimer PDF">
+                                    class="text-teal-500 hover:text-teal-900 transition" [title]="'INVOICE_LIST.PRINT_PDF' | translate">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                                     </svg>
                                 </button>
                                 <button (click)="previewInvoice(invoice.id)"
-                                    class="text-gray-400 hover:text-gray-600 transition" title="Voir l'aperçu">
+                                    class="text-gray-400 hover:text-gray-600 transition" [title]="'INVOICE_LIST.PREVIEW' | translate">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -299,19 +299,12 @@
                                     </svg>
                                 </button>
                                 <button (click)="editInvoice(invoice.id)"
-                                    class="text-indigo-500 hover:text-indigo-900 transition" title="Modifier">
+                                    class="text-indigo-500 hover:text-indigo-900 transition" [title]="'INVOICE_LIST.EDIT' | translate">
                                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
                                 </button>
-                                <!-- <button (click)="deleteInvoice(invoice.id)"
-                                    class="text-red-500 hover:text-red-900 transition" title="Supprimer">
-                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                </button> -->
                             </div>
                         </td>
                     </tr>
@@ -323,9 +316,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
-                            <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune facture trouvée</h3>
-                            <p class="mt-1 text-sm text-gray-500">Commencez par créer une nouvelle facture en cliquant
-                                sur le bouton ci-dessus.</p>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">{{ 'INVOICE_LIST.NO_INVOICE_FOUND' | translate }}</h3>
+                            <p class="mt-1 text-sm text-gray-500">{{ 'INVOICE_LIST.START_NEW_INVOICE' | translate }}</p>
                         </td>
                     </tr>
                     }
@@ -338,22 +330,22 @@
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
                     <p class="text-sm text-gray-700">
-                        Page <span class="font-medium">{{ currentPage() + 1 }}</span> sur <span class="font-medium">{{ totalPages() }}</span>
-                        (Total: {{ totalElements() }})
+                        {{ 'INVOICE_LIST.PAGE' | translate }} <span class="font-medium">{{ currentPage() + 1 }}</span> {{ 'INVOICE_LIST.ON' | translate }} <span class="font-medium">{{ totalPages() }}</span>
+                        ({{ 'INVOICE_LIST.TOTAL' | translate }} {{ totalElements() }})
                     </p>
                 </div>
                 <div>
                     <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                         <button (click)="prevPage()" [disabled]="currentPage() === 0"
                             class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <span class="sr-only">Précédent</span>
+                            <span class="sr-only">{{ 'INVOICE_LIST.PREVIOUS' | translate }}</span>
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                             </svg>
                         </button>
                         <button (click)="nextPage()" [disabled]="currentPage() >= totalPages() - 1"
                             class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                            <span class="sr-only">Suivant</span>
+                            <span class="sr-only">{{ 'INVOICE_LIST.NEXT' | translate }}</span>
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                             </svg>

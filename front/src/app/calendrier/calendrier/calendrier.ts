@@ -5,9 +5,11 @@ import { CalendrierJour } from "../calendrier-jour/calendrier-jour";
 import { CalendrierSemaine } from "../calendrier-semaine/calendrier-semaine";
 import { AppointementDialogComponent } from '../appointement-dialog/appointement-dialog';
 
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-calendrier',
-  imports: [CommonModule, FormsModule, CalendrierJour, CalendrierSemaine,],
+  imports: [CommonModule, FormsModule, CalendrierJour, CalendrierSemaine, TranslatePipe, TranslateDirective],
   templateUrl: './calendrier.html',
   styleUrl: './calendrier.css'
 })

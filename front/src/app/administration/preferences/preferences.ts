@@ -1,10 +1,13 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { NavigationService } from '../../services/navigation-service';
-import { FormGroup } from '@angular/forms';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-preferences',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, RouterModule, TranslatePipe, TranslateDirective],
   templateUrl: './preferences.html',
   styleUrl: './preferences.css',
 })

@@ -10,10 +10,12 @@ import { NavigationService } from '../../services/navigation-service';
 import { SecteurActiviteService } from '../../services/secteur-activite-service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-association-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, DocumentDialog],
+    imports: [CommonModule, ReactiveFormsModule, DocumentDialog, TranslatePipe, TranslateDirective],
     templateUrl: './association-form.component.html',
     styleUrls: ['./association-form.component.css']
 })

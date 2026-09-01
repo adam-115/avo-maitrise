@@ -2,11 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { User } from '../../appTypes';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-user-selection-dialog',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TranslatePipe, TranslateDirective],
     templateUrl: './user-selection-dialog.html',
     styleUrl: './user-selection-dialog.css'
 })

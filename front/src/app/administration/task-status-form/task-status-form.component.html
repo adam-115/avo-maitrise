@@ -1,29 +1,28 @@
 <div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4">Gestion des États de Tâches</h2>
+    <h2 class="text-2xl font-bold mb-4">{{ 'TASK_STATUS_FORM.TITLE' | translate }}</h2>
 
     <!-- Formulaire d'ajout/édition -->
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h3 class="text-xl font-semibold mb-2">{{ isEditing ? 'Modifier' : 'Ajouter' }} un État</h3>
+        <h3 class="text-xl font-semibold mb-2">{{ isEditing ? ('TASK_STATUS_FORM.EDIT_STATUS' | translate) : ('TASK_STATUS_FORM.ADD_STATUS' | translate) }}</h3>
 
         <form [formGroup]="statusForm" (ngSubmit)="onSubmit()">
             <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="libelle">Libellé</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="libelle">{{ 'TASK_STATUS_FORM.LABEL' | translate }}</label>
                     <input id="libelle" type="text" formControlName="libelle"
                         class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                        placeholder="Ex: En cours" />
+                        [placeholder]="'TASK_STATUS_FORM.LABEL_PLACEHOLDER' | translate" />
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="code">Code</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="code">{{ 'TASK_STATUS_FORM.CODE' | translate }}</label>
                     <input id="code" type="text" formControlName="code"
                         class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                        placeholder="Ex: EN_COURS" />
+                        [placeholder]="'TASK_STATUS_FORM.CODE_PLACEHOLDER' | translate" />
                 </div>
 
                 <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="ordre_affichage">Ordre
-                        d'affichage</label>
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="ordre_affichage">{{ 'TASK_STATUS_FORM.DISPLAY_ORDER' | translate }}</label>
                     <input id="ordre_affichage" type="number" formControlName="ordre_affichage"
                         class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors" />
                 </div>
@@ -31,7 +30,7 @@
                 <div class="flex items-center mt-6">
                     <input id="isClosingStatus" type="checkbox" formControlName="isClosingStatus"
                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
-                    <label for="isClosingStatus" class="ml-2 block text-sm text-gray-900">Est un état de clôture</label>
+                    <label for="isClosingStatus" class="ml-2 block text-sm text-gray-900">{{ 'TASK_STATUS_FORM.IS_CLOSING' | translate }}</label>
                 </div>
             </div>
 
@@ -39,11 +38,11 @@
                 <button
                     class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer disabled:opacity-50"
                     type="submit" [disabled]="statusForm.invalid">
-                    {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
+                    {{ isEditing ? ('TASK_STATUS_FORM.UPDATE' | translate) : ('TASK_STATUS_FORM.ADD' | translate) }}
                 </button>
                 <button *ngIf="isEditing" type="button" (click)="cancelEdit()"
                     class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer">
-                    Annuler
+                    {{ 'TASK_STATUS_FORM.CANCEL' | translate }}
                 </button>
             </div>
         </form>
@@ -51,30 +50,30 @@
 
     <!-- Liste des états -->
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
-        <h3 class="text-xl font-semibold mb-4">Liste des États de Tâches</h3>
+        <h3 class="text-xl font-semibold mb-4">{{ 'TASK_STATUS_FORM.LIST_TITLE' | translate }}</h3>
         <div class="overflow-x-auto">
             <table class="min-w-full leading-normal">
                 <thead>
                     <tr>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Ordre
+                            {{ 'TASK_STATUS_FORM.TABLE_ORDER' | translate }}
                         </th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Libellé
+                            {{ 'TASK_STATUS_FORM.TABLE_LABEL' | translate }}
                         </th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Code
+                            {{ 'TASK_STATUS_FORM.TABLE_CODE' | translate }}
                         </th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Clôture ?
+                            {{ 'TASK_STATUS_FORM.TABLE_CLOSING' | translate }}
                         </th>
                         <th
                             class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Actions
+                            {{ 'TASK_STATUS_FORM.TABLE_ACTIONS' | translate }}
                         </th>
                     </tr>
                 </thead>
@@ -88,14 +87,14 @@
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                                 [ngClass]="status.isClosingStatus ? 'bg-indigo-100 text-indigo-800' : 'bg-gray-100 text-gray-800'">
-                                {{ status.isClosingStatus ? 'Oui' : 'Non' }}
+                                {{ status.isClosingStatus ? ('TASK_STATUS_FORM.YES' | translate) : ('TASK_STATUS_FORM.NO' | translate) }}
                             </span>
                         </td>
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <button (click)="editStatus(status)"
-                                class="text-blue-600 hover:text-blue-900 mr-4 cursor-pointer">Éditer</button>
+                                class="text-blue-600 hover:text-blue-900 mr-4 cursor-pointer">{{ 'TASK_STATUS_FORM.ACTION_EDIT' | translate }}</button>
                             <button (click)="deleteStatus(status.id)"
-                                class="text-red-600 hover:text-red-900 cursor-pointer">Supprimer</button>
+                                class="text-red-600 hover:text-red-900 cursor-pointer">{{ 'TASK_STATUS_FORM.ACTION_DELETE' | translate }}</button>
                         </td>
                     </tr>
                 </tbody>

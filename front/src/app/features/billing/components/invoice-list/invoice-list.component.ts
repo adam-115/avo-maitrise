@@ -1,5 +1,5 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InvoiceService } from '../../services/invoice.service';
 import { InvoiceEntity, InvoiceStatusEnum } from '../../../../appTypes';
@@ -10,11 +10,12 @@ import { ClientSelectionDialog } from '../../../../dossier/client-selection-dial
 import { DossierSelectionDialog } from '../../../../dossier/dossier-selection-dialog/dossier-selection-dialog';
 import { Client, Dossier } from '../../../../appTypes';
 import { DossierService } from '../../../../services/dossier.service';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-invoice-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, RouterModule, ClientSelectionDialog, DossierSelectionDialog],
+    imports: [CommonModule, FormsModule, RouterModule, ClientSelectionDialog, DossierSelectionDialog, DecimalPipe, TranslatePipe, TranslateDirective],
     templateUrl: './invoice-list.component.html'
 })
 export class InvoiceListComponent implements OnInit {

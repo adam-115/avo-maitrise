@@ -4,11 +4,12 @@ import { BillingDashboardService, UnbilledDossierSummary } from '../../services/
 import { CabinetProfileService } from '../../../../services/cabinet-profile.service';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-billing-dashboard',
     standalone: true,
-    imports: [CommonModule, RouterModule, FormsModule],
+    imports: [CommonModule, RouterModule, FormsModule, TranslatePipe, TranslateDirective],
     templateUrl: './billing-dashboard.component.html'
 })
 export class BillingDashboardComponent implements OnInit {

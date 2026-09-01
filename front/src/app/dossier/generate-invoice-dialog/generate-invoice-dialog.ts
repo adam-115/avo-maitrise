@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 import { InvoiceTimeEntry } from '../../appTypes';
 import { CabinetProfileService } from '../../services/cabinet-profile.service';
 
@@ -13,7 +14,7 @@ export interface SelectableTimeEntry {
 @Component({
   selector: 'app-generate-invoice-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './generate-invoice-dialog.html'
 })
 export class GenerateInvoiceDialog implements OnChanges, OnInit {

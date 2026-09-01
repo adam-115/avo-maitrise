@@ -5,11 +5,12 @@ import { Task, TaskCategory, TaskStatus, User, TaskLog } from '../../../appTypes
 import { UserSelectionDialog } from '../../user-selection-dialog/user-selection-dialog';
 import { TaskLogService } from '../../../services/task-log.service';
 import { PaginatedResponse } from '../../../services/genericService/abstract-crud.service';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-task-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, UserSelectionDialog],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, UserSelectionDialog, TranslatePipe, TranslateDirective],
   templateUrl: './task-dialog.component.html'
 })
 export class TaskDialogComponent implements OnInit {

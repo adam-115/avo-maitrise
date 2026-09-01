@@ -1,18 +1,18 @@
 <!-- En-tête avec titre et sélecteurs de vue -->
 <div class="flex justify-between items-center mb-6">
-  <h1 class="text-3xl font-bold text-gray-800">Calendrier Judiciaire</h1>
+  <h1 class="text-3xl font-bold text-gray-800">{{ 'CALENDAR.TITLE' | translate }}</h1>
 
   <!-- Sélecteurs de vue -->
   <div class="flex gap-2 bg-white rounded-lg shadow p-1">
     <button (click)="selectedView = 'day'" [class.bg-cyan-600]="selectedView === 'day'"
       [class.text-white]="selectedView === 'day'" [class.text-gray-600]="selectedView !== 'day'"
       class="px-4 py-2 rounded-md font-medium transition duration-150 hover:bg-cyan-500 hover:text-white">
-      Vue Jour
+      {{ 'CALENDAR.DAY_VIEW' | translate }}
     </button>
     <button (click)="selectedView = 'week'" [class.bg-cyan-600]="selectedView === 'week'"
       [class.text-white]="selectedView === 'week'" [class.text-gray-600]="selectedView !== 'week'"
       class="px-4 py-2 rounded-md font-medium transition duration-150 hover:bg-cyan-500 hover:text-white">
-      Vue Semaine
+      {{ 'CALENDAR.WEEK_VIEW' | translate }}
     </button>
 
 

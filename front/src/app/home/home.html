@@ -6,10 +6,28 @@
     <aside [ngClass]="{'translate-x-0 ease-out': isSidebarOpen, '-translate-x-full ease-in': !isSidebarOpen}" class="fixed inset-y-0 left-0 z-30 w-64 bg-slate-900 text-white flex flex-col shadow-2xl
                   transform transition duration-300 lg:translate-x-0 lg:static lg:flex-shrink-0">
 
-        <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/30 relative">
+        <div class="p-4 border-b border-slate-800 flex flex-col items-center bg-slate-950/30 relative gap-5">
             <div class="flex items-center justify-center w-full py-1">
                 <img src="/logo-app.jpg" alt="SI Legal" class="w-44 h-auto rounded-lg shadow-md hover:scale-105 transition-transform duration-300">
             </div>
+
+            <!-- Language Switcher (Top Left) -->
+            <div class="w-full relative flex items-center p-2 bg-gradient-to-r from-slate-800/80 to-slate-800/40 hover:from-slate-700/90 hover:to-slate-700/50 rounded-xl transition-all duration-300 border border-slate-600/40 shadow-lg group">
+                <div class="flex-shrink-0 text-cyan-400 bg-cyan-900/40 group-hover:bg-cyan-500/20 group-hover:text-cyan-300 p-2 rounded-lg transition-colors duration-300 shadow-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+                </div>
+                <select (change)="changeLanguage($event)" [value]="currentLang" class="w-full pl-3 pr-8 py-1.5 bg-transparent border-none text-sm text-gray-200 group-hover:text-white focus:ring-0 cursor-pointer font-semibold appearance-none outline-none tracking-wide transition-colors">
+                    <option value="fr" class="bg-slate-800 text-white">{{ 'LANGUAGE.FR' | translate }}</option>
+                    <option value="en" class="bg-slate-800 text-white">{{ 'LANGUAGE.EN' | translate }}</option>
+                    <option value="es" class="bg-slate-800 text-white">{{ 'LANGUAGE.ES' | translate }}</option>
+                    <option value="de" class="bg-slate-800 text-white">{{ 'LANGUAGE.DE' | translate }}</option>
+                    <option value="it" class="bg-slate-800 text-white">{{ 'LANGUAGE.IT' | translate }}</option>
+                </select>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                    <svg class="w-4 h-4 text-cyan-500/50 group-hover:text-cyan-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </div>
+
             <button (click)="isSidebarOpen = false" class="lg:hidden text-gray-400 hover:text-white absolute right-4 top-4">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg">
@@ -29,13 +47,13 @@
                         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l7 7m-7-7v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
                     </path>
                 </svg>
-                <span>Accueil</span>
+                <span>{{ 'MENU.HOME' | translate }}</span>
             </a>
             <a (click)="navigateToAmlCompliance()"
                 [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
                 class="flex items-center cursor-pointer space-x-3 p-3 rounded-lg duration-150">
                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618"></path></svg>
-                <span>Conformité (AML)</span>
+                <span>{{ 'MENU.AML' | translate }}</span>
             </a>
             <a (click)="navigateToClientDiligenceStatusList()"
                 [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
@@ -43,7 +61,7 @@
                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                  </svg>
-                 <span>Suivi des Diligences</span>
+                 <span>{{ 'MENU.DILIGENCE_TRACKING' | translate }}</span>
             </a>
             <a (click)="navigateToCalendrier()"
                 [ngClass]="activeRoute === paths.CALENDRIER ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
@@ -54,7 +72,7 @@
                         d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
                     </path>
                 </svg>
-                <span>Calendrier Judiciaire</span>
+                <span>{{ 'MENU.CALENDAR' | translate }}</span>
             </a>
             <a (click)="navigateTODossier()"
                 [ngClass]="activeRoute === paths.DOSSIER ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
@@ -64,7 +82,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
                 </svg>
-                <span>Gestion des Dossiers</span>
+                <span>{{ 'MENU.DOSSIER' | translate }}</span>
             </a>
             <a (click)="navigateTOClients()"
                 [ngClass]="activeRoute === paths.CRM ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
@@ -75,7 +93,7 @@
                         d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z">
                     </path>
                 </svg>
-                <span>Gestion des Clients</span>
+                <span>{{ 'MENU.CLIENTS' | translate }}</span>
             </a>
             <a (click)="navigateToModel()"
                 [ngClass]="activeRoute === paths.MODEL ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
@@ -86,7 +104,7 @@
                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                     </path>
                 </svg>
-                <span>Gestion Documentaire (GED)</span>
+                <span>{{ 'MENU.MODEL' | translate }}</span>
             </a>
             <a (click)="navigateToFacturation()"
                 [ngClass]="activeRoute === paths.FACTURATION ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
@@ -97,7 +115,7 @@
                         d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z">
                     </path>
                 </svg>
-                <span>Facturation</span>
+                <span>{{ 'MENU.BILLING' | translate }}</span>
             </a>
             <a (click)="navigateToBillingDashboard()"
                 [ngClass]="activeRoute === paths.BILLING_DASHBOARD ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
@@ -108,7 +126,7 @@
                         d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                     </path>
                 </svg>
-                <span>Tableau de bord (Facturation)</span>
+                <span>{{ 'MENU.BILLING_DASHBOARD' | translate }}</span>
             </a>
             <a (click)="navigateToAdministration()"
                 [ngClass]="activeRoute === paths.ADMINSTRATION ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
@@ -121,7 +139,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 </svg>
-                <span>Administration</span>
+                <span>{{ 'MENU.ADMINISTRATION' | translate }}</span>
             </a>
 
         </nav>
@@ -132,7 +150,7 @@
                 <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                <span>Se déconnecter</span>
+                <span>{{ 'MENU.LOGOUT' | translate }}</span>
             </button>
         </div>
     </aside>

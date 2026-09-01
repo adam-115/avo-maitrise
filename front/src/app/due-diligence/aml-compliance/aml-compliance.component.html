@@ -3,19 +3,17 @@
   <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
     <div class="space-y-1">
       <nav class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">
-        <span class="hover:text-cyan-600 cursor-pointer" routerLink="/home">Tableau de Bord</span>
+        <span class="hover:text-cyan-600 cursor-pointer" routerLink="/home">{{ 'AML_COMPLIANCE.BREADCRUMB_DASHBOARD' | translate }}</span>
         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <span class="text-slate-900">Conformité AML</span>
+        <span class="text-slate-900">{{ 'AML_COMPLIANCE.BREADCRUMB_AML' | translate }}</span>
       </nav>
       <h1 class="text-4xl font-black text-slate-900 tracking-tight">
-        Suivi de la <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">Conformité
-          (AML / KYC)</span>
+        {{ 'AML_COMPLIANCE.TITLE_PREFIX' | translate }}<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">{{ 'AML_COMPLIANCE.TITLE_HIGHLIGHT' | translate }}</span>
       </h1>
       <p class="text-slate-500 font-medium max-w-2xl">
-        Analysez la situation AML globale de votre cabinet, visualisez le niveau de risque par secteur et supervisez les
-        filtrages de sanctions.
+        {{ 'AML_COMPLIANCE.SUBTITLE' | translate }}
       </p>
     </div>
 
@@ -30,7 +28,7 @@
         </svg>
         <div *ngIf="triggeringClients"
           class="w-5.5 h-5.5 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
-        <span>Lancer la vérification des Clients</span>
+        <span>{{ 'AML_COMPLIANCE.BTN_TRIGGER_CLIENTS' | translate }}</span>
       </button>
 
 
@@ -39,7 +37,7 @@
         <svg class="w-5 h-5 text-cyan-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
         </svg>
-        <span>Rapport Clients (PDF)</span>
+        <span>{{ 'AML_COMPLIANCE.BTN_REPORT_CLIENTS' | translate }}</span>
       </button>
 
       <button (click)="openReportModal('UBO')" [disabled]="loading"
@@ -47,7 +45,7 @@
         <svg class="w-5 h-5 text-blue-300 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
         </svg>
-        <span>Rapport UBOs (PDF)</span>
+        <span>{{ 'AML_COMPLIANCE.BTN_REPORT_UBOS' | translate }}</span>
       </button>
     </div>
   </div>
@@ -55,7 +53,7 @@
   <!-- Loading State -->
   <div *ngIf="loading" class="flex flex-col items-center justify-center py-20">
     <div class="w-16 h-16 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
-    <p class="text-slate-500 font-bold mt-4">Chargement des indicateurs de conformité...</p>
+    <p class="text-slate-500 font-bold mt-4">{{ 'AML_COMPLIANCE.LOADING_TEXT' | translate }}</p>
   </div>
 
   <div *ngIf="!loading" class="space-y-10">
@@ -66,7 +64,7 @@
       <div
         class="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
         <div class="flex items-center justify-between mb-4">
-          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">Taux de Conformité</span>
+          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">{{ 'AML_COMPLIANCE.KPI_COMPLIANCE_RATE' | translate }}</span>
           <div class="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -76,7 +74,7 @@
         </div>
         <div class="flex items-baseline gap-2">
           <span class="text-3xl font-black text-slate-950">{{ complianceRate }}%</span>
-          <span class="text-xs font-bold text-slate-400">des clients validés</span>
+          <span class="text-xs font-bold text-slate-400">{{ 'AML_COMPLIANCE.KPI_COMPLIANCE_DESC' | translate }}</span>
         </div>
         <div class="w-full bg-slate-100 h-2 rounded-full mt-4 overflow-hidden">
           <div class="bg-cyan-600 h-full rounded-full transition-all duration-500" [style.width.%]="complianceRate">
@@ -88,7 +86,7 @@
       <div [ngClass]="alertCount > 0 ? 'border-rose-300 bg-rose-50/20' : 'bg-white border-slate-200'"
         class="p-6 rounded-[32px] border shadow-sm hover:shadow-md transition-all duration-300">
         <div class="flex items-center justify-between mb-4">
-          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">Alertes Sanctions</span>
+          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">{{ 'AML_COMPLIANCE.KPI_ALERTS' | translate }}</span>
           <div [ngClass]="alertCount > 0 ? 'bg-rose-100 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-400'"
             class="w-10 h-10 rounded-xl flex items-center justify-center">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,10 +98,10 @@
         <div class="flex items-baseline gap-2">
           <span class="text-3xl font-black" [ngClass]="alertCount > 0 ? 'text-rose-600' : 'text-slate-950'">{{
             alertCount }}</span>
-          <span class="text-xs font-bold text-slate-400">correspondances en attente</span>
+          <span class="text-xs font-bold text-slate-400">{{ 'AML_COMPLIANCE.KPI_ALERTS_PENDING' | translate }}</span>
         </div>
         <p class="text-xs font-medium text-slate-400 mt-4">
-          {{ alertCount > 0 ? 'Analyses de sanctions requises immédiatement.' : 'Aucun hit critique non résolu.' }}
+          {{ alertCount > 0 ? ('AML_COMPLIANCE.KPI_ALERTS_REQ' | translate) : ('AML_COMPLIANCE.KPI_ALERTS_NO_HIT' | translate) }}
         </p>
       </div>
 
@@ -111,7 +109,7 @@
       <div
         class="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
         <div class="flex items-center justify-between mb-4">
-          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">Dossiers sous Revue</span>
+          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">{{ 'AML_COMPLIANCE.KPI_PENDING_REVIEW' | translate }}</span>
           <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -121,11 +119,11 @@
         </div>
         <div class="flex items-baseline gap-2">
           <span class="text-3xl font-black text-slate-950">{{ pendingReviewCount }}</span>
-          <span class="text-xs font-bold text-slate-400">en attente d'approbation</span>
+          <span class="text-xs font-bold text-slate-400">{{ 'AML_COMPLIANCE.KPI_PENDING_DESC' | translate }}</span>
         </div>
         <div class="flex items-center gap-1.5 text-xs text-amber-600 font-bold mt-4">
           <div class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></div>
-          {{ amlRequiredCount }} formulaires à remplir
+          {{ amlRequiredCount }} {{ 'AML_COMPLIANCE.KPI_PENDING_FORMS' | translate }}
         </div>
       </div>
 
@@ -133,7 +131,7 @@
       <div
         class="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
         <div class="flex items-center justify-between mb-4">
-          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">Score de Risque Moyen</span>
+          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">{{ 'AML_COMPLIANCE.KPI_AVG_RISK' | translate }}</span>
           <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -143,7 +141,7 @@
         </div>
         <div class="flex items-baseline gap-2">
           <span class="text-3xl font-black text-slate-950">{{ averageRiskScore }}%</span>
-          <span class="text-xs font-bold text-slate-400">score de screening moyen</span>
+          <span class="text-xs font-bold text-slate-400">{{ 'AML_COMPLIANCE.KPI_AVG_RISK_DESC' | translate }}</span>
         </div>
         <div class="w-full bg-slate-100 h-2 rounded-full mt-4 overflow-hidden">
           <div class="h-full rounded-full transition-all duration-500"
@@ -160,15 +158,14 @@
       <!-- Sector Risk Score -->
       <div class="bg-white p-8 rounded-[36px] border border-slate-200 shadow-sm flex flex-col justify-between">
         <div>
-          <h3 class="text-xl font-black text-slate-950 mb-1">Top Secteurs d'Activité Exposés</h3>
-          <p class="text-sm text-slate-400 font-semibold mb-6">Moyenne du score de screening de sanctions par secteur
-          </p>
+          <h3 class="text-xl font-black text-slate-950 mb-1">{{ 'AML_COMPLIANCE.CHART_SECTOR_TITLE' | translate }}</h3>
+          <p class="text-sm text-slate-400 font-semibold mb-6">{{ 'AML_COMPLIANCE.CHART_SECTOR_DESC' | translate }}</p>
         </div>
         <div class="space-y-4">
           <div *ngFor="let s of sectorRisks" class="space-y-1">
             <div class="flex justify-between text-sm font-bold text-slate-700">
               <span>{{ s.sector }}</span>
-              <span class="text-slate-400 font-medium">Vol: {{ s.count }} - Score moyen : <strong
+              <span class="text-slate-400 font-medium">{{ 'AML_COMPLIANCE.VOL' | translate }}{{ s.count }}{{ 'AML_COMPLIANCE.AVG_SCORE' | translate }}<strong
                   class="text-slate-700">{{ s.avgRisk }}%</strong></span>
             </div>
             <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
@@ -178,7 +175,7 @@
             </div>
           </div>
           <div *ngIf="sectorRisks.length === 0" class="py-6 text-center text-slate-400 font-bold">
-            Aucun secteur d'activité répertorié.
+            {{ 'AML_COMPLIANCE.NO_SECTORS' | translate }}
           </div>
         </div>
       </div>
@@ -186,8 +183,8 @@
       <!-- Client Type Breakdown -->
       <div class="bg-white p-8 rounded-[36px] border border-slate-200 shadow-sm flex flex-col justify-between">
         <div>
-          <h3 class="text-xl font-black text-slate-950 mb-1">Répartition par Catégories</h3>
-          <p class="text-sm text-slate-400 font-semibold mb-6">Proportion des clients enregistrés par type d'entité</p>
+          <h3 class="text-xl font-black text-slate-950 mb-1">{{ 'AML_COMPLIANCE.CHART_TYPE_TITLE' | translate }}</h3>
+          <p class="text-sm text-slate-400 font-semibold mb-6">{{ 'AML_COMPLIANCE.CHART_TYPE_DESC' | translate }}</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div *ngFor="let type of clientTypeCounts"
@@ -196,7 +193,7 @@
             <p class="text-xs text-slate-400 font-bold mt-1 uppercase tracking-wider">{{ type.type }}</p>
           </div>
           <div *ngIf="clientTypeCounts.length === 0" class="col-span-2 py-8 text-center text-slate-400 font-bold">
-            Aucun type de client enregistré.
+            {{ 'AML_COMPLIANCE.NO_TYPES' | translate }}
           </div>
         </div>
       </div>
@@ -207,9 +204,8 @@
     <div class="bg-white p-8 rounded-[36px] border border-slate-200 shadow-sm">
       <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 mb-8">
         <div>
-          <h3 class="text-2xl font-black text-slate-950 mb-1">Tableau de Bord des Clients</h3>
-          <p class="text-sm text-slate-400 font-semibold">Examinez le statut individuel de chaque client et appliquez
-            des décisions de conformité</p>
+          <h3 class="text-2xl font-black text-slate-950 mb-1">{{ 'AML_COMPLIANCE.TABLE_TITLE' | translate }}</h3>
+          <p class="text-sm text-slate-400 font-semibold">{{ 'AML_COMPLIANCE.TABLE_DESC' | translate }}</p>
         </div>
 
         <!-- Filters grid -->
@@ -224,35 +220,35 @@
             </div>
             <input [(ngModel)]="searchTerm" (ngModelChange)="resetPagination()"
               class="w-full pl-9 pr-3 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:border-cyan-500 focus:bg-white outline-none transition-all placeholder:text-slate-400 font-semibold text-sm text-slate-700"
-              placeholder="Rechercher client..." type="search">
+              [placeholder]="'AML_COMPLIANCE.SEARCH_PLACEHOLDER' | translate" type="search">
           </div>
 
           <!-- Type filter -->
           <select [(ngModel)]="selectedType" (ngModelChange)="resetPagination()"
             class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-600 cursor-pointer appearance-none">
-            <option value="">Tous les Types</option>
-            <option value="PERSONNE">Personne Physique</option>
-            <option value="SOCIETE">Société / Entité</option>
-            <option value="ASSOCIATION">Association</option>
-            <option value="INSTITUTION">Institution</option>
+            <option value="">{{ 'AML_COMPLIANCE.FILTER_ALL_TYPES' | translate }}</option>
+            <option value="PERSONNE">{{ 'AML_COMPLIANCE.FILTER_TYPE_PERSON' | translate }}</option>
+            <option value="SOCIETE">{{ 'AML_COMPLIANCE.FILTER_TYPE_COMPANY' | translate }}</option>
+            <option value="ASSOCIATION">{{ 'AML_COMPLIANCE.FILTER_TYPE_ASSOCIATION' | translate }}</option>
+            <option value="INSTITUTION">{{ 'AML_COMPLIANCE.FILTER_TYPE_INSTITUTION' | translate }}</option>
           </select>
 
           <!-- Status filter -->
           <select [(ngModel)]="selectedStatus" (ngModelChange)="resetPagination()"
             class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-600 cursor-pointer appearance-none">
-            <option value="">Tous les Statuts</option>
+            <option value="">{{ 'AML_COMPLIANCE.FILTER_ALL_STATUS' | translate }}</option>
             <option *ngFor="let status of clientStatuses" [value]="status">
-              {{ statusDisplayMap[status] }}
+              {{ 'AML_STATUS.' + status | translate }}
             </option>
           </select>
 
           <!-- Risk level filter -->
           <select [(ngModel)]="selectedRisk" (ngModelChange)="resetPagination()"
             class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-600 cursor-pointer appearance-none">
-            <option value="">Tous les Risques</option>
-            <option value="ELEVEE">Risque Élevé (>=70%)</option>
-            <option value="MOYEN">Risque Moyen (40-69%)</option>
-            <option value="FAIBLE">Risque Faible (<40%)< /option>
+            <option value="">{{ 'AML_COMPLIANCE.FILTER_ALL_RISKS' | translate }}</option>
+            <option value="ELEVEE">{{ 'AML_COMPLIANCE.FILTER_RISK_HIGH' | translate }}</option>
+            <option value="MOYEN">{{ 'AML_COMPLIANCE.FILTER_RISK_MEDIUM' | translate }}</option>
+            <option value="FAIBLE">{{ 'AML_COMPLIANCE.FILTER_RISK_LOW' | translate }}</option>
           </select>
         </div>
       </div>
@@ -262,13 +258,13 @@
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="bg-slate-50 border-b border-slate-100">
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">Client</th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">Type & Secteur</th>
+              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">{{ 'AML_COMPLIANCE.TH_CLIENT' | translate }}</th>
+              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">{{ 'AML_COMPLIANCE.TH_TYPE_SECTOR' | translate }}</th>
               <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400 text-center">
-                Correspondances Sanctions</th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">Statut AML (Décision)
+                {{ 'AML_COMPLIANCE.TH_MATCHES' | translate }}</th>
+              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">{{ 'AML_COMPLIANCE.TH_STATUS' | translate }}
               </th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400 text-right">Actions</th>
+              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400 text-right">{{ 'AML_COMPLIANCE.TH_ACTIONS' | translate }}</th>
             </tr>
           </thead>
           <tbody>
@@ -281,7 +277,7 @@
                   <span class="font-bold text-slate-900 text-base">{{ getDisplayName(client) }}</span>
                   <span class="text-xs text-slate-400 font-medium">{{ client.email }}</span>
                   <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ client.pays ||
-                    'Pays inconnu' }}</span>
+                    ('AML_COMPLIANCE.UNKNOWN_COUNTRY' | translate) }}</span>
                 </div>
               </td>
 
@@ -292,7 +288,7 @@
                     {{ translateClientType(client.type || '') }}
                   </span>
                   <span class="text-xs text-slate-400 font-bold italic ml-1">
-                    {{ client.secteurActivite || 'Aucun secteur' }}
+                    {{ client.secteurActivite || ('AML_COMPLIANCE.NO_SECTOR' | translate) }}
                   </span>
                 </div>
               </td>
@@ -304,14 +300,14 @@
                     <span
                       [ngClass]="getClientMatchesCount(client) > 0 ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-400'"
                       class="px-2 py-0.5 rounded text-xs font-bold">
-                      {{ getClientMatchesCount(client) }} hit(s)
+                      {{ getClientMatchesCount(client) }} {{ 'AML_COMPLIANCE.HITS' | translate }}
                     </span>
                     <span *ngIf="getHighestScore(client) > 0" [ngClass]="{
                             'bg-rose-500 text-white': getHighestScore(client) >= 0.7,
                             'bg-amber-500 text-white': getHighestScore(client) >= 0.4 && getHighestScore(client) < 0.7,
                             'bg-emerald-500 text-white': getHighestScore(client) < 0.4
                           }" class="px-2 py-0.5 rounded text-xs font-black">
-                      Score max: {{ getHighestScorePercentage(client) }}
+                      {{ 'AML_COMPLIANCE.MAX_SCORE' | translate }}{{ getHighestScorePercentage(client) }}
                     </span>
                   </div>
                 </div>
@@ -329,7 +325,7 @@
                          }">
                   <option *ngFor="let status of clientStatuses" [value]="status"
                     class="bg-white text-slate-700 font-medium">
-                    {{ statusDisplayMap[status] }}
+                    {{ 'AML_STATUS.' + status | translate }}
                   </option>
                 </select>
               </td>
@@ -337,21 +333,21 @@
               <!-- Action Links -->
               <td class="px-6 py-4 text-right">
                 <div class="flex justify-end gap-2">
-                  <button (click)="viewClientDetails(client)" title="Fiche Client"
+                  <button (click)="viewClientDetails(client)" [title]="'AML_COMPLIANCE.TOOLTIP_CLIENT_SHEET' | translate"
                     class="p-2 text-slate-500 hover:text-cyan-600 bg-slate-100 hover:bg-cyan-50 rounded-xl transition-all cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </button>
-                  <button (click)="viewDiligenceResults(client)" title="Dossier Diligence KYC"
+                  <button (click)="viewDiligenceResults(client)" [title]="'AML_COMPLIANCE.TOOLTIP_KYC_DOSSIER' | translate"
                     class="p-2 text-slate-500 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 rounded-xl transition-all cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </button>
-                  <button (click)="downloadClientKycAudit(client)" title="Télécharger Fiche de Vigilance LCB-FT (PDF)"
+                  <button (click)="downloadClientKycAudit(client)" [title]="'AML_COMPLIANCE.TOOLTIP_DOWNLOAD_PDF' | translate"
                     class="p-2 text-slate-500 hover:text-emerald-600 bg-slate-100 hover:bg-emerald-50 rounded-xl transition-all cursor-pointer">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -364,7 +360,7 @@
             </tr>
             <tr *ngIf="getFilteredClients().length === 0">
               <td colspan="5" class="px-6 py-12 text-center text-slate-400 font-bold">
-                Aucun client ne correspond aux critères de filtrage.
+                {{ 'AML_COMPLIANCE.NO_CLIENTS_FOUND' | translate }}
               </td>
             </tr>
           </tbody>
@@ -374,14 +370,14 @@
       <!-- Pagination Controls -->
       <div *ngIf="totalPages > 1" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white px-8 py-5 rounded-[25px] border border-slate-200 shadow-sm transition-all hover:shadow-md">
         <div class="flex items-center gap-2.5 text-slate-500 font-bold text-base">
-          <span>Affichage de</span>
+          <span>{{ 'AML_COMPLIANCE.PAGINATION_SHOWING' | translate }}</span>
           <select [(ngModel)]="pageSize" (ngModelChange)="resetPagination()"
             class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-sm text-slate-700 cursor-pointer hover:border-slate-300 transition-colors">
             <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
           </select>
-          <span>(de <span class="text-slate-900 font-black">{{ (currentPage - 1) * pageSize + 1 }}</span> à 
-          <span class="text-slate-900 font-black">{{ currentEndIndex }}</span> sur 
-          <span class="text-slate-900 font-black">{{ totalElements }}</span> clients)</span>
+          <span>{{ 'AML_COMPLIANCE.PAGINATION_FROM' | translate }}<span class="text-slate-900 font-black">{{ (currentPage - 1) * pageSize + 1 }}</span>{{ 'AML_COMPLIANCE.PAGINATION_TO' | translate }}
+          <span class="text-slate-900 font-black">{{ currentEndIndex }}</span>{{ 'AML_COMPLIANCE.PAGINATION_OUT_OF' | translate }}
+          <span class="text-slate-900 font-black">{{ totalElements }}</span>{{ 'AML_COMPLIANCE.PAGINATION_CLIENTS' | translate }}</span>
         </div>
 
         <div class="flex items-center gap-2">
@@ -425,8 +421,8 @@
             </svg>
           </div>
           <div>
-            <h3 class="font-black text-lg tracking-wide">{{ reportType === 'UBO' ? "Rapport d'Audit LCB-FT (UBOs)" : "Rapport d'Audit LCB-FT (Clients)" }}</h3>
-            <p class="text-xs text-cyan-300/80 font-medium">Génération via JasperReports</p>
+            <h3 class="font-black text-lg tracking-wide">{{ reportType === 'UBO' ? ('AML_COMPLIANCE.MODAL_TITLE_UBO' | translate) : ('AML_COMPLIANCE.MODAL_TITLE_CLIENT' | translate) }}</h3>
+            <p class="text-xs text-cyan-300/80 font-medium">{{ 'AML_COMPLIANCE.MODAL_SUBTITLE' | translate }}</p>
           </div>
         </div>
         <button (click)="closeReportModal()" [disabled]="generatingReport"
@@ -444,18 +440,18 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <p>
-            Sélectionnez la période d'analyse du statut AML {{ reportType === 'UBO' ? "de vos bénéficiaires effectifs (UBOs)" : "de vos clients" }}. Si vous laissez les dates vides, le rapport sera généré par défaut sur l'historique <strong>des 2 dernières années</strong>.
+            {{ reportType === 'UBO' ? ('AML_COMPLIANCE.MODAL_DESC_UBO' | translate) : ('AML_COMPLIANCE.MODAL_DESC_CLIENT' | translate) }}
           </p>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="space-y-1.5">
-            <label class="block text-xs font-black text-slate-700 uppercase tracking-wider">Date de Début</label>
+            <label class="block text-xs font-black text-slate-700 uppercase tracking-wider">{{ 'AML_COMPLIANCE.MODAL_START_DATE' | translate }}</label>
             <input type="date" [(ngModel)]="reportStartDate" [disabled]="generatingReport"
               class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-cyan-600 outline-none transition-all font-bold text-sm text-slate-700">
           </div>
           <div class="space-y-1.5">
-            <label class="block text-xs font-black text-slate-700 uppercase tracking-wider">Date de Fin</label>
+            <label class="block text-xs font-black text-slate-700 uppercase tracking-wider">{{ 'AML_COMPLIANCE.MODAL_END_DATE' | translate }}</label>
             <input type="date" [(ngModel)]="reportEndDate" [disabled]="generatingReport"
               class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-cyan-600 outline-none transition-all font-bold text-sm text-slate-700">
           </div>
@@ -466,7 +462,7 @@
       <div class="bg-slate-50 px-8 py-5 border-t border-slate-100 flex items-center justify-end gap-3">
         <button (click)="closeReportModal()" [disabled]="generatingReport"
           class="px-5 py-2.5 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-200/60 transition-all cursor-pointer">
-          Annuler
+          {{ 'AML_COMPLIANCE.MODAL_CANCEL' | translate }}
         </button>
         <button (click)="generateAmlReport()" [disabled]="generatingReport"
           class="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black text-sm shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
@@ -474,10 +470,10 @@
           <svg *ngIf="!generatingReport" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <span>{{ generatingReport ? 'Génération en cours...' : 'Télécharger le PDF' }}</span>
+          <span>{{ generatingReport ? ('AML_COMPLIANCE.MODAL_GENERATING' | translate) : ('AML_COMPLIANCE.MODAL_DOWNLOAD' | translate) }}</span>
         </button>
       </div>
 
     </div>
   </div>
-</div>
+</div>

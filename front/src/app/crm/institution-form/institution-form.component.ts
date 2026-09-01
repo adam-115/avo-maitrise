@@ -10,10 +10,12 @@ import { NavigationService } from '../../services/navigation-service';
 import { SecteurActiviteService } from '../../services/secteur-activite-service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-institution-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, DocumentDialog],
+    imports: [CommonModule, ReactiveFormsModule, DocumentDialog, TranslatePipe, TranslateDirective],
     templateUrl: './institution-form.component.html',
     styleUrls: ['./institution-form.component.css']
 })

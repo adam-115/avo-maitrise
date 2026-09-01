@@ -5,11 +5,12 @@ import { NoteCategoryService } from '../../services/note-category.service';
 import { NoteCategory } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { AlertService } from '../../services/alert-service';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-note-category',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, TranslateDirective],
     templateUrl: './note-category.component.html',
     styleUrls: ['./note-category.component.css']
 })

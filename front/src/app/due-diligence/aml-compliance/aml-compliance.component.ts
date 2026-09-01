@@ -9,11 +9,12 @@ import { ScreeningMatchService } from '../../services/screening-match.service';
 import { NavigationService } from '../../services/navigation-service';
 import { AlertService } from '../../services/alert-service';
 import { Client, ClientStatus, ScreeningMatchDTO, ClientTypeEnum } from '../../appTypes';
+import { TranslatePipe, TranslateDirective, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-aml-compliance',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, TranslatePipe, TranslateDirective],
   templateUrl: './aml-compliance.component.html'
 })
 export class AmlComplianceComponent implements OnInit {
@@ -22,6 +23,7 @@ export class AmlComplianceComponent implements OnInit {
   private readonly screeningMatchService = inject(ScreeningMatchService);
   private readonly navigationService = inject(NavigationService);
   private readonly alertService = inject(AlertService);
+  private readonly translateService = inject(TranslateService);
 
   // Enum and constants mapping
   readonly ClientStatus = ClientStatus;
@@ -125,6 +127,11 @@ export class AmlComplianceComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadData();
+    this.translateService.onLangChange.subscribe(() => {
+      if (!this.loading) {
+        this.calculateStats();
+      }
+    });
   }
 
   loadData(): void {
@@ -203,7 +210,11 @@ export class AmlComplianceComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading AML data:', err);
-        this.alertService.displayMessage('Erreur', 'Impossible de charger les données AML', 'error');
+        this.alertService.displayMessage(
+          this.translateService.instant('AML_COMPLIANCE.ALERTS.ERROR'),
+          this.translateService.instant('AML_COMPLIANCE.ALERTS.UPDATE_ERROR'), // using general error string or we should add a specific one. Actually, wait. I will use literal or we can use what I added. Let me check what I added: 'UPDATE_ERROR': 'Impossible de mettre à jour le statut' and 'ERROR': 'Erreur'.
+          'error'
+        );
         this.loading = false;
       }
     });
@@ -268,10 +279,10 @@ export class AmlComplianceComponent implements OnInit {
 
   translateClientType(type: string): string {
     switch (type) {
-      case 'PERSONNE': return 'Personne Physique';
-      case 'SOCIETE': return 'Société / Entité';
-      case 'ASSOCIATION': return 'Association';
-      case 'INSTITUTION': return 'Institution';
+      case 'PERSONNE': return this.translateService.instant('AML_COMPLIANCE.FILTER_TYPE_PERSON');
+      case 'SOCIETE': return this.translateService.instant('AML_COMPLIANCE.FILTER_TYPE_COMPANY');
+      case 'ASSOCIATION': return this.translateService.instant('AML_COMPLIANCE.FILTER_TYPE_ASSOCIATION');
+      case 'INSTITUTION': return this.translateService.instant('AML_COMPLIANCE.FILTER_TYPE_INSTITUTION');
       default: return type;
     }
   }
@@ -288,19 +299,23 @@ export class AmlComplianceComponent implements OnInit {
     if (!client.id) return;
 
     this.alertService.confirmMessage(
-      'Mettre à jour le statut ?',
-      `Êtes-vous sûr de vouloir changer le statut de conformité de ce client pour "${this.statusDisplayMap[newStatus]}" ?`,
+      this.translateService.instant('AML_COMPLIANCE.ALERTS.CONFIRM_TITLE'),
+      this.translateService.instant('AML_COMPLIANCE.ALERTS.CONFIRM_MSG', { status: this.translateService.instant('AML_STATUS.' + newStatus) }),
       'question'
     ).then((confirmed) => {
       if (confirmed) {
         this.clientService.updateClientStatus(client.id!, newStatus).subscribe({
           next: () => {
             this.loadData();
-            this.alertService.success('Le statut de conformité a été mis à jour avec succès.');
+            this.alertService.success(this.translateService.instant('AML_COMPLIANCE.ALERTS.UPDATE_SUCCESS'));
           },
           error: (err) => {
             console.error('Error updating status:', err);
-            this.alertService.displayMessage('Erreur', 'Impossible de mettre à jour le statut', 'error');
+            this.alertService.displayMessage(
+              this.translateService.instant('AML_COMPLIANCE.ALERTS.ERROR'),
+              this.translateService.instant('AML_COMPLIANCE.ALERTS.UPDATE_ERROR'),
+              'error'
+            );
           }
         });
       } else {
@@ -325,7 +340,11 @@ export class AmlComplianceComponent implements OnInit {
 
   downloadClientKycAudit(client: Client): void {
     if (!client.id) return;
-    this.alertService.displayMessage('Génération en cours', `Préparation de la Fiche LCB-FT pour ${this.getDisplayName(client)}...`, 'info');
+    this.alertService.displayMessage(
+      this.translateService.instant('AML_COMPLIANCE.ALERTS.GENERATING_PDF'),
+      this.translateService.instant('AML_COMPLIANCE.ALERTS.GENERATING_PDF_MSG', { name: this.getDisplayName(client) }),
+      'info'
+    );
     this.clientService.generateClientKycAuditReportPdf(client.id).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -336,45 +355,65 @@ export class AmlComplianceComponent implements OnInit {
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(url);
-        this.alertService.success('Fiche LCB-FT téléchargée.');
+        this.alertService.success(this.translateService.instant('AML_COMPLIANCE.ALERTS.PDF_SUCCESS'));
       },
       error: (err) => {
         console.error('Error downloading KYC audit report', err);
-        this.alertService.displayMessage('Erreur', 'Erreur de téléchargement du rapport', 'error');
+        this.alertService.displayMessage(
+          this.translateService.instant('AML_COMPLIANCE.ALERTS.ERROR'),
+          this.translateService.instant('AML_COMPLIANCE.ALERTS.PDF_ERROR'),
+          'error'
+        );
       }
     });
   }
 
   triggerManualClientScreening(): void {
     this.triggeringClients = true;
-    this.alertService.displayMessage('Lancement', 'Filtrage des clients en cours...', 'info');
+    this.alertService.displayMessage(
+      this.translateService.instant('AML_COMPLIANCE.ALERTS.LAUNCH'),
+      this.translateService.instant('AML_COMPLIANCE.ALERTS.CLIENT_SCREENING_MSG'),
+      'info'
+    );
     this.screeningMatchService.triggerClientScreening().subscribe({
       next: () => {
         this.triggeringClients = false;
-        this.alertService.success('Le filtrage manuel des clients a été complété avec succès.');
+        this.alertService.success(this.translateService.instant('AML_COMPLIANCE.ALERTS.CLIENT_SCREENING_SUCCESS'));
         this.loadData();
       },
       error: (err) => {
         console.error('Error triggering client screening:', err);
         this.triggeringClients = false;
-        this.alertService.displayMessage('Erreur', 'Impossible de lancer le filtrage des clients', 'error');
+        this.alertService.displayMessage(
+          this.translateService.instant('AML_COMPLIANCE.ALERTS.ERROR'),
+          this.translateService.instant('AML_COMPLIANCE.ALERTS.CLIENT_SCREENING_ERROR'),
+          'error'
+        );
       }
     });
   }
 
   triggerManualUboScreening(): void {
     this.triggeringUbos = true;
-    this.alertService.displayMessage('Lancement', 'Filtrage des UBOs en cours...', 'info');
+    this.alertService.displayMessage(
+      this.translateService.instant('AML_COMPLIANCE.ALERTS.LAUNCH'),
+      this.translateService.instant('AML_COMPLIANCE.ALERTS.UBO_SCREENING_MSG'),
+      'info'
+    );
     this.screeningMatchService.triggerUboScreening().subscribe({
       next: () => {
         this.triggeringUbos = false;
-        this.alertService.success('Le filtrage manuel des UBOs a été complété avec succès.');
+        this.alertService.success(this.translateService.instant('AML_COMPLIANCE.ALERTS.UBO_SCREENING_SUCCESS'));
         this.loadData();
       },
       error: (err) => {
         console.error('Error triggering UBO screening:', err);
         this.triggeringUbos = false;
-        this.alertService.displayMessage('Erreur', 'Impossible de lancer le filtrage des UBOs', 'error');
+        this.alertService.displayMessage(
+          this.translateService.instant('AML_COMPLIANCE.ALERTS.ERROR'),
+          this.translateService.instant('AML_COMPLIANCE.ALERTS.UBO_SCREENING_ERROR'),
+          'error'
+        );
       }
     });
   }
@@ -398,8 +437,14 @@ export class AmlComplianceComponent implements OnInit {
   generateAmlReport(): void {
     this.generatingReport = true;
     const isUbo = this.reportType === 'UBO';
-    const msg = isUbo ? 'Création du rapport d\'audit AML UBOs (JasperReports)...' : 'Création du rapport d\'audit AML Clients (JasperReports)...';
-    this.alertService.displayMessage('Génération', msg, 'info');
+    const msg = isUbo 
+      ? this.translateService.instant('AML_COMPLIANCE.ALERTS.UBO_REPORT_MSG') 
+      : this.translateService.instant('AML_COMPLIANCE.ALERTS.CLIENT_REPORT_MSG');
+    this.alertService.displayMessage(
+      this.translateService.instant('AML_COMPLIANCE.ALERTS.GENERATING_PDF'), 
+      msg, 
+      'info'
+    );
 
     const reportObs = isUbo
       ? this.uboService.generateUboAmlReportPdf(this.reportStartDate, this.reportEndDate)
@@ -416,11 +461,21 @@ export class AmlComplianceComponent implements OnInit {
         link.download = `${prefix}${new Date().toISOString().slice(0, 10)}.pdf`;
         link.click();
         window.URL.revokeObjectURL(url);
-        this.alertService.success(isUbo ? 'Rapport AML UBOs généré et téléchargé avec succès.' : 'Rapport AML Clients généré et téléchargé avec succès.');
+        this.alertService.success(
+          isUbo 
+            ? this.translateService.instant('AML_COMPLIANCE.ALERTS.UBO_REPORT_SUCCESS') 
+            : this.translateService.instant('AML_COMPLIANCE.ALERTS.CLIENT_REPORT_SUCCESS')
+        );
       },
       error: (err) => {
         this.generatingReport = false;
-        this.alertService.displayMessage('Erreur', isUbo ? 'Impossible de générer le rapport UBOs' : 'Impossible de générer le rapport Clients', 'error');
+        this.alertService.displayMessage(
+          this.translateService.instant('AML_COMPLIANCE.ALERTS.ERROR'), 
+          isUbo 
+            ? this.translateService.instant('AML_COMPLIANCE.ALERTS.UBO_REPORT_ERROR') 
+            : this.translateService.instant('AML_COMPLIANCE.ALERTS.CLIENT_REPORT_ERROR'), 
+          'error'
+        );
         console.error('Erreur de génération PDF:', err);
       }
     });

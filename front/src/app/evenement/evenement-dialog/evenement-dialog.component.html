@@ -6,7 +6,7 @@
 
     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-cyan-50 rounded-t-xl">
       <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
-        Planifier un Nouvel Événement / Délai
+        {{ 'EVENEMENT_DIALOG.TITLE' | translate }}
       </h3>
       <button type="button" (click)="onCloseModal()" class="text-gray-400 hover:text-gray-600 transition">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -19,26 +19,26 @@
       <form id="event-form" class="space-y-5" [formGroup]="eventForm" (ngSubmit)="submitForm()">
 
         <div>
-          <label for="event_title" class="block text-sm font-medium text-gray-700 mb-1">Objet de l'Événement <span
+          <label for="event_title" class="block text-sm font-medium text-gray-700 mb-1">{{ 'EVENEMENT_DIALOG.EVENT_OBJECT' | translate }} <span
               class="text-red-500">*</span></label>
           <input type="text" formControlName="titre" id="event_title" required
-            placeholder="Ex: Audience Juge d'Instruction, Réunion client M. C., Délai de réponse..."
+            [placeholder]="'EVENEMENT_DIALOG.EVENT_OBJECT_PLACEHOLDER' | translate"
             class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
         </div>
 
         <div>
-          <label for="event_type" class="block text-sm font-medium text-gray-700 mb-1">Catégorie <span
+          <label for="event_type" class="block text-sm font-medium text-gray-700 mb-1">{{ 'EVENEMENT_DIALOG.CATEGORY' | translate }} <span
               class="text-red-500">*</span></label>
           <select id="event_type" formControlName="typeId" required
             class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            <option value="" disabled selected>Sélectionner une catégorie</option>
+            <option value="" disabled selected>{{ 'EVENEMENT_DIALOG.CATEGORY_PLACEHOLDER' | translate }}</option>
             <option *ngFor="let type of eventTypes" [value]="type.id">{{ type.label }}</option>
           </select>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label for="event_start_date" class="block text-sm font-medium text-gray-700 mb-1">Début <span
+            <label for="event_start_date" class="block text-sm font-medium text-gray-700 mb-1">{{ 'EVENEMENT_DIALOG.START' | translate }} <span
                 class="text-red-500">*</span></label>
             <div class="flex items-center space-x-2">
               <div class="relative flex-grow">
@@ -52,7 +52,7 @@
             </div>
           </div>
           <div>
-            <label for="event_end_date" class="block text-sm font-medium text-gray-700 mb-1">Fin</label>
+            <label for="event_end_date" class="block text-sm font-medium text-gray-700 mb-1">{{ 'EVENEMENT_DIALOG.END' | translate }}</label>
             <div class="flex items-center space-x-2">
               <div class="relative flex-grow">
                 <input type="date" formControlName="endDate" id="event_end_date"
@@ -67,7 +67,7 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">Intervenants (Responsable / Participants) <span
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'EVENEMENT_DIALOG.INTERVENANTS' | translate }} <span
               class="text-red-500">*</span></label>
 
           <div class="flex flex-wrap gap-2 mb-2">
@@ -75,8 +75,8 @@
               class="inline-flex items-center bg-cyan-100 text-cyan-800 rounded-full px-3 py-1 text-sm font-medium">
               {{ user.username }}
               <button type="button" (click)="removeIntervenant(user.id!)"
-                class="ml-2 text-cyan-600 hover:text-cyan-800 focus:outline-none">
-                <span class="sr-only">Retirer</span>
+                class="ml-2 text-cyan-600 hover:text-cyan-800 focus:outline-none" [title]="'EVENEMENT_DIALOG.REMOVE' | translate">
+                <span class="sr-only">{{ 'EVENEMENT_DIALOG.REMOVE' | translate }}</span>
                 <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd"
                     d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -88,7 +88,7 @@
 
           <button type="button" (click)="openUserDialog()"
             class="input-trigger w-full flex items-center justify-between p-2 border border-gray-300 rounded-lg text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-cyan-500">
-            <span>Sélectionner ou gérer les intervenants</span>
+            <span>{{ 'EVENEMENT_DIALOG.SELECT_MANAGE_INTERVENANTS' | translate }}</span>
             <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
@@ -99,18 +99,17 @@
         </div>
 
         <div>
-          <label for="event_location" class="block text-sm font-medium text-gray-700 mb-1">Lieu (Physique ou
-            Visioconférence)</label>
+          <label for="event_location" class="block text-sm font-medium text-gray-700 mb-1">{{ 'EVENEMENT_DIALOG.LOCATION' | translate }}</label>
           <input type="text" formControlName="lieu" id="event_location"
-            placeholder="Ex: Palais de Justice - Salle 3, Teams Link, Bureau..."
+            [placeholder]="'EVENEMENT_DIALOG.LOCATION_PLACEHOLDER' | translate"
             class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
         </div>
 
         <div>
-          <label for="event_desc" class="block text-sm font-medium text-gray-700 mb-1">Description / Notes</label>
+          <label for="event_desc" class="block text-sm font-medium text-gray-700 mb-1">{{ 'EVENEMENT_DIALOG.DESC_NOTES' | translate }}</label>
           <textarea id="event_desc" formControlName="description" rows="3"
             class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors"
-            placeholder="Détails supplémentaires sur l'audience, instructions pour le collaborateur..."></textarea>
+            [placeholder]="'EVENEMENT_DIALOG.DESC_NOTES_PLACEHOLDER' | translate"></textarea>
         </div>
 
         <div class="flex items-center space-x-6 pt-2">
@@ -118,14 +117,14 @@
             <input id="event_reminder" formControlName="reminder" type="checkbox"
               class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
             <label for="event_reminder" class="ml-2 block text-sm text-gray-900 font-semibold">
-              Activer un rappel
+              {{ 'EVENEMENT_DIALOG.ACTIVATE_REMINDER' | translate }}
             </label>
           </div>
           
           <div *ngIf="eventForm.get('reminder')?.value" class="flex items-center space-x-2 animate-pulse">
             <input type="number" formControlName="reminderMinutesBefore"
               class="w-20 rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-1.5 border-2 border-slate-300 text-sm font-bold text-center">
-            <span class="text-xs text-gray-500 font-medium italic">minutes avant l'événement</span>
+            <span class="text-xs text-gray-500 font-medium italic">{{ 'EVENEMENT_DIALOG.MINUTES_BEFORE' | translate }}</span>
           </div>
         </div>
       </form>
@@ -134,12 +133,12 @@
     <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3 rounded-b-xl">
       <button type="button" (click)="onCloseModal()"
         class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
-        Annuler
+        {{ 'EVENEMENT_DIALOG.CANCEL' | translate }}
       </button>
       <button type="submit" form="event-form" [disabled]="!eventForm.valid || getSelectedIntervenants().length === 0"
         class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white shadow-md transition duration-150"
         [ngClass]="(eventForm.valid && getSelectedIntervenants().length > 0) ? 'bg-cyan-600 hover:bg-cyan-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'">
-        Enregistrer l'Événement
+        {{ 'EVENEMENT_DIALOG.SAVE_EVENT' | translate }}
       </button>
     </div>
 

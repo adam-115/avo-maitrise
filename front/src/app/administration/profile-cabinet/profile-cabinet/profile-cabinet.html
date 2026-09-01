@@ -3,12 +3,12 @@
     <header class="flex items-center justify-between h-16 bg-white shadow-md px-6 sm:px-8 flex-shrink-0">
         <div class="flex items-center space-x-6">
             <h1 class="text-2xl font-extrabold text-slate-800 tracking-wide">
-                Administration
+                {{ 'PROFILE_CABINET.BREADCRUMB_ADMIN' | translate }}
             </h1>
             <nav class="hidden md:flex space-x-4">
                
                 <a href="#" class="text-red-600 font-semibold border-b-2 border-red-600 pb-1 transition duration-150">
-                    Configurations
+                    {{ 'PROFILE_CABINET.CONFIGURATIONS' | translate }}
                 </a>
             </nav>
         </div>
@@ -20,8 +20,8 @@
 
     <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6 sm:p-8">
 
-        <h2 class="text-3xl font-bold text-slate-800 mb-2">Profil du Cabinet et Identité Visuelle</h2>
-        <p class="text-gray-600 mb-8">Gérez le nom légal de l'entreprise, les coordonnées et le logo affiché dans l'application.</p>
+        <h2 class="text-3xl font-bold text-slate-800 mb-2">{{ 'PROFILE_CABINET.TITLE' | translate }}</h2>
+        <p class="text-gray-600 mb-8">{{ 'PROFILE_CABINET.SUBTITLE' | translate }}</p>
 
         <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-xl shadow-2xl">
 
@@ -29,38 +29,38 @@
 
                 <div>
                     <h3 class="text-xl font-semibold text-red-600 mb-4 pb-2 border-b border-gray-200">
-                        Informations Légales et Contact
+                        {{ 'PROFILE_CABINET.LEGAL_INFO_CONTACT' | translate }}
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">Nom Légal du Cabinet / Entreprise</label>
+                            <label for="companyName" class="block text-sm font-medium text-gray-700 mb-1">{{ 'PROFILE_CABINET.COMPANY_NAME' | translate }}</label>
                             <input type="text" id="companyName" formControlName="name" required
                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                            <p class="text-xs text-gray-500 mt-1">Ce nom sera utilisé sur les rapports et en-têtes.</p>
+                            <p class="text-xs text-gray-500 mt-1">{{ 'PROFILE_CABINET.COMPANY_NAME_HELP' | translate }}</p>
                         </div>
 
                         <div>
-                            <label for="siret" class="block text-sm font-medium text-gray-700 mb-1">SIRET / Numéro d'Ordre (Optionnel)</label>
+                            <label for="siret" class="block text-sm font-medium text-gray-700 mb-1">{{ 'PROFILE_CABINET.SIRET' | translate }}</label>
                             <input type="text" id="siret" formControlName="siret"
                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         </div>
 
                         <div>
-                            <label for="emailContact" class="block text-sm font-medium text-gray-700 mb-1">Email de Contact Public</label>
+                            <label for="emailContact" class="block text-sm font-medium text-gray-700 mb-1">{{ 'PROFILE_CABINET.EMAIL_CONTACT' | translate }}</label>
                             <input type="email" id="emailContact" formControlName="email" required
                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         </div>
 
                          <div>
-                            <label for="phoneContact" class="block text-sm font-medium text-gray-700 mb-1">Téléphone de Contact</label>
+                            <label for="phoneContact" class="block text-sm font-medium text-gray-700 mb-1">{{ 'PROFILE_CABINET.PHONE_CONTACT' | translate }}</label>
                             <input type="tel" id="phoneContact" formControlName="phone"
                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         </div>
                     </div>
 
                     <div class="mt-6">
-                        <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Adresse Complète</label>
+                        <label for="address" class="block text-sm font-medium text-gray-700 mb-1">{{ 'PROFILE_CABINET.ADDRESS' | translate }}</label>
                         <textarea id="address" formControlName="address" rows="3"
                                   class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
                     </div>
@@ -68,23 +68,23 @@
 
                 <div>
                     <h3 class="text-xl font-semibold text-red-600 mb-4 pb-2 border-b border-gray-200">
-                        Paramètres de Facturation
+                        {{ 'PROFILE_CABINET.BILLING_SETTINGS' | translate }}
                     </h3>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">Devise de facturation</label>
+                            <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">{{ 'PROFILE_CABINET.CURRENCY' | translate }}</label>
                             <select id="currency" formControlName="currency" required
                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                                <option value="EUR">Euro (€)</option>
-                                <option value="USD">Dollar Américain ($)</option>
-                                <option value="MAD">Dirham Marocain (MAD)</option>
-                                <option value="CHF">Franc Suisse (CHF)</option>
+                                <option value="EUR">{{ 'PROFILE_CABINET.CURRENCY_EUR' | translate }}</option>
+                                <option value="USD">{{ 'PROFILE_CABINET.CURRENCY_USD' | translate }}</option>
+                                <option value="MAD">{{ 'PROFILE_CABINET.CURRENCY_MAD' | translate }}</option>
+                                <option value="CHF">{{ 'PROFILE_CABINET.CURRENCY_CHF' | translate }}</option>
                             </select>
                         </div>
 
                         <div>
-                            <label for="tvaRate" class="block text-sm font-medium text-gray-700 mb-1">Taux de TVA par défaut (%)</label>
+                            <label for="tvaRate" class="block text-sm font-medium text-gray-700 mb-1">{{ 'PROFILE_CABINET.VAT_RATE' | translate }}</label>
                             <input type="number" id="tvaRate" formControlName="tvaRate" required min="0" max="100" step="0.1"
                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
                         </div>
@@ -93,29 +93,29 @@
 
                 <div>
                     <h3 class="text-xl font-semibold text-red-600 mb-4 pb-2 border-b border-gray-200">
-                        Gestion du Logo
+                        {{ 'PROFILE_CABINET.LOGO_MANAGEMENT' | translate }}
                     </h3>
 
                     <div class="flex flex-col sm:flex-row items-start sm:space-x-8 space-y-6 sm:space-y-0 p-4 border border-gray-200 rounded-lg bg-gray-50">
 
                         <div class="flex flex-col items-center flex-shrink-0 w-32 space-y-2">
-                            <p class="text-xs font-semibold text-gray-600">Logo Actuel</p>
+                            <p class="text-xs font-semibold text-gray-600">{{ 'PROFILE_CABINET.CURRENT_LOGO' | translate }}</p>
                             <div class="w-24 h-24 border-2 border-gray-300 rounded-lg flex items-center justify-center p-2 bg-white overflow-hidden shadow-sm">
                                 <img *ngIf="logoPreview" [src]="logoPreview" alt="Logo Cabinet" class="max-w-full max-h-full object-contain">
-                                <span *ngIf="!logoPreview" class="text-xs text-gray-400 text-center">Aucun<br>logo</span>
+                                <span *ngIf="!logoPreview" class="text-xs text-gray-400 text-center" [innerHTML]="'PROFILE_CABINET.NO_LOGO' | translate"></span>
                             </div>
                         </div>
 
                         <div class="flex-grow space-y-4">
-                            <p class="text-sm font-medium text-gray-700">Télécharger un nouveau logo (Formats : PNG, SVG ou JPG)</p>
+                            <p class="text-sm font-medium text-gray-700">{{ 'PROFILE_CABINET.UPLOAD_LOGO' | translate }}</p>
 
                             <label class="block">
-                                <span class="sr-only">Choisir un fichier</span>
+                                <span class="sr-only">{{ 'PROFILE_CABINET.CHOOSE_FILE' | translate }}</span>
                                 <input type="file" id="logoFile" accept=".png, .jpg, .jpeg, .svg" (change)="onLogoSelected($event)"
                                        class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100"/>
                             </label>
 
-                            <p class="text-xs text-gray-500">Taille recommandée : 200x200 pixels. Max 1 Mo.</p>
+                            <p class="text-xs text-gray-500">{{ 'PROFILE_CABINET.LOGO_HELP' | translate }}</p>
                         </div>
                     </div>
                 </div>
@@ -123,7 +123,7 @@
                 <div class="pt-6 border-t border-gray-200 flex justify-end">
                     <button type="submit" [disabled]="profileForm.invalid || isLoading"
                             class="px-6 py-2.5 text-lg font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 shadow-lg">
-                        {{ isLoading ? 'Chargement...' : 'Sauvegarder les Paramètres' }}
+                        {{ isLoading ? ('PROFILE_CABINET.LOADING' | translate) : ('PROFILE_CABINET.SAVE' | translate) }}
                     </button>
                 </div>
             </form>

@@ -10,7 +10,7 @@
                 </svg>
             </a>
             <h1 class="text-xl font-extrabold text-slate-800 tracking-wide uppercase">
-                Administration / <span class="text-indigo-600">Listes de Référence</span>
+                {{ 'PREFERENCES.BREADCRUMB_ADMIN' | translate }} / <span class="text-indigo-600">{{ 'PREFERENCES.BREADCRUMB_REF_LISTS' | translate }}</span>
             </h1>
         </div>
     </header>
@@ -18,9 +18,8 @@
     <main class="flex-1 overflow-x-hidden overflow-y-auto p-6 sm:p-10">
 
         <div class="mb-10">
-            <h2 class="text-3xl font-bold text-slate-800 mb-2">Gestion des Données de Référence</h2>
-            <p class="text-gray-600 italic">Configurez les valeurs des listes déroulantes et les paramètres de
-                segmentation utilisés dans les formulaires.</p>
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">{{ 'PREFERENCES.TITLE' | translate }}</h2>
+            <p class="text-gray-600 italic">{{ 'PREFERENCES.SUBTITLE' | translate }}</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -39,9 +38,9 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-xl font-extrabold text-slate-800">Secteurs d'Activité</h3>
+                <h3 class="text-xl font-extrabold text-slate-800">{{ 'PREFERENCES.SECTORS' | translate }}</h3>
                 <p class="text-sm text-gray-500 mt-3 leading-relaxed">
-                    Définissez la liste des secteurs (Immobilier, Finance, Luxe) pour l'analyse des risques.
+                    {{ 'PREFERENCES.SECTORS_DESC' | translate }}
                 </p>
             </a>
 
@@ -57,9 +56,9 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-xl font-extrabold text-slate-800">États des Dossiers</h3>
+                <h3 class="text-xl font-extrabold text-slate-800">{{ 'PREFERENCES.DOSSIER_STATUS' | translate }}</h3>
                 <p class="text-sm text-gray-500 mt-3 leading-relaxed">
-                    Personnalisez les étapes du workflow (En attente, Validé, Sous enquête).
+                    {{ 'PREFERENCES.DOSSIER_STATUS_DESC' | translate }}
                 </p>
             </a>
 
@@ -74,9 +73,9 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-xl font-extrabold text-slate-800">Priorités des Dossiers</h3>
+                <h3 class="text-xl font-extrabold text-slate-800">{{ 'PREFERENCES.DOSSIER_PRIORITY' | translate }}</h3>
                 <p class="text-sm text-gray-500 mt-3 leading-relaxed">
-                    Gérez les niveaux de priorité (Basse, Normale, Haute, Urgente).
+                    {{ 'PREFERENCES.DOSSIER_PRIORITY_DESC' | translate }}
                 </p>
             </a>
 
@@ -92,9 +91,9 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-xl font-extrabold text-slate-800">Domaines Juridiques</h3>
+                <h3 class="text-xl font-extrabold text-slate-800">{{ 'PREFERENCES.LEGAL_DOMAIN' | translate }}</h3>
                 <p class="text-sm text-gray-500 mt-3 leading-relaxed">
-                    Gérez les domaines d'intervention (Droit des affaires, Droit social, etc.).
+                    {{ 'PREFERENCES.LEGAL_DOMAIN_DESC' | translate }}
                 </p>
             </a>
 
@@ -109,9 +108,9 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-xl font-extrabold text-slate-800">Catégories de Tâches</h3>
+                <h3 class="text-xl font-extrabold text-slate-800">{{ 'PREFERENCES.TASK_CATEGORY' | translate }}</h3>
                 <p class="text-sm text-gray-500 mt-3 leading-relaxed">
-                    Ajoutez et personnalisez les libellés de catégories de tâches (Type, Couleurs, Icônes).
+                    {{ 'PREFERENCES.TASK_CATEGORY_DESC' | translate }}
                 </p>
             </a>
 
@@ -127,9 +126,9 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-xl font-extrabold text-slate-800">États de Tâches</h3>
+                <h3 class="text-xl font-extrabold text-slate-800">{{ 'PREFERENCES.TASK_STATUS' | translate }}</h3>
                 <p class="text-sm text-gray-500 mt-3 leading-relaxed">
-                    Supervisez les statuts d'une tâche (En cours, En attente, Validé, Clôturé).
+                    {{ 'PREFERENCES.TASK_STATUS_DESC' | translate }}
                 </p>
             </a>
 
@@ -145,9 +144,9 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-xl font-extrabold text-slate-800">Catégories de Notes</h3>
+                <h3 class="text-xl font-extrabold text-slate-800">{{ 'PREFERENCES.NOTE_CATEGORY' | translate }}</h3>
                 <p class="text-sm text-gray-500 mt-3 leading-relaxed">
-                    Gérez les catégories de notes (Stratégie, Appel, Réunion, Interne, Compliance).
+                    {{ 'PREFERENCES.NOTE_CATEGORY_DESC' | translate }}
                 </p>
             </a>
 
@@ -163,9 +162,9 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-xl font-extrabold text-slate-800">Types d'Événements</h3>
+                <h3 class="text-xl font-extrabold text-slate-800">{{ 'PREFERENCES.EVENT_TYPE' | translate }}</h3>
                 <p class="text-sm text-gray-500 mt-3 leading-relaxed">
-                    Ajoutez et configurez les types d'événements pour l'agenda (Audience, Réunion, etc.).
+                    {{ 'PREFERENCES.EVENT_TYPE_DESC' | translate }}
                 </p>
             </a>
 
@@ -181,9 +180,9 @@
                         </svg>
                     </div>
                 </div>
-                <h3 class="text-xl font-extrabold text-slate-800">Types de Prestations(Facturation)</h3>
+                <h3 class="text-xl font-extrabold text-slate-800">{{ 'PREFERENCES.INVOICE_TYPE_OF_SERVICE' | translate }}</h3>
                 <p class="text-sm text-gray-500 mt-3 leading-relaxed">
-                    Gérez les prestations facturés, leurs codes et tarifs horaires.
+                    {{ 'PREFERENCES.INVOICE_TYPE_OF_SERVICE_DESC' | translate }}
                 </p>
             </a>
 
@@ -195,14 +194,12 @@
         <div class="mt-16 bg-indigo-900 rounded-2xl p-8 shadow-2xl relative overflow-hidden">
             <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="max-w-xl">
-                    <h4 class="text-white text-xl font-black mb-2 tracking-tight">Besoin d'ajouter un nouveau
-                        référentiel ?</h4>
-                    <p class="text-indigo-200 text-sm">Si une liste spécifique à votre métier manque, contactez l'équipe
-                        technique pour créer une nouvelle structure de données dynamique.</p>
+                    <h4 class="text-white text-xl font-black mb-2 tracking-tight">{{ 'PREFERENCES.SUPPORT_REQUEST_TITLE' | translate }}</h4>
+                    <p class="text-indigo-200 text-sm">{{ 'PREFERENCES.SUPPORT_REQUEST_DESC' | translate }}</p>
                 </div>
                 <button
                     class="px-8 py-4 bg-white text-indigo-900 font-black rounded-xl hover:bg-cyan-400 transition-colors uppercase text-xs tracking-[0.2em]">
-                    Demander un Support
+                    {{ 'PREFERENCES.REQUEST_SUPPORT' | translate }}
                 </button>
             </div>
             <div class="absolute right-0 top-0 w-64 h-64 bg-indigo-800 rounded-full -mr-20 -mt-20 opacity-50"></div>

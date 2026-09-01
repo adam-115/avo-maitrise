@@ -4,11 +4,12 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { CabinetProfileService } from '../../../services/cabinet-profile.service';
 import { AlertService } from '../../../services/alert-service';
 import { CabinetProfile } from '../../../appTypes';
+import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-profile-cabinet',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, TranslateDirective],
   templateUrl: './profile-cabinet.html',
   styleUrl: './profile-cabinet.css'
 })

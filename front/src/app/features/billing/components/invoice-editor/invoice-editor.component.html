@@ -6,16 +6,16 @@
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             </button>
             <div>
-                <h1 class="text-3xl font-bold tracking-tight text-slate-900">Facture {{ invoice()?.numeroFacture }}</h1>
-                <p class="text-sm text-slate-500 mt-1">Date de création : {{ invoice()?.issueDate | date:'shortDate' }}</p>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-900">{{ 'INVOICE_EDITOR.INVOICE_TITLE' | translate }} {{ invoice()?.numeroFacture }}</h1>
+                <p class="text-sm text-slate-500 mt-1">{{ 'INVOICE_EDITOR.CREATED_ON' | translate }} {{ invoice()?.issueDate | date:'shortDate' }}</p>
             </div>
         </div>
         <div class="flex items-center gap-3">
             <button (click)="goBack()" class="px-4 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
-                Annuler
+                {{ 'INVOICE_EDITOR.CANCEL' | translate }}
             </button>
             <button (click)="saveInvoice()" class="px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition">
-                Sauvegarder les modifications
+                {{ 'INVOICE_EDITOR.SAVE_CHANGES' | translate }}
             </button>
         </div>
     </div>
@@ -28,17 +28,17 @@
             
             <!-- Carte Client & Dossier -->
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Dossier & Client</h3>
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">{{ 'INVOICE_EDITOR.CLIENT_DOSSIER' | translate }}</h3>
                 
                 <div class="mb-4">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Client facturé</span>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{{ 'INVOICE_EDITOR.BILLED_CLIENT' | translate }}</span>
                     <p class="text-sm font-medium text-slate-800 mt-1">{{ getClientName(invoice()?.dossier?.client) }}</p>
                     <p class="text-xs text-slate-500 mt-1" *ngIf="invoice()?.dossier?.client?.email">{{ invoice()?.dossier?.client?.email }}</p>
                     <p class="text-xs text-slate-500 mt-0.5" *ngIf="invoice()?.dossier?.client?.telephone">{{ invoice()?.dossier?.client?.telephone }}</p>
                 </div>
 
                 <div>
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Dossier lié</span>
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">{{ 'INVOICE_EDITOR.LINKED_DOSSIER' | translate }}</span>
                     <p class="text-sm font-medium text-indigo-600 mt-1 cursor-pointer hover:underline" [routerLink]="['/home/dossier-detail', invoice()?.dossier?.id]">
                         {{ invoice()?.dossier?.referenceInterne }}
                     </p>
@@ -48,11 +48,11 @@
 
             <!-- Carte Paramètres -->
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Paramètres</h3>
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">{{ 'INVOICE_EDITOR.SETTINGS' | translate }}</h3>
                 
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Statut</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ 'INVOICE_EDITOR.STATUS' | translate }}</label>
                         <select [ngModel]="status()" (ngModelChange)="status.set($event)"
                             class="block w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                             <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
@@ -60,7 +60,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Date d'échéance</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">{{ 'INVOICE_EDITOR.DUE_DATE' | translate }}</label>
                         <input type="date" [ngModel]="dueDate()" (ngModelChange)="dueDate.set($event)"
                             [disabled]="invoice()?.status !== 'DRAFT'"
                             class="block w-full border border-slate-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200">
@@ -70,16 +70,16 @@
 
             <!-- Carte Totaux -->
             <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">Résumé financier</h3>
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-200 pb-2">{{ 'INVOICE_EDITOR.FINANCIAL_SUMMARY' | translate }}</h3>
                 
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <span class="text-sm text-slate-600">Sous-total HT</span>
+                        <span class="text-sm text-slate-600">{{ 'INVOICE_EDITOR.SUBTOTAL_HT' | translate }}</span>
                         <span class="text-sm font-semibold text-slate-800 font-mono">{{ subtotalAmount() | currency:'EUR' }}</span>
                     </div>
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <span class="text-sm text-slate-600">TVA</span>
+                            <span class="text-sm text-slate-600">{{ 'INVOICE_EDITOR.VAT' | translate }}</span>
                             <div class="relative w-20">
                                 <input type="number" [ngModel]="vatRate()" (ngModelChange)="vatRate.set($event)" min="0" step="0.5"
                                     [disabled]="invoice()?.status !== 'DRAFT'"
@@ -92,7 +92,7 @@
                         <span class="text-sm font-semibold text-slate-800 font-mono">{{ taxAmount() | currency:'EUR' }}</span>
                     </div>
                     <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
-                        <span class="text-base font-bold text-slate-800">Total TTC</span>
+                        <span class="text-base font-bold text-slate-800">{{ 'INVOICE_EDITOR.TOTAL_TTC' | translate }}</span>
                         <span class="text-xl font-black text-indigo-700 font-mono">{{ totalAmount() | currency:'EUR' }}</span>
                     </div>
                 </div>
@@ -106,10 +106,10 @@
             <!-- Prestations -->
             <div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
                 <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-                    <h3 class="text-lg font-bold text-slate-800">Lignes de facturation</h3>
+                    <h3 class="text-lg font-bold text-slate-800">{{ 'INVOICE_EDITOR.BILLING_LINES' | translate }}</h3>
                     <button type="button" *ngIf="invoice()?.status === 'DRAFT'" (click)="openAddPrestations()" class="px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-md text-sm font-semibold transition flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Modifier prestations
+                        {{ 'INVOICE_EDITOR.MODIFY_PRESTATIONS' | translate }}
                     </button>
                 </div>
                 
@@ -117,10 +117,10 @@
                     <table class="min-w-full divide-y divide-slate-200">
                         <thead class="bg-slate-50">
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Description</th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Durée (min)</th>
-                                <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Prix (5 min)</th>
-                                <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Total HT</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'INVOICE_EDITOR.DESCRIPTION' | translate }}</th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'INVOICE_EDITOR.DURATION_MIN' | translate }}</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'INVOICE_EDITOR.PRICE_5_MIN' | translate }}</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'INVOICE_EDITOR.TOTAL_HT' | translate }}</th>
                                 <th scope="col" class="px-6 py-3 w-10 text-center"></th>
                             </tr>
                         </thead>
@@ -153,14 +153,14 @@
                                     {{ (entry.nbrOfMinutes / 5) * entry.price5min | currency:'EUR' }}
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <button type="button" *ngIf="invoice()?.status === 'DRAFT'" (click)="removeEntry(i)" class="text-slate-400 hover:text-red-500 transition" title="Retirer de la facture">
+                                    <button type="button" *ngIf="invoice()?.status === 'DRAFT'" (click)="removeEntry(i)" class="text-slate-400 hover:text-red-500 transition" [title]="'INVOICE_EDITOR.REMOVE_FROM_INVOICE' | translate">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                     </button>
                                 </td>
                             </tr>
                             <tr *ngIf="timeEntries().length === 0">
                                 <td colspan="5" class="px-6 py-12 text-center text-slate-500 text-sm">
-                                    Aucune ligne de facturation associée à cette facture.
+                                    {{ 'INVOICE_EDITOR.NO_BILLING_LINES' | translate }}
                                 </td>
                             </tr>
                         </tbody>
@@ -170,11 +170,11 @@
 
             <!-- Notes -->
             <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">Notes</h3>
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-b border-slate-100 pb-2">{{ 'INVOICE_EDITOR.NOTES' | translate }}</h3>
                 <textarea [ngModel]="note()" (ngModelChange)="note.set($event)" rows="4"
                     [disabled]="invoice()?.status !== 'DRAFT'"
                     class="shadow-sm block w-full focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border border-slate-300 rounded-md p-3 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200"
-                    placeholder="Ajoutez une note interne ou un commentaire visible pour cette facture..."></textarea>
+                    [placeholder]="'INVOICE_EDITOR.NOTES_PLACEHOLDER' | translate"></textarea>
             </div>
             
         </div>

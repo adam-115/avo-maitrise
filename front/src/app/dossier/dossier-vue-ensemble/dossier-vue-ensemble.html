@@ -6,7 +6,7 @@
         <!-- Sidebar / Quick Actions -->
         <div class="space-y-6">
           <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl p-6">
-            <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">Échéance Prochaine</h3>
+            <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">{{ 'DOSSIER_VUE.NEXT_DEADLINE' | translate }}</h3>
             <div class="rounded-lg bg-red-50 p-4 border border-red-100">
               <div class="flex items-start">
                 <div class="flex-shrink-0">
@@ -15,14 +15,14 @@
                   </svg>
                 </div>
                 <div class="ml-3">
-                  <h3 class="text-sm font-bold text-red-800 uppercase tracking-wide">Audience Préparatoire</h3>
+                  <h3 class="text-sm font-bold text-red-800 uppercase tracking-wide">{{ 'DOSSIER_VUE.PREP_HEARING' | translate }}</h3>
                   <div class="mt-2 text-sm text-red-700">
-                    <p>Le 05/10/2025 à 09:00</p>
-                    <p class="font-medium">Tribunal Correctionnel</p>
+                    <p>{{ 'DOSSIER_VUE.DATE_TIME' | translate }}</p>
+                    <p class="font-medium">{{ 'DOSSIER_VUE.COURT' | translate }}</p>
                   </div>
                   <div class="mt-4">
                     <button type="button" class="text-sm font-semibold text-red-800 hover:text-red-700">
-                      Voir détails &rarr;
+                      {{ 'DOSSIER_VUE.VIEW_DETAILS' | translate }}
                     </button>
                   </div>
                 </div>
@@ -32,7 +32,7 @@
           
           <!-- Team Section -->
           <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl p-6">
-            <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">Équipe</h3>
+            <h3 class="text-base font-semibold leading-6 text-gray-900 mb-4">{{ 'DOSSIER_VUE.TEAM' | translate }}</h3>
             <ul role="list" class="divide-y divide-gray-100">
               <!-- Responsable -->
               <li *ngIf="getResponsable()" class="flex items-center justify-between py-4">
@@ -42,7 +42,7 @@
                   </div>
                   <div class="min-w-0">
                     <p class="text-sm font-semibold text-gray-900">Me. {{ getResponsable()?.username }}</p>
-                    <p class="text-xs text-indigo-600 font-medium">Associé Responsable</p>
+                    <p class="text-xs text-indigo-600 font-medium">{{ 'DOSSIER_VUE.LEAD_PARTNER' | translate }}</p>
                   </div>
                 </div>
               </li>
@@ -54,12 +54,12 @@
                   </div>
                   <div class="min-w-0">
                     <p class="text-sm font-semibold text-gray-900">{{ user.username }}</p>
-                    <p class="text-xs text-gray-500">Collaborateur</p>
+                    <p class="text-xs text-gray-500">{{ 'DOSSIER_VUE.ASSOCIATE' | translate }}</p>
                   </div>
                 </div>
               </li>
               <li *ngIf="!getResponsable() && getIntervenants().length === 0" class="py-4 text-center">
-                <p class="text-sm text-gray-500 italic">Aucun membre assigné</p>
+                <p class="text-sm text-gray-500 italic">{{ 'DOSSIER_VUE.NO_TEAM' | translate }}</p>
               </li>
             </ul>
           </div>

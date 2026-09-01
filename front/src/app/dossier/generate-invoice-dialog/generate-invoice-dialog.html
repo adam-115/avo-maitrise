@@ -4,9 +4,10 @@
     <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
       <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
         <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-        Détails de la Facture Générée
+        {{ 'GENERATE_INVOICE_DIALOG.TITLE' | translate }}
       </h3>
       <button (click)="onClose()" class="text-slate-400 hover:text-slate-600 transition bg-white rounded-full p-1 border border-slate-200 shadow-sm hover:bg-slate-50">
+        <span class="sr-only">{{ 'GENERATE_INVOICE_DIALOG.CLOSE' | translate }}</span>
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
       </button>
     </div>
@@ -15,7 +16,7 @@
       <!-- Résumé et TVA -->
       <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
         <div class="flex items-center gap-3">
-          <label class="text-sm font-semibold text-slate-700">Taux TVA (%)</label>
+          <label class="text-sm font-semibold text-slate-700">{{ 'GENERATE_INVOICE_DIALOG.VAT_RATE' | translate }}</label>
           <div class="relative w-24">
             <input type="number" [(ngModel)]="vatRate" min="0" max="100" step="0.1"
               class="block w-full px-3 py-2 border border-slate-300 rounded-md text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors outline-none" />
@@ -24,12 +25,12 @@
         
         <div class="flex items-center gap-6">
           <div class="flex flex-col items-end">
-            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total HT</span>
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'GENERATE_INVOICE_DIALOG.TOTAL_HT' | translate }}</span>
             <span class="text-lg font-bold text-slate-800 font-mono">{{ totalHT | currency:'EUR' }}</span>
           </div>
           <div class="h-10 w-px bg-slate-200"></div>
           <div class="flex flex-col items-end">
-            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total TTC</span>
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'GENERATE_INVOICE_DIALOG.TOTAL_TTC' | translate }}</span>
             <span class="text-2xl font-black text-emerald-600 font-mono">{{ totalTTC | currency:'EUR' }}</span>
           </div>
         </div>
@@ -39,12 +40,12 @@
           <thead class="bg-slate-50 border-b border-slate-200 text-slate-700">
             <tr>
               <th class="px-4 py-3 font-semibold w-12 text-center">
-                <input type="checkbox" checked disabled class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" title="Sélection" />
+                <input type="checkbox" checked disabled class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" [title]="'GENERATE_INVOICE_DIALOG.SELECTION' | translate" />
               </th>
-              <th class="px-4 py-3 font-semibold">Description</th>
-              <th class="px-4 py-3 font-semibold text-center">Durée (min)</th>
-              <th class="px-4 py-3 font-semibold text-right">Prix (5 min)</th>
-              <th class="px-4 py-3 font-semibold text-right">Total HT</th>
+              <th class="px-4 py-3 font-semibold">{{ 'GENERATE_INVOICE_DIALOG.DESCRIPTION' | translate }}</th>
+              <th class="px-4 py-3 font-semibold text-center">{{ 'GENERATE_INVOICE_DIALOG.DURATION' | translate }}</th>
+              <th class="px-4 py-3 font-semibold text-right">{{ 'GENERATE_INVOICE_DIALOG.PRICE' | translate }}</th>
+              <th class="px-4 py-3 font-semibold text-right">{{ 'GENERATE_INVOICE_DIALOG.TOTAL_HT' | translate }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
@@ -53,7 +54,7 @@
                 <input type="checkbox" [(ngModel)]="itemWrapper.selected" [disabled]="itemWrapper.disabled" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-200" />
               </td>
               <td class="px-4 py-3 font-medium flex items-center gap-2">
-                <span *ngIf="itemWrapper.disabled" class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-200 text-slate-600">Non éligible</span>
+                <span *ngIf="itemWrapper.disabled" class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-200 text-slate-600">{{ 'GENERATE_INVOICE_DIALOG.NOT_ELIGIBLE' | translate }}</span>
                 {{ itemWrapper.entry.invoiceDossierService?.invoiceTypeOfService?.code }} - {{ itemWrapper.entry.invoiceDossierService?.invoiceTypeOfService?.description }}
               </td>
               <td class="px-4 py-3 text-center">
@@ -83,10 +84,10 @@
     </div>
     
     <div class="px-6 py-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-      <button type="button" (click)="onClose()" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg shadow-sm transition">Fermer</button>
+      <button type="button" (click)="onClose()" class="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg shadow-sm transition">{{ 'GENERATE_INVOICE_DIALOG.CLOSE' | translate }}</button>
       <button type="button" (click)="onConfirm()" class="px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition flex items-center gap-2">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-        Confirmer et Créer Facture
+        {{ 'GENERATE_INVOICE_DIALOG.CONFIRM_CREATE' | translate }}
       </button>
     </div>
   </div>

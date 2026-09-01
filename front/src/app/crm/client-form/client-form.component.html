@@ -3,16 +3,16 @@
 
         <div class="mb-10">
             <h1 class="text-4xl font-black tracking-tighter text-slate-900">
-                {{ isEditMode ? 'Modification' : 'Nouveau' }} <span class="text-cyan-500">Client</span>
+                {{ (isEditMode ? 'CLIENT_FORM.TITLE_EDIT' : 'CLIENT_FORM.TITLE_NEW') | translate }} <span class="text-cyan-500">{{ 'CLIENT_FORM.TITLE_CLIENT' | translate }}</span>
             </h1>
-            <p class="text-slate-500 font-medium mt-2">Gestion des types d'entités & KYC</p>
+            <p class="text-slate-500 font-medium mt-2">{{ 'CLIENT_FORM.SUBTITLE' | translate }}</p>
         </div>
 
         <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" class="space-y-8">
 
             <!-- Entity Type Selection -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <label class="block text-[10px] uppercase font-black tracking-widest text-slate-400 mb-4">Type d'Entité</label>
+                <label class="block text-[10px] uppercase font-black tracking-widest text-slate-400 mb-4">{{ 'CLIENT_FORM.ENTITY_TYPE' | translate }}</label>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                     @for (type of clientTypes; track type) {
                     <label class="cursor-pointer relative group">
@@ -29,50 +29,50 @@
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                 <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 mb-6 flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
-                    Informations de Contact
+                    {{ 'CLIENT_FORM.CONTACT_INFO' | translate }}
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('email') ? 'text-red-500' : 'text-slate-400'">Email Principal <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('email') ? 'text-red-500' : 'text-slate-400'">{{ 'CLIENT_FORM.EMAIL' | translate }} <span class="text-red-500">*</span></label>
                         <input type="email" formControlName="email" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 outline-none transition-all duration-200" [ngClass]="isFieldInvalid('email') ? 'border-red-500 focus:border-red-500' : 'border-slate-300 focus:border-cyan-500'">
                         @if (isFieldInvalid('email')) {
                             <span class="text-[10px] font-bold text-red-500 mt-1 block">
                                 @if (clientForm.get('email')?.errors?.['email']) {
-                                    L'adresse email n'est pas valide
+                                    {{ 'CLIENT_FORM.EMAIL_INVALID' | translate }}
                                 } @else {
-                                    L'email est obligatoire
+                                    {{ 'CLIENT_FORM.EMAIL_REQUIRED' | translate }}
                                 }
                             </span>
                         }
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('telephone') ? 'text-red-500' : 'text-slate-400'">Téléphone <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('telephone') ? 'text-red-500' : 'text-slate-400'">{{ 'CLIENT_FORM.PHONE' | translate }} <span class="text-red-500">*</span></label>
                         <input type="tel" formControlName="telephone" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 outline-none transition-all duration-200" [ngClass]="isFieldInvalid('telephone') ? 'border-red-500 focus:border-red-500' : 'border-slate-300 focus:border-cyan-500'">
                         @if (isFieldInvalid('telephone')) {
-                            <span class="text-[10px] font-bold text-red-500 mt-1 block">Le téléphone est obligatoire</span>
+                            <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ 'CLIENT_FORM.PHONE_REQUIRED' | translate }}</span>
                         }
                     </div>
                     <div class="col-span-2">
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Adresse</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.ADDRESS' | translate }}</label>
                         <input type="text" formControlName="adresse" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none transition-all">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('pays') ? 'text-red-500' : 'text-slate-400'">Pays <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('pays') ? 'text-red-500' : 'text-slate-400'">{{ 'CLIENT_FORM.COUNTRY' | translate }} <span class="text-red-500">*</span></label>
                         <input type="text" formControlName="pays" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 outline-none transition-all duration-200" [ngClass]="isFieldInvalid('pays') ? 'border-red-500 focus:border-red-500' : 'border-slate-300 focus:border-cyan-500'">
                         @if (isFieldInvalid('pays')) {
-                            <span class="text-[10px] font-bold text-red-500 mt-1 block">Le pays est obligatoire</span>
+                            <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ 'CLIENT_FORM.COUNTRY_REQUIRED' | translate }}</span>
                         }
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('secteurActivite') ? 'text-red-500' : 'text-slate-400'">Secteur d'Activité <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('secteurActivite') ? 'text-red-500' : 'text-slate-400'">{{ 'CLIENT_FORM.SECTOR' | translate }} <span class="text-red-500">*</span></label>
                         <select formControlName="secteurActivite" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 outline-none transition-all duration-200" [ngClass]="isFieldInvalid('secteurActivite') ? 'border-red-500 focus:border-red-500' : 'border-slate-300 focus:border-cyan-500'">
-                            <option value="">Sélectionner un secteur</option>
+                            <option value="">{{ 'CLIENT_FORM.SECTOR_SELECT' | translate }}</option>
                             @for (sec of secteurs; track sec.code) {
                                 <option [value]="sec.code">{{ sec.libelle }}</option>
                             }
                         </select>
                         @if (isFieldInvalid('secteurActivite')) {
-                            <span class="text-[10px] font-bold text-red-500 mt-1 block">Le secteur d'activité est obligatoire</span>
+                            <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ 'CLIENT_FORM.SECTOR_REQUIRED' | translate }}</span>
                         }
                     </div>
                 </div>
@@ -83,33 +83,33 @@
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                 <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 mb-6 flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-blue-500"></span>
-                    Détails Identité
+                    {{ 'CLIENT_FORM.IDENTITY_DETAILS' | translate }}
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('nom') ? 'text-red-500' : 'text-slate-400'">Nom <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('nom') ? 'text-red-500' : 'text-slate-400'">{{ 'CLIENT_FORM.LAST_NAME' | translate }} <span class="text-red-500">*</span></label>
                         <input type="text" formControlName="nom" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 outline-none transition-all duration-200" [ngClass]="isFieldInvalid('nom') ? 'border-red-500 focus:border-red-500' : 'border-slate-300 focus:border-cyan-500'">
                         @if (isFieldInvalid('nom')) {
-                            <span class="text-[10px] font-bold text-red-500 mt-1 block">Le nom est obligatoire</span>
+                            <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ 'CLIENT_FORM.LAST_NAME_REQUIRED' | translate }}</span>
                         }
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('prenom') ? 'text-red-500' : 'text-slate-400'">Prénom <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('prenom') ? 'text-red-500' : 'text-slate-400'">{{ 'CLIENT_FORM.FIRST_NAME' | translate }} <span class="text-red-500">*</span></label>
                         <input type="text" formControlName="prenom" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 outline-none transition-all duration-200" [ngClass]="isFieldInvalid('prenom') ? 'border-red-500 focus:border-red-500' : 'border-slate-300 focus:border-cyan-500'">
                         @if (isFieldInvalid('prenom')) {
-                            <span class="text-[10px] font-bold text-red-500 mt-1 block">Le prénom est obligatoire</span>
+                            <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ 'CLIENT_FORM.FIRST_NAME_REQUIRED' | translate }}</span>
                         }
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Nationalité</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.NATIONALITY' | translate }}</label>
                         <input type="text" formControlName="nationalite" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">CIN / Passeport</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.PASSPORT' | translate }}</label>
                         <input type="text" formControlName="cin" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Date de Naissance</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.BIRTH_DATE' | translate }}</label>
                         <input type="date" formControlName="dateNaissance" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                 </div>
@@ -121,29 +121,29 @@
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                 <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 mb-6 flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-                    Informations Société
+                    {{ 'CLIENT_FORM.COMPANY_INFO' | translate }}
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="col-span-2">
-                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('nomCommercial') ? 'text-red-500' : 'text-slate-400'">Nom Commercial <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('nomCommercial') ? 'text-red-500' : 'text-slate-400'">{{ 'CLIENT_FORM.COMMERCIAL_NAME' | translate }} <span class="text-red-500">*</span></label>
                         <input type="text" formControlName="nomCommercial" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 outline-none transition-all duration-200" [ngClass]="isFieldInvalid('nomCommercial') ? 'border-red-500 focus:border-red-500' : 'border-slate-300 focus:border-cyan-500'">
                         @if (isFieldInvalid('nomCommercial')) {
-                            <span class="text-[10px] font-bold text-red-500 mt-1 block">Le nom commercial est obligatoire</span>
+                            <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ 'CLIENT_FORM.COMMERCIAL_NAME_REQUIRED' | translate }}</span>
                         }
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Forme Juridique</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.LEGAL_FORM' | translate }}</label>
                         <input type="text" formControlName="formeJuridique" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('numeroRegistreCommerce') ? 'text-red-500' : 'text-slate-400'">N° Registre Commerce <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('numeroRegistreCommerce') ? 'text-red-500' : 'text-slate-400'">{{ 'CLIENT_FORM.RC' | translate }} <span class="text-red-500">*</span></label>
                         <input type="text" formControlName="numeroRegistreCommerce" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 outline-none transition-all duration-200" [ngClass]="isFieldInvalid('numeroRegistreCommerce') ? 'border-red-500 focus:border-red-500' : 'border-slate-300 focus:border-cyan-500'">
                         @if (isFieldInvalid('numeroRegistreCommerce')) {
-                            <span class="text-[10px] font-bold text-red-500 mt-1 block">Le N° Registre Commerce est obligatoire</span>
+                            <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ 'CLIENT_FORM.RC_REQUIRED' | translate }}</span>
                         }
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">N° Identifiant Fiscal</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.FISCAL_ID' | translate }}</label>
                         <input type="text" formControlName="numeroIdFiscal" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                 </div>
@@ -155,25 +155,25 @@
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                 <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 mb-6 flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-orange-500"></span>
-                    Détails Organisme
+                    {{ 'CLIENT_FORM.ORG_DETAILS' | translate }}
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="col-span-2">
-                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('nom') ? 'text-red-500' : 'text-slate-400'">Nom de l'Organisme <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('nom') ? 'text-red-500' : 'text-slate-400'">{{ 'CLIENT_FORM.ORG_NAME' | translate }} <span class="text-red-500">*</span></label>
                         <input type="text" formControlName="nom" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 outline-none transition-all duration-200" [ngClass]="isFieldInvalid('nom') ? 'border-red-500 focus:border-red-500' : 'border-slate-300 focus:border-cyan-500'">
                         @if (isFieldInvalid('nom')) {
-                            <span class="text-[10px] font-bold text-red-500 mt-1 block">Le nom de l'organisme est obligatoire</span>
+                            <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ 'CLIENT_FORM.ORG_NAME_REQUIRED' | translate }}</span>
                         }
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('numeroRegistreNational') ? 'text-red-500' : 'text-slate-400'">N° Registre National <span class="text-red-500">*</span></label>
+                        <label class="block text-[10px] uppercase font-black mb-1 transition-colors duration-200" [ngClass]="isFieldInvalid('numeroRegistreNational') ? 'text-red-500' : 'text-slate-400'">{{ 'CLIENT_FORM.NATIONAL_REG' | translate }} <span class="text-red-500">*</span></label>
                         <input type="text" formControlName="numeroRegistreNational" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 outline-none transition-all duration-200" [ngClass]="isFieldInvalid('numeroRegistreNational') ? 'border-red-500 focus:border-red-500' : 'border-slate-300 focus:border-cyan-500'">
                         @if (isFieldInvalid('numeroRegistreNational')) {
-                            <span class="text-[10px] font-bold text-red-500 mt-1 block">Le N° Registre National est obligatoire</span>
+                            <span class="text-[10px] font-bold text-red-500 mt-1 block">{{ 'CLIENT_FORM.NATIONAL_REG_REQUIRED' | translate }}</span>
                         }
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">N° Identifiant Fiscal</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.FISCAL_ID' | translate }}</label>
                         <input type="text" formControlName="numeroIdFiscal" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                 </div>
@@ -185,27 +185,27 @@
             <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
                 <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 mb-6 flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-                    Représentant Légal
+                    {{ 'CLIENT_FORM.LEGAL_REP' | translate }}
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Nom du Représentant</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.REP_LAST_NAME' | translate }}</label>
                         <input type="text" formControlName="nomRepresentantLegal" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Prénom du Représentant</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.REP_FIRST_NAME' | translate }}</label>
                         <input type="text" formControlName="prenomRepresentantLegal" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Nationalité</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.NATIONALITY' | translate }}</label>
                         <input type="text" formControlName="nationaliteRepresentantLegal" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">CIN / Passeport</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.PASSPORT' | translate }}</label>
                         <input type="text" formControlName="cinRepresentantLegal" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">Date de Naissance</label>
+                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.BIRTH_DATE' | translate }}</label>
                         <input type="date" formControlName="dateNaissanceRepresentantLegal" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                     </div>
                 </div>
@@ -217,11 +217,11 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        Bénéficiaires Effectifs (UBO)
+                        {{ 'CLIENT_FORM.UBO_TITLE' | translate }}
                     </h2>
                     <button type="button" (click)="addUbo()" class="text-[10px] uppercase font-black tracking-widest text-cyan-500 hover:text-cyan-600 transition-colors flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        Ajouter
+                        {{ 'CLIENT_FORM.ADD' | translate }}
                     </button>
                 </div>
                 <div formArrayName="ubos" class="space-y-4">
@@ -232,15 +232,15 @@
                         </button>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="col-span-2">
-                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Nom Complet</label>
+                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">{{ 'CLIENT_FORM.UBO_FULL_NAME' | translate }}</label>
                                 <input formControlName="fullName" type="text" class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                             </div>
                             <div>
-                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Détention (%)</label>
+                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">{{ 'CLIENT_FORM.UBO_OWNERSHIP' | translate }}</label>
                                 <input formControlName="percentageOfOwnership" type="number" class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                             </div>
                             <div>
-                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Rôle</label>
+                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">{{ 'CLIENT_FORM.UBO_ROLE' | translate }}</label>
                                 <input formControlName="roleInCompany" type="text" class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                             </div>
                         </div>
@@ -256,11 +256,11 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
-                        Points de Contact
+                        {{ 'CLIENT_FORM.CONTACT_POINTS' | translate }}
                     </h2>
                     <button type="button" (click)="addContact()" class="text-[10px] uppercase font-black tracking-widest text-cyan-500 hover:text-cyan-600 transition-colors flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                        Ajouter
+                        {{ 'CLIENT_FORM.ADD' | translate }}
                     </button>
                 </div>
                 <div formArrayName="contacts" class="space-y-4">
@@ -271,27 +271,27 @@
                         </button>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <div>
-                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Nom</label>
+                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">{{ 'CLIENT_FORM.LAST_NAME' | translate }}</label>
                                 <input formControlName="nom" type="text" class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                             </div>
                             <div>
-                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Prénom</label>
+                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">{{ 'CLIENT_FORM.FIRST_NAME' | translate }}</label>
                                 <input formControlName="prenom" type="text" class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                             </div>
                             <div>
-                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Email</label>
+                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">{{ 'CLIENT_FORM.EMAIL' | translate }}</label>
                                 <input formControlName="email" type="email" class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                             </div>
                             <div>
-                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Téléphone</label>
+                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">{{ 'CLIENT_FORM.PHONE' | translate }}</label>
                                 <input formControlName="telephone" type="text" class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                             </div>
                             <div>
-                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Occupation</label>
+                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">{{ 'CLIENT_FORM.OCCUPATION' | translate }}</label>
                                 <input formControlName="occupation" type="text" class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                             </div>
                             <div class="col-span-1 md:col-span-2 lg:col-span-3">
-                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">Adresse</label>
+                                <label class="text-[9px] uppercase font-black text-slate-400 pl-1">{{ 'CLIENT_FORM.ADDRESS' | translate }}</label>
                                 <input formControlName="adresse" type="text" class="w-full bg-white rounded-lg px-3 py-2 text-xs font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
                             </div>
                         </div>
@@ -305,11 +305,11 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 flex items-center gap-2">
                         <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
-                        Documents KYC
+                        {{ 'CLIENT_FORM.KYC_DOCS' | translate }}
                     </h2>
                     <button type="button" (click)="openAddDocumentDialog()" class="text-[10px] uppercase font-black tracking-widest text-cyan-500 hover:text-cyan-600 transition-colors flex items-center gap-1">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
-                        Ajouter un document
+                        {{ 'CLIENT_FORM.ADD_DOC' | translate }}
                     </button>
                 </div>
                 <div class="space-y-3">
@@ -335,10 +335,10 @@
             <!-- Footer / Actions -->
             <div class="flex flex-col sm:flex-row justify-end gap-4 pt-6">
                 <button type="button" (click)="cancel()" class="w-full sm:w-auto px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest text-slate-500 hover:bg-slate-100 transition-all">
-                    Annuler
+                    {{ 'CLIENT_FORM.CANCEL' | translate }}
                 </button>
                 <button type="submit" [disabled]="clientForm.invalid" class="w-full sm:w-auto px-8 py-3 rounded-xl font-black text-xs uppercase tracking-widest bg-slate-900 text-white shadow-lg disabled:opacity-50 hover:bg-cyan-500 hover:text-slate-900 transition-all">
-                    {{ isEditMode ? 'Enregistrer les modifications' : 'Créer le Client' }}
+                    {{ (isEditMode ? 'CLIENT_FORM.SAVE_CHANGES' : 'CLIENT_FORM.CREATE_CLIENT') | translate }}
                 </button>
             </div>
 
