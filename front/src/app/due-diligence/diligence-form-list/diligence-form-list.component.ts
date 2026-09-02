@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { NavigationService } from '../../services/navigation-service';
 import { FormConfig } from '../../appTypes';
 import { FormConfigService } from '../../services/form-config-service';
@@ -11,7 +12,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 @Component({
     selector: 'app-diligence-form-list',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TranslatePipe],
     templateUrl: './diligence-form-list.component.html',
     styleUrl: './diligence-form-list.component.css',
 })

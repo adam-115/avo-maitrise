@@ -9,12 +9,12 @@ import { TaskLogService } from '../../services/task-log.service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { UserService } from '../../services/user.service';
 import { TaskDialogComponent } from './task-dialog/task-dialog.component';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-task-manager',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, TaskDialogComponent, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, TaskDialogComponent, TranslatePipe],
     templateUrl: './task-manager.component.html',
     styleUrls: ['./task-manager.component.css']
 })

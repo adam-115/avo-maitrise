@@ -228,7 +228,7 @@
                                     </div>
                                 </div>
                                 <span class="px-2.5 py-1 bg-slate-100 text-slate-600 font-black text-[10px] uppercase tracking-wider rounded-xl">
-                                    {{ task.category?.libelle || 'Dossier' }}
+                                    {{ task.category.libelle || 'Dossier' }}
                                 </span>
                             </div>
                         } @empty {
@@ -271,13 +271,13 @@
                                         <p class="text-xs text-slate-400 font-bold">{{ 'BORD.REF' | translate }}: {{ dossier.referenceInterne }}</p>
                                     </div>
                                     <span class="px-2 py-0.5 bg-slate-100 text-slate-600 font-extrabold text-[9px] uppercase tracking-widest rounded border border-slate-200/50">
-                                        {{ dossier.statutID?.label || 'OUVERT' }}
+                                        {{ dossier.statutID.label || 'OUVERT' }}
                                     </span>
                                 </div>
                                 
                                 <div class="flex items-center justify-between border-t border-slate-100/80 pt-2.5 mt-0.5">
                                     <span class="text-[11px] font-black uppercase text-indigo-600 bg-indigo-50/50 border border-indigo-100/50 px-2.5 py-0.5 rounded-md">
-                                        ⚖️ {{ dossier.domaineJuridique?.label || ('BORD.GENERAL_LAW' | translate) }}
+                                        ⚖️ {{ dossier.domaineJuridique.label || ('BORD.GENERAL_LAW' | translate) }}
                                     </span>
                                     <span class="text-[11px] text-slate-400 font-bold">
                                         {{ dossier.dateOuverture | date:'dd MMM yyyy' }}

@@ -2,12 +2,12 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Dossier, User } from '../../appTypes';
 import { DossierInfo } from '../dossier-info/dossier-info';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dossier-vue-ensemble',
   standalone: true,
-  imports: [CommonModule, DossierInfo, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, DossierInfo, TranslatePipe],
   templateUrl: './dossier-vue-ensemble.html',
   styleUrl: './dossier-vue-ensemble.css'
 })

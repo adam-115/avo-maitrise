@@ -212,14 +212,14 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full xl:w-auto">
           <!-- Search input -->
           <div class="relative w-full lg:w-64">
-            <div class="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+            <div class="absolute inset-y-0 start-3 flex items-center pointer-events-none">
               <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
             <input [(ngModel)]="searchTerm" (ngModelChange)="resetPagination()"
-              class="w-full pl-9 pr-3 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:border-cyan-500 focus:bg-white outline-none transition-all placeholder:text-slate-400 font-semibold text-sm text-slate-700"
+              class="w-full ps-9 pe-3 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:border-cyan-500 focus:bg-white outline-none transition-all placeholder:text-slate-400 font-semibold text-sm text-slate-700"
               [placeholder]="'AML_COMPLIANCE.SEARCH_PLACEHOLDER' | translate" type="search">
           </div>
 
@@ -287,7 +287,7 @@
                   <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
                     {{ translateClientType(client.type || '') }}
                   </span>
-                  <span class="text-xs text-slate-400 font-bold italic ml-1">
+                  <span class="text-xs text-slate-400 font-bold italic ms-1">
                     {{ client.secteurActivite || ('AML_COMPLIANCE.NO_SECTOR' | translate) }}
                   </span>
                 </div>

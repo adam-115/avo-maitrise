@@ -15,8 +15,8 @@
 
         <div class="relative w-full sm:w-80">
             <input type="text" [placeholder]="'EVENEMENT.SEARCH_PLACEHOLDER' | translate"
-                class="w-full pl-10 pr-4 py-2 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
+                class="w-full ps-10 pe-4 py-2 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+            <svg class="absolute start-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
                 stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -28,17 +28,17 @@
     <div class="space-y-4">
         @for (event of events; track event.id) {
         <div class="bg-white p-5 rounded-xl shadow-lg border-l-4 hover:shadow-xl transition duration-200 cursor-pointer"
-            [ngClass]="getEventTheme(event.categorie?.id).border" (click)="viewEventDetails(event)">
+            [ngClass]="getEventTheme(event.categorie.id).border" (click)="viewEventDetails(event)">
             <div class="flex items-start space-x-4">
-                <svg class="w-7 h-7 flex-shrink-0 mt-1" [ngClass]="getEventTheme(event.categorie?.id).text" fill="none"
+                <svg class="w-7 h-7 flex-shrink-0 mt-1" [ngClass]="getEventTheme(event.categorie.id).text" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        [attr.d]="getEventTheme(event.categorie?.id).icon"></path>
+                        [attr.d]="getEventTheme(event.categorie.id).icon"></path>
                 </svg>
 
                 <div class="flex-grow">
                     <div class="flex justify-between items-start">
-                        <p class="text-xs font-semibold uppercase mb-1" [ngClass]="getEventTheme(event.categorie?.id).text">
+                        <p class="text-xs font-semibold uppercase mb-1" [ngClass]="getEventTheme(event.categorie.id).text">
                             {{ getEventTheme(event.categorie.id).label }}
                         </p>
                         <div class="flex space-x-2">
@@ -80,7 +80,7 @@
                         </div>
                         <div class="sm:col-span-2 mt-1" *ngIf="event.participantsIds && event.participantsIds.length > 1">
                             <span class="font-semibold text-gray-600">{{ 'EVENEMENT.OTHER_PARTICIPANTS' | translate }}</span>
-                            <span class="text-gray-600 ml-1">
+                            <span class="text-gray-600 ms-1">
                                 + {{ event.participantsIds.length - 1 }} {{ 'EVENEMENT.PERSONS' | translate }}
                             </span>
                         </div>
@@ -230,7 +230,7 @@
             <!-- Description -->
             <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
                 <h4 class="text-sm text-gray-500 font-medium mb-3 flex items-center">
-                    <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    <svg class="w-5 h-5 text-gray-400 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h7"></path>
@@ -248,7 +248,7 @@
             <!-- Intervenants -->
             <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
                 <h4 class="text-sm text-gray-500 font-medium mb-3 flex items-center">
-                    <svg class="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    <svg class="w-5 h-5 text-gray-400 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                         xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">

@@ -17,12 +17,12 @@ import { ClientStatusAlertComponent } from '../../shared/components/client-statu
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { forkJoin } from 'rxjs';
 import { AlertService } from '../../services/alert-service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dossier-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, UserSelectionDialog, ClientSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, UserSelectionDialog, ClientSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent, TranslatePipe],
   templateUrl: './dossier-form.html',
   styleUrl: './dossier-form.css'
 })

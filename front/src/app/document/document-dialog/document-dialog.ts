@@ -2,11 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Document } from './../../appTypes';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-document-dialog',
-  imports: [CommonModule, ReactiveFormsModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './document-dialog.html',
   styleUrl: './document-dialog.css'
 })

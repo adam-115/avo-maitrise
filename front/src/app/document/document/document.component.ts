@@ -6,11 +6,11 @@ import { DocumentService } from '../../services/document.service';
 import { ClientService } from '../../services/client-service';
 import { DossierService } from '../../services/dossier.service';
 import { AlertService } from '../../services/alert-service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-document',
-  imports: [DocumentDialog, CommonModule, TranslatePipe, TranslateDirective],
+  imports: [DocumentDialog, CommonModule, TranslatePipe],
   templateUrl: './document.component.html',
   styleUrl: './document.component.css'
 })

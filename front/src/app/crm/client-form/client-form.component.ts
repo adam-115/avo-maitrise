@@ -14,12 +14,12 @@ import { AssociationService } from '../../services/association.service';
 import { InstitutionService } from '../../services/institution.service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-client-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, DocumentDialog, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, ReactiveFormsModule, DocumentDialog, TranslatePipe],
     templateUrl: './client-form.component.html',
     styleUrls: ['./client-form.component.css']
 })

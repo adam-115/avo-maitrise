@@ -39,7 +39,7 @@
             <button (click)="navigateToNewClient()"
                 class="group relative inline-flex items-center justify-center px-8 py-4 font-black text-lg text-white bg-slate-900 rounded-2xl overflow-hidden shadow-lg transition-all hover:scale-105 active:scale-95">
                 <div class="absolute inset-0 w-3 bg-gradient-to-r from-white/0 via-white/20 to-white/0 animate-[shimmer_2s_infinite] -skew-x-12"></div>
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                <svg class="w-6 h-6 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 {{ 'CRM.NEW_CLIENT' | translate }}
             </button>
         </div>
@@ -79,11 +79,11 @@
     <!-- Filters & Search Bar (Visible only on ALL tab) -->
     <div *ngIf="activeTab === 'ALL'" class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-10">
         <div class="lg:col-span-6 relative">
-            <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+            <div class="absolute inset-y-0 start-4 flex items-center pointer-events-none">
                 <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
             <input [(ngModel)]="searchTerm" (input)="filterClients()"
-                class="w-full pl-12 pr-4 py-4 bg-white rounded-3xl border-2 border-transparent shadow-sm focus:border-cyan-500 focus:ring-0 outline-none transition-all placeholder:text-slate-400 font-bold text-lg text-slate-700"
+                class="w-full ps-12 pe-4 py-4 bg-white rounded-3xl border-2 border-transparent shadow-sm focus:border-cyan-500 focus:ring-0 outline-none transition-all placeholder:text-slate-400 font-bold text-lg text-slate-700"
                 [placeholder]="'CRM.SEARCH_PLACEHOLDER' | translate" type="search">
         </div>
         <div class="lg:col-span-3">

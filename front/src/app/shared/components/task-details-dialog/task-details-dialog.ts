@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Task } from '../../../appTypes';
 
 @Component({
   selector: 'app-task-details-dialog',
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './task-details-dialog.html',
   styles: ``,
 })

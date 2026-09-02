@@ -2,12 +2,12 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { NavigationService } from '../../services/navigation-service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-preferences',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, RouterModule, TranslatePipe],
   templateUrl: './preferences.html',
   styleUrl: './preferences.css',
 })

@@ -13,15 +13,15 @@
                     </svg>
                 </div>
                 <div>
-                    <h2 class="text-lg font-bold text-slate-800">Cible du Formulaire</h2>
-                    <p class="text-sm text-slate-500 font-medium">Informations sur le client concerné</p>
+                    <h2 class="text-lg font-bold text-slate-800">{{ 'FORM_VIEWER.TARGET' | translate }}</h2>
+                    <p class="text-sm text-slate-500 font-medium">{{ 'FORM_VIEWER.TARGET_INFO' | translate }}</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Nom Complet -->
                 <div class="space-y-1">
-                    <p class="text-xs uppercase tracking-wider font-bold text-slate-400">Client</p>
+                    <p class="text-xs uppercase tracking-wider font-bold text-slate-400">{{ 'FORM_VIEWER.CLIENT' | translate }}</p>
                     <p class="text-base font-bold text-slate-900">{{ getDisplayName(selectedClient) }}</p>
                     <span
                         class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
@@ -31,26 +31,26 @@
 
                 <!-- Contact -->
                 <div class="space-y-1">
-                    <p class="text-xs uppercase tracking-wider font-bold text-slate-400">Contact</p>
+                    <p class="text-xs uppercase tracking-wider font-bold text-slate-400">{{ 'FORM_VIEWER.CONTACT' | translate }}</p>
                     <div class="flex items-center gap-2 text-sm font-medium text-slate-700">
                         <svg class="h-4 w-4 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
-                        {{ selectedClient.email || 'Non renseigné' }}
+                        {{ selectedClient.email || ('FORM_VIEWER.NOT_PROVIDED' | translate) }}
                     </div>
                     <div class="flex items-center gap-2 text-sm font-medium text-slate-700">
                         <svg class="h-4 w-4 text-cyan-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                         </svg>
-                        {{ selectedClient.telephone || 'Non renseigné' }}
+                        {{ selectedClient.telephone || ('FORM_VIEWER.NOT_PROVIDED' | translate) }}
                     </div>
                 </div>
 
                 <!-- Activité -->
                 <div class="space-y-1">
-                    <p class="text-xs uppercase tracking-wider font-bold text-slate-400">Activité</p>
+                    <p class="text-xs uppercase tracking-wider font-bold text-slate-400">{{ 'FORM_VIEWER.ACTIVITY' | translate }}</p>
                     <div
                         class="inline-flex items-center px-3 py-1 bg-cyan-50 text-cyan-700 rounded-lg text-sm font-bold">
                         {{ selectedClient.secteurActivite }}
@@ -59,7 +59,7 @@
 
                 <!-- Localisation -->
                 <div class="space-y-1">
-                    <p class="text-xs uppercase tracking-wider font-bold text-slate-400">Pays de Résidence</p>
+                    <p class="text-xs uppercase tracking-wider font-bold text-slate-400">{{ 'FORM_VIEWER.COUNTRY' | translate }}</p>
                     <div class="flex items-center gap-2 font-bold text-slate-800">
                         <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -95,7 +95,7 @@
                         class="block text-sm font-bold text-slate-700 mb-2.5 px-1 group-focus-within:text-cyan-600 transition-colors">
                         {{ field.label }}
                         @if (field.required) {
-                        <span class="text-cyan-500 ml-1" title="Obligatoire">*</span>
+                        <span class="text-cyan-500 ms-1" title="Obligatoire">*</span>
                         }
                     </label>
 
@@ -119,12 +119,12 @@
                     <div class="relative">
                         <select [formControlName]="field.id!"
                             class="w-full px-4 py-3.5 bg-slate-50 rounded-xl focus:bg-white focus:ring-4 focus:ring-cyan-500/10 focus:border-cyan-500 transition-all outline-none appearance-none font-medium text-slate-700 cursor-pointer border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                            <option [ngValue]="null" disabled>Sélectionnez une option</option>
+                            <option [ngValue]="null" disabled>{{ 'FORM_VIEWER.SELECT_OPTION' | translate }}</option>
                             @for (opt of field.options; track opt.id) {
                             <option [value]="opt.id">{{ opt.name || opt.value }}</option>
                             }
                         </select>
-                        <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-400">
+                        <div class="absolute inset-y-0 end-4 flex items-center pointer-events-none text-slate-400">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M19 9l-7 7-7-7" />
@@ -145,7 +145,7 @@
                                     class="absolute w-2.5 h-2.5 rounded-full bg-cyan-500 opacity-0 peer-checked:opacity-100 transition-opacity">
                                 </div>
                             </div>
-                            <span class="ml-3 text-sm text-slate-700 font-bold group-hover/opt:text-cyan-700">{{
+                            <span class="ms-3 text-sm text-slate-700 font-bold group-hover/opt:text-cyan-700">{{
                                 opt.name || opt.value }}</span>
                         </label>
                         }
@@ -159,7 +159,7 @@
                             class="flex items-center p-3.5 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:border-cyan-300 hover:bg-cyan-50/30 transition-all group/opt">
                             <input type="checkbox" [formControlName]="opt.id!"
                                 class="h-5 w-5 rounded border-slate-300 text-cyan-500 focus:ring-cyan-500 transition-all cursor-pointer">
-                            <span class="ml-3 text-sm text-slate-700 font-bold group-hover/opt:text-cyan-700">{{
+                            <span class="ms-3 text-sm text-slate-700 font-bold group-hover/opt:text-cyan-700">{{
                                 opt.name || opt.value }}</span>
                         </label>
                         }
@@ -168,21 +168,25 @@
 
                     @case ('file') {
                     <div
-                        class="flex flex-col items-center justify-center p-8 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl hover:border-cyan-400 hover:bg-cyan-50/30 transition-all group/file cursor-pointer relative">
+                        class="flex flex-col items-center justify-center p-8 bg-slate-50 border-2 border-dashed rounded-2xl transition-all group/file cursor-pointer relative"
+                        [ngClass]="getSelectedFileName(field.id!) ? 'border-cyan-500 bg-cyan-50/20' : 'border-slate-300 hover:border-cyan-400 hover:bg-cyan-50/30'">
                         <input type="file" (change)="onFileChange($event, field.id!)"
                             class="absolute inset-0 opacity-0 cursor-pointer">
                         <div
-                            class="p-3 bg-white rounded-full shadow-sm text-slate-400 group-hover/file:text-cyan-500 transition-colors mb-3">
+                            class="p-3 rounded-full shadow-sm transition-colors mb-3"
+                            [ngClass]="getSelectedFileName(field.id!) ? 'bg-cyan-500 text-white' : 'bg-white text-slate-400 group-hover/file:text-cyan-500'">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                             </svg>
                         </div>
-                        <p class="text-sm font-bold text-slate-500 group-hover/file:text-cyan-700 transition-colors">
-                            Cliquez ou glissez un fichier ici
+                        <p class="text-sm font-bold transition-colors"
+                           [ngClass]="getSelectedFileName(field.id!) ? 'text-cyan-800' : 'text-slate-500 group-hover/file:text-cyan-700'">
+                            {{ getSelectedFileName(field.id!) || ('FORM_VIEWER.CLICK_DRAG_FILE' | translate) }}
                         </p>
-                        <p class="text-xs text-slate-400 mt-1">PDF, Image (Max 10Mo)</p>
+                        <p class="text-xs text-slate-400 mt-1" *ngIf="!getSelectedFileName(field.id!)">PDF, Image (Max 10Mo)</p>
+                        <p class="text-xs text-cyan-600 font-semibold mt-1" *ngIf="getSelectedFileName(field.id!)">Fichier sélectionné (cliquez pour modifier)</p>
                     </div>
                     }
                     }
@@ -194,7 +198,7 @@
                                 d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
                                 clip-rule="evenodd" />
                         </svg>
-                        {{ field.errorMessage || 'Ce champ est requis' }}
+                        {{ field.errorMessage || ('FORM_VIEWER.FIELD_REQUIRED' | translate) }}
                     </p>
                     }
 
@@ -205,9 +209,7 @@
 
             <div class="bg-slate-50 p-6 border-t border-slate-100 flex justify-end">
                 <button type="submit" [disabled]="diligenceForm.invalid || selectedClient === null"
-                    class="w-full md:w-auto px-8 py-3.5 bg-slate-900 text-cyan-400 font-black rounded-xl hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all disabled:opacity-30 disabled:shadow-none flex justify-center items-center gap-3 transform hover:-translate-y-0.5 active:translate-y-0 text-sm uppercase tracking-wider">
-                    Soumettre
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    class="w-full md:w-auto px-8 py-3.5 bg-slate-900 text-cyan-400 font-black rounded-xl hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all disabled:opacity-30 disabled:shadow-none flex justify-center items-center gap-3 transform hover:-translate-y-0.5 active:translate-y-0 text-sm uppercase tracking-wider">{{ 'FORM_VIEWER.SUBMIT' | translate }}<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -220,7 +222,7 @@
             <div
                 class="spinner border-4 border-slate-200 border-t-cyan-500 rounded-full w-12 h-12 mx-auto animate-spin">
             </div>
-            <p class="mt-4 text-slate-500 font-medium">Chargement du formulaire...</p>
+            <p class="mt-4 text-slate-500 font-medium">{{ 'FORM_VIEWER.LOADING_FORM' | translate }}</p>
         </div>
         }
 

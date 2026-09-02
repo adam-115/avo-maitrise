@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { SecteurActivite } from '../../appTypes';
 import { AlertService } from './../../services/alert-service';
 import { SecteurActiviteService } from './../../services/secteur-activite-service';
 
 @Component({
   selector: 'app-secteur-activite',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
   templateUrl: './secteur-activite.html',
   styleUrl: './secteur-activite.css',
 })

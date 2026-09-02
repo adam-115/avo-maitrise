@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Appointement } from '../../appTypes';
 import { AppointementService } from '../../services/appointement.service';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
 
 @Component({
   selector: 'app-calendrier-jour',
-  imports: [CommonModule, FormsModule, AppointementDialogComponent, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, FormsModule, AppointementDialogComponent, TranslatePipe],
   templateUrl: './calendrier-jour.html',
   styleUrl: './calendrier-jour.css'
 })

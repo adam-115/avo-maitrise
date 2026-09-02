@@ -83,8 +83,8 @@
                             <div class="relative w-20">
                                 <input type="number" [ngModel]="vatRate()" (ngModelChange)="vatRate.set($event)" min="0" step="0.5"
                                     [disabled]="invoice()?.status !== 'DRAFT'"
-                                    class="block w-full text-right pr-6 pl-2 py-1 border border-slate-300 rounded-md text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200" />
-                                <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                                    class="block w-full text-right pe-6 ps-2 py-1 border border-slate-300 rounded-md text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200" />
+                                <div class="absolute inset-y-0 end-0 pe-2 flex items-center pointer-events-none">
                                     <span class="text-slate-500 text-xs">%</span>
                                 </div>
                             </div>
@@ -140,11 +140,11 @@
                                         class="block w-20 mx-auto text-center px-2 py-1 border border-slate-300 rounded-md text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200" />
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <div class="relative w-28 ml-auto">
+                                    <div class="relative w-28 ms-auto">
                                         <input type="number" [(ngModel)]="entry.price5min" (ngModelChange)="onEntryChange()" min="0" step="0.01"
                                             [disabled]="invoice()?.status !== 'DRAFT'"
-                                            class="block w-full text-right pr-6 pl-2 py-1 border border-slate-300 rounded-md text-sm font-mono focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200" />
-                                        <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                                            class="block w-full text-right pe-6 ps-2 py-1 border border-slate-300 rounded-md text-sm font-mono focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200" />
+                                        <div class="absolute inset-y-0 end-0 pe-2 flex items-center pointer-events-none">
                                             <span class="text-slate-500 text-xs font-mono">€</span>
                                         </div>
                                     </div>

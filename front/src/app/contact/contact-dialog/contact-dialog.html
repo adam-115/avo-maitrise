@@ -6,7 +6,7 @@
 
     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-cyan-50 rounded-t-xl">
       <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
-        Lier un Contact au Dossier {{ dossierNumber }}
+        {{ 'CONTACT_DIALOG.LINK_CONTACT' | translate }} {{ dossierNumber }}
       </h3>
       <button type="button" (click)="closeDialog()" class="text-gray-400 hover:text-gray-600 transition">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -20,56 +20,53 @@
       <div id="tab-create-new" class="mt-2 space-y-5">
 
         <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 rounded-lg text-sm">
-          Attention : Ce contact sera **ajouté de façon permanente** à la base de données de tous les contacts du
-          cabinet.
+          {{ 'CONTACT_DIALOG.WARNING' | translate }}
         </div>
 
         <form id="create-new-contact-form" class="space-y-4" [formGroup]="contactForm" (ngSubmit)="submitForm()">
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label for="new_contact_type" class="block text-sm font-medium text-gray-700 mb-1">Civilité <span
+              <label for="new_contact_type" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.CIVILITY' | translate }} <span
                   class="text-red-500">*</span></label>
               <select id="new_contact_type" formControlName="civilite" required
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                <option value="M.">Monsieur</option>
-                <option value="Mme">Madame</option>
-                <option value="Me">Maître</option>
+                <option value="M.">{{ 'CONTACT_DIALOG.MR' | translate }}</option>
+                <option value="Mme">{{ 'CONTACT_DIALOG.MRS' | translate }}</option>
+                <option value="Me">{{ 'CONTACT_DIALOG.MASTER' | translate }}</option>
               </select>
             </div>
             <div>
-              <label for="new_contact_company" class="block text-sm font-medium text-gray-700 mb-1">Société/Organisation
-                (Optionnel)</label>
+              <label for="new_contact_company" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.COMPANY' | translate }}</label>
               <input type="text" formControlName="entreprise" id="new_contact_company"
-                placeholder="Ex: SCP Tiers-Avocats, SARL Beta..."
+                [placeholder]="'CONTACT_DIALOG.COMPANY_PLACEHOLDER' | translate"
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label for="new_contact_last_name" class="block text-sm font-medium text-gray-700 mb-1">Nom <span
+              <label for="new_contact_last_name" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.LAST_NAME' | translate }} <span
                   class="text-red-500">*</span></label>
               <input type="text" formControlName="nom" id="new_contact_last_name" required placeholder="Ex: Durand"
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
             <div>
-              <label for="new_contact_first_name" class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-              <input type="text" formControlName="prenom" id="new_contact_first_name" placeholder="Ex: Luc"
+              <label for="new_contact_firstname" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.FIRST_NAME' | translate }} <span
+                  class="text-red-500">*</span></label>
+              <input type="text" formControlName="prenom" id="new_contact_firstname" placeholder="Ex: Luc"
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label for="new_contact_email" class="block text-sm font-medium text-gray-700 mb-1">Adresse
-                Email</label>
+              <label for="new_contact_email" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.EMAIL' | translate }}</label>
               <input type="email" formControlName="email" id="new_contact_email" placeholder="contact@exemple.com"
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
             <div>
-              <label for="new_contact_phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone
-                Principal</label>
+              <label for="new_contact_phone" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.PHONE' | translate }}</label>
               <input type="tel" formControlName="telephoneMobile" id="new_contact_phone"
                 placeholder="+33 XX XX XX XX XX"
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
@@ -78,12 +75,12 @@
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label for="new_contact_toque" class="block text-sm font-medium text-gray-700 mb-1">Numéro de Toque (Si Avocat)</label>
+              <label for="new_contact_toque" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.TOQUE_NUMBER' | translate }}</label>
               <input type="text" formControlName="numToque" id="new_contact_toque" placeholder="Ex: 1234"
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
             <div>
-              <label for="new_contact_web" class="block text-sm font-medium text-gray-700 mb-1">Site Web</label>
+              <label for="new_contact_web" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.WEBSITE' | translate }}</label>
               <input type="url" formControlName="siteWeb" id="new_contact_web" placeholder="https://..."
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
@@ -91,34 +88,33 @@
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label for="new_contact_profession" class="block text-sm font-medium text-gray-700 mb-1">Profession</label>
-              <input type="text" formControlName="profession" id="new_contact_profession" placeholder="Ex: Notaire, Expert..."
+              <label for="new_contact_profession" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.PROFESSION' | translate }}</label>
+              <input type="text" formControlName="profession" id="new_contact_profession" [placeholder]="'CONTACT_DIALOG.PROFESSION_PLACEHOLDER' | translate"
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
             <div>
-              <label for="new_contact_pays" class="block text-sm font-medium text-gray-700 mb-1">Pays</label>
+              <label for="new_contact_pays" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.COUNTRY' | translate }}</label>
               <input type="text" formControlName="pays" id="new_contact_pays" placeholder="Ex: France"
                 class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
             </div>
           </div>
 
           <div>
-            <label for="new_contact_observation" class="block text-sm font-medium text-gray-700 mb-1">Observations / Commentaires</label>
+            <label for="new_contact_observation" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.OBSERVATIONS' | translate }}</label>
             <textarea formControlName="observation" id="new_contact_observation" rows="2"
-              placeholder="Notes complémentaires sur ce contact..."
+              [placeholder]="'CONTACT_DIALOG.OBSERVATIONS_PLACEHOLDER' | translate"
               class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
           </div>
 
           <div class="pt-2">
-            <label for="new_contact_role" class="block text-sm font-medium text-gray-700 mb-1">Rôle de ce nouveau
-              contact dans ce dossier <span class="text-red-500">*</span></label>
+            <label for="new_contact_role" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.ROLE' | translate }} <span class="text-red-500">*</span></label>
             <select id="new_contact_role" formControlName="notes" required
               class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-              <option value="Partie Adverse">Partie Adverse</option>
-              <option value="Avocat Adverse">Avocat Adverse</option>
-              <option value="Expert / Tiers">Expert / Tiers</option>
-              <option value="Juridiction / Tribunal">Juridiction / Tribunal</option>
-              <option value="Client Principal">Client Principal</option>
+              <option value="Partie Adverse">{{ 'CONTACT_DIALOG.ROLE_ADVERSE_PARTY' | translate }}</option>
+              <option value="Avocat Adverse">{{ 'CONTACT_DIALOG.ROLE_ADVERSE_LAWYER' | translate }}</option>
+              <option value="Expert / Tiers">{{ 'CONTACT_DIALOG.ROLE_EXPERT_THIRD' | translate }}</option>
+              <option value="Juridiction / Tribunal">{{ 'CONTACT_DIALOG.ROLE_JURISDICTION' | translate }}</option>
+              <option value="Client Principal">{{ 'CONTACT_DIALOG.ROLE_MAIN_CLIENT' | translate }}</option>
             </select>
           </div>
 
@@ -130,11 +126,11 @@
     <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3 rounded-b-xl">
       <button type="button" (click)="closeDialog()"
         class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
-        Annuler
+        {{ 'CONTACT_DIALOG.CANCEL' | translate }}
       </button>
       <button type="submit" form="create-new-contact-form"
         class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-cyan-600 shadow-md hover:bg-cyan-700 transition duration-150">
-        Lier le Contact au Dossier
+        {{ 'CONTACT_DIALOG.LINK_BUTTON' | translate }}
       </button>
     </div>
 

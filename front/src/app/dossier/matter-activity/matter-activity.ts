@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MatterActivity } from '../../appTypes';
 import { MatterActivityService } from '../../services/matter-activity.service';
 
 @Component({
   selector: 'app-matter-activity',
   standalone: true,
-  imports: [CommonModule, FormsModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './matter-activity.html'
 })
 export class MatterActivityComponent implements OnInit {

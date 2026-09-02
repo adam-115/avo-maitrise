@@ -6,12 +6,12 @@ import { Document } from '../../appTypes';
 import { DocumentService } from '../../services/document.service';
 import { AlertService } from '../../services/alert-service';
 
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-model',
   standalone: true,
-  imports: [CommonModule, FormsModule, DocumentDialog, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, FormsModule, DocumentDialog, TranslatePipe],
   templateUrl: './model.html',
   styleUrl: './model.css'
 })

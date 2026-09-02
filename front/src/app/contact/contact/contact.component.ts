@@ -3,13 +3,14 @@ import { Component, inject, Input, OnInit, OnChanges, SimpleChanges } from '@ang
 import { DossierContact } from '../../appTypes';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { DossierContactService } from '../../services/dossier-contact.service';
 import { AlertService } from '../../services/alert-service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-contact',
-  imports: [ContactDialog, FormsModule, CommonModule],
+  imports: [ContactDialog, FormsModule, CommonModule, TranslatePipe],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css'
 })

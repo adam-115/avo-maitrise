@@ -35,7 +35,7 @@
     <!-- Filters Toolbar -->
     <div class="flex flex-col lg:flex-row gap-4 mb-8">
         <div class="flex-1 relative">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div class="absolute inset-y-0 start-0 ps-3 flex items-center pointer-events-none">
                 <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -43,7 +43,7 @@
             </div>
             <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
                 [placeholder]="'TASK_MANAGER.SEARCH_PLACEHOLDER' | translate"
-                class="w-full pl-10 pr-4 py-3 bg-white rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-700 shadow-sm transition-all placeholder:text-slate-400 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+                class="w-full ps-10 pe-4 py-3 bg-white rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 text-sm text-slate-700 shadow-sm transition-all placeholder:text-slate-400 border-2 border-slate-300 hover:border-slate-400 transition-colors">
         </div>
 
         <div class="flex gap-4 overflow-x-auto pb-2 lg:pb-0">
@@ -101,11 +101,11 @@
 
             <!-- Glowing background accent -->
             <div
-                class="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-cyan-100/60 to-indigo-100/20 rounded-full blur-3xl -mr-10 -mt-10 transition-transform duration-700 group-hover:scale-150 pointer-events-none">
+                class="absolute top-0 end-0 w-40 h-40 bg-gradient-to-br from-cyan-100/60 to-indigo-100/20 rounded-full blur-3xl -me-10 -mt-10 transition-transform duration-700 group-hover:scale-150 pointer-events-none">
             </div>
 
             <!-- Overdue Ribbon -->
-            <div *ngIf="isOverdue(task) && !isClosed(task)" class="absolute top-5 right-5 animate-pulse z-20">
+            <div *ngIf="isOverdue(task) && !isClosed(task)" class="absolute top-5 end-5 animate-pulse z-20">
                 <span
                     class="flex items-center gap-1.5 bg-red-50 text-red-600 border border-red-200 px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-wider backdrop-blur-md shadow-sm">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,7 +118,7 @@
 
             <!-- Header: Category & Priority -->
             <div class="relative flex items-center gap-3 mb-5 z-10 w-full"
-                [ngClass]="{'pr-24': isOverdue(task) && !isClosed(task)}">
+                [ngClass]="{'pe-24': isOverdue(task) && !isClosed(task)}">
                 <span *ngIf="task.category"
                     [style.backgroundColor]="task.category.couleur + '15'"
                     [style.color]="task.category.couleur"
@@ -156,7 +156,7 @@
                 <!-- Body: Title & Desc -->
                 <div class="relative z-10 mb-6 flex-1">
                     <h4 [ngClass]="{'line-through text-slate-400': isClosed(task), 'text-slate-800 group-hover:text-cyan-700 transition-colors': !isClosed(task)}"
-                        class="text-xl font-extrabold leading-snug tracking-tight mb-3 pr-4">
+                        class="text-xl font-extrabold leading-snug tracking-tight mb-3 pe-4">
                         {{ task.titre }}
                     </h4>
                     <p *ngIf="task.description" class="text-[13px] text-slate-500 line-clamp-3 leading-relaxed font-medium">
@@ -216,7 +216,7 @@
                     <div class="flex flex-col items-start sm:items-end gap-2 text-right">
                         <div class="flex items-center text-xs font-bold text-slate-500 bg-slate-50 px-2.5 py-1 rounded-lg"
                             [ngClass]="{'text-red-500 bg-red-50': isOverdue(task) && !isClosed(task)}">
-                            <svg class="w-3.5 h-3.5 mr-1.5 opacity-70" fill="none" stroke="currentColor"
+                            <svg class="w-3.5 h-3.5 me-1.5 opacity-70" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
@@ -226,12 +226,12 @@
                         </div>
 
                         <div class="relative flex items-center group/select w-full sm:w-auto">
-                            <select [ngModel]="task.status?.id" (change)="onStatusChange(task, $event)"
-                                class="w-full sm:w-auto text-[11px] font-extrabold bg-white hover:bg-slate-50 rounded-xl py-2 pl-3 pr-8 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 cursor-pointer text-slate-700 shadow-sm appearance-none min-w-[140px] transition-all border-2 border-slate-300 hover:border-slate-400 transition-colors">
+                            <select [ngModel]="task.status.id" (change)="onStatusChange(task, $event)"
+                                class="w-full sm:w-auto text-[11px] font-extrabold bg-white hover:bg-slate-50 rounded-xl py-2 ps-3 pe-8 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 cursor-pointer text-slate-700 shadow-sm appearance-none min-w-[140px] transition-all border-2 border-slate-300 hover:border-slate-400 transition-colors">
                                 <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
                             </select>
                             <div
-                                class="absolute right-3 text-slate-400 pointer-events-none transition-transform group-hover/select:-translate-y-0.5">
+                                class="absolute end-3 text-slate-400 pointer-events-none transition-transform group-hover/select:-translate-y-0.5">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 9l-7 7-7-7"></path>
@@ -244,7 +244,7 @@
 
             <!-- Tab Content: LOGS -->
             <div *ngIf="getTaskTab(task.id!) === 'LOGS'" class="flex-1 flex flex-col animate-fade-in">
-                <div class="flex-1 space-y-3 overflow-y-auto max-h-[180px] pr-2 scrollbar-thin scrollbar-thumb-slate-200">
+                <div class="flex-1 space-y-3 overflow-y-auto max-h-[180px] pe-2 scrollbar-thin scrollbar-thumb-slate-200">
                     <div *ngIf="getTaskLogs(task.id!).length === 0" class="text-center py-6">
                         <p class="text-[10px] font-bold text-slate-300 uppercase tracking-widest italic">{{ 'TASK_MANAGER.NO_HISTORY' | translate }}</p>
                     </div>

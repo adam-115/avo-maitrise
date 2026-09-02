@@ -9,12 +9,12 @@ import { TaskService } from '../../services/task.service';
 import { NavigationService } from '../../services/navigation-service';
 import { Notification, Client, Dossier, Appointement, Task } from '../../appTypes';
 import { KeycloakService } from '../../services/keycloak.service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bord',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, RouterModule, TranslatePipe],
   templateUrl: './bord.html',
   styleUrl: './bord.css'
 })

@@ -5,12 +5,12 @@ import { AlertService } from '../../../services/alert-service';
 import { User, UserRole } from '../../../appTypes';
 import { CommonModule } from '@angular/common';
 import { PaginatedResponse } from '../../../services/genericService/abstract-crud.service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-utilisateur',
   standalone: true,
-  imports: [CommonModule, UtilisateursFormDialog, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, UtilisateursFormDialog, TranslatePipe],
   templateUrl: './utilisateur.html',
   styleUrl: './utilisateur.css'
 })

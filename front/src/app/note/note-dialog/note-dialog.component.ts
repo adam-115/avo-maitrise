@@ -1,13 +1,14 @@
 import { Component, EventEmitter, inject, Input, OnInit, OnChanges, SimpleChanges, Output, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Note, NoteCategory } from '../../appTypes';
 import { NoteCategoryService } from '../../services/note-category.service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
   selector: 'app-note-dialog',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TranslatePipe],
   templateUrl: './note-dialog.component.html',
   styleUrl: './note-dialog.component.css'
 })

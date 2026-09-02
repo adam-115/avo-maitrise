@@ -38,7 +38,7 @@
                   <span>{{ (selectedFile || selectedDocument) ? ('DOCUMENT_DIALOG.CHANGE_FILE' | translate) : ('DOCUMENT_DIALOG.UPLOAD_FILE' | translate) }}</span>
                   <input id="file-upload" type="file" (change)="onFileSelected($event)" class="sr-only">
                 </label>
-                <p class="pl-1">{{ 'DOCUMENT_DIALOG.OR_DRAG_DROP' | translate }}</p>
+                <p class="ps-1">{{ 'DOCUMENT_DIALOG.OR_DRAG_DROP' | translate }}</p>
               </div>
               <p class="text-xs" [ngClass]="(selectedFile || selectedDocument) ? 'text-green-600 font-bold' : 'text-gray-500'">
                 {{ selectedFile ? selectedFile.name : (selectedDocument ? (selectedDocument.nomFichier || selectedDocument.filename || selectedDocument.name || ('DOCUMENT_DIALOG.EXISTING_FILE' | translate)) : 'PDF, DOCX, JPG, XLSX (Max 10MB)') }}

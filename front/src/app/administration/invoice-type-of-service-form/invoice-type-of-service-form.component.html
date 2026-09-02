@@ -30,7 +30,7 @@
                 <div class="flex items-center mt-6">
                     <input id="actif" type="checkbox" formControlName="actif"
                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
-                    <label for="actif" class="ml-2 block text-sm text-gray-900">{{ 'INVOICE_TYPE_OF_SERVICE.ACTIVE' | translate }}</label>
+                    <label for="actif" class="ms-2 block text-sm text-gray-900">{{ 'INVOICE_TYPE_OF_SERVICE.ACTIVE' | translate }}</label>
                 </div>
             </div>
 
@@ -85,7 +85,7 @@
                         </td>
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <button (click)="editService(service)"
-                                class="text-blue-600 hover:text-blue-900 mr-4">{{ 'INVOICE_TYPE_OF_SERVICE.ACTION_EDIT' | translate }}</button>
+                                class="text-blue-600 hover:text-blue-900 me-4">{{ 'INVOICE_TYPE_OF_SERVICE.ACTION_EDIT' | translate }}</button>
                             <button (click)="service.id ? deleteService(service.id) : null"
                                 class="text-red-600 hover:text-red-900">{{ 'INVOICE_TYPE_OF_SERVICE.ACTION_DELETE' | translate }}</button>
                         </td>

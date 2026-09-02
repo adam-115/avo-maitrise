@@ -5,7 +5,7 @@
         <div class="flex flex-col items-center justify-center py-20">
             <div class="spinner border-4 border-slate-200 border-t-cyan-500 rounded-full w-12 h-12 animate-spin mb-4">
             </div>
-            <p class="text-slate-500 font-medium">Chargement des résultats...</p>
+            <p class="text-slate-500 font-medium">{{ 'FORM_RESULT_VIEWER.LOADING' | translate }}</p>
         </div>
         } @else if (result && formConfig) {
 
@@ -14,27 +14,25 @@
             <div class="flex items-center gap-4">
                 <button (click)="goBack()"
                     class="inline-flex items-center text-slate-500 hover:text-slate-800 font-bold transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 me-2" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Retour
-                </button>
+                    </svg>{{ 'FORM_RESULT_VIEWER.BACK' | translate }}</button>
                 
                 <button (click)="printResult()"
                     class="inline-flex items-center px-4 py-2 bg-slate-900 text-cyan-400 rounded-xl hover:bg-slate-800 transition-all font-bold text-sm shadow-lg shadow-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 me-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
                     </svg>
-                    Imprimer
+                    {{ 'FORM_RESULT_VIEWER.PRINT' | translate }}
                 </button>
             </div>
 
             <div class="text-right">
                 <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-cyan-100 text-cyan-800">
-                    Soumis le : {{ result.creationDate | date:'dd/MM/yyyy HH:mm' }}
+                    {{ 'FORM_RESULT_VIEWER.SUBMITTED_ON' | translate }} {{ result.creationDate | date:'dd/MM/yyyy HH:mm' }}
                 </span>
             </div>
         </div>
@@ -61,15 +59,15 @@
                                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                     </div>
-                    <h2 class="text-lg font-bold text-slate-800">Client : {{ getDisplayName(client) }}</h2>
+                    <h2 class="text-lg font-bold text-slate-800">{{ 'FORM_RESULT_VIEWER.CLIENT' | translate }} {{ getDisplayName(client) }}</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                     <div>
-                        <span class="text-slate-400 font-bold uppercase text-xs">Email</span>
+                        <span class="text-slate-400 font-bold uppercase text-xs">{{ 'FORM_RESULT_VIEWER.EMAIL' | translate }}</span>
                         <p class="font-medium text-slate-700">{{ client.email || '-' }}</p>
                     </div>
                     <div>
-                        <span class="text-slate-400 font-bold uppercase text-xs">Téléphone</span>
+                        <span class="text-slate-400 font-bold uppercase text-xs">{{ 'FORM_RESULT_VIEWER.PHONE' | translate }}</span>
                         <p class="font-medium text-slate-700">{{ client.telephone || '-' }}</p>
                     </div>
                 </div>
@@ -91,7 +89,7 @@
                             <div class="space-y-2">
                                 @for (opt of field.options; track opt.id) {
                                 <div class="flex items-center">
-                                    <div class="h-5 w-5 rounded border flex items-center justify-center mr-3"
+                                    <div class="h-5 w-5 rounded border flex items-center justify-center me-3"
                                         [ngClass]="getFieldOptionResult(field.id!, opt.id!) ? 'bg-cyan-500 border-cyan-500 text-white' : 'border-slate-300 bg-white'">
                                         @if (getFieldOptionResult(field.id!, opt.id!)) {
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20"
@@ -110,6 +108,40 @@
                                 }
                             </div>
                             }
+                            @case ('file') {
+                            @if (hasFile(field)) {
+                            <div class="flex items-center justify-between p-3.5 bg-white rounded-xl border border-slate-200 shadow-sm hover:border-cyan-300 transition-all">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-10 h-10 rounded-lg bg-cyan-50 flex items-center justify-center text-cyan-600 flex-shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-bold text-slate-800 truncate" [title]="getFileName(field)">
+                                            {{ getFileName(field) }}
+                                        </p>
+                                        <p *ngIf="getFileSize(field)" class="text-xs text-slate-400 font-medium">
+                                            {{ getFileSize(field) }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 flex-shrink-0 ms-4 no-print" *ngIf="canDownloadOrPreview(field)">
+                                    <button type="button" (click)="downloadOrViewFile(field)"
+                                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-cyan-50 text-slate-700 hover:text-cyan-700 font-bold text-xs transition-colors cursor-pointer">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        <span>{{ 'FORM_RESULT_VIEWER.DOWNLOAD' | translate }}</span>
+                                    </button>
+                                </div>
+                            </div>
+                            } @else {
+                            <p class="text-slate-400 italic text-sm">-</p>
+                            }
+                            }
                             @default {
                             <p class="text-slate-700 font-medium">
                                 {{ getDisplayValue(field) }}
@@ -126,8 +158,8 @@
 
         } @else {
         <div class="text-center py-20">
-            <h3 class="text-xl font-bold text-slate-700">Résultat introuvable</h3>
-            <button (click)="goBack()" class="mt-4 text-cyan-600 font-bold hover:underline">Retour</button>
+            <h3 class="text-xl font-bold text-slate-700">{{ 'FORM_RESULT_VIEWER.NOT_FOUND' | translate }}</h3>
+            <button (click)="goBack()" class="mt-4 text-cyan-600 font-bold hover:underline">{{ 'FORM_RESULT_VIEWER.BACK' | translate }}</button>
         </div>
         }
 

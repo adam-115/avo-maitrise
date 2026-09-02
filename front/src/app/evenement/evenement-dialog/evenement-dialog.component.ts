@@ -6,11 +6,11 @@ import { UserService } from '../../services/user.service';
 import { UserSelectionDialog } from '../../dossier/user-selection-dialog/user-selection-dialog';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { EventTypeService } from '../../services/event-type.service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-evenement-dialog',
-  imports: [ReactiveFormsModule, CommonModule, UserSelectionDialog, TranslatePipe, TranslateDirective],
+  imports: [ReactiveFormsModule, CommonModule, UserSelectionDialog, TranslatePipe],
   templateUrl: './evenement-dialog.component.html',
   styleUrl: './evenement-dialog.component.css'
 })

@@ -34,4 +34,5 @@ public class UserDTO {
     private Date lastLogin;
     private Date createdAt;
     private String tempPassword;
+    private String preferredLanguage;
 }

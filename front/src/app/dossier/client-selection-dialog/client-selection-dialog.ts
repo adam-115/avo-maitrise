@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Client } from '../../appTypes';
 import { ClientService } from '../../services/client-service';
 
 @Component({
     selector: 'app-client-selection-dialog',
     standalone: true,
-    imports: [CommonModule, FormsModule, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, FormsModule, TranslatePipe],
     templateUrl: './client-selection-dialog.html',
     styleUrl: './client-selection-dialog.css'
 })

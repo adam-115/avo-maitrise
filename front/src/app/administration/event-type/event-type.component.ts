@@ -5,12 +5,12 @@ import { EventTypeService } from '../../services/event-type.service';
 import { EventType } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { AlertService } from '../../services/alert-service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-event-type',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
     templateUrl: './event-type.component.html',
     styleUrls: ['./event-type.component.css']
 })

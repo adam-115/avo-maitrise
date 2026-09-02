@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { DomaineJuridique } from '../../appTypes';
 
 @Component({
     selector: 'app-domaine-juridique-selection-dialog',
     standalone: true,
-    imports: [CommonModule, FormsModule, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, FormsModule, TranslatePipe],
     templateUrl: './domaine-juridique-selection-dialog.html',
     styleUrl: './domaine-juridique-selection-dialog.css'
 })

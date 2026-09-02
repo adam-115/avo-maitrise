@@ -1,6 +1,7 @@
 import { Component, inject, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 import { NoteDialogComponent } from '../note-dialog/note-dialog.component';
 import { Note, NoteCategory } from '../../appTypes';
 import { NoteService } from '../../services/note.service';
@@ -10,7 +11,7 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
 
 @Component({
   selector: 'app-note',
-  imports: [NoteDialogComponent, CommonModule, FormsModule],
+  imports: [NoteDialogComponent, CommonModule, FormsModule, TranslatePipe],
   templateUrl: './note.component.html',
   styleUrl: './note.component.css'
 })

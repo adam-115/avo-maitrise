@@ -18,11 +18,11 @@
                         Détails de l'événement
                     </h3>
                     <div class="mt-4 text-left space-y-3">
-                        <div><strong class="text-gray-700">Titre :</strong> <span class="text-gray-600">{{ event.titre
+                        <div><strong class="text-gray-700">{{ 'EVENT_DETAILS.EVENT_TITLE' | translate }}</strong> <span class="text-gray-600">{{ event.titre
                                 }}</span></div>
-                        <div *ngIf="event.categorie"><strong class="text-gray-700">Type :</strong> <span
+                        <div *ngIf="event.categorie"><strong class="text-gray-700">{{ 'EVENT_DETAILS.TYPE' | translate }}</strong> <span
                                 class="text-gray-600">{{ event.categorie.label }}</span></div>
-                        <div><strong class="text-gray-700">Statut :</strong> <span class="text-gray-600">{{ statusLabel
+                        <div><strong class="text-gray-700">{{ 'EVENT_DETAILS.STATUS' | translate }}</strong> <span class="text-gray-600">{{ statusLabel
                                 || event.statut }}</span></div>
                         <div>
                             <strong class="text-gray-700">Dates :</strong>
@@ -33,12 +33,12 @@
                                     }}</ng-container>
                             </span>
                         </div>
-                        <div *ngIf="event.lieu"><strong class="text-gray-700">Lieu :</strong> <span
+                        <div *ngIf="event.lieu"><strong class="text-gray-700">{{ 'EVENT_DETAILS.LOCATION' | translate }}</strong> <span
                                 class="text-gray-600">{{ event.lieu }}</span></div>
                         <div>
-                            <strong class="text-gray-700">Description :</strong>
+                            <strong class="text-gray-700">{{ 'EVENT_DETAILS.DESCRIPTION' | translate }}</strong>
                             <p class="text-gray-600 mt-1 whitespace-pre-wrap text-sm border p-2 rounded bg-gray-50">{{
-                                event.description || 'Aucune description disponible.' }}</p>
+                                event.description || ('EVENT_DETAILS.NO_DESCRIPTION' | translate) }}</p>
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
             <div class="mt-5 sm:mt-6">
                 <button type="button" (click)="onClose()"
                     class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
-                    Fermer
+                    {{ 'EVENT_DETAILS.CLOSE' | translate }}
                 </button>
             </div>
         </div>

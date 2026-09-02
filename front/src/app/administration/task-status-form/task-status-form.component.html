@@ -30,7 +30,7 @@
                 <div class="flex items-center mt-6">
                     <input id="isClosingStatus" type="checkbox" formControlName="isClosingStatus"
                         class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
-                    <label for="isClosingStatus" class="ml-2 block text-sm text-gray-900">{{ 'TASK_STATUS_FORM.IS_CLOSING' | translate }}</label>
+                    <label for="isClosingStatus" class="ms-2 block text-sm text-gray-900">{{ 'TASK_STATUS_FORM.IS_CLOSING' | translate }}</label>
                 </div>
             </div>
 
@@ -92,7 +92,7 @@
                         </td>
                         <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                             <button (click)="editStatus(status)"
-                                class="text-blue-600 hover:text-blue-900 mr-4 cursor-pointer">{{ 'TASK_STATUS_FORM.ACTION_EDIT' | translate }}</button>
+                                class="text-blue-600 hover:text-blue-900 me-4 cursor-pointer">{{ 'TASK_STATUS_FORM.ACTION_EDIT' | translate }}</button>
                             <button (click)="deleteStatus(status.id)"
                                 class="text-red-600 hover:text-red-900 cursor-pointer">{{ 'TASK_STATUS_FORM.ACTION_DELETE' | translate }}</button>
                         </td>

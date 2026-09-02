@@ -12,11 +12,12 @@ import { forkJoin, map, switchMap, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alert-service';
 import { AssignFormModalComponent } from '../assign-form-modal/assign-form-modal.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-client-diligence-results',
     standalone: true,
-    imports: [CommonModule, DatePipe, FormsModule, AssignFormModalComponent],
+    imports: [CommonModule, DatePipe, FormsModule, AssignFormModalComponent, TranslatePipe],
     templateUrl: './client-diligence-results.component.html',
     styles: [`
         @keyframes blink-red {

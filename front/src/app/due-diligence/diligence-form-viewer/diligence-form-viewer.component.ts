@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -12,7 +13,7 @@ import { FormResultService } from '../../services/form-result-service';
 @Component({
     selector: 'app-diligence-form-viewer',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
     templateUrl: './diligence-form-viewer.component.html',
 })
 export class DiligenceFormViewerComponent implements OnInit {
@@ -20,6 +21,7 @@ export class DiligenceFormViewerComponent implements OnInit {
     diligenceForm: FormGroup = new FormGroup({});
     selectedClient: Client | null = null;
     targetUboId: number | undefined = undefined;
+    selectedFileNames: { [fieldId: string]: string } = {};
 
     getDisplayName(client: any): string {
         if (!client) return '';
@@ -34,7 +36,6 @@ export class DiligenceFormViewerComponent implements OnInit {
     private clientService = inject(ClientService);
     private formResultService = inject(FormResultService);
 
-
     ngOnInit(): void {
         this.route.paramMap.subscribe(params => {
             const id = params.get('id');
@@ -42,7 +43,6 @@ export class DiligenceFormViewerComponent implements OnInit {
                 this.loadFormConfig(id);
             } else {
                 this.alertService.displayMessage('Erreur', 'Identifiant du formulaire manquant', 'error');
-                // this.navigationService.navigateToFormConfigList();
             }
         });
 
@@ -67,7 +67,6 @@ export class DiligenceFormViewerComponent implements OnInit {
             error: (err) => {
                 console.error('Error loading form config', err);
                 this.alertService.displayMessage('Erreur', 'Impossible de charger le formulaire', 'error');
-                // this.navigationService.navigateToFormConfigList();
             }
         });
     }
@@ -136,15 +135,26 @@ export class DiligenceFormViewerComponent implements OnInit {
     onFileChange(event: any, fieldId: string) {
         const file = event.target.files[0];
         if (file) {
+            this.selectedFileNames[fieldId] = file.name;
             const reader = new FileReader();
             reader.onload = () => {
+                const payload = JSON.stringify({
+                    name: file.name,
+                    data: reader.result,
+                    size: file.size,
+                    type: file.type
+                });
                 this.diligenceForm.patchValue({
-                    [fieldId]: reader.result
+                    [fieldId]: payload
                 });
                 this.diligenceForm.get(fieldId)?.markAsTouched();
             };
             reader.readAsDataURL(file);
         }
+    }
+
+    getSelectedFileName(fieldId: string): string | null {
+        return this.selectedFileNames[fieldId] || null;
     }
 
     onSubmit() {
@@ -179,8 +189,6 @@ export class DiligenceFormViewerComponent implements OnInit {
         });
     }
 
-
-
     private mapToFieldResults(): FieldResult[] {
         const results: FieldResult[] = [];
         const formValue = this.diligenceForm.value;
@@ -189,7 +197,7 @@ export class DiligenceFormViewerComponent implements OnInit {
 
         this.formConfig.fields.forEach(field => {
             if (field.id && formValue.hasOwnProperty(field.id)) {
-                // Handle standard fields (text, textarea, select, radio)
+                // Handle standard fields (text, textarea, select, radio, file)
                 results.push({
                     fieldConfigId: field.id,
                     value: formValue[field.id]

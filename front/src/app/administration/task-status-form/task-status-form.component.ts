@@ -5,12 +5,12 @@ import { TaskStatusService } from '../../services/task-status.service';
 import { TaskStatus } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { AlertService } from '../../services/alert-service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-task-status-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
     templateUrl: './task-status-form.component.html',
     styleUrls: ['./task-status-form.component.css']
 })

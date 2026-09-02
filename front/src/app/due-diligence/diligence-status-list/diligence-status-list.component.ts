@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ClientDiligenceStatus } from '../../appTypes';
@@ -10,7 +11,7 @@ import { NavigationService } from '../../services/navigation-service';
 @Component({
   selector: 'app-diligence-status-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, TranslatePipe],
   templateUrl: './diligence-status-list.component.html',
   styleUrl: './diligence-status-list.component.css'
 })

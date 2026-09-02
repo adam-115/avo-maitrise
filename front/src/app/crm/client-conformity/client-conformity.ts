@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { TranslatePipe } from '@ngx-translate/core';
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { Client, ClientStatus, Document, YenteMatchResponse, ScreeningExecutionDTO, ScreeningMatchDTO, ScreeningExecutionStatus, FormConfig, ClientDiligenceStatus } from '../../appTypes';
@@ -21,7 +22,7 @@ import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 @Component({
   selector: 'app-client-conformity',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatchAnalysisModal, AssignFormModalComponent, DocumentDialog],
+  imports: [CommonModule, FormsModule, RouterModule, MatchAnalysisModal, AssignFormModalComponent, DocumentDialog, TranslatePipe],
   templateUrl: './client-conformity.html',
   styleUrl: './client-conformity.css'
 })

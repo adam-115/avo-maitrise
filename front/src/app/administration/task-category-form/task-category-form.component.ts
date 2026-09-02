@@ -5,12 +5,12 @@ import { TaskCategoryService } from '../../services/task-category.service';
 import { TaskCategory } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { AlertService } from '../../services/alert-service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-task-category-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
     templateUrl: './task-category-form.component.html',
     styleUrls: ['./task-category-form.component.css']
 })

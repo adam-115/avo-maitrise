@@ -6,11 +6,11 @@ import { MatterEventService } from '../../services/matter-event.service';
 import { UserService } from '../../services/user.service';
 import { EvenementDialogComponent } from './../evenement-dialog/evenement-dialog.component';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-evenement',
-  imports: [EvenementDialogComponent, CommonModule, TranslatePipe, TranslateDirective],
+  imports: [EvenementDialogComponent, CommonModule, TranslatePipe],
   templateUrl: './evenement.component.html',
   styleUrl: './evenement.component.css'
 })

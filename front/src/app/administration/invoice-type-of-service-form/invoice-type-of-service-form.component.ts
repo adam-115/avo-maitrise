@@ -5,12 +5,12 @@ import { InvoiceTypeOfServiceService } from '../../services/invoice-type-of-serv
 import { InvoiceTypeOfService } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { AlertService } from '../../services/alert-service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-invoice-type-of-service-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
     templateUrl: './invoice-type-of-service-form.component.html',
     styleUrls: ['./invoice-type-of-service-form.component.css']
 })

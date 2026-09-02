@@ -10,12 +10,12 @@ import { NavigationService } from '../../services/navigation-service';
 import { SecteurActiviteService } from '../../services/secteur-activite-service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-personne-physique-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, DocumentDialog, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, ReactiveFormsModule, DocumentDialog, TranslatePipe],
     templateUrl: './personne-physique-form.component.html',
     styleUrls: ['./personne-physique-form.component.css']
 })

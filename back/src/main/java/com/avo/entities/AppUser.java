@@ -75,6 +75,9 @@ public class AppUser {
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
 
+    @Column(name = "preferred_language", length = 10)
+    private String preferredLanguage = "fr";
+
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {

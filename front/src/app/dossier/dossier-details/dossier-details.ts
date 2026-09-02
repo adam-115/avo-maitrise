@@ -17,12 +17,12 @@ import { MatterActivityComponent } from "../matter-activity/matter-activity";
 import { TaskManagerComponent } from "../task-manager/task-manager.component";
 import { InvoiceDossierServiceComponent } from '../invoice-dossier-service/invoice-dossier-service.component';
 
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dossier-details',
   standalone: true,
-  imports: [CommonModule, ClientStatusAlertComponent, RouterModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, ClientStatusAlertComponent, RouterModule, TranslatePipe],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })

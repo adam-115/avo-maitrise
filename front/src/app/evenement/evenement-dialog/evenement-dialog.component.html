@@ -75,7 +75,7 @@
               class="inline-flex items-center bg-cyan-100 text-cyan-800 rounded-full px-3 py-1 text-sm font-medium">
               {{ user.username }}
               <button type="button" (click)="removeIntervenant(user.id!)"
-                class="ml-2 text-cyan-600 hover:text-cyan-800 focus:outline-none" [title]="'EVENEMENT_DIALOG.REMOVE' | translate">
+                class="ms-2 text-cyan-600 hover:text-cyan-800 focus:outline-none" [title]="'EVENEMENT_DIALOG.REMOVE' | translate">
                 <span class="sr-only">{{ 'EVENEMENT_DIALOG.REMOVE' | translate }}</span>
                 <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                   <path fill-rule="evenodd"
@@ -116,7 +116,7 @@
           <div class="flex items-center">
             <input id="event_reminder" formControlName="reminder" type="checkbox"
               class="h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
-            <label for="event_reminder" class="ml-2 block text-sm text-gray-900 font-semibold">
+            <label for="event_reminder" class="ms-2 block text-sm text-gray-900 font-semibold">
               {{ 'EVENEMENT_DIALOG.ACTIVATE_REMINDER' | translate }}
             </label>
           </div>

@@ -8,13 +8,13 @@
     <!-- Action buttons (Hidden on Print) -->
     <div class="flex justify-between items-center mb-6 print:hidden">
       <button (click)="goBack()" class="text-gray-600 hover:text-red-600 font-medium flex items-center transition-colors">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
         {{ 'INVOICE_PREVIEW.BACK' | translate }}
       </button>
       <button (click)="printInvoice()" class="bg-red-600 text-white px-5 py-2 rounded-lg font-semibold shadow-md hover:bg-red-700 transition-colors flex items-center">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-5 h-5 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
         </svg>
         {{ 'INVOICE_PREVIEW.PRINT_PDF' | translate }}
@@ -162,7 +162,7 @@
       <div class="flex flex-col md:flex-row justify-between items-start">
         
         <!-- Notes / Mentions Légales -->
-        <div class="flex-1 pr-0 md:pr-12 mb-8 md:mb-0">
+        <div class="flex-1 pe-0 md:pe-12 mb-8 md:mb-0">
           <h3 class="text-sm font-bold text-slate-800 mb-2">{{ 'INVOICE_PREVIEW.LEGAL_NOTES' | translate }}</h3>
           <p class="text-sm text-gray-600 whitespace-pre-line bg-gray-50 p-4 rounded-lg border border-gray-100 min-h-[100px]">
             {{ invoice()?.note || ('INVOICE_PREVIEW.NO_ADDITIONAL_NOTES' | translate) }}

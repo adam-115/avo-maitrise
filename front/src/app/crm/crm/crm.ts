@@ -14,7 +14,7 @@ import { ClientMoralListComponent } from './client-moral-list/client-moral-list.
 import { AssociationListComponent } from './association-list/association-list.component';
 import { InstitutionListComponent } from './institution-list/institution-list.component';
 import { ClientCardComponent } from './client-card/client-card.component';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
@@ -28,8 +28,7 @@ import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
     AssociationListComponent, 
     InstitutionListComponent,
     ClientCardComponent,
-    TranslatePipe,
-    TranslateDirective
+    TranslatePipe
   ],
   templateUrl: './crm.html',
   styleUrl: './crm.css'

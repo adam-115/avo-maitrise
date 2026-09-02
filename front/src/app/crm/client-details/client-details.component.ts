@@ -11,12 +11,12 @@ import { ClientDiligenceStatusService } from '../../services/client-diligence-st
 
 import { Client, Dossier, InvoiceEntity, ClientDiligenceStatus } from '../../appTypes';
 
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-client-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, RouterModule, TranslatePipe],
   templateUrl: './client-details.component.html',
   styleUrl: './client-details.component.css'
 })

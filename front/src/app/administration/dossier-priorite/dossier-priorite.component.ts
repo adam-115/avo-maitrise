@@ -5,12 +5,12 @@ import { DossierPrioriteService } from '../../services/dossier-priorite.service'
 import { DossierPriorite } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { AlertService } from '../../services/alert-service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-dossier-priorite',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
     templateUrl: './dossier-priorite.component.html',
     styleUrls: ['./dossier-priorite.component.css']
 })

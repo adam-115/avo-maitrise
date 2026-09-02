@@ -11,12 +11,12 @@ import { Dossier as DossierModel, Client, StatutDossier, DossierPriorite, User }
 import { forkJoin } from 'rxjs';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { NavigationService } from '../../services/navigation-service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dossier',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, FormsModule, RouterModule, TranslatePipe],
   templateUrl: './dossier.component.html',
   styleUrl: './dossier.component.css'
 })

@@ -5,12 +5,12 @@ import { DomaineJuridiqueService } from '../../services/domaine-juridique.servic
 import { DomaineJuridique } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { AlertService } from '../../services/alert-service';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-domaine-juridique-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe, TranslateDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
     templateUrl: './domaine-juridique-form.component.html',
     styleUrls: ['./domaine-juridique-form.component.css']
 })

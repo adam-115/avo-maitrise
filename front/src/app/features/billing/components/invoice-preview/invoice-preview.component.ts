@@ -4,12 +4,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InvoiceService } from '../../services/invoice.service';
 import { CabinetProfileService } from '../../../../services/cabinet-profile.service';
 import { InvoiceEntity, CabinetProfile } from '../../../../appTypes';
-import { TranslatePipe, TranslateDirective } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-invoice-preview',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, RouterModule, TranslatePipe],
   templateUrl: './invoice-preview.component.html'
 })
 export class InvoicePreviewComponent implements OnInit {

@@ -9,12 +9,12 @@ import { ScreeningMatchService } from '../../services/screening-match.service';
 import { NavigationService } from '../../services/navigation-service';
 import { AlertService } from '../../services/alert-service';
 import { Client, ClientStatus, ScreeningMatchDTO, ClientTypeEnum } from '../../appTypes';
-import { TranslatePipe, TranslateDirective, TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-aml-compliance',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TranslatePipe, TranslateDirective],
+  imports: [CommonModule, FormsModule, RouterModule, TranslatePipe],
   templateUrl: './aml-compliance.component.html'
 })
 export class AmlComplianceComponent implements OnInit {

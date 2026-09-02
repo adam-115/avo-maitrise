@@ -1,25 +1,25 @@
 <div class="p-6 bg-gray-50 min-h-screen">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
         <div>
-            <h1 class="text-3xl font-black text-slate-900 tracking-tight">Configuration des Formulaires</h1>
-            <p class="text-slate-500 font-medium">Gérez vos modèles de questionnaires de diligence et d'indulgence.</p>
+            <h1 class="text-3xl font-black text-slate-900 tracking-tight">{{ 'DILIGENCE_FORM_LIST.TITLE' | translate }}</h1>
+            <p class="text-slate-500 font-medium">{{ 'DILIGENCE_FORM_LIST.SUBTITLE' | translate }}</p>
         </div>
         
         <div class="flex items-center gap-3 w-full md:w-auto">
             <!-- Search Bar -->
             <div class="relative flex-1 md:w-80">
-                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                <span class="absolute inset-y-0 start-0 ps-3 flex items-center text-slate-400">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </span>
                 <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onSearch()"
-                    placeholder="Rechercher un formulaire..."
-                    class="w-full pl-10 pr-4 py-2.5 bg-white border-2 border-slate-100 rounded-xl text-sm font-bold text-slate-900 focus:border-indigo-500 focus:ring-0 transition-all placeholder:text-slate-400">
+                    [placeholder]="'DILIGENCE_FORM_LIST.SEARCH_PLACEHOLDER' | translate"
+                    class="w-full ps-10 pe-4 py-2.5 bg-white border-2 border-slate-100 rounded-xl text-sm font-bold text-slate-900 focus:border-indigo-500 focus:ring-0 transition-all placeholder:text-slate-400">
             </div>
 
             <button (click)="onAdd()"
                 class="px-6 py-2.5 bg-slate-900 text-white rounded-xl hover:bg-indigo-600 transition-all duration-200 flex items-center font-bold text-sm shadow-lg shadow-slate-900/10">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.1" d="M12 4v16m8-8H4"></path></svg>
-                Nouveau
+                <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.1" d="M12 4v16m8-8H4"></path></svg>
+                {{ 'DILIGENCE_FORM_LIST.NEW' | translate }}
             </button>
         </div>
     </div>
@@ -30,7 +30,7 @@
                 <tr>
                     <th (click)="onSort('name')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group transition-colors">
                         <div class="flex items-center gap-1">
-                            Nom
+                            {{ 'DILIGENCE_FORM_LIST.TH_NAME' | translate }}
                             <span class="opacity-0 group-hover:opacity-100 transition-opacity" [class.opacity-100]="sortField === 'name'">
                                 @if (sortField === 'name') {
                                     @if (sortDirection === 'asc') { <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg> }
@@ -43,7 +43,7 @@
                     </th>
                     <th (click)="onSort('title')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group transition-colors">
                         <div class="flex items-center gap-1">
-                            Titre
+                            {{ 'DILIGENCE_FORM_LIST.TH_TITLE' | translate }}
                             <span class="opacity-0 group-hover:opacity-100 transition-opacity" [class.opacity-100]="sortField === 'title'">
                                 @if (sortField === 'title') {
                                     @if (sortDirection === 'asc') { <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg> }
@@ -56,7 +56,7 @@
                     </th>
                     <th (click)="onSort('type')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group transition-colors">
                         <div class="flex items-center gap-1">
-                            Type
+                            {{ 'DILIGENCE_FORM_LIST.TH_TYPE' | translate }}
                             <span class="opacity-0 group-hover:opacity-100 transition-opacity" [class.opacity-100]="sortField === 'type'">
                                 @if (sortField === 'type') {
                                     @if (sortDirection === 'asc') { <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg> }
@@ -69,7 +69,7 @@
                     </th>
                     <th (click)="onSort('creationDate')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 group transition-colors">
                         <div class="flex items-center gap-1">
-                            Date de Création
+                            {{ 'DILIGENCE_FORM_LIST.TH_CREATION_DATE' | translate }}
                             <span class="opacity-0 group-hover:opacity-100 transition-opacity" [class.opacity-100]="sortField === 'creationDate'">
                                 @if (sortField === 'creationDate') {
                                     @if (sortDirection === 'asc') { <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 15l7-7 7 7"/></svg> }
@@ -80,7 +80,7 @@
                             </span>
                         </div>
                     </th>
-                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{{ 'DILIGENCE_FORM_LIST.TH_ACTIONS' | translate }}</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -118,7 +118,7 @@
                 } @empty {
                     <tr>
                         <td colspan="5" class="px-6 py-10 text-center text-gray-500 italic">
-                            Aucun formulaire trouvé.
+                            {{ 'DILIGENCE_FORM_LIST.NO_FORM_FOUND' | translate }}
                         </td>
                     </tr>
                 }
@@ -129,18 +129,14 @@
         <div class="bg-white px-6 py-4 flex items-center justify-between border-t border-gray-200">
             <div class="flex-1 flex justify-between sm:hidden">
                 <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0"
-                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors">
-                    Précédent
-                </button>
+                    class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors">{{ 'DILIGENCE_FORM_LIST.PREV' | translate }}</button>
                 <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage >= totalPages - 1"
-                    class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors">
-                    Suivant
-                </button>
+                    class="ms-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 transition-colors">{{ 'DILIGENCE_FORM_LIST.NEXT' | translate }}</button>
             </div>
             <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                 <div>
                     <p class="text-sm text-gray-700">
-                        Affichage de <span class="font-bold">{{ startIndex }}</span> à <span class="font-bold">{{ endIndex }}</span> sur <span class="font-bold">{{ totalElements }}</span> résultats
+                        {{ 'DILIGENCE_FORM_LIST.SHOWING' | translate }} <span class="font-bold">{{ startIndex }}</span> {{ 'DILIGENCE_FORM_LIST.TO' | translate }} <span class="font-bold">{{ endIndex }}</span> {{ 'DILIGENCE_FORM_LIST.OUT_OF' | translate }} <span class="font-bold">{{ totalElements }}</span> {{ 'DILIGENCE_FORM_LIST.RESULTS' | translate }}
                     </p>
                 </div>
                 @if (totalPages > 1) {
@@ -148,7 +144,7 @@
                         <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
                             <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 0"
                                 class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 transition-colors">
-                                <span class="sr-only">Précédent</span>
+                                <span class="sr-only">{{ 'DILIGENCE_FORM_LIST.PREV' | translate }}</span>
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7"/></svg>
                             </button>
                             
@@ -165,7 +161,7 @@
 
                             <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage >= totalPages - 1"
                                 class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 transition-colors">
-                                <span class="sr-only">Suivant</span>
+                                <span class="sr-only">{{ 'DILIGENCE_FORM_LIST.NEXT' | translate }}</span>
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
                             </button>
                         </nav>
