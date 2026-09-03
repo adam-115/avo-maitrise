@@ -1381,5 +1381,25 @@
     "TO": "to",
     "OUT_OF": "out of",
     "MATTERS_LC": "matters"
+  },
+  "NEW_DILIGENCE_FIELD": {
+    "TITLE": "New Form Field",
+    "FIELD_LABEL": "Field Label",
+    "FIELD_LABEL_PLACEHOLDER": "e.g., What is your city?",
+    "ELEMENT_TYPE": "Element Type",
+    "TYPE_TEXT": "Short Text",
+    "TYPE_NUMBER": "Number",
+    "TYPE_TEXTAREA": "Text Area",
+    "TYPE_SELECT": "Dropdown",
+    "TYPE_RADIO": "Radio Button",
+    "TYPE_CHECKBOX": "Checkbox",
+    "TYPE_FILE": "File Upload",
+    "REQUIRED": "Required",
+    "OPTIONS_MANAGEMENT": "Options Management",
+    "IMPORT_CSV": "Import CSV",
+    "ADD_MANUALLY": "Add manually...",
+    "ERROR_MESSAGE": "Error Message",
+    "CANCEL": "Cancel",
+    "SAVE_FIELD": "Save Field"
   }
 }

@@ -1388,5 +1388,25 @@
     "TO": "bis",
     "OUT_OF": "von",
     "MATTERS_LC": "Akten"
+  },
+  "NEW_DILIGENCE_FIELD": {
+    "TITLE": "Neues Formularfeld",
+    "FIELD_LABEL": "Feldbezeichnung",
+    "FIELD_LABEL_PLACEHOLDER": "z.B.: Wie lautet Ihre Stadt?",
+    "ELEMENT_TYPE": "Elementtyp",
+    "TYPE_TEXT": "Kurzer Text",
+    "TYPE_NUMBER": "Zahl",
+    "TYPE_TEXTAREA": "Textbereich",
+    "TYPE_SELECT": "Dropdown-Menü",
+    "TYPE_RADIO": "Auswahlfeld (Radio)",
+    "TYPE_CHECKBOX": "Kontrollkästchen",
+    "TYPE_FILE": "Datei-Upload",
+    "REQUIRED": "Erforderlich",
+    "OPTIONS_MANAGEMENT": "Optionen verwalten",
+    "IMPORT_CSV": "CSV importieren",
+    "ADD_MANUALLY": "Manuell hinzufügen...",
+    "ERROR_MESSAGE": "Fehlermeldung",
+    "CANCEL": "Abbrechen",
+    "SAVE_FIELD": "Feld speichern"
   }
 }

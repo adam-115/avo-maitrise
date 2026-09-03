@@ -1295,5 +1295,25 @@
     "TO": "à",
     "OUT_OF": "sur",
     "MATTERS_LC": "dossiers"
+  },
+  "NEW_DILIGENCE_FIELD": {
+    "TITLE": "Nouveau champ de formulaire",
+    "FIELD_LABEL": "Libellé du champ",
+    "FIELD_LABEL_PLACEHOLDER": "ex: Quelle est votre ville ?",
+    "ELEMENT_TYPE": "Type d'élément",
+    "TYPE_TEXT": "Texte court",
+    "TYPE_NUMBER": "Nombre",
+    "TYPE_TEXTAREA": "Zone de texte",
+    "TYPE_SELECT": "Menu déroulant",
+    "TYPE_RADIO": "Bouton radio",
+    "TYPE_CHECKBOX": "Case à cocher",
+    "TYPE_FILE": "Téléversement de fichier",
+    "REQUIRED": "Obligatoire",
+    "OPTIONS_MANAGEMENT": "Gestion des options",
+    "IMPORT_CSV": "Importer CSV",
+    "ADD_MANUALLY": "Ajouter manuellement...",
+    "ERROR_MESSAGE": "Message d'erreur",
+    "CANCEL": "Annuler",
+    "SAVE_FIELD": "Enregistrer le champ"
   }
 }
