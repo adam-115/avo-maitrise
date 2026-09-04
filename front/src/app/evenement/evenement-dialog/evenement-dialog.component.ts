@@ -1,5 +1,5 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatterEvent, User } from '../../appTypes';
 import { UserService } from '../../services/user.service';
@@ -10,47 +10,52 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-evenement-dialog',
+  standalone: true,
   imports: [ReactiveFormsModule, CommonModule, UserSelectionDialog, TranslatePipe],
   templateUrl: './evenement-dialog.component.html',
   styleUrl: './evenement-dialog.component.css'
 })
-export class EvenementDialogComponent implements OnInit {
+export class EvenementDialogComponent implements OnInit, OnChanges {
 
-  @Input({ required: true })
-  dossierId!: string;
+  @Input({ required: true }) dossierId!: string;
+  @Input() eventToEdit: MatterEvent | null = null;
 
-  @Input()
-  eventToEdit: MatterEvent | null = null;
+  @Output() closeModalEvent = new EventEmitter<void>();
+  @Output() eventCreated = new EventEmitter<MatterEvent>();
+  @Output() eventUpdated = new EventEmitter<MatterEvent>();
 
-  @Output()
-  closeModalEvent = new EventEmitter<void>();
-
-  @Output()
-  eventCreated = new EventEmitter<MatterEvent>();
-
-  @Output()
-  eventUpdated = new EventEmitter<MatterEvent>();
+  private userService = inject(UserService);
+  private eventTypeService = inject(EventTypeService);
 
   eventForm!: FormGroup;
   users: User[] = [];
   eventTypes: any[] = [];
   showUserDialog = false;
-
-  constructor(private userService: UserService, private eventTypeService: EventTypeService) { }
+  isSubmitting = false;
 
   ngOnInit(): void {
-    this.userService.getAll().subscribe((data: PaginatedResponse<User>) => this.users = data.content);
-    this.eventTypeService.getAll().subscribe((data: PaginatedResponse<any>) => {
-      this.eventTypes = data.content;
-    }); 
+    this.initForm();
+    this.loadUsersAndTypes();
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.eventForm) {
+      this.initForm();
+    }
+    if (changes['eventToEdit'] && this.eventForm) {
+      this.populateForm();
+    }
+  }
+
+  private initForm(): void {
     this.eventForm = new FormGroup({
-      titre: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      titre: new FormControl('', [Validators.required, Validators.minLength(2)]),
       typeId: new FormControl('', [Validators.required]),
       startDate: new FormControl('', [Validators.required]),
-      startTime: new FormControl(''),
+      startTime: new FormControl('09:00'),
       endDate: new FormControl(''),
       endTime: new FormControl(''),
+      isAllDay: new FormControl(false),
       participantsIds: new FormControl([]),
       lieu: new FormControl(''),
       description: new FormControl(''),
@@ -59,49 +64,69 @@ export class EvenementDialogComponent implements OnInit {
     });
 
     if (this.eventToEdit) {
-      this.ngOnChanges()
+      this.populateForm();
     }
   }
 
-  ngOnChanges(): void {
-    if (!this.eventForm) return;
+  private loadUsersAndTypes(): void {
+    this.userService.getAll().subscribe({
+      next: (data: PaginatedResponse<User>) => {
+        this.users = data.content || [];
+      },
+      error: () => {}
+    });
 
-    if (this.eventToEdit) {
-      let startTime = '';
-      if (!this.eventToEdit.isAllDay && this.eventToEdit.startDate) {
-        const dateObj = new Date(this.eventToEdit.startDate);
-        startTime = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
-      }
+    this.eventTypeService.getAll().subscribe({
+      next: (data: PaginatedResponse<any>) => {
+        this.eventTypes = data.content || [];
+      },
+      error: () => {}
+    });
+  }
 
-      let endTime = '';
-      if (!this.eventToEdit.isAllDay && this.eventToEdit.endDate) {
-        const dateObj = new Date(this.eventToEdit.endDate);
-        endTime = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
-      }
-
-      this.eventForm.patchValue({
-        titre: this.eventToEdit.titre,
-        typeId: this.eventToEdit.categorie ? this.eventToEdit.categorie.id : '',
-        startDate: formatDate(this.eventToEdit.startDate, 'yyyy-MM-dd', 'en-US'),
-        startTime: startTime,
-        endDate: this.eventToEdit.endDate ? formatDate(this.eventToEdit.endDate, 'yyyy-MM-dd', 'en-US') : '',
-        endTime: endTime,
-        participantsIds: this.eventToEdit.participantsIds || [],
-        lieu: this.eventToEdit.lieu,
-        description: this.eventToEdit.description || '',
-        reminder: !!this.eventToEdit.reminderMinutesBefore,
-        reminderMinutesBefore: this.eventToEdit.reminderMinutesBefore || 30
+  private populateForm(): void {
+    if (!this.eventToEdit) {
+      this.eventForm.reset({
+        isAllDay: false,
+        reminder: false,
+        reminderMinutesBefore: 30,
+        participantsIds: []
       });
-    } else {
-      this.eventForm.reset();
+      return;
     }
+
+    let startTime = '';
+    if (!this.eventToEdit.isAllDay && this.eventToEdit.startDate) {
+      const dateObj = new Date(this.eventToEdit.startDate);
+      startTime = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
+    }
+
+    let endTime = '';
+    if (!this.eventToEdit.isAllDay && this.eventToEdit.endDate) {
+      const dateObj = new Date(this.eventToEdit.endDate);
+      endTime = `${dateObj.getHours().toString().padStart(2, '0')}:${dateObj.getMinutes().toString().padStart(2, '0')}`;
+    }
+
+    this.eventForm.patchValue({
+      titre: this.eventToEdit.titre,
+      typeId: this.eventToEdit.categorie ? this.eventToEdit.categorie.id : '',
+      startDate: this.eventToEdit.startDate ? formatDate(this.eventToEdit.startDate, 'yyyy-MM-dd', 'en-US') : '',
+      startTime: startTime || '09:00',
+      endDate: this.eventToEdit.endDate ? formatDate(this.eventToEdit.endDate, 'yyyy-MM-dd', 'en-US') : '',
+      endTime: endTime,
+      isAllDay: !!this.eventToEdit.isAllDay,
+      participantsIds: this.eventToEdit.participantsIds || [],
+      lieu: this.eventToEdit.lieu || '',
+      description: this.eventToEdit.description || '',
+      reminder: !!this.eventToEdit.reminderMinutesBefore,
+      reminderMinutesBefore: this.eventToEdit.reminderMinutesBefore || 30
+    });
   }
 
-  onCloseModal() {
+  onCloseModal(): void {
     this.closeModalEvent.emit();
   }
 
-  // Fonctions de gestion du UserSelectionDialog
   openUserDialog(): void {
     this.showUserDialog = true;
   }
@@ -116,8 +141,13 @@ export class EvenementDialogComponent implements OnInit {
   }
 
   getSelectedIntervenants(): User[] {
-    const selectedIds = this.eventForm.get('participantsIds')?.value || [];
+    const selectedIds = (this.eventForm.get('participantsIds')?.value || []).map((id: any) => String(id));
     return this.users.filter(user => selectedIds.includes(String(user.id)));
+  }
+
+  getUserInitials(user: User): string {
+    if (!user || !user.username) return '?';
+    return user.username.substring(0, 2).toUpperCase();
   }
 
   removeIntervenant(userId: string | number): void {
@@ -126,45 +156,50 @@ export class EvenementDialogComponent implements OnInit {
     this.eventForm.patchValue({ participantsIds: newIds });
   }
 
-  submitForm() {
-    if (this.eventForm.valid) {
-      const formValue = this.eventForm.value;
-
-      let startDateTime = new Date(formValue.startDate);
-      if (formValue.startTime) {
-        const [hours, minutes] = formValue.startTime.split(':');
-        startDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
-      }
-
-      let endDateTime = formValue.endDate ? new Date(formValue.endDate) : new Date(startDateTime);
-      if (formValue.endTime) {
-        const [hours, minutes] = formValue.endTime.split(':');
-        endDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10));
-      }
-
-      const eventData: MatterEvent = {
-        dossierId: this.dossierId,
-        titre: formValue.titre,
-        categorie: this.eventTypes.find(et => String(et.id) === String(formValue.typeId)),
-        startDate: startDateTime,
-        endDate: endDateTime,
-        isAllDay: !formValue.startTime,
-        lieu: formValue.lieu,
-        description: formValue.description,
-        participantsIds: formValue.participantsIds || [],
-        reminderMinutesBefore: formValue.reminder ? formValue.reminderMinutesBefore : undefined,
-        statut: this.eventToEdit ? this.eventToEdit.statut : 'CONFIRME',
-        createdAt: this.eventToEdit ? this.eventToEdit.createdAt : new Date(),
-        updatedAt: new Date()
-      };
-
-      if (this.eventToEdit && this.eventToEdit.id) {
-        eventData.id = this.eventToEdit.id;
-        this.eventUpdated.emit(eventData);
-      } else {
-        this.eventCreated.emit(eventData);
-      }
+  submitForm(): void {
+    if (this.eventForm.invalid) {
+      this.eventForm.markAllAsTouched();
+      return;
     }
-  }
 
+    this.isSubmitting = true;
+    const formValue = this.eventForm.value;
+
+    let startDateTime = new Date(formValue.startDate);
+    if (!formValue.isAllDay && formValue.startTime) {
+      const [hours, minutes] = formValue.startTime.split(':');
+      startDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0);
+    }
+
+    let endDateTime = formValue.endDate ? new Date(formValue.endDate) : new Date(startDateTime);
+    if (!formValue.isAllDay && formValue.endTime) {
+      const [hours, minutes] = formValue.endTime.split(':');
+      endDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0);
+    }
+
+    const eventData: MatterEvent = {
+      dossierId: this.dossierId,
+      titre: formValue.titre,
+      categorie: this.eventTypes.find(et => String(et.id) === String(formValue.typeId)),
+      startDate: startDateTime,
+      endDate: endDateTime,
+      isAllDay: formValue.isAllDay,
+      lieu: formValue.lieu,
+      description: formValue.description,
+      participantsIds: formValue.participantsIds || [],
+      reminderMinutesBefore: formValue.reminder ? formValue.reminderMinutesBefore : undefined,
+      statut: this.eventToEdit ? this.eventToEdit.statut : 'CONFIRME',
+      createdAt: this.eventToEdit ? this.eventToEdit.createdAt : new Date(),
+      updatedAt: new Date()
+    };
+
+    if (this.eventToEdit && this.eventToEdit.id) {
+      eventData.id = this.eventToEdit.id;
+      this.eventUpdated.emit(eventData);
+    } else {
+      this.eventCreated.emit(eventData);
+    }
+
+    this.isSubmitting = false;
+  }
 }

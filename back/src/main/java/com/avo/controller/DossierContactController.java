@@ -46,8 +46,11 @@ public class DossierContactController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<DossierContactDTO> update(@RequestBody DossierContactDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<DossierContactDTO> update(@PathVariable(required = false) Long id, @RequestBody DossierContactDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

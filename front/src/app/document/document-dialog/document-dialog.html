@@ -1,68 +1,154 @@
-<form [formGroup]="documentDialogFrom">
-  <div id="upload-document-modal" class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 flex items-center justify-center">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 my-8 transform transition-all">
+<form [formGroup]="documentDialogFrom" (ngSubmit)="submit()">
+  <div id="upload-document-modal" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 w-full max-w-lg overflow-hidden transform transition-all">
 
-      <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-        <h3 class="text-xl font-semibold text-slate-800">{{dialogTitle}}</h3>
-        <button type="button" (click)="closeModal()" class="text-gray-400 hover:text-gray-600">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-      </div>
-
-      <div class="p-6 space-y-5">
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'DOCUMENT_DIALOG.DOC_TITLE_LABEL' | translate }} <span class="text-red-500">*</span></label>
-          <input type="text" formControlName="title"
-            [ngClass]="{
-              'border-red-500 ring-1 ring-red-500': documentDialogFrom.get('title')?.invalid && documentDialogFrom.get('title')?.touched,
-              'border-gray-300': !documentDialogFrom.get('title')?.invalid || !documentDialogFrom.get('title')?.touched
-            }"
-            class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 outline-none border-2 border-slate-300 hover:border-slate-400 transition-colors">
-        </div>
-
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">{{ 'DOCUMENT_DIALOG.FILE_LABEL' | translate }} <span class="text-red-500" *ngIf="!selectedDocument">*</span></label>
-          <div
-            [ngClass]="{
-              'border-red-500 bg-red-50': !selectedFile && !selectedDocument && documentDialogFrom.get('title')?.touched,
-              'border-gray-300 hover:border-cyan-500': selectedFile || selectedDocument || !documentDialogFrom.get('title')?.touched,
-              'border-green-400 bg-green-50': selectedFile || selectedDocument
-            }"
-            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg transition duration-150 relative">
-            <div class="space-y-1 text-center">
-              <svg [ngClass]="(selectedFile || selectedDocument) ? 'text-green-500' : 'text-gray-400'" class="mx-auto h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v8"></path>
-              </svg>
-              <div class="flex text-sm text-gray-600">
-                <label for="file-upload" class="relative cursor-pointer bg-transparent rounded-md font-bold text-cyan-600 hover:text-cyan-500 outline-none">
-                  <span>{{ (selectedFile || selectedDocument) ? ('DOCUMENT_DIALOG.CHANGE_FILE' | translate) : ('DOCUMENT_DIALOG.UPLOAD_FILE' | translate) }}</span>
-                  <input id="file-upload" type="file" (change)="onFileSelected($event)" class="sr-only">
-                </label>
-                <p class="ps-1">{{ 'DOCUMENT_DIALOG.OR_DRAG_DROP' | translate }}</p>
-              </div>
-              <p class="text-xs" [ngClass]="(selectedFile || selectedDocument) ? 'text-green-600 font-bold' : 'text-gray-500'">
-                {{ selectedFile ? selectedFile.name : (selectedDocument ? (selectedDocument.nomFichier || selectedDocument.filename || selectedDocument.name || ('DOCUMENT_DIALOG.EXISTING_FILE' | translate)) : 'PDF, DOCX, JPG, XLSX (Max 10MB)') }}
-              </p>
-            </div>
+      <!-- Modal Header -->
+      <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">
+              {{ dialogTitle || (selectedDocument ? ('DOCUMENT_DIALOG.EDIT_TITLE' | translate) : ('DOCUMENT_DIALOG.ADD_TITLE' | translate)) }}
+            </h3>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">
+              {{ 'DOCUMENT_DIALOG.SUBTITLE' | translate }}
+            </p>
           </div>
         </div>
 
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ 'DOCUMENT_DIALOG.NOTES_LABEL' | translate }}</label>
-          <textarea formControlName="description" rows="3" class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 outline-none border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
-        </div>
+        <button type="button" (click)="closeModal()"
+          class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
 
-      <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3 rounded-b-xl">
-        <button type="button" (click)="closeModal()" class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100">{{ 'DOCUMENT_DIALOG.CANCEL' | translate }}</button>
+      <!-- Modal Body -->
+      <div class="p-6 space-y-5">
 
-        <button type="submit" (click)="submit()"
-          [disabled]="documentDialogFrom.invalid || (!selectedFile && !selectedDocument)"
+        <!-- Title Field -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            {{ 'DOCUMENT_DIALOG.DOC_TITLE_LABEL' | translate }} <span class="text-red-500">*</span>
+          </label>
+          <input type="text" formControlName="title"
+            [placeholder]="'DOCUMENT_DIALOG.DOC_TITLE_PLACEHOLDER' | translate"
+            [ngClass]="{
+              'border-red-400 ring-2 ring-red-100 bg-red-50/20': documentDialogFrom.get('title')?.invalid && documentDialogFrom.get('title')?.touched,
+              'border-slate-200 hover:border-slate-300 focus:border-indigo-500': !(documentDialogFrom.get('title')?.invalid && documentDialogFrom.get('title')?.touched)
+            }"
+            class="block w-full px-3.5 py-2.5 rounded-xl border bg-white text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all">
+          <p *ngIf="documentDialogFrom.get('title')?.invalid && documentDialogFrom.get('title')?.touched" class="text-[11px] font-bold text-red-500 mt-1">
+            {{ 'DOSSIER_FORM.REQUIRED' | translate }}
+          </p>
+        </div>
+
+        <!-- File Upload Zone -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            {{ 'DOCUMENT_DIALOG.FILE_LABEL' | translate }} <span class="text-red-500" *ngIf="!selectedDocument">*</span>
+          </label>
+
+          <!-- Selected File Card (if file or existing document is selected) -->
+          <div *ngIf="selectedFile || selectedDocument"
+            class="p-4 rounded-xl border border-emerald-200 bg-emerald-50/40 flex items-center justify-between gap-3 mb-2 transition-all">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="p-2.5 rounded-xl border font-black text-xs uppercase shadow-sm flex items-center justify-center min-w-[42px]"
+                [ngClass]="getFileIconColor(selectedFile ? selectedFile.name : (selectedDocument?.nomFichier || selectedDocument?.filename || selectedDocument?.name))">
+                {{ getFileExtension(selectedFile ? selectedFile.name : (selectedDocument?.nomFichier || selectedDocument?.filename || selectedDocument?.name)) }}
+              </div>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-900 truncate">
+                  {{ selectedFile ? selectedFile.name : (selectedDocument?.nomFichier || selectedDocument?.filename || selectedDocument?.name || ('DOCUMENT_DIALOG.EXISTING_FILE' | translate)) }}
+                </p>
+                <p class="text-[11px] text-slate-500 font-medium mt-0.5" *ngIf="selectedFile">
+                  {{ formatFileSize(selectedFile.size) }}
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 flex-shrink-0">
+              <label for="file-upload-replace"
+                class="px-2.5 py-1 text-xs font-bold bg-white text-indigo-600 border border-indigo-200 hover:bg-indigo-50 rounded-lg cursor-pointer transition-colors shadow-sm">
+                {{ 'DOCUMENT_DIALOG.CHANGE_FILE' | translate }}
+                <input id="file-upload-replace" type="file" (change)="onFileSelected($event)" class="sr-only">
+              </label>
+              <button *ngIf="selectedFile" type="button" (click)="removeSelectedFile()"
+                class="p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Drag and Drop Dropzone -->
+          <div *ngIf="!selectedFile && !selectedDocument"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+            [ngClass]="{
+              'border-indigo-500 bg-indigo-50/60 ring-2 ring-indigo-200': isDragging,
+              'border-slate-300 hover:border-indigo-400 bg-slate-50/50 hover:bg-indigo-50/20': !isDragging
+            }"
+            class="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-2xl transition-all cursor-pointer relative group">
+            
+            <input id="file-upload" type="file" (change)="onFileSelected($event)"
+              class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+
+            <div class="p-3 bg-white rounded-2xl shadow-sm border border-slate-200 text-indigo-600 mb-3 group-hover:scale-110 transition-transform">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v8" />
+              </svg>
+            </div>
+
+            <p class="text-xs font-bold text-slate-800 text-center mb-1">
+              <span class="text-indigo-600 underline underline-offset-2">{{ 'DOCUMENT_DIALOG.UPLOAD_FILE' | translate }}</span> {{ 'DOCUMENT_DIALOG.OR_DRAG_DROP' | translate }}
+            </p>
+            <p class="text-[11px] text-slate-400 font-medium text-center">
+              {{ 'DOCUMENT_DIALOG.ACCEPTED_FORMATS' | translate }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Description / Notes -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            {{ 'DOCUMENT_DIALOG.NOTES_LABEL' | translate }}
+          </label>
+          <textarea formControlName="description" rows="3"
+            [placeholder]="'DOCUMENT_DIALOG.NOTES_PLACEHOLDER' | translate"
+            class="block w-full px-3.5 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-indigo-500 bg-white text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none"></textarea>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
+        <button type="button" (click)="closeModal()"
+          class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition-colors shadow-sm">
+          {{ 'DOCUMENT_DIALOG.CANCEL' | translate }}
+        </button>
+
+        <button type="submit"
+          [disabled]="documentDialogFrom.invalid || (!selectedFile && !selectedDocument) || isSubmitting"
           [ngClass]="{
-            'bg-cyan-600 hover:bg-cyan-700 shadow-md': documentDialogFrom.valid && (selectedFile || selectedDocument),
-            'bg-slate-300 cursor-not-allowed opacity-70': documentDialogFrom.invalid || (!selectedFile && !selectedDocument)
+            'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow': documentDialogFrom.valid && (selectedFile || selectedDocument) && !isSubmitting,
+            'bg-slate-200 text-slate-400 cursor-not-allowed': documentDialogFrom.invalid || (!selectedFile && !selectedDocument) || isSubmitting
           }"
-          class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white transition duration-150">
+          class="px-5 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2">
+          <svg *ngIf="isSubmitting" class="animate-spin -ms-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <svg *ngIf="!isSubmitting" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
           {{ selectedDocument ? ('DOCUMENT_DIALOG.SAVE' | translate) : ('DOCUMENT_DIALOG.UPLOAD' | translate) }}
         </button>
       </div>

@@ -40,8 +40,11 @@ public class MatterEventController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<MatterEventDTO> update(@RequestBody MatterEventDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<MatterEventDTO> update(@PathVariable(required = false) Long id, @RequestBody MatterEventDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

@@ -43,8 +43,11 @@ public class AssociationController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<AssociationDTO> update(@RequestBody AssociationDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<AssociationDTO> update(@PathVariable(required = false) Long id, @RequestBody AssociationDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

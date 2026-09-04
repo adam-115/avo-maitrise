@@ -46,8 +46,11 @@ public class NoteController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<NoteDTO> update(@RequestBody NoteDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<NoteDTO> update(@PathVariable(required = false) Long id, @RequestBody NoteDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

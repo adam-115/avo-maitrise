@@ -62,6 +62,38 @@ export class DiligenceStatusListComponent implements OnInit {
     });
   }
 
+  get totalCount(): number {
+    return this.allStatuses.length;
+  }
+
+  get pendingCount(): number {
+    return this.allStatuses.filter(s => s.status === 'PENDING').length;
+  }
+
+  get submittedCount(): number {
+    return this.allStatuses.filter(s => s.status === 'SUBMITTED').length;
+  }
+
+  get validatedCount(): number {
+    return this.allStatuses.filter(s => s.status === 'VALIDATED').length;
+  }
+
+  get hasActiveFilters(): boolean {
+    return !!(this.searchTerm.trim() || this.selectedStatus || this.selectedType);
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.selectedStatus = '';
+    this.selectedType = '';
+    this.applyFilters();
+  }
+
+  filterByStatus(status: string): void {
+    this.selectedStatus = this.selectedStatus === status ? '' : status;
+    this.applyFilters();
+  }
+
   applyFilters(): void {
     this.filteredStatuses = this.allStatuses.filter(s => {
       // Search text filter
@@ -85,7 +117,7 @@ export class DiligenceStatusListComponent implements OnInit {
 
   updatePagination(): void {
     const totalItems = this.filteredStatuses.length;
-    this.totalPages = Math.ceil(totalItems / this.pageSize);
+    this.totalPages = Math.max(1, Math.ceil(totalItems / this.pageSize));
     this.pages = Array.from({ length: this.totalPages }, (_, i) => i + 1);
     this.paginate();
   }
@@ -109,6 +141,13 @@ export class DiligenceStatusListComponent implements OnInit {
 
   get endIndex(): number {
     return Math.min(this.currentPage * this.pageSize, this.filteredStatuses.length);
+  }
+
+  getInitials(name?: string): string {
+    if (!name) return 'CL';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+    return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
 
   translateClientType(type: string): string {

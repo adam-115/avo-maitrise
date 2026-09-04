@@ -40,8 +40,11 @@ public class StatutDossierController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<StatutDossierDTO> update(@RequestBody StatutDossierDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<StatutDossierDTO> update(@PathVariable(required = false) Long id, @RequestBody StatutDossierDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

@@ -7,7 +7,7 @@ import { FormConfigService } from '../../services/form-config-service';
 import { ClientService } from '../../services/client-service';
 import { NavigationService } from '../../services/navigation-service';
 import { Client, DiligenceFormResult, FieldConfig, FieldResult, FormConfig } from '../../appTypes';
-import { forkJoin, switchMap, of, map } from 'rxjs';
+import { forkJoin, switchMap, map } from 'rxjs';
 
 @Component({
     selector: 'app-diligence-form-result-viewer',
@@ -22,23 +22,24 @@ import { forkJoin, switchMap, of, map } from 'rxjs';
             .min-h-screen {
                 min-height: auto !important;
                 background-color: white !important;
+                padding: 0 !important;
             }
-            .max-w-4xl {
+            .max-w-5xl {
                 max-width: 100% !important;
                 margin: 0 !important;
                 padding: 0 !important;
             }
-            .bg-slate-50 {
+            .bg-slate-50, .bg-slate-50\\/50 {
                 background-color: white !important;
             }
-            .shadow-sm {
+            .shadow-sm, .shadow-md, .shadow-lg {
                 box-shadow: none !important;
             }
-            .rounded-2xl, .rounded-3xl {
-                border-radius: 0 !important;
+            .rounded-2xl, .rounded-3xl, .rounded-xl {
+                border-radius: 6px !important;
             }
             .border {
-                border-color: #e2e8f0 !important;
+                border-color: #cbd5e1 !important;
             }
             body {
                 print-color-adjust: exact;
@@ -52,6 +53,7 @@ export class DiligenceFormResultViewerComponent implements OnInit {
     formConfig: FormConfig | null = null;
     client: Client | null = null;
     loading = true;
+    downloadingPdf = false;
 
     private route = inject(ActivatedRoute);
     private formResultService = inject(FormResultService);
@@ -111,7 +113,7 @@ export class DiligenceFormResultViewerComponent implements OnInit {
             return;
         }
 
-        this.loading = true;
+        this.downloadingPdf = true;
         this.formResultService.generatePdf(this.result.id).subscribe({
             next: (blob) => {
                 const url = window.URL.createObjectURL(blob);
@@ -122,11 +124,11 @@ export class DiligenceFormResultViewerComponent implements OnInit {
                 a.click();
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
-                this.loading = false;
+                this.downloadingPdf = false;
             },
             error: (err) => {
                 console.error('Error downloading PDF', err);
-                this.loading = false;
+                this.downloadingPdf = false;
                 window.print();
             }
         });
@@ -135,6 +137,49 @@ export class DiligenceFormResultViewerComponent implements OnInit {
     getDisplayName(client: any): string {
         if (!client) return '';
         return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+    }
+
+    isCompany(client: any): boolean {
+        if (!client) return false;
+        return client.type === 'PERSONNE_MORALE' || client.type === 'COMPANY' || !!client.nomCommercial;
+    }
+
+    getClientTypeKey(client: any): string {
+        return this.isCompany(client) ? 'FORM_RESULT_VIEWER.TYPE_COMPANY' : 'FORM_RESULT_VIEWER.TYPE_INDIVIDUAL';
+    }
+
+    getInitials(client: any): string {
+        if (!client) return 'CL';
+        const name = this.getDisplayName(client);
+        if (!name) return 'CL';
+        const parts = name.trim().split(/\s+/);
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.slice(0, 2).toUpperCase();
+    }
+
+    getTotalFieldsCount(): number {
+        return this.formConfig?.fields?.length || 0;
+    }
+
+    getFilledFieldsCount(): number {
+        if (!this.formConfig?.fields || !this.result?.fieldResults) return 0;
+        return this.formConfig.fields.filter(f => this.isFieldFilled(f)).length;
+    }
+
+    getFilesCount(): number {
+        if (!this.formConfig?.fields) return 0;
+        return this.formConfig.fields.filter(f => f.type === 'file' && this.hasFile(f)).length;
+    }
+
+    isFieldFilled(field: FieldConfig): boolean {
+        if (field.type === 'file') return this.hasFile(field);
+        if (field.type === 'checkbox') {
+            return (field.options || []).some(opt => this.getFieldOptionResult(field.id!, opt.id!));
+        }
+        const val = this.getFieldResult(field.id!);
+        return val !== null && val !== undefined && String(val).trim() !== '' && String(val).trim() !== '-';
     }
 
     getFieldResult(fieldId: string): any {
@@ -157,7 +202,7 @@ export class DiligenceFormResultViewerComponent implements OnInit {
         return fieldResult.value;
     }
 
-    getFileInfo(field: FieldConfig): { name: string; url?: string; size?: string } | null {
+    getFileInfo(field: FieldConfig): { name: string; url?: string; size?: string; ext?: string } | null {
         const resObj = this.getFieldResultObj(field.id!);
         if (!resObj || resObj.value === null || resObj.value === undefined) return null;
 
@@ -174,10 +219,13 @@ export class DiligenceFormResultViewerComponent implements OnInit {
                         const kb = parsed.size / 1024;
                         formattedSize = kb >= 1024 ? `${(kb / 1024).toFixed(1)} Mo` : `${Math.round(kb)} Ko`;
                     }
+                    const name = parsed.name || 'document_joint';
+                    const ext = name.split('.').pop()?.toLowerCase() || '';
                     return {
-                        name: parsed.name || 'document_joint',
+                        name,
                         url: parsed.data || undefined,
-                        size: formattedSize
+                        size: formattedSize,
+                        ext
                     };
                 }
             } catch (e) {
@@ -206,16 +254,19 @@ export class DiligenceFormResultViewerComponent implements OnInit {
 
             return {
                 name: `${baseName || 'document'}.${ext}`,
-                url: value
+                url: value,
+                ext
             };
         }
 
         // 3. File path (e.g., C:\fakepath\carte_identite.png or /uploads/cin.pdf)
         const cleanName = value.split(/[/\\]/).pop() || value;
+        const ext = cleanName.split('.').pop()?.toLowerCase() || '';
 
         return {
             name: cleanName,
-            url: (value.startsWith('http://') || value.startsWith('https://')) ? value : undefined
+            url: (value.startsWith('http://') || value.startsWith('https://')) ? value : undefined,
+            ext
         };
     }
 
@@ -231,6 +282,11 @@ export class DiligenceFormResultViewerComponent implements OnInit {
     getFileSize(field: FieldConfig): string {
         const info = this.getFileInfo(field);
         return info?.size || '';
+    }
+
+    getFileExt(field: FieldConfig): string {
+        const info = this.getFileInfo(field);
+        return info?.ext || 'FILE';
     }
 
     canDownloadOrPreview(field: FieldConfig): boolean {
@@ -265,7 +321,7 @@ export class DiligenceFormResultViewerComponent implements OnInit {
         const value = resObj.value;
         const optionId = resObj.fieldOptionId;
 
-        if (value === null || value === undefined) return '-';
+        if (value === null || value === undefined || String(value).trim() === '') return '-';
 
         if (field.type === 'select' || field.type === 'radio') {
             const option = field.options?.find(o => 

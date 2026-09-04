@@ -40,8 +40,11 @@ public class TaskStatusController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<TaskStatusDTO> update(@RequestBody TaskStatusDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<TaskStatusDTO> update(@PathVariable(required = false) Long id, @RequestBody TaskStatusDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

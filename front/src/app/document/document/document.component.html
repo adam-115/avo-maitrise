@@ -1,131 +1,319 @@
-<div class="mt-6">
-    <div
-        class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+<div class="space-y-6 font-sans">
 
-        <button (click)="openDocumentDialog()"
-            class="flex items-center space-x-2 px-4 py-2 bg-cyan-600 text-white font-semibold rounded-lg shadow-md hover:bg-cyan-700 transition duration-150 w-full sm:w-auto flex-shrink-0">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path>
-            </svg>
-            <span>{{ 'DOCUMENT.UPLOAD' | translate }}</span>
+  <!-- Action Toolbar & Filters Card -->
+  <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+
+      <!-- Left: Add Button & Stats -->
+      <div class="flex flex-wrap items-center gap-3">
+        <button type="button" (click)="openDocumentDialog()"
+          class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow transition-all flex-shrink-0 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>{{ 'DOCUMENT.UPLOAD' | translate }}</span>
         </button>
 
-        <div class="flex flex-grow space-x-3 w-full sm:w-auto">
-            <div class="relative flex-grow">
-                <input type="text" [placeholder]="'DOCUMENT.SEARCH' | translate"
-                    class="w-full ps-10 pe-4 py-2 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                <svg class="absolute start-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
-                    stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-            </div>
-            <select
-                class="p-2 rounded-lg w-full sm:w-auto focus:ring-cyan-500 focus:border-cyan-500 flex-shrink-0 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                <option>{{ 'DOCUMENT.FILTER_TYPE' | translate }}</option>
-                <option>{{ 'DOCUMENT.CONTRACTS' | translate }}</option>
-                <option>{{ 'DOCUMENT.PROCEDURES' | translate }}</option>
-                <option>{{ 'DOCUMENT.EVIDENCE' | translate }}</option>
-            </select>
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-600">
+          <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+          <span>{{ totalElements }} {{ 'DOCUMENT.TOTAL_DOCS' | translate }}</span>
         </div>
+      </div>
+
+      <!-- Right: Search, Type Filter & View Switch -->
+      <div class="flex flex-wrap items-center gap-3 flex-1 lg:justify-end">
+
+        <!-- Search Input -->
+        <div class="relative min-w-[220px] flex-1 sm:flex-initial">
+          <svg class="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input type="text" [(ngModel)]="searchTerm"
+            [placeholder]="'DOCUMENT.SEARCH' | translate"
+            class="w-full ps-10 pe-9 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+          <button *ngIf="searchTerm" (click)="searchTerm = ''"
+            class="absolute end-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-md">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Type Filter Selector -->
+        <div class="relative">
+          <select [(ngModel)]="selectedFilterType"
+            class="px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer">
+            <option value="ALL">{{ 'DOCUMENT.ALL_TYPES' | translate }}</option>
+            <option value="PDF">PDF</option>
+            <option value="WORD">Word (.docx)</option>
+            <option value="EXCEL">Excel (.xlsx, .csv)</option>
+            <option value="IMAGE">Images (JPG, PNG)</option>
+            <option value="OTHER">Autres</option>
+          </select>
+        </div>
+
+        <!-- View Mode Switch -->
+        <div class="hidden sm:flex items-center p-1 bg-slate-100 rounded-xl border border-slate-200">
+          <button type="button" (click)="viewMode = 'table'"
+            [ngClass]="viewMode === 'table' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'"
+            class="p-1.5 rounded-lg transition-all" [title]="'DOCUMENT.VIEW_TABLE' | translate">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+            </svg>
+          </button>
+          <button type="button" (click)="viewMode = 'grid'"
+            [ngClass]="viewMode === 'grid' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'"
+            class="p-1.5 rounded-lg transition-all" [title]="'DOCUMENT.VIEW_GRID' | translate">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          </button>
+        </div>
+
+      </div>
+
     </div>
+  </div>
 
-    <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm">
+    <div class="w-9 h-9 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+    <p class="text-xs font-bold text-slate-500">{{ 'DOSSIER_FORM.LOADING_FORM' | translate }}</p>
+  </div>
 
-        <div
-            class="hidden md:grid grid-cols-12 text-xs font-semibold uppercase text-gray-500 bg-gray-100 p-4 border-b border-gray-200">
-            <div class="col-span-4">{{ 'DOCUMENT.DOC_TITLE' | translate }}</div>
-            <div class="col-span-2">{{ 'DOCUMENT.TYPE' | translate }}</div>
-            <div class="col-span-2">{{ 'DOCUMENT.ADDED_BY' | translate }}</div>
-            <div class="col-span-2">{{ 'DOCUMENT.UPLOAD_DATE' | translate }}</div>
-            <div class="col-span-1 text-center">{{ 'DOCUMENT.SIZE' | translate }}</div>
-            <div class="col-span-1 text-right">{{ 'DOCUMENT.ACTIONS' | translate }}</div>
-        </div>
+  <!-- Documents Content (When Not Loading) -->
+  <div *ngIf="!isLoading">
 
-        @if(documents && documents.length > 0) {
-        @for (doc of documents; track doc.id || $index; let i = $index) {
-        <div
-            class="grid grid-cols-1 md:grid-cols-12 items-center border-b border-gray-100 hover:bg-cyan-50 p-4 transition duration-100">
+    <!-- TABLE VIEW -->
+    <div *ngIf="viewMode === 'table' && filteredDocuments.length > 0"
+      class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+              <th scope="col" class="py-3.5 px-5">{{ 'DOCUMENT.DOC_TITLE' | translate }}</th>
+              <th scope="col" class="py-3.5 px-4 hidden sm:table-cell">{{ 'DOCUMENT.TYPE' | translate }}</th>
+              <th scope="col" class="py-3.5 px-4 hidden md:table-cell">{{ 'DOCUMENT.UPLOAD_DATE' | translate }}</th>
+              <th scope="col" class="py-3.5 px-4 hidden lg:table-cell">Tags</th>
+              <th scope="col" class="py-3.5 px-5 text-right">{{ 'DOCUMENT.ACTIONS' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
+            <tr *ngFor="let doc of filteredDocuments; let i = index"
+              class="hover:bg-indigo-50/40 transition-colors group">
 
-            <div class="col-span-4 flex items-center space-x-3">
-                <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12h6m-3-3v6m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a10 10 0 0117.87-2.67M3 20a10 10 0 013.87-4.33">
-                    </path>
-                </svg>
-                <div>
-                    <p class="font-semibold text-slate-800">{{ doc.title || doc.name || ('DOCUMENT.NO_TITLE' | translate) }}</p>
-                    <p class="text-xs text-gray-500 truncate md:hidden">
-                        {{ doc.label || ('DOCUMENT.UNKNOWN' | translate) }} · {{ (doc.date | date:'dd/MM/yyyy') || ('DOCUMENT.NA' | translate) }}
+              <!-- Document Title & File Details -->
+              <td class="py-3.5 px-5">
+                <div class="flex items-center gap-3.5">
+                  <div class="p-2.5 rounded-xl border flex items-center justify-center font-black text-xs uppercase shadow-sm flex-shrink-0"
+                    [ngClass]="getFileIconColor(doc.filename || doc.nomFichier || doc.name)">
+                    {{ getFileExtension(doc.filename || doc.nomFichier || doc.name) }}
+                  </div>
+                  <div class="min-w-0 max-w-xs md:max-w-md">
+                    <p class="text-sm font-bold text-slate-900 truncate">
+                      {{ doc.title || doc.name || doc.nomFichier || ('DOCUMENT.NO_TITLE' | translate) }}
                     </p>
+                    <p class="text-[11px] text-slate-500 font-medium truncate mt-0.5" *ngIf="doc.filename || doc.nomFichier">
+                      {{ doc.filename || doc.nomFichier }}
+                    </p>
+                    <p class="text-[11px] text-slate-400 italic font-medium truncate mt-0.5" *ngIf="doc.description">
+                      {{ doc.description }}
+                    </p>
+                  </div>
                 </div>
-            </div>
+              </td>
 
-            <div class="col-span-2 text-sm text-gray-700 hidden md:block">{{ doc.label || '-' }}</div>
-            <div class="col-span-2 text-sm text-gray-700 hidden md:block">-</div>
-            <div class="col-span-2 text-sm font-medium text-cyan-600 hidden md:block">
-                {{ doc.dateUpload ? (doc.dateUpload | date:'dd/MM/yyyy') : ('DOCUMENT.NA' | translate) }}
-            </div>
-            <div class="col-span-1 text-sm text-gray-700 text-center hidden md:block">-</div>
-
-            <div class="col-span-1 flex justify-end space-x-2">
-                <button (click)="downloadDocument(doc)" [title]="'DOCUMENT.DOWNLOAD' | translate" class="p-1 text-gray-500 hover:text-cyan-600 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                    </svg>
-                </button>
-                <button (click)="deleteDocument(doc, i)" [title]="'DOCUMENT.DELETE' | translate" class="p-1 text-gray-500 hover:text-red-600 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                        </path>
-                    </svg>
-                </button>
-            </div>
-        </div>
-        }
-        } @else {
-        <div class="p-8 text-center text-gray-500">
-            <p>{{ 'DOCUMENT.NO_DOCUMENT' | translate }}</p>
-        </div>
-        }
-    </div>
-
-    <div class="mt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div class="text-sm text-gray-600 order-2 sm:order-1">
-            {{ 'MATTER_ACTIVITY.SHOWING' | translate }} <b>{{ documents.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</b> {{ 'MATTER_ACTIVITY.TO_LOWER' | translate }} 
-            <b>{{ (currentPage - 1) * pageSize + documents.length }}</b> {{ 'MATTER_ACTIVITY.OUT_OF' | translate }} 
-            <b>{{ totalElements }}</b> documents.
-        </div>
-        
-        <div class="flex items-center space-x-2 order-1 sm:order-2" *ngIf="totalPages > 1">
-            <button (click)="prevPage()" [disabled]="currentPage === 1"
-                class="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
-                {{ 'MATTER_ACTIVITY.PREV' | translate }}
-            </button>
-            
-            <div class="flex items-center space-x-1">
-                <span class="px-3 py-1.5 rounded-lg bg-cyan-600 text-white font-medium">
-                    {{ currentPage }}
+              <!-- Type Badge -->
+              <td class="py-3.5 px-4 hidden sm:table-cell">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-bold border shadow-2xs"
+                  [ngClass]="getFileBadgeClass(doc.filename || doc.nomFichier || doc.name)">
+                  {{ getFileCategory(doc.filename || doc.nomFichier || doc.name) }}
                 </span>
-                <span class="text-gray-400 px-1">/</span>
-                <span class="text-gray-600 font-medium">{{ totalPages }}</span>
-            </div>
+              </td>
 
-            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                class="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
-                {{ 'MATTER_ACTIVITY.NEXT' | translate }}
-            </button>
-        </div>
+              <!-- Upload Date -->
+              <td class="py-3.5 px-4 hidden md:table-cell text-slate-600 font-medium">
+                <div class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>{{ (doc.dateUpload || doc.date) ? ((doc.dateUpload || doc.date) | date:'dd/MM/yyyy à HH:mm') : ('DOCUMENT.NA' | translate) }}</span>
+                </div>
+              </td>
+
+              <!-- Tags -->
+              <td class="py-3.5 px-4 hidden lg:table-cell">
+                <span *ngIf="doc.tags" class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                  #{{ doc.tags }}
+                </span>
+                <span *ngIf="!doc.tags" class="text-slate-300">-</span>
+              </td>
+
+              <!-- Action Buttons -->
+              <td class="py-3.5 px-5 text-right">
+                <div class="inline-flex items-center gap-1.5">
+                  <!-- Download Button -->
+                  <button type="button" (click)="downloadDocument(doc)"
+                    [title]="'DOCUMENT.DOWNLOAD' | translate"
+                    class="p-2 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-200 text-slate-600 hover:text-indigo-600 shadow-sm transition-all cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                  </button>
+
+                  <!-- Delete Button -->
+                  <button type="button" (click)="deleteDocument(doc, i)"
+                    [title]="'DOCUMENT.DELETE' | translate"
+                    class="p-2 rounded-xl border border-slate-200 bg-white hover:bg-rose-50 hover:border-rose-200 text-slate-600 hover:text-rose-600 shadow-sm transition-all cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
+
+    <!-- GRID / CARD VIEW -->
+    <div *ngIf="viewMode === 'grid' && filteredDocuments.length > 0"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      
+      <div *ngFor="let doc of filteredDocuments; let i = index"
+        class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-all flex flex-col justify-between group">
+        
+        <div>
+          <!-- Header Card -->
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <div class="p-3 rounded-xl border font-black text-sm uppercase shadow-sm flex items-center justify-center min-w-[46px]"
+              [ngClass]="getFileIconColor(doc.filename || doc.nomFichier || doc.name)">
+              {{ getFileExtension(doc.filename || doc.nomFichier || doc.name) }}
+            </div>
+            
+            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border shadow-2xs"
+              [ngClass]="getFileBadgeClass(doc.filename || doc.nomFichier || doc.name)">
+              {{ getFileCategory(doc.filename || doc.nomFichier || doc.name) }}
+            </span>
+          </div>
+
+          <!-- Document Info -->
+          <h4 class="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 mb-1">
+            {{ doc.title || doc.name || doc.nomFichier || ('DOCUMENT.NO_TITLE' | translate) }}
+          </h4>
+          <p class="text-[11px] text-slate-500 font-medium truncate mb-2" *ngIf="doc.filename || doc.nomFichier">
+            {{ doc.filename || doc.nomFichier }}
+          </p>
+          <p class="text-xs text-slate-600 font-normal line-clamp-2 mb-3" *ngIf="doc.description">
+            {{ doc.description }}
+          </p>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400 font-medium">
+          <span>{{ (doc.dateUpload || doc.date) ? ((doc.dateUpload || doc.date) | date:'dd/MM/yyyy') : ('DOCUMENT.NA' | translate) }}</span>
+          
+          <div class="flex items-center gap-1">
+            <button type="button" (click)="downloadDocument(doc)"
+              class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer"
+              [title]="'DOCUMENT.DOWNLOAD' | translate">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </button>
+            <button type="button" (click)="deleteDocument(doc, i)"
+              class="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+              [title]="'DOCUMENT.DELETE' | translate">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div *ngIf="filteredDocuments.length === 0"
+      class="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-2xl border border-dashed border-slate-200 text-center">
+      <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+        </svg>
+      </div>
+
+      <h3 class="text-base font-bold text-slate-900 mb-1">
+        {{ searchTerm ? ('DOCUMENT.EMPTY_SEARCH' | translate) : ('DOCUMENT.NO_DOCUMENT' | translate) }}
+      </h3>
+      <p class="text-xs font-medium text-slate-500 max-w-md mb-5">
+        {{ searchTerm ? '' : ('DOCUMENT.EMPTY_SUBTITLE' | translate) }}
+      </p>
+
+      <button *ngIf="!searchTerm" type="button" (click)="openDocumentDialog()"
+        class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow transition-all cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>{{ 'DOCUMENT.UPLOAD' | translate }}</span>
+      </button>
+
+      <button *ngIf="searchTerm" type="button" (click)="searchTerm = ''; selectedFilterType = 'ALL'"
+        class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer">
+        <span>Réinitialiser les filtres</span>
+      </button>
+    </div>
+
+    <!-- PAGINATION BAR -->
+    <div *ngIf="totalElements > 0"
+      class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 px-2">
+      
+      <div class="text-xs font-bold text-slate-500 order-2 sm:order-1">
+        {{ 'MATTER_ACTIVITY.SHOWING' | translate }} <strong class="text-slate-800">{{ documents.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</strong> {{ 'MATTER_ACTIVITY.TO_LOWER' | translate }} 
+        <strong class="text-slate-800">{{ (currentPage - 1) * pageSize + documents.length }}</strong> {{ 'MATTER_ACTIVITY.OUT_OF' | translate }} 
+        <strong class="text-slate-800">{{ totalElements }}</strong> documents
+      </div>
+      
+      <div class="flex items-center gap-2 order-1 sm:order-2" *ngIf="totalPages > 1">
+        <button (click)="prevPage()" [disabled]="currentPage === 1"
+          class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs transition-all cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>{{ 'MATTER_ACTIVITY.PREV' | translate }}</span>
+        </button>
+        
+        <div class="flex items-center gap-1">
+          <button *ngFor="let page of getPageArray()"
+            (click)="setPage(page)"
+            [ngClass]="page === currentPage ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'"
+            class="w-7 h-7 flex items-center justify-center rounded-lg text-xs font-bold transition-all cursor-pointer">
+            {{ page }}
+          </button>
+        </div>
+
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+          class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs transition-all cursor-pointer">
+          <span>{{ 'MATTER_ACTIVITY.NEXT' | translate }}</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
-@if(showAddDocumentDialog){
-<app-document-dialog (closeDialogEvent)="closeDocumentDialog()"
-    (addDocumentEvent)="addDocument($event)"></app-document-dialog>
-}
+
+<!-- Upload / Edit Document Dialog Modal -->
+<app-document-dialog *ngIf="showAddDocumentDialog"
+  [selectedDocument]="selectedDocForEdit"
+  (closeDialogEvent)="closeDocumentDialog()"
+  (addDocumentEvent)="addDocument($event)">
+</app-document-dialog>

@@ -40,8 +40,11 @@ public class DomaineJuridiqueController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<DomaineJuridiqueDTO> update(@RequestBody DomaineJuridiqueDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<DomaineJuridiqueDTO> update(@PathVariable(required = false) Long id, @RequestBody DomaineJuridiqueDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

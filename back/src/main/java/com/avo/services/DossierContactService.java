@@ -75,7 +75,6 @@ public class DossierContactService {
         DossierContact existing = repository.findById(dto.getId()).orElse(null);
         if (existing == null) return null;
 
-        // Patch fields
         existing.setCivilite(dto.getCivilite());
         existing.setNom(dto.getNom());
         existing.setPrenom(dto.getPrenom());
@@ -86,6 +85,9 @@ public class DossierContactService {
         existing.setAdresse(dto.getAdresse());
         existing.setNumToque(dto.getNumToque());
         existing.setSiteWeb(dto.getSiteWeb());
+        existing.setPays(dto.getPays());
+        existing.setProfession(dto.getProfession());
+        existing.setObservation(dto.getObservation());
         existing.setNotes(dto.getNotes());
 
         attachRelatedEntities(existing, dto);

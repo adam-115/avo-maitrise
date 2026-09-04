@@ -1,201 +1,319 @@
-<div class="p-6 sm:p-10 bg-slate-50 min-h-screen font-sans">
-  <!-- Header Section -->
-  <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-    <div class="space-y-1">
-      <nav class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">
-        <span class="hover:text-cyan-600 cursor-pointer" routerLink="/home">{{ 'DILIGENCE_STATUS_LIST.BREADCRUMB_DASHBOARD' | translate }}</span>
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 bg-slate-50 min-h-screen font-sans space-y-6">
+
+  <!-- Breadcrumb & Header Card -->
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div class="space-y-2">
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400">
+        <span class="hover:text-indigo-600 cursor-pointer transition-colors" routerLink="/home">
+          {{ 'DILIGENCE_STATUS_LIST.BREADCRUMB_DASHBOARD' | translate }}
+        </span>
+        <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
-        <span class="text-slate-900">{{ 'DILIGENCE_STATUS_LIST.BREADCRUMB_TRACKING' | translate }}</span>
+        <span class="text-slate-700 font-black">{{ 'DILIGENCE_STATUS_LIST.BREADCRUMB_TRACKING' | translate }}</span>
       </nav>
-      <h1 class="text-4xl font-black text-slate-900 tracking-tight">
-        {{ 'DILIGENCE_STATUS_LIST.TITLE_PREFIX' | translate }}<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">{{ 'DILIGENCE_STATUS_LIST.TITLE_HIGHLIGHT' | translate }}</span>
-      </h1>
-      <p class="text-slate-500 font-medium max-w-2xl">
-        {{ 'DILIGENCE_STATUS_LIST.SUBTITLE' | translate }}
-      </p>
+
+      <!-- Title & Count -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-1">
+        <div>
+          <div class="flex items-center gap-3">
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              {{ 'DILIGENCE_STATUS_LIST.TITLE_PREFIX' | translate }}<span class="text-indigo-600">{{ 'DILIGENCE_STATUS_LIST.TITLE_HIGHLIGHT' | translate }}</span>
+            </h1>
+            <span class="px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-black border border-indigo-100">
+              {{ allStatuses.length }}
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium max-w-3xl leading-relaxed mt-1">
+            {{ 'DILIGENCE_STATUS_LIST.SUBTITLE' | translate }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Summary Cards Grid -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    
+    <!-- Total Diligences -->
+    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <div>
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ 'DILIGENCE_STATUS_LIST.STATS_TOTAL' | translate }}</p>
+        <p class="text-lg font-black text-slate-900 mt-0.5">{{ totalCount }}</p>
+      </div>
+    </div>
+
+    <!-- En Attente (Pending) -->
+    <div (click)="filterByStatus('PENDING')"
+      class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center gap-3.5 cursor-pointer hover:border-amber-300 transition-all group"
+      [ngClass]="{'ring-2 ring-amber-500 border-transparent bg-amber-50/20': selectedStatus === 'PENDING'}">
+      <div class="w-11 h-11 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0 group-hover:scale-105 transition-transform">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div>
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ 'DILIGENCE_STATUS_LIST.STATS_PENDING' | translate }}</p>
+        <p class="text-lg font-black text-amber-600 mt-0.5">{{ pendingCount }}</p>
+      </div>
+    </div>
+
+    <!-- Soumises (Submitted) -->
+    <div (click)="filterByStatus('SUBMITTED')"
+      class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center gap-3.5 cursor-pointer hover:border-blue-300 transition-all group"
+      [ngClass]="{'ring-2 ring-blue-500 border-transparent bg-blue-50/20': selectedStatus === 'SUBMITTED'}">
+      <div class="w-11 h-11 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0 group-hover:scale-105 transition-transform">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+        </svg>
+      </div>
+      <div>
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ 'DILIGENCE_STATUS_LIST.STATS_SUBMITTED' | translate }}</p>
+        <p class="text-lg font-black text-blue-600 mt-0.5">{{ submittedCount }}</p>
+      </div>
+    </div>
+
+    <!-- Validées (Validated) -->
+    <div (click)="filterByStatus('VALIDATED')"
+      class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center gap-3.5 cursor-pointer hover:border-emerald-300 transition-all group"
+      [ngClass]="{'ring-2 ring-emerald-500 border-transparent bg-emerald-50/20': selectedStatus === 'VALIDATED'}">
+      <div class="w-11 h-11 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0 group-hover:scale-105 transition-transform">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div>
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ 'DILIGENCE_STATUS_LIST.STATS_VALIDATED' | translate }}</p>
+        <p class="text-lg font-black text-emerald-600 mt-0.5">{{ validatedCount }}</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Filters Toolbar Card -->
+  <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+    <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
+      
+      <!-- Search Input -->
+      <div class="relative flex-1 min-w-[240px]">
+        <svg class="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
+          type="text"
+          [placeholder]="'DILIGENCE_STATUS_LIST.SEARCH_PLACEHOLDER' | translate"
+          class="w-full ps-10 pe-9 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+        <button *ngIf="searchTerm" (click)="searchTerm = ''; applyFilters()"
+          class="absolute end-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-md cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Select Filters -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <!-- Client Type Filter -->
+        <select [(ngModel)]="selectedType" (change)="applyFilters()"
+          class="px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer">
+          <option value="">{{ 'DILIGENCE_STATUS_LIST.ALL_CLIENT_TYPES' | translate }}</option>
+          <option value="PERSONNE">{{ 'DILIGENCE_STATUS_LIST.TYPE_INDIVIDUAL' | translate }}</option>
+          <option value="SOCIETE">{{ 'DILIGENCE_STATUS_LIST.TYPE_COMPANY' | translate }}</option>
+          <option value="ASSOCIATION">{{ 'DILIGENCE_STATUS_LIST.TYPE_ASSOCIATION' | translate }}</option>
+          <option value="INSTITUTION">{{ 'DILIGENCE_STATUS_LIST.TYPE_INSTITUTION' | translate }}</option>
+        </select>
+
+        <!-- Status Filter -->
+        <select [(ngModel)]="selectedStatus" (change)="applyFilters()"
+          class="px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer">
+          <option value="">{{ 'DILIGENCE_STATUS_LIST.ALL_STATUSES' | translate }}</option>
+          <option value="PENDING">{{ 'DILIGENCE_STATUS_LIST.STATUS_PENDING' | translate }}</option>
+          <option value="SUBMITTED">{{ 'DILIGENCE_STATUS_LIST.STATUS_SUBMITTED' | translate }}</option>
+          <option value="VALIDATED">{{ 'DILIGENCE_STATUS_LIST.STATUS_VALIDATED' | translate }}</option>
+        </select>
+
+        <!-- Reset Button -->
+        <button *ngIf="hasActiveFilters" (click)="resetFilters()"
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-xs font-bold text-slate-600 transition-colors cursor-pointer">
+          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>{{ 'DILIGENCE_STATUS_LIST.RESET_FILTERS' | translate }}</span>
+        </button>
+      </div>
+
     </div>
   </div>
 
   <!-- Loading State -->
-  <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm">
-    <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
-    <p class="text-slate-500 font-bold mt-4">{{ 'DILIGENCE_STATUS_LIST.LOADING' | translate }}</p>
+  <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-slate-200 shadow-sm">
+    <div class="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-slate-500 font-bold mt-3 text-xs">{{ 'DILIGENCE_STATUS_LIST.LOADING' | translate }}</p>
   </div>
 
-  <div *ngIf="!loading" class="space-y-6">
-    <!-- Filter Board -->
-    <div class="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm">
-      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-        <div>
-          <h3 class="text-lg font-black text-slate-950">{{ 'DILIGENCE_STATUS_LIST.FILTER_BOARD_TITLE' | translate }}</h3>
-          <p class="text-xs text-slate-400 font-bold">{{ 'DILIGENCE_STATUS_LIST.FILTER_BOARD_DESC' | translate }}</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full lg:w-auto">
-          <!-- Search input -->
-          <div class="relative w-full sm:w-64">
-            <div class="absolute inset-y-0 start-3 flex items-center pointer-events-none">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <input [(ngModel)]="searchTerm" (ngModelChange)="applyFilters()"
-              class="w-full ps-9 pe-3 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl focus:border-cyan-500 focus:bg-white outline-none transition-all placeholder:text-slate-400 font-semibold text-sm text-slate-700"
-              [placeholder]="'DILIGENCE_STATUS_LIST.SEARCH_PLACEHOLDER' | translate" type="search">
-          </div>
-
-          <!-- Type filter -->
-          <select [(ngModel)]="selectedType" (change)="applyFilters()"
-            class="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-600 cursor-pointer appearance-none">
-            <option value="">{{ 'DILIGENCE_STATUS_LIST.ALL_CLIENT_TYPES' | translate }}</option>
-            <option value="PERSONNE">{{ 'DILIGENCE_STATUS_LIST.TYPE_INDIVIDUAL' | translate }}</option>
-            <option value="SOCIETE">{{ 'DILIGENCE_STATUS_LIST.TYPE_COMPANY' | translate }}</option>
-            <option value="ASSOCIATION">{{ 'DILIGENCE_STATUS_LIST.TYPE_ASSOCIATION' | translate }}</option>
-            <option value="INSTITUTION">{{ 'DILIGENCE_STATUS_LIST.TYPE_INSTITUTION' | translate }}</option>
-          </select>
-
-          <!-- Status filter -->
-          <select [(ngModel)]="selectedStatus" (change)="applyFilters()"
-            class="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-600 cursor-pointer appearance-none">
-            <option value="">{{ 'DILIGENCE_STATUS_LIST.ALL_STATUSES' | translate }}</option>
-            <option value="PENDING">{{ 'DILIGENCE_STATUS_LIST.STATUS_PENDING' | translate }}</option>
-            <option value="SUBMITTED">{{ 'DILIGENCE_STATUS_LIST.STATUS_SUBMITTED' | translate }}</option>
-            <option value="VALIDATED">{{ 'DILIGENCE_STATUS_LIST.STATUS_VALIDATED' | translate }}</option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Data Table Card -->
-    <div class="bg-white rounded-[32px] border border-slate-200 shadow-sm overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="bg-slate-50/70 border-b border-slate-100">
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">{{ 'DILIGENCE_STATUS_LIST.TH_CLIENT' | translate }}</th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">{{ 'DILIGENCE_STATUS_LIST.TH_FORM' | translate }}</th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">{{ 'DILIGENCE_STATUS_LIST.TH_STATUS' | translate }}</th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">{{ 'DILIGENCE_STATUS_LIST.TH_LAST_UPDATE' | translate }}</th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400 text-right">{{ 'DILIGENCE_STATUS_LIST.TH_ACTIONS' | translate }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of paginatedStatuses"
-              class="hover:bg-slate-50/30 transition-colors border-b border-slate-100 last:border-0">
-              
-              <!-- Client Info -->
-              <td class="px-6 py-4">
-                <div class="flex flex-col gap-1 items-start">
-                  <span class="font-bold text-slate-900 text-sm">{{ item.clientName }}</span>
-                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-500 uppercase tracking-wider">
+  <!-- Data Table Card -->
+  <div *ngIf="!loading" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse">
+        <thead>
+          <tr class="bg-slate-50/80 border-b border-slate-200/80">
+            <th class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">{{ 'DILIGENCE_STATUS_LIST.TH_CLIENT' | translate }}</th>
+            <th class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">{{ 'DILIGENCE_STATUS_LIST.TH_FORM' | translate }}</th>
+            <th class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">{{ 'DILIGENCE_STATUS_LIST.TH_STATUS' | translate }}</th>
+            <th class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">{{ 'DILIGENCE_STATUS_LIST.TH_LAST_UPDATE' | translate }}</th>
+            <th class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 text-right">{{ 'DILIGENCE_STATUS_LIST.TH_ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-slate-700">
+          <tr *ngFor="let item of paginatedStatuses"
+            class="hover:bg-slate-50/70 transition-colors group">
+            
+            <!-- Client Info -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-200 text-indigo-700 font-extrabold text-xs flex items-center justify-center flex-shrink-0 shadow-sm">
+                  {{ getInitials(item.clientName) }}
+                </div>
+                <div class="min-w-0">
+                  <p class="font-bold text-slate-900 text-sm truncate group-hover:text-indigo-600 transition-colors">
+                    {{ item.clientName }}
+                  </p>
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-600 uppercase tracking-wider mt-0.5 border border-slate-200/60">
                     {{ translateClientType(item.clientType || '') }}
                   </span>
                 </div>
-              </td>
+              </div>
+            </td>
 
-              <!-- Form Info -->
-              <td class="px-6 py-4">
-                <div class="flex items-center gap-2">
-                  <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Form Info -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-2.5">
+                <div class="p-1.5 rounded-lg bg-slate-100 text-slate-500 flex-shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <span class="font-semibold text-slate-700 text-sm">{{ item.formTitle }}</span>
                 </div>
-              </td>
+                <span class="font-bold text-slate-800 text-xs">{{ item.formTitle }}</span>
+              </div>
+            </td>
 
-              <!-- Status Badge -->
-              <td class="px-6 py-4">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold"
+            <!-- Status Badge -->
+            <td class="px-6 py-4">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold border"
+                [ngClass]="{
+                  'bg-amber-50 text-amber-700 border-amber-200': item.status === 'PENDING',
+                  'bg-blue-50 text-blue-700 border-blue-200': item.status === 'SUBMITTED',
+                  'bg-emerald-50 text-emerald-700 border-emerald-200': item.status === 'VALIDATED'
+                }">
+                <span class="w-1.5 h-1.5 rounded-full"
                   [ngClass]="{
-                    'bg-amber-100 text-amber-800 border border-amber-200': item.status === 'PENDING',
-                    'bg-blue-100 text-blue-800 border border-blue-200': item.status === 'SUBMITTED',
-                    'bg-emerald-100 text-emerald-800 border border-emerald-200': item.status === 'VALIDATED'
-                  }">
-                  <span class="w-1.5 h-1.5 rounded-full"
-                    [ngClass]="{
-                      'bg-amber-500': item.status === 'PENDING',
-                      'bg-blue-500': item.status === 'SUBMITTED',
-                      'bg-emerald-500': item.status === 'VALIDATED'
-                    }"></span>
-                  {{ statusDisplayMap[item.status] }}
-                </span>
-              </td>
+                    'bg-amber-500 animate-pulse': item.status === 'PENDING',
+                    'bg-blue-500': item.status === 'SUBMITTED',
+                    'bg-emerald-500': item.status === 'VALIDATED'
+                  }"></span>
+                {{ statusDisplayMap[item.status] || item.status }}
+              </span>
+            </td>
 
-              <!-- Last Update -->
-              <td class="px-6 py-4 text-sm font-semibold text-slate-500">
-                {{ item.lastUpdateDate | date:'dd/MM/yyyy HH:mm' }}
-              </td>
+            <!-- Last Update -->
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-1.5 text-xs font-semibold text-slate-500">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{{ item.lastUpdateDate | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+            </td>
 
-              <!-- Action Button -->
-              <td class="px-6 py-4 text-right">
-                <button (click)="onAction(item)"
-                  class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all"
-                  [ngClass]="{
-                    'bg-amber-500 hover:bg-amber-600 text-white shadow-sm shadow-amber-200': item.status === 'PENDING',
-                    'bg-slate-900 hover:bg-slate-800 text-cyan-400 shadow-sm shadow-slate-200': item.status === 'SUBMITTED' || item.status === 'VALIDATED'
-                  }">
-                  <!-- Button Icon -->
-                  <svg *ngIf="item.status === 'PENDING'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                  <svg *ngIf="item.status === 'SUBMITTED' || item.status === 'VALIDATED'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  
-                  <span>{{ item.status === 'PENDING' ? ('DILIGENCE_STATUS_LIST.BTN_FILL' | translate) : ('DILIGENCE_STATUS_LIST.BTN_VIEW' | translate) }}</span>
-                </button>
-              </td>
+            <!-- Action Button -->
+            <td class="px-6 py-4 text-right">
+              <button (click)="onAction(item)"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold active:scale-95 shadow-sm hover:shadow transition-all cursor-pointer"
+                [ngClass]="{
+                  'bg-amber-500 hover:bg-amber-600 text-white shadow-amber-200': item.status === 'PENDING',
+                  'bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-200': item.status === 'SUBMITTED' || item.status === 'VALIDATED'
+                }">
+                <!-- Pending Icon -->
+                <svg *ngIf="item.status === 'PENDING'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                <!-- View Icon -->
+                <svg *ngIf="item.status === 'SUBMITTED' || item.status === 'VALIDATED'" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                
+                <span>{{ item.status === 'PENDING' ? ('DILIGENCE_STATUS_LIST.BTN_FILL' | translate) : ('DILIGENCE_STATUS_LIST.BTN_VIEW' | translate) }}</span>
+              </button>
+            </td>
 
-            </tr>
-            <tr *ngIf="filteredStatuses.length === 0">
-              <td colspan="5" class="px-6 py-16 text-center text-slate-400 font-bold bg-slate-50/20">
-                <div class="flex flex-col items-center justify-center gap-2">
-                  <svg class="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          </tr>
+
+          <!-- Empty Row -->
+          <tr *ngIf="filteredStatuses.length === 0">
+            <td colspan="5" class="px-6 py-16 text-center text-slate-500 bg-white">
+              <div class="flex flex-col items-center justify-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-400">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  <span>{{ 'DILIGENCE_STATUS_LIST.NO_DILIGENCE' | translate }}</span>
                 </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                <div>
+                  <p class="font-bold text-slate-800 text-sm">{{ 'DILIGENCE_STATUS_LIST.NO_DILIGENCE' | translate }}</p>
+                  <p class="text-xs text-slate-400 font-medium mt-0.5">Modifiez vos critères de recherche ou réinitialisez les filtres.</p>
+                </div>
+                <button *ngIf="hasActiveFilters" (click)="resetFilters()"
+                  class="mt-2 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors cursor-pointer">
+                  {{ 'DILIGENCE_STATUS_LIST.RESET_FILTERS' | translate }}
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div *ngIf="totalPages > 1" class="px-6 py-4 bg-slate-50/70 border-t border-slate-200/80 flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="text-xs text-slate-500 font-semibold order-2 sm:order-1">
+        {{ 'DILIGENCE_STATUS_LIST.SHOWING' | translate }} 
+        <span class="text-slate-900 font-black">{{ startIndex }}</span> 
+        {{ 'DILIGENCE_STATUS_LIST.TO' | translate }} 
+        <span class="text-slate-900 font-black">{{ endIndex }}</span> 
+        {{ 'DILIGENCE_STATUS_LIST.OUT_OF' | translate }} 
+        <span class="text-slate-900 font-black">{{ filteredStatuses.length }}</span> 
+        {{ 'DILIGENCE_STATUS_LIST.DILIGENCES' | translate }}
       </div>
 
-      <!-- Pagination Footer -->
-      <div *ngIf="totalPages > 1" class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <span class="text-xs font-bold text-slate-400">
-          {{ 'DILIGENCE_STATUS_LIST.SHOWING' | translate }} {{ startIndex }} {{ 'DILIGENCE_STATUS_LIST.TO' | translate }} {{ endIndex }} {{ 'DILIGENCE_STATUS_LIST.OUT_OF' | translate }} {{ filteredStatuses.length }} {{ 'DILIGENCE_STATUS_LIST.DILIGENCES' | translate }}
+      <div class="flex items-center gap-1.5 order-1 sm:order-2">
+        <!-- Prev Button -->
+        <button type="button" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
+          class="p-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <!-- Current / Total Indicator -->
+        <span class="text-xs font-bold text-slate-700 px-3 py-1 bg-white rounded-xl border border-slate-200 shadow-sm">
+          {{ 'DILIGENCE_STATUS_LIST.PAGE' | translate }} <span class="text-indigo-600 font-black">{{ currentPage }}</span> / {{ totalPages }}
         </span>
 
-        <div class="flex items-center gap-1">
-          <!-- Prev Button -->
-          <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
-            class="p-2 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-all disabled:opacity-30 disabled:hover:text-slate-500 disabled:hover:border-slate-200 cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-
-          <!-- Pages -->
-          <button *ngFor="let page of pages" (click)="onPageChange(page)"
-            class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
-            [ngClass]="currentPage === page ? 'bg-slate-900 text-cyan-400 shadow-md shadow-slate-200' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'">
-            {{ page }}
-          </button>
-
-          <!-- Next Button -->
-          <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
-            class="p-2 rounded-xl bg-white border border-slate-200 text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-all disabled:opacity-30 disabled:hover:text-slate-500 disabled:hover:border-slate-200 cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
+        <!-- Next Button -->
+        <button type="button" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
+          class="p-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
     </div>
   </div>
+
 </div>

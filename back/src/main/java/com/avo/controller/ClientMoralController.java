@@ -41,8 +41,11 @@ public class ClientMoralController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<ClientMoralDTO> update(@RequestBody ClientMoralDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<ClientMoralDTO> update(@PathVariable(required = false) Long id, @RequestBody ClientMoralDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

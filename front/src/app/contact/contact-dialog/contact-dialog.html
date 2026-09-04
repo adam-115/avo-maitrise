@@ -1,138 +1,224 @@
 <div id="link-contact-modal"
-  class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 flex items-center justify-center ">
+  class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 transition-all duration-300">
 
-  <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 my-8 transform transition-all scale-100 opacity-100"
-    role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl border border-slate-200/80 overflow-hidden transform transition-all scale-100 flex flex-col max-h-[90vh]"
+    role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
 
-    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-cyan-50 rounded-t-xl">
-      <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
-        {{ 'CONTACT_DIALOG.LINK_CONTACT' | translate }} {{ dossierNumber }}
-      </h3>
-      <button type="button" (click)="closeDialog()" class="text-gray-400 hover:text-gray-600 transition">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+    <!-- Modal Header -->
+    <div class="px-6 py-5 border-b border-slate-200/80 flex justify-between items-center bg-gradient-to-r from-slate-50 to-indigo-50/30">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600/10 border border-indigo-200/60 flex items-center justify-center text-indigo-600">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+          </svg>
+        </div>
+        <div>
+          <h3 id="contact-modal-title" class="text-base font-bold text-slate-900 leading-tight">
+            {{ (isEditMode ? 'CONTACT_DIALOG.EDIT_CONTACT' : 'CONTACT_DIALOG.LINK_CONTACT') | translate }}
+            <span *ngIf="dossierNumber" class="text-xs font-semibold text-indigo-600 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md ms-1.5">{{ dossierNumber }}</span>
+          </h3>
+          <p class="text-xs text-slate-500 font-medium mt-0.5">{{ 'CONTACT_DIALOG.SUBTITLE' | translate }}</p>
+        </div>
+      </div>
+
+      <button type="button" (click)="closeDialog()"
+        class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
 
-    <div class="p-6">
+    <!-- Modal Body -->
+    <div class="p-6 overflow-y-auto flex-grow space-y-5">
 
-      <div id="tab-create-new" class="mt-2 space-y-5">
+      <!-- Informational Hint -->
+      <div class="p-3.5 bg-indigo-50/60 border border-indigo-100 rounded-xl text-xs text-indigo-900/80 flex items-start gap-2.5">
+        <svg class="w-4 h-4 text-indigo-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span class="leading-relaxed">{{ 'CONTACT_DIALOG.WARNING' | translate }}</span>
+      </div>
 
-        <div class="p-4 bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800 rounded-lg text-sm">
-          {{ 'CONTACT_DIALOG.WARNING' | translate }}
+      <form id="create-new-contact-form" class="space-y-4" [formGroup]="contactForm" (ngSubmit)="submitForm()">
+
+        <!-- Civilité, Nom, Prénom -->
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
+          <div class="sm:col-span-3">
+            <label for="new_contact_type" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.CIVILITY' | translate }} <span class="text-rose-500">*</span>
+            </label>
+            <select id="new_contact_type" formControlName="civilite" required
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer">
+              <option value="M.">{{ 'CONTACT_DIALOG.MR' | translate }}</option>
+              <option value="Mme">{{ 'CONTACT_DIALOG.MRS' | translate }}</option>
+              <option value="Me">{{ 'CONTACT_DIALOG.MASTER' | translate }}</option>
+            </select>
+          </div>
+
+          <div class="sm:col-span-5">
+            <label for="new_contact_last_name" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.LAST_NAME' | translate }} <span class="text-rose-500">*</span>
+            </label>
+            <input type="text" formControlName="nom" id="new_contact_last_name" required
+              [placeholder]="'CONTACT_DIALOG.LAST_NAME_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+              [ngClass]="{'border-rose-300 focus:border-rose-500 focus:ring-rose-500/10': contactForm.get('nom')?.touched && contactForm.get('nom')?.invalid}">
+          </div>
+
+          <div class="sm:col-span-4">
+            <label for="new_contact_firstname" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.FIRST_NAME' | translate }} <span class="text-rose-500">*</span>
+            </label>
+            <input type="text" formControlName="prenom" id="new_contact_firstname" required
+              [placeholder]="'CONTACT_DIALOG.FIRST_NAME_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+              [ngClass]="{'border-rose-300 focus:border-rose-500 focus:ring-rose-500/10': contactForm.get('prenom')?.touched && contactForm.get('prenom')?.invalid}">
+          </div>
         </div>
 
-        <form id="create-new-contact-form" class="space-y-4" [formGroup]="contactForm" (ngSubmit)="submitForm()">
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="new_contact_type" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.CIVILITY' | translate }} <span
-                  class="text-red-500">*</span></label>
-              <select id="new_contact_type" formControlName="civilite" required
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                <option value="M.">{{ 'CONTACT_DIALOG.MR' | translate }}</option>
-                <option value="Mme">{{ 'CONTACT_DIALOG.MRS' | translate }}</option>
-                <option value="Me">{{ 'CONTACT_DIALOG.MASTER' | translate }}</option>
-              </select>
-            </div>
-            <div>
-              <label for="new_contact_company" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.COMPANY' | translate }}</label>
-              <input type="text" formControlName="entreprise" id="new_contact_company"
-                [placeholder]="'CONTACT_DIALOG.COMPANY_PLACEHOLDER' | translate"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="new_contact_last_name" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.LAST_NAME' | translate }} <span
-                  class="text-red-500">*</span></label>
-              <input type="text" formControlName="nom" id="new_contact_last_name" required placeholder="Ex: Durand"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-            <div>
-              <label for="new_contact_firstname" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.FIRST_NAME' | translate }} <span
-                  class="text-red-500">*</span></label>
-              <input type="text" formControlName="prenom" id="new_contact_firstname" placeholder="Ex: Luc"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="new_contact_email" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.EMAIL' | translate }}</label>
-              <input type="email" formControlName="email" id="new_contact_email" placeholder="contact@exemple.com"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-            <div>
-              <label for="new_contact_phone" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.PHONE' | translate }}</label>
-              <input type="tel" formControlName="telephoneMobile" id="new_contact_phone"
-                placeholder="+33 XX XX XX XX XX"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="new_contact_toque" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.TOQUE_NUMBER' | translate }}</label>
-              <input type="text" formControlName="numToque" id="new_contact_toque" placeholder="Ex: 1234"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-            <div>
-              <label for="new_contact_web" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.WEBSITE' | translate }}</label>
-              <input type="url" formControlName="siteWeb" id="new_contact_web" placeholder="https://..."
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label for="new_contact_profession" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.PROFESSION' | translate }}</label>
-              <input type="text" formControlName="profession" id="new_contact_profession" [placeholder]="'CONTACT_DIALOG.PROFESSION_PLACEHOLDER' | translate"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-            <div>
-              <label for="new_contact_pays" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.COUNTRY' | translate }}</label>
-              <input type="text" formControlName="pays" id="new_contact_pays" placeholder="Ex: France"
-                class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-          </div>
-
+        <!-- Rôle dans le dossier & Profession -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
           <div>
-            <label for="new_contact_observation" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.OBSERVATIONS' | translate }}</label>
-            <textarea formControlName="observation" id="new_contact_observation" rows="2"
-              [placeholder]="'CONTACT_DIALOG.OBSERVATIONS_PLACEHOLDER' | translate"
-              class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
-          </div>
-
-          <div class="pt-2">
-            <label for="new_contact_role" class="block text-sm font-medium text-gray-700 mb-1">{{ 'CONTACT_DIALOG.ROLE' | translate }} <span class="text-red-500">*</span></label>
+            <label for="new_contact_role" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.ROLE' | translate }} <span class="text-rose-500">*</span>
+            </label>
             <select id="new_contact_role" formControlName="notes" required
-              class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer">
               <option value="Partie Adverse">{{ 'CONTACT_DIALOG.ROLE_ADVERSE_PARTY' | translate }}</option>
               <option value="Avocat Adverse">{{ 'CONTACT_DIALOG.ROLE_ADVERSE_LAWYER' | translate }}</option>
               <option value="Expert / Tiers">{{ 'CONTACT_DIALOG.ROLE_EXPERT_THIRD' | translate }}</option>
               <option value="Juridiction / Tribunal">{{ 'CONTACT_DIALOG.ROLE_JURISDICTION' | translate }}</option>
               <option value="Client Principal">{{ 'CONTACT_DIALOG.ROLE_MAIN_CLIENT' | translate }}</option>
+              <option value="Notaire">{{ 'CONTACT_DIALOG.ROLE_NOTARY' | translate }}</option>
+              <option value="Commissaire de Justice / Huissier">{{ 'CONTACT_DIALOG.ROLE_BAILIFF' | translate }}</option>
             </select>
           </div>
 
-        </form>
-      </div>
+          <div>
+            <label for="new_contact_profession" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.PROFESSION' | translate }}
+            </label>
+            <input type="text" formControlName="profession" id="new_contact_profession"
+              [placeholder]="'CONTACT_DIALOG.PROFESSION_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+          </div>
+        </div>
 
+        <!-- Entreprise & Toque -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label for="new_contact_company" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.COMPANY' | translate }}
+            </label>
+            <input type="text" formControlName="entreprise" id="new_contact_company"
+              [placeholder]="'CONTACT_DIALOG.COMPANY_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+          </div>
+
+          <div>
+            <label for="new_contact_toque" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.TOQUE_NUMBER' | translate }}
+            </label>
+            <input type="text" formControlName="numToque" id="new_contact_toque"
+              [placeholder]="'CONTACT_DIALOG.TOQUE_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+          </div>
+        </div>
+
+        <!-- Email & Téléphone Mobile -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label for="new_contact_email" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.EMAIL' | translate }} <span class="text-rose-500">*</span>
+            </label>
+            <input type="email" formControlName="email" id="new_contact_email" required
+              [placeholder]="'CONTACT_DIALOG.EMAIL_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"
+              [ngClass]="{'border-rose-300 focus:border-rose-500 focus:ring-rose-500/10': contactForm.get('email')?.touched && contactForm.get('email')?.invalid}">
+          </div>
+
+          <div>
+            <label for="new_contact_phone" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.PHONE_MOBILE' | translate }}
+            </label>
+            <input type="tel" formControlName="telephoneMobile" id="new_contact_phone"
+              [placeholder]="'CONTACT_DIALOG.PHONE_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+          </div>
+        </div>
+
+        <!-- Téléphone Fixe & Site Web -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div>
+            <label for="new_contact_phone_fixe" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.PHONE_FIXE' | translate }}
+            </label>
+            <input type="tel" formControlName="telephoneFixe" id="new_contact_phone_fixe"
+              [placeholder]="'CONTACT_DIALOG.PHONE_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+          </div>
+
+          <div>
+            <label for="new_contact_web" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.WEBSITE' | translate }}
+            </label>
+            <input type="url" formControlName="siteWeb" id="new_contact_web"
+              [placeholder]="'CONTACT_DIALOG.WEBSITE_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+          </div>
+        </div>
+
+        <!-- Adresse & Pays -->
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
+          <div class="sm:col-span-8">
+            <label for="new_contact_adresse" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.ADDRESS' | translate }}
+            </label>
+            <input type="text" formControlName="adresse" id="new_contact_adresse"
+              [placeholder]="'CONTACT_DIALOG.ADDRESS_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+          </div>
+
+          <div class="sm:col-span-4">
+            <label for="new_contact_pays" class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'CONTACT_DIALOG.COUNTRY' | translate }}
+            </label>
+            <input type="text" formControlName="pays" id="new_contact_pays"
+              [placeholder]="'CONTACT_DIALOG.COUNTRY_PLACEHOLDER' | translate"
+              class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+          </div>
+        </div>
+
+        <!-- Observations -->
+        <div>
+          <label for="new_contact_observation" class="block text-xs font-bold text-slate-700 mb-1.5">
+            {{ 'CONTACT_DIALOG.OBSERVATIONS' | translate }}
+          </label>
+          <textarea formControlName="observation" id="new_contact_observation" rows="2"
+            [placeholder]="'CONTACT_DIALOG.OBSERVATIONS_PLACEHOLDER' | translate"
+            class="w-full px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all"></textarea>
+        </div>
+
+      </form>
     </div>
 
-    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3 rounded-b-xl">
+    <!-- Modal Footer -->
+    <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/80 flex items-center justify-end gap-3">
       <button type="button" (click)="closeDialog()"
-        class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
+        class="px-4 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-100 hover:text-slate-900 transition-colors cursor-pointer">
         {{ 'CONTACT_DIALOG.CANCEL' | translate }}
       </button>
-      <button type="submit" form="create-new-contact-form"
-        class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-cyan-600 shadow-md hover:bg-cyan-700 transition duration-150">
-        {{ 'CONTACT_DIALOG.LINK_BUTTON' | translate }}
+      <button type="submit" form="create-new-contact-form" [disabled]="isSubmitting"
+        class="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs shadow-sm hover:shadow transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+        <svg *ngIf="isSubmitting" class="w-3.5 h-3.5 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>{{ (isEditMode ? 'CONTACT_DIALOG.UPDATE_BUTTON' : 'CONTACT_DIALOG.LINK_BUTTON') | translate }}</span>
       </button>
     </div>
 
   </div>
-</div>
+</div>

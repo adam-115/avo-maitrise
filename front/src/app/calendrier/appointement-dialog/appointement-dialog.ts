@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnInit, Output, Input, input } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AppointementService } from '../../services/appointement.service';
@@ -8,10 +8,12 @@ import { Appointement, Client, Dossier } from '../../appTypes';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { ClientSelectionDialog } from '../../dossier/client-selection-dialog/client-selection-dialog';
 import { DossierSelectionDialog } from '../../dossier/dossier-selection-dialog/dossier-selection-dialog';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-appointement-dialog',
-  imports: [CommonModule, ReactiveFormsModule, ClientSelectionDialog, DossierSelectionDialog],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, ClientSelectionDialog, DossierSelectionDialog, TranslatePipe],
   templateUrl: './appointement-dialog.html',
   styleUrl: './appointement-dialog.css'
 })
@@ -38,9 +40,23 @@ export class AppointementDialogComponent implements OnInit {
   showClientDialog = false;
   showDossierDialog = false;
 
+  get isEditMode(): boolean {
+    return !!this.selectedAppointement;
+  }
+
   getDisplayName(client: any): string {
     if (!client) return '';
     return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+  }
+
+  getClientInitials(): string {
+    const name = this.getSelectedClientName();
+    if (!name) return 'CL';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
   }
 
   openClientDialog(): void {
@@ -55,6 +71,14 @@ export class AppointementDialogComponent implements OnInit {
     this.selectedClient = client;
     this.appointementForm.patchValue({ clientId: client.id });
     this.closeClientDialog();
+  }
+
+  removeClient(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.selectedClient = null;
+    this.appointementForm.patchValue({ clientId: null });
   }
 
   getSelectedClientName(): string {
@@ -75,10 +99,17 @@ export class AppointementDialogComponent implements OnInit {
     this.closeDossierDialog();
   }
 
+  removeDossier(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.appointementForm.patchValue({ dossierId: null });
+  }
+
   getSelectedDossierName(): string {
     const dossierId = this.appointementForm.get('dossierId')?.value;
     if (!dossierId) return '';
-    const dossier = this.dossiers.find(d => d.id == dossierId);
+    const dossier = this.dossiers.find(d => String(d.id) === String(dossierId));
     return dossier ? `${dossier.titre} (${dossier.referenceInterne})` : '';
   }
 
@@ -155,7 +186,6 @@ export class AppointementDialogComponent implements OnInit {
         error: (err) => {
           console.error('Failed to update appointement', err);
           this.isLoading = false;
-          // Ideally show an error notification here
         }
       });
     } else {
@@ -172,7 +202,6 @@ export class AppointementDialogComponent implements OnInit {
         error: (err) => {
           console.error('Failed to create appointement', err);
           this.isLoading = false;
-          // Ideally show an error notification here
         }
       });
     }

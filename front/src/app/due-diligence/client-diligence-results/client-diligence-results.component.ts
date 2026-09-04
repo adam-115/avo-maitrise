@@ -5,14 +5,13 @@ import { FormResultService } from '../../services/form-result-service';
 import { ClientService } from '../../services/client-service';
 import { FormConfigService } from '../../services/form-config-service';
 import { NavigationService } from '../../services/navigation-service';
-import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { ClientDiligenceStatusService } from '../../services/client-diligence-status-service';
-import { Client, DiligenceFormResult, FormConfig, ClientDiligenceStatus, ClientStatus } from '../../appTypes';
+import { Client, DiligenceFormResult, FormConfig, ClientDiligenceStatus } from '../../appTypes';
 import { forkJoin, map, switchMap, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alert-service';
 import { AssignFormModalComponent } from '../assign-form-modal/assign-form-modal.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-client-diligence-results',
@@ -20,14 +19,12 @@ import { TranslatePipe } from '@ngx-translate/core';
     imports: [CommonModule, DatePipe, FormsModule, AssignFormModalComponent, TranslatePipe],
     templateUrl: './client-diligence-results.component.html',
     styles: [`
-        @keyframes blink-red {
-            0% { border-color: rgba(244, 63, 94, 0.2); box-shadow: 0 0 0 rgba(244, 63, 94, 0); }
-            50% { border-color: rgba(244, 63, 94, 1); box-shadow: 0 0 15px rgba(244, 63, 94, 0.3); }
-            100% { border-color: rgba(244, 63, 94, 0.2); box-shadow: 0 0 0 rgba(244, 63, 94, 0); }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.85; transform: scale(0.98); }
         }
-        .blink-red-border {
-            animation: blink-red 2s infinite ease-in-out;
-            border-width: 2px !important;
+        .pulse-subtle {
+            animation: pulse-subtle 3s infinite ease-in-out;
         }
     `]
 })
@@ -41,11 +38,6 @@ export class ClientDiligenceResultsComponent implements OnInit {
     showAssignDialog = false;
     downloadingPdf = false;
 
-    getDisplayName(client: any): string {
-        if (!client) return '';
-        return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
-    }
-
     private route = inject(ActivatedRoute);
     private formResultService = inject(FormResultService);
     private clientService = inject(ClientService);
@@ -53,6 +45,7 @@ export class ClientDiligenceResultsComponent implements OnInit {
     private navigationService = inject(NavigationService);
     private statusService = inject(ClientDiligenceStatusService);
     private alertService = inject(AlertService);
+    private translate = inject(TranslateService);
 
     ngOnInit(): void {
         this.route.paramMap.subscribe(params => {
@@ -112,8 +105,54 @@ export class ClientDiligenceResultsComponent implements OnInit {
     private loadAvailableForms(clientType: string) {
         this.formConfigService.findAll(0, 100, undefined, { targetClientType: clientType }).subscribe(data => {
             this.availableForms = data.content;
-            console.log("available forms for type " + clientType, this.availableForms);
         });
+    }
+
+    get pendingAssignments(): ClientDiligenceStatus[] {
+        return this.assignments.filter(a => a.status === 'PENDING' && a.enabled !== false);
+    }
+
+    get totalCount(): number {
+        return this.pendingAssignments.length + this.results.length;
+    }
+
+    get pendingCount(): number {
+        return this.pendingAssignments.length;
+    }
+
+    get submittedCount(): number {
+        return this.results.length;
+    }
+
+    get complianceRate(): number {
+        const total = this.totalCount;
+        if (total === 0) return 100;
+        return Math.round((this.submittedCount / total) * 100);
+    }
+
+    getDisplayName(client: any): string {
+        if (!client) return '';
+        return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+    }
+
+    isCompany(client: any): boolean {
+        if (!client) return false;
+        return client.type === 'PERSONNE_MORALE' || client.type === 'COMPANY' || !!client.nomCommercial;
+    }
+
+    getClientTypeKey(client: any): string {
+        return this.isCompany(client) ? 'CLIENT_DILIGENCE_RESULTS.TYPE_COMPANY' : 'CLIENT_DILIGENCE_RESULTS.TYPE_INDIVIDUAL';
+    }
+
+    getInitials(client: any): string {
+        if (!client) return 'CL';
+        const name = this.getDisplayName(client);
+        if (!name) return 'CL';
+        const parts = name.trim().split(/\s+/);
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.slice(0, 2).toUpperCase();
     }
 
     getFormTitle(configId: string): string {
@@ -152,13 +191,12 @@ export class ClientDiligenceResultsComponent implements OnInit {
             formConfigId: assignmentData.formId,
             uboId: assignmentData.uboId,
             status: 'PENDING', 
-            enabled:true
+            enabled: true
         };
 
         this.statusService.create(newAssignment).subscribe({
             next: (assignment) => {
                 this.assignments.push(assignment);
-                // Also fetch the config if not already loaded
                 if (!this.formConfigs.has(String(assignment.formConfigId))) {
                     this.formConfigService.findById(String(assignment.formConfigId)).subscribe(config => {
                         this.formConfigs.set(String(config.id!), config);
@@ -174,18 +212,23 @@ export class ClientDiligenceResultsComponent implements OnInit {
         });
     }
 
-    deleteAssignment(id: string) {
+    async deleteAssignment(id: string, event?: Event) {
+        if (event) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
         if (!id) return;
         
-        if (confirm('Êtes-vous sûr de vouloir supprimer cette assignation ?')) {
+        const title = this.translate.instant('CLIENT_DILIGENCE_RESULTS.CONFIRM_DELETE_TITLE') || 'Supprimer l\'assignation';
+        const msg = this.translate.instant('CLIENT_DILIGENCE_RESULTS.CONFIRM_DELETE_MSG') || 'Êtes-vous sûr de vouloir supprimer cette assignation ?';
+        
+        const confirmed = await this.alertService.confirmMessage(title, msg, 'warning');
+        if (confirmed) {
             this.statusService.delete(id).subscribe({
                 next: () => {
-                    // Update local state - soft delete means it might still be in the list but disabled
-                    // but usually we want to remove it from the "Actions Requises" view.
                     const index = this.assignments.findIndex(a => a.id === id);
                     if (index !== -1) {
                         this.assignments[index].enabled = false;
-                        // For immediate feedback in the "Actions Requises" grid
                         this.assignments = [...this.assignments];
                     }
                     this.alertService.displayMessage('Succès', 'Assignation supprimée', 'success');
@@ -224,4 +267,3 @@ export class ClientDiligenceResultsComponent implements OnInit {
         });
     }
 }
-

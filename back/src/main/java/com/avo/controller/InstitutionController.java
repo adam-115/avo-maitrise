@@ -41,8 +41,11 @@ public class InstitutionController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<InstitutionDTO> update(@RequestBody InstitutionDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<InstitutionDTO> update(@PathVariable(required = false) Long id, @RequestBody InstitutionDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

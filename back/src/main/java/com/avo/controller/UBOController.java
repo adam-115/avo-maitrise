@@ -54,8 +54,11 @@ public class UBOController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<UBODTO> update(@RequestBody UBODTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<UBODTO> update(@PathVariable(required = false) Long id, @RequestBody UBODTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

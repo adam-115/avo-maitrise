@@ -1,154 +1,223 @@
-<div class="space-y-10 py-8 animate-fade-in">
-    <!-- Action Header -->
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white/60 backdrop-blur-xl p-8 rounded-[2.5rem] border-2 border-white shadow-[0_8px_32px_rgba(0,0,0,0.04)]">
-        <div>
-            <h2 class="text-3xl font-black text-slate-900 tracking-tight mb-2 flex items-center gap-3">
-                {{ 'NOTE_COMPONENT.TITLE' | translate }}
-                <span class="bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full text-sm font-black">{{ notes.length }}</span>
-            </h2>
-            <p class="text-slate-500 font-medium">{{ 'NOTE_COMPONENT.SUBTITLE' | translate }}</p>
-        </div>
+<div class="space-y-6 font-sans">
 
-        <div class="flex items-center gap-4 w-full lg:w-auto">
-            <div class="relative flex-1 lg:w-72 group">
-                <input type="text" [placeholder]="'NOTE_COMPONENT.SEARCH_PLACEHOLDER' | translate" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()"
-                    class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border-2 border-transparent focus:border-cyan-400 focus:bg-white rounded-2xl outline-none transition-all font-semibold text-slate-700 placeholder:text-slate-400 shadow-inner">
-                <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-cyan-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                </svg>
-            </div>
-            
-            <button (click)="openNoteCreationModal()"
-                class="flex items-center gap-2 px-8 py-4 bg-gradient-to-br from-cyan-600 to-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-cyan-200/50 hover:shadow-cyan-300/60 hover:-translate-y-1 active:translate-y-0 transition-all duration-300">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span class="hidden sm:inline">{{ 'NOTE_COMPONENT.NEW_NOTE' | translate }}</span>
-            </button>
+  <!-- Action Header Card -->
+  <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <h2 class="text-xl font-bold text-slate-900">{{ 'NOTE.TITLE' | translate }}</h2>
+          <span class="px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-black border border-indigo-100">
+            {{ notes.length }}
+          </span>
         </div>
+        <p class="text-xs text-slate-500 font-medium mt-1">{{ 'NOTE.SUBTITLE' | translate }}</p>
+      </div>
+
+      <button type="button" (click)="openNoteCreationModal()"
+        class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow transition-all flex-shrink-0 cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>{{ 'NOTE.NEW_NOTE' | translate }}</span>
+      </button>
     </div>
+  </div>
+
+  <!-- Filters Toolbar -->
+  <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      
+      <!-- Search Input -->
+      <div class="relative flex-1 min-w-[220px]">
+        <svg class="absolute start-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onFilterChange()"
+          [placeholder]="'NOTE.SEARCH_PLACEHOLDER' | translate"
+          class="w-full ps-10 pe-9 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+        <button *ngIf="searchTerm" (click)="searchTerm = ''; onFilterChange()"
+          class="absolute end-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-md cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="flex items-center gap-2.5">
+        <select [(ngModel)]="selectedCategoryId" (ngModelChange)="onFilterChange()"
+          class="px-3 py-2 rounded-xl bg-slate-50/80 border border-slate-200 text-xs font-bold text-slate-700 focus:bg-white focus:outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer">
+          <option value="">{{ 'NOTE.ALL_CATEGORIES' | translate }}</option>
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.label }}</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex flex-col items-center justify-center py-16 bg-white rounded-2xl border border-slate-200 shadow-sm">
+    <div class="w-9 h-9 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-3"></div>
+    <p class="text-xs font-bold text-slate-500">{{ 'DOSSIER_FORM.LOADING_FORM' | translate }}</p>
+  </div>
+
+  <!-- Notes Content (When Not Loading) -->
+  <div *ngIf="!isLoading">
 
     <!-- Notes Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        @for (note of paginatedNotes; track note.id) {
-            <div class="group relative bg-white border-2 border-slate-100 rounded-[3rem] p-9 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.08)] hover:border-cyan-200 hover:-translate-y-3 transition-all duration-500 flex flex-col min-h-[360px] overflow-hidden">
-                
-                <!-- Category Accent Line -->
-                <div [style.backgroundColor]="getCategoryColor(note.categoryId)" 
-                    class="absolute top-0 left-12 w-16 h-1.5 rounded-b-full opacity-60"></div>
+    <div *ngIf="paginatedNotes.length > 0" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      <div *ngFor="let note of paginatedNotes; let i = index; trackBy: trackByNoteId"
+        class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:border-indigo-300 transition-all flex flex-col justify-between group relative overflow-hidden">
 
-                <!-- Card Header: Category & Actions -->
-                <div class="flex justify-between items-center mb-8">
-                    <span [style.color]="getCategoryColor(note.categoryId)" 
-                        [style.backgroundColor]="getCategoryColor(note.categoryId) + '20'"
-                        class="px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border border-current/20 backdrop-blur-sm">
-                        {{ getCategoryName(note.categoryId) }}
-                    </span>
-                    
-                    <div class="flex items-center gap-1 lg:opacity-0 lg:group-hover:opacity-100 transition-all duration-300 lg:translate-x-4 lg:group-hover:translate-x-0">
-                        <button (click)="editNote(note)" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded-xl transition-all" [title]="'NOTE_COMPONENT.EDIT' | translate">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
-                            </svg>
-                        </button>
-                        <button (click)="deleteNote(note.id)" class="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all" [title]="'NOTE_COMPONENT.DELETE' | translate">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+        <!-- Top Accent Bar -->
+        <div [style.backgroundColor]="getCategoryColor(note.categoryId)" 
+          class="absolute top-0 start-0 w-full h-1"></div>
 
-                <!-- Title & Content -->
-                <div class="flex-1 mb-10">
-                    <h3 class="text-2xl font-black text-slate-800 leading-[1.3] mb-5 group-hover:text-cyan-700 transition-colors line-clamp-2">
-                        {{ note.title }}
-                    </h3>
-                    <p class="text-slate-500 font-medium leading-relaxed line-clamp-5 text-[15px]">
-                        {{ note.description }}
-                    </p>
-                </div>
-
-                <!-- Footer: Author & Meta -->
-                <div class="pt-8 border-t-2 border-slate-50 flex items-center justify-between mt-auto">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 border-2 border-white shadow-sm flex items-center justify-center text-slate-500 text-xs font-black ring-4 ring-slate-50">
-                            {{ note.auteurId ? 'JD' : 'M' }}
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-sm font-black text-slate-800">Maître J. Dupont</span>
-                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">{{ note.createdAt | date:'dd MMM yyyy' }}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-cyan-50 group-hover:text-cyan-500 transition-all duration-300">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        } @empty {
-            <div class="col-span-full py-28 bg-slate-50/50 rounded-[4rem] border-4 border-dashed border-slate-200 flex flex-col items-center justify-center text-center">
-                <div class="w-32 h-32 bg-white rounded-full shadow-xl flex items-center justify-center mb-8 animate-bounce-slow">
-                    <svg class="w-14 h-14 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                </div>
-                <h3 class="text-3xl font-black text-slate-800 mb-3">{{ 'NOTE_COMPONENT.NO_NOTE_TITLE' | translate }}</h3>
-                <p class="text-slate-400 font-bold max-w-sm leading-relaxed">{{ 'NOTE_COMPONENT.NO_NOTE_DESC' | translate }}</p>
-                <button (click)="openNoteCreationModal()" 
-                    class="mt-10 px-10 py-4 bg-white border-2 border-slate-200 rounded-[2rem] text-slate-700 font-black hover:border-cyan-500 hover:text-cyan-600 hover:shadow-xl transition-all group">
-                    <span class="flex items-center gap-3">
-                        <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
-                        </svg>
-                        {{ 'NOTE_COMPONENT.WRITE_FIRST_NOTE' | translate }}
-                    </span>
-                </button>
-            </div>
-        }
-    </div>
-
-    <!-- Pagination -->
-    <div class="mt-8 flex flex-col sm:flex-row justify-between items-center gap-4 bg-white/60 backdrop-blur-xl p-8 rounded-[2.5rem] border-2 border-white shadow-[0_8px_32px_rgba(0,0,0,0.04)]" *ngIf="filteredNotes.length > 0">
-        <div class="text-sm text-slate-500 order-2 sm:order-1 font-medium font-sans">
-            {{ 'NOTE_COMPONENT.SHOWING' | translate }} <b>{{ filteredNotes.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</b> {{ 'NOTE_COMPONENT.TO' | translate }} 
-            <b>{{ currentEndIndex }}</b> {{ 'NOTE_COMPONENT.OUT_OF' | translate }} 
-            <b>{{ filteredNotes.length }}</b> {{ 'NOTE_COMPONENT.NOTES' | translate }}.
-        </div>
-        
-        <div class="flex items-center space-x-2 order-1 sm:order-2" *ngIf="totalPages > 1">
-            <button (click)="prevPage()" [disabled]="currentPage === 1"
-                class="inline-flex items-center justify-center p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 shadow-sm">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                </svg>
-            </button>
-            
-            <span class="text-sm font-bold text-slate-700 px-3 font-sans">
-                {{ 'NOTE_COMPONENT.PAGE' | translate }} <span class="text-cyan-600 font-extrabold">{{ currentPage }}</span> {{ 'NOTE_COMPONENT.OUT_OF' | translate }} {{ totalPages }}
+        <div>
+          <!-- Card Header: Category & Action Buttons -->
+          <div class="flex items-center justify-between gap-2 mb-3.5 pt-1">
+            <span [style.color]="getCategoryColor(note.categoryId)" 
+              [style.backgroundColor]="getCategoryColor(note.categoryId) + '15'"
+              [style.borderColor]="getCategoryColor(note.categoryId) + '30'"
+              class="px-2.5 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider inline-flex items-center gap-1.5 border shadow-2xs">
+              {{ getCategoryName(note.categoryId) }}
             </span>
-            
-            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                class="inline-flex items-center justify-center p-2.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition duration-150 shadow-sm">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+
+            <div class="flex items-center gap-1">
+              <button type="button" (click)="editNote(note)"
+                class="p-1.5 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-200 text-slate-600 hover:text-indigo-600 transition-colors shadow-2xs cursor-pointer"
+                [title]="'NOTE.EDIT' | translate">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                 </svg>
-            </button>
+              </button>
+
+              <button type="button" (click)="deleteNote(note.id)"
+                class="p-1.5 rounded-xl border border-slate-200 bg-white hover:bg-rose-50 hover:border-rose-200 text-slate-600 hover:text-rose-600 transition-colors shadow-2xs cursor-pointer"
+                [title]="'NOTE.DELETE' | translate">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Title & Content -->
+          <div class="space-y-2 mb-4">
+            <h3 class="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors leading-snug line-clamp-2">
+              {{ note.title }}
+            </h3>
+            <p class="text-xs text-slate-500 font-medium leading-relaxed line-clamp-4 whitespace-pre-line">
+              {{ note.description }}
+            </p>
+          </div>
         </div>
+
+        <!-- Card Footer: Author & Date -->
+        <div class="pt-3 mt-auto border-t border-slate-100 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white text-[10px] font-bold flex items-center justify-center shadow-2xs flex-shrink-0">
+              {{ getAuthorInitials(note.auteurId) }}
+            </div>
+            <div class="flex flex-col min-w-0">
+              <span class="text-xs font-bold text-slate-800 truncate max-w-[130px]">{{ getAuthorName(note.auteurId) }}</span>
+              <span class="text-[10px] font-semibold text-slate-400">{{ note.createdAt | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+
+          <button type="button" (click)="editNote(note)"
+            class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1 cursor-pointer">
+            <span>{{ 'NOTE.EDIT' | translate }}</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+      </div>
     </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredNotes.length === 0"
+      class="flex flex-col items-center justify-center py-16 px-4 bg-white rounded-2xl border border-dashed border-slate-200 text-center">
+      <div class="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mb-4 shadow-sm">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+      </div>
+
+      <h3 class="text-base font-bold text-slate-900 mb-1">
+        {{ 'NOTE.NO_NOTES_FOUND' | translate }}
+      </h3>
+      <p class="text-xs font-medium text-slate-500 max-w-md mb-5">
+        {{ 'NOTE.MODIFY_FILTERS' | translate }}
+      </p>
+
+      <div class="flex items-center gap-3">
+        <button *ngIf="!searchTerm && !selectedCategoryId" type="button" (click)="openNoteCreationModal()"
+          class="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl shadow-sm hover:shadow transition-all cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>{{ 'NOTE.NEW_NOTE' | translate }}</span>
+        </button>
+
+        <button *ngIf="searchTerm || selectedCategoryId" type="button" (click)="searchTerm = ''; selectedCategoryId = ''; onFilterChange()"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer">
+          <span>{{ 'NOTE.RESET_FILTERS' | translate }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pagination Bar -->
+    <div *ngIf="filteredNotes.length > 0"
+      class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 px-2">
+      
+      <div class="text-xs font-bold text-slate-500 order-2 sm:order-1">
+        {{ 'MATTER_ACTIVITY.SHOWING' | translate }} <strong class="text-slate-800">{{ filteredNotes.length > 0 ? (currentPage - 1) * pageSize + 1 : 0 }}</strong> {{ 'MATTER_ACTIVITY.TO_LOWER' | translate }} 
+        <strong class="text-slate-800">{{ currentEndIndex }}</strong> {{ 'MATTER_ACTIVITY.OUT_OF' | translate }} 
+        <strong class="text-slate-800">{{ filteredNotes.length }}</strong> {{ 'NOTE.TOTAL_NOTES' | translate }}
+      </div>
+      
+      <div class="flex items-center gap-2 order-1 sm:order-2" *ngIf="totalPages > 1">
+        <button (click)="prevPage()" [disabled]="currentPage === 1"
+          class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs transition-all cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+          </svg>
+          <span>{{ 'MATTER_ACTIVITY.PREV' | translate }}</span>
+        </button>
+        
+        <div class="flex items-center gap-1">
+          <button *ngFor="let page of getPageArray()"
+            (click)="setPage(page)"
+            [ngClass]="page === currentPage ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'"
+            class="w-7 h-7 flex items-center justify-center rounded-lg text-xs font-bold transition-all cursor-pointer">
+            {{ page }}
+          </button>
+        </div>
+
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+          class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed shadow-2xs transition-all cursor-pointer">
+          <span>{{ 'MATTER_ACTIVITY.NEXT' | translate }}</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
 
-@if (showNoteDialog) {
-<app-note-dialog 
-    [dossierId]="dossierID" 
-    [auteurId]="userId" 
-    [noteToEdit]="selectedNote"
-    (noteCreated)="addNote($event)" 
-    (noteUpdated)="updateNote($event)" 
-    (closeModalEvent)="closeNoteCreationModal()">
+<!-- Note Dialog Modal -->
+<app-note-dialog *ngIf="showNoteDialog"
+  [dossierId]="activeDossierId"
+  [auteurId]="userId"
+  [categories]="categories"
+  [noteToEdit]="selectedNote"
+  (closeDialog)="closeNoteCreationModal()"
+  (saveNote)="handleSaveNote($event)">
 </app-note-dialog>
-}

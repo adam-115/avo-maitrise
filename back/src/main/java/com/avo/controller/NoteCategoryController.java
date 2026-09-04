@@ -40,8 +40,11 @@ public class NoteCategoryController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<NoteCategoryDTO> update(@RequestBody NoteCategoryDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<NoteCategoryDTO> update(@PathVariable(required = false) Long id, @RequestBody NoteCategoryDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

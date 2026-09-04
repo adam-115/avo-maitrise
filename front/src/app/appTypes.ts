@@ -432,11 +432,6 @@ export interface Dossier {
   dateCloture?: Date;
   updated_at: Date;
 
-  // Données Financières (Optionnel)
-  budgetEstime?: number;
-  tauxHoraireApplique?: number;
-  methodeFacturation: 'HORAIRE' | 'FORFAIT' | 'RESULTAT';
-
   // Métadonnées
   tags?: string[];             // Pour la recherche rapide
 }
@@ -464,27 +459,28 @@ export interface TaskStatus {
 }
 
 export interface Task {
-  id?: number ;
+  id?: number;
   dossierId: number;
   titre: string;
   description?: string;
 
-  // Relations par objets
-  category: TaskCategory;
-  status: TaskStatus;
+  // Relations par objets ou IDs
+  category?: TaskCategory;
+  status?: TaskStatus;
+  categoryId?: number | string;
+  statusId?: number | string;
 
   priorite: 'BASSE' | 'NORMALE' | 'HAUTE' | 'URGENTE';
   assignees?: User[];
-  dateEcheance: Date;
+  dateEcheance: Date | string;
   isCompleted: boolean;
-  createdAt: Date;
+  createdAt: Date | string;
   createdBy?: User;
 
   // Facturation
   invoiceId?: string;
 
   estimatedTimeMinutes?: number;
-
 }
 
 export interface TaskLog {
@@ -510,19 +506,19 @@ export interface NoteCategory {
 export interface Note {
   id?: number;
   dossierId: number | string;  // Le dossier auquel la note est liée
-  auteurId: number | string;   // L'utilisateur (avocat/collaborateur) qui a écrit la note        // Pour l'affichage rapide (ex: "Me. Dupont")
+  auteurId: number | string;   // L'utilisateur (avocat/collaborateur) qui a écrit la note
 
   title: string;
-  description: string;             // Le corps de la note (peut supporter du Markdown)
+  description: string;         // Le corps de la note
 
   categoryId: string | number;
 
   // Temporalité
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt?: Date | string;
 
   // Pièces jointes (optionnel)
-  attachmentIds?: string[];    // Si la note est liée à des documents spécifiques
+  attachmentIds?: string[];
 }
 
 export enum ContactRole {

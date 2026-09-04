@@ -40,8 +40,11 @@ public class AppointementController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<AppointementDTO> update(@RequestBody AppointementDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<AppointementDTO> update(@PathVariable(required = false) Long id, @RequestBody AppointementDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

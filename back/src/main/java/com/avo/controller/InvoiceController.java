@@ -49,8 +49,11 @@ public class InvoiceController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<InvoiceDTO> update(@RequestBody InvoiceDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<InvoiceDTO> update(@PathVariable(required = false) Long id, @RequestBody InvoiceDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

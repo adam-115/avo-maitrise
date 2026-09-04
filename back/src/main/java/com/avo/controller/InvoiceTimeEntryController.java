@@ -46,8 +46,11 @@ public class InvoiceTimeEntryController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<InvoiceTimeEntryDTO> update(@RequestBody InvoiceTimeEntryDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<InvoiceTimeEntryDTO> update(@PathVariable(required = false) Long id, @RequestBody InvoiceTimeEntryDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

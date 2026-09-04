@@ -158,12 +158,6 @@ export class DossierInfo implements OnInit, OnChanges {
         return initials || '?';
     }
 
-    getBillingInfo(dossier: Dossier): string {
-        const method = dossier.methodeFacturation || 'Non défini';
-        const rate = dossier.tauxHoraireApplique ? ` (${dossier.tauxHoraireApplique} €/h)` : '';
-        return `${method}${rate}`;
-    }
-
     getActivityColor(type: string): string {
         switch (type) {
             case 'Tâche': return 'bg-blue-500';

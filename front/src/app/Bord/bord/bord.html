@@ -228,7 +228,7 @@
                                     </div>
                                 </div>
                                 <span class="px-2.5 py-1 bg-slate-100 text-slate-600 font-black text-[10px] uppercase tracking-wider rounded-xl">
-                                    {{ task.category.libelle || 'Dossier' }}
+                                    {{ task.category?.libelle || 'Dossier' }}
                                 </span>
                             </div>
                         } @empty {

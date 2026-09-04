@@ -40,8 +40,11 @@ public class DossierPrioriteController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<DossierPrioriteDTO> update(@RequestBody DossierPrioriteDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<DossierPrioriteDTO> update(@PathVariable(required = false) Long id, @RequestBody DossierPrioriteDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

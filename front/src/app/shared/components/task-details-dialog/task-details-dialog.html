@@ -27,11 +27,11 @@
                             <span
                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-sm"
                                 [ngClass]="{
-                                    'bg-green-50 text-green-700 border-green-100': task.status.code === 'TERMINE' || statusLabel.toLowerCase().includes('terminé'),
-                                    'bg-blue-50 text-blue-700 border-blue-100': task.status.code === 'EN_COURS' || statusLabel.toLowerCase().includes('cours'),
-                                    'bg-gray-50 text-gray-700 border-gray-100': task.status.code !== 'TERMINE' && task.status.code !== 'EN_COURS' && !statusLabel.toLowerCase().includes('terminé') && !statusLabel.toLowerCase().includes('cours')
+                                    'bg-green-50 text-green-700 border-green-100': task.status?.code === 'TERMINE' || statusLabel.toLowerCase().includes('terminé'),
+                                    'bg-blue-50 text-blue-700 border-blue-100': task.status?.code === 'EN_COURS' || statusLabel.toLowerCase().includes('cours'),
+                                    'bg-gray-50 text-gray-700 border-gray-100': task.status?.code !== 'TERMINE' && task.status?.code !== 'EN_COURS' && !statusLabel.toLowerCase().includes('terminé') && !statusLabel.toLowerCase().includes('cours')
                                 }" class="px-3 py-1 rounded-lg text-xs font-bold border shadow-sm">
-                                {{ statusLabel || task.status.libelle }}
+                                {{ statusLabel || task.status?.libelle }}
                             </span>
                         </div>
                         <div><strong class="text-gray-700">Priorité :</strong> <span class="text-gray-600">{{

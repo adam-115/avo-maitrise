@@ -17,7 +17,7 @@ import { ClientStatusAlertComponent } from '../../shared/components/client-statu
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { forkJoin } from 'rxjs';
 import { AlertService } from '../../services/alert-service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dossier-form',
@@ -37,6 +37,7 @@ export class DossierForm implements OnInit {
   private userService = inject(UserService);
   private domaineService = inject(DomaineJuridiqueService);
   private alertService = inject(AlertService);
+  private translate = inject(TranslateService);
 
   dossierForm: FormGroup;
   isEditMode = false;
@@ -67,9 +68,6 @@ export class DossierForm implements OnInit {
       prioriteID: ['', Validators.required],
       statutID: ['', Validators.required],
       dateOuverture: [new Date().toISOString().substring(0, 10), Validators.required],
-      methodeFacturation: ['HORAIRE', Validators.required],
-      budgetEstime: [0],
-      tauxHoraireApplique: [0],
       tags: [[]],
       documents: [[]]
     });
@@ -299,11 +297,28 @@ export class DossierForm implements OnInit {
     this.closeDocumentDialog();
   }
 
-  removeDocument(index: number): void {
-    const currentDocs = this.documents;
-    this.dossierForm.patchValue({
-      documents: currentDocs.filter((_, i) => i !== index)
-    });
+  async removeDocument(index: number): Promise<void> {
+    const doc = this.documents[index];
+    const docTitle = doc?.title || doc?.name || doc?.nomFichier || '';
+
+    const title = this.translate.instant('DOSSIER_FORM.CONFIRM_REMOVE_DOC_TITLE');
+    const msg = docTitle
+      ? `${this.translate.instant('DOSSIER_FORM.CONFIRM_REMOVE_DOC_MSG')} (${docTitle})`
+      : this.translate.instant('DOSSIER_FORM.CONFIRM_REMOVE_DOC_MSG');
+
+    const confirmed = await this.alertService.confirmMessage(
+      title,
+      msg,
+      'warning'
+    );
+
+    if (confirmed) {
+      const currentDocs = this.documents;
+      this.dossierForm.patchValue({
+        documents: currentDocs.filter((_, i) => i !== index)
+      });
+      this.alertService.success(this.translate.instant('DOSSIER_FORM.DOC_REMOVED_SUCCESS'));
+    }
   }
 
   async onSubmit(): Promise<void> {

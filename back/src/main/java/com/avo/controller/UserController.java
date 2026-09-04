@@ -40,8 +40,11 @@ public class UserController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<UserDTO> update(@RequestBody UserDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<UserDTO> update(@PathVariable(required = false) Long id, @RequestBody UserDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

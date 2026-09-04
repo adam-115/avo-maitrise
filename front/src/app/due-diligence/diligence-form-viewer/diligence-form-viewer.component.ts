@@ -22,11 +22,8 @@ export class DiligenceFormViewerComponent implements OnInit {
     selectedClient: Client | null = null;
     targetUboId: number | undefined = undefined;
     selectedFileNames: { [fieldId: string]: string } = {};
-
-    getDisplayName(client: any): string {
-        if (!client) return '';
-        return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
-    }
+    selectedFileSizes: { [fieldId: string]: string } = {};
+    isSubmitting = false;
 
     private route = inject(ActivatedRoute);
     private fb = inject(FormBuilder);
@@ -92,7 +89,7 @@ export class DiligenceFormViewerComponent implements OnInit {
     private createFormControl(field: FieldConfig) {
         if (!field.id) return;
 
-        // case text or textarea
+        // case text or textarea or number
         if (field.type === 'text' || field.type === 'textarea' || field.type === 'number') {
             const control = field.required
                 ? this.fb.control('', Validators.required)
@@ -136,6 +133,9 @@ export class DiligenceFormViewerComponent implements OnInit {
         const file = event.target.files[0];
         if (file) {
             this.selectedFileNames[fieldId] = file.name;
+            const kb = file.size / 1024;
+            this.selectedFileSizes[fieldId] = kb >= 1024 ? `${(kb / 1024).toFixed(1)} Mo` : `${Math.round(kb)} Ko`;
+
             const reader = new FileReader();
             reader.onload = () => {
                 const payload = JSON.stringify({
@@ -153,8 +153,90 @@ export class DiligenceFormViewerComponent implements OnInit {
         }
     }
 
+    removeFile(fieldId: string, event?: Event) {
+        if (event) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+        delete this.selectedFileNames[fieldId];
+        delete this.selectedFileSizes[fieldId];
+        this.diligenceForm.patchValue({
+            [fieldId]: null
+        });
+        this.diligenceForm.get(fieldId)?.markAsTouched();
+    }
+
     getSelectedFileName(fieldId: string): string | null {
         return this.selectedFileNames[fieldId] || null;
+    }
+
+    getSelectedFileSize(fieldId: string): string | null {
+        return this.selectedFileSizes[fieldId] || null;
+    }
+
+    getSelectedFileExt(fieldId: string): string {
+        const name = this.selectedFileNames[fieldId];
+        return name ? (name.split('.').pop()?.toUpperCase() || 'FILE') : 'FILE';
+    }
+
+    getDisplayName(client: any): string {
+        if (!client) return '';
+        return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+    }
+
+    isCompany(client: any): boolean {
+        if (!client) return false;
+        return client.type === 'PERSONNE_MORALE' || client.type === 'COMPANY' || !!client.nomCommercial;
+    }
+
+    getClientTypeKey(client: any): string {
+        return this.isCompany(client) ? 'FORM_VIEWER.TYPE_COMPANY' : 'FORM_VIEWER.TYPE_INDIVIDUAL';
+    }
+
+    getInitials(client: any): string {
+        if (!client) return 'CL';
+        const name = this.getDisplayName(client);
+        if (!name) return 'CL';
+        const parts = name.trim().split(/\s+/);
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return name.slice(0, 2).toUpperCase();
+    }
+
+    getTotalFieldsCount(): number {
+        return this.formConfig?.fields?.length || 0;
+    }
+
+    getFilledFieldsCount(): number {
+        if (!this.formConfig?.fields) return 0;
+        let count = 0;
+        this.formConfig.fields.forEach(field => {
+            if (field.type === 'checkbox') {
+                const anyChecked = (field.options || []).some(opt => this.diligenceForm.get(opt.id!)?.value === true);
+                if (anyChecked) count++;
+            } else if (field.id) {
+                const val = this.diligenceForm.get(field.id)?.value;
+                if (val !== null && val !== undefined && String(val).trim() !== '') {
+                    count++;
+                }
+            }
+        });
+        return count;
+    }
+
+    getCompletionPercentage(): number {
+        const total = this.getTotalFieldsCount();
+        if (total === 0) return 0;
+        return Math.round((this.getFilledFieldsCount() / total) * 100);
+    }
+
+    goBack() {
+        if (this.selectedClient) {
+            this.navigationService.navigateToClientDiligenceResults(String(this.selectedClient.id!));
+        } else {
+            this.navigationService.navigateToClients();
+        }
     }
 
     onSubmit() {
@@ -164,6 +246,7 @@ export class DiligenceFormViewerComponent implements OnInit {
             return;
         }
 
+        this.isSubmitting = true;
         const fieldResults: FieldResult[] = this.mapToFieldResults();
 
         const result: DiligenceFormResult = {
@@ -177,6 +260,7 @@ export class DiligenceFormViewerComponent implements OnInit {
 
         this.formResultService.create(result).subscribe({
             next: (createdResult) => {
+                this.isSubmitting = false;
                 this.alertService.displayMessage('Succès', 'Formulaire soumis avec succès', 'success');
                 if (this.selectedClient) {
                     this.navigationService.navigateToClientDiligenceResults(String(this.selectedClient.id!));
@@ -184,6 +268,7 @@ export class DiligenceFormViewerComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Error saving result', err);
+                this.isSubmitting = false;
                 this.alertService.displayMessage('Erreur', 'Erreur lors de l\'enregistrement', 'error');
             }
         });

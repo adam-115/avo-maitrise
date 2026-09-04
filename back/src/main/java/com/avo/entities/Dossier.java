@@ -60,11 +60,6 @@ public class Dossier {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    private Double budgetEstime;
-    private Double tauxHoraireApplique;
-
-    private String methodeFacturation;
-
     public Dossier() {}
 
     public Long getId() { return id; }
@@ -108,15 +103,6 @@ public class Dossier {
 
     public Date getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
-
-    public Double getBudgetEstime() { return budgetEstime; }
-    public void setBudgetEstime(Double budgetEstime) { this.budgetEstime = budgetEstime; }
-
-    public Double getTauxHoraireApplique() { return tauxHoraireApplique; }
-    public void setTauxHoraireApplique(Double tauxHoraireApplique) { this.tauxHoraireApplique = tauxHoraireApplique; }
-
-    public String getMethodeFacturation() { return methodeFacturation; }
-    public void setMethodeFacturation(String methodeFacturation) { this.methodeFacturation = methodeFacturation; }
 
     @PrePersist
     protected void onCreate() {

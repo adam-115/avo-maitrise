@@ -46,8 +46,11 @@ public class TaskController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<TaskDTO> update(@RequestBody TaskDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<TaskDTO> update(@PathVariable(required = false) Long id, @RequestBody TaskDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

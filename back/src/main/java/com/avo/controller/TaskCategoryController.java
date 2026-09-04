@@ -40,8 +40,11 @@ public class TaskCategoryController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<TaskCategoryDTO> update(@RequestBody TaskCategoryDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<TaskCategoryDTO> update(@PathVariable(required = false) Long id, @RequestBody TaskCategoryDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

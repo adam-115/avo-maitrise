@@ -41,8 +41,11 @@ public class DocumentController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<DocumentDTO> update(@RequestBody DocumentDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<DocumentDTO> update(@PathVariable(required = false) Long id, @RequestBody DocumentDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

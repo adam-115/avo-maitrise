@@ -41,8 +41,11 @@ public class PersonnePhysiqueController {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<ClientPersonnePhysiqueDTO> update(@RequestBody ClientPersonnePhysiqueDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<ClientPersonnePhysiqueDTO> update(@PathVariable(required = false) Long id, @RequestBody ClientPersonnePhysiqueDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 
