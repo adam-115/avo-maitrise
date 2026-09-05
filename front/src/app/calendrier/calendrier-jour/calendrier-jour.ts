@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Appointement } from '../../appTypes';
 import { AppointementService } from '../../services/appointement.service';
@@ -10,20 +10,20 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
 
 @Component({
   selector: 'app-calendrier-jour',
+  standalone: true,
   imports: [CommonModule, FormsModule, AppointementDialogComponent, TranslatePipe],
   templateUrl: './calendrier-jour.html',
   styleUrl: './calendrier-jour.css'
 })
-export class CalendrierJour {
+export class CalendrierJour implements OnInit {
 
-  // Propriété pour sélectionner la date affichée. Initialisée à la date du jour.
   @Input() date: Date = new Date();
 
   showAppointementDialog = false;
   selectedTime = '';
   selectedDateStr = '';
 
-  // Paramètres de la grille (inchangés)
+  // Paramètres de la grille
   public hours = Array.from({ length: 11 }, (_, i) => 8 + i);
   hourHeightPx = 64;
   startHour = 8;
@@ -52,12 +52,24 @@ export class CalendrierJour {
     });
   }
 
-  // --- NOUVELLES FONCTIONS DE NAVIGATION ET D'INITIALISATION ---
+  get isDateToday(): boolean {
+    const today = new Date();
+    return this.date.toDateString() === today.toDateString();
+  }
 
-  /**
-   * Modifie la date affichée d'un certain nombre de jours.
-   * @param offset Nombre de jours (ex: 1 pour demain, -1 pour hier).
-   */
+  getCurrentTimeTop(): string | null {
+    if (!this.isDateToday) return null;
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const startMinutes = this.startHour * 60;
+    const endMinutes = (this.startHour + this.hours.length) * 60;
+
+    if (currentMinutes < startMinutes || currentMinutes > endMinutes) return null;
+
+    const topPx = ((currentMinutes - startMinutes) / 60) * this.hourHeightPx;
+    return `${topPx}px`;
+  }
+
   public changeDay(offset: number): void {
     const newDate = new Date(this.date);
     newDate.setDate(newDate.getDate() + offset);
@@ -65,18 +77,11 @@ export class CalendrierJour {
     this.filterAndCalculateEvents(this.date);
   }
 
-  /**
-   * Revient à la date du jour.
-   */
   public goToToday(): void {
     this.date = new Date();
     this.filterAndCalculateEvents(this.date);
   }
 
-  /**
-   * Filtre les événements pour le jour sélectionné et recalcule leurs styles.
-   * @param targetDate La date à filtrer.
-   */
   private filterAndCalculateEvents(targetDate: Date): void {
     this.dayHearings = this.hearings.filter(appointement =>
       appointement.date.toDateString() === targetDate.toDateString()
@@ -85,16 +90,12 @@ export class CalendrierJour {
     this.calculateEventStyles();
   }
 
-  // --- Fonctions utilitaires (inchangées, mais appelées par filterAndCalculateEvents) ---
-
   private timeToMinutes(time: string): number {
     const [h, m] = time.split(':').map(Number);
     return h * 60 + m;
   }
 
   public calculateEventStyles() {
-    // La logique de positionnement vertical et de gestion des conflits est ici (inchangée)
-    // ...
     const dayEvents = this.dayHearings;
 
     // 1. Calcul du TOP et de la HEIGHT
@@ -138,15 +139,18 @@ export class CalendrierJour {
 
   public getStatusClass(status: string): string {
     switch (status) {
-      case 'Urgent': return 'bg-red-100 text-red-800 border-red-400';
-      case 'Standard': return 'bg-blue-100 text-blue-800 border-blue-400';
-      case 'Reporté': return 'bg-gray-100 text-gray-600 border-gray-400 line-through';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'Urgent':
+        return 'bg-rose-50 border-l-4 border-rose-500 text-rose-950 shadow-sm hover:shadow-md ring-1 ring-rose-200/80';
+      case 'Standard':
+        return 'bg-indigo-50 border-l-4 border-indigo-500 text-indigo-950 shadow-sm hover:shadow-md ring-1 ring-indigo-200/80';
+      case 'Reporté':
+        return 'bg-slate-100 border-l-4 border-slate-400 text-slate-600 shadow-sm line-through opacity-75 ring-1 ring-slate-200/80';
+      default:
+        return 'bg-slate-50 border-l-4 border-slate-300 text-slate-800 shadow-sm';
     }
   }
 
   public handleGridClick(event: MouseEvent): void {
-    // ... (logique du clic sur la grille inchangée) ...
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const yPosition = event.clientY - rect.top;
     const totalMinutes = (yPosition / this.hourHeightPx) * 60;
@@ -164,6 +168,7 @@ export class CalendrierJour {
 
     this.selectedDateStr = `${yyyy}-${mm}-${dd}`;
     this.selectedTime = formattedTime;
+    this.selectedAppointement = null;
     this.showAppointementDialog = true;
   }
 
@@ -178,6 +183,12 @@ export class CalendrierJour {
   }
 
   openAddAppointementDialog() {
+    this.selectedAppointement = null;
+    const yyyy = this.date.getFullYear();
+    const mm = String(this.date.getMonth() + 1).padStart(2, '0');
+    const dd = String(this.date.getDate()).padStart(2, '0');
+    this.selectedDateStr = `${yyyy}-${mm}-${dd}`;
+    this.selectedTime = '09:00';
     this.showAppointementDialog = true;
   }
 
@@ -187,7 +198,7 @@ export class CalendrierJour {
   }
 
   async deleteAppointement(appointement: Appointement, event: Event) {
-    event.stopPropagation(); // Avoid opening the edit dialog
+    event.stopPropagation();
 
     const isConfirmed = await this.alertService.confirmMessage(
       'Supprimer la réunion ?',
@@ -200,7 +211,7 @@ export class CalendrierJour {
       this.appointementService.delete(appointement.id).subscribe({
         next: () => {
           this.alertService.success('La réunion a été supprimée avec succès.');
-          this.loadAppointements(); // Reload data to remove it from UI
+          this.loadAppointements();
         },
         error: (err) => {
           console.error('Failed to delete appointement', err);
@@ -210,4 +221,3 @@ export class CalendrierJour {
   }
 
 }
-

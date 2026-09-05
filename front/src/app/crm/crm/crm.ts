@@ -3,6 +3,10 @@ import { Router, RouterModule } from '@angular/router';
 import { NavigationService } from './../../services/navigation-service';
 import { Client, ClientStatus } from '../../appTypes';
 import { ClientService } from '../../services/client-service';
+import { PersonnePhysiqueService } from '../../services/personne-physique.service';
+import { ClientMoralService } from '../../services/client-moral.service';
+import { AssociationService } from '../../services/association.service';
+import { InstitutionService } from '../../services/institution.service';
 import { ScreeningMatchService } from '../../services/screening-match.service';
 import { forkJoin } from 'rxjs';
 
@@ -37,9 +41,14 @@ export class Crm implements OnInit {
   
   activeTab: 'ALL' | 'PERSONNE' | 'SOCIETE' | 'ASSOCIATION' | 'INSTITUTION' = 'ALL';
   loading = true;
+  viewMode: 'grid' | 'table' = 'grid';
 
   private readonly navigationService = inject(NavigationService);
   private readonly clientService = inject(ClientService);
+  private readonly personneService = inject(PersonnePhysiqueService);
+  private readonly clientMoralService = inject(ClientMoralService);
+  private readonly associationService = inject(AssociationService);
+  private readonly institutionService = inject(InstitutionService);
   private readonly screeningMatchService = inject(ScreeningMatchService);
 
   private clientMatchesMap = new Map<number, any[]>();
@@ -47,10 +56,25 @@ export class Crm implements OnInit {
   // Liste de contacts récupérée depuis le service
   clients: Client[] = [];
   totalElements = 0;
+  personneCount = 0;
+  societeCount = 0;
+  associationCount = 0;
+  institutionCount = 0;
 
   searchTerm: string = '';
   selectedType: string = '';
   selectedRisk: string = '';
+
+  get isFiltered(): boolean {
+    return !!(this.searchTerm || this.selectedType || this.selectedRisk);
+  }
+
+  resetFilters() {
+    this.searchTerm = '';
+    this.selectedType = '';
+    this.selectedRisk = '';
+    this.filterClients();
+  }
 
   // Pagination
   currentPage = 1;
@@ -125,6 +149,36 @@ export class Crm implements OnInit {
 
   ngOnInit(): void {
     this.loadClients();
+    this.loadCounts();
+  }
+
+  loadCounts() {
+    forkJoin({
+      personnes: this.personneService.findAll(0, 1),
+      societes: this.clientMoralService.findAll(0, 1),
+      associations: this.associationService.findAll(0, 1),
+      institutions: this.institutionService.findAll(0, 1)
+    }).subscribe({
+      next: ({ personnes, societes, associations, institutions }) => {
+        this.personneCount = personnes?.totalElements || 0;
+        this.societeCount = societes?.totalElements || 0;
+        this.associationCount = associations?.totalElements || 0;
+        this.institutionCount = institutions?.totalElements || 0;
+      },
+      error: (err) => console.error('Error loading type counts', err)
+    });
+  }
+
+  navigateToConformity(client: Client) {
+    if (client && client.id) {
+      this.navigationService.navigateToClientConformity(String(client.id));
+    }
+  }
+
+  navigateToEdit(client: Client) {
+    if (client && client.id) {
+      this.navigationService.navigateToClientEdit(String(client.id));
+    }
   }
 
   loadClients() {

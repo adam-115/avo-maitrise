@@ -1,19 +1,22 @@
 <div id="event-creation-modal"
   class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
 
-  <div class="bg-white rounded-2xl shadow-2xl border border-slate-100 w-full max-w-xl overflow-hidden transform transition-all"
+  <div class="bg-white rounded-3xl shadow-2xl border border-slate-200/80 w-full max-w-xl overflow-hidden transform transition-all"
     role="dialog" aria-modal="true">
 
+    <!-- Top accent gradient line -->
+    <div class="h-1.5 bg-gradient-to-r from-indigo-500 via-indigo-600 to-blue-600"></div>
+
     <!-- Modal Header -->
-    <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+    <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
       <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl">
+        <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-2xl border border-indigo-100/80 shadow-sm flex-shrink-0">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
         <div>
-          <h3 class="text-base font-bold text-slate-900">
+          <h3 class="text-base font-black text-slate-900 tracking-tight">
             {{ (eventToEdit ? ('EVENEMENT_DIALOG.EDIT_TITLE' | translate) : ('EVENEMENT_DIALOG.TITLE' | translate)) }}
           </h3>
           <p class="text-xs text-slate-500 font-medium mt-0.5">
@@ -23,7 +26,7 @@
       </div>
 
       <button type="button" (click)="onCloseModal()"
-        class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors">
+        class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
@@ -31,47 +34,62 @@
     </div>
 
     <!-- Modal Body -->
-    <div class="p-6 max-h-[78vh] overflow-y-auto">
+    <div class="p-6 sm:p-7 max-h-[75vh] overflow-y-auto space-y-5">
       <form id="event-form" class="space-y-5" [formGroup]="eventForm" (ngSubmit)="submitForm()">
 
         <!-- Titre / Objet -->
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-            {{ 'EVENEMENT_DIALOG.EVENT_OBJECT' | translate }} <span class="text-red-500">*</span>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+            [ngClass]="eventForm.get('titre')?.invalid && eventForm.get('titre')?.touched ? 'text-rose-600' : 'text-slate-700'">
+            {{ 'EVENEMENT_DIALOG.EVENT_OBJECT' | translate }} <span class="text-rose-500">*</span>
           </label>
           <input type="text" formControlName="titre"
             [placeholder]="'EVENEMENT_DIALOG.EVENT_OBJECT_PLACEHOLDER' | translate"
             [ngClass]="{
-              'border-red-400 ring-2 ring-red-100 bg-red-50/20': eventForm.get('titre')?.invalid && eventForm.get('titre')?.touched,
-              'border-slate-200 hover:border-slate-300 focus:border-indigo-500': !(eventForm.get('titre')?.invalid && eventForm.get('titre')?.touched)
+              'border-rose-400 ring-4 ring-rose-500/10 bg-rose-50/20 focus:border-rose-500': eventForm.get('titre')?.invalid && eventForm.get('titre')?.touched,
+              'border-slate-300 hover:border-slate-400 focus:border-indigo-600 focus:ring-indigo-500/10': !(eventForm.get('titre')?.invalid && eventForm.get('titre')?.touched)
             }"
-            class="block w-full px-3.5 py-2.5 rounded-xl border bg-white text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all">
-          <p *ngIf="eventForm.get('titre')?.invalid && eventForm.get('titre')?.touched" class="text-[11px] font-bold text-red-500 mt-1">
-            {{ 'DOSSIER_FORM.REQUIRED' | translate }}
+            class="block w-full px-4 py-2.5 rounded-xl border-2 bg-white text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 transition-all shadow-sm">
+          <p *ngIf="eventForm.get('titre')?.invalid && eventForm.get('titre')?.touched" class="text-xs font-bold text-rose-600 mt-1 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+            </svg>
+            <span>{{ 'EVENEMENT_DIALOG.OBJECT_REQUIRED' | translate }}</span>
           </p>
         </div>
 
         <!-- Catégorie -->
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-            {{ 'EVENEMENT_DIALOG.CATEGORY' | translate }} <span class="text-red-500">*</span>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
+            [ngClass]="eventForm.get('typeId')?.invalid && eventForm.get('typeId')?.touched ? 'text-rose-600' : 'text-slate-700'">
+            {{ 'EVENEMENT_DIALOG.CATEGORY' | translate }} <span class="text-rose-500">*</span>
           </label>
-          <select formControlName="typeId"
-            [ngClass]="{
-              'border-red-400 ring-2 ring-red-100 bg-red-50/20': eventForm.get('typeId')?.invalid && eventForm.get('typeId')?.touched,
-              'border-slate-200 hover:border-slate-300 focus:border-indigo-500': !(eventForm.get('typeId')?.invalid && eventForm.get('typeId')?.touched)
-            }"
-            class="block w-full px-3.5 py-2.5 rounded-xl border bg-white text-sm font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer">
-            <option value="" disabled>{{ 'EVENEMENT_DIALOG.CATEGORY_PLACEHOLDER' | translate }}</option>
-            <option *ngFor="let type of eventTypes" [value]="type.id">{{ type.label }}</option>
-          </select>
-          <p *ngIf="eventForm.get('typeId')?.invalid && eventForm.get('typeId')?.touched" class="text-[11px] font-bold text-red-500 mt-1">
-            {{ 'DOSSIER_FORM.REQUIRED' | translate }}
+          <div class="relative">
+            <select formControlName="typeId"
+              [ngClass]="{
+                'border-rose-400 ring-4 ring-rose-500/10 bg-rose-50/20 focus:border-rose-500': eventForm.get('typeId')?.invalid && eventForm.get('typeId')?.touched,
+                'border-slate-300 hover:border-slate-400 focus:border-indigo-600 focus:ring-indigo-500/10': !(eventForm.get('typeId')?.invalid && eventForm.get('typeId')?.touched)
+              }"
+              class="block w-full ps-4 pe-10 py-2.5 rounded-xl border-2 bg-white text-sm font-bold text-slate-800 focus:outline-none focus:ring-4 transition-all cursor-pointer appearance-none shadow-sm">
+              <option value="" disabled>{{ 'EVENEMENT_DIALOG.CATEGORY_PLACEHOLDER' | translate }}</option>
+              <option *ngFor="let type of eventTypes" [value]="type.id">{{ type.label }}</option>
+            </select>
+            <div class="absolute inset-y-0 end-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+          <p *ngIf="eventForm.get('typeId')?.invalid && eventForm.get('typeId')?.touched" class="text-xs font-bold text-rose-600 mt-1 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+            </svg>
+            <span>{{ 'EVENEMENT_DIALOG.CATEGORY_REQUIRED' | translate }}</span>
           </p>
         </div>
 
         <!-- All Day Toggle -->
-        <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200">
+        <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border-2 border-slate-200">
           <div class="flex items-center gap-2.5">
             <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -87,19 +105,29 @@
           
           <!-- Start Date & Time -->
           <div class="space-y-2">
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
-              {{ 'EVENEMENT_DIALOG.START' | translate }} <span class="text-red-500">*</span>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700"
+              [ngClass]="eventForm.get('startDate')?.invalid && eventForm.get('startDate')?.touched ? 'text-rose-600' : 'text-slate-700'">
+              {{ 'EVENEMENT_DIALOG.START' | translate }} <span class="text-rose-500">*</span>
             </label>
             <div class="space-y-2">
               <input type="date" formControlName="startDate"
                 [ngClass]="{
-                  'border-red-400 ring-2 ring-red-100 bg-red-50/20': eventForm.get('startDate')?.invalid && eventForm.get('startDate')?.touched,
-                  'border-slate-200 focus:border-indigo-500': !(eventForm.get('startDate')?.invalid && eventForm.get('startDate')?.touched)
+                  'border-rose-400 ring-4 ring-rose-500/10 bg-rose-50/20 focus:border-rose-500': eventForm.get('startDate')?.invalid && eventForm.get('startDate')?.touched,
+                  'border-slate-300 hover:border-slate-400 focus:border-indigo-600 focus:ring-indigo-500/10': !(eventForm.get('startDate')?.invalid && eventForm.get('startDate')?.touched)
                 }"
-                class="block w-full px-3 py-2 rounded-xl border bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all">
+                class="block w-full px-3.5 py-2.5 rounded-xl border-2 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-4 transition-all shadow-sm cursor-pointer">
               
+              @if (eventForm.get('startDate')?.invalid && eventForm.get('startDate')?.touched) {
+              <p class="text-xs font-bold text-rose-600 mt-1 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                </svg>
+                <span>{{ 'EVENEMENT_DIALOG.START_REQUIRED' | translate }}</span>
+              </p>
+              }
+
               <input *ngIf="!eventForm.get('isAllDay')?.value" type="time" formControlName="startTime"
-                class="block w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all">
+                class="block w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 hover:border-slate-400 bg-white text-xs font-bold text-slate-800 focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm cursor-pointer">
             </div>
           </div>
 
@@ -110,10 +138,10 @@
             </label>
             <div class="space-y-2">
               <input type="date" formControlName="endDate"
-                class="block w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all">
+                class="block w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 hover:border-slate-400 bg-white text-xs font-bold text-slate-800 focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm cursor-pointer">
               
               <input *ngIf="!eventForm.get('isAllDay')?.value" type="time" formControlName="endTime"
-                class="block w-full px-3 py-2 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-800 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all">
+                class="block w-full px-3.5 py-2.5 rounded-xl border-2 border-slate-300 hover:border-slate-400 bg-white text-xs font-bold text-slate-800 focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm cursor-pointer">
             </div>
           </div>
 
@@ -126,7 +154,7 @@
               {{ 'EVENEMENT_DIALOG.INTERVENANTS' | translate }}
             </label>
             <button type="button" (click)="openUserDialog()"
-              class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1">
+              class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1 cursor-pointer">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
               </svg>
@@ -135,15 +163,15 @@
           </div>
 
           <!-- Selected Intervenants List -->
-          <div *ngIf="getSelectedIntervenants().length > 0" class="flex flex-wrap gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200 mb-2">
+          <div *ngIf="getSelectedIntervenants().length > 0" class="flex flex-wrap gap-2 p-3 rounded-xl bg-slate-50 border-2 border-slate-200 mb-2">
             <div *ngFor="let user of getSelectedIntervenants()"
-              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-200 shadow-sm">
               <div class="w-6 h-6 rounded-lg bg-indigo-600 text-white font-bold text-[10px] flex items-center justify-center">
                 {{ getUserInitials(user) }}
               </div>
               <span class="text-xs font-bold text-slate-800">{{ user.username }}</span>
               <button type="button" (click)="removeIntervenant(user.id!)"
-                class="p-0.5 text-slate-400 hover:text-rose-600 rounded-md transition-colors"
+                class="p-0.5 text-slate-400 hover:text-rose-600 rounded-md transition-colors cursor-pointer"
                 [title]="'EVENEMENT_DIALOG.REMOVE' | translate">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -154,7 +182,7 @@
 
           <div *ngIf="getSelectedIntervenants().length === 0"
             (click)="openUserDialog()"
-            class="p-3.5 rounded-xl border border-dashed border-slate-300 hover:border-indigo-400 bg-slate-50/50 hover:bg-indigo-50/20 text-center cursor-pointer transition-colors">
+            class="p-3.5 rounded-xl border-2 border-dashed border-slate-300 hover:border-indigo-400 bg-slate-50/50 hover:bg-indigo-50/20 text-center cursor-pointer transition-colors">
             <p class="text-xs font-semibold text-slate-500">
               {{ 'EVENEMENT_DIALOG.NO_INTERVENANTS' | translate }} — <span class="text-indigo-600 font-bold underline">{{ 'EVENEMENT_DIALOG.SELECT_MANAGE_INTERVENANTS' | translate }}</span>
             </p>
@@ -175,7 +203,7 @@
             </svg>
             <input type="text" formControlName="lieu"
               [placeholder]="'EVENEMENT_DIALOG.LOCATION_PLACEHOLDER' | translate"
-              class="block w-full ps-10 pe-3.5 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-indigo-500 bg-white text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all">
+              class="block w-full ps-10 pe-4 py-2.5 rounded-xl border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 bg-white text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-sm">
           </div>
         </div>
 
@@ -186,11 +214,11 @@
           </label>
           <textarea formControlName="description" rows="3"
             [placeholder]="'EVENEMENT_DIALOG.DESC_NOTES_PLACEHOLDER' | translate"
-            class="block w-full px-3.5 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-indigo-500 bg-white text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none"></textarea>
+            class="block w-full px-4 py-2.5 rounded-xl border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 bg-white text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none shadow-sm"></textarea>
         </div>
 
         <!-- Reminder Notification -->
-        <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+        <div class="p-3.5 rounded-xl bg-slate-50 border-2 border-slate-200 space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2.5">
               <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -204,7 +232,7 @@
 
           <div *ngIf="eventForm.get('reminder')?.value" class="flex items-center gap-2 pt-2 border-t border-slate-200">
             <input type="number" formControlName="reminderMinutesBefore"
-              class="w-20 px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-bold text-center text-slate-800 focus:border-indigo-500 focus:outline-none">
+              class="w-24 px-3 py-1.5 rounded-xl border-2 border-slate-300 bg-white text-xs font-bold text-center text-slate-800 focus:border-indigo-600 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 shadow-sm">
             <span class="text-xs text-slate-500 font-medium">{{ 'EVENEMENT_DIALOG.MINUTES_BEFORE' | translate }}</span>
           </div>
         </div>
@@ -213,19 +241,15 @@
     </div>
 
     <!-- Modal Footer -->
-    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
+    <div class="px-6 py-4 bg-slate-50/80 border-t border-slate-100 flex items-center justify-end gap-3">
       <button type="button" (click)="onCloseModal()"
-        class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition-colors shadow-sm">
+        class="px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition-colors shadow-sm cursor-pointer">
         {{ 'EVENEMENT_DIALOG.CANCEL' | translate }}
       </button>
 
       <button type="submit" form="event-form"
         [disabled]="eventForm.invalid || isSubmitting"
-        [ngClass]="{
-          'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm hover:shadow': eventForm.valid && !isSubmitting,
-          'bg-slate-200 text-slate-400 cursor-not-allowed': eventForm.invalid || isSubmitting
-        }"
-        class="px-5 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2">
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold text-xs shadow-md shadow-indigo-100 hover:shadow-indigo-200 disabled:opacity-50 transition-all cursor-pointer">
         <svg *ngIf="isSubmitting" class="animate-spin -ms-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -233,7 +257,7 @@
         <svg *ngIf="!isSubmitting" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
         </svg>
-        {{ 'EVENEMENT_DIALOG.SAVE_EVENT' | translate }}
+        <span>{{ 'EVENEMENT_DIALOG.SAVE_EVENT' | translate }}</span>
       </button>
     </div>
 

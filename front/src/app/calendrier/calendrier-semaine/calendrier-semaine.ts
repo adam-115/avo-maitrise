@@ -11,6 +11,7 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
 
 @Component({
   selector: 'app-calendrier-semaine',
+  standalone: true,
   imports: [CommonModule, FormsModule, RouterModule, AppointementDialogComponent, TranslatePipe],
   templateUrl: './calendrier-semaine.html',
   styleUrl: './calendrier-semaine.css'
@@ -21,6 +22,13 @@ export class CalendrierSemaine implements OnInit {
   hourHeightPx = 64;
   startHour = 8;
 
+  public dayKeys = [
+    { key: 'CALENDAR.DAYS.MONDAY', index: 0 },
+    { key: 'CALENDAR.DAYS.TUESDAY', index: 1 },
+    { key: 'CALENDAR.DAYS.WEDNESDAY', index: 2 },
+    { key: 'CALENDAR.DAYS.THURSDAY', index: 3 },
+    { key: 'CALENDAR.DAYS.FRIDAY', index: 4 }
+  ];
   public daysOfWeek = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
   public weekStart: Date = this.getStartOfWeek(new Date());
 
@@ -41,7 +49,6 @@ export class CalendrierSemaine implements OnInit {
   loadAppointements(): void {
     this.appointementService.findAll(0, 1000).subscribe({
       next: (data: PaginatedResponse<Appointement>) => {
-        // Convert the ISO string dates back to Javascript Date objects
         this.hearings = data.content.map(app => ({
           ...app,
           date: new Date(app.date)
@@ -52,22 +59,18 @@ export class CalendrierSemaine implements OnInit {
     });
   }
 
-  // --- LOGIQUE CRITIQUE DE CALCUL DES STYLES ---
-
   timeToMinutes(time: string): number {
     const [h, m] = time.split(':').map(Number);
     return h * 60 + m;
   }
 
   public calculateEventStyles() {
-    // 1. Groupement des événements par jour
-    const eventsByDay = this.daysOfWeek.map((dayName, index) => {
+    const eventsByDay = [0, 1, 2, 3, 4].map((index) => {
       const targetDate = this.getDateForDay(index, this.weekStart);
       return this.hearings.filter(event => event.date.toDateString() === targetDate.toDateString());
     });
 
     eventsByDay.forEach(dayEvents => {
-      // 2. Calcul du TOP et de la HEIGHT (Positionnement vertical)
       dayEvents.forEach(event => {
         const startMinutes = this.timeToMinutes(event.time);
         const endMinutes = this.timeToMinutes(event.endTime);
@@ -75,7 +78,6 @@ export class CalendrierSemaine implements OnInit {
         const minutesFromStart = startMinutes - (this.startHour * 60);
         const durationMinutes = endMinutes - startMinutes;
 
-        // Calcul du TOP et de la HEIGHT en pixels
         const topPx = (minutesFromStart / 60) * this.hourHeightPx;
         const heightPx = (durationMinutes / 60) * this.hourHeightPx;
 
@@ -85,28 +87,23 @@ export class CalendrierSemaine implements OnInit {
         };
       });
 
-      // 3. Gestion des CONFLITS (Positionnement horizontal - width et left)
       dayEvents.forEach(event => {
-        // Trouver tous les événements qui chevauchent l'événement courant (y compris lui-même pour l'algorithme)
         const overlappingEvents = dayEvents.filter(other =>
-          (other.time < event.endTime && other.endTime > event.time) || // Standard chevauchement A.time < B.endTime && A.endTime > B.time
-          (other.id === event.id) // Inclure l'événement lui-même
-        ).sort((a, b) => a.time.localeCompare(b.time)); // Tri pour un positionnement stable
+          (other.time < event.endTime && other.endTime > event.time) ||
+          (other.id === event.id)
+        ).sort((a, b) => a.time.localeCompare(b.time));
 
-        // Si un chevauchement existe, déterminer la largeur et la position relative
         if (overlappingEvents.length > 1) {
           const groupSize = overlappingEvents.length;
           const eventIndexInGroup = overlappingEvents.findIndex(e => e.id === event.id);
 
-          // Diviser l'espace horizontal disponible
           const widthPercent = (100 / groupSize);
           const leftPercent = eventIndexInGroup * widthPercent;
 
           event.style.width = `${widthPercent}%`;
           event.style.left = `${leftPercent}%`;
-          event.style.zIndex = eventIndexInGroup + 10; // Pour garantir que les événements superposés sont visibles
+          event.style.zIndex = eventIndexInGroup + 10;
         } else {
-          // Pas de chevauchement: utiliser toute la largeur
           event.style.width = '100%';
           event.style.left = '0%';
           event.style.zIndex = 1;
@@ -114,8 +111,6 @@ export class CalendrierSemaine implements OnInit {
       });
     });
   }
-
-  // --- Fonctions de navigation et utilitaires (inchangées) ---
 
   getStartOfWeek(date: Date): Date {
     const day = date.getDay();
@@ -131,21 +126,41 @@ export class CalendrierSemaine implements OnInit {
     return d;
   }
 
+  isToday(dayIndex: number): boolean {
+    const dayDate = this.getDateForDay(dayIndex, this.weekStart);
+    const today = new Date();
+    return dayDate.toDateString() === today.toDateString();
+  }
+
+  getCurrentTimeTop(dayIndex: number): string | null {
+    if (!this.isToday(dayIndex)) return null;
+    const now = new Date();
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
+    const startMinutes = this.startHour * 60;
+    const endMinutes = (this.startHour + this.hours.length) * 60;
+
+    if (currentMinutes < startMinutes || currentMinutes > endMinutes) return null;
+
+    const topPx = ((currentMinutes - startMinutes) / 60) * this.hourHeightPx;
+    return `${topPx}px`;
+  }
+
   public getStatusClass(status: string): string {
     switch (status) {
       case 'Urgent':
-        return 'bg-red-100 text-red-800 border-red-400';
+        return 'bg-rose-50 border-l-4 border-rose-500 text-rose-950 shadow-sm hover:shadow-md ring-1 ring-rose-200/80';
       case 'Standard':
-        return 'bg-blue-100 text-blue-800 border-blue-400';
+        return 'bg-indigo-50 border-l-4 border-indigo-500 text-indigo-950 shadow-sm hover:shadow-md ring-1 ring-indigo-200/80';
       case 'Reporté':
-        return 'bg-gray-100 text-gray-600 border-gray-400 line-through';
+        return 'bg-slate-100 border-l-4 border-slate-400 text-slate-600 shadow-sm line-through opacity-75 ring-1 ring-slate-200/80';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-slate-50 border-l-4 border-slate-300 text-slate-800 shadow-sm';
     }
   }
 
   public getFormattedDate(dayIndex: number): string {
-    return this.getDateForDay(dayIndex, this.weekStart).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    const d = this.getDateForDay(dayIndex, this.weekStart);
+    return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
   }
 
   public changeWeek(offset: number) {
@@ -160,9 +175,6 @@ export class CalendrierSemaine implements OnInit {
     this.calculateEventStyles();
   }
 
-  /**
-   * Récupère les audiences pour un jour spécifique (simplement filtrées et triées).
-   */
   public getHearingsForDay(dayIndex: number): Appointement[] {
     const targetDate = this.getDateForDay(dayIndex, this.weekStart);
 
@@ -171,45 +183,40 @@ export class CalendrierSemaine implements OnInit {
       .sort((a, b) => a.time.localeCompare(b.time));
   }
 
-  showHiringDetails(appointement: Appointement) {
-    alert(`Détails de l'audience:\n\nTitre: ${appointement.title}\nDossier: ${appointement.clientCase}\nHeure: ${appointement.time} - ${appointement.endTime}\nLieu: ${appointement.location}\nStatut: ${appointement.status}`);
-  }
-
-  // NOUVELLE MÉTHODE POUR GÉRER LE CLIC SUR LA GRILLE
   public handleGridClick(event: MouseEvent, dayIndex: number): void {
-
-    // 1. Obtenir la date et le nom du jour
     const targetDate = this.getDateForDay(dayIndex, this.weekStart);
-    const dayName = this.daysOfWeek[dayIndex];
 
-    // 2. Calculer la position verticale du clic dans le conteneur du jour
     const rect = (event.currentTarget as HTMLElement).getBoundingClientRect();
     const yPosition = event.clientY - rect.top;
 
-    // 3. Convertir la position Y en heures/minutes (arrondi à 15 minutes)
     const totalMinutes = (yPosition / this.hourHeightPx) * 60;
     const hours = this.startHour + Math.floor(totalMinutes / 60);
 
-    // Snap to 15-minute intervals (15, 30, 45, 60)
     const minutes = Math.round((totalMinutes % 60) / 15) * 15;
 
-    // Gérer l'arrondi qui dépasse 60 (ex: 52 arrondi à 60)
     const normalizedMinutes = minutes === 60 ? 0 : minutes;
     const normalizedHours = minutes === 60 ? hours + 1 : hours;
 
     const formattedTime = `${String(normalizedHours).padStart(2, '0')}:${String(normalizedMinutes).padStart(2, '0')}`;
 
-    // 4. Mettre à jour les variables et ouvrir la modale
     const yyyy = targetDate.getFullYear();
     const mm = String(targetDate.getMonth() + 1).padStart(2, '0');
     const dd = String(targetDate.getDate()).padStart(2, '0');
 
     this.selectedDateStr = `${yyyy}-${mm}-${dd}`;
     this.selectedTime = formattedTime;
+    this.selectedAppointement = null;
     this.showAppointementDialog = true;
   }
 
   openAddAppointementDialog() {
+    this.selectedAppointement = null;
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    this.selectedDateStr = `${yyyy}-${mm}-${dd}`;
+    this.selectedTime = '09:00';
     this.showAppointementDialog = true;
   }
 
@@ -229,7 +236,7 @@ export class CalendrierSemaine implements OnInit {
   }
 
   async deleteAppointement(appointement: Appointement, event: Event) {
-    event.stopPropagation(); // Avoid opening the edit dialog
+    event.stopPropagation();
 
     const isConfirmed = await this.alertService.confirmMessage(
       'Supprimer la réunion ?',
@@ -242,7 +249,7 @@ export class CalendrierSemaine implements OnInit {
       this.appointementService.delete(appointement.id).subscribe({
         next: () => {
           this.alertService.success('La réunion a été supprimée avec succès.');
-          this.loadAppointements(); // Reload data to remove it from UI
+          this.loadAppointements();
         },
         error: (err) => {
           console.error('Failed to delete appointement', err);
@@ -252,4 +259,3 @@ export class CalendrierSemaine implements OnInit {
   }
 
 }
-

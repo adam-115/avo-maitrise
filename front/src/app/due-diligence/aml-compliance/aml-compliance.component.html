@@ -1,479 +1,653 @@
-<div class="p-6 sm:p-10 bg-slate-50 min-h-screen">
-  <!-- Header Section -->
-  <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-    <div class="space-y-1">
-      <nav class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">
-        <span class="hover:text-cyan-600 cursor-pointer" routerLink="/home">{{ 'AML_COMPLIANCE.BREADCRUMB_DASHBOARD' | translate }}</span>
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-        <span class="text-slate-900">{{ 'AML_COMPLIANCE.BREADCRUMB_AML' | translate }}</span>
-      </nav>
-      <h1 class="text-4xl font-black text-slate-900 tracking-tight">
-        {{ 'AML_COMPLIANCE.TITLE_PREFIX' | translate }}<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">{{ 'AML_COMPLIANCE.TITLE_HIGHLIGHT' | translate }}</span>
-      </h1>
-      <p class="text-slate-500 font-medium max-w-2xl">
-        {{ 'AML_COMPLIANCE.SUBTITLE' | translate }}
-      </p>
-    </div>
+<div class="space-y-6 font-sans">
+  
+  <!-- En-tête Principal avec Titre & Actions Rapides -->
+  <div class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-sm relative overflow-hidden">
+    <!-- Accent gradient bar -->
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600"></div>
 
-    <!-- Manual Trigger Actions -->
-    <div class="flex flex-wrap gap-3">
-      <button (click)="triggerManualClientScreening()" [disabled]="triggeringClients || triggeringUbos || loading"
-        class="flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-white border border-slate-200 hover:border-cyan-500 hover:text-cyan-600 font-bold text-sm text-slate-700 shadow-sm hover:shadow transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer group">
-        <svg *ngIf="!triggeringClients" class="w-5 h-5 text-slate-400 group-hover:text-cyan-500 transition-colors"
-          fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-        <div *ngIf="triggeringClients"
-          class="w-5.5 h-5.5 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
-        <span>{{ 'AML_COMPLIANCE.BTN_TRIGGER_CLIENTS' | translate }}</span>
-      </button>
-
-
-      <button (click)="openReportModal('CLIENT')" [disabled]="loading"
-        class="flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 hover:from-cyan-700 hover:to-blue-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer group">
-        <svg class="w-5 h-5 text-cyan-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-        <span>{{ 'AML_COMPLIANCE.BTN_REPORT_CLIENTS' | translate }}</span>
-      </button>
-
-      <button (click)="openReportModal('UBO')" [disabled]="loading"
-        class="flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-950 to-indigo-900 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer group">
-        <svg class="w-5 h-5 text-blue-300 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-        </svg>
-        <span>{{ 'AML_COMPLIANCE.BTN_REPORT_UBOS' | translate }}</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- Loading State -->
-  <div *ngIf="loading" class="flex flex-col items-center justify-center py-20">
-    <div class="w-16 h-16 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
-    <p class="text-slate-500 font-bold mt-4">{{ 'AML_COMPLIANCE.LOADING_TEXT' | translate }}</p>
-  </div>
-
-  <div *ngIf="!loading" class="space-y-10">
-    <!-- KPI Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-      <!-- Conformity Rate Card -->
-      <div
-        class="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">{{ 'AML_COMPLIANCE.KPI_COMPLIANCE_RATE' | translate }}</span>
-          <div class="w-10 h-10 rounded-xl bg-cyan-50 flex items-center justify-center text-cyan-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      
+      <!-- Titre & Fil d'Ariane -->
+      <div class="flex items-start sm:items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 border border-cyan-100 flex items-center justify-center font-bold shadow-sm flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <div>
+          <!-- Fil d'Ariane -->
+          <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+            <span class="hover:text-cyan-600 cursor-pointer transition-colors" routerLink="/home">{{ 'AML_COMPLIANCE.BREADCRUMB_DASHBOARD' | translate }}</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
+            <span class="text-slate-800">{{ 'AML_COMPLIANCE.BREADCRUMB_AML' | translate }}</span>
+          </nav>
+          
+          <div class="flex items-center gap-2.5">
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              {{ 'AML_COMPLIANCE.TITLE_PREFIX' | translate }}<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">{{ 'AML_COMPLIANCE.TITLE_HIGHLIGHT' | translate }}</span>
+            </h1>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-cyan-50 px-2.5 py-0.5 text-[11px] font-bold text-cyan-700 ring-1 ring-inset ring-cyan-700/10">
+              <span class="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
+              LCB-FT
+            </span>
           </div>
-        </div>
-        <div class="flex items-baseline gap-2">
-          <span class="text-3xl font-black text-slate-950">{{ complianceRate }}%</span>
-          <span class="text-xs font-bold text-slate-400">{{ 'AML_COMPLIANCE.KPI_COMPLIANCE_DESC' | translate }}</span>
-        </div>
-        <div class="w-full bg-slate-100 h-2 rounded-full mt-4 overflow-hidden">
-          <div class="bg-cyan-600 h-full rounded-full transition-all duration-500" [style.width.%]="complianceRate">
-          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5 max-w-2xl">
+            {{ 'AML_COMPLIANCE.SUBTITLE' | translate }}
+          </p>
         </div>
       </div>
 
-      <!-- Active Alerts Card -->
-      <div [ngClass]="alertCount > 0 ? 'border-rose-300 bg-rose-50/20' : 'bg-white border-slate-200'"
-        class="p-6 rounded-[32px] border shadow-sm hover:shadow-md transition-all duration-300">
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">{{ 'AML_COMPLIANCE.KPI_ALERTS' | translate }}</span>
-          <div [ngClass]="alertCount > 0 ? 'bg-rose-100 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-400'"
-            class="w-10 h-10 rounded-xl flex items-center justify-center">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Actions Boutons -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        
+        <!-- Lancer vérification client -->
+        <button type="button" (click)="triggerManualClientScreening()" [disabled]="triggeringClients || triggeringUbos || loading"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-slate-300 hover:border-cyan-500 hover:text-cyan-700 text-slate-700 font-bold text-xs rounded-xl shadow-sm hover:shadow transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer group">
+          @if (!triggeringClients) {
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-cyan-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          } @else {
+          <div class="w-4 h-4 border-2 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
+          }
+          <span>{{ 'AML_COMPLIANCE.BTN_TRIGGER_CLIENTS' | translate }}</span>
+        </button>
+
+        <!-- Rapport PDF Clients -->
+        <button type="button" (click)="openReportModal('CLIENT')" [disabled]="loading"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-cyan-700 hover:to-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-slate-200 hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer group">
+          <svg class="w-4 h-4 text-cyan-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <span>{{ 'AML_COMPLIANCE.BTN_REPORT_CLIENTS' | translate }}</span>
+        </button>
+
+        <!-- Rapport PDF UBOs -->
+        <button type="button" (click)="openReportModal('UBO')" [disabled]="loading"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-900 to-indigo-900 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md shadow-blue-100 hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer group">
+          <svg class="w-4 h-4 text-blue-300 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          <span>{{ 'AML_COMPLIANCE.BTN_REPORT_UBOS' | translate }}</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- État de Chargement (Loading) -->
+  @if (loading) {
+  <div class="py-24 flex flex-col items-center justify-center text-center bg-white rounded-2xl shadow-sm border border-slate-200">
+    <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-slate-700 font-black mt-4 text-sm">{{ 'AML_COMPLIANCE.LOADING_TEXT' | translate }}</p>
+    <p class="text-slate-400 text-xs mt-0.5">Calcul des scores et analyse des sanctions en cours...</p>
+  </div>
+  }
+
+  @if (!loading) {
+  <div class="space-y-6">
+    
+    <!-- Stats Dashboard (KPIs - 4 Colonnes) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      
+      <!-- Card 1: Taux de Conformité -->
+      <div class="relative overflow-hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition-all duration-300 group hover:-translate-y-0.5 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
+          <div class="p-2.5 bg-emerald-50 border border-emerald-100/80 rounded-xl text-emerald-600 shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full">
+            {{ complianceRate }}% {{ 'AML_STATUS.VALIDATED' | translate }}
+          </span>
+        </div>
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'AML_COMPLIANCE.KPI_COMPLIANCE_RATE' | translate }}</p>
+          <p class="text-3xl font-black text-slate-900 mt-1">{{ complianceRate }}%</p>
+          <p class="text-xs text-slate-400 mt-1 font-medium">{{ 'AML_COMPLIANCE.KPI_COMPLIANCE_DESC' | translate }}</p>
+        </div>
+        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden">
+          <div class="bg-emerald-500 h-full rounded-full transition-all duration-500" [style.width.%]="complianceRate"></div>
+        </div>
+      </div>
+
+      <!-- Card 2: Alertes Sanctions -->
+      <div class="relative overflow-hidden p-5 rounded-2xl shadow-sm border transition-all duration-300 group hover:-translate-y-0.5 flex flex-col justify-between"
+        [ngClass]="alertCount > 0 ? 'bg-rose-50/20 border-rose-300 hover:border-rose-400 hover:shadow-md' : 'bg-white border-slate-200 hover:shadow-md'">
+        <div class="flex items-center justify-between mb-3">
+          <div class="p-2.5 rounded-xl shadow-sm"
+            [ngClass]="alertCount > 0 ? 'bg-rose-100 text-rose-600 border border-rose-200' : 'bg-slate-100 text-slate-400 border border-slate-200'">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded-full border"
+            [ngClass]="alertCount > 0 ? 'text-rose-700 bg-rose-50 border-rose-200' : 'text-slate-600 bg-slate-100 border-slate-200'">
+            {{ alertCount > 0 ? ('AML_COMPLIANCE.KPI_ALERTS_REQ' | translate) : ('AML_COMPLIANCE.KPI_ALERTS_NO_HIT' | translate) }}
+          </span>
         </div>
-        <div class="flex items-baseline gap-2">
-          <span class="text-3xl font-black" [ngClass]="alertCount > 0 ? 'text-rose-600' : 'text-slate-950'">{{
-            alertCount }}</span>
-          <span class="text-xs font-bold text-slate-400">{{ 'AML_COMPLIANCE.KPI_ALERTS_PENDING' | translate }}</span>
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'AML_COMPLIANCE.KPI_ALERTS' | translate }}</p>
+          <p class="text-3xl font-black mt-1" [ngClass]="alertCount > 0 ? 'text-rose-600' : 'text-slate-900'">{{ alertCount }}</p>
+          <p class="text-xs text-slate-400 mt-1 font-medium">{{ 'AML_COMPLIANCE.KPI_ALERTS_PENDING' | translate }}</p>
         </div>
-        <p class="text-xs font-medium text-slate-400 mt-4">
-          {{ alertCount > 0 ? ('AML_COMPLIANCE.KPI_ALERTS_REQ' | translate) : ('AML_COMPLIANCE.KPI_ALERTS_NO_HIT' | translate) }}
-        </p>
+        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden">
+          <div class="h-full rounded-full transition-all duration-500"
+            [ngClass]="alertCount > 0 ? 'bg-rose-500' : 'bg-slate-300'"
+            [style.width.%]="alertCount > 0 ? 100 : 0"></div>
+        </div>
       </div>
 
-      <!-- Pending Reviews Card -->
-      <div
-        class="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">{{ 'AML_COMPLIANCE.KPI_PENDING_REVIEW' | translate }}</span>
-          <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <!-- Card 3: Dossiers sous Revue -->
+      <div class="relative overflow-hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition-all duration-300 group hover:-translate-y-0.5 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
+          <div class="p-2.5 bg-amber-50 border border-amber-100/80 rounded-xl text-amber-600 shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
             </svg>
           </div>
+          <span class="text-[11px] font-bold text-amber-800 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span>
+            {{ amlRequiredCount }} {{ 'AML_COMPLIANCE.KPI_PENDING_FORMS' | translate }}
+          </span>
         </div>
-        <div class="flex items-baseline gap-2">
-          <span class="text-3xl font-black text-slate-950">{{ pendingReviewCount }}</span>
-          <span class="text-xs font-bold text-slate-400">{{ 'AML_COMPLIANCE.KPI_PENDING_DESC' | translate }}</span>
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'AML_COMPLIANCE.KPI_PENDING_REVIEW' | translate }}</p>
+          <p class="text-3xl font-black text-slate-900 mt-1">{{ pendingReviewCount }}</p>
+          <p class="text-xs text-slate-400 mt-1 font-medium">{{ 'AML_COMPLIANCE.KPI_PENDING_DESC' | translate }}</p>
         </div>
-        <div class="flex items-center gap-1.5 text-xs text-amber-600 font-bold mt-4">
-          <div class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></div>
-          {{ amlRequiredCount }} {{ 'AML_COMPLIANCE.KPI_PENDING_FORMS' | translate }}
+        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden">
+          <div class="bg-amber-500 h-full rounded-full transition-all duration-500" style="width: 55%"></div>
         </div>
       </div>
 
-      <!-- Average Risk Score Card -->
-      <div
-        class="bg-white p-6 rounded-[32px] border border-slate-200 shadow-sm hover:shadow-md transition-all duration-300">
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-xs uppercase font-black text-slate-400 tracking-wider">{{ 'AML_COMPLIANCE.KPI_AVG_RISK' | translate }}</span>
-          <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+      <!-- Card 4: Score de Risque Moyen -->
+      <div class="relative overflow-hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition-all duration-300 group hover:-translate-y-0.5 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-3">
+          <div class="p-2.5 bg-indigo-50 border border-indigo-100/80 rounded-xl text-indigo-600 shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
             </svg>
           </div>
+          <span class="text-[11px] font-bold px-2 py-0.5 rounded-full border"
+            [ngClass]="averageRiskScore >= 70 ? 'text-rose-700 bg-rose-50 border-rose-200' : (averageRiskScore >= 40 ? 'text-amber-800 bg-amber-50 border-amber-200' : 'text-cyan-700 bg-cyan-50 border-cyan-200')">
+            {{ averageRiskScore >= 70 ? ('AML_COMPLIANCE.FILTER_RISK_HIGH' | translate) : (averageRiskScore >= 40 ? ('AML_COMPLIANCE.FILTER_RISK_MEDIUM' | translate) : ('AML_COMPLIANCE.FILTER_RISK_LOW' | translate)) }}
+          </span>
         </div>
-        <div class="flex items-baseline gap-2">
-          <span class="text-3xl font-black text-slate-950">{{ averageRiskScore }}%</span>
-          <span class="text-xs font-bold text-slate-400">{{ 'AML_COMPLIANCE.KPI_AVG_RISK_DESC' | translate }}</span>
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'AML_COMPLIANCE.KPI_AVG_RISK' | translate }}</p>
+          <p class="text-3xl font-black text-slate-900 mt-1">{{ averageRiskScore }}%</p>
+          <p class="text-xs text-slate-400 mt-1 font-medium">{{ 'AML_COMPLIANCE.KPI_AVG_RISK_DESC' | translate }}</p>
         </div>
-        <div class="w-full bg-slate-100 h-2 rounded-full mt-4 overflow-hidden">
+        <div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden">
           <div class="h-full rounded-full transition-all duration-500"
-            [ngClass]="averageRiskScore >= 70 ? 'bg-rose-500' : (averageRiskScore >= 40 ? 'bg-amber-500' : 'bg-emerald-500')"
+            [ngClass]="averageRiskScore >= 70 ? 'bg-rose-500' : (averageRiskScore >= 40 ? 'bg-amber-500' : 'bg-cyan-500')"
             [style.width.%]="averageRiskScore"></div>
         </div>
       </div>
 
     </div>
 
-    <!-- Visual Analytics: Sectors and Client Types -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <!-- Graphiques d'Analyse : Secteurs & Catégories -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-      <!-- Sector Risk Score -->
-      <div class="bg-white p-8 rounded-[36px] border border-slate-200 shadow-sm flex flex-col justify-between">
+      <!-- Secteur d'Activité Exposé -->
+      <div class="bg-white p-6 sm:p-7 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
         <div>
-          <h3 class="text-xl font-black text-slate-950 mb-1">{{ 'AML_COMPLIANCE.CHART_SECTOR_TITLE' | translate }}</h3>
-          <p class="text-sm text-slate-400 font-semibold mb-6">{{ 'AML_COMPLIANCE.CHART_SECTOR_DESC' | translate }}</p>
-        </div>
-        <div class="space-y-4">
-          <div *ngFor="let s of sectorRisks" class="space-y-1">
-            <div class="flex justify-between text-sm font-bold text-slate-700">
-              <span>{{ s.sector }}</span>
-              <span class="text-slate-400 font-medium">{{ 'AML_COMPLIANCE.VOL' | translate }}{{ s.count }}{{ 'AML_COMPLIANCE.AVG_SCORE' | translate }}<strong
-                  class="text-slate-700">{{ s.avgRisk }}%</strong></span>
+          <div class="flex items-center gap-2.5 mb-1">
+            <div class="p-2 bg-cyan-50 text-cyan-600 rounded-lg border border-cyan-100">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
             </div>
-            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+            <h3 class="text-base sm:text-lg font-black text-slate-900">{{ 'AML_COMPLIANCE.CHART_SECTOR_TITLE' | translate }}</h3>
+          </div>
+          <p class="text-xs text-slate-400 font-medium mb-5">{{ 'AML_COMPLIANCE.CHART_SECTOR_DESC' | translate }}</p>
+        </div>
+
+        <div class="space-y-4">
+          @for (s of sectorRisks; track s.sector) {
+          <div class="space-y-1.5">
+            <div class="flex justify-between items-center text-xs font-bold text-slate-700">
+              <span class="truncate max-w-[200px]">{{ s.sector }}</span>
+              <span class="text-slate-400 font-medium text-[11px]">
+                {{ 'AML_COMPLIANCE.VOL' | translate }}<strong class="text-slate-700">{{ s.count }}</strong>
+                {{ 'AML_COMPLIANCE.AVG_SCORE' | translate }}<strong class="text-slate-900 font-black">{{ s.avgRisk }}%</strong>
+              </span>
+            </div>
+            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
               <div class="h-full rounded-full transition-all duration-500"
                 [ngClass]="s.avgRisk >= 70 ? 'bg-rose-500' : (s.avgRisk >= 40 ? 'bg-amber-500' : 'bg-cyan-500')"
                 [style.width.%]="s.avgRisk"></div>
             </div>
           </div>
-          <div *ngIf="sectorRisks.length === 0" class="py-6 text-center text-slate-400 font-bold">
+          }
+          @if (sectorRisks.length === 0) {
+          <div class="py-8 text-center text-slate-400 font-bold text-xs">
             {{ 'AML_COMPLIANCE.NO_SECTORS' | translate }}
           </div>
+          }
         </div>
       </div>
 
-      <!-- Client Type Breakdown -->
-      <div class="bg-white p-8 rounded-[36px] border border-slate-200 shadow-sm flex flex-col justify-between">
+      <!-- Répartition par Catégories de Clients -->
+      <div class="bg-white p-6 sm:p-7 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
         <div>
-          <h3 class="text-xl font-black text-slate-950 mb-1">{{ 'AML_COMPLIANCE.CHART_TYPE_TITLE' | translate }}</h3>
-          <p class="text-sm text-slate-400 font-semibold mb-6">{{ 'AML_COMPLIANCE.CHART_TYPE_DESC' | translate }}</p>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div *ngFor="let type of clientTypeCounts"
-            class="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-center">
-            <span class="text-2xl font-black text-slate-950">{{ type.count }}</span>
-            <p class="text-xs text-slate-400 font-bold mt-1 uppercase tracking-wider">{{ type.type }}</p>
+          <div class="flex items-center gap-2.5 mb-1">
+            <div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <h3 class="text-base sm:text-lg font-black text-slate-900">{{ 'AML_COMPLIANCE.CHART_TYPE_TITLE' | translate }}</h3>
           </div>
-          <div *ngIf="clientTypeCounts.length === 0" class="col-span-2 py-8 text-center text-slate-400 font-bold">
+          <p class="text-xs text-slate-400 font-medium mb-5">{{ 'AML_COMPLIANCE.CHART_TYPE_DESC' | translate }}</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3.5">
+          @for (type of clientTypeCounts; track type.type) {
+          <div class="p-4 bg-slate-50/80 rounded-xl border border-slate-200/80 text-center hover:bg-slate-100/80 transition-colors">
+            <span class="text-2xl font-black text-slate-900 tracking-tight">{{ type.count }}</span>
+            <p class="text-[11px] text-slate-500 font-bold mt-0.5 uppercase tracking-wider">{{ type.type }}</p>
+          </div>
+          }
+          @if (clientTypeCounts.length === 0) {
+          <div class="col-span-2 py-8 text-center text-slate-400 font-bold text-xs">
             {{ 'AML_COMPLIANCE.NO_TYPES' | translate }}
           </div>
+          }
         </div>
       </div>
 
     </div>
 
-    <!-- Filters & Main Board -->
-    <div class="bg-white p-8 rounded-[36px] border border-slate-200 shadow-sm">
-      <div class="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6 mb-8">
-        <div>
-          <h3 class="text-2xl font-black text-slate-950 mb-1">{{ 'AML_COMPLIANCE.TABLE_TITLE' | translate }}</h3>
-          <p class="text-sm text-slate-400 font-semibold">{{ 'AML_COMPLIANCE.TABLE_DESC' | translate }}</p>
+    <!-- Barre de Recherche & Filtres -->
+    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3.5">
+      
+      <!-- Champ Recherche -->
+      <div class="relative flex-grow min-w-0">
+        <div class="absolute inset-y-0 start-3.5 flex items-center pointer-events-none text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
         </div>
+        <input [(ngModel)]="searchTerm" (ngModelChange)="resetPagination()" type="search"
+          [placeholder]="'AML_COMPLIANCE.SEARCH_PLACEHOLDER' | translate"
+          class="w-full ps-10 pe-4 py-2.5 bg-white border-2 border-slate-300 rounded-xl focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-800 text-sm shadow-sm hover:border-slate-400">
+      </div>
 
-        <!-- Filters grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full xl:w-auto">
-          <!-- Search input -->
-          <div class="relative w-full lg:w-64">
-            <div class="absolute inset-y-0 start-3 flex items-center pointer-events-none">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <input [(ngModel)]="searchTerm" (ngModelChange)="resetPagination()"
-              class="w-full ps-9 pe-3 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:border-cyan-500 focus:bg-white outline-none transition-all placeholder:text-slate-400 font-semibold text-sm text-slate-700"
-              [placeholder]="'AML_COMPLIANCE.SEARCH_PLACEHOLDER' | translate" type="search">
-          </div>
-
-          <!-- Type filter -->
+      <!-- Filtres Dropdowns & Reset -->
+      <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
+        
+        <!-- Filtre Type -->
+        <div class="relative flex-1 sm:flex-initial min-w-[150px]">
           <select [(ngModel)]="selectedType" (ngModelChange)="resetPagination()"
-            class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-600 cursor-pointer appearance-none">
+            class="w-full ps-3.5 pe-8 py-2.5 bg-white border-2 border-slate-300 rounded-xl focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none font-semibold text-slate-700 text-xs shadow-sm cursor-pointer appearance-none hover:border-slate-400">
             <option value="">{{ 'AML_COMPLIANCE.FILTER_ALL_TYPES' | translate }}</option>
             <option value="PERSONNE">{{ 'AML_COMPLIANCE.FILTER_TYPE_PERSON' | translate }}</option>
             <option value="SOCIETE">{{ 'AML_COMPLIANCE.FILTER_TYPE_COMPANY' | translate }}</option>
             <option value="ASSOCIATION">{{ 'AML_COMPLIANCE.FILTER_TYPE_ASSOCIATION' | translate }}</option>
             <option value="INSTITUTION">{{ 'AML_COMPLIANCE.FILTER_TYPE_INSTITUTION' | translate }}</option>
           </select>
+          <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
 
-          <!-- Status filter -->
+        <!-- Filtre Statut -->
+        <div class="relative flex-1 sm:flex-initial min-w-[160px]">
           <select [(ngModel)]="selectedStatus" (ngModelChange)="resetPagination()"
-            class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-600 cursor-pointer appearance-none">
+            class="w-full ps-3.5 pe-8 py-2.5 bg-white border-2 border-slate-300 rounded-xl focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none font-semibold text-slate-700 text-xs shadow-sm cursor-pointer appearance-none hover:border-slate-400">
             <option value="">{{ 'AML_COMPLIANCE.FILTER_ALL_STATUS' | translate }}</option>
-            <option *ngFor="let status of clientStatuses" [value]="status">
-              {{ 'AML_STATUS.' + status | translate }}
-            </option>
+            @for (status of clientStatuses; track status) {
+            <option [value]="status">{{ 'AML_STATUS.' + status | translate }}</option>
+            }
           </select>
+          <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+        </div>
 
-          <!-- Risk level filter -->
+        <!-- Filtre Niveau de Risque -->
+        <div class="relative flex-1 sm:flex-initial min-w-[150px]">
           <select [(ngModel)]="selectedRisk" (ngModelChange)="resetPagination()"
-            class="px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none font-semibold text-sm text-slate-600 cursor-pointer appearance-none">
+            class="w-full ps-3.5 pe-8 py-2.5 bg-white border-2 border-slate-300 rounded-xl focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none font-semibold text-slate-700 text-xs shadow-sm cursor-pointer appearance-none hover:border-slate-400">
             <option value="">{{ 'AML_COMPLIANCE.FILTER_ALL_RISKS' | translate }}</option>
             <option value="ELEVEE">{{ 'AML_COMPLIANCE.FILTER_RISK_HIGH' | translate }}</option>
             <option value="MOYEN">{{ 'AML_COMPLIANCE.FILTER_RISK_MEDIUM' | translate }}</option>
             <option value="FAIBLE">{{ 'AML_COMPLIANCE.FILTER_RISK_LOW' | translate }}</option>
           </select>
+          <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
         </div>
-      </div>
 
-      <!-- Clients List Table -->
-      <div class="overflow-x-auto rounded-3xl border border-slate-100">
+        <!-- Bouton Réinitialiser les Filtres (si filtre actif) -->
+        @if (isFiltered) {
+        <button type="button" (click)="resetFilters()"
+          class="inline-flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors cursor-pointer shadow-sm">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>{{ 'DOSSIER.RESET_FILTERS' | translate }}</span>
+        </button>
+        }
+
+        <!-- Badge Total Elements -->
+        <span class="inline-flex items-center px-3 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200/80 whitespace-nowrap">
+          {{ totalElements }} Clients
+        </span>
+
+      </div>
+    </div>
+
+    <!-- Tableau Moderne des Clients & Décisions AML -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-slate-50 border-b border-slate-100">
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">{{ 'AML_COMPLIANCE.TH_CLIENT' | translate }}</th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">{{ 'AML_COMPLIANCE.TH_TYPE_SECTOR' | translate }}</th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400 text-center">
-                {{ 'AML_COMPLIANCE.TH_MATCHES' | translate }}</th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400">{{ 'AML_COMPLIANCE.TH_STATUS' | translate }}
-              </th>
-              <th class="px-6 py-4 text-xs font-black uppercase tracking-wider text-slate-400 text-right">{{ 'AML_COMPLIANCE.TH_ACTIONS' | translate }}</th>
+            <tr class="bg-slate-50/80 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <th class="px-6 py-4">{{ 'AML_COMPLIANCE.TH_CLIENT' | translate }}</th>
+              <th class="px-6 py-4">{{ 'AML_COMPLIANCE.TH_TYPE_SECTOR' | translate }}</th>
+              <th class="px-6 py-4 text-center">{{ 'AML_COMPLIANCE.TH_MATCHES' | translate }}</th>
+              <th class="px-6 py-4">{{ 'AML_COMPLIANCE.TH_STATUS' | translate }}</th>
+              <th class="px-6 py-4 text-right">{{ 'AML_COMPLIANCE.TH_ACTIONS' | translate }}</th>
             </tr>
           </thead>
-          <tbody>
-            <tr *ngFor="let client of getPaginatedClients()"
-              class="hover:bg-slate-50/50 transition-colors border-b border-slate-100 last:border-0">
+          <tbody class="divide-y divide-slate-100">
+            @for (client of getPaginatedClients(); track client.id) {
+            <tr class="hover:bg-slate-50/70 transition-colors group">
 
-              <!-- Client Name & Contacts -->
+              <!-- Client Avatar & Contacts -->
               <td class="px-6 py-4">
-                <div class="flex flex-col">
-                  <span class="font-bold text-slate-900 text-base">{{ getDisplayName(client) }}</span>
-                  <span class="text-xs text-slate-400 font-medium">{{ client.email }}</span>
-                  <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">{{ client.pays ||
-                    ('AML_COMPLIANCE.UNKNOWN_COUNTRY' | translate) }}</span>
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-600 to-blue-600 text-white font-black text-xs flex items-center justify-center shadow-sm flex-shrink-0">
+                    {{ getClientInitials(client) }}
+                  </div>
+                  <div class="min-w-0">
+                    <span class="font-bold text-slate-900 text-sm block truncate group-hover:text-cyan-700 transition-colors">
+                      {{ getDisplayName(client) }}
+                    </span>
+                    <div class="flex items-center gap-1.5 mt-0.5 text-xs text-slate-400 font-medium">
+                      @if (client.email) {
+                      <span class="truncate max-w-[180px]">{{ client.email }}</span>
+                      }
+                      @if (client.email && (client.pays || client.paysResidance)) {
+                      <span>&bull;</span>
+                      }
+                      <span class="font-bold uppercase tracking-wider text-[10px] text-slate-500">
+                        {{ client.pays || client.paysResidance || ('AML_COMPLIANCE.UNKNOWN_COUNTRY' | translate) }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </td>
 
-              <!-- Client Type & Sector -->
+              <!-- Type de Client & Secteur -->
               <td class="px-6 py-4">
                 <div class="flex flex-col gap-1 items-start">
-                  <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600">
+                  <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200/80">
                     {{ translateClientType(client.type || '') }}
                   </span>
-                  <span class="text-xs text-slate-400 font-bold italic ms-1">
+                  <span class="text-xs text-slate-400 font-medium italic">
                     {{ client.secteurActivite || ('AML_COMPLIANCE.NO_SECTOR' | translate) }}
                   </span>
                 </div>
               </td>
 
-              <!-- Screening matches details -->
+              <!-- Screening Sanctions Hits & Score -->
               <td class="px-6 py-4 text-center">
-                <div class="flex flex-col items-center justify-center gap-1.5">
-                  <div class="flex items-center gap-2">
-                    <span
-                      [ngClass]="getClientMatchesCount(client) > 0 ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-400'"
-                      class="px-2 py-0.5 rounded text-xs font-bold">
-                      {{ getClientMatchesCount(client) }} {{ 'AML_COMPLIANCE.HITS' | translate }}
-                    </span>
-                    <span *ngIf="getHighestScore(client) > 0" [ngClass]="{
-                            'bg-rose-500 text-white': getHighestScore(client) >= 0.7,
-                            'bg-amber-500 text-white': getHighestScore(client) >= 0.4 && getHighestScore(client) < 0.7,
-                            'bg-emerald-500 text-white': getHighestScore(client) < 0.4
-                          }" class="px-2 py-0.5 rounded text-xs font-black">
-                      {{ 'AML_COMPLIANCE.MAX_SCORE' | translate }}{{ getHighestScorePercentage(client) }}
-                    </span>
+                <div class="flex items-center justify-center gap-2">
+                  <span class="px-2.5 py-1 rounded-lg text-xs font-bold border"
+                    [ngClass]="getClientMatchesCount(client) > 0 ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-slate-100 text-slate-500 border-slate-200/80'">
+                    {{ getClientMatchesCount(client) }} {{ 'AML_COMPLIANCE.HITS' | translate }}
+                  </span>
+                  
+                  @if (getHighestScore(client) > 0) {
+                  <span class="px-2.5 py-1 rounded-lg text-xs font-black shadow-sm"
+                    [ngClass]="{
+                      'bg-rose-500 text-white': getHighestScore(client) >= 0.7,
+                      'bg-amber-500 text-white': getHighestScore(client) >= 0.4 && getHighestScore(client) < 0.7,
+                      'bg-emerald-500 text-white': getHighestScore(client) < 0.4
+                    }">
+                    {{ 'AML_COMPLIANCE.MAX_SCORE' | translate }}{{ getHighestScorePercentage(client) }}
+                  </span>
+                  }
+                </div>
+              </td>
+
+              <!-- Sélecteur de Statut AML (Décision) -->
+              <td class="px-6 py-4">
+                <div class="relative inline-block w-full max-w-[190px]">
+                  <select [ngModel]="client.clientStatus" (ngModelChange)="onStatusChange(client, $event)"
+                    class="w-full ps-3 pe-8 py-1.5 rounded-xl border-2 text-xs font-bold focus:outline-none cursor-pointer tracking-wide appearance-none shadow-sm transition-all"
+                    [ngClass]="{
+                      'bg-emerald-50 text-emerald-800 border-emerald-300 hover:border-emerald-400': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
+                      'bg-amber-50 text-amber-800 border-amber-300 hover:border-amber-400': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
+                      'bg-rose-50 text-rose-800 border-rose-300 hover:border-rose-400': client.clientStatus === 'BLOCKED',
+                      'bg-indigo-50 text-indigo-800 border-indigo-300 hover:border-indigo-400': client.clientStatus === 'INDULGENCE_REQUIRED'
+                    }">
+                    @for (status of clientStatuses; track status) {
+                    <option [value]="status" class="bg-white text-slate-800 font-semibold py-1">
+                      {{ 'AML_STATUS.' + status | translate }}
+                    </option>
+                    }
+                  </select>
+                  <div class="absolute inset-y-0 end-2 flex items-center pointer-events-none text-slate-500">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
                   </div>
                 </div>
               </td>
 
-              <!-- Quick AML Status Dropdown -->
-              <td class="px-6 py-4">
-                <select [ngModel]="client.clientStatus" (ngModelChange)="onStatusChange(client, $event)"
-                  class="px-3 py-2 rounded-2xl border text-xs font-bold focus:outline-none cursor-pointer tracking-wide appearance-none shadow-sm transition-all"
-                  [ngClass]="{
-                           'bg-emerald-100 text-emerald-800 border-emerald-300': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
-                           'bg-amber-100 text-amber-800 border-amber-300': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
-                           'bg-rose-100 text-rose-800 border-rose-300': client.clientStatus === 'BLOCKED',
-                           'bg-indigo-100 text-indigo-800 border-indigo-300': client.clientStatus === 'INDULGENCE_REQUIRED'
-                         }">
-                  <option *ngFor="let status of clientStatuses" [value]="status"
-                    class="bg-white text-slate-700 font-medium">
-                    {{ 'AML_STATUS.' + status | translate }}
-                  </option>
-                </select>
-              </td>
-
-              <!-- Action Links -->
+              <!-- Actions Rapides -->
               <td class="px-6 py-4 text-right">
-                <div class="flex justify-end gap-2">
-                  <button (click)="viewClientDetails(client)" [title]="'AML_COMPLIANCE.TOOLTIP_CLIENT_SHEET' | translate"
-                    class="p-2 text-slate-500 hover:text-cyan-600 bg-slate-100 hover:bg-cyan-50 rounded-xl transition-all cursor-pointer">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center justify-end gap-1.5">
+                  
+                  <!-- Fiche Client -->
+                  <button type="button" (click)="viewClientDetails(client)" [title]="'AML_COMPLIANCE.TOOLTIP_CLIENT_SHEET' | translate"
+                    class="p-2 text-slate-500 hover:text-cyan-600 bg-slate-100 hover:bg-cyan-50 rounded-xl transition-all cursor-pointer border border-transparent hover:border-cyan-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </button>
-                  <button (click)="viewDiligenceResults(client)" [title]="'AML_COMPLIANCE.TOOLTIP_KYC_DOSSIER' | translate"
-                    class="p-2 text-slate-500 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 rounded-xl transition-all cursor-pointer">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                  <!-- Dossier Diligence KYC -->
+                  <button type="button" (click)="viewDiligenceResults(client)" [title]="'AML_COMPLIANCE.TOOLTIP_KYC_DOSSIER' | translate"
+                    class="p-2 text-slate-500 hover:text-indigo-600 bg-slate-100 hover:bg-indigo-50 rounded-xl transition-all cursor-pointer border border-transparent hover:border-indigo-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </button>
-                  <button (click)="downloadClientKycAudit(client)" [title]="'AML_COMPLIANCE.TOOLTIP_DOWNLOAD_PDF' | translate"
-                    class="p-2 text-slate-500 hover:text-emerald-600 bg-slate-100 hover:bg-emerald-50 rounded-xl transition-all cursor-pointer">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                  <!-- Télécharger Rapport PDF -->
+                  <button type="button" (click)="downloadClientKycAudit(client)" [title]="'AML_COMPLIANCE.TOOLTIP_DOWNLOAD_PDF' | translate"
+                    class="p-2 text-slate-500 hover:text-emerald-600 bg-slate-100 hover:bg-emerald-50 rounded-xl transition-all cursor-pointer border border-transparent hover:border-emerald-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </button>
+
                 </div>
               </td>
 
             </tr>
-            <tr *ngIf="getFilteredClients().length === 0">
-              <td colspan="5" class="px-6 py-12 text-center text-slate-400 font-bold">
-                {{ 'AML_COMPLIANCE.NO_CLIENTS_FOUND' | translate }}
+            }
+            @if (getFilteredClients().length === 0) {
+            <tr>
+              <td colspan="5" class="px-6 py-16 text-center">
+                <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
+                  <div class="w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mb-3">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <h4 class="text-sm font-black text-slate-900">{{ 'AML_COMPLIANCE.NO_CLIENTS_FOUND' | translate }}</h4>
+                  <p class="text-xs text-slate-400 mt-1">Essayez d'ajuster votre recherche ou réinitialisez les filtres.</p>
+                  @if (isFiltered) {
+                  <button type="button" (click)="resetFilters()"
+                    class="mt-4 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-slate-200 transition-colors cursor-pointer">
+                    {{ 'DOSSIER.RESET_FILTERS' | translate }}
+                  </button>
+                  }
+                </div>
               </td>
             </tr>
+            }
           </tbody>
         </table>
       </div>
 
-      <!-- Pagination Controls -->
-      <div *ngIf="totalPages > 1" class="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white px-8 py-5 rounded-[25px] border border-slate-200 shadow-sm transition-all hover:shadow-md">
-        <div class="flex items-center gap-2.5 text-slate-500 font-bold text-base">
+      <!-- Pagination Footer -->
+      @if (totalPages > 1 || totalElements > 0) {
+      <div class="px-6 py-4 border-t border-slate-200 bg-slate-50/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-600">
           <span>{{ 'AML_COMPLIANCE.PAGINATION_SHOWING' | translate }}</span>
           <select [(ngModel)]="pageSize" (ngModelChange)="resetPagination()"
-            class="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl outline-none font-bold text-sm text-slate-700 cursor-pointer hover:border-slate-300 transition-colors">
-            <option *ngFor="let option of pageSizeOptions" [value]="option">{{ option }}</option>
+            class="px-2.5 py-1 bg-white border-2 border-slate-300 rounded-lg outline-none font-bold text-xs text-slate-700 cursor-pointer hover:border-slate-400 transition-colors">
+            @for (option of pageSizeOptions; track option) {
+            <option [value]="option">{{ option }}</option>
+            }
           </select>
-          <span>{{ 'AML_COMPLIANCE.PAGINATION_FROM' | translate }}<span class="text-slate-900 font-black">{{ (currentPage - 1) * pageSize + 1 }}</span>{{ 'AML_COMPLIANCE.PAGINATION_TO' | translate }}
-          <span class="text-slate-900 font-black">{{ currentEndIndex }}</span>{{ 'AML_COMPLIANCE.PAGINATION_OUT_OF' | translate }}
-          <span class="text-slate-900 font-black">{{ totalElements }}</span>{{ 'AML_COMPLIANCE.PAGINATION_CLIENTS' | translate }}</span>
+          <span>{{ 'AML_COMPLIANCE.PAGINATION_FROM' | translate }}<b class="text-slate-900 font-black">{{ (currentPage - 1) * pageSize + 1 }}</b>{{ 'AML_COMPLIANCE.PAGINATION_TO' | translate }}
+          <b class="text-slate-900 font-black">{{ currentEndIndex }}</b>{{ 'AML_COMPLIANCE.PAGINATION_OUT_OF' | translate }}
+          <b class="text-slate-900 font-black">{{ totalElements }}</b>{{ 'AML_COMPLIANCE.PAGINATION_CLIENTS' | translate }}</span>
         </div>
 
-        <div class="flex items-center gap-2">
-          <!-- Prev Page -->
-          <button (click)="prevPage()" [disabled]="currentPage === 1"
-            class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        @if (totalPages > 1) {
+        <div class="flex items-center gap-1.5">
+          <!-- Page Précédente -->
+          <button type="button" (click)="prevPage()" [disabled]="currentPage === 1"
+            class="flex items-center justify-center w-8 h-8 rounded-xl border-2 border-slate-300 bg-white text-slate-600 hover:bg-slate-100 hover:border-slate-400 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-slate-300 disabled:cursor-not-allowed transition-all cursor-pointer shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
           </button>
           
-          <!-- Page Numbers -->
-          <button *ngFor="let page of pages" (click)="goToPage(page)"
-            [ngClass]="currentPage === page ? 'bg-cyan-600 border-cyan-600 text-white shadow-md shadow-cyan-100 scale-105' : 'border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'"
-            class="flex items-center justify-center w-12 h-12 rounded-2xl font-black text-base transition-all active:scale-95 cursor-pointer">
+          <!-- Numéros de Pages -->
+          @for (page of pages; track page) {
+          <button type="button" (click)="goToPage(page)"
+            [ngClass]="currentPage === page ? 'bg-gradient-to-r from-cyan-600 to-blue-600 border-cyan-600 text-white shadow-sm font-black' : 'bg-white border-2 border-slate-300 text-slate-700 hover:bg-slate-100 hover:border-slate-400 font-bold'"
+            class="flex items-center justify-center w-8 h-8 rounded-xl text-xs transition-all cursor-pointer">
             {{ page }}
           </button>
+          }
 
-          <!-- Next Page -->
-          <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-            class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- Page Suivante -->
+          <button type="button" (click)="nextPage()" [disabled]="currentPage === totalPages"
+            class="flex items-center justify-center w-8 h-8 rounded-xl border-2 border-slate-300 bg-white text-slate-600 hover:bg-slate-100 hover:border-slate-400 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-slate-300 disabled:cursor-not-allowed transition-all cursor-pointer shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </div>
+        }
       </div>
+      }
+
     </div>
+
   </div>
+  }
 
   <!-- Modal de Génération de Rapport AML -->
-  <div *ngIf="showReportModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-    <div class="bg-white rounded-[32px] border border-slate-100 shadow-2xl w-full max-w-lg overflow-hidden transform transition-all duration-300 scale-100">
+  @if (showReportModal) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-lg overflow-hidden transform transition-all duration-300">
       
+      <!-- Top accent gradient line -->
+      <div class="h-1.5 bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600"></div>
+
       <!-- Modal Header -->
-      <div class="bg-gradient-to-r from-slate-900 to-slate-800 p-6 text-white flex justify-between items-center">
+      <div class="px-7 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
         <div class="flex items-center gap-3">
-          <div class="p-2.5 bg-cyan-500/20 rounded-2xl border border-cyan-500/30 text-cyan-400">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="p-2.5 bg-cyan-50 rounded-2xl border border-cyan-100 text-cyan-600 flex-shrink-0 shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
           <div>
-            <h3 class="font-black text-lg tracking-wide">{{ reportType === 'UBO' ? ('AML_COMPLIANCE.MODAL_TITLE_UBO' | translate) : ('AML_COMPLIANCE.MODAL_TITLE_CLIENT' | translate) }}</h3>
-            <p class="text-xs text-cyan-300/80 font-medium">{{ 'AML_COMPLIANCE.MODAL_SUBTITLE' | translate }}</p>
+            <h3 class="font-black text-slate-900 text-base tracking-tight">
+              {{ reportType === 'UBO' ? ('AML_COMPLIANCE.MODAL_TITLE_UBO' | translate) : ('AML_COMPLIANCE.MODAL_TITLE_CLIENT' | translate) }}
+            </h3>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">{{ 'AML_COMPLIANCE.MODAL_SUBTITLE' | translate }}</p>
           </div>
         </div>
-        <button (click)="closeReportModal()" [disabled]="generatingReport"
-          class="text-slate-400 hover:text-white transition-colors p-1 rounded-xl hover:bg-white/10 cursor-pointer">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button type="button" (click)="closeReportModal()" [disabled]="generatingReport"
+          class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
 
       <!-- Modal Body -->
-      <div class="p-8 space-y-6">
-        <div class="bg-cyan-50/60 border border-cyan-200/60 rounded-2xl p-4 flex items-start gap-3 text-cyan-900 text-xs font-semibold">
-          <svg class="w-5 h-5 text-cyan-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="p-6 sm:p-7 space-y-5">
+        
+        <!-- Info Banner -->
+        <div class="bg-cyan-50/70 border border-cyan-200/80 rounded-2xl p-4 flex items-start gap-3 text-cyan-950 text-xs font-semibold">
+          <svg class="w-4 h-4 text-cyan-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p>
+          <p class="leading-relaxed">
             {{ reportType === 'UBO' ? ('AML_COMPLIANCE.MODAL_DESC_UBO' | translate) : ('AML_COMPLIANCE.MODAL_DESC_CLIENT' | translate) }}
           </p>
         </div>
 
+        <!-- Date Inputs -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="space-y-1.5">
-            <label class="block text-xs font-black text-slate-700 uppercase tracking-wider">{{ 'AML_COMPLIANCE.MODAL_START_DATE' | translate }}</label>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ 'AML_COMPLIANCE.MODAL_START_DATE' | translate }}</label>
             <input type="date" [(ngModel)]="reportStartDate" [disabled]="generatingReport"
-              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-cyan-600 outline-none transition-all font-bold text-sm text-slate-700">
+              class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-slate-300 hover:border-slate-400 focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all font-semibold text-xs text-slate-800 shadow-sm">
           </div>
-          <div class="space-y-1.5">
-            <label class="block text-xs font-black text-slate-700 uppercase tracking-wider">{{ 'AML_COMPLIANCE.MODAL_END_DATE' | translate }}</label>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ 'AML_COMPLIANCE.MODAL_END_DATE' | translate }}</label>
             <input type="date" [(ngModel)]="reportEndDate" [disabled]="generatingReport"
-              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-cyan-600 outline-none transition-all font-bold text-sm text-slate-700">
+              class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-slate-300 hover:border-slate-400 focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all font-semibold text-xs text-slate-800 shadow-sm">
           </div>
         </div>
       </div>
 
       <!-- Modal Footer -->
-      <div class="bg-slate-50 px-8 py-5 border-t border-slate-100 flex items-center justify-end gap-3">
-        <button (click)="closeReportModal()" [disabled]="generatingReport"
-          class="px-5 py-2.5 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-200/60 transition-all cursor-pointer">
+      <div class="bg-slate-50/80 px-7 py-4 border-t border-slate-100 flex items-center justify-end gap-3">
+        <button type="button" (click)="closeReportModal()" [disabled]="generatingReport"
+          class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border-2 border-slate-300 hover:border-slate-400 shadow-sm transition-all cursor-pointer">
           {{ 'AML_COMPLIANCE.MODAL_CANCEL' | translate }}
         </button>
-        <button (click)="generateAmlReport()" [disabled]="generatingReport"
-          class="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black text-sm shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-          <div *ngIf="generatingReport" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-          <svg *ngIf="!generatingReport" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button type="button" (click)="generateAmlReport()" [disabled]="generatingReport"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold text-xs shadow-md shadow-cyan-100 hover:shadow-cyan-200 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+          @if (generatingReport) {
+          <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          <span>{{ 'AML_COMPLIANCE.MODAL_GENERATING' | translate }}</span>
+          } @else {
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <span>{{ generatingReport ? ('AML_COMPLIANCE.MODAL_GENERATING' | translate) : ('AML_COMPLIANCE.MODAL_DOWNLOAD' | translate) }}</span>
+          <span>{{ 'AML_COMPLIANCE.MODAL_DOWNLOAD' | translate }}</span>
+          }
         </button>
       </div>
 
     </div>
   </div>
+  }
+
 </div>

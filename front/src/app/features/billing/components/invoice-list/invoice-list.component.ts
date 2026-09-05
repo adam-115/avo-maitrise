@@ -62,6 +62,37 @@ export class InvoiceListComponent implements OnInit {
     // Subject for debouncing search input
     private searchSubject = new Subject<void>();
 
+    get isFiltered(): boolean {
+        return !!(
+            this.filters.numeroFacture ||
+            this.filters['dossier.client.id'] ||
+            this.filters['dossier.id'] ||
+            this.filters.issueDateFrom ||
+            this.filters.issueDateTo ||
+            this.filters.status
+        );
+    }
+
+    get paidInvoicesCount(): number {
+        return this.invoices().filter(i => i.status === InvoiceStatusEnum.PAID).length;
+    }
+
+    get pendingInvoicesCount(): number {
+        return this.invoices().filter(i => 
+            i.status === InvoiceStatusEnum.ISSUED || 
+            i.status === InvoiceStatusEnum.PARTIALLY_PAID || 
+            i.status === InvoiceStatusEnum.DRAFT
+        ).length;
+    }
+
+    get overdueInvoicesCount(): number {
+        return this.invoices().filter(i => i.status === InvoiceStatusEnum.OVERDUE).length;
+    }
+
+    get totalInvoicesAmount(): number {
+        return this.invoices().reduce((acc, inv) => acc + (inv.totalAmount || 0), 0);
+    }
+
     ngOnInit() {
         this.loadInvoices();
         
@@ -202,15 +233,6 @@ export class InvoiceListComponent implements OnInit {
         if(id) this.router.navigate(['/home/billing/preview', id]);
     }
 
-    // deleteInvoice(id: string | number | undefined) {
-    //     if (!id) return;
-    //     if (confirm('Êtes-vous sûr de vouloir supprimer cette facture ?')) {
-    //         this.invoiceService.delete(id).subscribe(() => {
-    //             this.loadInvoices();
-    //         });
-    //     }
-    // }
-
     printInvoice(id: string | number | undefined) {
         if (!id) return;
         this.invoiceService.downloadInvoicePdf(id).subscribe({
@@ -269,14 +291,22 @@ export class InvoiceListComponent implements OnInit {
 
     getStatusBadge(status: InvoiceStatusEnum) {
         switch (status) {
-            case InvoiceStatusEnum.DRAFT: return { label: 'Brouillon', classes: 'bg-gray-100 text-gray-800 border-gray-200' };
-            case InvoiceStatusEnum.ISSUED: return { label: 'Emise', classes: 'bg-blue-100 text-blue-800 border-blue-200' };
-            case InvoiceStatusEnum.PARTIALLY_PAID: return { label: 'Partiellement Payée', classes: 'bg-yellow-100 text-yellow-800 border-yellow-200' };
-            case InvoiceStatusEnum.PAID: return { label: 'Payée', classes: 'bg-green-100 text-green-800 border-green-200' };
-            case InvoiceStatusEnum.OVERDUE: return { label: 'En retard', classes: 'bg-red-100 text-red-800 border-red-200' };
-            case InvoiceStatusEnum.CANCELLED: return { label: 'Annulée', classes: 'bg-gray-100 text-gray-600 border-gray-200' };
-            case InvoiceStatusEnum.WRITTEN_OFF: return { label: 'Irrécouvrable', classes: 'bg-purple-100 text-purple-800 border-purple-200' };
-            default: return { label: status, classes: 'bg-gray-100 text-gray-800 border-gray-200' };
+            case InvoiceStatusEnum.DRAFT: 
+                return { label: 'Brouillon', classes: 'bg-slate-50 text-slate-700 border-slate-200 ring-1 ring-slate-500/10' };
+            case InvoiceStatusEnum.ISSUED: 
+                return { label: 'Émise', classes: 'bg-blue-50 text-blue-700 border-blue-200 ring-1 ring-blue-500/10' };
+            case InvoiceStatusEnum.PARTIALLY_PAID: 
+                return { label: 'Partiellement Payée', classes: 'bg-amber-50 text-amber-700 border-amber-200 ring-1 ring-amber-500/10' };
+            case InvoiceStatusEnum.PAID: 
+                return { label: 'Payée', classes: 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-1 ring-emerald-500/10' };
+            case InvoiceStatusEnum.OVERDUE: 
+                return { label: 'En retard', classes: 'bg-rose-50 text-rose-700 border-rose-200 ring-1 ring-rose-500/10' };
+            case InvoiceStatusEnum.CANCELLED: 
+                return { label: 'Annulée', classes: 'bg-slate-100 text-slate-500 border-slate-200 ring-1 ring-slate-500/10' };
+            case InvoiceStatusEnum.WRITTEN_OFF: 
+                return { label: 'Irrécouvrable', classes: 'bg-purple-50 text-purple-700 border-purple-200 ring-1 ring-purple-500/10' };
+            default: 
+                return { label: status, classes: 'bg-slate-50 text-slate-700 border-slate-200 ring-1 ring-slate-500/10' };
         }
     }
 
@@ -286,5 +316,16 @@ export class InvoiceListComponent implements OnInit {
             return `${client.nom || ''} ${client.prenom || ''}`.trim() || `Client #${client.id}`;
         }
         return client.nomCommercial || client.nom || `Client #${client.id}`;
+    }
+
+    getClientInitials(client: any): string {
+        if (!client) return 'CL';
+        if (client.type === 'PERSONNE') {
+            const first = (client.prenom || '').charAt(0).toUpperCase();
+            const last = (client.nom || '').charAt(0).toUpperCase();
+            return (first + last) || 'CL';
+        }
+        const name = client.nomCommercial || client.nom || 'CL';
+        return name.substring(0, 2).toUpperCase();
     }
 }

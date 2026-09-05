@@ -44,6 +44,15 @@ export class BillingDashboardComponent implements OnInit {
     startDate = signal<string>('');
     endDate = signal<string>('');
 
+    get isFiltered(): boolean {
+        return !!(this.startDate() || this.endDate());
+    }
+
+    getClientInitial(clientName: string | undefined): string {
+        if (!clientName) return 'CL';
+        return clientName.trim().charAt(0).toUpperCase();
+    }
+
     ngOnInit(): void {
         this.loadProfile();
         this.loadDashboardData();

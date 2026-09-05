@@ -1,95 +1,117 @@
 <div class="space-y-6">
   <!-- Table Header / Title Section -->
-  <div class="flex flex-col md:flex-row items-start md:items-center justify-between bg-white p-6 rounded-[32px] border-2 border-emerald-100 shadow-sm gap-6">
-    <div class="flex items-center gap-4">
-      <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shadow-lg shadow-emerald-200">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+  <div class="flex flex-col md:flex-row items-start md:items-center justify-between bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm gap-4">
+    <div class="flex items-center gap-3.5">
+      <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center font-black shadow-inner flex-shrink-0">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
         </svg>
       </div>
       <div>
-        <h2 class="text-xl font-black text-slate-900 leading-tight">Répertoire des Associations</h2>
-        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">{{ filteredClients.length }} Association(s) enregistrée(s)</p>
+        <h2 class="text-xl font-black text-slate-900 tracking-tight">{{ 'CRM.ASSOCIATIONS_REGISTRY' | translate }}</h2>
+        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mt-0.5">{{ filteredClients.length }} {{ 'CRM.FILES_LISTED' | translate }}</p>
       </div>
     </div>
 
-    <!-- EXPERT SEARCH BAR -->
+    <!-- Search Bar with 2px Borders -->
     <div class="relative flex-1 max-w-md w-full">
-      <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-        <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      <div class="absolute inset-y-0 start-3.5 flex items-center pointer-events-none text-slate-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
       </div>
       <input [(ngModel)]="searchTerm" (input)="filterClients()"
-        class="w-full pl-12 pr-4 py-3 bg-emerald-50/50 rounded-2xl border-2 border-transparent focus:border-emerald-500 focus:bg-white outline-none transition-all font-bold text-slate-700 placeholder:text-emerald-300 shadow-inner"
-        placeholder="Rechercher par nom, RN ou ID..." type="text">
+        class="w-full ps-10 pe-4 py-2.5 bg-white border-2 border-slate-300 rounded-xl focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-800 text-sm shadow-sm hover:border-slate-400"
+        [placeholder]="'CRM.SEARCH_ASSOCIATIONS' | translate" type="search">
     </div>
   </div>
 
-  <!-- Table Container with Visible Borders -->
-  <div class="bg-white rounded-[32px] shadow-md border-2 border-slate-200 overflow-hidden">
+  <!-- Table Container with Crisp High-Contrast 2px Borders -->
+  <div class="bg-white rounded-2xl shadow-sm border-2 border-slate-200 overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
-          <tr class="bg-slate-50 border-b-2 border-slate-200">
-            <th class="px-6 py-5 text-xs font-black uppercase tracking-widest text-slate-500 border-r border-slate-100">Association</th>
-            <th class="px-6 py-5 text-xs font-black uppercase tracking-widest text-slate-500 border-r border-slate-100">Contact / Email</th>
-            <th class="px-6 py-5 text-xs font-black uppercase tracking-widest text-slate-500 border-r border-slate-100">RN / Pays d'origine</th>
-            <th class="px-6 py-5 text-xs font-black uppercase tracking-widest text-slate-500 border-r border-slate-100">Status AML</th>
-            <th class="px-6 py-5 text-xs font-black uppercase tracking-widest text-slate-500 text-right">Actions</th>
+          <tr class="bg-slate-50/90 border-b-2 border-slate-200 text-[11px] font-black uppercase tracking-wider text-slate-500">
+            <th class="px-5 py-4 border-r border-slate-100">{{ 'CRM.ASSOCIATION' | translate }}</th>
+            <th class="px-5 py-4 border-r border-slate-100">{{ 'CRM.CONTACT_EMAIL' | translate }}</th>
+            <th class="px-5 py-4 border-r border-slate-100">{{ 'CRM.RN_ORIGIN' | translate }}</th>
+            <th class="px-5 py-4 border-r border-slate-100">{{ 'CRM.STATUS_AML' | translate }}</th>
+            <th class="px-5 py-4 text-right">{{ 'CRM.ACTIONS' | translate }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y-2 divide-slate-100">
+        <tbody class="divide-y-2 divide-slate-100 text-xs">
           @for (client of filteredClients; track client.id) {
-            <tr class="hover:bg-emerald-50/50 transition-colors group">
-              <td class="px-6 py-4 border-r border-slate-50">
+            <tr class="hover:bg-emerald-50/40 transition-colors group cursor-pointer" (click)="navigateToDetails(client)">
+              
+              <!-- Association Name -->
+              <td class="px-5 py-4 border-r border-slate-100">
                 <div class="flex items-center gap-3">
-                  <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-sm shadow-sm">
+                  <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-xs shadow-xs flex-shrink-0">
                     {{ getDisplayName(client).charAt(0) }}
                   </div>
                   <div>
-                    <span class="block font-black text-slate-900 text-sm group-hover:text-emerald-600 transition-colors">{{ getDisplayName(client) }}</span>
-                    <span class="block text-[10px] text-slate-400 uppercase font-bold">ID: #{{ client.id }}</span>
+                    <span class="block font-black text-slate-900 group-hover:text-emerald-600 transition-colors">{{ getDisplayName(client) }}</span>
+                    <span class="block text-[10px] font-mono font-bold text-slate-400 uppercase">ID: #{{ client.id }}</span>
                   </div>
                 </div>
               </td>
-              <td class="px-6 py-4 border-r border-slate-50">
-                <span class="block text-sm font-bold text-slate-700">{{ client.email || '---' }}</span>
-                <span class="block text-xs text-slate-400">{{ client.telephone || '---' }}</span>
+
+              <!-- Contact -->
+              <td class="px-5 py-4 border-r border-slate-100">
+                <span class="block font-bold text-slate-700">{{ client.email || '---' }}</span>
+                <span class="block text-[11px] text-slate-400 font-medium">{{ client.telephone || '---' }}</span>
               </td>
-              <td class="px-6 py-4 border-r border-slate-50">
-                <span class="block text-sm font-bold text-slate-700">RN: {{ client.numeroRegistreNational || '---' }}</span>
-                <span class="block text-xs text-slate-400 font-bold uppercase">{{ client.pays || '---' }}</span>
+
+              <!-- RN / Country -->
+              <td class="px-5 py-4 border-r border-slate-100">
+                <span class="block font-bold text-slate-700 font-mono">{{ client.numeroRegistreNational ? ('RN: ' + client.numeroRegistreNational) : '---' }}</span>
+                <span class="block text-[10px] text-slate-400 font-bold uppercase">{{ client.pays || '---' }}</span>
               </td>
-              <td class="px-6 py-4 border-r border-slate-50">
-                <span class="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter shadow-sm inline-block"
-                      [ngClass]="getStatusColor(client.clientStatus)">
-                  {{ client.clientStatus?.replace('_', ' ') }}
+
+              <!-- AML Status -->
+              <td class="px-5 py-4 border-r border-slate-100">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-xs inline-block"
+                  [ngClass]="{
+                    'bg-rose-50 text-rose-700 border-rose-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'BLOCKED',
+                    'bg-amber-50 text-amber-800 border-amber-200': client.clientStatus === 'VERIFICATION_AML_REQUIRED',
+                    'bg-emerald-50 text-emerald-800 border-emerald-200': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
+                    'bg-indigo-50 text-indigo-800 border-indigo-200': client.clientStatus === 'INDULGENCE_REQUIRED',
+                    'bg-slate-50 text-slate-700 border-slate-200': !client.clientStatus
+                  }">
+                  {{ client.clientStatus ? client.clientStatus.replace('_', ' ') : 'INCONNU' }}
                 </span>
               </td>
-              <td class="px-6 py-4">
-                <div class="flex justify-end gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-all transform lg:translate-x-2 lg:group-hover:translate-x-0">
-                  <button (click)="navigateToDetails(client)" 
-                          class="p-2.5 rounded-xl hover:bg-white hover:shadow-md text-slate-400 hover:text-slate-900 transition-all border border-transparent hover:border-slate-100" title="Détails">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+
+              <!-- Actions -->
+              <td class="px-5 py-4 text-right" (click)="$event.stopPropagation()">
+                <div class="flex items-center justify-end gap-1.5">
+                  <button type="button" (click)="navigateToConformity(client)"
+                    class="p-2 rounded-xl bg-white border-2 border-slate-200 hover:border-slate-400 text-slate-600 hover:text-slate-900 transition-all shadow-xs cursor-pointer"
+                    [title]="'CRM.CONFORMITY' | translate">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                   </button>
-                  <button (click)="navigateToEdit(client)" 
-                          class="p-2.5 rounded-xl hover:bg-white hover:shadow-md text-slate-400 hover:text-cyan-600 transition-all border border-transparent hover:border-slate-100" title="Modifier">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                  <button type="button" (click)="navigateToEdit(client)"
+                    class="p-2 rounded-xl bg-white border-2 border-slate-200 hover:border-emerald-500 text-slate-600 hover:text-emerald-700 transition-all shadow-xs cursor-pointer"
+                    [title]="'CRM.EDIT' | translate">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                   </button>
-                  <button (click)="navigateToDiligence(client)" 
-                          class="p-2.5 rounded-xl hover:bg-white hover:shadow-md text-slate-400 hover:text-red-600 transition-all border border-transparent hover:border-slate-100" title="Due Diligence">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                  <button type="button" (click)="navigateToDiligence(client)"
+                    class="p-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white transition-all shadow-xs cursor-pointer"
+                    [title]="'CRM.DILIGENCE' | translate">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                   </button>
                 </div>
               </td>
+
             </tr>
           } @empty {
             <tr>
-              <td colspan="6" class="px-6 py-24 text-center bg-slate-50/30">
+              <td colspan="5" class="px-6 py-20 text-center bg-slate-50/40">
                 <div class="flex flex-col items-center">
-                  <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm mb-4 border border-slate-100">
-                    <svg class="w-8 h-8 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                  <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-xs mb-3 border border-slate-200">
+                    <svg class="w-7 h-7 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                   </div>
-                  <span class="text-slate-400 font-black uppercase tracking-widest text-sm">Aucune association enregistrée</span>
+                  <span class="text-slate-500 font-bold text-sm">{{ 'CRM.NO_DATA_AVAILABLE' | translate }}</span>
                 </div>
               </td>
             </tr>
@@ -99,4 +121,3 @@
     </div>
   </div>
 </div>
-

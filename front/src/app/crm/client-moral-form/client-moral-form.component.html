@@ -1,132 +1,268 @@
-<div class="min-h-screen bg-slate-50 p-6 md:p-12 font-sans text-slate-900">
-    <div class="max-w-4xl mx-auto">
+<div class="space-y-8 font-sans max-w-5xl mx-auto pb-12">
 
-        <div class="mb-10">
-            <h1 class="text-4xl font-black tracking-tighter text-slate-900">
-                {{ (isEditMode ? 'CLIENT_FORM.TITLE_EDIT' : 'CLIENT_FORM.TITLE_NEW') | translate }} <span class="text-purple-500">{{ 'CLIENT_FORM.TITLE_MORAL' | translate }}</span>
+  <!-- En-tête Principal avec Titre & Fil d'Ariane -->
+  <div class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-sm relative overflow-hidden">
+    <!-- Accent gradient bar (Purple Theme for Société) -->
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-500 via-indigo-600 to-blue-600"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="flex items-start sm:items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 border border-purple-100 flex items-center justify-center font-bold shadow-sm flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+        </div>
+        <div>
+          <!-- Fil d'Ariane -->
+          <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+            <span class="hover:text-purple-600 cursor-pointer transition-colors" routerLink="/home">{{ 'CRM.BREADCRUMB_DASHBOARD' | translate }}</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            <span class="hover:text-purple-600 cursor-pointer transition-colors" routerLink="/home/crm">{{ 'CRM.BREADCRUMB_CLIENTS' | translate }}</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+            <span class="text-slate-800">{{ isEditMode ? ('CLIENT_FORM.TITLE_EDIT' | translate) : ('CLIENT_FORM.TITLE_NEW' | translate) }}</span>
+          </nav>
+          
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              {{ (isEditMode ? 'CLIENT_FORM.TITLE_EDIT' : 'CLIENT_FORM.TITLE_NEW') | translate }} 
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">{{ 'CLIENT_FORM.TITLE_MORAL' | translate }}</span>
             </h1>
-            <p class="text-slate-500 font-medium mt-2">{{ 'CLIENT_FORM.SUBTITLE_MORAL' | translate }}</p>
+            <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-bold ring-1 ring-inset"
+              [ngClass]="isEditMode ? 'bg-amber-50 text-amber-700 ring-amber-600/20' : 'bg-purple-50 text-purple-700 ring-purple-700/10'">
+              <span class="h-1.5 w-1.5 rounded-full" [ngClass]="isEditMode ? 'bg-amber-500' : 'bg-purple-500 animate-pulse'"></span>
+              {{ isEditMode ? 'Mode Édition' : 'Mode Création' }}
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5 max-w-2xl">
+            {{ 'CLIENT_FORM.SUBTITLE_MORAL' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <button type="button" (click)="cancel()"
+        class="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors cursor-pointer self-start sm:self-center shadow-xs">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>{{ 'CLIENT_FORM.CANCEL' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" class="space-y-6">
+
+    <!-- Informations Société -->
+    <div class="bg-white p-6 sm:p-7 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+      <div class="flex items-center gap-2.5 mb-6">
+        <div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold shadow-xs">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        </div>
+        <h2 class="text-base font-black uppercase tracking-tight text-slate-900">{{ 'CLIENT_FORM.COMPANY_INFO' | translate }}</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Nom Commercial -->
+        <div class="col-span-1 md:col-span-2">
+          <label class="block text-xs font-bold mb-1.5 transition-colors" [ngClass]="isFieldInvalid('nomCommercial') ? 'text-rose-600' : 'text-slate-700'">
+            {{ 'CLIENT_FORM.COMMERCIAL_NAME' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input type="text" formControlName="nomCommercial"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 outline-none transition-all"
+            [ngClass]="isFieldInvalid('nomCommercial') ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10' : 'border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800'">
+          @if (isFieldInvalid('nomCommercial')) {
+            <span class="text-xs font-bold text-rose-600 mt-1.5 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              {{ 'CLIENT_FORM.COMMERCIAL_NAME_REQUIRED' | translate }}
+            </span>
+          }
         </div>
 
-        <form [formGroup]="clientForm" (ngSubmit)="onSubmit()" class="space-y-8">
+        <!-- Forme Juridique -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">{{ 'CLIENT_FORM.LEGAL_FORM' | translate }}</label>
+          <input type="text" formControlName="formeJuridique"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800 outline-none transition-all">
+        </div>
 
-            <!-- Informations Société -->
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 mb-6 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-                    {{ 'CLIENT_FORM.COMPANY_INFO' | translate }}
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="col-span-2">
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.COMMERCIAL_NAME' | translate }} <span class="text-red-500">*</span></label>
-                        <input type="text" formControlName="nomCommercial" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.LEGAL_FORM' | translate }}</label>
-                        <input type="text" formControlName="formeJuridique" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.RC' | translate }} <span class="text-red-500">*</span></label>
-                        <input type="text" formControlName="numeroRegistreCommerce" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.FISCAL_ID' | translate }}</label>
-                        <input type="text" formControlName="numeroIdFiscal" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
-                    </div>
-                </div>
-            </div>
+        <!-- N° RC -->
+        <div>
+          <label class="block text-xs font-bold mb-1.5 transition-colors" [ngClass]="isFieldInvalid('numeroRegistreCommerce') ? 'text-rose-600' : 'text-slate-700'">
+            {{ 'CLIENT_FORM.RC' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input type="text" formControlName="numeroRegistreCommerce"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 outline-none transition-all"
+            [ngClass]="isFieldInvalid('numeroRegistreCommerce') ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10' : 'border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800'">
+          @if (isFieldInvalid('numeroRegistreCommerce')) {
+            <span class="text-xs font-bold text-rose-600 mt-1.5 flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              {{ 'CLIENT_FORM.RC_REQUIRED' | translate }}
+            </span>
+          }
+        </div>
 
-            <!-- Représentant Légal -->
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 mb-6 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-                    {{ 'CLIENT_FORM.LEGAL_REP' | translate }}
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.LAST_NAME' | translate }}</label>
-                        <input type="text" formControlName="nomRepresentantLegal" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.FIRST_NAME' | translate }}</label>
-                        <input type="text" formControlName="prenomRepresentantLegal" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
-                    </div>
-                </div>
-            </div>
-
-            <!-- UBOs -->
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-pink-500"></span>
-                        {{ 'CLIENT_FORM.UBO_TITLE' | translate }}
-                    </h2>
-                    <button type="button" (click)="addUbo()" class="px-4 py-2 bg-slate-900 text-white text-[10px] font-black uppercase rounded-xl hover:bg-pink-600 transition-colors">
-                        {{ 'CLIENT_FORM.ADD' | translate }}
-                    </button>
-                </div>
-                <div formArrayName="ubos" class="space-y-4">
-                    @for (ubo of ubos.controls; track $index) {
-                    <div [formGroupName]="$index" class="p-6 bg-slate-50 rounded-2xl border border-slate-200 relative group">
-                        <button type="button" (click)="removeUbo($index)" class="absolute top-4 right-4 text-slate-300 hover:text-red-500">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                        </button>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-[9px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.UBO_FULL_NAME' | translate }} <span class="text-red-500">*</span></label>
-                                <input type="text" formControlName="fullName" class="w-full bg-white rounded-xl px-4 py-2 text-sm font-bold border border-slate-200 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[9px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.UBO_OWNERSHIP' | translate }} <span class="text-red-500">*</span></label>
-                                <input type="number" formControlName="percentageOfOwnership" class="w-full bg-white rounded-xl px-4 py-2 text-sm font-bold border border-slate-200 outline-none">
-                            </div>
-                        </div>
-                    </div>
-                    }
-                </div>
-            </div>
-
-            <!-- Common Fields (Email, Tel, etc.) - Simplified -->
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-lg font-black uppercase tracking-tight text-slate-900 mb-6 flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full bg-cyan-500"></span>
-                    {{ 'CLIENT_FORM.CONTACT_HQ' | translate }}
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.EMAIL' | translate }} <span class="text-red-500">*</span></label>
-                        <input type="email" formControlName="email" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.PHONE' | translate }} <span class="text-red-500">*</span></label>
-                        <input type="tel" formControlName="telephone" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.COUNTRY' | translate }} <span class="text-red-500">*</span></label>
-                        <input type="text" formControlName="pays" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] uppercase font-black text-slate-400 mb-1">{{ 'CLIENT_FORM.SECTOR' | translate }} <span class="text-red-500">*</span></label>
-                        <select formControlName="secteurActivite" class="w-full bg-slate-50 rounded-xl px-4 py-3 text-sm font-bold border-2 border-slate-300 focus:border-cyan-500 outline-none">
-                            @for (sec of secteurs; track sec.code) {
-                                <option [value]="sec.code">{{ sec.libelle }}</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Actions -->
-            <div class="flex justify-end gap-4">
-                <button type="button" (click)="cancel()" class="px-8 py-4 text-sm font-black uppercase tracking-widest text-slate-500 hover:text-slate-900 transition-all">
-                    {{ 'CLIENT_FORM.CANCEL' | translate }}
-                </button>
-                <button type="submit" class="px-10 py-4 bg-slate-900 text-white text-sm font-black uppercase tracking-widest rounded-2xl hover:bg-purple-600 shadow-lg shadow-slate-200 transition-all">
-                    {{ (isEditMode ? 'CLIENT_FORM.SAVE_CHANGES' : 'CLIENT_FORM.CREATE_CLIENT') | translate }}
-                </button>
-            </div>
-        </form>
+        <!-- Identifiant Fiscal -->
+        <div class="col-span-1 md:col-span-2">
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">{{ 'CLIENT_FORM.FISCAL_ID' | translate }}</label>
+          <input type="text" formControlName="numeroIdFiscal"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800 outline-none transition-all">
+        </div>
+      </div>
     </div>
+
+    <!-- Représentant Légal -->
+    <div class="bg-white p-6 sm:p-7 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+      <div class="flex items-center gap-2.5 mb-6">
+        <div class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shadow-xs">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h2 class="text-base font-black uppercase tracking-tight text-slate-900">{{ 'CLIENT_FORM.LEGAL_REP' | translate }}</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">{{ 'CLIENT_FORM.REP_LAST_NAME' | translate }}</label>
+          <input type="text" formControlName="nomRepresentantLegal"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800 outline-none transition-all">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">{{ 'CLIENT_FORM.REP_FIRST_NAME' | translate }}</label>
+          <input type="text" formControlName="prenomRepresentantLegal"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800 outline-none transition-all">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">{{ 'CLIENT_FORM.NATIONALITY' | translate }}</label>
+          <input type="text" formControlName="nationaliteRepresentantLegal"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800 outline-none transition-all">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">{{ 'CLIENT_FORM.PASSPORT' | translate }}</label>
+          <input type="text" formControlName="cinRepresentantLegal"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800 outline-none transition-all">
+        </div>
+      </div>
+    </div>
+
+    <!-- Bénéficiaires Effectifs (UBO) -->
+    <div class="bg-white p-6 sm:p-7 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-pink-100 text-pink-700 flex items-center justify-center font-bold shadow-xs">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          </div>
+          <h2 class="text-base font-black uppercase tracking-tight text-slate-900">{{ 'CLIENT_FORM.UBO_TITLE' | translate }}</h2>
+        </div>
+        <button type="button" (click)="addUbo()"
+          class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-pink-50 hover:bg-pink-100 border border-pink-200 text-pink-700 font-bold text-xs transition-colors cursor-pointer shadow-xs">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          <span>{{ 'CLIENT_FORM.ADD' | translate }}</span>
+        </button>
+      </div>
+
+      <div formArrayName="ubos" class="space-y-4">
+        @for (ubo of ubos.controls; track $index) {
+        <div [formGroupName]="$index" class="p-5 rounded-2xl bg-slate-50 border-2 border-slate-200 relative group hover:border-pink-300 transition-all">
+          <button type="button" (click)="removeUbo($index)"
+            class="absolute top-4 end-4 p-1.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 hover:bg-rose-100 transition-all cursor-pointer shadow-xs"
+            title="Supprimer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pe-8">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">{{ 'CLIENT_FORM.UBO_FULL_NAME' | translate }} <span class="text-rose-500">*</span></label>
+              <input type="text" formControlName="fullName"
+                class="w-full bg-white rounded-xl px-3.5 py-2 text-sm font-semibold border-2 border-slate-300 hover:border-slate-400 focus:border-pink-600 focus:ring-4 focus:ring-pink-500/10 text-slate-800 outline-none transition-all">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">{{ 'CLIENT_FORM.UBO_OWNERSHIP' | translate }} <span class="text-rose-500">*</span></label>
+              <input type="number" formControlName="percentageOfOwnership" min="0" max="100"
+                class="w-full bg-white rounded-xl px-3.5 py-2 text-sm font-semibold border-2 border-slate-300 hover:border-slate-400 focus:border-pink-600 focus:ring-4 focus:ring-pink-500/10 text-slate-800 outline-none transition-all">
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Contact & Siège Social -->
+    <div class="bg-white p-6 sm:p-7 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+      <div class="flex items-center gap-2.5 mb-6">
+        <div class="w-8 h-8 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold shadow-xs">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </div>
+        <h2 class="text-base font-black uppercase tracking-tight text-slate-900">{{ 'CLIENT_FORM.CONTACT_HQ' | translate }}</h2>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Email -->
+        <div>
+          <label class="block text-xs font-bold mb-1.5 transition-colors" [ngClass]="isFieldInvalid('email') ? 'text-rose-600' : 'text-slate-700'">
+            {{ 'CLIENT_FORM.EMAIL' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input type="email" formControlName="email"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 outline-none transition-all"
+            [ngClass]="isFieldInvalid('email') ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10' : 'border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800'">
+        </div>
+
+        <!-- Téléphone -->
+        <div>
+          <label class="block text-xs font-bold mb-1.5 transition-colors" [ngClass]="isFieldInvalid('telephone') ? 'text-rose-600' : 'text-slate-700'">
+            {{ 'CLIENT_FORM.PHONE' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input type="tel" formControlName="telephone"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 outline-none transition-all"
+            [ngClass]="isFieldInvalid('telephone') ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10' : 'border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800'">
+        </div>
+
+        <!-- Pays -->
+        <div>
+          <label class="block text-xs font-bold mb-1.5 transition-colors" [ngClass]="isFieldInvalid('pays') ? 'text-rose-600' : 'text-slate-700'">
+            {{ 'CLIENT_FORM.COUNTRY' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input type="text" formControlName="pays"
+            class="w-full bg-white rounded-xl px-4 py-2.5 sm:py-3 text-sm font-semibold border-2 outline-none transition-all"
+            [ngClass]="isFieldInvalid('pays') ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10' : 'border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800'">
+        </div>
+
+        <!-- Secteur d'Activité -->
+        <div>
+          <label class="block text-xs font-bold mb-1.5 transition-colors" [ngClass]="isFieldInvalid('secteurActivite') ? 'text-rose-600' : 'text-slate-700'">
+            {{ 'CLIENT_FORM.SECTOR' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <div class="relative">
+            <select formControlName="secteurActivite"
+              class="w-full bg-white rounded-xl ps-4 pe-10 py-2.5 sm:py-3 text-sm font-semibold border-2 outline-none transition-all appearance-none cursor-pointer"
+              [ngClass]="isFieldInvalid('secteurActivite') ? 'border-rose-400 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/10' : 'border-slate-300 hover:border-slate-400 focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 text-slate-800'">
+              <option value="">{{ 'CLIENT_FORM.SECTOR_SELECT' | translate }}</option>
+              @for (sec of secteurs; track sec.code) {
+                <option [value]="sec.code">{{ sec.libelle }}</option>
+              }
+            </select>
+            <div class="absolute inset-y-0 end-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barre d'Actions Inférieure -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-end gap-3.5">
+      <button type="button" (click)="cancel()"
+        class="w-full sm:w-auto px-6 py-2.5 rounded-xl border-2 border-slate-300 text-slate-700 hover:bg-slate-100 font-bold text-xs transition-all cursor-pointer shadow-xs text-center">
+        {{ 'CLIENT_FORM.CANCEL' | translate }}
+      </button>
+      <button type="submit" [disabled]="clientForm.invalid"
+        class="w-full sm:w-auto px-8 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md shadow-purple-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer flex items-center justify-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+        <span>{{ (isEditMode ? 'CLIENT_FORM.SAVE_CHANGES' : 'CLIENT_FORM.CREATE_CLIENT') | translate }}</span>
+      </button>
+    </div>
+
+  </form>
 </div>
 
-<app-document-dialog *ngIf="showAddDocumentDialog" (addDocumentEvent)="onAddDocument($event)" (closeDialogEvent)="closeAddDocumentDialog()"></app-document-dialog>
+@if (showAddDocumentDialog) {
+<app-document-dialog [selectedDocument]="null" (addDocumentEvent)="onAddDocument($event)" (closeDialogEvent)="closeAddDocumentDialog()"></app-document-dialog>
+}

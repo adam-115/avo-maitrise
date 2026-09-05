@@ -1,112 +1,451 @@
-<div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4">{{ 'DOSSIER_STATUS_FORM.TITLE' | translate }}</h2>
+<div class="p-4 sm:p-6 lg:p-8 bg-slate-50/50 min-h-screen space-y-6 sm:space-y-8 font-sans">
 
-    <!-- Formulaire d'ajout/édition -->
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h3 class="text-xl font-semibold mb-2">{{ isEditing ? ('DOSSIER_STATUS_FORM.EDIT_STATUS' | translate) : ('DOSSIER_STATUS_FORM.ADD_STATUS' | translate) }}</h3>
+  <!-- Hero Header Card -->
+  <div class="relative overflow-hidden rounded-3xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all duration-300 p-6 sm:p-8">
+    <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600"></div>
+    <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-indigo-100/40 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-16 -top-16 w-64 h-64 bg-purple-100/30 rounded-full blur-3xl pointer-events-none"></div>
 
-        <form [formGroup]="statusForm" (ngSubmit)="onSubmit()">
-            <div class="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="label">{{ 'DOSSIER_STATUS_FORM.LABEL' | translate }}</label>
-                    <input id="label" type="text" formControlName="label"
-                        class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                        [placeholder]="'DOSSIER_STATUS_FORM.LABEL_PLACEHOLDER' | translate" />
-                </div>
+    <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      <div class="space-y-2">
+        <!-- Back Navigation & Breadcrumb -->
+        <div class="flex items-center gap-3">
+          <button (click)="navigateBackToPreferences()" 
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold text-slate-700 transition-colors active:scale-95 shadow-2xs cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            <span>{{ 'DOSSIER_STATUS_FORM.BACK_TO_PREFERENCES' | translate }}</span>
+          </button>
 
-                <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="code">{{ 'DOSSIER_STATUS_FORM.CODE' | translate }}</label>
-                    <input id="code" type="text" formControlName="code"
-                        class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                        [placeholder]="'DOSSIER_STATUS_FORM.CODE_PLACEHOLDER' | translate" />
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="color">{{ 'DOSSIER_STATUS_FORM.COLOR' | translate }}</label>
-                    <input id="color" type="color" formControlName="color"
-                        class="h-10 w-full rounded cursor-pointer border-2 border-slate-300 hover:border-slate-400 transition-colors" />
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 text-sm font-bold mb-2" for="order">{{ 'DOSSIER_STATUS_FORM.DISPLAY_ORDER' | translate }}</label>
-                    <input id="order" type="number" formControlName="order"
-                        class="shadow appearance-none rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-2 border-slate-300 hover:border-slate-400 transition-colors" />
-                </div>
-
-                <div class="flex items-center mt-6">
-                    <input id="active" type="checkbox" formControlName="active"
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" />
-                    <label for="active" class="ms-2 block text-sm text-gray-900">{{ 'DOSSIER_STATUS_FORM.ACTIVE' | translate }}</label>
-                </div>
-            </div>
-
-            <div class="flex items-center justify-between">
-                <button
-                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    type="submit" [disabled]="statusForm.invalid">
-                    {{ isEditing ? ('DOSSIER_STATUS_FORM.UPDATE' | translate) : ('DOSSIER_STATUS_FORM.ADD' | translate) }}
-                </button>
-                <button *ngIf="isEditing" type="button" (click)="cancelEdit()"
-                    class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                    {{ 'DOSSIER_STATUS_FORM.CANCEL' | translate }}
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Liste des statuts -->
-    <div class="bg-white shadow-md rounded px-8 pt-6 pb-8">
-        <h3 class="text-xl font-semibold mb-4">{{ 'DOSSIER_STATUS_FORM.LIST_TITLE' | translate }}</h3>
-        <div class="overflow-x-auto">
-            <table class="min-w-full leading-normal">
-                <thead>
-                    <tr>
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            {{ 'DOSSIER_STATUS_FORM.TABLE_ORDER' | translate }}</th>
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            {{ 'DOSSIER_STATUS_FORM.TABLE_COLOR' | translate }}</th>
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            {{ 'DOSSIER_STATUS_FORM.TABLE_LABEL' | translate }}</th>
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            {{ 'DOSSIER_STATUS_FORM.TABLE_CODE' | translate }}</th>
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            {{ 'DOSSIER_STATUS_FORM.TABLE_STATUS' | translate }}</th>
-                        <th
-                            class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            {{ 'DOSSIER_STATUS_FORM.TABLE_ACTIONS' | translate }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let status of statuses">
-                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ status.order }}</td>
-                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                            <div [style.background-color]="status.color"
-                                class="w-6 h-6 rounded-full border border-gray-300"></div>
-                        </td>
-                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm font-medium">{{ status.label }}
-                        </td>
-                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">{{ status.code }}</td>
-                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                                [ngClass]="status.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-                                {{ status.active ? ('DOSSIER_STATUS_FORM.STATUS_ACTIVE' | translate) : ('DOSSIER_STATUS_FORM.STATUS_INACTIVE' | translate) }}
-                            </span>
-                        </td>
-                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                            <button (click)="editStatus(status)"
-                                class="text-blue-600 hover:text-blue-900 me-4">{{ 'DOSSIER_STATUS_FORM.ACTION_EDIT' | translate }}</button>
-                            <button (click)="deleteStatus(status.id)"
-                                class="text-red-600 hover:text-red-900">{{ 'DOSSIER_STATUS_FORM.ACTION_DELETE' | translate }}</button>
-
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+          <span class="text-slate-300 font-normal">/</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-700">{{ 'DOSSIER_STATUS_FORM.BREADCRUMB_PREF' | translate }}</span>
         </div>
+
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+          {{ 'DOSSIER_STATUS_FORM.TITLE' | translate }}
+          <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+            {{ totalCount }} {{ 'DOSSIER_STATUS_FORM.KPI_TOTAL' | translate }}
+          </span>
+        </h1>
+        <p class="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
+          {{ 'DOSSIER_STATUS_FORM.SUBTITLE' | translate }}
+        </p>
+      </div>
+
+      <!-- Quick Action / Status Badge -->
+      <div class="flex items-center gap-3 self-start lg:self-center">
+        <div class="px-4 py-2 rounded-2xl bg-indigo-50 border border-indigo-200 text-xs font-bold text-indigo-700 flex items-center gap-2 shadow-2xs">
+          <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+          </svg>
+          <span>{{ activeCount }} Actifs • {{ inactiveCount }} Inactifs</span>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- KPI Metrics Cards Grid -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    
+    <!-- 1. Total Statuses -->
+    <div class="p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+      <div class="absolute top-0 inset-x-0 h-1 bg-indigo-500"></div>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'DOSSIER_STATUS_FORM.KPI_TOTAL' | translate }}</p>
+          <h3 class="text-2xl font-black text-slate-900 mt-1">{{ totalCount }}</h3>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Active Statuses -->
+    <div class="p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+      <div class="absolute top-0 inset-x-0 h-1 bg-emerald-500"></div>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'DOSSIER_STATUS_FORM.KPI_ACTIVE' | translate }}</p>
+          <h3 class="text-2xl font-black text-emerald-700 mt-1">{{ activeCount }}</h3>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Inactive Statuses -->
+    <div class="p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+      <div class="absolute top-0 inset-x-0 h-1 bg-slate-400"></div>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'DOSSIER_STATUS_FORM.KPI_INACTIVE' | translate }}</p>
+          <h3 class="text-2xl font-black text-slate-600 mt-1">{{ inactiveCount }}</h3>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Mode Status -->
+    <div class="p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
+      [ngClass]="isEditing ? 'border-amber-400' : ''">
+      <div class="absolute top-0 inset-x-0 h-1" [ngClass]="isEditing ? 'bg-amber-500' : 'bg-blue-500'"></div>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">État Formulaire</p>
+          <h3 class="text-sm font-black mt-1" [ngClass]="isEditing ? 'text-amber-700' : 'text-blue-700'">
+            {{ isEditing ? ('DOSSIER_STATUS_FORM.EDIT_STATUS' | translate) : ('DOSSIER_STATUS_FORM.ADD_STATUS' | translate) }}
+          </h3>
+        </div>
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform"
+          [ngClass]="isEditing ? 'bg-amber-50 border border-amber-200 text-amber-600' : 'bg-blue-50 border border-blue-200 text-blue-600'">
+          <svg *ngIf="!isEditing" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <svg *ngIf="isEditing" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Form Section Card -->
+  <div id="statusFormCard"
+    [ngClass]="isEditing ? 'border-amber-400 ring-4 ring-amber-100' : 'border-slate-300'"
+    class="relative overflow-hidden bg-white rounded-3xl p-6 sm:p-8 shadow-sm border-2 transition-all duration-300">
+    
+    <div class="absolute top-0 inset-x-0 h-1.5"
+      [ngClass]="isEditing ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600'"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+      <div class="space-y-1">
+        <h3 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center text-white"
+            [style.backgroundColor]="statusForm.get('color')?.value || '#3b82f6'">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+            </svg>
+          </div>
+          <span>{{ isEditing ? ('DOSSIER_STATUS_FORM.EDIT_STATUS' | translate) : ('DOSSIER_STATUS_FORM.ADD_STATUS' | translate) }}</span>
+        </h3>
+        <p class="text-xs text-slate-500 font-medium">
+          {{ 'DOSSIER_STATUS_FORM.FORM_SECTION_DESC' | translate }}
+        </p>
+      </div>
+
+      <div *ngIf="isEditing" class="flex items-center gap-2">
+        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+          Mode Édition Actif
+        </span>
+      </div>
+    </div>
+
+    <!-- Form Body -->
+    <form [formGroup]="statusForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Libellé -->
+        <div class="lg:col-span-2">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2" for="label">
+            {{ 'DOSSIER_STATUS_FORM.LABEL' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input id="label" type="text" formControlName="label"
+            [placeholder]="'DOSSIER_STATUS_FORM.LABEL_PLACEHOLDER' | translate"
+            [ngClass]="{
+              'border-rose-400 ring-2 ring-rose-100 bg-rose-50/20': statusForm.get('label')?.invalid && statusForm.get('label')?.touched,
+              'border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600': !(statusForm.get('label')?.invalid && statusForm.get('label')?.touched)
+            }"
+            class="w-full px-4 py-3 rounded-2xl bg-white text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs" />
+          <p *ngIf="statusForm.get('label')?.invalid && statusForm.get('label')?.touched" class="text-[11px] font-bold text-rose-500 mt-1.5 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>{{ 'DOSSIER_FORM.REQUIRED' | translate }}</span>
+          </p>
+        </div>
+
+        <!-- Code Mnémonique -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2" for="code">
+            {{ 'DOSSIER_STATUS_FORM.CODE' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input id="code" type="text" formControlName="code"
+            [placeholder]="'DOSSIER_STATUS_FORM.CODE_PLACEHOLDER' | translate"
+            [ngClass]="{
+              'border-rose-400 ring-2 ring-rose-100 bg-rose-50/20': statusForm.get('code')?.invalid && statusForm.get('code')?.touched,
+              'border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600': !(statusForm.get('code')?.invalid && statusForm.get('code')?.touched)
+            }"
+            class="w-full px-4 py-3 rounded-2xl bg-white text-sm font-mono font-bold text-slate-800 uppercase placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs" />
+          <p *ngIf="statusForm.get('code')?.invalid && statusForm.get('code')?.touched" class="text-[11px] font-bold text-rose-500 mt-1.5 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>{{ 'DOSSIER_FORM.REQUIRED' | translate }}</span>
+          </p>
+        </div>
+
+        <!-- Ordre d'affichage -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2" for="order">
+            {{ 'DOSSIER_STATUS_FORM.DISPLAY_ORDER' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input id="order" type="number" formControlName="order"
+            [ngClass]="{
+              'border-rose-400 ring-2 ring-rose-100 bg-rose-50/20': statusForm.get('order')?.invalid && statusForm.get('order')?.touched,
+              'border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600': !(statusForm.get('order')?.invalid && statusForm.get('order')?.touched)
+            }"
+            class="w-full px-4 py-3 rounded-2xl bg-white text-sm font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs" />
+        </div>
+
+        <!-- Couleur avec Palette Rapide -->
+        <div class="lg:col-span-2">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2" for="color">
+            {{ 'DOSSIER_STATUS_FORM.COLOR' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <div class="flex flex-wrap items-center gap-3 p-3 rounded-2xl bg-slate-50 border-2 border-slate-200">
+            <!-- Native Color Picker with swatch -->
+            <div class="relative flex items-center gap-2">
+              <input id="color" type="color" formControlName="color"
+                class="w-10 h-10 rounded-xl cursor-pointer border-2 border-slate-300 p-0.5 bg-white shadow-2xs transition-transform active:scale-95"
+                [title]="'DOSSIER_STATUS_FORM.COLOR_PICKER_HINT' | translate" />
+              <span class="font-mono text-xs font-bold text-slate-700 uppercase">{{ statusForm.get('color')?.value }}</span>
+            </div>
+
+            <!-- Separator -->
+            <div class="h-6 w-px bg-slate-300 hidden sm:block"></div>
+
+            <!-- Color Presets -->
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button *ngFor="let col of presetColors" type="button" (click)="setColor(col)"
+                [style.backgroundColor]="col"
+                [ngClass]="statusForm.get('color')?.value === col ? 'ring-2 ring-offset-2 ring-slate-800 scale-110' : 'hover:scale-105'"
+                class="w-6 h-6 rounded-lg transition-transform shadow-2xs border border-white cursor-pointer"></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Statut Actif Checkbox -->
+        <div class="md:col-span-2 lg:col-span-3 pt-2">
+          <label class="relative inline-flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border-2 border-slate-200 cursor-pointer hover:bg-slate-100/80 transition-colors">
+            <input id="active" type="checkbox" formControlName="active"
+              class="w-5 h-5 text-indigo-600 bg-white border-2 border-slate-300 rounded-lg focus:ring-indigo-500 cursor-pointer" />
+            <div>
+              <span class="text-xs font-bold text-slate-800 block">{{ 'DOSSIER_STATUS_FORM.ACTIVE' | translate }}</span>
+              <span class="text-[11px] text-slate-500 font-medium">Rendre ce statut actif et utilisable dans le workflow des dossiers.</span>
+            </div>
+          </label>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons Row -->
+      <div class="flex items-center justify-between gap-4 pt-4 border-t border-slate-100">
+        <button *ngIf="isEditing" type="button" (click)="cancelEdit()"
+          class="px-5 py-2.5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs shadow-2xs transition-all cursor-pointer active:scale-95">
+          {{ 'DOSSIER_STATUS_FORM.CANCEL' | translate }}
+        </button>
+        <div *ngIf="!isEditing"></div>
+
+        <button type="submit" [disabled]="statusForm.invalid"
+          [ngClass]="{
+            'bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg': statusForm.valid,
+            'bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200': statusForm.invalid
+          }"
+          class="px-6 py-3 rounded-2xl font-black text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+          <svg *ngIf="!isEditing" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+          <svg *ngIf="isEditing" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>{{ isEditing ? ('DOSSIER_STATUS_FORM.UPDATE' | translate) : ('DOSSIER_STATUS_FORM.ADD' | translate) }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Statuses List Repository Section -->
+  <div class="overflow-hidden rounded-3xl bg-white border-2 border-slate-300 shadow-sm space-y-4">
+    
+    <!-- Table Toolbar -->
+    <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/50">
+      <div>
+        <h3 class="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <span>{{ 'DOSSIER_STATUS_FORM.LIST_TITLE' | translate }}</span>
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+            {{ filteredStatuses.length }}
+          </span>
+        </h3>
+        <p class="text-xs text-slate-500 font-medium mt-0.5">
+          {{ 'DOSSIER_STATUS_FORM.LIST_SECTION_DESC' | translate }}
+        </p>
+      </div>
+
+      <!-- Filters & Search -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Search Input -->
+        <div class="relative min-w-[220px]">
+          <svg class="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input type="text" [(ngModel)]="searchTerm"
+            [placeholder]="'DOSSIER_STATUS_FORM.SEARCH_PLACEHOLDER' | translate"
+            class="w-full ps-9 pe-8 py-2 rounded-xl bg-white border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs" />
+          <button *ngIf="searchTerm" (click)="searchTerm = ''"
+            class="absolute end-2.5 top-1/2 -translate-y-1/2 p-0.5 text-slate-400 hover:text-slate-600 rounded cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Filter Status Segmented Buttons -->
+        <div class="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200 shadow-2xs">
+          <button type="button" (click)="filterStatus = 'ALL'"
+            [ngClass]="filterStatus === 'ALL' ? 'bg-white text-indigo-700 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 font-bold'"
+            class="px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer">
+            Tous
+          </button>
+          <button type="button" (click)="filterStatus = 'ACTIVE'"
+            [ngClass]="filterStatus === 'ACTIVE' ? 'bg-white text-indigo-700 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 font-bold'"
+            class="px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer">
+            Actifs
+          </button>
+          <button type="button" (click)="filterStatus = 'INACTIVE'"
+            [ngClass]="filterStatus === 'INACTIVE' ? 'bg-white text-indigo-700 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 font-bold'"
+            class="px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer">
+            Inactifs
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Content -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs border-collapse">
+        <thead>
+          <tr class="bg-slate-100/90 border-b-2 border-slate-300 text-slate-700 uppercase font-black tracking-wider text-[11px]">
+            <th scope="col" class="py-4 px-6">{{ 'DOSSIER_STATUS_FORM.TABLE_ORDER' | translate }}</th>
+            <th scope="col" class="py-4 px-6">{{ 'DOSSIER_STATUS_FORM.TABLE_COLOR' | translate }}</th>
+            <th scope="col" class="py-4 px-6">{{ 'DOSSIER_STATUS_FORM.TABLE_LABEL' | translate }}</th>
+            <th scope="col" class="py-4 px-6">{{ 'DOSSIER_STATUS_FORM.TABLE_CODE' | translate }}</th>
+            <th scope="col" class="py-4 px-6">{{ 'DOSSIER_STATUS_FORM.TABLE_STATUS' | translate }}</th>
+            <th scope="col" class="py-4 px-6 text-end">{{ 'DOSSIER_STATUS_FORM.TABLE_ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <tr *ngFor="let status of filteredStatuses"
+            [ngClass]="{
+              'bg-slate-50/60 opacity-75': !status.active,
+              'hover:bg-indigo-50/30 bg-white': status.active
+            }"
+            class="transition-colors group">
+            
+            <!-- Order -->
+            <td class="py-4 px-6">
+              <span class="w-7 h-7 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 font-black text-xs inline-flex items-center justify-center shadow-2xs">
+                {{ status.order }}
+              </span>
+            </td>
+
+            <!-- Color Badge -->
+            <td class="py-4 px-6">
+              <div class="flex items-center gap-2.5">
+                <div [style.backgroundColor]="status.color || '#3b82f6'"
+                  class="w-6 h-6 rounded-lg shadow-2xs border border-white"></div>
+                <span class="font-mono text-[11px] font-bold text-slate-500 uppercase">{{ status.color || '-' }}</span>
+              </div>
+            </td>
+
+            <!-- Libellé -->
+            <td class="py-4 px-6">
+              <div class="flex items-center gap-2.5">
+                <span [style.backgroundColor]="(status.color || '#3b82f6') + '20'"
+                  [style.color]="status.color || '#3b82f6'"
+                  [style.borderColor]="(status.color || '#3b82f6') + '40'"
+                  class="px-2.5 py-1 rounded-lg text-xs font-black uppercase tracking-wider border shadow-2xs">
+                  {{ status.label }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Code Mnémonique -->
+            <td class="py-4 px-6">
+              <span class="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                {{ status.code }}
+              </span>
+            </td>
+
+            <!-- Statut -->
+            <td class="py-4 px-6">
+              <span class="px-3 py-1 inline-flex items-center gap-1.5 text-xs font-bold rounded-full border shadow-2xs"
+                [ngClass]="status.active ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-600 border-slate-200'">
+                <span class="w-1.5 h-1.5 rounded-full" [ngClass]="status.active ? 'bg-emerald-500' : 'bg-slate-400'"></span>
+                {{ status.active ? ('DOSSIER_STATUS_FORM.STATUS_ACTIVE' | translate) : ('DOSSIER_STATUS_FORM.STATUS_INACTIVE' | translate) }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="py-4 px-6 text-end">
+              <div class="flex items-center justify-end gap-2">
+                <!-- Edit Button -->
+                <button type="button" (click)="editStatus(status)"
+                  class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border-2 border-slate-300 bg-white hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 hover:text-indigo-700 font-bold text-xs transition-all shadow-2xs cursor-pointer active:scale-95"
+                  [title]="'DOSSIER_STATUS_FORM.ACTION_EDIT' | translate">
+                  <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  <span>{{ 'DOSSIER_STATUS_FORM.ACTION_EDIT' | translate }}</span>
+                </button>
+
+                <!-- Toggle Status Button -->
+                <button type="button" (click)="toggleStatusActive(status)"
+                  [ngClass]="status.active ? 'hover:bg-rose-50 hover:border-rose-300 text-slate-700 hover:text-rose-600' : 'hover:bg-emerald-50 hover:border-emerald-300 text-slate-700 hover:text-emerald-700'"
+                  class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border-2 border-slate-300 bg-white font-bold text-xs transition-all shadow-2xs cursor-pointer active:scale-95"
+                  [title]="status.active ? ('DOSSIER_STATUS_FORM.ACTION_DISABLE' | translate) : ('DOSSIER_STATUS_FORM.ACTION_ACTIVATE' | translate)">
+                  <svg *ngIf="status.active" class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                  </svg>
+                  <svg *ngIf="!status.active" class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{{ status.active ? ('DOSSIER_STATUS_FORM.ACTION_DISABLE' | translate) : ('DOSSIER_STATUS_FORM.ACTION_ACTIVATE' | translate) }}</span>
+                </button>
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredStatuses.length === 0"
+      class="flex flex-col items-center justify-center py-16 px-4 text-center">
+      <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl border-2 border-indigo-200 flex items-center justify-center mb-3 shadow-2xs">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+        </svg>
+      </div>
+      <h4 class="text-base font-bold text-slate-900">{{ 'DOSSIER_STATUS_FORM.NO_STATUS_FOUND' | translate }}</h4>
+      <p class="text-xs text-slate-500 font-medium max-w-sm mt-1">
+        Modifiez vos filtres de recherche ou configurez un nouveau statut à l'aide du formulaire ci-dessus.
+      </p>
+    </div>
+
+  </div>
+
 </div>

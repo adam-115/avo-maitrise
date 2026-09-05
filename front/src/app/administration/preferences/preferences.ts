@@ -1,24 +1,26 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { NavigationService } from '../../services/navigation-service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-preferences',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe],
+  imports: [CommonModule, RouterModule, FormsModule, TranslatePipe],
   templateUrl: './preferences.html',
   styleUrl: './preferences.css',
 })
 export class Preferences {
-
+  private readonly router = inject(Router);
   navigationService = inject(NavigationService);
 
-  navigateBackToAdmin() {
-    throw ("not yet implemented");
-  }
+  searchTerm: string = '';
 
+  navigateBackToAdmin() {
+    this.router.navigate([NavigationService.HOME, NavigationService.ADMINSTRATION]);
+  }
 
   navigateToAdminSecteurActivite() {
     this.navigationService.navigateToAdminSecteurActivite();
@@ -55,5 +57,4 @@ export class Preferences {
   navigateToInvoiceTypeOfServiceForm() {
     this.navigationService.navigateToInvoiceTypeOfServiceForm();
   }
-
 }

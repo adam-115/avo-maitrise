@@ -1,156 +1,432 @@
-<div class="min-h-screen bg-slate-50 p-8 font-sans antialiased text-slate-900">
-  <div class="max-w-7xl mx-auto">
+<div class="p-4 sm:p-6 lg:p-8 bg-slate-50/50 min-h-screen space-y-6 sm:space-y-8 font-sans">
 
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-      <div>
-        <h1 class="text-4xl font-black text-slate-900 tracking-tighter">
-          {{ 'SECTEUR_ACTIVITE_FORM.TITLE' | translate }}<span class="text-cyan-500">{{ 'SECTEUR_ACTIVITE_FORM.SUBTITLE' | translate }}</span>
+  <!-- Hero Header Card -->
+  <div class="relative overflow-hidden rounded-3xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all duration-300 p-6 sm:p-8">
+    <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-600 via-teal-600 to-cyan-600"></div>
+    <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-indigo-100/40 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-16 -top-16 w-64 h-64 bg-teal-100/30 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      <div class="space-y-2">
+        <!-- Back Navigation & Breadcrumb -->
+        <div class="flex items-center gap-3">
+          <button (click)="navigateBackToPreferences()" 
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-xs font-bold text-slate-700 transition-colors active:scale-95 shadow-2xs cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            <span>{{ 'SECTEUR_ACTIVITE_FORM.BACK_TO_PREFERENCES' | translate }}</span>
+          </button>
+
+          <span class="text-slate-300 font-normal">/</span>
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-700">{{ 'SECTEUR_ACTIVITE_FORM.BREADCRUMB_PREF' | translate }}</span>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+          {{ 'SECTEUR_ACTIVITE_FORM.TITLE' | translate }}
+          <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 shadow-xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+            {{ totalCount }} {{ 'SECTEUR_ACTIVITE_FORM.KPI_TOTAL' | translate }}
+          </span>
         </h1>
+        <p class="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
+          {{ 'SECTEUR_ACTIVITE_FORM.PAGE_SUBTITLE' | translate }}
+        </p>
       </div>
 
-      <div class="flex items-center gap-3">
+      <!-- Header Actions -->
+      <div class="flex flex-wrap items-center gap-3 self-start lg:self-center">
+        <!-- Hidden CSV File Input -->
         <input type="file" #fileInput (change)="onFileSelected($event)" accept=".csv" class="hidden">
 
+        <!-- Import CSV Button -->
         <button (click)="fileInput.click()"
-          class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-50 hover:text-cyan-600 transition-all shadow-sm">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          class="inline-flex items-center gap-2 px-4 py-2.5 bg-white border-2 border-slate-300 hover:border-teal-400 hover:bg-teal-50/50 rounded-2xl text-xs font-black text-slate-700 hover:text-teal-700 transition-all shadow-2xs cursor-pointer active:scale-95">
+          <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
           </svg>
-          {{ 'SECTEUR_ACTIVITE_FORM.IMPORT_CSV' | translate }}
+          <span>{{ 'SECTEUR_ACTIVITE_FORM.IMPORT_CSV' | translate }}</span>
         </button>
 
-        <button (click)="resetForm()" *ngIf="selectedSecteurActivite"
-          class="px-4 py-2 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg">
-          {{ 'SECTEUR_ACTIVITE_FORM.NEW_SECTOR' | translate }}
-        </button>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-      <div class="lg:col-span-7 space-y-4">
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <table class="w-full text-left">
-            <thead>
-              <tr class="border-b border-slate-100 bg-slate-50/50">
-                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">{{ 'SECTEUR_ACTIVITE_FORM.TABLE_ORDER' | translate }}</th>
-                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">{{ 'SECTEUR_ACTIVITE_FORM.TABLE_LABEL_CODE' | translate }}</th>
-
-                <th class="px-6 py-4 text-[10px] font-black uppercase tracking-widest text-slate-400">{{ 'SECTEUR_ACTIVITE_FORM.TABLE_STATUS' | translate }}</th>
-                <th class="px-6 py-4"></th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-50">
-              @for (secteur of secteurs; track secteur.id) {
-              <tr (click)="selectSecteur(secteur)" [ngClass]="{
-                  'bg-cyan-50/50 border-l-4 border-l-cyan-500 shadow-sm': selectedSecteurActivite?.id === secteur.id,
-                  'border-l-4 border-l-transparent': selectedSecteurActivite?.id !== secteur.id
-                }" class="group hover:bg-slate-50/80 transition-all cursor-pointer">
-
-                <td class="px-6 py-4 text-sm font-black transition-colors"
-                  [class.text-cyan-600]="selectedSecteurActivite?.id === secteur.id"
-                  [class.text-slate-300]="selectedSecteurActivite?.id !== secteur.id">
-                  {{ secteur.ordreAffichage | number:'2.0' }}
-                </td>
-
-                <td class="px-6 py-4">
-                  <div class="flex flex-col">
-                    <span class="text-sm font-bold transition-colors"
-                      [class.text-cyan-900]="selectedSecteurActivite?.id === secteur.id"
-                      [class.text-slate-800]="selectedSecteurActivite?.id !== secteur.id">
-                      {{ secteur.libelle }}
-                    </span>
-                    <code class="text-[10px] font-black uppercase tracking-tighter"
-                      [class.text-cyan-400]="selectedSecteurActivite?.id === secteur.id"
-                      [class.text-slate-400]="selectedSecteurActivite?.id !== secteur.id">
-                      {{ secteur.code }}
-                    </code>
-                  </div>
-                </td>
-
-                <td class="px-6 py-4">
-                  <span [class]="secteur.actif ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-400'"
-                    class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest">
-                    {{ secteur.actif ? ('SECTEUR_ACTIVITE_FORM.STATUS_ACTIVE' | translate) : ('SECTEUR_ACTIVITE_FORM.STATUS_INACTIVE' | translate) }}
-                  </span>
-                </td>
-
-                <td class="px-6 py-4 text-right">
-                  <svg class="w-4 h-4 transition-all"
-                    [ngClass]="selectedSecteurActivite?.id === secteur.id ? 'text-cyan-500 translate-x-1' : 'text-slate-300 group-hover:text-slate-900'"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-width="3" d="M9 5l7 7-7 7"></path>
-                  </svg>
-                </td>
-              </tr>
-              }
-            </tbody>
-          </table>
+        <!-- Quick Status Badge -->
+        <div class="px-4 py-2 rounded-2xl bg-indigo-50 border border-indigo-200 text-xs font-bold text-indigo-700 flex items-center gap-2 shadow-2xs">
+          <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+            </path>
+          </svg>
+          <span>{{ activeCount }} Actifs • {{ inactiveCount }} Inactifs</span>
         </div>
       </div>
-
-      <div class="lg:col-span-5">
-        <div
-          class="sticky top-8 bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden">
-          <div class="p-6 bg-slate-900 flex justify-between items-center">
-            <h2 class="text-white font-black text-xs uppercase tracking-[0.2em]">{{ 'SECTEUR_ACTIVITE_FORM.FORM_TITLE' | translate }}</h2>
-            <span class="text-cyan-400 font-mono text-[10px]">#{{ selectedSecteurActivite?.id || ('SECTEUR_ACTIVITE_FORM.NEW' | translate) }}</span>
-          </div>
-
-          <form [formGroup]="secteurForm!" class="p-8 space-y-6">
-            <div>
-              <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ms-1">{{ 'SECTEUR_ACTIVITE_FORM.LABEL' | translate }}</label>
-              <input type="text" formControlName="libelle" [placeholder]="'SECTEUR_ACTIVITE_FORM.LABEL_PLACEHOLDER' | translate"
-                [ngClass]="(secteurForm.get('libelle')?.invalid && secteurForm.get('libelle')?.touched) ? 'border-red-500 focus:ring-red-500/10' : 'border-slate-200 focus:border-cyan-500 focus:ring-cyan-500/10'"
-                class="w-full bg-slate-50 rounded-xl p-4 text-sm font-bold text-slate-800 outline-none transition-all focus:ring-4 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ms-1">{{ 'SECTEUR_ACTIVITE_FORM.CODE' | translate }}</label>
-                <input type="text" formControlName="code" [placeholder]="'SECTEUR_ACTIVITE_FORM.CODE_PLACEHOLDER' | translate"
-                  [ngClass]="(secteurForm.get('code')?.invalid && secteurForm.get('code')?.touched) ? 'border-red-500' : 'border-slate-200 focus:border-cyan-500'"
-                  class="w-full bg-slate-50 rounded-xl p-4 text-xs font-black text-slate-900 uppercase outline-none transition-all focus:ring-4 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-              </div>
-              <div>
-                <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ms-1">{{ 'SECTEUR_ACTIVITE_FORM.POSITION' | translate }}</label>
-                <input type="number" formControlName="ordre_affichage"
-                  class="w-full bg-slate-50 rounded-xl p-4 text-sm font-black text-slate-900 focus:border-cyan-500 outline-none border-2 border-slate-300 hover:border-slate-400 transition-colors">
-              </div>
-            </div>
-
-
-
-
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-              <div class="flex flex-col">
-                <span class="text-[10px] font-black text-slate-900 uppercase">{{ 'SECTEUR_ACTIVITE_FORM.OPERATIONAL_STATUS' | translate }}</span>
-                <span class="text-[9px] text-slate-400 font-bold uppercase">{{ 'SECTEUR_ACTIVITE_FORM.ACTIVE_IN_FORMS' | translate }}</span>
-              </div>
-              <label class="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" formControlName="actif" class="sr-only peer">
-                <div
-                  class="w-12 h-6 bg-slate-200 rounded-full peer peer-checked:bg-cyan-500 after:content-[''] after:absolute after:top-[4px] after:start-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-6 shadow-sm">
-                </div>
-              </label>
-            </div>
-
-            <!-- [disabled]="secteurForm.invalid" -->
-            <div class="pt-4 space-y-3">
-              <button type="submit" (click)="submit()" [disabled]="secteurForm.invalid"
-                class="w-full py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all bg-cyan-500 text-slate-900 shadow-lg shadow-cyan-100 hover:bg-cyan-400 disabled:bg-slate-300 disabled:text-slate-500 disabled:shadow-none disabled:cursor-not-allowed">
-                {{ selectedSecteurActivite ? ('SECTEUR_ACTIVITE_FORM.UPDATE' | translate) : ('SECTEUR_ACTIVITE_FORM.ADD' | translate) }}
-              </button>
-              <button type="button" (click)="resetForm()"
-                class="w-full text-slate-400 font-black text-[10px] uppercase tracking-widest hover:text-red-500 transition-colors py-2">
-                {{ 'SECTEUR_ACTIVITE_FORM.RESET' | translate }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
     </div>
   </div>
+
+  <!-- KPI Metrics Cards Grid -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    
+    <!-- 1. Total Sectors -->
+    <div class="p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+      <div class="absolute top-0 inset-x-0 h-1 bg-indigo-500"></div>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'SECTEUR_ACTIVITE_FORM.KPI_TOTAL' | translate }}</p>
+          <h3 class="text-2xl font-black text-slate-900 mt-1">{{ totalCount }}</h3>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+            </path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Active Sectors -->
+    <div class="p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+      <div class="absolute top-0 inset-x-0 h-1 bg-emerald-500"></div>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'SECTEUR_ACTIVITE_FORM.KPI_ACTIVE' | translate }}</p>
+          <h3 class="text-2xl font-black text-emerald-700 mt-1">{{ activeCount }}</h3>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Inactive Sectors -->
+    <div class="p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all relative overflow-hidden group">
+      <div class="absolute top-0 inset-x-0 h-1 bg-slate-400"></div>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'SECTEUR_ACTIVITE_FORM.KPI_INACTIVE' | translate }}</p>
+          <h3 class="text-2xl font-black text-slate-600 mt-1">{{ inactiveCount }}</h3>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Mode Status -->
+    <div class="p-5 rounded-2xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all relative overflow-hidden group"
+      [ngClass]="selectedSecteurActivite ? 'border-amber-400' : ''">
+      <div class="absolute top-0 inset-x-0 h-1" [ngClass]="selectedSecteurActivite ? 'bg-amber-500' : 'bg-indigo-500'"></div>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">État Formulaire</p>
+          <h3 class="text-sm font-black mt-1" [ngClass]="selectedSecteurActivite ? 'text-amber-700' : 'text-indigo-700'">
+            {{ selectedSecteurActivite ? ('SECTEUR_ACTIVITE_FORM.UPDATE' | translate) : ('SECTEUR_ACTIVITE_FORM.NEW_SECTOR' | translate) }}
+          </h3>
+        </div>
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform"
+          [ngClass]="selectedSecteurActivite ? 'bg-amber-50 border border-amber-200 text-amber-600' : 'bg-indigo-50 border border-indigo-200 text-indigo-600'">
+          <svg *ngIf="!selectedSecteurActivite" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <svg *ngIf="selectedSecteurActivite" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Form Section Card -->
+  <div id="secteurFormCard"
+    [ngClass]="selectedSecteurActivite ? 'border-amber-400 ring-4 ring-amber-100' : 'border-slate-300'"
+    class="relative overflow-hidden bg-white rounded-3xl p-6 sm:p-8 shadow-sm border-2 transition-all duration-300">
+    
+    <div class="absolute top-0 inset-x-0 h-1.5"
+      [ngClass]="selectedSecteurActivite ? 'bg-gradient-to-r from-amber-500 to-orange-500' : 'bg-gradient-to-r from-indigo-600 via-teal-600 to-cyan-600'"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
+      <div class="space-y-1">
+        <h3 class="text-xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center bg-indigo-50 border border-indigo-200 text-indigo-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+              </path>
+            </svg>
+          </div>
+          <span>{{ selectedSecteurActivite ? ('SECTEUR_ACTIVITE_FORM.UPDATE' | translate) : ('SECTEUR_ACTIVITE_FORM.FORM_TITLE' | translate) }}</span>
+          <span *ngIf="selectedSecteurActivite" class="text-xs font-mono text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200">
+            #{{ selectedSecteurActivite.id }}
+          </span>
+        </h3>
+        <p class="text-xs text-slate-500 font-medium">
+          {{ 'SECTEUR_ACTIVITE_FORM.FORM_SECTION_DESC' | translate }}
+        </p>
+      </div>
+
+      <div *ngIf="selectedSecteurActivite" class="flex items-center gap-2">
+        <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+          Mode Édition Actif
+        </span>
+      </div>
+    </div>
+
+    <!-- Form Body -->
+    <form [formGroup]="secteurForm" (ngSubmit)="submit()" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        <!-- Nom du Secteur -->
+        <div class="lg:col-span-2">
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2" for="libelle">
+            {{ 'SECTEUR_ACTIVITE_FORM.LABEL' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input id="libelle" type="text" formControlName="libelle"
+            [placeholder]="'SECTEUR_ACTIVITE_FORM.LABEL_PLACEHOLDER' | translate"
+            [ngClass]="{
+              'border-rose-400 ring-2 ring-rose-100 bg-rose-50/20': secteurForm.get('libelle')?.invalid && secteurForm.get('libelle')?.touched,
+              'border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600': !(secteurForm.get('libelle')?.invalid && secteurForm.get('libelle')?.touched)
+            }"
+            class="w-full px-4 py-3 rounded-2xl bg-white text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs" />
+          <p *ngIf="secteurForm.get('libelle')?.invalid && secteurForm.get('libelle')?.touched" class="text-[11px] font-bold text-rose-500 mt-1.5 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>{{ 'DOSSIER_FORM.REQUIRED' | translate }}</span>
+          </p>
+        </div>
+
+        <!-- Code Système -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2" for="code">
+            {{ 'SECTEUR_ACTIVITE_FORM.CODE' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input id="code" type="text" formControlName="code"
+            [placeholder]="'SECTEUR_ACTIVITE_FORM.CODE_PLACEHOLDER' | translate"
+            [ngClass]="{
+              'border-rose-400 ring-2 ring-rose-100 bg-rose-50/20': secteurForm.get('code')?.invalid && secteurForm.get('code')?.touched,
+              'border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600': !(secteurForm.get('code')?.invalid && secteurForm.get('code')?.touched)
+            }"
+            class="w-full px-4 py-3 rounded-2xl bg-white text-sm font-mono font-bold text-slate-800 uppercase placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs" />
+          <p *ngIf="secteurForm.get('code')?.invalid && secteurForm.get('code')?.touched" class="text-[11px] font-bold text-rose-500 mt-1.5 flex items-center gap-1">
+            <svg class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>{{ 'DOSSIER_FORM.REQUIRED' | translate }}</span>
+          </p>
+        </div>
+
+        <!-- Ordre d'affichage -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2" for="ordre_affichage">
+            {{ 'SECTEUR_ACTIVITE_FORM.POSITION' | translate }} <span class="text-rose-500">*</span>
+          </label>
+          <input id="ordre_affichage" type="number" formControlName="ordre_affichage"
+            [ngClass]="{
+              'border-rose-400 ring-2 ring-rose-100 bg-rose-50/20': secteurForm.get('ordre_affichage')?.invalid && secteurForm.get('ordre_affichage')?.touched,
+              'border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600': !(secteurForm.get('ordre_affichage')?.invalid && secteurForm.get('ordre_affichage')?.touched)
+            }"
+            class="w-full px-4 py-3 rounded-2xl bg-white text-sm font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs" />
+        </div>
+
+        <!-- Statut Opérationnel Checkbox -->
+        <div class="md:col-span-2 pt-2">
+          <label class="relative inline-flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border-2 border-slate-200 cursor-pointer hover:bg-slate-100/80 transition-colors">
+            <input id="actif" type="checkbox" formControlName="actif"
+              class="w-5 h-5 text-indigo-600 bg-white border-2 border-slate-300 rounded-lg focus:ring-indigo-500 cursor-pointer" />
+            <div>
+              <span class="text-xs font-bold text-slate-800 block">{{ 'SECTEUR_ACTIVITE_FORM.OPERATIONAL_STATUS' | translate }}</span>
+              <span class="text-[11px] text-slate-500 font-medium">{{ 'SECTEUR_ACTIVITE_FORM.ACTIVE_IN_FORMS' | translate }}</span>
+            </div>
+          </label>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons Row -->
+      <div class="flex items-center justify-between gap-4 pt-4 border-t border-slate-100">
+        <button *ngIf="selectedSecteurActivite" type="button" (click)="resetForm()"
+          class="px-5 py-2.5 rounded-xl border-2 border-slate-300 bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs shadow-2xs transition-all cursor-pointer active:scale-95">
+          {{ 'SECTEUR_ACTIVITE_FORM.CANCEL' | translate }}
+        </button>
+        <div *ngIf="!selectedSecteurActivite"></div>
+
+        <button type="submit" [disabled]="secteurForm.invalid"
+          [ngClass]="{
+            'bg-gradient-to-r from-indigo-600 via-teal-600 to-cyan-600 hover:from-indigo-700 hover:to-teal-700 text-white shadow-md hover:shadow-lg': secteurForm.valid,
+            'bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200': secteurForm.invalid
+          }"
+          class="px-6 py-3 rounded-2xl font-black text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+          <svg *ngIf="!selectedSecteurActivite" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+          <svg *ngIf="selectedSecteurActivite" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>{{ selectedSecteurActivite ? ('SECTEUR_ACTIVITE_FORM.UPDATE' | translate) : ('SECTEUR_ACTIVITE_FORM.ADD' | translate) }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Sectors List Repository Section -->
+  <div class="overflow-hidden rounded-3xl bg-white border-2 border-slate-300 shadow-sm space-y-4">
+    
+    <!-- Table Toolbar -->
+    <div class="p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50/50">
+      <div>
+        <h3 class="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <span>{{ 'SECTEUR_ACTIVITE_FORM.LIST_TITLE' | translate }}</span>
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+            {{ filteredSecteurs.length }}
+          </span>
+        </h3>
+        <p class="text-xs text-slate-500 font-medium mt-0.5">
+          {{ 'SECTEUR_ACTIVITE_FORM.LIST_SECTION_DESC' | translate }}
+        </p>
+      </div>
+
+      <!-- Filters & Search -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Search Input -->
+        <div class="relative min-w-[220px]">
+          <svg class="absolute start-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input type="text" [(ngModel)]="searchTerm"
+            [placeholder]="'SECTEUR_ACTIVITE_FORM.SEARCH_PLACEHOLDER' | translate"
+            class="w-full ps-9 pe-8 py-2 rounded-xl bg-white border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs" />
+          <button *ngIf="searchTerm" (click)="searchTerm = ''"
+            class="absolute end-2.5 top-1/2 -translate-y-1/2 p-0.5 text-slate-400 hover:text-slate-600 rounded cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Filter Status Segmented Buttons -->
+        <div class="flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200 shadow-2xs">
+          <button type="button" (click)="filterStatus = 'ALL'"
+            [ngClass]="filterStatus === 'ALL' ? 'bg-white text-indigo-700 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 font-bold'"
+            class="px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer">
+            Tous
+          </button>
+          <button type="button" (click)="filterStatus = 'ACTIVE'"
+            [ngClass]="filterStatus === 'ACTIVE' ? 'bg-white text-indigo-700 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 font-bold'"
+            class="px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer">
+            Actifs
+          </button>
+          <button type="button" (click)="filterStatus = 'INACTIVE'"
+            [ngClass]="filterStatus === 'INACTIVE' ? 'bg-white text-indigo-700 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 font-bold'"
+            class="px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer">
+            Inactifs
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table Content -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs border-collapse">
+        <thead>
+          <tr class="bg-slate-100/90 border-b-2 border-slate-300 text-slate-700 uppercase font-black tracking-wider text-[11px]">
+            <th scope="col" class="py-4 px-6">{{ 'SECTEUR_ACTIVITE_FORM.TABLE_ORDER' | translate }}</th>
+            <th scope="col" class="py-4 px-6">{{ 'SECTEUR_ACTIVITE_FORM.TABLE_LABEL_CODE' | translate }}</th>
+            <th scope="col" class="py-4 px-6">{{ 'SECTEUR_ACTIVITE_FORM.TABLE_STATUS' | translate }}</th>
+            <th scope="col" class="py-4 px-6 text-end">{{ 'SECTEUR_ACTIVITE_FORM.TABLE_ACTIONS' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          <tr *ngFor="let secteur of filteredSecteurs"
+            (click)="selectSecteur(secteur)"
+            [ngClass]="{
+              'bg-indigo-50/80 border-s-4 border-indigo-600': selectedSecteurActivite?.id === secteur.id,
+              'bg-slate-50/60 opacity-75': !secteur.actif && selectedSecteurActivite?.id !== secteur.id,
+              'hover:bg-indigo-50/30 bg-white': secteur.actif && selectedSecteurActivite?.id !== secteur.id
+            }"
+            class="transition-colors group cursor-pointer">
+            
+            <!-- Order -->
+            <td class="py-4 px-6">
+              <span class="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 font-black text-xs inline-flex items-center justify-center shadow-2xs group-hover:bg-indigo-50 group-hover:text-indigo-700 transition-colors">
+                {{ secteur.ordreAffichage }}
+              </span>
+            </td>
+
+            <!-- Libellé & Code -->
+            <td class="py-4 px-6">
+              <div class="flex flex-col gap-1">
+                <span class="text-sm font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">
+                  {{ secteur.libelle }}
+                </span>
+                <span class="inline-flex items-center self-start px-2 py-0.5 rounded-md text-[11px] font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200 uppercase">
+                  {{ secteur.code }}
+                </span>
+              </div>
+            </td>
+
+            <!-- Statut -->
+            <td class="py-4 px-6">
+              <span class="px-3 py-1 inline-flex items-center gap-1.5 text-xs font-bold rounded-full border shadow-2xs"
+                [ngClass]="secteur.actif ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-600 border-slate-200'">
+                <span class="w-1.5 h-1.5 rounded-full" [ngClass]="secteur.actif ? 'bg-emerald-500' : 'bg-slate-400'"></span>
+                {{ secteur.actif ? ('SECTEUR_ACTIVITE_FORM.STATUS_ACTIVE' | translate) : ('SECTEUR_ACTIVITE_FORM.STATUS_INACTIVE' | translate) }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="py-4 px-6 text-end" (click)="$event.stopPropagation()">
+              <div class="flex items-center justify-end gap-2">
+                <!-- Edit Button -->
+                <button type="button" (click)="selectSecteur(secteur)"
+                  class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border-2 border-slate-300 bg-white hover:bg-indigo-50 hover:border-indigo-300 text-slate-700 hover:text-indigo-700 font-bold text-xs transition-all shadow-2xs cursor-pointer active:scale-95"
+                  [title]="'SECTEUR_ACTIVITE_FORM.ACTION_EDIT' | translate">
+                  <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  <span>{{ 'SECTEUR_ACTIVITE_FORM.ACTION_EDIT' | translate }}</span>
+                </button>
+
+                <!-- Toggle Status Button -->
+                <button type="button" (click)="toggleSecteurActive(secteur)"
+                  [ngClass]="secteur.actif ? 'hover:bg-rose-50 hover:border-rose-300 text-slate-700 hover:text-rose-600' : 'hover:bg-emerald-50 hover:border-emerald-300 text-slate-700 hover:text-emerald-700'"
+                  class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border-2 border-slate-300 bg-white font-bold text-xs transition-all shadow-2xs cursor-pointer active:scale-95"
+                  [title]="secteur.actif ? ('SECTEUR_ACTIVITE_FORM.ACTION_DISABLE' | translate) : ('SECTEUR_ACTIVITE_FORM.ACTION_ACTIVATE' | translate)">
+                  <svg *ngIf="secteur.actif" class="w-3.5 h-3.5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                  </svg>
+                  <svg *ngIf="!secteur.actif" class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{{ secteur.actif ? ('SECTEUR_ACTIVITE_FORM.ACTION_DISABLE' | translate) : ('SECTEUR_ACTIVITE_FORM.ACTION_ACTIVATE' | translate) }}</span>
+                </button>
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="filteredSecteurs.length === 0"
+      class="flex flex-col items-center justify-center py-16 px-4 text-center">
+      <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl border-2 border-indigo-200 flex items-center justify-center mb-3 shadow-2xs">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+          </path>
+        </svg>
+      </div>
+      <h4 class="text-base font-bold text-slate-900">{{ 'SECTEUR_ACTIVITE_FORM.NO_SECTOR_FOUND' | translate }}</h4>
+      <p class="text-xs text-slate-500 font-medium max-w-sm mt-1">
+        Modifiez vos filtres de recherche ou configurez un nouveau secteur d'activité à l'aide du formulaire ci-dessus.
+      </p>
+    </div>
+
+  </div>
+
 </div>

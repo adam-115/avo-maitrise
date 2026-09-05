@@ -1,177 +1,535 @@
-<div class="p-6 sm:p-10 bg-slate-50 min-h-screen">
-    <!-- Header Section -->
-    <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div class="space-y-1">
-            <nav class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">
-                <span class="hover:text-cyan-600 cursor-pointer">{{ 'CRM.BREADCRUMB_DASHBOARD' | translate }}</span>
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                <span class="text-slate-900">{{ 'CRM.BREADCRUMB_CLIENTS' | translate }}</span>
-            </nav>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight">
-                {{ 'CRM.DIRECTORY' | translate }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">{{ 'CRM.CLIENTS_CONTACTS' | translate }}</span>
+<div class="space-y-6 font-sans">
+  
+  <!-- En-tête Principal avec Titre & Actions -->
+  <div class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-sm relative overflow-hidden">
+    <!-- Accent gradient bar -->
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600"></div>
+
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      
+      <!-- Titre & Fil d'Ariane -->
+      <div class="flex items-start sm:items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 border border-cyan-100 flex items-center justify-center font-bold shadow-sm flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+        <div>
+          <!-- Fil d'Ariane -->
+          <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+            <span class="hover:text-cyan-600 cursor-pointer transition-colors" routerLink="/home">{{ 'CRM.BREADCRUMB_DASHBOARD' | translate }}</span>
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+            <span class="text-slate-800">{{ 'CRM.BREADCRUMB_CLIENTS' | translate }}</span>
+          </nav>
+          
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              {{ 'CRM.DIRECTORY' | translate }} <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">{{ 'CRM.CLIENTS_CONTACTS' | translate }}</span>
             </h1>
-            <p class="text-slate-500 font-medium max-w-2xl">
-                {{ 'CRM.SUBTITLE' | translate }}
-            </p>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-cyan-50 px-2.5 py-0.5 text-[11px] font-bold text-cyan-700 ring-1 ring-inset ring-cyan-700/10">
+              <span class="h-1.5 w-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
+              {{ 'CRM.ACTIVE_CRM' | translate }}
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5 max-w-2xl">
+            {{ 'CRM.SUBTITLE' | translate }}
+          </p>
         </div>
-        <div class="flex items-center gap-4">
-            <div *ngIf="alertCount > 0" 
-                class="hidden lg:flex items-center gap-4 bg-red-50 px-6 py-3 rounded-2xl border-2 border-red-500 shadow-lg animate-blink-red">
-                <div class="flex flex-col items-end">
-                    <span class="text-xs uppercase font-black text-red-600 leading-none tracking-tighter">{{ 'CRM.ALERTS_CRITICAL' | translate }}</span>
-                    <span class="text-2xl font-black text-red-700 leading-none mt-1">{{ alertCount }}</span>
+      </div>
+
+      <!-- Actions & Alertes -->
+      <div class="flex flex-wrap items-center gap-3">
+        
+        <!-- Alerte Sanctions -->
+        @if (alertCount > 0) {
+        <div class="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+          <span class="text-xs font-bold">{{ alertCount }} {{ 'CRM.ALERTS_CRITICAL' | translate }}</span>
+        </div>
+        } @else {
+        <div class="hidden sm:flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-600 text-xs font-bold shadow-xs">
+          <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ 'CRM.NO_ALERTS' | translate }}</span>
+        </div>
+        }
+
+        <!-- Bouton Nouveau Client -->
+        <button type="button" (click)="navigateToNewClient()"
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-cyan-100 hover:shadow-cyan-200 transition-all cursor-pointer flex-shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>{{ 'CRM.NEW_CLIENT' | translate }}</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 Cartes Statistiques / KPIs Répertoire -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+    
+    <!-- KPI 1 : Total Répertoire -->
+    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden hover:border-cyan-400 transition-all hover:shadow-md">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'CRM.TOTAL_CLIENTS' | translate }}</p>
+          <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">{{ totalElements }}</h3>
+          <span class="inline-flex items-center gap-1 mt-1 text-[11px] font-bold text-cyan-600">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Base active
+          </span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-cyan-50 text-cyan-600 flex items-center justify-center border border-cyan-100 shadow-inner">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 2 : Personnes Physiques -->
+    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden hover:border-blue-400 transition-all hover:shadow-md">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'CRM.PERSONS' | translate }}</p>
+          <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">{{ personneCount }}</h3>
+          <span class="inline-flex items-center gap-1 mt-1 text-[11px] font-bold text-blue-600">
+            Particuliers
+          </span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shadow-inner">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 3 : Sociétés -->
+    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden hover:border-purple-400 transition-all hover:shadow-md">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'CRM.COMPANIES' | translate }}</p>
+          <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">{{ societeCount }}</h3>
+          <span class="inline-flex items-center gap-1 mt-1 text-[11px] font-bold text-purple-600">
+            Personnes Morales
+          </span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100 shadow-inner">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPI 4 : Associations & Institutions -->
+    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative overflow-hidden hover:border-emerald-400 transition-all hover:shadow-md">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">{{ 'CRM.ORGANIZATIONS' | translate }}</p>
+          <h3 class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">{{ associationCount + institutionCount }}</h3>
+          <span class="inline-flex items-center gap-1 mt-1 text-[11px] font-bold text-emerald-600">
+            Assoc. & Inst.
+          </span>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-inner">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v20c0 4.418 7.163 8 16 8 1.38 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v20c0 4.418-7.163 8-16 8-1.38 0-2.721-.087-4-.252m0 0V42m0-28V42" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Navigation par Onglets (Segmented Tabs) -->
+  <div class="bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-1.5">
+    <button type="button" (click)="activeTab = 'ALL'"
+      [ngClass]="activeTab === 'ALL' ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-sm font-black' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-bold'"
+      class="px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 cursor-pointer">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+      </svg>
+      <span>{{ 'CRM.TAB_ALL' | translate }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
+        [ngClass]="activeTab === 'ALL' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+        {{ totalElements }}
+      </span>
+    </button>
+
+    <button type="button" (click)="activeTab = 'PERSONNE'"
+      [ngClass]="activeTab === 'PERSONNE' ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-sm font-black' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-bold'"
+      class="px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 cursor-pointer">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+      </svg>
+      <span>{{ 'CRM.TAB_PERSONNE' | translate }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
+        [ngClass]="activeTab === 'PERSONNE' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+        {{ personneCount }}
+      </span>
+    </button>
+
+    <button type="button" (click)="activeTab = 'SOCIETE'"
+      [ngClass]="activeTab === 'SOCIETE' ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-sm font-black' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-bold'"
+      class="px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 cursor-pointer">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+      <span>{{ 'CRM.TAB_SOCIETE' | translate }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
+        [ngClass]="activeTab === 'SOCIETE' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+        {{ societeCount }}
+      </span>
+    </button>
+
+    <button type="button" (click)="activeTab = 'ASSOCIATION'"
+      [ngClass]="activeTab === 'ASSOCIATION' ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-sm font-black' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-bold'"
+      class="px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 cursor-pointer">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <span>{{ 'CRM.TAB_ASSOCIATION' | translate }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
+        [ngClass]="activeTab === 'ASSOCIATION' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+        {{ associationCount }}
+      </span>
+    </button>
+
+    <button type="button" (click)="activeTab = 'INSTITUTION'"
+      [ngClass]="activeTab === 'INSTITUTION' ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-sm font-black' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-bold'"
+      class="px-4 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 cursor-pointer">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 14v20c0 4.418 7.163 8 16 8 1.38 0 2.721-.087 4-.252M8 14c0 4.418 7.163 8 16 8s16-3.582 16-8M8 14c0-4.418 7.163-8 16-8s16 3.582 16 8m0 0v20c0 4.418-7.163 8-16 8-1.38 0-2.721-.087-4-.252m0 0V42m0-28V42" />
+      </svg>
+      <span>{{ 'CRM.TAB_INSTITUTION' | translate }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[10px] font-black"
+        [ngClass]="activeTab === 'INSTITUTION' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'">
+        {{ institutionCount }}
+      </span>
+    </button>
+  </div>
+
+  <!-- Barre de Recherche & Filtres (Visible uniquement sur l'onglet ALL) -->
+  @if (activeTab === 'ALL') {
+  <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3.5">
+    
+    <!-- Champ Recherche -->
+    <div class="relative flex-grow min-w-0">
+      <div class="absolute inset-y-0 start-3.5 flex items-center pointer-events-none text-slate-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <input [(ngModel)]="searchTerm" (input)="filterClients()" type="search"
+        [placeholder]="'CRM.SEARCH_PLACEHOLDER' | translate"
+        class="w-full ps-10 pe-4 py-2.5 bg-white border-2 border-slate-300 rounded-xl focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-800 text-sm shadow-sm hover:border-slate-400">
+    </div>
+
+    <!-- Filtres Dropdowns & Reset -->
+    <div class="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
+      
+      <!-- Filtre Type -->
+      <div class="relative flex-1 sm:flex-initial min-w-[150px]">
+        <select [(ngModel)]="selectedType" (change)="filterClients()"
+          class="w-full ps-3.5 pe-8 py-2.5 bg-white border-2 border-slate-300 rounded-xl focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none font-semibold text-slate-700 text-xs shadow-sm cursor-pointer appearance-none hover:border-slate-400">
+          <option value="">{{ 'CRM.FILTER_ALL_TYPES' | translate }}</option>
+          <option value="PERSONNE">{{ 'CRM.FILTER_PERSON' | translate }}</option>
+          <option value="SOCIETE">{{ 'CRM.FILTER_COMPANY' | translate }}</option>
+          <option value="ASSOCIATION">{{ 'CRM.FILTER_ASSOCIATION' | translate }}</option>
+          <option value="INSTITUTION">{{ 'CRM.FILTER_INSTITUTION' | translate }}</option>
+        </select>
+        <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Filtre Niveau de Risque AML -->
+      <div class="relative flex-1 sm:flex-initial min-w-[150px]">
+        <select [(ngModel)]="selectedRisk" (change)="filterClients()"
+          class="w-full ps-3.5 pe-8 py-2.5 bg-white border-2 border-slate-300 rounded-xl focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 transition-all outline-none font-semibold text-slate-700 text-xs shadow-sm cursor-pointer appearance-none hover:border-slate-400">
+          <option value="">{{ 'CRM.FILTER_ALL_RISKS' | translate }}</option>
+          <option value="ELEVEE">{{ 'CRM.RISK_HIGH' | translate }}</option>
+          <option value="MOYEN">{{ 'CRM.RISK_MEDIUM' | translate }}</option>
+          <option value="FAIBLE">{{ 'CRM.RISK_LOW' | translate }}</option>
+        </select>
+        <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Bouton Réinitialiser les Filtres (si actif) -->
+      @if (isFiltered) {
+      <button type="button" (click)="resetFilters()"
+        class="inline-flex items-center gap-1.5 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl border border-slate-200 transition-colors cursor-pointer shadow-sm">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span>{{ 'DOSSIER.RESET_FILTERS' | translate }}</span>
+      </button>
+      }
+
+      <!-- Toggle Mode Vue (Cartes vs Tableau) -->
+      <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-xs">
+        <button type="button" (click)="viewMode = 'grid'"
+          [ngClass]="viewMode === 'grid' ? 'bg-white text-cyan-700 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 font-bold'"
+          class="p-2 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1" title="Vue Grille">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          <span class="hidden md:inline">{{ 'CRM.VIEW_GRID' | translate }}</span>
+        </button>
+        <button type="button" (click)="viewMode = 'table'"
+          [ngClass]="viewMode === 'table' ? 'bg-white text-cyan-700 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 font-bold'"
+          class="p-2 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1" title="Vue Tableau">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+          </svg>
+          <span class="hidden md:inline">{{ 'CRM.VIEW_TABLE' | translate }}</span>
+        </button>
+      </div>
+
+      <!-- Badge Total Elements -->
+      <span class="inline-flex items-center px-3 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200/80 whitespace-nowrap">
+        {{ totalElements }} {{ 'CRM.CLIENTS_COUNT' | translate }}
+      </span>
+
+    </div>
+  </div>
+  }
+
+  <!-- État de Chargement (Loading) -->
+  @if (loading) {
+  <div class="py-24 flex flex-col items-center justify-center text-center bg-white rounded-2xl shadow-sm border border-slate-200">
+    <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-slate-700 font-black mt-4 text-sm">{{ 'CRM.LOADING' | translate }}</p>
+    <p class="text-slate-400 text-xs mt-0.5">Récupération des fiches clients en cours...</p>
+  </div>
+  }
+
+  <!-- Contenu Principal -->
+  @if (!loading) {
+  <div>
+    @switch (activeTab) {
+      
+      <!-- ONGLET TOUS LES CLIENTS (Cartes ou Tableau) -->
+      @case ('ALL') {
+        <div>
+          
+          <!-- Mode Grille Cartes -->
+          @if (viewMode === 'grid') {
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              @for (client of paginatedClients; track client.id) {
+                <app-client-card [client]="client"></app-client-card>
+              } @empty {
+                <div class="col-span-full py-16 flex flex-col items-center justify-center text-center bg-white rounded-2xl shadow-sm border border-slate-200">
+                  <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 mb-3">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-base font-black text-slate-900 mb-1">{{ 'CRM.NO_CLIENT_FOUND' | translate }}</h3>
+                  <p class="text-xs text-slate-500 font-medium mb-4">{{ 'CRM.NO_CLIENT_DESC' | translate }}</p>
+                  <button type="button" (click)="navigateToNewClient()"
+                    class="px-5 py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer">
+                    {{ 'CRM.CREATE_CLIENT' | translate }}
+                  </button>
                 </div>
-                <div class="w-12 h-12 rounded-xl bg-red-600 flex items-center justify-center text-white shadow-inner">
-                    <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                </div>
+              }
             </div>
+          }
+
+          <!-- Mode Tableau Détaillé -->
+          @if (viewMode === 'table') {
+            <div class="bg-white rounded-2xl shadow-sm border-2 border-slate-200 overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50/90 border-b-2 border-slate-200 text-[11px] font-black uppercase tracking-wider text-slate-500">
+                      <th class="px-5 py-4 border-r border-slate-100">{{ 'CRM.CLIENT' | translate }}</th>
+                      <th class="px-5 py-4 border-r border-slate-100">Type</th>
+                      <th class="px-5 py-4 border-r border-slate-100">{{ 'CRM.CONTACT' | translate }}</th>
+                      <th class="px-5 py-4 border-r border-slate-100">{{ 'CRM.IDENTIFIER' | translate }}</th>
+                      <th class="px-5 py-4 border-r border-slate-100">{{ 'CRM.STATUS_AML' | translate }}</th>
+                      <th class="px-5 py-4 text-right">{{ 'CRM.ACTIONS' | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y-2 divide-slate-100 text-xs">
+                    @for (client of paginatedClients; track client.id) {
+                      <tr class="hover:bg-cyan-50/30 transition-colors group cursor-pointer" (click)="navigateToClientDetails(client)">
+                        
+                        <!-- Client Name + Avatar -->
+                        <td class="px-5 py-4 border-r border-slate-100">
+                          <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shadow-xs flex-shrink-0"
+                              [ngClass]="{
+                                'bg-blue-100 text-blue-700': client.type === 'PERSONNE',
+                                'bg-purple-100 text-purple-700': client.type === 'SOCIETE',
+                                'bg-emerald-100 text-emerald-700': client.type === 'ASSOCIATION',
+                                'bg-amber-100 text-amber-700': client.type === 'INSTITUTION'
+                              }">
+                              {{ getDisplayName(client).charAt(0) }}
+                            </div>
+                            <div>
+                              <span class="block font-black text-slate-900 group-hover:text-cyan-600 transition-colors">{{ getDisplayName(client) }}</span>
+                              <span class="block text-[10px] font-mono font-bold text-slate-400 uppercase">ID: #{{ client.id }}</span>
+                            </div>
+                          </div>
+                        </td>
+
+                        <!-- Type Badge -->
+                        <td class="px-5 py-4 border-r border-slate-100">
+                          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border"
+                            [ngClass]="{
+                              'bg-blue-50 text-blue-700 border-blue-200': client.type === 'PERSONNE',
+                              'bg-purple-50 text-purple-700 border-purple-200': client.type === 'SOCIETE',
+                              'bg-emerald-50 text-emerald-700 border-emerald-200': client.type === 'ASSOCIATION',
+                              'bg-amber-50 text-amber-700 border-amber-200': client.type === 'INSTITUTION'
+                            }">
+                            {{ client.type }}
+                          </span>
+                        </td>
+
+                        <!-- Contact -->
+                        <td class="px-5 py-4 border-r border-slate-100">
+                          <span class="block font-bold text-slate-700">{{ client.email || '---' }}</span>
+                          <span class="block text-[11px] text-slate-400 font-medium">{{ client.telephone || '---' }}</span>
+                        </td>
+
+                        <!-- Specific Info / ID / RC -->
+                        <td class="px-5 py-4 border-r border-slate-100">
+                          <span class="block font-mono font-bold text-slate-800">{{ getClientSpecificInfo(client) || '---' }}</span>
+                          <span class="block text-[10px] text-slate-400 font-bold uppercase">{{ client.pays || 'International' }}</span>
+                        </td>
+
+                        <!-- Status AML -->
+                        <td class="px-5 py-4 border-r border-slate-100">
+                          <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border shadow-xs inline-block"
+                            [ngClass]="{
+                              'bg-rose-50 text-rose-700 border-rose-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'BLOCKED',
+                              'bg-amber-50 text-amber-800 border-amber-200': client.clientStatus === 'VERIFICATION_AML_REQUIRED',
+                              'bg-emerald-50 text-emerald-800 border-emerald-200': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
+                              'bg-indigo-50 text-indigo-800 border-indigo-200': client.clientStatus === 'INDULGENCE_REQUIRED',
+                              'bg-slate-50 text-slate-700 border-slate-200': !client.clientStatus
+                            }">
+                            {{ client.clientStatus ? client.clientStatus.replace('_', ' ') : 'INCONNU' }}
+                          </span>
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="px-5 py-4 text-right" (click)="$event.stopPropagation()">
+                          <div class="flex items-center justify-end gap-1.5">
+                            <button type="button" (click)="navigateToConformity(client)"
+                              class="p-2 rounded-xl bg-white border-2 border-slate-200 hover:border-slate-400 text-slate-600 hover:text-slate-900 transition-all shadow-xs cursor-pointer"
+                              title="Conformité">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            </button>
+                            <button type="button" (click)="navigateToEdit(client)"
+                              class="p-2 rounded-xl bg-white border-2 border-slate-200 hover:border-cyan-500 text-slate-600 hover:text-cyan-700 transition-all shadow-xs cursor-pointer"
+                              title="Modifier">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            </button>
+                            <button type="button" (click)="navigateToClientDiligenceResults(client.id!)"
+                              class="p-2 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white transition-all shadow-xs cursor-pointer"
+                              title="Due Diligence">
+                              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                            </button>
+                          </div>
+                        </td>
+
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="6" class="px-6 py-20 text-center bg-slate-50/50">
+                          <div class="flex flex-col items-center">
+                            <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-xs mb-3 border border-slate-200">
+                              <svg class="w-7 h-7 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                            </div>
+                            <span class="text-slate-500 font-bold text-sm">{{ 'CRM.NO_CLIENT_FOUND' | translate }}</span>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+
+          <!-- Pagination Toolbar -->
+          @if (totalPages > 1 || totalElements > 0) {
+          <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white px-6 py-4 rounded-2xl border border-slate-200 shadow-sm">
+            <span class="text-slate-600 font-bold text-xs">
+              {{ 'CRM.DISPLAYING' | translate }} <b class="text-slate-900 font-black">{{ (currentPage - 1) * pageSize + 1 }}</b> {{ 'CRM.TO' | translate }} 
+              <b class="text-slate-900 font-black">{{ currentEndIndex }}</b> {{ 'CRM.OF' | translate }} 
+              <b class="text-slate-900 font-black">{{ totalElements }}</b> {{ 'CRM.CLIENTS_COUNT' | translate }}
+            </span>
             
-            <div *ngIf="alertCount === 0" 
-                class="hidden lg:flex items-center gap-3 bg-white px-5 py-3 rounded-2xl border border-slate-200 shadow-sm opacity-60">
-                <div class="flex flex-col items-end">
-                    <span class="text-xs uppercase font-black text-slate-400 leading-none">{{ 'CRM.NO_ALERTS' | translate }}</span>
-                    <span class="text-lg font-black text-slate-300 leading-none mt-1">0</span>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
+            @if (totalPages > 1) {
+            <div class="flex items-center gap-1.5">
+              <!-- Précédent -->
+              <button type="button" (click)="prevPage()" [disabled]="currentPage === 1"
+                class="flex items-center justify-center w-8 h-8 rounded-xl border-2 border-slate-300 bg-white text-slate-600 hover:bg-slate-100 hover:border-slate-400 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-slate-300 disabled:cursor-not-allowed transition-all cursor-pointer shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <!-- Numéros de pages -->
+              @for (page of pages; track page) {
+              <button type="button" (click)="goToPage(page)"
+                [ngClass]="currentPage === page ? 'bg-gradient-to-r from-cyan-600 to-blue-600 border-cyan-600 text-white shadow-sm font-black' : 'bg-white border-2 border-slate-300 text-slate-700 hover:bg-slate-100 hover:border-slate-400 font-bold'"
+                class="flex items-center justify-center w-8 h-8 rounded-xl text-xs transition-all cursor-pointer">
+                {{ page }}
+              </button>
+              }
+
+              <!-- Suivant -->
+              <button type="button" (click)="nextPage()" [disabled]="currentPage === totalPages"
+                class="flex items-center justify-center w-8 h-8 rounded-xl border-2 border-slate-300 bg-white text-slate-600 hover:bg-slate-100 hover:border-slate-400 disabled:opacity-40 disabled:hover:bg-white disabled:hover:border-slate-300 disabled:cursor-not-allowed transition-all cursor-pointer shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
             </div>
-            <button (click)="navigateToNewClient()"
-                class="group relative inline-flex items-center justify-center px-8 py-4 font-black text-lg text-white bg-slate-900 rounded-2xl overflow-hidden shadow-lg transition-all hover:scale-105 active:scale-95">
-                <div class="absolute inset-0 w-3 bg-gradient-to-r from-white/0 via-white/20 to-white/0 animate-[shimmer_2s_infinite] -skew-x-12"></div>
-                <svg class="w-6 h-6 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                {{ 'CRM.NEW_CLIENT' | translate }}
-            </button>
+            }
+          </div>
+          }
         </div>
-    </div>
+      }
 
-    <!-- Tabbed Navigation -->
-    <div class="mb-8 border-b border-slate-200 overflow-x-auto scrollbar-none">
-        <nav class="flex space-x-8 min-w-max" aria-label="Tabs">
-            <button (click)="activeTab = 'ALL'"
-                [ngClass]="activeTab === 'ALL' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
-                {{ 'CRM.TAB_ALL' | translate }}
-            </button>
-            <button (click)="activeTab = 'PERSONNE'"
-                [ngClass]="activeTab === 'PERSONNE' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
-                {{ 'CRM.TAB_PERSONNE' | translate }}
-            </button>
-            <button (click)="activeTab = 'SOCIETE'"
-                [ngClass]="activeTab === 'SOCIETE' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
-                {{ 'CRM.TAB_SOCIETE' | translate }}
-            </button>
-            <button (click)="activeTab = 'ASSOCIATION'"
-                [ngClass]="activeTab === 'ASSOCIATION' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
-                {{ 'CRM.TAB_ASSOCIATION' | translate }}
-            </button>
-            <button (click)="activeTab = 'INSTITUTION'"
-                [ngClass]="activeTab === 'INSTITUTION' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
-                {{ 'CRM.TAB_INSTITUTION' | translate }}
-            </button>
-        </nav>
-    </div>
+      <!-- PERSONNES PHYSIQUES -->
+      @case ('PERSONNE') {
+        <app-client-physique-list></app-client-physique-list>
+      }
 
-    <!-- Filters & Search Bar (Visible only on ALL tab) -->
-    <div *ngIf="activeTab === 'ALL'" class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-10">
-        <div class="lg:col-span-6 relative">
-            <div class="absolute inset-y-0 start-4 flex items-center pointer-events-none">
-                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            </div>
-            <input [(ngModel)]="searchTerm" (input)="filterClients()"
-                class="w-full ps-12 pe-4 py-4 bg-white rounded-3xl border-2 border-transparent shadow-sm focus:border-cyan-500 focus:ring-0 outline-none transition-all placeholder:text-slate-400 font-bold text-lg text-slate-700"
-                [placeholder]="'CRM.SEARCH_PLACEHOLDER' | translate" type="search">
-        </div>
-        <div class="lg:col-span-3">
-            <select [(ngModel)]="selectedType" (change)="filterClients()"
-                class="w-full px-4 py-4 bg-white rounded-3xl border-2 border-transparent shadow-sm focus:border-cyan-500 outline-none font-bold text-lg text-slate-600 cursor-pointer appearance-none">
-                <option value="">{{ 'CRM.FILTER_ALL_TYPES' | translate }}</option>
-                <option value="PERSONNE">{{ 'CRM.FILTER_PERSON' | translate }}</option>
-                <option value="SOCIETE">{{ 'CRM.FILTER_COMPANY' | translate }}</option>
-                <option value="ASSOCIATION">{{ 'CRM.FILTER_ASSOCIATION' | translate }}</option>
-                <option value="INSTITUTION">{{ 'CRM.FILTER_INSTITUTION' | translate }}</option>
-            </select>
-        </div>
-        <div class="lg:col-span-3">
-            <select [(ngModel)]="selectedRisk" (change)="filterClients()"
-                class="w-full px-4 py-4 bg-white rounded-3xl border-2 border-transparent shadow-sm focus:border-cyan-500 outline-none font-bold text-lg text-slate-600 cursor-pointer appearance-none">
-                <option value="">{{ 'CRM.FILTER_ALL_RISKS' | translate }}</option>
-                <option value="ELEVEE">{{ 'CRM.RISK_HIGH' | translate }}</option>
-                <option value="MOYEN">{{ 'CRM.RISK_MEDIUM' | translate }}</option>
-                <option value="FAIBLE">{{ 'CRM.RISK_LOW' | translate }}</option>
-            </select>
-        </div>
-    </div>
+      <!-- SOCIETES -->
+      @case ('SOCIETE') {
+        <app-client-moral-list></app-client-moral-list>
+      }
 
-    <!-- Loading State -->
-    <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 bg-white rounded-[40px] border border-slate-200 shadow-sm">
-        <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-slate-500 font-bold mt-4">{{ 'CRM.LOADING' | translate }}</p>
-    </div>
+      <!-- ASSOCIATIONS -->
+      @case ('ASSOCIATION') {
+        <app-association-list></app-association-list>
+      }
 
-    <!-- Content Sections -->
-    <div *ngIf="!loading" [ngSwitch]="activeTab">
-        <!-- ALL TAB -->
-        <div *ngSwitchCase="'ALL'">
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                @for (client of paginatedClients; track client.id) {
-                    <app-client-card [client]="client"></app-client-card>
-                } @empty {
-                    <div class="col-span-full py-20 flex flex-col items-center justify-center text-center bg-white rounded-[40px] shadow-sm border-2 border-dashed border-slate-200">
-                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-6">
-                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                        </div>
-                        <h3 class="text-2xl font-black text-slate-900 mb-2">{{ 'CRM.NO_CLIENT_FOUND' | translate }}</h3>
-                        <p class="text-slate-500 font-medium mb-8">{{ 'CRM.NO_CLIENT_DESC' | translate }}</p>
-                        <button (click)="navigateToNewClient()"
-                            class="px-8 py-3 bg-slate-900 text-white font-black rounded-2xl hover:scale-105 transition-transform">
-                            {{ 'CRM.CREATE_CLIENT' | translate }}
-                        </button>
-                    </div>
-                }
-            </div>
+      <!-- INSTITUTIONS -->
+      @case ('INSTITUTION') {
+        <app-institution-list></app-institution-list>
+      }
+    }
+  </div>
+  }
 
-            <!-- Pagination Toolbar -->
-            <div *ngIf="totalPages > 1" class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white px-8 py-5 rounded-[25px] border border-slate-200 shadow-sm transition-all hover:shadow-md">
-                <span class="text-slate-500 font-bold text-base">
-                    {{ 'CRM.DISPLAYING' | translate }} <span class="text-slate-900 font-black">{{ (currentPage - 1) * pageSize + 1 }}</span> {{ 'CRM.TO' | translate }} 
-                    <span class="text-slate-900 font-black">{{ currentEndIndex }}</span> {{ 'CRM.OF' | translate }} 
-                    <span class="text-slate-900 font-black">{{ totalElements }}</span> {{ 'CRM.CLIENTS_COUNT' | translate }}
-                </span>
-                <div class="flex items-center gap-2">
-                    <button (click)="prevPage()" [disabled]="currentPage === 1"
-                        class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    </button>
-                    
-                    <button *ngFor="let page of pages" (click)="goToPage(page)"
-                        [ngClass]="currentPage === page ? 'bg-cyan-600 border-cyan-600 text-white shadow-md shadow-cyan-100 scale-105' : 'border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'"
-                        class="flex items-center justify-center w-12 h-12 rounded-2xl font-black text-base transition-all active:scale-95 cursor-pointer">
-                        {{ page }}
-                    </button>
-
-                    <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                        class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PERSONNE TAB -->
-        <app-client-physique-list *ngSwitchCase="'PERSONNE'"></app-client-physique-list>
-
-        <!-- SOCIETE TAB -->
-        <app-client-moral-list *ngSwitchCase="'SOCIETE'"></app-client-moral-list>
-
-        <!-- ASSOCIATION TAB -->
-        <app-association-list *ngSwitchCase="'ASSOCIATION'"></app-association-list>
-
-        <!-- INSTITUTION TAB -->
-        <app-institution-list *ngSwitchCase="'INSTITUTION'"></app-institution-list>
-    </div>
 </div>

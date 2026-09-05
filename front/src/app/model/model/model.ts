@@ -26,6 +26,8 @@ export class Model implements OnInit {
   selectedCategory: string = '';
   selectedStatus: string = '';
 
+  viewMode: 'grid' | 'table' = 'grid';
+
   showDocumentDialog = false;
   selectedDocument: Document | null = null;
   dialogTitle = "Ajouter un Nouveau Modèle";
@@ -34,6 +36,32 @@ export class Model implements OnInit {
 
   ngOnInit(): void {
     this.loadModels();
+  }
+
+  get contractsCount(): number {
+    return this.documents.filter(d => (d.tags || '').toUpperCase().includes('CONTRACT')).length;
+  }
+
+  get kycCount(): number {
+    return this.documents.filter(d => (d.tags || '').toUpperCase().includes('KYC')).length;
+  }
+
+  get policiesCount(): number {
+    return this.documents.filter(d => {
+      const tag = (d.tags || '').toUpperCase();
+      return tag.includes('POLICY') || tag.includes('INTERNAL');
+    }).length;
+  }
+
+  get isFiltered(): boolean {
+    return !!(this.searchTerm.trim() || this.selectedCategory || this.selectedStatus);
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.selectedCategory = '';
+    this.selectedStatus = '';
+    this.applyFilters();
   }
 
   loadModels(): void {
@@ -57,7 +85,8 @@ export class Model implements OnInit {
       temp = temp.filter(doc => 
         (doc.title || '').toLowerCase().includes(search) || 
         (doc.description || '').toLowerCase().includes(search) ||
-        (doc.nomFichier || '').toLowerCase().includes(search)
+        (doc.nomFichier || '').toLowerCase().includes(search) ||
+        (doc.filename || '').toLowerCase().includes(search)
       );
     }
 
@@ -182,11 +211,35 @@ export class Model implements OnInit {
 
   getCategoryLabel(categoryCode: string): string {
     switch (categoryCode) {
-      case 'CONTRACT': return 'Modèles de Contrats';
-      case 'KYC_FORM': return 'Formulaires KYC';
-      case 'POLICY': return 'Politiques Internes';
-      case 'INTERNAL': return 'Documents de Travail';
-      default: return 'Général / Autre';
+      case 'CONTRACT': return 'MODEL.CONTRACTS';
+      case 'KYC_FORM': return 'MODEL.KYC_FORMS';
+      case 'POLICY': return 'MODEL.POLICIES';
+      case 'INTERNAL': return 'MODEL.INTERNAL_DOCS';
+      default: return categoryCode ? categoryCode : 'MODEL.ALL_CATEGORIES';
     }
+  }
+
+  getCategoryBadgeClass(categoryCode: string): string {
+    switch (categoryCode) {
+      case 'CONTRACT':
+        return 'bg-purple-50 text-purple-700 border-purple-200 ring-1 ring-purple-500/10';
+      case 'KYC_FORM':
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-1 ring-emerald-500/10';
+      case 'POLICY':
+        return 'bg-blue-50 text-blue-700 border-blue-200 ring-1 ring-blue-500/10';
+      case 'INTERNAL':
+        return 'bg-amber-50 text-amber-700 border-amber-200 ring-1 ring-amber-500/10';
+      default:
+        return 'bg-slate-50 text-slate-700 border-slate-200 ring-1 ring-slate-500/10';
+    }
+  }
+
+  getFileExtension(doc: Document): string {
+    const filename = doc.nomFichier || doc.filename || doc.name || '';
+    const parts = filename.split('.');
+    if (parts.length > 1) {
+      return parts.pop()!.toUpperCase();
+    }
+    return 'DOC';
   }
 }

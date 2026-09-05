@@ -7,12 +7,13 @@ import { FormConfigService } from '../../services/form-config-service';
 import { AlertService } from '../../services/alert-service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 @Component({
     selector: 'app-diligence-form-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, TranslatePipe],
+    imports: [CommonModule, FormsModule, TranslatePipe, RouterLink],
     templateUrl: './diligence-form-list.component.html',
     styleUrl: './diligence-form-list.component.css',
 })
@@ -22,6 +23,7 @@ export class DiligenceFormListComponent implements OnInit {
     alertService = inject(AlertService);
 
     formConfigs: FormConfig[] = [];
+    isLoading = false;
     
     // Pagination and Sorting
     currentPage = 0;
@@ -31,9 +33,15 @@ export class DiligenceFormListComponent implements OnInit {
     sortField = 'name';
     sortDirection = 'asc';
 
-    // Search
+    // Search & Filter
     searchTerm = '';
+    selectedTypeFilter = 'ALL';
     private searchSubject = new Subject<string>();
+
+    // Delete Modal State
+    deleteModalOpen = false;
+    itemToDelete: FormConfig | null = null;
+    isDeleting = false;
 
     ngOnInit(): void {
         this.loadFormsConfig();
@@ -49,11 +57,17 @@ export class DiligenceFormListComponent implements OnInit {
     }
 
     loadFormsConfig(): void {
+        this.isLoading = true;
         const sortParam = `${this.sortField},${this.sortDirection}`;
-        const filters = { name: this.searchTerm }; // QueryDSL will match name
+        const filters: any = { name: this.searchTerm };
+        
+        if (this.selectedTypeFilter !== 'ALL') {
+            filters.type = this.selectedTypeFilter;
+        }
         
         this.formConfigService.findAll(this.currentPage, this.pageSize, sortParam, filters).subscribe({
             next: (data: PaginatedResponse<FormConfig>) => {
+                this.isLoading = false;
                 if (data && data.content) {
                     this.formConfigs = data.content;
                     this.totalElements = data.totalElements;
@@ -65,6 +79,7 @@ export class DiligenceFormListComponent implements OnInit {
                 }
             },
             error: (err) => {
+                this.isLoading = false;
                 this.alertService.displayMessage('Erreur', 'Impossible de charger les formulaires', 'error');
                 console.error('Error loading forms', err);
             }
@@ -75,7 +90,27 @@ export class DiligenceFormListComponent implements OnInit {
         this.searchSubject.next(this.searchTerm);
     }
 
+    clearSearch(): void {
+        this.searchTerm = '';
+        this.currentPage = 0;
+        this.loadFormsConfig();
+    }
+
+    onTypeFilterChange(type: string): void {
+        this.selectedTypeFilter = type;
+        this.currentPage = 0;
+        this.loadFormsConfig();
+    }
+
+    onPageSizeChange(event: Event): void {
+        const select = event.target as HTMLSelectElement;
+        this.pageSize = Number(select.value);
+        this.currentPage = 0;
+        this.loadFormsConfig();
+    }
+
     onPageChange(page: number): void {
+        if (page < 0 || page >= this.totalPages) return;
         this.currentPage = page;
         this.loadFormsConfig();
     }
@@ -97,6 +132,7 @@ export class DiligenceFormListComponent implements OnInit {
     protected readonly Math = Math;
 
     get startIndex(): number {
+        if (this.totalElements === 0) return 0;
         return this.currentPage * this.pageSize + 1;
     }
 
@@ -104,39 +140,67 @@ export class DiligenceFormListComponent implements OnInit {
         return Math.min((this.currentPage + 1) * this.pageSize, this.totalElements);
     }
 
+    get uniqueTypesCount(): number {
+        const types = new Set(this.formConfigs.map(c => c.type).filter(Boolean));
+        return types.size || (this.totalElements > 0 ? 1 : 0);
+    }
+
+    navigateBack(): void {
+        this.navigationService.navigateToClientDiligenceStatusList();
+    }
+
+    navigateToTracking(): void {
+        this.navigationService.navigateToClientDiligenceStatusList();
+    }
+
     onAdd(): void {
         this.navigationService.navigateToDiligenceFormBuilder();
     }
 
     onEdit(id: string): void {
-        // Assuming the builder can handle edit mode via query param or route param. 
-        // The current builder seems to generate a new ID on init, so it might need adjustment for edit mode.
-        // For now, I'll navigate to the builder.
-        // Checking NavigationService for proper edit method.
-        // NavigationService has navigateToDiligenceFormBuilder() which creates new.
-        // I need to check if there is an edit route or if I should pass an ID.
-        // NavigationService.DILIGENCE_FORM_BUILDER is "diligence-form-builder/:id".
-        // So I should pass the ID.
         this.navigationService.navigateToDiligenceFormBuilderEdit(id);
     }
 
-    onDelete(id: string): void {
-        if (confirm('Êtes-vous sûr de vouloir supprimer ce formulaire ?')) {
-            this.formConfigService.delete(id).subscribe({
-                next: () => {
-                    this.alertService.displayMessage('Succès', 'Formulaire supprimé', 'success');
-                    this.loadFormsConfig();
-                },
-                error: (err) => {
-                    this.alertService.displayMessage('Erreur', 'Impossible de supprimer le formulaire', 'error');
-                    console.error('Error deleting form', err);
-                }
-            });
-        }
+    onView(id: string): void {
+        this.navigationService.navigateToDiligenceFormViewer(id);
     }
 
-    onView(id: string): void {
-        // Navigate to viewer (preview)
-        this.navigationService.navigateToDiligenceFormViewer(id);
+    openDeleteModal(config: FormConfig): void {
+        this.itemToDelete = config;
+        this.deleteModalOpen = true;
+    }
+
+    closeDeleteModal(): void {
+        this.deleteModalOpen = false;
+        this.itemToDelete = null;
+        this.isDeleting = false;
+    }
+
+    confirmDelete(): void {
+        if (!this.itemToDelete || !this.itemToDelete.id) return;
+        this.isDeleting = true;
+
+        this.formConfigService.delete(this.itemToDelete.id).subscribe({
+            next: () => {
+                this.isDeleting = false;
+                this.closeDeleteModal();
+                this.alertService.displayMessage('Succès', 'Modèle de formulaire supprimé', 'success');
+                this.loadFormsConfig();
+            },
+            error: (err) => {
+                this.isDeleting = false;
+                this.alertService.displayMessage('Erreur', 'Impossible de supprimer le formulaire', 'error');
+                console.error('Error deleting form', err);
+            }
+        });
+    }
+
+    onDelete(id: string): void {
+        const config = this.formConfigs.find(c => c.id === id);
+        if (config) {
+            this.openDeleteModal(config);
+        } else {
+            this.openDeleteModal({ id, name: 'Formulaire #' + id } as FormConfig);
+        }
     }
 }

@@ -1,397 +1,435 @@
 @if (client) {
-<div class="min-h-screen py-4 px-4 sm:px-6 lg:px-8 bg-slate-50/50">
-  <div class="max-w-[1600px] mx-auto space-y-6 animate-in">
-    
-    <!-- Header Section -->
-    <header class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white p-5 sm:p-6 rounded-3xl border border-slate-200 shadow-sm">
-      <div class="space-y-2 w-full lg:w-auto">
-        <nav class="flex items-center space-x-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-          <a routerLink="/contacts" class="hover:text-indigo-600 transition-colors">CRM</a> 
-          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
-          <span class="text-indigo-500">{{ 'CLIENT_CONFORMITY.CLIENT_DETAILS' | translate }}</span>
-        </nav>
-        
-        <div class="flex items-center gap-4">
-          <div class="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-2xl bg-gradient-to-br from-indigo-600 to-cyan-500 flex items-center justify-center text-white text-lg sm:text-xl font-black shadow-lg shadow-indigo-500/20">
-            {{ getDisplayName(client).charAt(0) }}
-          </div>
-          <div class="min-w-0">
-            <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-none mb-1.5 truncate">
+<div class="space-y-6 font-sans">
+  
+  <!-- En-tête Principal avec Titre & Actions Rapides -->
+  <div class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-sm relative overflow-hidden">
+    <!-- Accent gradient bar -->
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-cyan-500 to-blue-600"></div>
+
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      
+      <!-- Titre & Contexte Client -->
+      <div class="flex items-start sm:items-center gap-3.5">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-cyan-500 text-white flex items-center justify-center font-black text-lg shadow-md shadow-indigo-100 flex-shrink-0">
+          {{ getDisplayName(client).charAt(0) }}
+        </div>
+        <div>
+          <!-- Fil d'Ariane -->
+          <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+            <a routerLink="/contacts" class="hover:text-indigo-600 transition-colors">CRM</a> 
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <span class="text-slate-800">{{ 'CLIENT_CONFORMITY.CLIENT_DETAILS' | translate }}</span>
+          </nav>
+          
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
               {{ getDisplayName(client) }}
             </h1>
-            <div class="flex items-center gap-2 flex-wrap">
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-slate-900 text-white shadow-sm">
-                ID: #{{ client.id }}
-              </span>
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-slate-200 bg-slate-50 text-slate-600">
-                {{ client.type }}
-              </span>
-            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200/80">
+              ID: #{{ client.id }}
+            </span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold border"
+              [ngClass]="{
+                'bg-blue-50 text-blue-700 border-blue-200': client.type === 'PERSONNE',
+                'bg-purple-50 text-purple-700 border-purple-200': client.type === 'SOCIETE',
+                'bg-emerald-50 text-emerald-700 border-emerald-200': client.type === 'ASSOCIATION',
+                'bg-amber-50 text-amber-700 border-amber-200': client.type === 'INSTITUTION'
+              }">
+              {{ client.type }}
+            </span>
           </div>
         </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full lg:w-auto mt-2 lg:mt-0">
-        <button (click)="triggerClientVerification()" [disabled]="isVerifying"
-            class="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-all shadow-sm disabled:opacity-50">
-            @if(isVerifying) {
-              <svg class="animate-spin -ml-1 mr-2 h-3.5 w-3.5 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-              Vérification...
-            } @else {
-              <svg class="w-3.5 h-3.5 mr-1.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              Vérification AML
-            }
-        </button>
-
-        <button (click)="startDueDiligence()" [disabled]="isAmlLoading"
-            class="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest bg-gradient-to-r from-indigo-600 to-cyan-500 text-white hover:shadow-lg hover:shadow-indigo-500/25 transition-all shadow-sm disabled:opacity-50">
-            @if(isAmlLoading) {
-              <svg class="animate-spin -ml-1 mr-2 h-3.5 w-3.5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-              Analyse...
-            } @else {
-              <svg class="w-3.5 h-3.5 mr-1.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-              Dossier LCB-FT
-            }
-        </button>
-
-        <button (click)="openReportModal()"
-            class="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 bg-slate-800 text-white hover:bg-slate-700 rounded-xl text-[11px] font-black uppercase tracking-widest shadow-sm transition-all cursor-pointer">
-            <svg class="h-3.5 w-3.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-            PDF Audit
-        </button>
-
-        <button (click)="editClient()"
-            class="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-widest text-slate-700 bg-white border border-slate-200 hover:border-indigo-500 hover:text-indigo-600 transition-all shadow-sm">
-            <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-            Modifier
-        </button>
-      </div>
-    </header>
-
-    <!-- Main Grid: 1/3 and 2/3 ratio on laptops -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      
-      <!-- LEFT COLUMN (1/3) -->
-      <div class="lg:col-span-4 xl:col-span-3 space-y-6">
+      <!-- Actions Boutons -->
+      <div class="flex flex-wrap items-center gap-2.5">
         
-        <!-- Status Card -->
-        <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm relative overflow-hidden">
-          <div class="absolute -top-10 -right-10 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl"></div>
-          <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
-            Statut
-          </h3>
-          <div class="space-y-4">
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col items-start gap-2">
-              <span class="text-[10px] font-bold text-slate-500 uppercase">État Actuel</span>
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest inline-block" [ngClass]="{
-                'bg-emerald-100 text-emerald-800 border border-emerald-200': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
-                'bg-amber-100 text-amber-800 border border-amber-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
-                'bg-rose-100 text-rose-800 border border-rose-200': client.clientStatus === 'BLOCKED',
-                'bg-indigo-100 text-indigo-800 border border-indigo-200': client.clientStatus?.startsWith('INDULGENCE')
-              }">{{ client.clientStatus?.replace('_', ' ') }}</span>
-            </div>
-            <div>
-              <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 block mb-1">Changer Statut</label>
+        <!-- Vérification AML -->
+        <button type="button" (click)="triggerClientVerification()" [disabled]="isVerifying"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 border-2 border-emerald-200 hover:bg-emerald-100 transition-all shadow-xs disabled:opacity-50 cursor-pointer">
+          @if(isVerifying) {
+            <div class="w-3.5 h-3.5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            <span>Vérification...</span>
+          } @else {
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span>Vérification AML</span>
+          }
+        </button>
+
+        <!-- Dossier LCB-FT -->
+        <button type="button" (click)="startDueDiligence()" [disabled]="isAmlLoading"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-700 hover:to-cyan-600 text-white shadow-md shadow-indigo-100 hover:shadow-indigo-200 transition-all disabled:opacity-50 cursor-pointer">
+          @if(isAmlLoading) {
+            <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Analyse...</span>
+          } @else {
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <span>Dossier LCB-FT</span>
+          }
+        </button>
+
+        <!-- PDF Audit -->
+        <button type="button" (click)="openReportModal()"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer">
+          <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          <span>PDF Audit</span>
+        </button>
+
+        <!-- Modifier -->
+        <button type="button" (click)="editClient()"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 bg-white border-2 border-slate-300 hover:border-indigo-500 hover:text-indigo-600 transition-all shadow-xs cursor-pointer">
+          <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+          <span>Modifier</span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Grille Principale : 1/3 (Infos & Profil) et 2/3 (Analyses Sanctions & Historique) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- COLONNE GAUCHE (1/3) -->
+    <div class="lg:col-span-4 xl:col-span-4 space-y-6">
+      
+      <!-- Carte Statut AML -->
+      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm relative overflow-hidden">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </span>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900">Statut AML de Conformité</h3>
+        </div>
+
+        <div class="space-y-4">
+          <div class="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">État Actuel</span>
+            <span class="px-3 py-1 rounded-full text-xs font-bold border shadow-xs" [ngClass]="{
+              'bg-emerald-50 text-emerald-800 border-emerald-200': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
+              'bg-amber-50 text-amber-800 border-amber-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
+              'bg-rose-50 text-rose-800 border-rose-200': client.clientStatus === 'BLOCKED',
+              'bg-indigo-50 text-indigo-800 border-indigo-200': client.clientStatus?.startsWith('INDULGENCE')
+            }">{{ client.clientStatus?.replace('_', ' ') }}</span>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Changer de Statut</label>
+            <div class="relative">
               <select [ngModel]="client.clientStatus" (ngModelChange)="onStatusChange($event)"
-                class="w-full bg-slate-50 rounded-xl border border-slate-200 p-2.5 text-xs font-bold text-slate-900 focus:border-indigo-500 focus:bg-white transition-all cursor-pointer">
+                class="w-full ps-3.5 pe-8 py-2.5 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 outline-none font-semibold text-xs text-slate-800 shadow-sm transition-all cursor-pointer appearance-none">
                 @for (status of clientStatuses; track status) {
                   <option [value]="status">{{ status.replace('_', ' ') }}</option>
                 }
               </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Risk Profile -->
-        <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex items-center gap-4">
-          <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
-            <svg class="w-full h-full" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f5f9" stroke-width="8"/>
-              <circle cx="50" cy="50" r="45" fill="none" 
-                [attr.stroke]="getHighestMatchScore() >= 0.8 ? '#f43f5e' : (getHighestMatchScore() >= 0.5 ? '#f59e0b' : '#10b981')" 
-                stroke-width="8" stroke-linecap="round"
-                class="progress-ring transition-all duration-1000"
-                [attr.stroke-dasharray]="282.7"
-                [attr.stroke-dashoffset]="282.7 * (1 - getHighestMatchScore())"/>
-            </svg>
-            <div class="absolute inset-0 flex flex-col items-center justify-center">
-              <span class="text-sm font-black text-slate-900 leading-none">{{ (getHighestMatchScore() * 100).toFixed(0) }}%</span>
-            </div>
-          </div>
-          <div>
-            <p class="text-[11px] font-black text-slate-900 leading-tight mb-1">
-              {{ getHighestMatchScore() >= 0.5 ? 'Risque Détecté' : 'Profil Sain' }}
-            </p>
-            <p class="text-[10px] font-medium text-slate-500 leading-tight">
-              {{ getHighestMatchScore() >= 0.5 ? 'Analyse manuelle requise.' : 'Aucun hit critique trouvé.' }}
-            </p>
-          </div>
-        </div>
-
-        <!-- Identity & Documents -->
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-          <div class="p-5 space-y-5">
-            <!-- Contact Info -->
-            <div class="space-y-3">
-              <div>
-                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-0.5">Email</span>
-                <a [href]="'mailto:' + client.email" class="text-xs font-black text-slate-900 hover:text-indigo-600 transition-colors flex items-center gap-1.5 truncate">
-                  <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                  <span class="truncate">{{ client.email || 'Non renseigné' }}</span>
-                </a>
-              </div>
-              <div>
-                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400 block mb-0.5">Localisation</span>
-                <p class="text-xs font-black text-slate-900 flex items-center gap-1.5">
-                  <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                  {{ client.paysResidance || 'International' }}
-                </p>
+              <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
               </div>
             </div>
-
-            <!-- Documents -->
-            <div class="pt-4 border-t border-slate-100">
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Documents</span>
-                <div class="flex items-center gap-1.5">
-                  <span class="text-[9px] font-black text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">{{ client.documents?.length || 0 }}</span>
-                  <button (click)="openAddDocumentDialog()" class="w-5 h-5 rounded bg-slate-100 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                  </button>
-                </div>
-              </div>
-              <div class="space-y-2">
-                @for (doc of client.documents; track doc.id) {
-                  <div class="p-2.5 rounded-xl bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 transition-all flex items-center justify-between group">
-                    <div class="flex items-center gap-2 min-w-0">
-                      <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                      <div class="min-w-0">
-                        <p class="text-[10px] font-black text-slate-700 truncate leading-tight">{{ doc.title || doc.label || doc.nomFichier }}</p>
-                      </div>
-                    </div>
-                    <button (click)="downloadDocument(doc)" class="p-1.5 text-slate-300 hover:text-indigo-600 transition-colors shrink-0">
-                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                    </button>
-                  </div>
-                }
-              </div>
-            </div>
-
-            <!-- UBOs -->
-            @if (client.type === 'SOCIETE' && client.ubos && client.ubos.length > 0) {
-            <div class="pt-4 border-t border-slate-100">
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">UBOs</span>
-                <span class="text-[9px] font-black text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">{{ client.ubos.length }}</span>
-              </div>
-              <div class="space-y-2">
-                @for (ubo of client.ubos; track ubo.id) {
-                  <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
-                    <div class="flex justify-between items-start mb-1">
-                      <span class="text-[11px] font-black text-slate-900 truncate pr-2">{{ ubo.fullName }}</span>
-                      <span class="text-[10px] font-black text-purple-600 shrink-0">{{ ubo.percentageOfOwnership }}%</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                      <span class="text-[9px] font-bold text-slate-500 uppercase">{{ ubo.roleInCompany || 'Actionnaire' }}</span>
-                      @if (ubo.amlAnalysisStatus) {
-                        <span [class]="'px-1.5 py-0.5 rounded-full text-[8px] font-black uppercase ' + 
-                          (ubo.amlAnalysisStatus === 'OK' ? 'bg-emerald-100 text-emerald-700' : 
-                           ubo.amlAnalysisStatus === 'SUSPECT' ? 'bg-amber-100 text-amber-700' : 
-                           ubo.amlAnalysisStatus === 'BLOCKED' ? 'bg-red-100 text-red-700' : 'bg-slate-200 text-slate-600')">
-                          {{ ubo.amlAnalysisStatus }}
-                        </span>
-                      }
-                    </div>
-                  </div>
-                }
-              </div>
-            </div>
-            }
-            
-            <!-- Contacts -->
-            @if (client.contacts && client.contacts.length > 0) {
-            <div class="pt-4 border-t border-slate-100">
-              <div class="flex items-center justify-between mb-3">
-                <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Contacts</span>
-                <span class="text-[9px] font-black text-cyan-600 bg-cyan-50 px-1.5 py-0.5 rounded">{{ client.contacts.length }}</span>
-              </div>
-              <div class="space-y-2">
-                @for (contact of client.contacts; track contact.id) {
-                  <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
-                    <div class="mb-1.5">
-                      <p class="text-[11px] font-black text-slate-900">{{ contact.prenom }} {{ contact.nom }}</p>
-                      <p class="text-[9px] font-bold text-slate-500 uppercase">{{ contact.occupation || 'Contact' }}</p>
-                    </div>
-                    <div class="space-y-1">
-                      <a [href]="'mailto:' + contact.email" class="text-[10px] font-bold text-slate-600 hover:text-cyan-600 transition-colors flex items-center gap-1.5 truncate">
-                        <svg class="w-3 h-3 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                        <span class="truncate">{{ contact.email }}</span>
-                      </a>
-                    </div>
-                  </div>
-                }
-              </div>
-            </div>
-            }
           </div>
         </div>
       </div>
 
-      <!-- RIGHT COLUMN (2/3): Dashboards -->
-      <div class="lg:col-span-8 xl:col-span-9 space-y-6">
-        
-        <!-- Table Card -->
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-          <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
-            <div>
-              <h2 class="text-base font-black text-slate-900 tracking-tight">Analyse Sanctions</h2>
-              <p class="text-[10px] font-medium text-slate-500 mt-0.5">Vérification temps réel OpenSanctions</p>
+      <!-- Profil de Risque Circulaire -->
+      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm flex items-center gap-4">
+        <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
+          <svg class="w-full h-full" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f5f9" stroke-width="8"/>
+            <circle cx="50" cy="50" r="45" fill="none" 
+              [attr.stroke]="getHighestMatchScore() >= 0.8 ? '#f43f5e' : (getHighestMatchScore() >= 0.5 ? '#f59e0b' : '#10b981')" 
+              stroke-width="8" stroke-linecap="round"
+              class="transition-all duration-1000"
+              [attr.stroke-dasharray]="282.7"
+              [attr.stroke-dashoffset]="282.7 * (1 - getHighestMatchScore())"/>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span class="text-sm font-black text-slate-900 leading-none">{{ (getHighestMatchScore() * 100).toFixed(0) }}%</span>
+          </div>
+        </div>
+        <div>
+          <p class="text-xs font-black text-slate-900 leading-tight mb-0.5">
+            {{ getHighestMatchScore() >= 0.5 ? 'Risque Détecté' : 'Profil Conforme' }}
+          </p>
+          <p class="text-[11px] font-medium text-slate-500 leading-tight">
+            {{ getHighestMatchScore() >= 0.5 ? 'Analyse manuelle de sanctions requise.' : 'Aucun hit critique trouvé.' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Coordonnées, Documents & UBOs -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-5 space-y-4">
+          
+          <!-- Contact Info -->
+          <div class="space-y-2.5">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Coordonnées</h4>
+            
+            <div class="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100 flex items-center gap-2.5">
+              <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <a [href]="'mailto:' + client.email" class="text-xs font-bold text-slate-800 hover:text-indigo-600 transition-colors truncate">
+                {{ client.email || 'Email non renseigné' }}
+              </a>
             </div>
-            <div class="flex items-center gap-2 w-full sm:w-auto">
-              <div class="flex-1 sm:flex-none flex items-center gap-2 bg-white px-3 py-2 rounded-xl border border-slate-200">
-                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                <input type="date" [(ngModel)]="matchDateFilter" class="text-[10px] font-black uppercase tracking-widest border-none focus:ring-0 bg-transparent p-0 w-full sm:w-28 text-slate-600">
-              </div>
-              <button (click)="loadAmlHistory(client.id?.toString()!)" class="p-2 bg-indigo-50 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shrink-0">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-              </button>
+
+            <div class="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100 flex items-center gap-2.5">
+              <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span class="text-xs font-bold text-slate-800 truncate">
+                {{ client.paysResidance || client.pays || 'International' }}
+              </span>
             </div>
           </div>
 
-          <div class="overflow-x-auto">
-            @if (getFilteredMatches().length > 0) {
-              <table class="w-full text-left border-collapse whitespace-nowrap">
-                <thead class="bg-slate-50/80 border-b border-slate-100">
-                  <tr>
-                    <th class="px-5 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400">Entité & Yente ID</th>
-                    <th class="px-5 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400">Cible</th>
-                    <th class="px-5 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400 text-center">Score</th>
-                    <th class="px-5 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400">Status</th>
-                    <th class="px-5 py-3 text-[9px] font-black uppercase tracking-widest text-slate-400 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                  @for (match of paginatedMatches; track match.id) {
-                    <tr class="hover:bg-indigo-50/30 transition-colors group">
-                      <td class="px-5 py-3">
-                        <div class="text-[11px] font-black text-slate-900">{{ getTargetName(match) }}</div>
-                        <a href="https://www.opensanctions.org/entities/{{match.yenteId}}" target="_blank" class="text-[9px] font-bold text-indigo-500 hover:text-indigo-700 mt-0.5 inline-flex items-center gap-1">
-                          ID: {{ match.yenteId }} <svg class="w-2 h-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                        </a>
-                      </td>
-                      <td class="px-5 py-3 text-[11px] font-bold text-slate-600">
-                        {{ match.uboDTO ? match.uboDTO.fullName : 'Client Principal' }}
-                      </td>
-                      <td class="px-5 py-3 text-center">
-                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-black" [ngClass]="{
-                          'bg-rose-100 text-rose-700': match.score! >= 0.8,
-                          'bg-amber-100 text-amber-700': match.score! >= 0.5 && match.score! < 0.8,
-                          'bg-emerald-100 text-emerald-700': match.score! < 0.5
-                        }">{{ (match.score! * 100).toFixed(0) }}%</span>
-                      </td>
-                      <td class="px-5 py-3">
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider border" [ngClass]="{
-                          'bg-emerald-50 text-emerald-700 border-emerald-200': match.status === 'FALSE_POSITIVE',
-                          'bg-rose-50 text-rose-700 border-rose-200': match.status === 'TRUE_POSITIVE',
-                          'bg-amber-50 text-amber-700 border-amber-200': match.status === 'DILIGENCE_REQUIRED',
-                          'bg-slate-50 text-slate-600 border-slate-200': match.status === 'PENDING'
-                        }">{{ match.status?.replace('_', ' ') }}</span>
-                      </td>
-                      <td class="px-5 py-3 text-right">
-                        <button (click)="openAnalysisModal(match)" class="p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:bg-indigo-600 hover:text-white transition-colors inline-flex">
-                          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                        </button>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-              @if (totalMatchesPages > 1) {
-                <div class="px-5 py-2.5 border-t border-slate-100 flex items-center justify-between bg-slate-50">
-                  <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Page {{ matchesCurrentPage }} / {{ totalMatchesPages }}</span>
-                  <div class="flex items-center gap-1.5">
-                    <button (click)="matchesCurrentPage = matchesCurrentPage - 1" [disabled]="matchesCurrentPage === 1" class="px-2 py-1 rounded-lg bg-white border border-slate-200 text-[10px] font-bold disabled:opacity-50 text-slate-600 hover:bg-slate-50">Préc.</button>
-                    <button (click)="matchesCurrentPage = matchesCurrentPage + 1" [disabled]="matchesCurrentPage === totalMatchesPages" class="px-2 py-1 rounded-lg bg-white border border-slate-200 text-[10px] font-bold disabled:opacity-50 text-slate-600 hover:bg-slate-50">Suiv.</button>
+          <!-- Documents -->
+          <div class="pt-4 border-t border-slate-100">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Documents</h4>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[11px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">{{ client.documents?.length || 0 }}</span>
+                <button type="button" (click)="openAddDocumentDialog()" [title]="'Ajouter un document'" class="p-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-indigo-600 hover:text-white transition-all cursor-pointer">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-1.5">
+              @for (doc of client.documents; track doc.id) {
+                <div class="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-100 transition-all flex items-center justify-between group">
+                  <div class="flex items-center gap-2 min-w-0">
+                    <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <p class="text-xs font-bold text-slate-700 truncate">{{ doc.title || doc.label || doc.nomFichier }}</p>
+                  </div>
+                  <button type="button" (click)="downloadDocument(doc)" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors shrink-0 cursor-pointer" title="Télécharger">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                  </button>
+                </div>
+              }
+              @if (!client.documents || client.documents.length === 0) {
+                <p class="text-xs text-slate-400 font-medium italic">Aucun document rattaché.</p>
+              }
+            </div>
+          </div>
+
+          <!-- UBOs -->
+          @if (client.type === 'SOCIETE' && client.ubos && client.ubos.length > 0) {
+          <div class="pt-4 border-t border-slate-100">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Bénéficiaires Effectifs (UBOs)</h4>
+              <span class="text-[11px] font-bold text-purple-700 bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full">{{ client.ubos.length }}</span>
+            </div>
+            <div class="space-y-2">
+              @for (ubo of client.ubos; track ubo.id) {
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <div class="flex justify-between items-start mb-1">
+                    <span class="text-xs font-black text-slate-900 truncate pr-2">{{ ubo.fullName }}</span>
+                    <span class="text-xs font-black text-purple-600 shrink-0">{{ ubo.percentageOfOwnership }}%</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-[11px] font-medium text-slate-500 uppercase">{{ ubo.roleInCompany || 'Actionnaire' }}</span>
+                    @if (ubo.amlAnalysisStatus) {
+                      <span [class]="'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ' + 
+                        (ubo.amlAnalysisStatus === 'OK' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 
+                         ubo.amlAnalysisStatus === 'SUSPECT' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 
+                         ubo.amlAnalysisStatus === 'BLOCKED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-600 border border-slate-200')">
+                        {{ ubo.amlAnalysisStatus }}
+                      </span>
+                    }
                   </div>
                 </div>
               }
-            } @else {
-              <div class="p-10 text-center">
-                <div class="w-10 h-10 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            </div>
+          </div>
+          }
+          
+          <!-- Contacts Associés -->
+          @if (client.contacts && client.contacts.length > 0) {
+          <div class="pt-4 border-t border-slate-100">
+            <div class="flex items-center justify-between mb-3">
+              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Contacts</h4>
+              <span class="text-[11px] font-bold text-cyan-700 bg-cyan-50 border border-cyan-100 px-2 py-0.5 rounded-full">{{ client.contacts.length }}</span>
+            </div>
+            <div class="space-y-2">
+              @for (contact of client.contacts; track contact.id) {
+                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <div class="mb-1">
+                    <p class="text-xs font-black text-slate-900">{{ contact.prenom }} {{ contact.nom }}</p>
+                    <p class="text-[10px] font-semibold text-slate-400 uppercase">{{ contact.occupation || 'Contact' }}</p>
+                  </div>
+                  @if (contact.email) {
+                  <a [href]="'mailto:' + contact.email" class="text-xs font-medium text-slate-600 hover:text-cyan-600 transition-colors flex items-center gap-1.5 truncate">
+                    <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <span class="truncate">{{ contact.email }}</span>
+                  </a>
+                  }
                 </div>
-                <h3 class="text-xs font-black text-slate-900 mb-1">Tout est en ordre</h3>
-                <p class="text-[10px] text-slate-500 font-medium">Aucune correspondance critique détectée.</p>
-              </div>
-            }
+              }
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- COLONNE DROITE (2/3) : Table Sanctions & Timeline -->
+    <div class="lg:col-span-8 xl:col-span-8 space-y-6">
+      
+      <!-- Table des Correspondances de Sanctions -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+        <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/60">
+          <div>
+            <h2 class="text-base font-black text-slate-900 tracking-tight">Analyse des Correspondances Sanctions</h2>
+            <p class="text-xs font-medium text-slate-500 mt-0.5">Vérification temps réel via OpenSanctions & Yente</p>
+          </div>
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <div class="flex-1 sm:flex-none flex items-center gap-2 bg-white px-3 py-2 rounded-xl border-2 border-slate-300 hover:border-slate-400 transition-colors">
+              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              <input type="date" [(ngModel)]="matchDateFilter" class="text-xs font-semibold border-none focus:ring-0 bg-transparent p-0 w-full sm:w-28 text-slate-700 outline-none">
+            </div>
+            <button type="button" (click)="loadAmlHistory(client.id?.toString()!)" class="p-2 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shrink-0 cursor-pointer shadow-xs" title="Actualiser l'historique">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            </button>
           </div>
         </div>
 
-        <!-- Timeline -->
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-5">
-          <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-5 flex items-center gap-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-            Historique d'Exécution
-          </h3>
-          <div class="space-y-4">
-            @for (exec of paginatedExecutions; track exec.id) {
-              <div class="relative pl-5 pb-3 group last:pb-0">
-                <div class="absolute left-1.5 top-3 bottom-0 w-px bg-slate-100 group-last:hidden"></div>
-                <div class="absolute left-0 top-1 w-3 h-3 rounded-full border-2 border-white shadow-sm" [ngClass]="{'bg-emerald-400': exec.status === 'PASSED', 'bg-rose-400': exec.status === 'FAILED', 'bg-slate-300': !exec.status}"></div>
-                <div class="flex flex-col sm:flex-row justify-between items-start gap-2">
-                  <div>
-                    <div class="flex items-center gap-2 mb-0.5">
-                      <span class="text-[11px] font-black text-slate-900">{{ exec.uboDTO ? exec.uboDTO.fullName : 'Client Principal' }}</span>
-                      <span class="text-[9px] font-bold text-slate-400">{{ exec.createdAt | date:'short' }}</span>
-                    </div>
-                    <p class="text-[10px] text-slate-500 leading-relaxed">{{ exec.executionMessage || 'Analyse terminée.' }}</p>
-                  </div>
-                  <span class="px-2 py-0.5 rounded text-[8px] font-black uppercase border" [ngClass]="{'bg-emerald-50 text-emerald-700 border-emerald-200': exec.status === 'PASSED', 'bg-rose-50 text-rose-700 border-rose-200': exec.status === 'FAILED', 'bg-slate-50 text-slate-600 border-slate-200': !exec.status}">
-                    {{ exec.status || 'INCONNU' }}
-                  </span>
-                </div>
-                
-                @if (exec.rawResponse) {
-                  <details class="mt-3 group/details">
-                    <summary class="text-[9px] font-black uppercase tracking-widest text-indigo-500 cursor-pointer list-none flex items-center gap-1.5 hover:text-indigo-700 transition-colors">
-                      <svg class="w-2.5 h-2.5 group-open/details:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
-                      Voir détails OpenSanctions
-                    </summary>
-                    <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      @for (result of getResultsFromRawResponse(exec.rawResponse); track result.id) {
-                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                          <div class="flex justify-between items-start mb-1">
-                            <a href="https://www.opensanctions.org/entities/{{result.id}}" target="_blank" class="text-[10px] font-black text-slate-900 hover:text-indigo-600 transition-colors flex items-center gap-1 truncate">
-                               {{ result.properties?.name?.[0] }} <svg class="w-2 h-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                            </a>
-                            <span class="text-[9px] font-black px-1.5 py-0.5 rounded" [ngClass]="result.score >= 0.8 ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'">
-                              {{ (result.score * 100).toFixed(0) }}%
-                            </span>
-                          </div>
-                          <div class="text-[8px] font-black uppercase tracking-widest text-slate-400">
-                            {{ result.schema }} • {{ result.properties?.country?.[0] || 'Unknown' }}
-                          </div>
-                        </div>
-                      }
-                    </div>
-                  </details>
+        <div class="overflow-x-auto">
+          @if (getFilteredMatches().length > 0) {
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+              <thead class="bg-slate-50/80 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <tr>
+                  <th class="px-5 py-3.5">Entité & Yente ID</th>
+                  <th class="px-5 py-3.5">Cible</th>
+                  <th class="px-5 py-3.5 text-center">Score</th>
+                  <th class="px-5 py-3.5">Statut Décision</th>
+                  <th class="px-5 py-3.5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                @for (match of paginatedMatches; track match.id) {
+                  <tr class="hover:bg-slate-50/70 transition-colors group">
+                    <td class="px-5 py-3.5">
+                      <div class="text-xs font-bold text-slate-900">{{ getTargetName(match) }}</div>
+                      <a href="https://www.opensanctions.org/entities/{{match.yenteId}}" target="_blank" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 mt-0.5 inline-flex items-center gap-1">
+                        ID: {{ match.yenteId }} <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                      </a>
+                    </td>
+                    <td class="px-5 py-3.5 text-xs font-semibold text-slate-700">
+                      {{ match.uboDTO ? match.uboDTO.fullName : 'Client Principal' }}
+                    </td>
+                    <td class="px-5 py-3.5 text-center">
+                      <span class="inline-block px-2.5 py-1 rounded-lg text-xs font-black shadow-xs" [ngClass]="{
+                        'bg-rose-500 text-white': match.score! >= 0.8,
+                        'bg-amber-500 text-white': match.score! >= 0.5 && match.score! < 0.8,
+                        'bg-emerald-500 text-white': match.score! < 0.5
+                      }">{{ (match.score! * 100).toFixed(0) }}%</span>
+                    </td>
+                    <td class="px-5 py-3.5">
+                      <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border" [ngClass]="{
+                        'bg-emerald-50 text-emerald-800 border-emerald-200': match.status === 'FALSE_POSITIVE',
+                        'bg-rose-50 text-rose-800 border-rose-200': match.status === 'TRUE_POSITIVE',
+                        'bg-amber-50 text-amber-800 border-amber-200': match.status === 'DILIGENCE_REQUIRED',
+                        'bg-slate-100 text-slate-700 border-slate-200': match.status === 'PENDING'
+                      }">{{ match.status?.replace('_', ' ') }}</span>
+                    </td>
+                    <td class="px-5 py-3.5 text-right">
+                      <button type="button" (click)="openAnalysisModal(match)" class="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-indigo-600 hover:text-white transition-all inline-flex cursor-pointer border border-transparent hover:border-indigo-200" title="Analyser la correspondance">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                      </button>
+                    </td>
+                  </tr>
                 }
+              </tbody>
+            </table>
+            @if (totalMatchesPages > 1) {
+              <div class="px-5 py-3 border-t border-slate-200 flex items-center justify-between bg-slate-50/60">
+                <span class="text-xs font-bold text-slate-500">Page {{ matchesCurrentPage }} / {{ totalMatchesPages }}</span>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" (click)="matchesCurrentPage = matchesCurrentPage - 1" [disabled]="matchesCurrentPage === 1" class="px-3 py-1.5 rounded-lg bg-white border-2 border-slate-300 hover:border-slate-400 text-xs font-bold disabled:opacity-40 text-slate-700 cursor-pointer shadow-xs">Préc.</button>
+                  <button type="button" (click)="matchesCurrentPage = matchesCurrentPage + 1" [disabled]="matchesCurrentPage === totalMatchesPages" class="px-3 py-1.5 rounded-lg bg-white border-2 border-slate-300 hover:border-slate-400 text-xs font-bold disabled:opacity-40 text-slate-700 cursor-pointer shadow-xs">Suiv.</button>
+                </div>
               </div>
             }
-          </div>
-          @if (totalExecutionsPages > 1) {
-            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between items-center">
-              <span class="text-[9px] font-bold text-slate-500 uppercase tracking-widest">Page {{ executionsCurrentPage }} / {{ totalExecutionsPages }}</span>
-              <div class="flex gap-1.5">
-                <button (click)="executionsCurrentPage = executionsCurrentPage - 1" [disabled]="executionsCurrentPage === 1" class="px-2 py-1 rounded-lg bg-slate-50 text-[10px] font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-50 border border-slate-200">Préc.</button>
-                <button (click)="executionsCurrentPage = executionsCurrentPage + 1" [disabled]="executionsCurrentPage === totalExecutionsPages" class="px-2 py-1 rounded-lg bg-slate-50 text-[10px] font-bold text-slate-600 hover:bg-slate-100 disabled:opacity-50 border border-slate-200">Suiv.</button>
+          } @else {
+            <div class="p-10 text-center">
+              <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-emerald-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
               </div>
+              <h3 class="text-sm font-black text-slate-900 mb-0.5">Tout est en ordre</h3>
+              <p class="text-xs text-slate-500 font-medium">Aucune correspondance critique détectée pour ce client.</p>
             </div>
           }
         </div>
-
       </div>
+
+      <!-- Timeline & Historique des Exécutions -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+        <div class="flex items-center gap-2 mb-5">
+          <span class="p-1.5 bg-cyan-50 text-cyan-600 rounded-lg border border-cyan-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900">Historique des Exécutions de Filtrage</h3>
+        </div>
+
+        <div class="space-y-4">
+          @for (exec of paginatedExecutions; track exec.id) {
+            <div class="relative pl-6 pb-4 group last:pb-0">
+              <div class="absolute left-2 top-3 bottom-0 w-0.5 bg-slate-200 group-last:hidden"></div>
+              <div class="absolute left-0.5 top-1.5 w-3.5 h-3.5 rounded-full border-2 border-white shadow-xs" [ngClass]="{'bg-emerald-500': exec.status === 'PASSED', 'bg-rose-500': exec.status === 'FAILED', 'bg-slate-400': !exec.status}"></div>
+              <div class="flex flex-col sm:flex-row justify-between items-start gap-2">
+                <div>
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="text-xs font-black text-slate-900">{{ exec.uboDTO ? exec.uboDTO.fullName : 'Client Principal' }}</span>
+                    <span class="text-[11px] font-semibold text-slate-400">{{ exec.createdAt | date:'short' }}</span>
+                  </div>
+                  <p class="text-xs text-slate-500 leading-relaxed">{{ exec.executionMessage || 'Analyse terminée.' }}</p>
+                </div>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border" [ngClass]="{'bg-emerald-50 text-emerald-800 border-emerald-200': exec.status === 'PASSED', 'bg-rose-50 text-rose-800 border-rose-200': exec.status === 'FAILED', 'bg-slate-100 text-slate-700 border-slate-200': !exec.status}">
+                  {{ exec.status || 'INCONNU' }}
+                </span>
+              </div>
+              
+              @if (exec.rawResponse) {
+                <details class="mt-2.5 group/details">
+                  <summary class="text-xs font-bold text-indigo-600 hover:text-indigo-800 cursor-pointer list-none flex items-center gap-1.5 transition-colors">
+                    <svg class="w-3.5 h-3.5 group-open/details:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    <span>Voir détails OpenSanctions</span>
+                  </summary>
+                  <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    @for (result of getResultsFromRawResponse(exec.rawResponse); track result.id) {
+                      <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <div class="flex justify-between items-start mb-1">
+                          <a href="https://www.opensanctions.org/entities/{{result.id}}" target="_blank" class="text-xs font-bold text-slate-900 hover:text-indigo-600 transition-colors flex items-center gap-1 truncate">
+                             {{ result.properties?.name?.[0] }} <svg class="w-2.5 h-2.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                          </a>
+                          <span class="text-[10px] font-black px-1.5 py-0.5 rounded text-white shadow-xs" [ngClass]="result.score >= 0.8 ? 'bg-rose-500' : 'bg-amber-500'">
+                            {{ (result.score * 100).toFixed(0) }}%
+                          </span>
+                        </div>
+                        <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                          {{ result.schema }} &bull; {{ result.properties?.country?.[0] || 'Inconnu' }}
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </details>
+              }
+            </div>
+          }
+        </div>
+        @if (totalExecutionsPages > 1) {
+          <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
+            <span class="text-xs font-bold text-slate-500">Page {{ executionsCurrentPage }} / {{ totalExecutionsPages }}</span>
+            <div class="flex gap-1.5">
+              <button type="button" (click)="executionsCurrentPage = executionsCurrentPage - 1" [disabled]="executionsCurrentPage === 1" class="px-3 py-1.5 rounded-lg bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 border-2 border-slate-300 hover:border-slate-400 cursor-pointer shadow-xs">Préc.</button>
+              <button type="button" (click)="executionsCurrentPage = executionsCurrentPage + 1" [disabled]="executionsCurrentPage === totalExecutionsPages" class="px-3 py-1.5 rounded-lg bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 border-2 border-slate-300 hover:border-slate-400 cursor-pointer shadow-xs">Suiv.</button>
+            </div>
+          </div>
+        }
+      </div>
+
     </div>
   </div>
 
@@ -417,55 +455,67 @@
   @if (showAddDocumentDialog) {
     <app-document-dialog [selectedDocument]="null" (addDocumentEvent)="onAddDocument($event)" (closeDialogEvent)="closeAddDocumentDialog()"></app-document-dialog>
   }
-</div>
 
-<!-- Report Date Selection Modal -->
-<div *ngIf="showReportModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-  <div class="bg-white rounded-[32px] border border-slate-100 shadow-2xl w-full max-w-lg overflow-hidden transform transition-all duration-300 scale-100">
-    <!-- Modal Header -->
-    <div class="bg-gradient-to-r from-slate-900 to-slate-800 p-6 text-white flex justify-between items-center">
-      <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-cyan-500/20 rounded-2xl border border-cyan-500/30 text-cyan-400">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-        </div>
-        <div>
-          <h3 class="font-black text-lg tracking-wide">{{ 'CLIENT_CONFORMITY.KYC_REPORT' | translate }}</h3>
-          <p class="text-xs text-cyan-300/80 font-medium">{{ 'CLIENT_CONFORMITY.GENERATION_VIA_JASPER' | translate }}</p>
-        </div>
-      </div>
-      <button (click)="closeReportModal()" [disabled]="downloadingPdf" class="text-slate-400 hover:text-white transition-colors p-1 rounded-xl hover:bg-white/10 cursor-pointer">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-      </button>
-    </div>
+  <!-- Report Date Selection Modal -->
+  @if (showReportModal) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-2xl w-full max-w-lg overflow-hidden transform transition-all duration-300">
+      
+      <!-- Top accent gradient line -->
+      <div class="h-1.5 bg-gradient-to-r from-indigo-500 via-cyan-500 to-blue-600"></div>
 
-    <!-- Modal Body -->
-    <div class="p-8 space-y-6">
-      <div class="bg-cyan-50/60 border border-cyan-200/60 rounded-2xl p-4 flex items-start gap-3 text-cyan-900 text-xs font-semibold">
-        <svg class="w-5 h-5 text-cyan-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-        <p>{{ 'CLIENT_CONFORMITY.SELECT_PERIOD' | translate }}</p>
+      <!-- Modal Header -->
+      <div class="px-7 py-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+        <div class="flex items-center gap-3">
+          <div class="p-2.5 bg-cyan-50 rounded-2xl border border-cyan-100 text-cyan-600 flex-shrink-0 shadow-sm">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          </div>
+          <div>
+            <h3 class="font-black text-slate-900 text-base tracking-tight">{{ 'CLIENT_CONFORMITY.KYC_REPORT' | translate }}</h3>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">{{ 'CLIENT_CONFORMITY.GENERATION_VIA_JASPER' | translate }}</p>
+          </div>
+        </div>
+        <button type="button" (click)="closeReportModal()" [disabled]="downloadingPdf" class="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="space-y-1.5">
-          <label class="block text-xs font-black text-slate-700 uppercase tracking-wider">{{ 'CLIENT_CONFORMITY.START_DATE' | translate }}</label>
-          <input type="date" [(ngModel)]="reportStartDate" [disabled]="downloadingPdf" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-cyan-600 outline-none transition-all font-bold text-sm text-slate-700">
+      <!-- Modal Body -->
+      <div class="p-6 sm:p-7 space-y-5">
+        <div class="bg-cyan-50/70 border border-cyan-200/80 rounded-2xl p-4 flex items-start gap-3 text-cyan-950 text-xs font-semibold">
+          <svg class="w-4 h-4 text-cyan-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          <p class="leading-relaxed">{{ 'CLIENT_CONFORMITY.SELECT_PERIOD' | translate }}</p>
         </div>
-        <div class="space-y-1.5">
-          <label class="block text-xs font-black text-slate-700 uppercase tracking-wider">{{ 'CLIENT_CONFORMITY.END_DATE' | translate }}</label>
-          <input type="date" [(ngModel)]="reportEndDate" [disabled]="downloadingPdf" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 focus:bg-white focus:border-cyan-600 outline-none transition-all font-bold text-sm text-slate-700">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ 'CLIENT_CONFORMITY.START_DATE' | translate }}</label>
+            <input type="date" [(ngModel)]="reportStartDate" [disabled]="downloadingPdf" class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-slate-300 hover:border-slate-400 focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all font-semibold text-xs text-slate-800 shadow-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">{{ 'CLIENT_CONFORMITY.END_DATE' | translate }}</label>
+            <input type="date" [(ngModel)]="reportEndDate" [disabled]="downloadingPdf" class="w-full px-3.5 py-2.5 rounded-xl bg-white border-2 border-slate-300 hover:border-slate-400 focus:border-cyan-600 focus:ring-4 focus:ring-cyan-500/10 outline-none transition-all font-semibold text-xs text-slate-800 shadow-sm">
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Modal Footer -->
-    <div class="bg-slate-50 px-8 py-5 border-t border-slate-100 flex items-center justify-end gap-3">
-      <button (click)="closeReportModal()" [disabled]="downloadingPdf" class="px-5 py-2.5 rounded-2xl font-bold text-sm text-slate-600 hover:bg-slate-200/60 transition-all cursor-pointer">Annuler</button>
-      <button (click)="downloadKycAuditPdf()" [disabled]="downloadingPdf" class="flex items-center gap-2.5 px-6 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-black text-sm shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
-        <div *ngIf="downloadingPdf" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-        <svg *ngIf="!downloadingPdf" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-        <span>{{ downloadingPdf ? ('CLIENT_CONFORMITY.GENERATING' | translate) : ('CLIENT_CONFORMITY.DOWNLOAD_PDF' | translate) }}</span>
-      </button>
+      <!-- Modal Footer -->
+      <div class="bg-slate-50/80 px-7 py-4 border-t border-slate-100 flex items-center justify-end gap-3">
+        <button type="button" (click)="closeReportModal()" [disabled]="downloadingPdf" class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border-2 border-slate-300 hover:border-slate-400 shadow-sm transition-all cursor-pointer">
+          Annuler
+        </button>
+        <button type="button" (click)="downloadKycAuditPdf()" [disabled]="downloadingPdf" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold text-xs shadow-md shadow-cyan-100 hover:shadow-cyan-200 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+          @if (downloadingPdf) {
+          <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          <span>{{ 'CLIENT_CONFORMITY.GENERATING' | translate }}</span>
+          } @else {
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          <span>{{ 'CLIENT_CONFORMITY.DOWNLOAD_PDF' | translate }}</span>
+          }
+        </button>
+      </div>
     </div>
   </div>
+  }
 </div>
 }

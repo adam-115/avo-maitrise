@@ -192,5 +192,10 @@ export class ClientMoralFormComponent implements OnInit {
     cancel(): void {
         this.router.navigate(['/home/crm']);
     }
+
+    isFieldInvalid(fieldName: string): boolean {
+        const control = this.clientForm.get(fieldName);
+        return !!(control && control.invalid && (control.touched || control.dirty));
+    }
 }
 

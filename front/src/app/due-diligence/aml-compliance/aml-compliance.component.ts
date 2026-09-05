@@ -52,6 +52,28 @@ export class AmlComplianceComponent implements OnInit {
   selectedStatus = '';
   selectedRisk = ''; // 'ELEVEE' | 'MOYEN' | 'FAIBLE' | ''
 
+  get isFiltered(): boolean {
+    return !!(this.searchTerm || this.selectedType || this.selectedStatus || this.selectedRisk);
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.selectedType = '';
+    this.selectedStatus = '';
+    this.selectedRisk = '';
+    this.resetPagination();
+  }
+
+  getClientInitials(client: any): string {
+    const name = this.getDisplayName(client);
+    if (!name) return 'CL';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  }
+
   // Pagination state
   currentPage = 1;
   pageSize = 10;

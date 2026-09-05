@@ -5,55 +5,94 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { SecteurActivite } from '../../appTypes';
 import { AlertService } from './../../services/alert-service';
 import { SecteurActiviteService } from './../../services/secteur-activite-service';
+import { NavigationService } from './../../services/navigation-service';
 
 @Component({
   selector: 'app-secteur-activite',
+  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslatePipe],
   templateUrl: './secteur-activite.html',
   styleUrl: './secteur-activite.css',
 })
 export class SecteurActiviteComponent implements OnInit {
-  fb: FormBuilder = inject(FormBuilder);
-  alertService = inject(AlertService);
-  secteurActiviteService = inject(SecteurActiviteService);
+  private fb: FormBuilder = inject(FormBuilder);
+  private alertService = inject(AlertService);
+  private secteurActiviteService = inject(SecteurActiviteService);
+  private navigationService = inject(NavigationService);
+
   secteurs: SecteurActivite[] = [];
   selectedSecteurActivite: SecteurActivite | null = null;
   secteurForm: FormGroup = new FormGroup({});
+  
+  searchTerm: string = '';
+  filterStatus: 'ALL' | 'ACTIVE' | 'INACTIVE' = 'ALL';
+  errorMessage: string = '';
 
   ngOnInit(): void {
     this.secteurForm = this.fb.group({
-      code: ["", Validators.required],
-      libelle: ["", Validators.required],
-      ordre_affichage: [0, Validators.required],
+      code: ['', [Validators.required, Validators.minLength(2)]],
+      libelle: ['', [Validators.required, Validators.minLength(2)]],
+      ordre_affichage: [1, [Validators.required, Validators.min(0)]],
       actif: [true]
     });
-    this.lodAllSeteurActivite();
+    this.loadAllSecteurActivite();
   }
 
-
-  private lodAllSeteurActivite() {
-    this.secteurActiviteService.getAll().subscribe(data => {
-      this.secteurs = data.content;
-      console.log("les secteurs sont : ", data.content);
-    })
+  navigateBackToPreferences(): void {
+    this.navigationService.navigateToAdminPrefences();
   }
 
+  loadAllSecteurActivite(): void {
+    this.secteurActiviteService.getAll().subscribe({
+      next: (data) => {
+        const raw = data.content || (Array.isArray(data) ? data : []);
+        this.secteurs = raw.sort((a, b) => (a.ordreAffichage || 0) - (b.ordreAffichage || 0));
+      },
+      error: (err) => {
+        console.error('Error loading secteurs', err);
+        this.errorMessage = 'Erreur lors du chargement des secteurs d\'activité.';
+        this.alertService.displayMessage('Erreur', this.errorMessage, 'error');
+      }
+    });
+  }
 
-  // Convertir les données du formulaire vers l'interface SecteurActivite
+  get totalCount(): number {
+    return this.secteurs?.length || 0;
+  }
+
+  get activeCount(): number {
+    return (this.secteurs || []).filter(s => s.actif).length;
+  }
+
+  get inactiveCount(): number {
+    return (this.secteurs || []).filter(s => !s.actif).length;
+  }
+
+  get filteredSecteurs(): SecteurActivite[] {
+    return (this.secteurs || []).filter(s => {
+      const matchSearch = this.searchTerm
+        ? ((s.libelle || '').toLowerCase().includes(this.searchTerm.toLowerCase()) || (s.code || '').toLowerCase().includes(this.searchTerm.toLowerCase()))
+        : true;
+      const matchStatus = this.filterStatus === 'ALL'
+        ? true
+        : this.filterStatus === 'ACTIVE'
+          ? !!s.actif
+          : !s.actif;
+      return matchSearch && matchStatus;
+    });
+  }
+
   private formToSecteur(): SecteurActivite {
-    const formValues = this.secteurForm.getRawValue(); // Récupère toutes les valeurs, même si désactivées
+    const formValues = this.secteurForm.getRawValue();
     return {
-      // Si on est en édition, on conserve l'ID de l'objet sélectionné
       ...(this.selectedSecteurActivite?.id && { id: this.selectedSecteurActivite.id }),
-      code: formValues.code,
-      libelle: formValues.libelle,
-      ordreAffichage: Number(formValues.ordre_affichage),
+      code: (formValues.code || '').toUpperCase().trim(),
+      libelle: (formValues.libelle || '').trim(),
+      ordreAffichage: Number(formValues.ordre_affichage) || 0,
       actif: Boolean(formValues.actif),
-      // created_at est généralement géré par le backend
     };
   }
 
-  // Convertir un objet SecteurActivite pour remplir le formulaire
   private secteurToForm(secteur: SecteurActivite): void {
     this.secteurForm.patchValue({
       code: secteur.code,
@@ -63,23 +102,59 @@ export class SecteurActiviteComponent implements OnInit {
     });
   }
 
-  selectSecteur(selectedSecteur: SecteurActivite) {
+  selectSecteur(selectedSecteur: SecteurActivite): void {
     this.selectedSecteurActivite = selectedSecteur;
     this.secteurToForm(selectedSecteur);
+
+    const formCard = document.getElementById('secteurFormCard');
+    if (formCard) {
+      formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
-  resetForm() {
+  async toggleSecteurActive(secteur: SecteurActivite): Promise<void> {
+    if (!secteur.id) return;
+    const newStatus = !secteur.actif;
+    const title = newStatus ? 'Réactivation' : 'Désactivation';
+    const message = newStatus
+      ? 'Voulez-vous réactiver ce secteur d\'activité ?'
+      : 'Êtes-vous sûr de vouloir désactiver ce secteur d\'activité ?';
+
+    const isConfirmed = await this.alertService.confirmMessage(title, message, 'warning');
+    if (isConfirmed) {
+      const updatedSecteur: SecteurActivite = { ...secteur, actif: newStatus };
+      this.secteurActiviteService.update(updatedSecteur).subscribe({
+        next: () => {
+          this.alertService.success(newStatus ? 'Secteur réactivé avec succès' : 'Secteur désactivé avec succès');
+          this.loadAllSecteurActivite();
+        },
+        error: (err) => {
+          console.error('Error toggling secteur active', err);
+          this.alertService.displayMessage('Erreur', 'Impossible de modifier le statut.', 'error');
+        }
+      });
+    }
+  }
+
+  async deleteSecteur(id: number): Promise<void> {
+    const secteur = this.secteurs.find(s => s.id === id);
+    if (secteur) {
+      await this.toggleSecteurActive(secteur);
+    }
+  }
+
+  resetForm(): void {
     this.selectedSecteurActivite = null;
+    const nextOrder = (this.secteurs.length > 0 ? Math.max(...this.secteurs.map(s => s.ordreAffichage || 0)) + 1 : 1);
     this.secteurForm.reset({
-      ordre_affichage: 0,
+      code: '',
+      libelle: '',
+      ordre_affichage: nextOrder,
       actif: true
     });
   }
 
-
-  // Ajoutez cette méthode dans votre classe SecteurActiviteComponent
-
-  onFileSelected(event: any) {
+  onFileSelected(event: any): void {
     const file: File = event.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -91,22 +166,24 @@ export class SecteurActiviteComponent implements OnInit {
     }
   }
 
-  private parseCSV(csvText: string) {
+  private parseCSV(csvText: string): void {
     const lines = csvText.split('\n');
     const result: SecteurActivite[] = [];
 
-    // On suppose que le CSV a une ligne d'entête : code,libelle,ordre,actif,risque
-    // Exemple : IMMO,Immobilier,1,true,FAIBLE
     for (let i = 1; i < lines.length; i++) {
       const currentLine = lines[i].split(',');
       if (currentLine.length >= 2) {
-        const secteur: SecteurActivite = {
-          code: currentLine[0].trim(),
-          libelle: currentLine[1].trim(),
-          ordreAffichage: currentLine[2] ? Number(currentLine[2]) : 0,
-          actif: currentLine[3] ? currentLine[3].trim().toLowerCase() === 'true' : true
-        };
-        result.push(secteur);
+        const code = currentLine[0].trim().toUpperCase();
+        const libelle = currentLine[1].trim();
+        if (code && libelle) {
+          const secteur: SecteurActivite = {
+            code: code,
+            libelle: libelle,
+            ordreAffichage: currentLine[2] ? Number(currentLine[2]) : (result.length + 1),
+            actif: currentLine[3] ? currentLine[3].trim().toLowerCase() === 'true' : true
+          };
+          result.push(secteur);
+        }
       }
     }
 
@@ -115,44 +192,54 @@ export class SecteurActiviteComponent implements OnInit {
     }
   }
 
-  private importSecteurs(secteurs: SecteurActivite[]) {
-    // Ici, vous pouvez soit faire un appel API "bulk" (si votre backend le supporte)
-    // Soit boucler sur les créations. Exemple simple par boucle :
+  private importSecteurs(secteurs: SecteurActivite[]): void {
     let completed = 0;
     secteurs.forEach(s => {
       this.secteurActiviteService.create(s).subscribe({
         next: () => {
           completed++;
           if (completed === secteurs.length) {
-            this.lodAllSeteurActivite();
-            this.alertService.success(`${secteurs.length} secteurs importés avec succès`);
+            this.loadAllSecteurActivite();
+            this.alertService.success(`${secteurs.length} secteurs d'activité importés avec succès`);
           }
         },
-        error: () => this.alertService.displayMessage('Error', `Erreur lors de l'import du code ${s.code}`, 'error')
+        error: () => this.alertService.displayMessage('Erreur', `Erreur lors de l'import du code ${s.code}`, 'error')
       });
     });
   }
 
-  submit() {
+  submit(): void {
     if (this.secteurForm.valid) {
       if (this.selectedSecteurActivite == null) {
-        let newSecteurActivity = this.formToSecteur();
-        this.secteurActiviteService.create(newSecteurActivity).subscribe(data => {
-          this.alertService.success("element bien ajouté ");
-          this.lodAllSeteurActivite();
-          this.resetForm();
+        const newSecteurActivity = this.formToSecteur();
+        this.secteurActiviteService.create(newSecteurActivity).subscribe({
+          next: () => {
+            this.alertService.success('Secteur d\'activité créé avec succès');
+            this.loadAllSecteurActivite();
+            this.resetForm();
+          },
+          error: (err) => {
+            console.error('Error creating secteur', err);
+            this.alertService.displayMessage('Erreur', 'Erreur lors de la création.', 'error');
+          }
         });
       } else {
-        let updatedSecteurActivity = this.formToSecteur();
+        const updatedSecteurActivity = this.formToSecteur();
         updatedSecteurActivity.id = this.selectedSecteurActivite.id;
-        this.secteurActiviteService.update(updatedSecteurActivity).subscribe(data => {
-          this.lodAllSeteurActivite();
-          this.alertService.success("elemet mis a jour");
-          this.resetForm();
-        }
-        );
+        this.secteurActiviteService.update(updatedSecteurActivity).subscribe({
+          next: () => {
+            this.alertService.success('Secteur d\'activité mis à jour avec succès');
+            this.loadAllSecteurActivite();
+            this.resetForm();
+          },
+          error: (err) => {
+            console.error('Error updating secteur', err);
+            this.alertService.displayMessage('Erreur', 'Erreur lors de la mise à jour.', 'error');
+          }
+        });
       }
+    } else {
+      this.secteurForm.markAllAsTouched();
     }
   }
-
 }

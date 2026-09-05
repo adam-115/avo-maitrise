@@ -223,12 +223,34 @@ export class DossierComponent implements OnInit {
     return this.priorities.find(p => String(p.id) === String(priorityOrId));
   }
 
+  getClientInitials(dossier: DossierModel): string {
+    const name = this.getDossierClientName(dossier);
+    if (!name || name === 'Non assigné' || name === 'Client inconnu') return 'CL';
+    const parts = name.trim().split(' ');
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  }
+
+  get isFiltered(): boolean {
+    return !!this.searchTerm || this.statusFilter !== 'Tous' || this.lawyerFilter !== 'Tous';
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.statusFilter = 'Tous';
+    this.lawyerFilter = 'Tous';
+    this.currentPage = 1;
+    this.loadData();
+  }
+
   nviagteToDossierForm() {
     this.router.navigateByUrl('/home/dossier-form');
   }
 
   navigateToDossierDetail(id: string) {
-
     this.navigationService.navigateToDossierDetails(id);
   }
 }
+

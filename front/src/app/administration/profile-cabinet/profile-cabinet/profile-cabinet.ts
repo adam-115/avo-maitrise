@@ -1,8 +1,10 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CabinetProfileService } from '../../../services/cabinet-profile.service';
 import { AlertService } from '../../../services/alert-service';
+import { NavigationService } from '../../../services/navigation-service';
 import { CabinetProfile } from '../../../appTypes';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -18,30 +20,37 @@ export class ProfileCabinet implements OnInit {
   private fb = inject(FormBuilder);
   private profileService = inject(CabinetProfileService);
   private alertService = inject(AlertService);
+  private router = inject(Router);
+  
   isLoading = true;
+  isSaving = false;
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({
       id: [null],
-      name: ['', Validators.required],
+      name: ['', [Validators.required, Validators.minLength(2)]],
+      siret: [''],
+      vatNumber: [''],
+      website: [''],
+      email: ['', [Validators.email]],
+      phone: [''],
       address: [''],
       city: [''],
       postalCode: [''],
       country: [''],
-      phone: [''],
-      email: ['', Validators.email],
-      website: [''],
-      siret: [''],
-      vatNumber: [''],
+      currency: ['EUR', Validators.required],
+      tvaRate: [20, [Validators.required, Validators.min(0), Validators.max(100)]],
       iban: [''],
       bic: [''],
       logo: [null],
-      logoContentType: [null],
-      currency: ['EUR', Validators.required],
-      tvaRate: [20, [Validators.required, Validators.min(0), Validators.max(100)]]
+      logoContentType: [null]
     });
 
     this.loadProfile();
+  }
+
+  navigateBackToAdmin(): void {
+    this.router.navigate([NavigationService.HOME, NavigationService.ADMINSTRATION]);
   }
 
   loadProfile(): void {
@@ -61,9 +70,33 @@ export class ProfileCabinet implements OnInit {
     });
   }
 
+  get hasLogo(): boolean {
+    return !!this.profileForm.get('logo')?.value;
+  }
+
+  get firmName(): string {
+    return this.profileForm.get('name')?.value || 'Mon Cabinet';
+  }
+
+  get locationSummary(): string {
+    const city = this.profileForm.get('city')?.value;
+    const country = this.profileForm.get('country')?.value;
+    if (city && country) return `${city}, ${country}`;
+    if (city) return city;
+    if (country) return country;
+    return 'Non configuré';
+  }
+
+  get currencyAndVatSummary(): string {
+    const curr = this.profileForm.get('currency')?.value || 'EUR';
+    const vat = this.profileForm.get('tvaRate')?.value ?? 20;
+    return `${curr} • TVA ${vat}%`;
+  }
+
   saveProfile(): void {
     if (this.profileForm.invalid) {
-      this.alertService.displayMessage('Formulaire invalide', 'Veuillez vérifier les champs obligatoires.', 'warning');
+      this.alertService.displayMessage('Formulaire incomplet', 'Veuillez vérifier les champs obligatoires du profil.', 'warning');
+      this.profileForm.markAllAsTouched();
       return;
     }
 
@@ -73,15 +106,18 @@ export class ProfileCabinet implements OnInit {
       'question'
     ).then((confirmed) => {
       if (confirmed) {
+        this.isSaving = true;
         const profileData: CabinetProfile = this.profileForm.value;
         this.profileService.updateProfile(profileData).subscribe({
           next: (updatedProfile) => {
             this.profileForm.patchValue(updatedProfile);
-            this.alertService.success('Profil du cabinet mis à jour avec succès.');
+            this.alertService.success('Profil du cabinet et identité visuelle mis à jour avec succès.');
+            this.isSaving = false;
           },
           error: (err) => {
             console.error('Erreur lors de la sauvegarde du profil', err);
             this.alertService.displayMessage('Erreur', 'Impossible de sauvegarder le profil', 'error');
+            this.isSaving = false;
           }
         });
       }
@@ -114,5 +150,13 @@ export class ProfileCabinet implements OnInit {
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  removeLogo(): void {
+    this.profileForm.patchValue({
+      logo: null,
+      logoContentType: null
+    });
+    this.profileForm.markAsDirty();
   }
 }

@@ -1,95 +1,314 @@
-<div class="flex flex-col bg-gray-100">
+<div class="p-4 sm:p-6 lg:p-8 bg-slate-50/50 min-h-screen space-y-6 sm:space-y-8">
 
-    <header class="flex items-center justify-between h-16 bg-white shadow-md px-6 sm:px-8">
-        <h1 class="text-2xl font-extrabold text-slate-800 tracking-wide">
-            {{ 'ADMINISTRATION.TITLE' | translate }}
+  <!-- Hero Header Card -->
+  <div class="relative overflow-hidden rounded-3xl bg-white border-2 border-slate-300 shadow-sm hover:shadow-md transition-all duration-300 p-6 sm:p-8">
+    <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-red-600 via-indigo-600 to-purple-600"></div>
+    <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-red-100/30 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-16 -top-16 w-64 h-64 bg-indigo-100/30 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      <div class="space-y-2">
+        <!-- Breadcrumb Pill -->
+        <div class="flex items-center gap-2 text-xs font-bold tracking-wider text-red-700 uppercase">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 border border-red-200/60 shadow-xs">
+            <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            {{ 'ADMINISTRATION.BREADCRUMB_ADMIN' | translate }}
+          </span>
+          <span class="text-slate-300 font-normal">/</span>
+          <span class="text-slate-600">{{ 'ADMINISTRATION.TITLE' | translate }}</span>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+          {{ 'ADMINISTRATION.TITLE' | translate }}
+          <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/70 shadow-xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            {{ 'ADMINISTRATION.ACTIVE_ADMIN' | translate }}
+          </span>
         </h1>
-    </header>
+        <p class="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
+          {{ 'ADMINISTRATION.DESCRIPTION' | translate }}
+        </p>
+      </div>
 
-    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6 sm:p-10">
+      <!-- Quick Status Badges -->
+      <div class="flex items-center gap-3 self-start lg:self-center">
+        <div class="px-4 py-2 rounded-2xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Core v2.1.0 Stable</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <h2 class="text-3xl font-bold text-slate-800 mb-2">{{ 'ADMINISTRATION.SUBTITLE' | translate }}</h2>
-        <p class="text-gray-600 mb-10">{{ 'ADMINISTRATION.DESCRIPTION' | translate }}</p>
+  <!-- 4 System Health & Security Metrics Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <!-- Card 1: System Status -->
+    <div class="relative overflow-hidden rounded-2xl bg-white border-2 border-slate-300 p-5 shadow-xs hover:border-emerald-400 hover:shadow-md transition-all duration-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">{{ 'ADMINISTRATION.SYSTEM_STATUS' | translate }}</p>
+          <h3 class="text-2xl font-black text-emerald-700">v2.1.0</h3>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center text-emerald-600 shadow-xs">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-500 font-medium mt-3">{{ 'ADMINISTRATION.LAST_UPDATE' | translate }}</p>
+    </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <!-- Card 2: Security & Encryption -->
+    <div class="relative overflow-hidden rounded-2xl bg-white border-2 border-slate-300 p-5 shadow-xs hover:border-indigo-400 hover:shadow-md transition-all duration-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">{{ 'ADMINISTRATION.SECURITY_ENCRYPTION' | translate }}</p>
+          <h3 class="text-lg font-black text-indigo-700">AES-256</h3>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-indigo-50 border border-indigo-200/80 flex items-center justify-center text-indigo-600 shadow-xs">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-500 font-medium mt-3">{{ 'ADMINISTRATION.SECURITY_STATUS' | translate }}</p>
+    </div>
 
-            <a (click)="navigateToUserManagement()"
-                class="block cursor-pointer bg-white p-6 rounded-xl shadow-lg border-t-4 border-red-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20v-2a3 3 0 015.356-1.857M7 20h4m-4 0v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M10 11a3 3 0 100-6 3 3 0 000 6zm7-3a1 1 0 11-2 0 1 1 0 012 0zm-7 4a1 1 0 100-2 1 1 0 000 2zm7 0a1 1 0 100-2 1 1 0 000 2z">
-                        </path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">{{ 'ADMINISTRATION.USER_MANAGEMENT' | translate }}</h3>
-                </div>
-                <p class="text-sm text-gray-500 mt-3">{{ 'ADMINISTRATION.USER_MANAGEMENT_DESC' | translate }}</p>
-            </a>
+    <!-- Card 3: Database Connection -->
+    <div class="relative overflow-hidden rounded-2xl bg-white border-2 border-slate-300 p-5 shadow-xs hover:border-cyan-400 hover:shadow-md transition-all duration-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">{{ 'ADMINISTRATION.DATABASE' | translate }}</p>
+          <h3 class="text-lg font-black text-cyan-700">PostgreSQL</h3>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-cyan-50 border border-cyan-200/80 flex items-center justify-center text-cyan-600 shadow-xs">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path>
+          </svg>
+        </div>
+      </div>
+      <p class="text-[11px] text-emerald-600 font-bold mt-3 flex items-center gap-1">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        {{ 'ADMINISTRATION.CONNECTED_STABLE' | translate }}
+      </p>
+    </div>
 
-            <a (click)="navigateToAdministrationPrefrences()"
-                class="block cursor-pointer bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h7"></path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">{{ 'ADMINISTRATION.REFERENCE_LISTS' | translate }}</h3>
-                </div>
-                <p class="text-sm text-gray-500 mt-3">{{ 'ADMINISTRATION.REFERENCE_LISTS_DESC' | translate }}</p>
-            </a>
+    <!-- Card 4: Backup Status -->
+    <div class="relative overflow-hidden rounded-2xl bg-white border-2 border-slate-300 p-5 shadow-xs hover:border-purple-400 hover:shadow-md transition-all duration-200">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">{{ 'ADMINISTRATION.BACKUP_STATUS' | translate }}</p>
+          <h3 class="text-lg font-black text-purple-700">Automatisé</h3>
+        </div>
+        <div class="w-12 h-12 rounded-xl bg-purple-50 border border-purple-200/80 flex items-center justify-center text-purple-600 shadow-xs">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+          </svg>
+        </div>
+      </div>
+      <p class="text-[11px] text-slate-500 font-medium mt-3">{{ 'ADMINISTRATION.BACKUP_OK' | translate }}</p>
+    </div>
+  </div>
 
-            <a (click)="navigateToProfileCabinet()"
-                class="block cursor-pointer bg-white p-6 rounded-xl shadow-lg border-t-4 border-yellow-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                        </path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">{{ 'ADMINISTRATION.CABINET_PROFILE' | translate }}</h3>
-                </div>
-                <p class="text-sm text-gray-500 mt-3">{{ 'ADMINISTRATION.CABINET_PROFILE_DESC' | translate }}</p>
-            </a>
+  <!-- Modules Grid Section Header -->
+  <div class="flex items-center gap-2 pt-2">
+    <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span>
+    <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ 'ADMINISTRATION.QUICK_ACCESS' | translate }}</h2>
+  </div>
 
-            <a (click)="navigateToIndulgence()"
-                class="block cursor-pointer bg-white p-6 rounded-xl shadow-lg border-t-4 border-purple-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
-                        </path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">{{ 'ADMINISTRATION.INDULGENCE_CONFIG' | translate }}</h3>
-                </div>
-                <p class="text-sm text-gray-500 mt-3">{{ 'ADMINISTRATION.INDULGENCE_CONFIG_DESC' | translate }}</p>
-            </a>
+  <!-- Administration Modules Tiles Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            <a href="#"
-                class="block bg-white p-6 rounded-xl shadow-lg border-t-4 border-gray-600 hover:shadow-2xl hover:scale-[1.02] transition duration-300 transform">
-                <div class="flex items-center space-x-4">
-                    <svg class="w-10 h-10 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                        </path>
-                    </svg>
-                    <h3 class="text-xl font-bold text-slate-800">{{ 'ADMINISTRATION.AUDIT_LOG' | translate }}</h3>
-                </div>
-                <p class="text-sm text-gray-500 mt-3">{{ 'ADMINISTRATION.AUDIT_LOG_DESC' | translate }}</p>
-            </a>
+    <!-- Module 1: Gestion des Utilisateurs -->
+    <a (click)="navigateToUserManagement()"
+      class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-red-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
+      <div class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-red-500 group-hover:to-rose-600 transition-all"></div>
 
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="w-12 h-12 rounded-2xl bg-red-50 border border-red-200 text-red-600 flex items-center justify-center shadow-xs group-hover:bg-red-600 group-hover:text-white transition-colors duration-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M10 11a3 3 0 100-6 3 3 0 000 6zm7-3a1 1 0 11-2 0 1 1 0 012 0zm-7 4a1 1 0 100-2 1 1 0 000 2zm7 0a1 1 0 100-2 1 1 0 000 2z">
+              </path>
+            </svg>
+          </div>
+          <span class="p-2 rounded-xl bg-slate-50 group-hover:bg-red-50 text-slate-400 group-hover:text-red-600 transition-colors">
+            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </span>
         </div>
 
-        <div class="mt-12 bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-            <h3 class="text-xl font-semibold text-slate-800 mb-3">{{ 'ADMINISTRATION.SYSTEM_STATUS' | translate }}</h3>
-            <p class="text-sm text-gray-700">{{ 'ADMINISTRATION.APP_VERSION' | translate }} <span
-                    class="font-bold text-green-600">v2.1.0</span>. {{ 'ADMINISTRATION.LAST_UPDATE' | translate }}</p>
-            <p class="text-sm text-gray-700 mt-1">{{ 'ADMINISTRATION.DATABASE' | translate }} <span class="font-bold text-green-600">{{ 'ADMINISTRATION.CONNECTED_STABLE' | translate }}</span></p>
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 group-hover:text-red-700 transition-colors">
+            {{ 'ADMINISTRATION.USER_MANAGEMENT' | translate }}
+          </h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+            {{ 'ADMINISTRATION.USER_MANAGEMENT_DESC' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-red-600">
+        <span>{{ 'ADMINISTRATION.OPEN_MODULE' | translate }}</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </div>
+    </a>
+
+    <!-- Module 2: Listes de Référence & Paramètres -->
+    <a (click)="navigateToAdministrationPrefrences()"
+      class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-indigo-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
+      <div class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-indigo-500 group-hover:to-blue-600 transition-all"></div>
+
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center shadow-xs group-hover:bg-indigo-600 group-hover:text-white transition-colors duration-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+            </svg>
+          </div>
+          <span class="p-2 rounded-xl bg-slate-50 group-hover:bg-indigo-50 text-slate-400 group-hover:text-indigo-600 transition-colors">
+            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </span>
         </div>
 
-    </main>
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">
+            {{ 'ADMINISTRATION.REFERENCE_LISTS' | translate }}
+          </h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+            {{ 'ADMINISTRATION.REFERENCE_LISTS_DESC' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-indigo-600">
+        <span>{{ 'ADMINISTRATION.OPEN_MODULE' | translate }}</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </div>
+    </a>
+
+    <!-- Module 3: Profil du Cabinet & Logo -->
+    <a (click)="navigateToProfileCabinet()"
+      class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-amber-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
+      <div class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-amber-500 group-hover:to-yellow-600 transition-all"></div>
+
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center shadow-xs group-hover:bg-amber-600 group-hover:text-white transition-colors duration-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+          </div>
+          <span class="p-2 rounded-xl bg-slate-50 group-hover:bg-amber-50 text-slate-400 group-hover:text-amber-600 transition-colors">
+            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </span>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 group-hover:text-amber-700 transition-colors">
+            {{ 'ADMINISTRATION.CABINET_PROFILE' | translate }}
+          </h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+            {{ 'ADMINISTRATION.CABINET_PROFILE_DESC' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-amber-700">
+        <span>{{ 'ADMINISTRATION.OPEN_MODULE' | translate }}</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </div>
+    </a>
+
+    <!-- Module 4: Formulaires Diligence & Indulgence -->
+    <a (click)="navigateToIndulgence()"
+      class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-purple-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
+      <div class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-indigo-600 transition-all"></div>
+
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-200 text-purple-600 flex items-center justify-center shadow-xs group-hover:bg-purple-600 group-hover:text-white transition-colors duration-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+              </path>
+            </svg>
+          </div>
+          <span class="p-2 rounded-xl bg-slate-50 group-hover:bg-purple-50 text-slate-400 group-hover:text-purple-600 transition-colors">
+            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </span>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 group-hover:text-purple-700 transition-colors">
+            {{ 'ADMINISTRATION.INDULGENCE_CONFIG' | translate }}
+          </h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+            {{ 'ADMINISTRATION.INDULGENCE_CONFIG_DESC' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-purple-700">
+        <span>{{ 'ADMINISTRATION.OPEN_MODULE' | translate }}</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </div>
+    </a>
+
+    <!-- Module 5: Journal d'Audit & Sécurité -->
+    <div class="group relative flex flex-col justify-between rounded-2xl bg-white border-2 border-slate-300 hover:border-slate-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden">
+      <div class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-slate-500 group-hover:to-slate-700 transition-all"></div>
+
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="w-12 h-12 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 flex items-center justify-center shadow-xs group-hover:bg-slate-800 group-hover:text-white transition-colors duration-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+              </path>
+            </svg>
+          </div>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+            Automatisé
+          </span>
+        </div>
+
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 group-hover:text-slate-700 transition-colors">
+            {{ 'ADMINISTRATION.AUDIT_LOG' | translate }}
+          </h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+            {{ 'ADMINISTRATION.AUDIT_LOG_DESC' | translate }}
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-600">
+        <span>Journal Actif & Enregistré</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      </div>
+    </div>
+
+  </div>
+
 </div>

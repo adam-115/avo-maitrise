@@ -32,6 +32,8 @@ export class TaskManagerComponent implements OnInit, OnChanges {
   taskTabs: { [key: number]: 'INFO' | 'LOGS' } = {};
   isLoading = false;
 
+  viewMode: 'grid' | 'table' = 'grid';
+
   showForm: boolean = false;
   isEditing: boolean = false;
   isViewOnlyMode: boolean = false;
@@ -46,6 +48,7 @@ export class TaskManagerComponent implements OnInit, OnChanges {
   searchTerm: string = '';
   selectedCategoryId: string = '';
   selectedStatusId: string = '';
+  selectedPriority: string = '';
   showUrgentOnly: boolean = false;
 
   taskService = inject(TaskService);
@@ -147,6 +150,10 @@ export class TaskManagerComponent implements OnInit, OnChanges {
     });
   }
 
+  get totalTasksCount(): number {
+    return this.tasks?.length || 0;
+  }
+
   get completionRate(): number {
     if (!this.tasks || this.tasks.length === 0) return 0;
     const closingStatuses = this.statuses.filter(s => s.isClosingStatus).map(s => String(s.id));
@@ -160,6 +167,25 @@ export class TaskManagerComponent implements OnInit, OnChanges {
     return this.tasks.filter(t => t.isCompleted || (t.status && closingStatuses.includes(String(t.status.id)))).length;
   }
 
+  get inProgressTasksCount(): number {
+    if (!this.tasks || this.tasks.length === 0) return 0;
+    return this.tasks.filter(t => !this.isClosed(t)).length;
+  }
+
+  get overdueTasksCount(): number {
+    if (!this.tasks || this.tasks.length === 0) return 0;
+    return this.tasks.filter(t => this.isOverdue(t) && !this.isClosed(t)).length;
+  }
+
+  get urgentTasksCount(): number {
+    if (!this.tasks || this.tasks.length === 0) return 0;
+    return this.tasks.filter(t => t.priorite === 'URGENTE' && !this.isClosed(t)).length;
+  }
+
+  get isFiltered(): boolean {
+    return !!(this.searchTerm || this.selectedCategoryId || this.selectedStatusId || this.selectedPriority || this.showUrgentOnly);
+  }
+
   applyFilters(): void {
     this.currentPage = 1;
     this.filteredTasks = (this.tasks || []).filter(task => {
@@ -168,9 +194,23 @@ export class TaskManagerComponent implements OnInit, OnChanges {
         : true;
       const matchCategory = this.selectedCategoryId ? String(task.category?.id || task.categoryId) === String(this.selectedCategoryId) : true;
       const matchStatus = this.selectedStatusId ? String(task.status?.id || task.statusId) === String(this.selectedStatusId) : true;
+      const matchPriority = this.selectedPriority ? task.priorite === this.selectedPriority : true;
       const matchUrgent = this.showUrgentOnly ? task.priorite === 'URGENTE' : true;
-      return matchSearch && matchCategory && matchStatus && matchUrgent;
+      return matchSearch && matchCategory && matchStatus && matchPriority && matchUrgent;
     });
+  }
+
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.selectedCategoryId = '';
+    this.selectedStatusId = '';
+    this.selectedPriority = '';
+    this.showUrgentOnly = false;
+    this.applyFilters();
+  }
+
+  setViewMode(mode: 'grid' | 'table'): void {
+    this.viewMode = mode;
   }
 
   toggleUrgentFilter(): void {
@@ -358,6 +398,14 @@ export class TaskManagerComponent implements OnInit, OnChanges {
     const first = user.firstName ? user.firstName.charAt(0) : '';
     const last = user.lastName ? user.lastName.charAt(0) : '';
     return (first + last).toUpperCase() || (user.username ? user.username.substring(0, 2).toUpperCase() : '?');
+  }
+
+  getUserFullName(user: User): string {
+    if (!user) return '';
+    if (user.firstName || user.lastName) {
+      return `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    }
+    return user.username || '';
   }
 
   trackByTaskId(index: number, task: Task): any {

@@ -1,111 +1,216 @@
-<div class="p-6 sm:p-8 bg-white rounded-xl shadow-2xl border border-gray-200">
+<div class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-6">
 
-  <div class="mb-6 flex flex-col xl:flex-row justify-between xl:items-center border-b pb-4 gap-4">
-
-    <h2 class="text-3xl font-bold text-slate-800 flex items-center">
-      <svg class="w-8 h-8 mr-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-      </svg>
-      {{ 'CALENDAR.AGENDA_DAY' | translate }}
-    </h2>
-
-    <div class="flex flex-wrap gap-3 items-center">
-      <button (click)="openAddAppointementDialog()"
-        class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 flex items-center ml-4">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+  <!-- En-tête Navigation Jour & Actions -->
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+    
+    <!-- Titre & Date du Jour -->
+    <div class="flex items-center gap-3">
+      <span class="p-2.5 bg-indigo-50 text-indigo-600 rounded-2xl border border-indigo-100/80 shadow-sm flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        {{ 'CALENDAR.ADD_MEETING' | translate }}
-      </button>
-      <button (click)="goToToday()"
-        class="px-4 py-2 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition duration-150 flex items-center">
-        {{ 'CALENDAR.TODAY' | translate }}
-      </button>
-
-      <button (click)="changeDay(-1)"
-        class="px-3 py-2 text-sm font-medium rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 transition duration-150">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-        </svg>
-      </button>
-
-      <span class="text-lg font-semibold text-slate-800 whitespace-nowrap">
-        {{ date | date:'EEEE dd MMMM yyyy' }}
       </span>
-
-      <button (click)="changeDay(1)"
-        class="px-3 py-2 text-sm font-medium rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 transition duration-150">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="border border-gray-300 rounded-lg shadow-inner flex">
-
-    <div class="flex-shrink-0 w-20 bg-gray-100 border-r border-gray-300">
-      <div class="h-14 text-xs font-semibold text-gray-700 flex items-center justify-center border-b border-gray-300">
-        {{ 'CALENDAR.HOURS' | translate }}</div>
-
-      <div *ngFor="let hour of hours"
-        class="h-16 text-xs text-gray-500 font-medium flex justify-end pr-2 items-start pt-1 border-b border-dashed border-gray-300">
-        {{ hour }}:00
+      <div>
+        <h2 class="text-xl font-black text-slate-900 tracking-tight">
+          {{ 'CALENDAR.AGENDA_DAY' | translate }}
+        </h2>
+        <p class="text-xs text-slate-500 font-medium capitalize mt-0.5">
+          {{ date | date:'EEEE dd MMMM yyyy' }}
+        </p>
       </div>
     </div>
 
-    <div (click)="handleGridClick($event)" class="flex-grow bg-white relative h-[704px] cursor-pointer">
+    <!-- Contrôles de Navigation & Boutons d'Action -->
+    <div class="flex flex-wrap items-center gap-2.5">
+      
+      <!-- Bouton Ajouter Réunion -->
+      <button type="button" (click)="openAddAppointementDialog()"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-100 hover:shadow-indigo-200 transition-all cursor-pointer">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>{{ 'CALENDAR.ADD_MEETING' | translate }}</span>
+      </button>
 
-      <ng-container *ngFor="let hour of hours">
-      </ng-container>
+      <!-- Bouton Aujourd'hui -->
+      <button type="button" (click)="goToToday()"
+        class="inline-flex items-center px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border border-slate-200 shadow-sm transition-all cursor-pointer">
+        {{ 'CALENDAR.TODAY' | translate }}
+      </button>
 
-      <div *ngFor="let hearing of dayHearings" (click)="$event.stopPropagation()"
-        (click)="openEditAppointementDialog(hearing)"
-        class="absolute p-1.5 rounded-lg border-l-4 shadow-md cursor-pointer hover:shadow-lg transition duration-150 group flex justify-between items-start"
-        [ngClass]="getStatusClass(hearing.status)" [style.top]="hearing.style.top" [style.height]="hearing.style.height"
-        [style.width]="hearing.style.width" [style.left]="hearing.style.left" [style.zIndex]="hearing.style.zIndex">
+      <!-- Navigation Précédent / Suivant -->
+      <div class="inline-flex items-center gap-1 p-1 bg-slate-50 rounded-xl border border-slate-200">
+        <button type="button" (click)="changeDay(-1)" [title]="'CALENDAR.PREV_DAY' | translate"
+          class="p-1.5 rounded-lg text-slate-600 hover:bg-white hover:text-indigo-600 transition-colors shadow-none hover:shadow-sm cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
 
-        <div class="overflow-hidden">
-          <p class="text-[11px] font-bold truncate">{{ hearing.title }}</p>
-          <p class="text-[10px] font-medium mt-0.5 truncate">
-            <span class="font-semibold">{{ 'CALENDAR.TIME' | translate }}</span> {{ hearing.time }} - {{ hearing.endTime }}
-          </p>
-          <p class="text-[10px] text-gray-500 font-medium truncate">{{ hearing.clientCase }}</p>
-        </div>
+        <span class="px-2 text-xs font-bold text-slate-700 capitalize whitespace-nowrap">
+          {{ date | date:'dd MMM yyyy' }}
+        </span>
 
-        <button (click)="deleteAppointement(hearing, $event)" [title]="'CALENDAR.DELETE' | translate"
-          class="text-red-500 hover:text-red-700 hover:bg-red-50 rounded p-0.5 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity flex-shrink-0 ml-1 mt-0.5">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-            </path>
+        <button type="button" (click)="changeDay(1)" [title]="'CALENDAR.NEXT_DAY' | translate"
+          class="p-1.5 rounded-lg text-slate-600 hover:bg-white hover:text-indigo-600 transition-colors shadow-none hover:shadow-sm cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
       </div>
 
-      <div *ngIf="dayHearings.length === 0"
-        class="text-center p-8 text-gray-500 italic absolute top-1/2 left-0 right-0 transform -translate-y-1/2">
-        {{ 'CALENDAR.NO_HEARINGS_TODAY' | translate }}
+    </div>
+  </div>
+
+  <!-- Grille Quotidienne Interactive avec Lignes d'Heures Visibles -->
+  <div class="border border-slate-300 rounded-2xl overflow-hidden shadow-sm flex bg-white">
+
+    <!-- Colonne des Heures (Gauche) -->
+    <div class="flex-shrink-0 w-20 bg-slate-50 border-r border-slate-300 select-none">
+      <div class="h-12 text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center justify-center border-b border-slate-300 bg-slate-100/70">
+        {{ 'CALENDAR.HOURS' | translate }}
+      </div>
+
+      <div *ngFor="let hour of hours"
+        class="h-16 border-b border-slate-300 bg-slate-50/80 grid grid-rows-4">
+        <!-- 00 min -->
+        <div class="flex items-center justify-end pe-2.5 text-slate-800 font-bold text-xs border-b border-dotted border-slate-200">
+          <span>{{ hour < 10 ? '0' + hour : hour }}:00</span>
+        </div>
+        <!-- 15 min -->
+        <div class="flex items-center justify-end pe-2.5 text-slate-400 font-medium text-[9px] border-b border-dashed border-slate-300">
+          <span>:15</span>
+        </div>
+        <!-- 30 min -->
+        <div class="flex items-center justify-end pe-2.5 text-slate-600 font-semibold text-[10px] border-b border-dotted border-slate-200">
+          <span>:30</span>
+        </div>
+        <!-- 45 min -->
+        <div class="flex items-center justify-end pe-2.5 text-slate-400 font-medium text-[9px]">
+          <span>:45</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zone de la Grille (Droite) -->
+    <div class="flex-grow flex flex-col min-w-0">
+      
+      <!-- En-tête de la grille aligné avec la colonne des heures -->
+      <div class="h-12 bg-slate-50/80 border-b border-slate-300 px-4 flex items-center justify-between">
+        <span class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+          <span>{{ date | date:'EEEE dd MMMM yyyy' }}</span>
+          @if (isDateToday) {
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-700">
+            Aujourd'hui
+          </span>
+          }
+        </span>
+        <span class="text-xs font-semibold text-slate-500">
+          {{ dayHearings.length }} {{ (dayHearings.length > 1 ? 'événements' : 'événement') }}
+        </span>
+      </div>
+
+      <!-- Zone interactive cliquable avec slots visibles -->
+      <div (click)="handleGridClick($event)" class="relative h-[704px] cursor-pointer bg-white hover:bg-indigo-50/10 transition-colors">
+
+        <!-- Grille des créneaux horaires (lignes visibles par 15 min et 30 min) -->
+        <div class="absolute inset-0 flex flex-col pointer-events-none">
+          <div *ngFor="let hour of hours" class="h-16 w-full border-b border-slate-300 relative grid grid-rows-4">
+            <!-- 00 - 15 min -->
+            <div class="border-b border-dotted border-slate-200"></div>
+            <!-- 15 - 30 min -->
+            <div class="border-b border-dashed border-slate-300"></div>
+            <!-- 30 - 45 min -->
+            <div class="border-b border-dotted border-slate-200"></div>
+            <!-- 45 - 60 min -->
+            <div></div>
+          </div>
+        </div>
+
+        <!-- Ligne rouge de l'heure actuelle (si aujourd'hui) -->
+        @if (getCurrentTimeTop()) {
+        <div class="absolute w-full border-t-2 border-rose-500 pointer-events-none z-30 flex items-center"
+          [style.top]="getCurrentTimeTop()!">
+          <div class="w-3 h-3 rounded-full bg-rose-500 -ms-1.5 shadow-md shadow-rose-300"></div>
+        </div>
+        }
+
+        <!-- Événements positionnés -->
+        <div *ngFor="let hearing of dayHearings" (click)="$event.stopPropagation()"
+          (click)="openEditAppointementDialog(hearing)"
+          class="absolute p-2.5 rounded-xl border transition-all duration-150 group flex justify-between items-start cursor-pointer z-20"
+          [ngClass]="getStatusClass(hearing.status)"
+          [style.top]="hearing.style.top"
+          [style.height]="hearing.style.height"
+          [style.width]="hearing.style.width"
+          [style.left]="hearing.style.left"
+          [style.zIndex]="hearing.style.zIndex">
+
+          <div class="overflow-hidden min-w-0 pr-1">
+            <p class="text-xs font-bold truncate leading-tight">{{ hearing.title }}</p>
+            <p class="text-[11px] font-semibold opacity-90 mt-0.5 truncate flex items-center gap-1">
+              <svg class="w-3 h-3 flex-shrink-0 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{{ hearing.time }} - {{ hearing.endTime }}</span>
+            </p>
+            @if (hearing.clientCase && hearing.clientCase !== hearing.title) {
+            <p class="text-[10px] font-medium opacity-75 truncate mt-0.5">{{ hearing.clientCase }}</p>
+            }
+          </div>
+
+          <button type="button" (click)="deleteAppointement(hearing, $event)" [title]="'CALENDAR.DELETE' | translate"
+            class="p-1 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-white/90 transition-all opacity-80 lg:opacity-0 lg:group-hover:opacity-100 flex-shrink-0 cursor-pointer">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- État vide si aucune audience -->
+        @if (dayHearings.length === 0) {
+        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none p-6 text-center z-10">
+          <div class="w-12 h-12 rounded-2xl bg-slate-100/90 text-slate-400 flex items-center justify-center mb-3 shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p class="text-sm font-bold text-slate-700">{{ 'CALENDAR.NO_HEARINGS_TODAY' | translate }}</p>
+          <p class="text-xs text-slate-400 mt-0.5">Cliquez sur un créneau horaire pour ajouter un rendez-vous.</p>
+        </div>
+        }
+
       </div>
     </div>
   </div>
 
-  <div class="mt-6 text-sm text-gray-600">
-    <p class="font-semibold">{{ 'CALENDAR.STATUS_LEGEND' | translate }}</p>
-    <span
-      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-400 mr-2">{{ 'CALENDAR.URGENT' | translate }}</span>
-    <span
-      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-400 mr-2">{{ 'CALENDAR.STANDARD' | translate }}</span>
-    <span
-      class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-400">{{ 'CALENDAR.POSTPONED' | translate }}</span>
+  <!-- Légende des Statuts -->
+  <div class="pt-2 flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-500">
+    <span class="text-slate-700 font-bold uppercase text-[10px] tracking-wider">{{ 'CALENDAR.STATUS_LEGEND' | translate }}</span>
+    
+    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+      <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+      {{ 'CALENDAR.URGENT' | translate }}
+    </span>
+
+    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+      <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+      {{ 'CALENDAR.STANDARD' | translate }}
+    </span>
+
+    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+      <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+      {{ 'CALENDAR.POSTPONED' | translate }}
+    </span>
   </div>
+
 </div>
 
-<app-appointement-dialog *ngIf="showAppointementDialog" [selectedAppointement]="selectedAppointement"
-  [initialDate]="selectedDateStr" [initialTime]="selectedTime" (onClose)="closeAppointementDialog()"
+<!-- Boîte de Dialogue d'Événement -->
+<app-appointement-dialog *ngIf="showAppointementDialog"
+  [selectedAppointement]="selectedAppointement"
+  [initialDate]="selectedDateStr"
+  [initialTime]="selectedTime"
+  (onClose)="closeAppointementDialog()"
   (onSave)="onAppointementSaved()">
 </app-appointement-dialog>
