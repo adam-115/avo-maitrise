@@ -80,10 +80,43 @@ public class ClientMoral extends ClientEntity {
         if (other.getUbos() != null) {
             if (this.ubos == null) {
                 this.ubos = new java.util.ArrayList<>();
-            } else {
-                this.ubos.clear();
             }
-            this.ubos.addAll(other.getUbos());
+
+            java.util.Map<Long, UBO> existingMap = new java.util.HashMap<>();
+            for (UBO u : this.ubos) {
+                if (u.getId() != null) {
+                    existingMap.put(u.getId(), u);
+                }
+            }
+
+            java.util.List<UBO> incomingUbos = other.getUbos();
+            java.util.Set<Long> incomingIds = new java.util.HashSet<>();
+            java.util.List<UBO> toAdd = new java.util.ArrayList<>();
+
+            for (UBO incoming : incomingUbos) {
+                if (incoming.getId() != null && existingMap.containsKey(incoming.getId())) {
+                    UBO existingUbo = existingMap.get(incoming.getId());
+                    existingUbo.setFullName(incoming.getFullName());
+                    existingUbo.setDateOfBirth(incoming.getDateOfBirth());
+                    existingUbo.setNationality(incoming.getNationality());
+                    existingUbo.setRoleInCompany(incoming.getRoleInCompany());
+                    existingUbo.setPercentageOfOwnership(incoming.getPercentageOfOwnership());
+                    if (incoming.getAmlAnalysisStatus() != null) {
+                        existingUbo.setAmlAnalysisStatus(incoming.getAmlAnalysisStatus());
+                    }
+                    if (incoming.getAmlTargetEntityName() != null) {
+                        existingUbo.setAmlTargetEntityName(incoming.getAmlTargetEntityName());
+                    }
+                    existingUbo.setClientMoral(this);
+                    incomingIds.add(incoming.getId());
+                } else {
+                    incoming.setClientMoral(this);
+                    toAdd.add(incoming);
+                }
+            }
+
+            this.ubos.removeIf(u -> u.getId() != null && !incomingIds.contains(u.getId()));
+            this.ubos.addAll(toAdd);
         }
     }
 }

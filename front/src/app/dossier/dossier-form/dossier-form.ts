@@ -340,13 +340,27 @@ export class DossierForm implements OnInit {
         'warning'
       );
       if (confirmed) {
-        this.dossierService.update(dossierData).subscribe(() => {
-          this.navigateToDossier();
+        this.dossierService.update(dossierData).subscribe({
+          next: () => {
+            this.alertService.success('Dossier mis à jour avec succès');
+            this.navigateToDossier();
+          },
+          error: (err) => {
+            const errorMsg = err?.error?.message || err?.error || 'Erreur lors de la mise à jour du dossier';
+            this.alertService.displayMessage('Erreur', typeof errorMsg === 'string' ? errorMsg : 'Erreur lors de la mise à jour du dossier', 'error');
+          }
         });
       }
     } else {
-      this.dossierService.create(dossierData).subscribe(() => {
-        this.navigateToDossier();
+      this.dossierService.create(dossierData).subscribe({
+        next: () => {
+          this.alertService.success('Dossier créé avec succès');
+          this.navigateToDossier();
+        },
+        error: (err) => {
+          const errorMsg = err?.error?.message || err?.error || 'Erreur lors de la création du dossier';
+          this.alertService.displayMessage('Erreur', typeof errorMsg === 'string' ? errorMsg : 'Erreur lors de la création du dossier', 'error');
+        }
       });
     }
   }

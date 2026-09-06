@@ -240,7 +240,8 @@
     "STATUS_OPEN": "OPEN",
     "CHANGE_STATUS": "Change status",
     "OPENED_ON": "Opened on",
-    "EDIT": "Edit"
+    "EDIT": "Edit",
+    "BLOCKED_AML_TAG": "Blocked — AML Review"
   },
   "DOSSIER_FORM": {
     "TITLE_NEW": "Create New Matter",
@@ -2078,5 +2079,28 @@
     "SAVE_CREATE": "Add to Calendar",
     "SAVE_UPDATE": "Save Changes",
     "SAVING": "Saving..."
+  },
+  "CLIENT_STATUS_ALERT": {
+    "BLOCKED_BADGE": "Blocked — AML Review",
+    "BLOCKED_TITLE": "Matter Blocked following AML Review",
+    "BLOCKED_DESC": "This matter is currently blocked following the AML compliance review findings for this client. Operations and actions are restricted pending review.",
+    "VIEW_AML": "Review AML Compliance",
+    "AML_REQUIRED_BADGE": "AML Required",
+    "AML_REQUIRED_TITLE": "AML Review Required",
+    "AML_REQUIRED_DESC": "The AML compliance questionnaire for this client must be completed to assess risk level and proceed.",
+    "COMPLETE_AML": "Complete AML File",
+    "VERIFICATION_BADGE": "AML Verification",
+    "VERIFICATION_TITLE": "AML Verification Pending",
+    "VERIFICATION_DESC": "The AML screening results for this client are awaiting verification and review by the compliance officer.",
+    "CHECK_AML": "Verify AML Compliance",
+    "INDULGENCE_BADGE": "Indulgence Required",
+    "INDULGENCE_TITLE": "Indulgence Approval Required",
+    "INDULGENCE_DESC": "This client presents an elevated risk level and requires an AML indulgence approval from a partner.",
+    "REVIEW_INDULGENCE": "Review Indulgence Request",
+    "VALIDATED_BADGE": "Compliant",
+    "VALIDATED_TITLE": "AML Compliance Validated",
+    "VALIDATED_DESC": "The AML compliance profile for this client has been verified and validated successfully.",
+    "VIEW_AML_DETAILS": "Compliance Details",
+    "STATUS_LABEL": "Client Compliance Status"
   }
 }

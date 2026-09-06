@@ -10,6 +10,12 @@ import java.util.List;
 @Repository
 public interface DossierRepository extends JpaRepository<Dossier, Long>, QuerydslPredicateExecutor<Dossier> {
 
+    boolean existsByReferenceInterne(String referenceInterne);
+
+    boolean existsByReferenceInterneAndIdNot(String referenceInterne, Long id);
+
+    java.util.Optional<Dossier> findByReferenceInterne(String referenceInterne);
+
     @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
     long countDistinctClientIdByStatutIDNotIn(List<String> statutIds);
 

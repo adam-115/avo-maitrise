@@ -67,6 +67,13 @@ public class DossierService {
 
     public DossierDTO create(DossierDTO dto) {
         log.info("[ENTER] Executing create");
+        if (dto.getReferenceInterne() != null && !dto.getReferenceInterne().trim().isEmpty()) {
+            String ref = dto.getReferenceInterne().trim();
+            if (repository.existsByReferenceInterne(ref)) {
+                throw new IllegalArgumentException("La référence interne '" + ref + "' est déjà utilisée par un autre dossier.");
+            }
+            dto.setReferenceInterne(ref);
+        }
         Dossier entity = mapper.toEntity(dto);
         linkDocuments(entity);
         Dossier saved = repository.save(entity);
@@ -80,6 +87,13 @@ public class DossierService {
 
     public DossierDTO update(DossierDTO dto) {
         log.info("[ENTER] Executing update");
+        if (dto.getReferenceInterne() != null && !dto.getReferenceInterne().trim().isEmpty() && dto.getId() != null) {
+            String ref = dto.getReferenceInterne().trim();
+            if (repository.existsByReferenceInterneAndIdNot(ref, dto.getId())) {
+                throw new IllegalArgumentException("La référence interne '" + ref + "' est déjà utilisée par un autre dossier.");
+            }
+            dto.setReferenceInterne(ref);
+        }
         Dossier entity = mapper.toEntity(dto);
         linkDocuments(entity);
         Dossier saved = repository.save(entity);

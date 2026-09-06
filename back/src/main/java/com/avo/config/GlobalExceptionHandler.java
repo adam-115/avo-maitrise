@@ -28,6 +28,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.warn("⚠️ IllegalArgumentException: {}", ex.getMessage());
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(org.springframework.dao.DataIntegrityViolationException ex) {
+        log.warn("⚠️ DataIntegrityViolationException: {}", ex.getMessage());
+        Map<String, String> error = new HashMap<>();
+        String msg = ex.getMessage();
+        if (msg != null && msg.contains("Duplicate entry")) {
+            error.put("message", "Cette référence ou valeur unique existe déjà dans la base de données.");
+        } else {
+            error.put("message", "Erreur de contrainte d'intégrité des données.");
+        }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
     @ExceptionHandler(value = { Throwable.class })
     protected ResponseEntity<String> handleConflict(Throwable ex, WebRequest request) {
         log.error("❌ Exception caught by GlobalExceptionHandler!");

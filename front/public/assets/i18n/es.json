@@ -232,7 +232,8 @@
     "STATUS_OPEN": "ABIERTO",
     "CHANGE_STATUS": "Cambiar estado",
     "OPENED_ON": "Abierto el",
-    "EDIT": "Modificar"
+    "EDIT": "Modificar",
+    "BLOCKED_AML_TAG": "Bloqueado — Revisión AML"
   },
   "DOSSIER_FORM": {
     "TITLE_NEW": "Crear un Nuevo Expediente",
@@ -2193,5 +2194,28 @@
     "SAVE_CREATE": "Añadir al calendario",
     "SAVE_UPDATE": "Guardar cambios",
     "SAVING": "Guardando..."
+  },
+  "CLIENT_STATUS_ALERT": {
+    "BLOCKED_BADGE": "Bloqueado — Revisión AML",
+    "BLOCKED_TITLE": "Expediente Bloqueado tras Revisión AML",
+    "BLOCKED_DESC": "Este expediente está bloqueado tras los resultados de la revisión de cumplimiento AML del cliente. Todas las operaciones están restringidas.",
+    "VIEW_AML": "Revisar cumplimiento AML",
+    "AML_REQUIRED_BADGE": "AML Requerido",
+    "AML_REQUIRED_TITLE": "Revisión AML Requerida",
+    "AML_REQUIRED_DESC": "Debe completarse el formulario de cumplimiento AML para este cliente a fin de evaluar el nivel de riesgo.",
+    "COMPLETE_AML": "Completar expediente AML",
+    "VERIFICATION_BADGE": "Verificación AML",
+    "VERIFICATION_TITLE": "Verificación AML pendiente",
+    "VERIFICATION_DESC": "Los resultados del filtrado AML de este cliente están pendientes de verificación por el oficial de cumplimiento.",
+    "CHECK_AML": "Verificar cumplimiento AML",
+    "INDULGENCE_BADGE": "Indulgencia Requerida",
+    "INDULGENCE_TITLE": "Solicitud de Indulgencia Requerida",
+    "INDULGENCE_DESC": "Este caso presenta un nivel de riesgo elevado y requiere la aprobación de una indulgencia por parte de un socio.",
+    "REVIEW_INDULGENCE": "Consultar solicitud",
+    "VALIDATED_BADGE": "Conforme",
+    "VALIDATED_TITLE": "Cumplimiento AML Validado",
+    "VALIDATED_DESC": "El perfil de cumplimiento AML de este cliente ha sido verificado y validado con éxito.",
+    "VIEW_AML_DETAILS": "Detalles de cumplimiento",
+    "STATUS_LABEL": "Estado de cumplimiento del cliente"
   }
 }

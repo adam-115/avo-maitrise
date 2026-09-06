@@ -34,6 +34,16 @@ public interface ScreeningMatchRepository extends JpaRepository<ScreeningMatch, 
 
     @org.springframework.data.jpa.repository.Modifying
     @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Query("delete from ScreeningMatch m where m.ubo.id = :uboId")
+    void deleteByUboId(@org.springframework.data.repository.query.Param("uboId") Long uboId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Query("delete from ScreeningMatch m where m.client.id = :clientId")
+    void deleteByClientId(@org.springframework.data.repository.query.Param("clientId") Long clientId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
     @org.springframework.data.jpa.repository.Query("delete from ScreeningMatch m where m.client.id not in (select c.id from ClientEntity c)")
     void deleteOrphanedMatches();
 }

@@ -870,7 +870,8 @@
     "STATUS": "الحالة :",
     "STATUS_OPEN": "مفتوح",
     "CHANGE_STATUS": "تغيير الحالة",
-    "OPENED_ON": "فُتح في"
+    "OPENED_ON": "فُتح في",
+    "BLOCKED_AML_TAG": "محظور — مراجعة AML"
   },
   "DOSSIER_FORM": {
     "TITLE_NEW": "إنشاء ملف جديد",
@@ -2156,5 +2157,28 @@
     "SAVE_CREATE": "إضافة إلى التقويم",
     "SAVE_UPDATE": "حفظ التعديلات",
     "SAVING": "جارٍ الحفظ..."
+  },
+  "CLIENT_STATUS_ALERT": {
+    "BLOCKED_BADGE": "محظور — مراجعة AML",
+    "BLOCKED_TITLE": "الملف محظور إثر مراجعة الامتثال لمكافحة غسل الأموال",
+    "BLOCKED_DESC": "هذا الملف محظور حالياً بناءً على نتائج مراجعة الامتثال ومكافحة غسل الأموال (AML) الخاصة بالعميل. جميع الإجراءات معلقة حتى إعادة التقييم.",
+    "VIEW_AML": "فحص امتثال AML",
+    "AML_REQUIRED_BADGE": "AML مطلوب",
+    "AML_REQUIRED_TITLE": "مراجعة الامتثال AML مطلوبة",
+    "AML_REQUIRED_DESC": "يجب استكمال استبيان الامتثال لمكافحة غسل الأموال الخاص بهذا العميل لتقييم مستوى المخاطر ومتابعة الإجراءات.",
+    "COMPLETE_AML": "استكمال ملف AML",
+    "VERIFICATION_BADGE": "تحقق AML",
+    "VERIFICATION_TITLE": "التحقق من الامتثال AML قيد الانتظار",
+    "VERIFICATION_DESC": "نتائج فحص الامتثال لهذا العميل بانتظار مراجعة وتأكيد مسؤول الامتثال.",
+    "CHECK_AML": "مراجعة التحقق من AML",
+    "INDULGENCE_BADGE": "استثناء مطلوب",
+    "INDULGENCE_TITLE": "طلب استثناء امتثال مطلوب",
+    "INDULGENCE_DESC": "ينطوي هذا الملف على مخاطر مرتفعة ويتطلب موافقة شريك على استثناء الامتثال (Indulgence).",
+    "REVIEW_INDULGENCE": "مراجعة طلب الاستثناء",
+    "VALIDATED_BADGE": "مطابق",
+    "VALIDATED_TITLE": "تم التحقق من امتثال AML",
+    "VALIDATED_DESC": "تم التحقق من ملف امتثال العميل وتأكيده بنجاح.",
+    "VIEW_AML_DETAILS": "تفاصيل الامتثال",
+    "STATUS_LABEL": "حالة امتثال العميل"
   }
 }
