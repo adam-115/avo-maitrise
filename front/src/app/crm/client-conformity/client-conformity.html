@@ -71,11 +71,23 @@
           }
         </button>
 
+        <!-- Bouton Rapport d'Audit GAFI (FATF) -->
+        <button type="button" (click)="downloadFatfAuditPdf()" [disabled]="downloadingFatfPdf"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-slate-900 to-indigo-950 hover:from-slate-800 hover:to-indigo-900 text-white rounded-xl text-xs font-bold shadow-md shadow-slate-900/20 transition-all cursor-pointer disabled:opacity-50">
+          @if (downloadingFatfPdf) {
+            <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Génération GAFI...</span>
+          } @else {
+            <span class="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 font-black text-[10px]">GAFI</span>
+            <span>Rapport Audit FATF</span>
+          }
+        </button>
+
         <!-- Bouton Fiche Audit PDF -->
         <button type="button" (click)="openReportModal()"
-          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer">
-          <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-          <span>Fiche Audit PDF</span>
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-white border-2 border-slate-300 hover:border-slate-400 text-slate-800 rounded-xl text-xs font-bold shadow-2xs transition-all cursor-pointer">
+          <svg class="w-4 h-4 text-cyan-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+          <span>Fiche KYC PDF</span>
         </button>
 
         <!-- Bouton Modifier Fiche Client -->
@@ -683,17 +695,30 @@
       </div>
 
       <!-- Modal Footer -->
-      <div class="bg-slate-50/80 px-7 py-4 border-t border-slate-100 flex items-center justify-end gap-3">
-        <button type="button" (click)="closeReportModal()" [disabled]="downloadingPdf" class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border-2 border-slate-300 hover:border-slate-400 shadow-sm transition-all cursor-pointer">
+      <div class="bg-slate-50/80 px-7 py-4 border-t border-slate-100 flex items-center justify-end gap-3 flex-wrap">
+        <button type="button" (click)="closeReportModal()" [disabled]="downloadingPdf || downloadingFatfPdf" class="px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-bold text-xs border-2 border-slate-300 hover:border-slate-400 shadow-sm transition-all cursor-pointer">
           Annuler
         </button>
-        <button type="button" (click)="downloadKycAuditPdf()" [disabled]="downloadingPdf" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold text-xs shadow-md shadow-cyan-100 hover:shadow-cyan-200 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+        
+        <!-- Télécharger Fiche KYC -->
+        <button type="button" (click)="downloadKycAuditPdf()" [disabled]="downloadingPdf || downloadingFatfPdf" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 font-bold text-xs border-2 border-slate-300 hover:border-slate-400 shadow-sm transition-all cursor-pointer disabled:opacity-50">
           @if (downloadingPdf) {
-          <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-          <span>{{ 'CLIENT_CONFORMITY.GENERATING' | translate }}</span>
+            <div class="w-3.5 h-3.5 border-2 border-slate-600 border-t-transparent rounded-full animate-spin"></div>
+            <span>Génération KYC...</span>
           } @else {
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-          <span>{{ 'CLIENT_CONFORMITY.DOWNLOAD_PDF' | translate }}</span>
+            <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+            <span>Fiche KYC (PDF)</span>
+          }
+        </button>
+
+        <!-- Télécharger Rapport GAFI (FATF) -->
+        <button type="button" (click)="downloadFatfAuditPdf()" [disabled]="downloadingPdf || downloadingFatfPdf" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-slate-900 to-indigo-950 hover:from-slate-800 hover:to-indigo-900 text-white font-bold text-xs shadow-md shadow-slate-900/20 transition-all cursor-pointer disabled:opacity-50">
+          @if (downloadingFatfPdf) {
+            <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Génération GAFI...</span>
+          } @else {
+            <span class="px-1.5 py-0.5 rounded bg-amber-400 text-slate-950 font-black text-[10px]">GAFI</span>
+            <span>Dossier d'Audit FATF (PDF)</span>
           }
         </button>
       </div>

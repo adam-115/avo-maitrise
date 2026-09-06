@@ -171,7 +171,8 @@
     "TAB_NOTES": "Notes",
     "TAB_CONTACTS": "Contacts",
     "TAB_SERVICES": "Prestations",
-    "TAB_LOG": "Journal"
+    "TAB_LOG": "Journal",
+    "BLOCKED_AML_TAG": "Bloqué — Revue AML"
   },
   "DOSSIER_FORM": {
     "TITLE_EDIT": "Modifier le Dossier",
@@ -1940,5 +1941,28 @@
     "SAVE_CREATE": "Ajouter l'événement",
     "SAVE_UPDATE": "Enregistrer les modifications",
     "SAVING": "Enregistrement..."
+  },
+  "CLIENT_STATUS_ALERT": {
+    "BLOCKED_BADGE": "Bloqué — Revue AML",
+    "BLOCKED_TITLE": "Dossier Bloqué suite à la Revue AML",
+    "BLOCKED_DESC": "Ce dossier est actuellement bloqué suite aux conclusions de la revue de conformité AML du client. Toutes les opérations et actions sont restreintes jusqu'à réévaluation.",
+    "VIEW_AML": "Examiner la conformité AML",
+    "AML_REQUIRED_BADGE": "AML Requis",
+    "AML_REQUIRED_TITLE": "Revue AML Requise",
+    "AML_REQUIRED_DESC": "Le formulaire de conformité AML pour ce client doit être renseigné afin d'évaluer le niveau de risque et de poursuivre les démarches.",
+    "COMPLETE_AML": "Compléter le dossier AML",
+    "VERIFICATION_BADGE": "Vérification AML",
+    "VERIFICATION_TITLE": "Vérification AML en attente",
+    "VERIFICATION_DESC": "L'analyse et les résultats de filtrage AML de ce client sont en attente de vérification et de validation par le responsable de conformité.",
+    "CHECK_AML": "Vérifier la conformité AML",
+    "INDULGENCE_BADGE": "Indulgence Requise",
+    "INDULGENCE_TITLE": "Demande d'Indulgence Requise",
+    "INDULGENCE_DESC": "Ce dossier présente un niveau de risque élevé et requiert l'approbation d'une dérogation / indulgence de conformité par un associé.",
+    "REVIEW_INDULGENCE": "Consulter la demande d'indulgence",
+    "VALIDATED_BADGE": "Conforme",
+    "VALIDATED_TITLE": "Conformité AML Validée",
+    "VALIDATED_DESC": "Le profil de conformité AML de ce client a été vérifié et validé avec succès.",
+    "VIEW_AML_DETAILS": "Détails conformité",
+    "STATUS_LABEL": "Statut de conformité client"
   }
 }

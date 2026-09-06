@@ -208,6 +208,10 @@ export class DossierDetails implements OnInit {
     return client.clientStatus || client.status;
   }
 
+  isClientBlocked(): boolean {
+    return this.getClientStatus() === 'BLOCKED';
+  }
+
   getClientName(): string {
     if (!this.selectedClient) return '';
     const c: any = this.selectedClient;
@@ -223,3 +227,4 @@ export class DossierDetails implements OnInit {
     return 'Client inconnu';
   }
 }
+

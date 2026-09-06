@@ -163,12 +163,22 @@ export class MatchAnalysisModal {
 
   get clientCountry(): string {
     if (!this.client) return 'Non renseigné';
-    return this.client.pays || this.client.paysResidance || this.client.nationalite || this.client.nationaliteRepresentantLegal || 'Non renseigné';
+    const nat = this.client.nationalite || this.client.nationaliteRepresentantLegal;
+    const pays = this.client.pays || this.client.paysResidance;
+    if (nat && pays && nat.toLowerCase() !== pays.toLowerCase()) {
+      return `${nat} (Résidence : ${pays})`;
+    }
+    return nat || pays || 'Non renseigné';
   }
 
   get yenteCountry(): string {
-    const nats = this.yenteProperties['nationality'] || this.yenteProperties['country'] || this.yenteProperties['jurisdiction'];
+    const nats = this.yenteProperties['nationality'] 
+      || this.yenteProperties['country'] 
+      || this.yenteProperties['citizenship']
+      || this.yenteProperties['jurisdiction'];
     if (nats && nats.length > 0) return nats.join(', ');
+    const birthPlace = this.yenteProperties['birthPlace'];
+    if (birthPlace && birthPlace.length > 0) return birthPlace.join(', ');
     return 'Inconnu';
   }
 
@@ -181,7 +191,15 @@ export class MatchAnalysisModal {
   get isCountryMismatch(): boolean {
     const cCountry = this.clientCountry;
     const yCountry = this.yenteCountry;
-    return cCountry !== 'Non renseigné' && yCountry !== 'Inconnu' && !yCountry.toLowerCase().includes(cCountry.toLowerCase());
+    if (cCountry === 'Non renseigné' || yCountry === 'Inconnu') return false;
+    const nat = (this.client?.nationalite || this.client?.nationaliteRepresentantLegal || '').toLowerCase();
+    const pays = (this.client?.pays || this.client?.paysResidance || '').toLowerCase();
+    const yLower = yCountry.toLowerCase();
+    
+    const natMatch = nat && (yLower.includes(nat) || (nat === 'russe' && (yLower.includes('russi') || yLower.includes('ru'))));
+    const paysMatch = pays && (yLower.includes(pays) || (pays === 'luxembourg' && yLower.includes('lu')));
+    
+    return !natMatch && !paysMatch;
   }
 
   get sanctionReasons(): string[] {

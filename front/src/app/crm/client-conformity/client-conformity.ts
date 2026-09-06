@@ -167,6 +167,7 @@ export class ClientConformity implements OnInit {
   isAnalysisModalOpen = false;
   showAddDocumentDialog = false;
   downloadingPdf = false;
+  downloadingFatfPdf = false;
   showReportModal = false;
   reportStartDate: string = '';
   reportEndDate: string = '';
@@ -223,7 +224,12 @@ export class ClientConformity implements OnInit {
 
   getClientCountry(client: any): string {
     if (!client) return 'International';
-    return client.paysResidance || client.pays || client.nationalite || 'International';
+    const nat = client.nationalite || client.nationaliteRepresentantLegal;
+    const pays = client.paysResidance || client.pays;
+    if (nat && pays && nat.toLowerCase() !== pays.toLowerCase()) {
+      return `${nat} (${pays})`;
+    }
+    return nat || pays || 'International';
   }
 
   getMatchStatusBadge(status?: string): { label: string; class: string } {
@@ -757,6 +763,34 @@ export class ClientConformity implements OnInit {
             this.downloadingPdf = false;
             this.closeReportModal();
             this.alertService.displayMessage('Erreur', 'Impossible de générer la Fiche de Vigilance KYC. Veuillez réessayer plus tard.', 'error');
+        }
+    });
+  }
+
+  downloadFatfAuditPdf() {
+    if (!this.client || !this.client.id) return;
+    this.downloadingFatfPdf = true;
+    this.alertService.displayMessage('Génération en cours', 'Préparation du Dossier d\'Audit de Conformité GAFI (FATF)...', 'info');
+    
+    this.clientService.generateClientFatfAuditReportPdf(this.client.id, this.reportStartDate, this.reportEndDate).subscribe({
+        next: (blob) => {
+            this.downloadingFatfPdf = false;
+            this.closeReportModal();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Rapport_Conformite_GAFI_FATF_${this.getDisplayName(this.client).replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            this.alertService.success('Rapport d\'Audit GAFI / FATF (PDF) téléchargé avec succès.');
+        },
+        error: (err) => {
+            console.error('Error generating FATF audit PDF', err);
+            this.downloadingFatfPdf = false;
+            this.closeReportModal();
+            this.alertService.displayMessage('Erreur', 'Impossible de générer le Rapport d\'Audit GAFI (FATF). Veuillez réessayer plus tard.', 'error');
         }
     });
   }

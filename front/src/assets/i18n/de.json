@@ -186,7 +186,8 @@
     "STATUS_OPEN": "OFFEN",
     "CHANGE_STATUS": "Status ändern",
     "OPENED_ON": "Eröffnet am",
-    "EDIT": "Bearbeiten"
+    "EDIT": "Bearbeiten",
+    "BLOCKED_AML_TAG": "Gesperrt — AML-Prüfung"
   },
   "DOSSIER_FORM": {
     "TITLE_NEW": "Neue Akte anlegen",
@@ -2033,5 +2034,28 @@
     "SAVE_CREATE": "Zum Kalender hinzufügen",
     "SAVE_UPDATE": "Änderungen speichern",
     "SAVING": "Wird gespeichert..."
+  },
+  "CLIENT_STATUS_ALERT": {
+    "BLOCKED_BADGE": "Gesperrt — AML-Prüfung",
+    "BLOCKED_TITLE": "Akte nach AML-Prüfung gesperrt",
+    "BLOCKED_DESC": "Diese Akte ist aufgrund der AML-Compliance-Prüfung dieses Mandanten gesperrt. Alle Aktionen sind bis zur Neubewertung eingeschränkt.",
+    "VIEW_AML": "AML-Compliance prüfen",
+    "AML_REQUIRED_BADGE": "AML erforderlich",
+    "AML_REQUIRED_TITLE": "AML-Prüfung erforderlich",
+    "AML_REQUIRED_DESC": "Der AML-Fragebogen für diesen Mandanten muss ausgefüllt werden, um das Risikoniveau zu bewerten.",
+    "COMPLETE_AML": "AML-Akte vervollständigen",
+    "VERIFICATION_BADGE": "AML-Verifizierung",
+    "VERIFICATION_TITLE": "AML-Verifizierung ausstehend",
+    "VERIFICATION_DESC": "Die Screening-Ergebnisse dieses Mandanten warten auf die Prüfung durch den Compliance-Beauftragten.",
+    "CHECK_AML": "AML-Compliance überprüfen",
+    "INDULGENCE_BADGE": "Nachsicht erforderlich",
+    "INDULGENCE_TITLE": "Genehmigung einer Nachsicht erforderlich",
+    "INDULGENCE_DESC": "Dieser Fall weist ein hohes Risiko auf und erfordert eine Nachsichtsgenehmigung durch einen Partner.",
+    "REVIEW_INDULGENCE": "Antrag einsehen",
+    "VALIDATED_BADGE": "Konform",
+    "VALIDATED_TITLE": "AML-Compliance validiert",
+    "VALIDATED_DESC": "Das AML-Compliance-Profil dieses Mandanten wurde erfolgreich überprüft und freigegeben.",
+    "VIEW_AML_DETAILS": "Compliance-Details",
+    "STATUS_LABEL": "Mandanten-Compliance-Status"
   }
 }

@@ -185,7 +185,7 @@
 
                 <!-- Status Alert Component -->
                 <div class="mt-2">
-                  <app-client-status-alert [status]="getSelectedClientStatus()"></app-client-status-alert>
+                  <app-client-status-alert [status]="getSelectedClientStatus()" [clientId]="selectedClient?.id"></app-client-status-alert>
                 </div>
 
                 <app-client-selection-dialog *ngIf="showClientDialog"

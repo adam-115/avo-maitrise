@@ -178,7 +178,8 @@
     "STATUS_OPEN": "APERTO",
     "CHANGE_STATUS": "Cambia stato",
     "OPENED_ON": "Aperto il",
-    "EDIT": "Modifica"
+    "EDIT": "Modifica",
+    "BLOCKED_AML_TAG": "Bloccato — Revisione AML"
   },
   "DOSSIER_FORM": {
     "TITLE_NEW": "Crea una Nuova Pratica",
@@ -2139,5 +2140,28 @@
     "SAVE_CREATE": "Aggiungi al calendario",
     "SAVE_UPDATE": "Salva modifiche",
     "SAVING": "Salvataggio..."
+  },
+  "CLIENT_STATUS_ALERT": {
+    "BLOCKED_BADGE": "Bloccato — Revisione AML",
+    "BLOCKED_TITLE": "Fascicolo Bloccato a seguito di Revisione AML",
+    "BLOCKED_DESC": "Questo fascicolo è attualmente bloccato a seguito dell'esito della revisione di conformità AML del cliente. Tutte le operazioni sono sospese.",
+    "VIEW_AML": "Esamina conformità AML",
+    "AML_REQUIRED_BADGE": "AML Richiesto",
+    "AML_REQUIRED_TITLE": "Revisione AML Richiesta",
+    "AML_REQUIRED_DESC": "Il questionario di conformità AML per questo cliente deve essere compilato per valutare il livello di rischio.",
+    "COMPLETE_AML": "Completa fascicolo AML",
+    "VERIFICATION_BADGE": "Verifica AML",
+    "VERIFICATION_TITLE": "Verifica AML in attesa",
+    "VERIFICATION_DESC": "I risultati dello screening AML di questo cliente sono in attesa di verifica da parte del responsabile della conformità.",
+    "CHECK_AML": "Verifica conformità AML",
+    "INDULGENCE_BADGE": "Indulgenza Richiesta",
+    "INDULGENCE_TITLE": "Richiesta di Indulgenza Necessaria",
+    "INDULGENCE_DESC": "Questo fascicolo presenta un rischio elevato e richiede l'approvazione di una deroga/indulgenza da parte di un socio.",
+    "REVIEW_INDULGENCE": "Consulta richiesta",
+    "VALIDATED_BADGE": "Conforme",
+    "VALIDATED_TITLE": "Conformità AML Validata",
+    "VALIDATED_DESC": "Il profilo di conformità AML di questo cliente è stato verificato e validato con successo.",
+    "VIEW_AML_DETAILS": "Dettagli conformità",
+    "STATUS_LABEL": "Stato conformità cliente"
   }
 }

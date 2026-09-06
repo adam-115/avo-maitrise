@@ -76,6 +76,17 @@
                 }
               </div>
             </div>
+
+            <!-- Blocked AML Status Indicator Pill in Header -->
+            <div *ngIf="isClientBlocked()" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 border border-red-300 text-red-700 shadow-sm animate-pulse-danger">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-600"></span>
+              </span>
+              <span class="text-xs font-black uppercase tracking-wider animate-flash-red">
+                {{ 'DOSSIER_DETAILS.BLOCKED_AML_TAG' | translate }}
+              </span>
+            </div>
           </div>
           <h1 class="text-3xl font-bold leading-7 text-gray-900 sm:truncate sm:text-4xl sm:tracking-tight">
             {{ selectedDossier?.titre }}
@@ -118,7 +129,7 @@
       </div>
 
       <!-- Client Status Alert Integrated in Header -->
-      <app-client-status-alert [status]="getClientStatus()"></app-client-status-alert>
+      <app-client-status-alert [status]="getClientStatus()" [clientId]="selectedClient?.id" [clientName]="getClientName()"></app-client-status-alert>
     </div>
   </div>
 

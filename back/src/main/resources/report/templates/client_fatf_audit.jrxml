@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" 
+              name="client_fatf_audit" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="30" bottomMargin="30" whenNoDataType="AllSectionsNoDetail" uuid="e8b1c2d3-4a5b-4c6d-8e7f-0a1b2c3d4e5f">
+    
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+
+    <!-- Styles -->
+    <style name="Base" isDefault="true" fontName="SansSerif" fontSize="8.5" forecolor="#334155"/>
+    <style name="HeaderTitle" fontName="SansSerif" fontSize="16" isBold="true" forecolor="#0F172A"/>
+    <style name="HeaderSubtitle" fontName="SansSerif" fontSize="8" isBold="true" forecolor="#0E7490"/>
+    <style name="CabinetName" fontName="SansSerif" fontSize="11" isBold="true" forecolor="#0F172A"/>
+    <style name="SectionTitle" fontName="SansSerif" fontSize="10" isBold="true" forecolor="#0E7490"/>
+    <style name="KpiTitle" fontName="SansSerif" fontSize="7" isBold="true" forecolor="#64748B"/>
+    <style name="KpiValue" fontName="SansSerif" fontSize="11" isBold="true" forecolor="#0F172A"/>
+    <style name="TableColumnHeader" fontName="SansSerif" fontSize="7.5" isBold="true" forecolor="#334155"/>
+    <style name="TableCell" fontName="SansSerif" fontSize="8" forecolor="#334155"/>
+
+    <!-- Parameters -->
+    <parameter name="cabinetName" class="java.lang.String"/>
+    <parameter name="cabinetAddress" class="java.lang.String"/>
+    <parameter name="cabinetPhone" class="java.lang.String"/>
+    <parameter name="cabinetEmail" class="java.lang.String"/>
+    <parameter name="logo" class="java.io.InputStream"/>
+    <parameter name="reportDate" class="java.lang.String"/>
+    <parameter name="auditRef" class="java.lang.String"/>
+    
+    <parameter name="clientName" class="java.lang.String"/>
+    <parameter name="clientType" class="java.lang.String"/>
+    <parameter name="clientEmail" class="java.lang.String"/>
+    <parameter name="clientPhone" class="java.lang.String"/>
+    <parameter name="clientAddress" class="java.lang.String"/>
+    <parameter name="clientCountry" class="java.lang.String"/>
+    <parameter name="clientSector" class="java.lang.String"/>
+    <parameter name="clientCreationDate" class="java.lang.String"/>
+    <parameter name="clientRegistration" class="java.lang.String"/>
+    <parameter name="clientStatus" class="java.lang.String"/>
+    <parameter name="riskLevel" class="java.lang.String"/>
+    <parameter name="matchesCount" class="java.lang.String"/>
+    <parameter name="lastScreeningDate" class="java.lang.String"/>
+    <parameter name="countryFatfRisk" class="java.lang.String"/>
+    <parameter name="expertComment" class="java.lang.String"/>
+    <parameter name="diligenceFormDetails" class="java.lang.String"/>
+
+    <!-- Fields (DataSource: UBOs list) -->
+    <field name="uboName" class="java.lang.String"/>
+    <field name="roleAndOwnership" class="java.lang.String"/>
+    <field name="nationality" class="java.lang.String"/>
+    <field name="riskLevel" class="java.lang.String"/>
+    <field name="amlStatus" class="java.lang.String"/>
+
+    <!-- Title Band: Header, Client Profile, Risk Matrix, UBO Intro -->
+    <title>
+        <band height="348" splitType="Stretch">
+            <!-- Logo -->
+            <image scaleImage="RetainShape" hAlign="Left" vAlign="Top">
+                <reportElement x="0" y="0" width="115" height="42" uuid="10000000-0000-0000-0000-000000000001">
+                    <printWhenExpression><![CDATA[$P{logo} != null]]></printWhenExpression>
+                </reportElement>
+                <imageExpression><![CDATA[$P{logo}]]></imageExpression>
+            </image>
+
+            <!-- Cabinet Info -->
+            <textField textAdjust="StretchHeight">
+                <reportElement style="CabinetName" positionType="Float" x="0" y="44" width="220" height="15" uuid="10000000-0000-0000-0000-000000000002"/>
+                <textFieldExpression><![CDATA[$P{cabinetName} != null ? $P{cabinetName} : "Cabinet d'Avocats"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" positionType="Float" x="0" y="60" width="220" height="28" forecolor="#64748B" uuid="10000000-0000-0000-0000-000000000003"/>
+                <textElement>
+                    <font size="7.5"/>
+                </textElement>
+                <textFieldExpression><![CDATA[($P{cabinetAddress} != null && !$P{cabinetAddress}.isEmpty() ? $P{cabinetAddress} + "\n" : "") +
+"Tél: " + ($P{cabinetPhone} != null ? $P{cabinetPhone} : "") + " | Email: " + ($P{cabinetEmail} != null ? $P{cabinetEmail} : "")]]></textFieldExpression>
+            </textField>
+
+            <!-- Top Right: GAFI / FATF Header -->
+            <staticText>
+                <reportElement style="HeaderTitle" x="200" y="0" width="335" height="22" uuid="10000000-0000-0000-0000-000000000004"/>
+                <textElement textAlignment="Right" verticalAlignment="Top"/>
+                <text><![CDATA[RAPPORT DE CONFORMITÉ GAFI (FATF)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="HeaderSubtitle" x="200" y="22" width="335" height="14" uuid="10000000-0000-0000-0000-000000000005"/>
+                <textElement textAlignment="Right"/>
+                <text><![CDATA[Normes Internationales LCB-FT • Recommandations 1, 10, 12, 19, 22 & 24]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="200" y="38" width="335" height="14" forecolor="#0F172A" uuid="10000000-0000-0000-0000-000000000006"/>
+                <textElement textAlignment="Right">
+                    <font isBold="true" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Réf. Audit : " + ($P{auditRef} != null ? $P{auditRef} : "GAFI-AUDIT") + "  |  Date : " + ($P{reportDate} != null ? $P{reportDate} : "")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="180" y="54" width="355" height="28" forecolor="#475569" uuid="10000000-0000-0000-0000-000000000007"/>
+                <textElement textAlignment="Right">
+                    <font size="7" isItalic="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA["Criblage LCB-FT automatisé sur registres officiels (CSNU/ONU, OFAC, UE, DG Trésor, SECO, OFSI, Interpol)\nDernier contrôle des alertes : " + ($P{lastScreeningDate} != null ? $P{lastScreeningDate} : "Temps réel")]]></textFieldExpression>
+            </textField>
+
+            <!-- Box: 1. Identification KYC / CDD (FATF Rec. 10) (Y: 92, height: 122) -->
+            <rectangle radius="6">
+                <reportElement x="0" y="92" width="535" height="122" backcolor="#F8FAFC" uuid="10000000-0000-0000-0000-000000000008"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#CBD5E1"/></graphicElement>
+            </rectangle>
+            
+            <staticText>
+                <reportElement style="SectionTitle" x="10" y="98" width="515" height="14" uuid="10000000-0000-0000-0000-000000000009"/>
+                <text><![CDATA[1. IDENTIFICATION CLIENT & VIGILANCE INITIALE (FATF / GAFI REC. 10)]]></text>
+            </staticText>
+
+            <!-- Left Col in Profile Box (x=10, width=255) -->
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="10" y="116" width="255" height="14" uuid="10000000-0000-0000-0000-000000000010"/>
+                <textElement><font isBold="true" size="8.5"/></textElement>
+                <textFieldExpression><![CDATA["Dénomination / Nom : " + ($P{clientName} != null ? $P{clientName} : "N/A")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="10" y="132" width="255" height="14" forecolor="#475569" uuid="10000000-0000-0000-0000-000000000011"/>
+                <textFieldExpression><![CDATA["Forme Juridique / Type : " + ($P{clientType} != null ? $P{clientType} : "N/D")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="10" y="148" width="255" height="14" forecolor="#475569" uuid="10000000-0000-0000-0000-000000000012"/>
+                <textFieldExpression><![CDATA["Identifiant Légal : " + ($P{clientRegistration} != null && !$P{clientRegistration}.isEmpty() ? $P{clientRegistration} : "N/D")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="10" y="164" width="255" height="14" forecolor="#475569" uuid="10000000-0000-0000-0000-000000000013"/>
+                <textFieldExpression><![CDATA["Secteur d'Activité : " + ($P{clientSector} != null ? $P{clientSector} : "N/D")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="10" y="180" width="255" height="14" forecolor="#475569" uuid="10000000-0000-0000-0000-000000000014"/>
+                <textFieldExpression><![CDATA["Entrée en relation : " + ($P{clientCreationDate} != null ? $P{clientCreationDate} : "N/D")]]></textFieldExpression>
+            </textField>
+
+            <!-- Right Col in Profile Box (x=275, width=250) -->
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="275" y="116" width="250" height="14" forecolor="#475569" uuid="10000000-0000-0000-0000-000000000015"/>
+                <textFieldExpression><![CDATA["Pays d'origine / Siège : " + ($P{clientCountry} != null ? $P{clientCountry} : "N/D")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="275" y="132" width="250" height="14" forecolor="#475569" uuid="10000000-0000-0000-0000-000000000016"/>
+                <textFieldExpression><![CDATA["Risque GAFI (Rec. 19) : " + ($P{countryFatfRisk} != null ? $P{countryFatfRisk} : "Standard")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="275" y="148" width="250" height="14" forecolor="#475569" uuid="10000000-0000-0000-0000-000000000017"/>
+                <textFieldExpression><![CDATA["Email : " + ($P{clientEmail} != null && !$P{clientEmail}.isEmpty() ? $P{clientEmail} : "Non renseigné")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="275" y="164" width="250" height="14" forecolor="#475569" uuid="10000000-0000-0000-0000-000000000018"/>
+                <textFieldExpression><![CDATA["Téléphone : " + ($P{clientPhone} != null && !$P{clientPhone}.isEmpty() ? $P{clientPhone} : "Non renseigné")]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="275" y="180" width="250" height="26" forecolor="#64748B" uuid="10000000-0000-0000-0000-000000000019"/>
+                <textElement><font size="7.5"/></textElement>
+                <textFieldExpression><![CDATA["Adresse : " + ($P{clientAddress} != null && !$P{clientAddress}.trim().isEmpty() ? $P{clientAddress} : "Non enregistrée")]]></textFieldExpression>
+            </textField>
+
+            <!-- Section 2: Matrice d'Évaluation des Risques LCB-FT (Y: 222) -->
+            <staticText>
+                <reportElement style="SectionTitle" x="0" y="222" width="535" height="14" uuid="10000000-0000-0000-0000-000000000020"/>
+                <text><![CDATA[2. MATRICE D'ÉVALUATION DES RISQUES LCB-FT (GAFI REC. 1, 6, 7 & 12)]]></text>
+            </staticText>
+
+            <!-- KPI Boxes (Y: 238, height: 44) -->
+            <!-- Box 1: Statut AML -->
+            <rectangle radius="5">
+                <reportElement x="0" y="238" width="170" height="44" backcolor="#EFF6FF" uuid="10000000-0000-0000-0000-000000000021"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#BFDBFE"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="KpiTitle" x="8" y="243" width="154" height="10" forecolor="#1D4ED8" uuid="10000000-0000-0000-0000-000000000022"/>
+                <text><![CDATA[STATUT DE CONFORMITÉ LCB-FT]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="KpiValue" x="8" y="255" width="154" height="16" forecolor="#1E40AF" uuid="10000000-0000-0000-0000-000000000023"/>
+                <textFieldExpression><![CDATA[$P{clientStatus} != null ? $P{clientStatus} : "EN ATTENTE"]]></textFieldExpression>
+            </textField>
+
+            <!-- Box 2: Score Risque Global -->
+            <rectangle radius="5">
+                <reportElement x="182" y="238" width="170" height="44" backcolor="#FFF1F2" uuid="10000000-0000-0000-0000-000000000024"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#FECDD3"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="KpiTitle" x="190" y="243" width="154" height="10" forecolor="#BE123C" uuid="10000000-0000-0000-0000-000000000025"/>
+                <text><![CDATA[SCORE SIMILARITÉ MAX (AML)]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="KpiValue" x="190" y="255" width="154" height="16" forecolor="#9F1239" uuid="10000000-0000-0000-0000-000000000026"/>
+                <textFieldExpression><![CDATA[$P{riskLevel} != null ? $P{riskLevel} : "0% (Aucun)"]]></textFieldExpression>
+            </textField>
+
+            <!-- Box 3: Matches Count -->
+            <rectangle radius="5">
+                <reportElement x="364" y="238" width="171" height="44" backcolor="#F0FDF4" uuid="10000000-0000-0000-0000-000000000027"/>
+                <graphicElement><pen lineWidth="0.5" lineColor="#86EFAC"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="KpiTitle" x="372" y="243" width="155" height="10" forecolor="#15803D" uuid="10000000-0000-0000-0000-000000000028"/>
+                <text><![CDATA[ALERTES ANALYSÉES & QUALIFIÉES]]></text>
+            </staticText>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="KpiValue" x="372" y="255" width="155" height="16" forecolor="#166534" uuid="10000000-0000-0000-0000-000000000029"/>
+                <textFieldExpression><![CDATA[$P{matchesCount} != null ? $P{matchesCount} : "0 alerte"]]></textFieldExpression>
+            </textField>
+
+            <!-- Section 3 Title (Y: 292) -->
+            <staticText>
+                <reportElement style="SectionTitle" x="0" y="292" width="535" height="14" uuid="10000000-0000-0000-0000-000000000030"/>
+                <text><![CDATA[3. TRANSPARENCE & BÉNÉFICIAIRES EFFECTIFS - UBOs (GAFI REC. 24 & 25)]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement style="Base" x="0" y="308" width="535" height="32" forecolor="#475569" uuid="10000000-0000-0000-0000-000000000031"/>
+                <textElement>
+                    <font size="7.5" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[Identification obligatoire des personnes physiques détenant directement ou indirectement plus de 25% du capital ou exerçant un contrôle effectif sur l'entité cliente conformément aux Recommandations 24 & 25 du GAFI.]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <!-- Column Header: UBOs Table -->
+    <columnHeader>
+        <band height="18" splitType="Stretch">
+            <rectangle>
+                <reportElement x="0" y="0" width="535" height="16" backcolor="#E2E8F0" uuid="20000000-0000-0000-0000-000000000001"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="6" y="2" width="164" height="12" uuid="20000000-0000-0000-0000-000000000002"/>
+                <text><![CDATA[BÉNÉFICIAIRE EFFECTIF (UBO)]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="174" y="2" width="126" height="12" uuid="20000000-0000-0000-0000-000000000003"/>
+                <text><![CDATA[RÔLE & QUOTITÉ DÉTENUE]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="304" y="2" width="76" height="12" uuid="20000000-0000-0000-0000-000000000004"/>
+                <text><![CDATA[NATIONALITÉ]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="384" y="2" width="76" height="12" uuid="20000000-0000-0000-0000-000000000005"/>
+                <text><![CDATA[SCORE RISQUE]]></text>
+            </staticText>
+            <staticText>
+                <reportElement style="TableColumnHeader" x="464" y="2" width="65" height="12" uuid="20000000-0000-0000-0000-000000000006"/>
+                <textElement textAlignment="Center"/>
+                <text><![CDATA[STATUT AML]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <!-- Detail Band: UBO Rows -->
+    <detail>
+        <band height="18" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="17" width="535" height="1" forecolor="#E2E8F0" uuid="30000000-0000-0000-0000-000000000001"/>
+                <graphicElement><pen lineWidth="0.5"/></graphicElement>
+            </line>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="TableCell" x="6" y="2" width="164" height="14" uuid="30000000-0000-0000-0000-000000000002"/>
+                <textElement><font isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{uboName} != null ? $F{uboName} : "-"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="TableCell" x="174" y="2" width="126" height="14" uuid="30000000-0000-0000-0000-000000000003"/>
+                <textFieldExpression><![CDATA[$F{roleAndOwnership} != null ? $F{roleAndOwnership} : "-"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="TableCell" x="304" y="2" width="76" height="14" forecolor="#475569" uuid="30000000-0000-0000-0000-000000000004"/>
+                <textFieldExpression><![CDATA[$F{nationality} != null ? $F{nationality} : "-"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="TableCell" x="384" y="2" width="76" height="14" uuid="30000000-0000-0000-0000-000000000005"/>
+                <textElement><font isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{riskLevel} != null ? $F{riskLevel} : "-"]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="TableCell" x="464" y="2" width="65" height="14" uuid="30000000-0000-0000-0000-000000000006"/>
+                <textElement textAlignment="Center"><font isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{amlStatus} != null ? $F{amlStatus} : "N/A"]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+    <!-- Page Footer -->
+    <pageFooter>
+        <band height="26" splitType="Stretch">
+            <line>
+                <reportElement x="0" y="2" width="535" height="1" forecolor="#CBD5E1" uuid="50000000-0000-0000-0000-000000000001"/>
+                <graphicElement><pen lineWidth="0.5"/></graphicElement>
+            </line>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="0" y="6" width="420" height="18" forecolor="#94A3B8" uuid="50000000-0000-0000-0000-000000000002"/>
+                <textElement><font size="7"/></textElement>
+                <textFieldExpression><![CDATA["Dossier de conformité LCB-FT certifié conforme aux normes GAFI / FATF Standards • Système Avo-Maitrise\nAudit généré le " + new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(new java.util.Date()) + " • Registres : ONU/CSNU, OFAC, UE, DG Trésor, SECO, OFSI, Interpol."]]></textFieldExpression>
+            </textField>
+            <textField textAdjust="StretchHeight">
+                <reportElement style="Base" x="430" y="6" width="105" height="14" forecolor="#64748B" uuid="50000000-0000-0000-0000-000000000003"/>
+                <textElement textAlignment="Right"><font size="7.5" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+
+    <!-- Summary Band: GAFI Conclusion, Lawyer Certification Visa, and Detailed Matches -->
+    <summary>
+        <band height="180" splitType="Stretch">
+            <!-- Box 4: Expert Conclusion Frame -->
+            <frame>
+                <reportElement positionType="Float" x="0" y="10" width="535" height="75" uuid="40000000-0000-0000-0000-000000000001"/>
+                <rectangle radius="6">
+                    <reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="535" height="75" backcolor="#F1F5F9" uuid="40000000-0000-0000-0000-000000000002"/>
+                    <graphicElement><pen lineWidth="0.5" lineColor="#CBD5E1"/></graphicElement>
+                </rectangle>
+                <staticText>
+                    <reportElement style="SectionTitle" positionType="Float" x="10" y="8" width="515" height="14" uuid="40000000-0000-0000-0000-000000000003"/>
+                    <text><![CDATA[4. CONCLUSION D'AUDIT & DÉCLARATION DE CONFORMITÉ GAFI (FATF)]]></text>
+                </staticText>
+                <textField textAdjust="StretchHeight">
+                    <reportElement style="Base" positionType="Float" x="10" y="25" width="515" height="42" forecolor="#334155" uuid="40000000-0000-0000-0000-000000000004"/>
+                    <textElement>
+                        <font size="8"/>
+                    </textElement>
+                    <textFieldExpression><![CDATA[$P{expertComment} != null ? $P{expertComment} : "Évaluation de vigilance réglementaire effectuée conformément aux 40 Recommandations du GAFI et aux obligations LCB-FT."]]></textFieldExpression>
+                </textField>
+            </frame>
+
+            <!-- Lawyer Visa / Certification Box -->
+            <frame>
+                <reportElement positionType="Float" x="250" y="92" width="285" height="42" uuid="40000000-0000-0000-0000-000000000005"/>
+                <line>
+                    <reportElement x="0" y="0" width="285" height="1" forecolor="#94A3B8" uuid="40000000-0000-0000-0000-000000000006"/>
+                    <graphicElement><pen lineWidth="0.5" lineStyle="Dashed"/></graphicElement>
+                </line>
+                <staticText>
+                    <reportElement style="Base" x="0" y="4" width="285" height="12" forecolor="#0F172A" uuid="40000000-0000-0000-0000-000000000007"/>
+                    <textElement textAlignment="Right">
+                        <font size="7.5" isBold="true"/>
+                    </textElement>
+                    <text><![CDATA[Visa & Émargement de l'Avocat Référent LCB-FT]]></text>
+                </staticText>
+                <staticText>
+                    <reportElement style="Base" x="0" y="16" width="285" height="24" forecolor="#64748B" uuid="40000000-0000-0000-0000-000000000008"/>
+                    <textElement textAlignment="Right">
+                        <font size="7" isItalic="true"/>
+                    </textElement>
+                    <text><![CDATA[Responsable Conformité (Compliance Officer / MLRO)
+Certifié conforme aux obligations réglementaires]]></text>
+                </staticText>
+            </frame>
+
+            <!-- Section 5: Diligence Form & Screening Matches Details Section -->
+            <textField textAdjust="StretchHeight" isBlankWhenNull="true">
+                <reportElement style="Base" positionType="Float" x="0" y="140" width="535" height="20" forecolor="#334155" uuid="50000000-0000-0000-0000-000000000009">
+                    <printWhenExpression><![CDATA[$P{diligenceFormDetails} != null && !$P{diligenceFormDetails}.isEmpty()]]></printWhenExpression>
+                </reportElement>
+                <textElement markup="html">
+                    <font size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{diligenceFormDetails}]]></textFieldExpression>
+            </textField>
+        </band>
+    </summary>
+</jasperReport>

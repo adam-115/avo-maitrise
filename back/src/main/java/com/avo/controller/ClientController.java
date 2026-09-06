@@ -45,6 +45,15 @@ public class ClientController {
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 
+    @GetMapping("/{id}/fatf-audit-report/pdf")
+    public ResponseEntity<byte[]> generateClientFatfAuditReport(@PathVariable Long id) {
+        byte[] pdfBytes = reportingService.generateClientFatfAuditReport(id);
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "Rapport_Conformite_GAFI_Client_" + id + ".pdf");
+        return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
+    }
+
 
     @GetMapping
     public ResponseEntity<Page<ClientEntityDTO>> findAll(
