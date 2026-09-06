@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Step 1: Drop document_id FK if exists -->
+    <changeSet id="drop-fk-document-id" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="FKcy26kl6ew1tk1tornmix2lr8g" foreignKeyTableName="dossier_documents"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="dossier_documents" constraintName="FKcy26kl6ew1tk1tornmix2lr8g"/>
+    </changeSet>
+
+    <!-- Step 2: Add document_id FK with CASCADE -->
+    <changeSet id="add-fk-document-id-cascade" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FKcy26kl6ew1tk1tornmix2lr8g" foreignKeyTableName="dossier_documents"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="dossier_documents"
+                                 baseColumnNames="document_id"
+                                 constraintName="FKcy26kl6ew1tk1tornmix2lr8g"
+                                 referencedTableName="documents"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Step 3: Drop dossier_id FK if exists under FK2m4ws4bpcfquvrhyf626ei8yh -->
+    <changeSet id="drop-fk-dossier-id-1" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="FK2m4ws4bpcfquvrhyf626ei8yh" foreignKeyTableName="dossier_documents"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="dossier_documents" constraintName="FK2m4ws4bpcfquvrhyf626ei8yh"/>
+    </changeSet>
+
+    <!-- Step 4: Drop dossier_id FK if exists under FKdossier_id_documents -->
+    <changeSet id="drop-fk-dossier-id-2" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="FKdossier_id_documents" foreignKeyTableName="dossier_documents"/>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="dossier_documents" constraintName="FKdossier_id_documents"/>
+    </changeSet>
+
+    <!-- Step 5: Add dossier_id FK with CASCADE -->
+    <changeSet id="add-fk-dossier-id-cascade" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="FK2m4ws4bpcfquvrhyf626ei8yh" foreignKeyTableName="dossier_documents"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="dossier_documents"
+                                 baseColumnNames="dossier_id"
+                                 constraintName="FK2m4ws4bpcfquvrhyf626ei8yh"
+                                 referencedTableName="dossiers"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

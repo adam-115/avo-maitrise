@@ -115,6 +115,7 @@ public class DocumentService {
         return mapper.toDto(saved);
     }
     
+    @org.springframework.transaction.annotation.Transactional
     public void delete(Long id) {
         log.info("[ENTER] Executing delete");
         repository.findById(id).ifPresent(doc -> {
@@ -124,6 +125,7 @@ public class DocumentService {
                     getCurrentUsername(), "Suppression", "Document", doc.getId(), "Document supprimé : " + doc.getNomFichier()
                 ));
             }
+            repository.deleteDossierDocumentAssociation(doc.getId());
             repository.delete(doc);
         });
     }

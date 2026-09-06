@@ -10,7 +10,17 @@
     "BILLING": "Billing",
     "BILLING_DASHBOARD": "Billing Dashboard",
     "ADMINISTRATION": "Administration",
-    "LOGOUT": "Log Out"
+    "LOGOUT": "Log Out",
+    "SECTION_CORE": "Main Workspace",
+    "SECTION_COMPLIANCE": "Compliance & Due Diligence",
+    "SECTION_FINANCE": "Finance & Billing",
+    "SECTION_DOCUMENTS": "Documents & DMS",
+    "SECTION_SYSTEM": "System & Settings",
+    "USER_ROLE": "Partner Attorney",
+    "CABINET_BADGE": "Legal Practice",
+    "VERSION": "v1.2.0 • SI Legal ERP",
+    "CLOSE_MENU": "Close menu",
+    "OPEN_MENU": "Open menu"
   },
   "LANGUAGE": {
     "TITLE": "Langue",

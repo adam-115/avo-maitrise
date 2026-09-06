@@ -10,7 +10,17 @@
     "BILLING": "Abrechnung",
     "BILLING_DASHBOARD": "Abrechnungs-Dashboard",
     "ADMINISTRATION": "Verwaltung",
-    "LOGOUT": "Abmelden"
+    "LOGOUT": "Abmelden",
+    "SECTION_CORE": "Hauptarbeitsbereich",
+    "SECTION_COMPLIANCE": "Compliance & Sorgfaltspflicht",
+    "SECTION_FINANCE": "Finanzen & Abrechnung",
+    "SECTION_DOCUMENTS": "Dokumente & DMS",
+    "SECTION_SYSTEM": "System & Einstellungen",
+    "USER_ROLE": "Partner-Rechtsanwalt",
+    "CABINET_BADGE": "Kanzlei",
+    "VERSION": "v1.2.0 • SI Legal ERP",
+    "CLOSE_MENU": "Menü schließen",
+    "OPEN_MENU": "Menü öffnen"
   },
   "LANGUAGE": {
     "TITLE": "Langue",

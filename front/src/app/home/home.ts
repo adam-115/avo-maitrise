@@ -1,36 +1,96 @@
 import { NavigationService } from './../services/navigation-service';
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, NavigationEnd, Event as RouterEvent } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { KeycloakService } from './../services/keycloak.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { filter, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
+  standalone: true,
   imports: [RouterOutlet, FormsModule, CommonModule, TranslatePipe],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
-export class Home {
+export class Home implements OnInit, OnDestroy {
 
   private readonly navigationService = inject(NavigationService);
   private readonly keycloakService = inject(KeycloakService);
   public readonly translate = inject(TranslateService);
+  public readonly router = inject(Router);
 
   // Variable d'état pour le contrôle de la barre latérale
   isSidebarOpen: boolean = false;
-  activeRoute: string = 'calendrier';
+  activeRoute: string = 'home';
   paths = NavigationService;
   environment = environment;
   currentLang: string = 'fr';
+  private routerSubscription?: Subscription;
 
-  constructor(private readonly router: Router) {
+  constructor() {
     this.translate.addLangs(['fr', 'en', 'es', 'de', 'it', 'ar']);
     this.translate.setFallbackLang('fr');
     this.translate.use('fr');
     document.documentElement.dir = 'ltr';
+  }
+
+  ngOnInit(): void {
+    // Synchroniser activeRoute dès le chargement initial
+    this.updateActiveRouteFromUrl(this.router.url);
+
+    // Écouter les changements d'URL
+    this.routerSubscription = this.router.events.pipe(
+      filter((event: RouterEvent): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      this.updateActiveRouteFromUrl(event.urlAfterRedirects || event.url);
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+
+  private updateActiveRouteFromUrl(url: string): void {
+    if (url.includes('/home/' + NavigationService.AML_COMPLIANCE)) {
+      this.activeRoute = NavigationService.AML_COMPLIANCE;
+    } else if (url.includes('/home/' + NavigationService.CLIENT_DILIGENCE_STATUS_LIST) || url.includes('/home/' + NavigationService.DILIGENCE_FORM_LIST)) {
+      this.activeRoute = NavigationService.CLIENT_DILIGENCE_STATUS_LIST;
+    } else if (url.includes('/home/' + NavigationService.CALENDRIER)) {
+      this.activeRoute = NavigationService.CALENDRIER;
+    } else if (url.includes('/home/' + NavigationService.DOSSIER)) {
+      this.activeRoute = NavigationService.DOSSIER;
+    } else if (url.includes('/home/' + NavigationService.CRM) || url.includes('/home/' + NavigationService.CLIENT_DETAILS) || url.includes('/home/' + NavigationService.NEW_CLIENT)) {
+      this.activeRoute = NavigationService.CRM;
+    } else if (url.includes('/home/' + NavigationService.MODEL)) {
+      this.activeRoute = NavigationService.MODEL;
+    } else if (url.includes('/home/' + NavigationService.BILLING_DASHBOARD)) {
+      this.activeRoute = NavigationService.BILLING_DASHBOARD;
+    } else if (url.includes('/home/' + NavigationService.BILLING)) {
+      this.activeRoute = NavigationService.BILLING;
+    } else if (url.includes('/home/' + NavigationService.ADMINSTRATION) || url.includes('/home/' + NavigationService.ADMIN_PREFERENCE)) {
+      this.activeRoute = NavigationService.ADMINSTRATION;
+    } else if (url === '/home' || url === '/home/') {
+      this.activeRoute = 'home';
+    }
+  }
+
+  get username(): string {
+    return this.keycloakService.getUsername() || 'Avocat';
+  }
+
+  get userInitials(): string {
+    const name = this.username.trim();
+    if (!name) return 'AV';
+    const parts = name.split(/[ ._-]+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
   }
 
   changeLanguage(event: Event) {
@@ -48,7 +108,6 @@ export class Home {
     this.keycloakService.logout();
   }
 
-  // Cette fonction peut être appelée par le bouton d'ouverture/fermeture
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
@@ -85,7 +144,7 @@ export class Home {
 
   navigateToCalendrier() {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.CALENDRIER);
-    this.activeRoute = 'calendrier';
+    this.activeRoute = NavigationService.CALENDRIER;
     this.isSidebarOpen = false;
   }
 
@@ -109,11 +168,8 @@ export class Home {
 
   navigateToHome() {
     this.router.navigateByUrl(NavigationService.HOME);
-    this.activeRoute = 'calendrier';
+    this.activeRoute = 'home';
     this.isSidebarOpen = false;
   }
-
-
-
-
 }
+

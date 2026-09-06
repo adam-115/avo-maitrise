@@ -10,7 +10,17 @@
     "BILLING": "Facturation",
     "BILLING_DASHBOARD": "Tableau de bord (Facturation)",
     "ADMINISTRATION": "Administration",
-    "LOGOUT": "Se déconnecter"
+    "LOGOUT": "Se déconnecter",
+    "SECTION_CORE": "Espace Principal",
+    "SECTION_COMPLIANCE": "Conformité & Vigilance",
+    "SECTION_FINANCE": "Finances & Facturation",
+    "SECTION_DOCUMENTS": "Documents & GED",
+    "SECTION_SYSTEM": "Système & Paramètres",
+    "USER_ROLE": "Avocat Associé",
+    "CABINET_BADGE": "Cabinet Juridique",
+    "VERSION": "v1.2.0 • SI Légal ERP",
+    "CLOSE_MENU": "Fermer le menu",
+    "OPEN_MENU": "Ouvrir le menu"
   },
   "LANGUAGE": {
     "TITLE": "Langue",

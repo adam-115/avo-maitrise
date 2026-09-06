@@ -1,178 +1,477 @@
-<div class="flex h-screen bg-gray-100">
+<div class="flex h-screen bg-slate-900 font-sans overflow-hidden">
+    <!-- Backdrop Overlay for Mobile Drawer -->
     <div *ngIf="isSidebarOpen" (click)="isSidebarOpen = false"
-        class="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden">
+        class="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-sm lg:hidden transition-opacity animate-fadeIn">
     </div>
 
-    <aside [ngClass]="{'translate-x-0 ease-out': isSidebarOpen, '-translate-x-full rtl:translate-x-full ease-in': !isSidebarOpen}" class="fixed inset-y-0 start-0 z-30 w-64 bg-slate-900 text-white flex flex-col shadow-2xl
-                  transform transition duration-300 lg:!translate-x-0 lg:static lg:flex-shrink-0">
+    <!-- Main Navigation Sidebar -->
+    <aside [ngClass]="{'translate-x-0 ease-out': isSidebarOpen, '-translate-x-full rtl:translate-x-full ease-in': !isSidebarOpen}"
+        class="fixed inset-y-0 start-0 z-50 w-72 bg-slate-900 text-white flex flex-col shadow-2xl lg:shadow-none transform transition-transform duration-300 lg:!translate-x-0 lg:static lg:flex-shrink-0 select-none">
 
-        <div class="p-4 border-b border-slate-800 flex flex-col items-center bg-slate-950/30 relative gap-5">
-            <div class="flex items-center justify-center w-full py-1">
-                <img src="/logo-app.jpg" alt="SI Legal" class="w-44 h-auto rounded-lg shadow-md hover:scale-105 transition-transform duration-300">
+        <!-- Top Accent Bar (Cyan to Electric Blue) -->
+        <div class="h-1.5 bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600"></div>
+
+        <!-- Brand & Header Container -->
+        <div class="p-5 border-b border-slate-800/80 flex flex-col items-center bg-slate-950/40 relative gap-4">
+            <!-- Brand Logo -->
+            <div class="flex items-center justify-between w-full">
+                <a (click)="navigateToHome()" class="flex items-center gap-3 cursor-pointer group">
+                    <img src="/logo-app.jpg" alt="SI Legal" class="h-11 w-auto rounded-xl shadow-md group-hover:scale-105 transition-transform duration-200">
+                    <div class="flex flex-col">
+                        <span class="text-sm font-black tracking-tight text-white group-hover:text-cyan-300 transition-colors">SI-LÉGAL</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ 'MENU.CABINET_BADGE' | translate }}</span>
+                    </div>
+                </a>
+
+                <!-- Mobile Close Button -->
+                <button (click)="isSidebarOpen = false"
+                    class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                    [attr.aria-label]="'MENU.CLOSE_MENU' | translate">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
             </div>
 
-            <!-- Language Switcher (Top Left) -->
-            <div class="w-full relative flex items-center p-2 bg-gradient-to-r from-slate-800/80 to-slate-800/40 hover:from-slate-700/90 hover:to-slate-700/50 rounded-xl transition-all duration-300 border border-slate-600/40 shadow-lg group">
-                <div class="flex-shrink-0 text-cyan-400 bg-cyan-900/40 group-hover:bg-cyan-500/20 group-hover:text-cyan-300 p-2 rounded-lg transition-colors duration-300 shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+            <!-- Modern Language Switcher -->
+            <div class="w-full relative flex items-center p-1.5 bg-slate-800/80 hover:bg-slate-800 rounded-xl transition-all duration-200 border border-slate-700/60 shadow-inner group">
+                <div class="flex-shrink-0 text-cyan-400 bg-cyan-950/80 border border-cyan-800/50 p-2 rounded-lg transition-colors duration-200">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+                    </svg>
                 </div>
-                <select (change)="changeLanguage($event)" [value]="currentLang" class="w-full ps-3 pe-8 py-1.5 bg-transparent border-none text-sm text-gray-200 group-hover:text-white focus:ring-0 cursor-pointer font-semibold appearance-none outline-none tracking-wide transition-colors">
-                    <option value="fr" class="bg-slate-800 text-white">{{ 'LANGUAGE.FR' | translate }}</option>
-                    <option value="en" class="bg-slate-800 text-white">{{ 'LANGUAGE.EN' | translate }}</option>
-                    <option value="es" class="bg-slate-800 text-white">{{ 'LANGUAGE.ES' | translate }}</option>
-                    <option value="de" class="bg-slate-800 text-white">{{ 'LANGUAGE.DE' | translate }}</option>
-                    <option value="it" class="bg-slate-800 text-white">{{ 'LANGUAGE.IT' | translate }}</option>
-                    <option value="ar" class="bg-slate-800 text-white">{{ 'LANGUAGE.AR' | translate }}</option>
+                <select (change)="changeLanguage($event)" [value]="currentLang"
+                    class="w-full ps-2.5 pe-7 py-1 bg-transparent border-none text-xs text-slate-200 group-hover:text-white focus:ring-0 cursor-pointer font-bold appearance-none outline-none tracking-wide transition-colors">
+                    <option value="fr" class="bg-slate-900 text-white">{{ 'LANGUAGE.FR' | translate }}</option>
+                    <option value="en" class="bg-slate-900 text-white">{{ 'LANGUAGE.EN' | translate }}</option>
+                    <option value="es" class="bg-slate-900 text-white">{{ 'LANGUAGE.ES' | translate }}</option>
+                    <option value="de" class="bg-slate-900 text-white">{{ 'LANGUAGE.DE' | translate }}</option>
+                    <option value="it" class="bg-slate-900 text-white">{{ 'LANGUAGE.IT' | translate }}</option>
+                    <option value="ar" class="bg-slate-900 text-white">{{ 'LANGUAGE.AR' | translate }}</option>
                 </select>
-                <div class="absolute inset-y-0 end-0 flex items-center pe-4 pointer-events-none">
-                    <svg class="w-4 h-4 text-cyan-500/50 group-hover:text-cyan-400 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none text-slate-400 group-hover:text-cyan-300 transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
                 </div>
             </div>
-
-            <button (click)="isSidebarOpen = false" class="lg:hidden text-gray-400 hover:text-white absolute end-4 top-4">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
-                </svg>
-            </button>
         </div>
 
-        <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
-            <a (click)="navigateToHome()"
-                [ngClass]="activeRoute === 'calendrier' ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center gap-3 p-3 cursor-pointer rounded-lg duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m0 0l7 7m-7-7v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
-                    </path>
-                </svg>
-                <span>{{ 'MENU.HOME' | translate }}</span>
-            </a>
-            <a (click)="navigateToAmlCompliance()"
-                [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center cursor-pointer gap-3 p-3 rounded-lg duration-150">
-                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618"></path></svg>
-                <span>{{ 'MENU.AML' | translate }}</span>
-            </a>
-            <a (click)="navigateToClientDiligenceStatusList()"
-                [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center cursor-pointer gap-3 p-3 rounded-lg duration-150">
-                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                 </svg>
-                 <span>{{ 'MENU.DILIGENCE_TRACKING' | translate }}</span>
-            </a>
-            <a (click)="navigateToCalendrier()"
-                [ngClass]="activeRoute === paths.CALENDRIER ? 'bg-cyan-600/20 text-cyan-400 font-semibold' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center gap-3 p-3 cursor-pointer rounded-lg duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                    </path>
-                </svg>
-                <span>{{ 'MENU.CALENDAR' | translate }}</span>
-            </a>
-            <a (click)="navigateTODossier()"
-                [ngClass]="activeRoute === paths.DOSSIER ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center gap-3 p-3 cursor-pointer rounded-lg  transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
-                </svg>
-                <span>{{ 'MENU.DOSSIER' | translate }}</span>
-            </a>
-            <a (click)="navigateTOClients()"
-                [ngClass]="activeRoute === paths.CRM ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center gap-3 p-3 rounded-lg transition duration-150 cursor-pointer">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z">
-                    </path>
-                </svg>
-                <span>{{ 'MENU.CLIENTS' | translate }}</span>
-            </a>
-            <a (click)="navigateToModel()"
-                [ngClass]="activeRoute === paths.MODEL ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center gap-3 p-3 rounded-lg  transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                    </path>
-                </svg>
-                <span>{{ 'MENU.MODEL' | translate }}</span>
-            </a>
-            <a (click)="navigateToFacturation()"
-                [ngClass]="activeRoute === paths.FACTURATION ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center gap-3 p-3 cursor-pointer transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z">
-                    </path>
-                </svg>
-                <span>{{ 'MENU.BILLING' | translate }}</span>
-            </a>
-            <a (click)="navigateToBillingDashboard()"
-                [ngClass]="activeRoute === paths.BILLING_DASHBOARD ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center gap-3 p-3 cursor-pointer transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                    </path>
-                </svg>
-                <span>{{ 'MENU.BILLING_DASHBOARD' | translate }}</span>
-            </a>
-            <a (click)="navigateToAdministration()"
-                [ngClass]="activeRoute === paths.ADMINSTRATION ? 'bg-cyan-600/20 text-cyan-400 font-semibold ' : 'text-gray-300 hover:bg-slate-700'"
-                class="flex items-center cursor-pointer gap-3 p-3 rounded-lg transition duration-150">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                    </path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-                <span>{{ 'MENU.ADMINISTRATION' | translate }}</span>
-            </a>
+        <!-- Navigation Links Container -->
+        <nav class="flex-grow px-3 py-4 space-y-6 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-700">
 
+            <!-- SECTION 1: Espace Principal -->
+            <div class="space-y-1">
+                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    {{ 'MENU.SECTION_CORE' | translate }}
+                </p>
+
+                <!-- Accueil -->
+                <a (click)="navigateToHome()"
+                    [class.bg-gradient-to-r]="activeRoute === 'home'"
+                    [class.from-cyan-950/90]="activeRoute === 'home'"
+                    [class.via-slate-800/80]="activeRoute === 'home'"
+                    [class.to-slate-800/40]="activeRoute === 'home'"
+                    [class.text-cyan-200]="activeRoute === 'home'"
+                    [class.border-cyan-500/40]="activeRoute === 'home'"
+                    [class.shadow-sm]="activeRoute === 'home'"
+                    [class.shadow-cyan-950/50]="activeRoute === 'home'"
+                    [class.before:absolute]="activeRoute === 'home'"
+                    [class.before:inset-y-1.5]="activeRoute === 'home'"
+                    [class.before:start-0]="activeRoute === 'home'"
+                    [class.before:w-1.5]="activeRoute === 'home'"
+                    [class.before:rounded-e-full]="activeRoute === 'home'"
+                    [class.before:bg-gradient-to-b]="activeRoute === 'home'"
+                    [class.before:from-cyan-400]="activeRoute === 'home'"
+                    [class.before:to-blue-500]="activeRoute === 'home'"
+                    [class.text-slate-300]="activeRoute !== 'home'"
+                    [class.hover:bg-slate-800/60]="activeRoute !== 'home'"
+                    [class.hover:text-cyan-300]="activeRoute !== 'home'"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === 'home'"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === 'home'"
+                        [class.text-slate-400]="activeRoute !== 'home'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span>{{ 'MENU.HOME' | translate }}</span>
+                </a>
+
+                <!-- Calendrier -->
+                <a (click)="navigateToCalendrier()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.CALENDRIER"
+                    [class.from-cyan-950/90]="activeRoute === paths.CALENDRIER"
+                    [class.via-slate-800/80]="activeRoute === paths.CALENDRIER"
+                    [class.to-slate-800/40]="activeRoute === paths.CALENDRIER"
+                    [class.text-cyan-200]="activeRoute === paths.CALENDRIER"
+                    [class.border-cyan-500/40]="activeRoute === paths.CALENDRIER"
+                    [class.shadow-sm]="activeRoute === paths.CALENDRIER"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.CALENDRIER"
+                    [class.before:absolute]="activeRoute === paths.CALENDRIER"
+                    [class.before:inset-y-1.5]="activeRoute === paths.CALENDRIER"
+                    [class.before:start-0]="activeRoute === paths.CALENDRIER"
+                    [class.before:w-1.5]="activeRoute === paths.CALENDRIER"
+                    [class.before:rounded-e-full]="activeRoute === paths.CALENDRIER"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.CALENDRIER"
+                    [class.before:from-cyan-400]="activeRoute === paths.CALENDRIER"
+                    [class.before:to-blue-500]="activeRoute === paths.CALENDRIER"
+                    [class.text-slate-300]="activeRoute !== paths.CALENDRIER"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.CALENDRIER"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.CALENDRIER"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.CALENDRIER"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.CALENDRIER"
+                        [class.text-slate-400]="activeRoute !== paths.CALENDRIER"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span>{{ 'MENU.CALENDAR' | translate }}</span>
+                </a>
+
+                <!-- Dossiers -->
+                <a (click)="navigateTODossier()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.DOSSIER"
+                    [class.from-cyan-950/90]="activeRoute === paths.DOSSIER"
+                    [class.via-slate-800/80]="activeRoute === paths.DOSSIER"
+                    [class.to-slate-800/40]="activeRoute === paths.DOSSIER"
+                    [class.text-cyan-200]="activeRoute === paths.DOSSIER"
+                    [class.border-cyan-500/40]="activeRoute === paths.DOSSIER"
+                    [class.shadow-sm]="activeRoute === paths.DOSSIER"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.DOSSIER"
+                    [class.before:absolute]="activeRoute === paths.DOSSIER"
+                    [class.before:inset-y-1.5]="activeRoute === paths.DOSSIER"
+                    [class.before:start-0]="activeRoute === paths.DOSSIER"
+                    [class.before:w-1.5]="activeRoute === paths.DOSSIER"
+                    [class.before:rounded-e-full]="activeRoute === paths.DOSSIER"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.DOSSIER"
+                    [class.before:from-cyan-400]="activeRoute === paths.DOSSIER"
+                    [class.before:to-blue-500]="activeRoute === paths.DOSSIER"
+                    [class.text-slate-300]="activeRoute !== paths.DOSSIER"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.DOSSIER"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.DOSSIER"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.DOSSIER"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.DOSSIER"
+                        [class.text-slate-400]="activeRoute !== paths.DOSSIER"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                    </svg>
+                    <span>{{ 'MENU.DOSSIER' | translate }}</span>
+                </a>
+
+                <!-- Clients (CRM) -->
+                <a (click)="navigateTOClients()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.CRM"
+                    [class.from-cyan-950/90]="activeRoute === paths.CRM"
+                    [class.via-slate-800/80]="activeRoute === paths.CRM"
+                    [class.to-slate-800/40]="activeRoute === paths.CRM"
+                    [class.text-cyan-200]="activeRoute === paths.CRM"
+                    [class.border-cyan-500/40]="activeRoute === paths.CRM"
+                    [class.shadow-sm]="activeRoute === paths.CRM"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.CRM"
+                    [class.before:absolute]="activeRoute === paths.CRM"
+                    [class.before:inset-y-1.5]="activeRoute === paths.CRM"
+                    [class.before:start-0]="activeRoute === paths.CRM"
+                    [class.before:w-1.5]="activeRoute === paths.CRM"
+                    [class.before:rounded-e-full]="activeRoute === paths.CRM"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.CRM"
+                    [class.before:from-cyan-400]="activeRoute === paths.CRM"
+                    [class.before:to-blue-500]="activeRoute === paths.CRM"
+                    [class.text-slate-300]="activeRoute !== paths.CRM"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.CRM"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.CRM"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.CRM"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.CRM"
+                        [class.text-slate-400]="activeRoute !== paths.CRM"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z"/>
+                    </svg>
+                    <span>{{ 'MENU.CLIENTS' | translate }}</span>
+                </a>
+            </div>
+
+            <!-- SECTION 2: Conformité & Vigilance (AML / KYC) -->
+            <div class="space-y-1">
+                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    {{ 'MENU.SECTION_COMPLIANCE' | translate }}
+                </p>
+
+                <!-- Conformité AML -->
+                <a (click)="navigateToAmlCompliance()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.from-cyan-950/90]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.via-slate-800/80]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.to-slate-800/40]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.text-cyan-200]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.border-cyan-500/40]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.shadow-sm]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.before:absolute]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.before:inset-y-1.5]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.before:start-0]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.before:w-1.5]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.before:rounded-e-full]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.before:from-cyan-400]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.before:to-blue-500]="activeRoute === paths.AML_COMPLIANCE"
+                    [class.text-slate-300]="activeRoute !== paths.AML_COMPLIANCE"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.AML_COMPLIANCE"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.AML_COMPLIANCE"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.AML_COMPLIANCE"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.AML_COMPLIANCE"
+                        [class.text-slate-400]="activeRoute !== paths.AML_COMPLIANCE"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618"/>
+                    </svg>
+                    <span>{{ 'MENU.AML' | translate }}</span>
+                </a>
+
+                <!-- Suivi des Diligences -->
+                <a (click)="navigateToClientDiligenceStatusList()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.from-cyan-950/90]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.via-slate-800/80]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.to-slate-800/40]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.text-cyan-200]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.border-cyan-500/40]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.shadow-sm]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.before:absolute]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.before:inset-y-1.5]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.before:start-0]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.before:w-1.5]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.before:rounded-e-full]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.before:from-cyan-400]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.before:to-blue-500]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.text-slate-300]="activeRoute !== paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.CLIENT_DILIGENCE_STATUS_LIST"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
+                        [class.text-slate-400]="activeRoute !== paths.CLIENT_DILIGENCE_STATUS_LIST"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                    <span>{{ 'MENU.DILIGENCE_TRACKING' | translate }}</span>
+                </a>
+            </div>
+
+            <!-- SECTION 3: Finances & Facturation -->
+            <div class="space-y-1">
+                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    {{ 'MENU.SECTION_FINANCE' | translate }}
+                </p>
+
+                <!-- Facturation -->
+                <a (click)="navigateToFacturation()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.BILLING"
+                    [class.from-cyan-950/90]="activeRoute === paths.BILLING"
+                    [class.via-slate-800/80]="activeRoute === paths.BILLING"
+                    [class.to-slate-800/40]="activeRoute === paths.BILLING"
+                    [class.text-cyan-200]="activeRoute === paths.BILLING"
+                    [class.border-cyan-500/40]="activeRoute === paths.BILLING"
+                    [class.shadow-sm]="activeRoute === paths.BILLING"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.BILLING"
+                    [class.before:absolute]="activeRoute === paths.BILLING"
+                    [class.before:inset-y-1.5]="activeRoute === paths.BILLING"
+                    [class.before:start-0]="activeRoute === paths.BILLING"
+                    [class.before:w-1.5]="activeRoute === paths.BILLING"
+                    [class.before:rounded-e-full]="activeRoute === paths.BILLING"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.BILLING"
+                    [class.before:from-cyan-400]="activeRoute === paths.BILLING"
+                    [class.before:to-blue-500]="activeRoute === paths.BILLING"
+                    [class.text-slate-300]="activeRoute !== paths.BILLING"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.BILLING"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.BILLING"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.BILLING"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.BILLING"
+                        [class.text-slate-400]="activeRoute !== paths.BILLING"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"/>
+                    </svg>
+                    <span>{{ 'MENU.BILLING' | translate }}</span>
+                </a>
+
+                <!-- Tableau de Bord Facturation -->
+                <a (click)="navigateToBillingDashboard()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.from-cyan-950/90]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.via-slate-800/80]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.to-slate-800/40]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.text-cyan-200]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.border-cyan-500/40]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.shadow-sm]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.before:absolute]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.before:inset-y-1.5]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.before:start-0]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.before:w-1.5]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.before:rounded-e-full]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.before:from-cyan-400]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.before:to-blue-500]="activeRoute === paths.BILLING_DASHBOARD"
+                    [class.text-slate-300]="activeRoute !== paths.BILLING_DASHBOARD"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.BILLING_DASHBOARD"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.BILLING_DASHBOARD"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.BILLING_DASHBOARD"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.BILLING_DASHBOARD"
+                        [class.text-slate-400]="activeRoute !== paths.BILLING_DASHBOARD"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span>{{ 'MENU.BILLING_DASHBOARD' | translate }}</span>
+                </a>
+            </div>
+
+            <!-- SECTION 4: Documents & GED -->
+            <div class="space-y-1">
+                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    {{ 'MENU.SECTION_DOCUMENTS' | translate }}
+                </p>
+
+                <!-- Modèles & GED -->
+                <a (click)="navigateToModel()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.MODEL"
+                    [class.from-cyan-950/90]="activeRoute === paths.MODEL"
+                    [class.via-slate-800/80]="activeRoute === paths.MODEL"
+                    [class.to-slate-800/40]="activeRoute === paths.MODEL"
+                    [class.text-cyan-200]="activeRoute === paths.MODEL"
+                    [class.border-cyan-500/40]="activeRoute === paths.MODEL"
+                    [class.shadow-sm]="activeRoute === paths.MODEL"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.MODEL"
+                    [class.before:absolute]="activeRoute === paths.MODEL"
+                    [class.before:inset-y-1.5]="activeRoute === paths.MODEL"
+                    [class.before:start-0]="activeRoute === paths.MODEL"
+                    [class.before:w-1.5]="activeRoute === paths.MODEL"
+                    [class.before:rounded-e-full]="activeRoute === paths.MODEL"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.MODEL"
+                    [class.before:from-cyan-400]="activeRoute === paths.MODEL"
+                    [class.before:to-blue-500]="activeRoute === paths.MODEL"
+                    [class.text-slate-300]="activeRoute !== paths.MODEL"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.MODEL"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.MODEL"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.MODEL"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.MODEL"
+                        [class.text-slate-400]="activeRoute !== paths.MODEL"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span>{{ 'MENU.MODEL' | translate }}</span>
+                </a>
+            </div>
+
+            <!-- SECTION 5: Système & Administration -->
+            <div class="space-y-1">
+                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                    {{ 'MENU.SECTION_SYSTEM' | translate }}
+                </p>
+
+                <!-- Administration -->
+                <a (click)="navigateToAdministration()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.ADMINSTRATION"
+                    [class.from-cyan-950/90]="activeRoute === paths.ADMINSTRATION"
+                    [class.via-slate-800/80]="activeRoute === paths.ADMINSTRATION"
+                    [class.to-slate-800/40]="activeRoute === paths.ADMINSTRATION"
+                    [class.text-cyan-200]="activeRoute === paths.ADMINSTRATION"
+                    [class.border-cyan-500/40]="activeRoute === paths.ADMINSTRATION"
+                    [class.shadow-sm]="activeRoute === paths.ADMINSTRATION"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.ADMINSTRATION"
+                    [class.before:absolute]="activeRoute === paths.ADMINSTRATION"
+                    [class.before:inset-y-1.5]="activeRoute === paths.ADMINSTRATION"
+                    [class.before:start-0]="activeRoute === paths.ADMINSTRATION"
+                    [class.before:w-1.5]="activeRoute === paths.ADMINSTRATION"
+                    [class.before:rounded-e-full]="activeRoute === paths.ADMINSTRATION"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.ADMINSTRATION"
+                    [class.before:from-cyan-400]="activeRoute === paths.ADMINSTRATION"
+                    [class.before:to-blue-500]="activeRoute === paths.ADMINSTRATION"
+                    [class.text-slate-300]="activeRoute !== paths.ADMINSTRATION"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.ADMINSTRATION"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.ADMINSTRATION"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.ADMINSTRATION"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.ADMINSTRATION"
+                        [class.text-slate-400]="activeRoute !== paths.ADMINSTRATION"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span>{{ 'MENU.ADMINISTRATION' | translate }}</span>
+                </a>
+            </div>
         </nav>
 
-        <!-- Sidebar Footer / Logout -->
-        <div class="p-4 border-t border-slate-700">
-            <button (click)="logout()" class="w-full flex items-center gap-3 p-3 text-red-400 hover:bg-slate-800 rounded-lg duration-150 cursor-pointer border-0 bg-transparent text-left font-semibold">
-                <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                </svg>
-                <span>{{ 'MENU.LOGOUT' | translate }}</span>
-            </button>
+        <!-- Sidebar Footer / User Profile & Logout -->
+        <div class="p-4 border-t border-slate-800/80 bg-slate-950/60 space-y-3">
+            <!-- User Profile Glass Card -->
+            <div class="flex items-center justify-between gap-3 p-2.5 bg-slate-900/90 rounded-2xl border border-slate-800 shadow-sm">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="relative flex-shrink-0">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 via-sky-600 to-blue-600 text-white font-black text-xs flex items-center justify-center shadow-md shadow-cyan-900/40">
+                            {{ userInitials }}
+                        </div>
+                        <span class="absolute -bottom-0.5 -end-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-900 rounded-full animate-pulse"></span>
+                    </div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-black text-white truncate">{{ username }}</p>
+                        <p class="text-[10px] text-cyan-400 font-semibold truncate">{{ 'MENU.USER_ROLE' | translate }}</p>
+                    </div>
+                </div>
+
+                <!-- Logout Button -->
+                <button (click)="logout()"
+                    class="p-2 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all flex-shrink-0"
+                    [title]="'MENU.LOGOUT' | translate">
+                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Version Tag -->
+            <p class="text-center text-[10px] text-slate-500 font-medium">
+                {{ 'MENU.VERSION' | translate }}
+            </p>
         </div>
     </aside>
 
-    <div class="flex-1 flex flex-col overflow-hidden">
+    <!-- Main Content Area with Elegant Floating Canvas Separation -->
+    <div class="flex-1 flex flex-col overflow-hidden lg:p-3 lg:ps-1.5 bg-slate-900">
         <!-- Mobile Header Bar -->
-        <header class="lg:hidden bg-slate-900 text-white px-6 py-3 flex items-center justify-between border-b border-slate-800 shadow-md z-10">
+        <header class="lg:hidden bg-slate-900 text-white px-4 py-3 flex items-center justify-between border-b border-slate-800 shadow-md z-30 sticky top-0">
             <div class="flex items-center gap-3">
-                <button (click)="isSidebarOpen = true" class="p-2 -ms-2 text-gray-400 hover:text-white focus:outline-none" aria-label="Ouvrir le menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                <button (click)="isSidebarOpen = true"
+                    class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none transition-colors"
+                    [attr.aria-label]="'MENU.OPEN_MENU' | translate">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                 </button>
-                <img src="/logo-app.jpg" alt="SI Legal" class="h-9 w-auto rounded shadow-sm">
+                <img src="/logo-app.jpg" alt="SI Legal" class="h-8 w-auto rounded shadow-sm">
             </div>
-            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 bg-slate-800/80 px-3 py-1 rounded-full border border-slate-700">
-                Cabinet
+            <span class="text-xs font-bold uppercase tracking-wider text-cyan-300 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-800/60">
+                SI-LÉGAL
             </span>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-6 sm:p-10">
+        <!-- Router Outlet Content Canvas with subtle outer shadow and 2xl rounded corners -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 lg:rounded-2xl lg:shadow-2xl lg:border lg:border-slate-800/60 relative">
             <router-outlet></router-outlet>
         </main>
     </div>

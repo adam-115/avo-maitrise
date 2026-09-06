@@ -18,7 +18,17 @@
     "BILLING": "الفواتير",
     "BILLING_DASHBOARD": "لوحة معلومات الفواتير",
     "ADMINISTRATION": "الإدارة",
-    "LOGOUT": "تسجيل الخروج"
+    "LOGOUT": "تسجيل الخروج",
+    "SECTION_CORE": "مساحة العمل الرئيسية",
+    "SECTION_COMPLIANCE": "الامتثال والعناية الواجبة",
+    "SECTION_FINANCE": "المالية والفوترة",
+    "SECTION_DOCUMENTS": "الوثائق وإدارة المستندات",
+    "SECTION_SYSTEM": "النظام والإعدادات",
+    "USER_ROLE": "محامٍ شريك",
+    "CABINET_BADGE": "مكتب المحاماة",
+    "VERSION": "v1.2.0 • نظام إدارة المحاماة",
+    "CLOSE_MENU": "إغلاق القائمة",
+    "OPEN_MENU": "فتح القائمة"
   },
   "BORD": {
     "GREETING": "مرحباً، {{ username }}",
