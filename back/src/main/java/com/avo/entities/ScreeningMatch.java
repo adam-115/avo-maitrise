@@ -71,6 +71,9 @@ public class ScreeningMatch {
     @Column(name = "yente_last_update")
     private String yenteLastUpdate;
 
+    @Column(name = "client_version_at_review")
+    private Long clientVersionAtReview;
+
     public ScreeningMatch() {}
 
     public Long getId() { return id; }
@@ -117,4 +120,7 @@ public class ScreeningMatch {
 
     public String getYenteLastUpdate() { return yenteLastUpdate; }
     public void setYenteLastUpdate(String yenteLastUpdate) { this.yenteLastUpdate = yenteLastUpdate; }
+
+    public Long getClientVersionAtReview() { return clientVersionAtReview; }
+    public void setClientVersionAtReview(Long clientVersionAtReview) { this.clientVersionAtReview = clientVersionAtReview; }
 }

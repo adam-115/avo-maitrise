@@ -152,6 +152,7 @@ export interface Client {
   secteurActivite?: string;
   contacts?: ContactPoint[];
   createdAt?: Date;
+  version?: number;
 }
 
 export interface ClientPersonnePhysique extends Client {
@@ -257,6 +258,8 @@ export enum ScreeningMatchStatus {
   PENDING = 'PENDING',
   FALSE_POSITIVE = 'FALSE_POSITIVE',
   TRUE_POSITIVE = 'TRUE_POSITIVE',
+  TRUE_POSITIVE_SANCTION = 'TRUE_POSITIVE_SANCTION',
+  TRUE_POSITIVE_PEP = 'TRUE_POSITIVE_PEP',
   DILIGENCE_REQUIRED = 'DILIGENCE_REQUIRED',
   NO_LONGER_SANCTIONED = 'NO_LONGER_SANCTIONED'
 }
@@ -296,6 +299,7 @@ export interface ScreeningMatchDTO {
   reviewedAt?: Date | string;
   reviewedBy?: string;
   yenteLastUpdate?: string;
+  clientVersionAtReview?: number;
 }
 
 export enum FormType {

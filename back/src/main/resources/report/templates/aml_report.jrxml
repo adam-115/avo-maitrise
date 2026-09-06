@@ -95,7 +95,7 @@
                 <textElement textAlignment="Right">
                     <font size="8" isItalic="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA["Moteur LCB-FT : OpenSanctions via Yente (Sanctions, PPE & Watchlists)\nDernier contrôle : " + ($P{lastScreeningDate} != null ? $P{lastScreeningDate} : "Contrôle en continu")]]></textFieldExpression>
+                <textFieldExpression><![CDATA["Moteur LCB-FT : Contrôle automatisé continu (Sanctions Internationales, Registres de Gel & PPE)\nDernier contrôle : " + ($P{lastScreeningDate} != null ? $P{lastScreeningDate} : "Contrôle en continu")]]></textFieldExpression>
             </textField>
 
             <!-- KPI BOXES (Y: 115, height: 48) -->

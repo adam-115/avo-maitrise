@@ -1,7 +1,10 @@
 package com.avo.job;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -17,6 +20,8 @@ import com.avo.dtos.ScreeningMatchDTO;
 import com.avo.dtos.UBODTO;
 import com.avo.entities.ClientEntity;
 import com.avo.entities.ScreeningExecutionStatus;
+import com.avo.entities.ScreeningMatch;
+import com.avo.entities.ScreeningMatchStatus;
 import com.avo.mappers.ClientEntityMapper;
 import com.avo.repositories.ClientRepository;
 import com.avo.services.ClientService;
@@ -130,7 +135,7 @@ public class YenteClientVerificationJob {
                 }
 
                 // Set of Yente IDs found in the current check run to track active alerts
-                java.util.Set<String> currentYenteIds = new java.util.HashSet<>();
+                Set<String> currentYenteIds = new HashSet<>();
                 boolean hasMatchAboveThreshold = false;
 
                 // 4. Process screening results if any hits are returned
@@ -155,18 +160,23 @@ public class YenteClientVerificationJob {
                             hasMatchAboveThreshold = true;
                             
                             // Check if this particular match was already identified previously
-                            java.util.Optional<com.avo.entities.ScreeningMatch> lastMatchOpt = screeningMatchRepository
+                         Optional<ScreeningMatch> lastMatchOpt = screeningMatchRepository
                                     .findFirstByClientIdAndYenteIdOrderByCreatedAtDesc(client.getId(), yenteId);
 
                             boolean needsNewMatch = false;
-                            com.avo.entities.ScreeningMatchStatus newStatus = com.avo.entities.ScreeningMatchStatus.PENDING;
+                            ScreeningMatchStatus newStatus = ScreeningMatchStatus.PENDING;
 
                             if (lastMatchOpt.isPresent()) {
-                                com.avo.entities.ScreeningMatch lastMatch = lastMatchOpt.get();
-                                // If the sanction record has been updated at the source, prompt for re-evaluation
-                                if (yenteUpdate != null && !yenteUpdate.equals(lastMatch.getYenteLastUpdate())) {
+                                ScreeningMatch lastMatch = lastMatchOpt.get();
+                                boolean yenteSourceChanged = yenteUpdate != null && !yenteUpdate.equals(lastMatch.getYenteLastUpdate());
+                                boolean clientDataChanged = client.getVersion() != null 
+                                        && lastMatch.getClientVersionAtReview() != null 
+                                        && !client.getVersion().equals(lastMatch.getClientVersionAtReview());
+
+                                // If the sanction record or client entity has been updated, prompt for re-evaluation
+                                if (yenteSourceChanged || clientDataChanged) {
                                     needsNewMatch = true;
-                                    newStatus = com.avo.entities.ScreeningMatchStatus.PENDING;
+                                    newStatus = ScreeningMatchStatus.PENDING;
 
                                     // Resolve representative client name for notifications
                                     String clientName = client.getId().toString();
@@ -174,14 +184,19 @@ public class YenteClientVerificationJob {
                                         clientName = ((com.avo.entities.ClientPersonnePhysique) client).getNom();
                                     } else if (client instanceof com.avo.entities.ClientMoral) {
                                         clientName = ((com.avo.entities.ClientMoral) client).getNomCommercial();
+                                    } else if (client instanceof com.avo.entities.Association) {
+                                        clientName = ((com.avo.entities.Association) client).getNom();
+                                    } else if (client instanceof com.avo.entities.Institution) {
+                                        clientName = ((com.avo.entities.Institution) client).getNom();
                                     }
 
+                                    String reason = clientDataChanged ? "Modification des données du client" : "Mise à jour de la liste de sanctions";
                                     // Save alert notification for the lawyers
                                     notificationRepository.save(new com.avo.entities.Notification(
-                                            "Mise à jour Sanctions",
+                                            "Alerte AML : Ré-évaluation Requise",
                                             "L'entité " + yenteId
-                                                    + " a été mise à jour. Une re-évaluation est requise pour "
-                                                    + clientName,
+                                                    + " nécessite une ré-évaluation pour " + clientName
+                                                    + " (" + reason + ").",
                                             client.getId()));
                                 }
                             } else {
@@ -265,12 +280,12 @@ public class YenteClientVerificationJob {
 
                 // 9. CLEANUP: If a previously logged match is no longer flagged by the Yente API,
                 // mark its status as NO_LONGER_SANCTIONED.
-                java.util.List<com.avo.entities.ScreeningMatch> dbMatches = screeningMatchRepository
+               List<ScreeningMatch> dbMatches = screeningMatchRepository
                         .findByClientId(client.getId());
-                for (com.avo.entities.ScreeningMatch m : dbMatches) {
-                    if (m.getStatus() != com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED
+                for (ScreeningMatch m : dbMatches) {
+                    if (m.getStatus() != ScreeningMatchStatus.NO_LONGER_SANCTIONED
                             && !currentYenteIds.contains(m.getYenteId())) {
-                        m.setStatus(com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED);
+                        m.setStatus(ScreeningMatchStatus.NO_LONGER_SANCTIONED);
                         screeningMatchRepository.save(m);
                     }
                 }

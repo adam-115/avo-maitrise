@@ -89,7 +89,7 @@
                 <textElement textAlignment="Right">
                     <font size="8" isItalic="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA["Moteur LCB-FT : OpenSanctions via Yente (Sanctions, PPE & Watchlists)\nDernier criblage d'alertes : " + ($P{lastScreeningDate} != null ? $P{lastScreeningDate} : "Contrôle en continu")]]></textFieldExpression>
+                <textFieldExpression><![CDATA["Moteur LCB-FT : Contrôle automatisé continu (Sanctions Internationales, Registres de Gel & PPE)\nDernier criblage d'alertes : " + ($P{lastScreeningDate} != null ? $P{lastScreeningDate} : "Contrôle en continu")]]></textFieldExpression>
             </textField>
 
             <!-- Box: Client Profile (Y: 110, height: 110) -->
@@ -161,14 +161,14 @@
                 <textFieldExpression><![CDATA[$P{clientStatus} != null ? $P{clientStatus} : "EN ATTENTE"]]></textFieldExpression>
             </textField>
 
-            <!-- Box 2: Niveau Risque Yente -->
+            <!-- Box 2: Niveau Risque Score Max -->
             <rectangle radius="6">
                 <reportElement x="182" y="258" width="170" height="50" backcolor="#FFF1F2" uuid="10000000-0000-0000-0000-000000000022"/>
                 <graphicElement><pen lineWidth="0.5" lineColor="#FECDD3"/></graphicElement>
             </rectangle>
             <staticText>
                 <reportElement style="KpiTitle" x="192" y="265" width="150" height="12" forecolor="#BE123C" uuid="10000000-0000-0000-0000-000000000023"/>
-                <text><![CDATA[SCORE RISQUE YENTE MAX]]></text>
+                <text><![CDATA[SCORE SIMILARITÉ MAXIMAL]]></text>
             </staticText>
             <textField textAdjust="StretchHeight">
                 <reportElement style="KpiValue" x="192" y="280" width="150" height="20" forecolor="#9F1239" uuid="10000000-0000-0000-0000-000000000024"/>
@@ -222,7 +222,7 @@
             <staticText>
                 <reportElement x="386" y="3" width="75" height="14" forecolor="#334155" uuid="20000000-0000-0000-0000-000000000005"/>
                 <textElement><font size="8" isBold="true"/></textElement>
-                <text><![CDATA[RISQUE YENTE]]></text>
+                <text><![CDATA[SCORE RISQUE]]></text>
             </staticText>
             <staticText>
                 <reportElement x="465" y="3" width="65" height="14" forecolor="#334155" uuid="20000000-0000-0000-0000-000000000006"/>
@@ -275,7 +275,7 @@
             <textField textAdjust="StretchHeight">
                 <reportElement style="Base" x="0" y="10" width="400" height="20" forecolor="#94A3B8" uuid="50000000-0000-0000-0000-000000000002"/>
                 <textElement><font size="7"/></textElement>
-                <textFieldExpression><![CDATA["Fiche individuelle d'audit LCB-FT générée de manière sécurisée et confidentielle - Avo-Maitrise\nLes vérifications (Sanctions, PEP) ont été réalisées le " + new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(new java.util.Date()) + " via les données de OpenSanctions (fournisseur Yente)."]]></textFieldExpression>
+                <textFieldExpression><![CDATA["Fiche individuelle d'audit LCB-FT générée de manière sécurisée et confidentielle - Avo-Maitrise\nLes vérifications (Sanctions, PEP) ont été réalisées le " + new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm").format(new java.util.Date()) + " via les registres officiels étatiques et internationaux (DG Trésor, OFAC, UE, ONU, SECO)."]]></textFieldExpression>
             </textField>
             <textField textAdjust="StretchHeight">
                 <reportElement style="Base" x="430" y="10" width="100" height="14" forecolor="#64748B" uuid="50000000-0000-0000-0000-000000000003"/>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Step 1: Add version column to clients table if not exists -->
+    <changeSet id="add-version-to-clients" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="clients" columnName="version"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="clients">
+            <column name="version" type="BIGINT" defaultValueNumeric="1">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Step 2: Add client_version_at_review to screening_matches table if not exists -->
+    <changeSet id="add-client-version-at-review-to-screening-matches" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="screening_matches" columnName="client_version_at_review"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="screening_matches">
+            <column name="client_version_at_review" type="BIGINT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

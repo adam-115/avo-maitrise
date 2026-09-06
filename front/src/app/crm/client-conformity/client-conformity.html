@@ -1,34 +1,34 @@
 @if (client) {
 <div class="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 font-sans min-h-full">
   
-  <!-- En-tête Principal avec Titre & Actions Rapides -->
-  <div class="bg-white rounded-2xl p-6 sm:p-7 border border-slate-200 shadow-sm relative overflow-hidden">
-    <!-- Accent gradient bar -->
-    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-cyan-500 to-blue-600"></div>
+  <!-- ================= EN-TÊTE PRINCIPAL HERO ================= -->
+  <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-sm relative overflow-hidden">
+    <!-- Barre de dégradé supérieur -->
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-cyan-500 to-emerald-500"></div>
 
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
       
-      <!-- Titre & Contexte Client -->
-      <div class="flex items-start sm:items-center gap-3.5">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-cyan-500 text-white flex items-center justify-center font-black text-lg shadow-md shadow-indigo-100 flex-shrink-0">
+      <!-- Titre & Identité Client -->
+      <div class="flex items-start sm:items-center gap-4">
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-cyan-600 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-indigo-600/20 flex-shrink-0">
           {{ getDisplayName(client).charAt(0) }}
         </div>
         <div>
           <!-- Fil d'Ariane -->
-          <nav class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
-            <a routerLink="/contacts" class="hover:text-indigo-600 transition-colors">CRM</a> 
-            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            <span class="text-slate-800">{{ 'CLIENT_CONFORMITY.CLIENT_DETAILS' | translate }}</span>
+          <nav class="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">
+            <a routerLink="/contacts" class="hover:text-indigo-600 transition-colors">CRM Clients</a> 
+            <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <span class="text-slate-800">Conformité LCB-FT & AML</span>
           </nav>
           
-          <div class="flex items-center gap-2.5 flex-wrap">
+          <div class="flex items-center gap-3 flex-wrap">
             <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
               {{ getDisplayName(client) }}
             </h1>
-            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200/80">
-              ID: #{{ client.id }}
+            <span class="px-2.5 py-0.5 rounded-lg text-xs font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200">
+              #{{ client.id }}
             </span>
-            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold border"
+            <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold border shadow-2xs"
               [ngClass]="{
                 'bg-blue-50 text-blue-700 border-blue-200': client.type === 'PERSONNE',
                 'bg-purple-50 text-purple-700 border-purple-200': client.type === 'SOCIETE',
@@ -37,45 +37,48 @@
               }">
               {{ client.type }}
             </span>
+            <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold font-mono bg-indigo-50 text-indigo-700 border border-indigo-200" title="Version des données pour l'invalidation automatique des faux positifs">
+              v{{ client.version || 1 }}
+            </span>
           </div>
         </div>
       </div>
 
-      <!-- Actions Boutons -->
+      <!-- Actions Rapides -->
       <div class="flex flex-wrap items-center gap-2.5">
         
-        <!-- Vérification AML -->
+        <!-- Bouton Vérification AML Yente -->
         <button type="button" (click)="triggerClientVerification()" [disabled]="isVerifying"
-          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 border-2 border-emerald-200 hover:bg-emerald-100 transition-all shadow-xs disabled:opacity-50 cursor-pointer">
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 border-2 border-emerald-300 hover:bg-emerald-100 transition-all shadow-xs disabled:opacity-50 cursor-pointer">
           @if(isVerifying) {
             <div class="w-3.5 h-3.5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-            <span>Vérification...</span>
+            <span>Vérification en cours...</span>
           } @else {
             <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span>Vérification AML</span>
+            <span>Vérifier AML (Yente)</span>
           }
         </button>
 
-        <!-- Dossier LCB-FT -->
+        <!-- Bouton Dossier LCB-FT -->
         <button type="button" (click)="startDueDiligence()" [disabled]="isAmlLoading"
-          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-700 hover:to-cyan-600 text-white shadow-md shadow-indigo-100 hover:shadow-indigo-200 transition-all disabled:opacity-50 cursor-pointer">
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 text-white shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 transition-all disabled:opacity-50 cursor-pointer">
           @if(isAmlLoading) {
             <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
             <span>Analyse...</span>
           } @else {
             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-            <span>Dossier LCB-FT</span>
+            <span>Dossier Diligences</span>
           }
         </button>
 
-        <!-- PDF Audit -->
+        <!-- Bouton Fiche Audit PDF -->
         <button type="button" (click)="openReportModal()"
           class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold shadow-sm transition-all cursor-pointer">
           <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-          <span>PDF Audit</span>
+          <span>Fiche Audit PDF</span>
         </button>
 
-        <!-- Modifier -->
+        <!-- Bouton Modifier Fiche Client -->
         <button type="button" (click)="editClient()"
           class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 bg-white border-2 border-slate-300 hover:border-indigo-500 hover:text-indigo-600 transition-all shadow-xs cursor-pointer">
           <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
@@ -86,237 +89,393 @@
     </div>
   </div>
 
-  <!-- Grille Principale : 1/3 (Infos & Profil) et 2/3 (Analyses Sanctions & Historique) -->
-  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-    
-    <!-- COLONNE GAUCHE (1/3) -->
-    <div class="lg:col-span-4 xl:col-span-4 space-y-6">
-      
-      <!-- Carte Statut AML -->
-      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm relative overflow-hidden">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg border border-indigo-100">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          </span>
-          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900">Statut AML de Conformité</h3>
-        </div>
-
-        <div class="space-y-4">
-          <div class="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200/80 flex items-center justify-between">
-            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">État Actuel</span>
-            <span class="px-3 py-1 rounded-full text-xs font-bold border shadow-xs" [ngClass]="{
-              'bg-emerald-50 text-emerald-800 border-emerald-200': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
-              'bg-amber-50 text-amber-800 border-amber-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
-              'bg-rose-50 text-rose-800 border-rose-200': client.clientStatus === 'BLOCKED',
-              'bg-indigo-50 text-indigo-800 border-indigo-200': client.clientStatus?.startsWith('INDULGENCE')
-            }">{{ client.clientStatus?.replace('_', ' ') }}</span>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Changer de Statut</label>
-            <div class="relative">
-              <select [ngModel]="client.clientStatus" (ngModelChange)="onStatusChange($event)"
-                class="w-full ps-3.5 pe-8 py-2.5 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 outline-none font-semibold text-xs text-slate-800 shadow-sm transition-all cursor-pointer appearance-none">
-                @for (status of clientStatuses; track status) {
-                  <option [value]="status">{{ status.replace('_', ' ') }}</option>
-                }
-              </select>
-              <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Profil de Risque Circulaire -->
-      <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm flex items-center gap-4">
-        <div class="relative w-16 h-16 shrink-0 flex items-center justify-center">
-          <svg class="w-full h-full" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f5f9" stroke-width="8"/>
-            <circle cx="50" cy="50" r="45" fill="none" 
-              [attr.stroke]="getHighestMatchScore() >= 0.8 ? '#f43f5e' : (getHighestMatchScore() >= 0.5 ? '#f59e0b' : '#10b981')" 
-              stroke-width="8" stroke-linecap="round"
-              class="transition-all duration-1000"
-              [attr.stroke-dasharray]="282.7"
-              [attr.stroke-dashoffset]="282.7 * (1 - getHighestMatchScore())"/>
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span class="text-sm font-black text-slate-900 leading-none">{{ (getHighestMatchScore() * 100).toFixed(0) }}%</span>
-          </div>
+  <!-- ================= BANNIÈRE D'ALERTE DE MODIFICATION CLIENT (VERSION DRIFT) ================= -->
+  @if (isClientModifiedSinceLastReview) {
+    <div class="p-4 sm:p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm animate-in fade-in duration-200">
+      <div class="flex items-start gap-3">
+        <div class="p-2 bg-amber-100 rounded-xl text-amber-700 shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
         </div>
         <div>
-          <p class="text-xs font-black text-slate-900 leading-tight mb-0.5">
-            {{ getHighestMatchScore() >= 0.5 ? 'Risque Détecté' : 'Profil Conforme' }}
-          </p>
-          <p class="text-[11px] font-medium text-slate-500 leading-tight">
-            {{ getHighestMatchScore() >= 0.5 ? 'Analyse manuelle de sanctions requise.' : 'Aucun hit critique trouvé.' }}
+          <h3 class="text-xs font-black uppercase tracking-wider text-amber-900">Données Client Modifiées (Version v{{ client.version || 1 }})</h3>
+          <p class="text-xs text-amber-800 font-medium mt-0.5">
+            Les informations de ce client ont changé depuis la dernière revue de conformité. Les anciens statuts « Faux Positifs » doivent être réévalués pour garantir la conformité réglementaire.
           </p>
         </div>
       </div>
+      <button type="button" (click)="triggerClientVerification()" [disabled]="isVerifying"
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black bg-amber-600 hover:bg-amber-700 text-white shadow-sm transition-all shrink-0 cursor-pointer">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        <span>Relancer le Screening Immédiat</span>
+      </button>
+    </div>
+  }
 
-      <!-- Coordonnées, Documents & UBOs -->
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div class="p-5 space-y-4">
-          
-          <!-- Contact Info -->
-          <div class="space-y-2.5">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Coordonnées</h4>
-            
-            <div class="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100 flex items-center gap-2.5">
-              <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              <a [href]="'mailto:' + client.email" class="text-xs font-bold text-slate-800 hover:text-indigo-600 transition-colors truncate">
-                {{ client.email || 'Email non renseigné' }}
-              </a>
-            </div>
-
-            <div class="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100 flex items-center gap-2.5">
-              <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              <span class="text-xs font-bold text-slate-800 truncate">
-                {{ client.paysResidance || client.pays || 'International' }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Documents -->
-          <div class="pt-4 border-t border-slate-100">
-            <div class="flex items-center justify-between mb-3">
-              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Documents</h4>
-              <div class="flex items-center gap-1.5">
-                <span class="text-[11px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">{{ client.documents?.length || 0 }}</span>
-                <button type="button" (click)="openAddDocumentDialog()" [title]="'Ajouter un document'" class="p-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-indigo-600 hover:text-white transition-all cursor-pointer">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                </button>
-              </div>
-            </div>
-
-            <div class="space-y-1.5">
-              @for (doc of client.documents; track doc.id) {
-                <div class="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-100 transition-all flex items-center justify-between group">
-                  <div class="flex items-center gap-2 min-w-0">
-                    <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                    <p class="text-xs font-bold text-slate-700 truncate">{{ doc.title || doc.label || doc.nomFichier }}</p>
-                  </div>
-                  <button type="button" (click)="downloadDocument(doc)" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors shrink-0 cursor-pointer" title="Télécharger">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                  </button>
-                </div>
-              }
-              @if (!client.documents || client.documents.length === 0) {
-                <p class="text-xs text-slate-400 font-medium italic">Aucun document rattaché.</p>
-              }
-            </div>
-          </div>
-
-          <!-- UBOs -->
-          @if (client.type === 'SOCIETE' && client.ubos && client.ubos.length > 0) {
-          <div class="pt-4 border-t border-slate-100">
-            <div class="flex items-center justify-between mb-3">
-              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Bénéficiaires Effectifs (UBOs)</h4>
-              <span class="text-[11px] font-bold text-purple-700 bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full">{{ client.ubos.length }}</span>
-            </div>
-            <div class="space-y-2">
-              @for (ubo of client.ubos; track ubo.id) {
-                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <div class="flex justify-between items-start mb-1">
-                    <span class="text-xs font-black text-slate-900 truncate pr-2">{{ ubo.fullName }}</span>
-                    <span class="text-xs font-black text-purple-600 shrink-0">{{ ubo.percentageOfOwnership }}%</span>
-                  </div>
-                  <div class="flex justify-between items-center">
-                    <span class="text-[11px] font-medium text-slate-500 uppercase">{{ ubo.roleInCompany || 'Actionnaire' }}</span>
-                    @if (ubo.amlAnalysisStatus) {
-                      <span [class]="'px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ' + 
-                        (ubo.amlAnalysisStatus === 'OK' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 
-                         ubo.amlAnalysisStatus === 'SUSPECT' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 
-                         ubo.amlAnalysisStatus === 'BLOCKED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-600 border border-slate-200')">
-                        {{ ubo.amlAnalysisStatus }}
-                      </span>
-                    }
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
-          }
-          
-          <!-- Contacts Associés -->
-          @if (client.contacts && client.contacts.length > 0) {
-          <div class="pt-4 border-t border-slate-100">
-            <div class="flex items-center justify-between mb-3">
-              <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Contacts</h4>
-              <span class="text-[11px] font-bold text-cyan-700 bg-cyan-50 border border-cyan-100 px-2 py-0.5 rounded-full">{{ client.contacts.length }}</span>
-            </div>
-            <div class="space-y-2">
-              @for (contact of client.contacts; track contact.id) {
-                <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <div class="mb-1">
-                    <p class="text-xs font-black text-slate-900">{{ contact.prenom }} {{ contact.nom }}</p>
-                    <p class="text-[10px] font-semibold text-slate-400 uppercase">{{ contact.occupation || 'Contact' }}</p>
-                  </div>
-                  @if (contact.email) {
-                  <a [href]="'mailto:' + contact.email" class="text-xs font-medium text-slate-600 hover:text-cyan-600 transition-colors flex items-center gap-1.5 truncate">
-                    <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    <span class="truncate">{{ contact.email }}</span>
-                  </a>
-                  }
-                </div>
-              }
-            </div>
-          </div>
-          }
+  <!-- ================= 4 CARTES KPIS DE CONFORMITÉ ================= -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+    
+    <!-- KPI 1 : Niveau de Risque Global -->
+    <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex items-center gap-4">
+      <div class="relative w-14 h-14 shrink-0 flex items-center justify-center">
+        <svg class="w-full h-full" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="#f1f5f9" stroke-width="8"/>
+          <circle cx="50" cy="50" r="42" fill="none" 
+            [attr.stroke]="getHighestMatchScore() >= 0.8 ? '#f43f5e' : (getHighestMatchScore() >= 0.5 ? '#f59e0b' : '#10b981')" 
+            stroke-width="8" stroke-linecap="round"
+            class="transition-all duration-1000"
+            [attr.stroke-dasharray]="263.9"
+            [attr.stroke-dashoffset]="263.9 * (1 - getHighestMatchScore())"/>
+        </svg>
+        <div class="absolute inset-0 flex flex-col items-center justify-center">
+          <span class="text-xs font-black text-slate-900 leading-none">{{ (getHighestMatchScore() * 100).toFixed(0) }}%</span>
         </div>
+      </div>
+      <div>
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Score de Risque AML</span>
+        <span class="text-xs font-black px-2 py-0.5 rounded-md inline-block" [ngClass]="riskLevel.badgeClass">
+          {{ riskLevel.label }}
+        </span>
       </div>
     </div>
 
-    <!-- COLONNE DROITE (2/3) : Table Sanctions & Timeline -->
-    <div class="lg:col-span-8 xl:col-span-8 space-y-6">
+    <!-- KPI 2 : Statut LCB-FT Actuel -->
+    <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex flex-col justify-between">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Statut Dossier LCB-FT</span>
+        <span class="w-2.5 h-2.5 rounded-full" [ngClass]="{
+          'bg-emerald-500': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
+          'bg-amber-500': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
+          'bg-rose-500': client.clientStatus === 'BLOCKED',
+          'bg-indigo-500': client.clientStatus?.startsWith('INDULGENCE')
+        }"></span>
+      </div>
+      <div class="mt-2">
+        <span class="px-3 py-1 rounded-xl text-xs font-black border shadow-2xs inline-block" [ngClass]="{
+          'bg-emerald-50 text-emerald-800 border-emerald-200': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
+          'bg-amber-50 text-amber-800 border-amber-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'VERIFICATION_AML_REQUIRED',
+          'bg-rose-50 text-rose-800 border-rose-200': client.clientStatus === 'BLOCKED',
+          'bg-indigo-50 text-indigo-800 border-indigo-200': client.clientStatus?.startsWith('INDULGENCE')
+        }">{{ client.clientStatus?.replace('_', ' ') }}</span>
+      </div>
+    </div>
+
+    <!-- KPI 3 : Correspondances & Triage -->
+    <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex flex-col justify-between">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Triage des Alertes</span>
+        <span class="text-xs font-mono font-bold text-slate-500">{{ latestMatches.length }} détection(s)</span>
+      </div>
+      <div class="flex items-center gap-2 mt-2">
+        <span class="px-2.5 py-1 rounded-lg text-xs font-black bg-amber-50 text-amber-800 border border-amber-200">
+          {{ pendingMatchesCount }} en attente
+        </span>
+        <span class="px-2.5 py-1 rounded-lg text-xs font-black bg-emerald-50 text-emerald-800 border border-emerald-200">
+          {{ falsePositivesCount }} écarté(s)
+        </span>
+      </div>
+    </div>
+
+    <!-- KPI 4 : Pièces & UBOs -->
+    <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xs flex flex-col justify-between">
+      <div class="flex items-center justify-between">
+        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Diligences KYC</span>
+        <span class="text-xs font-bold text-indigo-600 font-mono">{{ client.documents?.length || 0 }} document(s)</span>
+      </div>
+      <div class="flex items-center justify-between mt-2">
+        <span class="text-xs font-bold text-slate-700">
+          {{ client.type === 'SOCIETE' ? ((client.ubos?.length || 0) + ' UBO(s) rattaché(s)') : 'Personne Physique' }}
+        </span>
+        <button type="button" (click)="openAddDocumentDialog()" class="p-1 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all text-xs font-bold cursor-pointer" title="Ajouter un document">
+          + Doc
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= GRILLE PRINCIPALE (1/3 GAUCHE - 2/3 DROITE) ================= -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- ================= COLONNE GAUCHE (1/3) : IDENTITÉ, STATUT, DOCUMENTS & UBOS ================= -->
+    <div class="lg:col-span-4 xl:col-span-4 space-y-6">
       
-      <!-- Table des Correspondances de Sanctions -->
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-        <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/60">
-          <div>
-            <h2 class="text-base font-black text-slate-900 tracking-tight">Analyse des Correspondances Sanctions</h2>
-            <p class="text-xs font-medium text-slate-500 mt-0.5">Vérification temps réel via OpenSanctions & Yente</p>
+      <!-- Sélecteur de Statut Manuel -->
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </span>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900">Gestion Manuelle du Statut</h3>
           </div>
-          <div class="flex items-center gap-2 w-full sm:w-auto">
-            <div class="flex-1 sm:flex-none flex items-center gap-2 bg-white px-3 py-2 rounded-xl border-2 border-slate-300 hover:border-slate-400 transition-colors">
-              <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-              <input type="date" [(ngModel)]="matchDateFilter" class="text-xs font-semibold border-none focus:ring-0 bg-transparent p-0 w-full sm:w-28 text-slate-700 outline-none">
+          @if (pendingMatchesCount > 0) {
+            <span class="text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-full">
+              Triage requis
+            </span>
+          }
+        </div>
+
+        <!-- Avertissement Triage Obligatoire -->
+        @if (pendingMatchesCount > 0) {
+          <div class="p-3 bg-amber-50/90 rounded-xl border border-amber-200 text-amber-900 text-xs space-y-1.5">
+            <div class="flex items-center gap-1.5 font-bold text-amber-800">
+              <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              <span>{{ pendingMatchesCount }} alerte(s) non traitée(s)</span>
             </div>
-            <button type="button" (click)="loadAmlHistory(client.id?.toString()!)" class="p-2 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shrink-0 cursor-pointer shadow-xs" title="Actualiser l'historique">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            <p class="text-[11px] leading-relaxed text-amber-700">
+              L'instruction de toutes les alertes (Faux Positifs, PPE, Sanctions) est obligatoire avant toute validation manuelle de conformité.
+            </p>
+            <button type="button" (click)="scrollToMatches()" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 underline inline-flex items-center gap-1 cursor-pointer">
+              Qualifier les correspondances &darr;
+            </button>
+          </div>
+        }
+
+        @if (hasActiveSanction) {
+          <div class="p-3 bg-rose-50/90 rounded-xl border border-rose-200 text-rose-900 text-xs space-y-1">
+            <div class="flex items-center gap-1.5 font-bold text-rose-800">
+              <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+              <span>Alerte Sanction Confirmée</span>
+            </div>
+            <p class="text-[11px] leading-relaxed text-rose-700">
+              Ce dossier fait l'objet d'une sanction financière active. La validation du statut est verrouillée par la conformité LCB-FT.
+            </p>
+          </div>
+        }
+        
+        <div class="relative">
+          <select [ngModel]="client.clientStatus" (ngModelChange)="onStatusChange($event)"
+            class="w-full ps-3.5 pe-8 py-2.5 bg-white border-2 border-slate-300 hover:border-slate-400 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 outline-none font-semibold text-xs text-slate-800 shadow-sm transition-all cursor-pointer appearance-none">
+            @for (status of clientStatuses; track status) {
+              <option [value]="status">{{ status.replace('_', ' ') }}</option>
+            }
+          </select>
+          <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coordonnées & Données Identité -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-5 space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Coordonnées & Juridiction</h4>
+          <span class="text-[11px] font-bold text-slate-400">ID: #{{ client.id }}</span>
+        </div>
+        
+        <div class="space-y-2.5">
+          <div class="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100 flex items-center gap-2.5">
+            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <a [href]="'mailto:' + client.email" class="text-xs font-bold text-slate-800 hover:text-indigo-600 transition-colors truncate">
+              {{ client.email || 'Email non renseigné' }}
+            </a>
+          </div>
+
+          <div class="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100 flex items-center gap-2.5">
+            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span class="text-xs font-bold text-slate-800 truncate">
+              {{ getClientCountry(client) }}
+            </span>
+          </div>
+
+          @if (getClientRegistration(client)) {
+            <div class="p-2.5 bg-slate-50/80 rounded-xl border border-slate-100 flex items-center justify-between text-xs font-bold text-slate-700">
+              <span class="text-slate-400 uppercase text-[10px]">Identifiant Légal :</span>
+              <span class="font-mono">{{ getClientRegistration(client) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Bénéficiaires Effectifs (UBOs) -->
+      @if (client.type === 'SOCIETE' && client.ubos && client.ubos.length > 0) {
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-5 space-y-3">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Bénéficiaires Effectifs (UBOs)</h4>
+            <span class="text-[11px] font-bold text-purple-700 bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full">{{ client.ubos.length }}</span>
+          </div>
+          
+          <div class="space-y-2">
+            @for (ubo of client.ubos; track ubo.id) {
+              <div class="p-3 bg-purple-50/40 rounded-xl border border-purple-100 flex items-center justify-between">
+                <div>
+                  <p class="text-xs font-bold text-slate-900">{{ ubo.fullName }}</p>
+                  <p class="text-[11px] font-medium text-slate-500">{{ ubo.roleInCompany || 'Bénéficiaire' }} {{ ubo.percentageOfOwnership ? '• ' + ubo.percentageOfOwnership + '%' : '' }}</p>
+                </div>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md"
+                  [ngClass]="ubo.amlAnalysisStatus === 'SUSPECT' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'">
+                  {{ ubo.amlAnalysisStatus || 'CONFORME' }}
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Documents & Justificatifs KYC -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-5 space-y-3">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Documents KYC & Justificatifs</h4>
+          <div class="flex items-center gap-1.5">
+            <span class="text-[11px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-full">{{ client.documents?.length || 0 }}</span>
+            <button type="button" (click)="openAddDocumentDialog()" title="Ajouter un document" class="p-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-indigo-600 hover:text-white transition-all cursor-pointer">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             </button>
           </div>
         </div>
 
+        <div class="space-y-1.5">
+          @for (doc of client.documents; track doc.id) {
+            <div class="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100/80 border border-slate-100 transition-all flex items-center justify-between group">
+              <div class="flex items-center gap-2 min-w-0">
+                <svg class="w-3.5 h-3.5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                <p class="text-xs font-bold text-slate-700 truncate">{{ doc.title || doc.label || doc.nomFichier }}</p>
+              </div>
+              <button type="button" (click)="downloadDocument(doc)" class="p-1 text-slate-400 hover:text-indigo-600 transition-colors shrink-0 cursor-pointer" title="Télécharger">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              </button>
+            </div>
+          }
+          @if (!client.documents || client.documents.length === 0) {
+            <p class="text-xs text-slate-400 font-medium italic">Aucun document rattaché.</p>
+          }
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ================= COLONNE DROITE (2/3) : CORRESPONDANCES & JOURNAL D'AUDIT ================= -->
+    <div class="lg:col-span-8 xl:col-span-8 space-y-6">
+      
+      <!-- ================= TABLEAU DES CORRESPONDANCES SANCTIONS AVEC ONGLETS DE FILTRAGE ================= -->
+      <div id="matches-section" class="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col">
+        
+        <!-- En-tête du Tableau avec Onglets de Filtrage -->
+        <div class="p-5 border-b border-slate-100 bg-slate-50/70 space-y-4">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <div class="flex items-center gap-2.5">
+                <h2 class="text-base font-black text-slate-900 tracking-tight">Analyse & Triage des Alertes Sanctions</h2>
+                @if (pendingMatchesCount > 0) {
+                  <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-500 text-white shadow-xs animate-pulse">
+                    {{ pendingMatchesCount }} à traiter
+                  </span>
+                }
+              </div>
+              <p class="text-xs font-medium text-slate-500 mt-0.5">Filtrage automatisé via les registres officiels étatiques & bases réglementaires LCB-FT</p>
+            </div>
+
+            <!-- Action collective Faux Positifs -->
+            @if (pendingMatchesCount > 0) {
+              <button type="button" (click)="dismissAllAsFalsePositive()"
+                class="inline-flex items-center gap-1.5 px-3.5 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-2 border-emerald-300 rounded-xl text-xs font-black transition-all shadow-xs cursor-pointer">
+                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>Tout écarter (Faux Positifs)</span>
+              </button>
+            }
+          </div>
+
+          <!-- Onglets de Triage Rapide -->
+          <div class="flex items-center justify-between gap-3 flex-wrap pt-2 border-t border-slate-200/70">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button type="button" (click)="matchStatusFilter = 'ALL'"
+                [class.bg-slate-900]="matchStatusFilter === 'ALL'"
+                [class.text-white]="matchStatusFilter === 'ALL'"
+                [class.bg-white]="matchStatusFilter !== 'ALL'"
+                [class.text-slate-700]="matchStatusFilter !== 'ALL'"
+                class="px-3 py-1.5 rounded-xl border text-xs font-bold transition-all shadow-2xs cursor-pointer">
+                Toutes ({{ latestMatches.length }})
+              </button>
+
+              <button type="button" (click)="matchStatusFilter = 'PENDING'"
+                [class.bg-amber-600]="matchStatusFilter === 'PENDING'"
+                [class.text-white]="matchStatusFilter === 'PENDING'"
+                [class.bg-white]="matchStatusFilter !== 'PENDING'"
+                [class.text-amber-800]="matchStatusFilter !== 'PENDING'"
+                class="px-3 py-1.5 rounded-xl border border-amber-300 text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+                <span>En attente ({{ pendingMatchesCount }})</span>
+              </button>
+
+              <button type="button" (click)="matchStatusFilter = 'FALSE_POSITIVE'"
+                [class.bg-emerald-600]="matchStatusFilter === 'FALSE_POSITIVE'"
+                [class.text-white]="matchStatusFilter === 'FALSE_POSITIVE'"
+                [class.bg-white]="matchStatusFilter !== 'FALSE_POSITIVE'"
+                [class.text-emerald-800]="matchStatusFilter !== 'FALSE_POSITIVE'"
+                class="px-3 py-1.5 rounded-xl border border-emerald-300 text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Faux Positifs ({{ falsePositivesCount }})</span>
+              </button>
+
+              <button type="button" (click)="matchStatusFilter = 'TRUE_POSITIVE'"
+                [class.bg-rose-600]="matchStatusFilter === 'TRUE_POSITIVE'"
+                [class.text-white]="matchStatusFilter === 'TRUE_POSITIVE'"
+                [class.bg-white]="matchStatusFilter !== 'TRUE_POSITIVE'"
+                [class.text-rose-800]="matchStatusFilter !== 'TRUE_POSITIVE'"
+                class="px-3 py-1.5 rounded-xl border border-rose-300 text-xs font-bold transition-all shadow-2xs cursor-pointer flex items-center gap-1">
+                <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                <span>Vrais Positifs ({{ truePositivesCount }})</span>
+              </button>
+            </div>
+
+            <!-- Barre de Recherche & Date -->
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-xl border border-slate-300 shadow-2xs">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                <input type="text" [(ngModel)]="searchQuery" placeholder="Rechercher cible ou ID..." class="text-xs font-medium border-none focus:ring-0 bg-transparent p-0 w-32 sm:w-40 text-slate-700 outline-none">
+              </div>
+
+              <button type="button" (click)="loadAmlHistory(client.id?.toString()!)" class="p-2 bg-indigo-50 border border-indigo-100 text-indigo-600 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shrink-0 cursor-pointer shadow-2xs" title="Actualiser les alertes">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Table des Résultats -->
         <div class="overflow-x-auto">
           @if (getFilteredMatches().length > 0) {
             <table class="w-full text-left border-collapse whitespace-nowrap">
-              <thead class="bg-slate-50/80 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <thead class="bg-slate-50/90 border-b border-slate-200 text-[11px] font-black text-slate-500 uppercase tracking-wider">
                 <tr>
-                  <th class="px-5 py-3.5">Entité & Yente ID</th>
-                  <th class="px-5 py-3.5">Cible</th>
-                  <th class="px-5 py-3.5 text-center">Score</th>
-                  <th class="px-5 py-3.5">Statut Décision</th>
-                  <th class="px-5 py-3.5 text-right">Actions</th>
+                  <th class="px-5 py-3.5">Cible & Registre Officiel</th>
+                  <th class="px-5 py-3.5">Entité Rattachée</th>
+                  <th class="px-5 py-3.5 text-center">Score Similarité</th>
+                  <th class="px-5 py-3.5">Décision de Qualification</th>
+                  <th class="px-5 py-3.5 text-right">Action Triage</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-slate-100">
+              <tbody class="divide-y divide-slate-100 text-xs">
                 @for (match of paginatedMatches; track match.id) {
-                  <tr class="hover:bg-slate-50/70 transition-colors group">
+                  <tr class="hover:bg-slate-50/80 transition-colors group">
                     <td class="px-5 py-3.5">
-                      <div class="text-xs font-bold text-slate-900">{{ getTargetName(match) }}</div>
-                      <a href="https://www.opensanctions.org/entities/{{match.yenteId}}" target="_blank" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 mt-0.5 inline-flex items-center gap-1">
-                        ID: {{ match.yenteId }} <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                      </a>
+                      <div class="font-black text-slate-900">{{ getTargetName(match) }}</div>
+                      <div class="flex items-center gap-1.5 mt-1">
+                        <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">
+                          ID: {{ match.yenteId }}
+                        </span>
+                        @if (getOfficialProviderForMatch(match).url) {
+                          <a [href]="getOfficialProviderForMatch(match).url" target="_blank"
+                            class="text-[10px] font-bold px-2 py-0.5 rounded-lg border inline-flex items-center gap-1 transition-colors shadow-2xs"
+                            [ngClass]="getOfficialProviderForMatch(match).badgeClass">
+                            <span>{{ getOfficialProviderForMatch(match).name }}</span>
+                            <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                          </a>
+                        } @else {
+                          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-lg border" [ngClass]="getOfficialProviderForMatch(match).badgeClass">
+                            {{ getOfficialProviderForMatch(match).name }}
+                          </span>
+                        }
+                      </div>
                     </td>
-                    <td class="px-5 py-3.5 text-xs font-semibold text-slate-700">
-                      {{ match.uboDTO ? match.uboDTO.fullName : 'Client Principal' }}
+
+                    <td class="px-5 py-3.5 font-semibold text-slate-700">
+                      <span class="px-2 py-1 bg-slate-100 rounded-lg text-slate-800 text-xs font-bold">
+                        {{ match.uboDTO ? match.uboDTO.fullName : 'Client Principal' }}
+                      </span>
                     </td>
+
                     <td class="px-5 py-3.5 text-center">
                       <span class="inline-block px-2.5 py-1 rounded-lg text-xs font-black shadow-xs" [ngClass]="{
                         'bg-rose-500 text-white': match.score! >= 0.8,
@@ -324,53 +483,62 @@
                         'bg-emerald-500 text-white': match.score! < 0.5
                       }">{{ (match.score! * 100).toFixed(0) }}%</span>
                     </td>
+
                     <td class="px-5 py-3.5">
-                      <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border" [ngClass]="{
-                        'bg-emerald-50 text-emerald-800 border-emerald-200': match.status === 'FALSE_POSITIVE',
-                        'bg-rose-50 text-rose-800 border-rose-200': match.status === 'TRUE_POSITIVE',
-                        'bg-amber-50 text-amber-800 border-amber-200': match.status === 'DILIGENCE_REQUIRED',
-                        'bg-slate-100 text-slate-700 border-slate-200': match.status === 'PENDING'
-                      }">{{ match.status?.replace('_', ' ') }}</span>
+                      <div class="flex flex-col gap-0.5">
+                        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border inline-block w-fit shadow-2xs" 
+                          [ngClass]="getMatchStatusBadge(match.status).class">
+                          {{ getMatchStatusBadge(match.status).label }}
+                        </span>
+                        @if (match.reviewedBy) {
+                          <span class="text-[10px] text-slate-400 font-medium">Par {{ match.reviewedBy }}</span>
+                        }
+                      </div>
                     </td>
+
                     <td class="px-5 py-3.5 text-right">
-                      <button type="button" (click)="openAnalysisModal(match)" class="p-2 rounded-xl bg-slate-100 text-slate-600 hover:bg-indigo-600 hover:text-white transition-all inline-flex cursor-pointer border border-transparent hover:border-indigo-200" title="Analyser la correspondance">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                      <button type="button" (click)="openAnalysisModal(match)" 
+                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white border border-indigo-200 transition-all font-bold text-xs cursor-pointer shadow-2xs">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                        <span>Analyser</span>
                       </button>
                     </td>
                   </tr>
                 }
               </tbody>
             </table>
+
             @if (totalMatchesPages > 1) {
-              <div class="px-5 py-3 border-t border-slate-200 flex items-center justify-between bg-slate-50/60">
-                <span class="text-xs font-bold text-slate-500">Page {{ matchesCurrentPage }} / {{ totalMatchesPages }}</span>
+              <div class="px-5 py-3 border-t border-slate-200 flex items-center justify-between bg-slate-50/70">
+                <span class="text-xs font-bold text-slate-500">Page {{ matchesCurrentPage }} sur {{ totalMatchesPages }}</span>
                 <div class="flex items-center gap-1.5">
-                  <button type="button" (click)="matchesCurrentPage = matchesCurrentPage - 1" [disabled]="matchesCurrentPage === 1" class="px-3 py-1.5 rounded-lg bg-white border-2 border-slate-300 hover:border-slate-400 text-xs font-bold disabled:opacity-40 text-slate-700 cursor-pointer shadow-xs">Préc.</button>
-                  <button type="button" (click)="matchesCurrentPage = matchesCurrentPage + 1" [disabled]="matchesCurrentPage === totalMatchesPages" class="px-3 py-1.5 rounded-lg bg-white border-2 border-slate-300 hover:border-slate-400 text-xs font-bold disabled:opacity-40 text-slate-700 cursor-pointer shadow-xs">Suiv.</button>
+                  <button type="button" (click)="matchesCurrentPage = matchesCurrentPage - 1" [disabled]="matchesCurrentPage === 1" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-slate-400 text-xs font-bold disabled:opacity-40 text-slate-700 cursor-pointer shadow-2xs">Précédent</button>
+                  <button type="button" (click)="matchesCurrentPage = matchesCurrentPage + 1" [disabled]="matchesCurrentPage === totalMatchesPages" class="px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:border-slate-400 text-xs font-bold disabled:opacity-40 text-slate-700 cursor-pointer shadow-2xs">Suivant</button>
                 </div>
               </div>
             }
           } @else {
             <div class="p-10 text-center">
-              <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-emerald-100">
+              <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-emerald-100 shadow-sm">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
               </div>
-              <h3 class="text-sm font-black text-slate-900 mb-0.5">Tout est en ordre</h3>
-              <p class="text-xs text-slate-500 font-medium">Aucune correspondance critique détectée pour ce client.</p>
+              <h3 class="text-sm font-black text-slate-900 mb-0.5">Aucune correspondance à afficher</h3>
+              <p class="text-xs text-slate-500 font-medium">Toutes les alertes pour ce filtre ont été traitées ou aucune détection n'est active.</p>
             </div>
           }
         </div>
       </div>
 
-      <!-- Timeline & Historique des Exécutions -->
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
-        <div class="flex items-center gap-2 mb-5">
-          <span class="p-1.5 bg-cyan-50 text-cyan-600 rounded-lg border border-cyan-100">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </span>
-          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900">Historique des Exécutions de Filtrage</h3>
+      <!-- ================= HISTORIQUE & JOURNAL D'AUDIT DES EXÉCUTIONS ================= -->
+      <div class="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 bg-cyan-50 text-cyan-600 rounded-lg">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            </span>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900">Journal d'Audit & Historique des Screenings</h3>
+          </div>
+          <span class="text-xs font-bold text-slate-400 font-mono">{{ executions.length }} contrôle(s) horodaté(s)</span>
         </div>
 
         <div class="space-y-4">
@@ -384,7 +552,7 @@
                     <span class="text-xs font-black text-slate-900">{{ exec.uboDTO ? exec.uboDTO.fullName : 'Client Principal' }}</span>
                     <span class="text-[11px] font-semibold text-slate-400">{{ exec.createdAt | date:'short' }}</span>
                   </div>
-                  <p class="text-xs text-slate-500 leading-relaxed">{{ exec.executionMessage || 'Analyse terminée.' }}</p>
+                  <p class="text-xs text-slate-500 leading-relaxed">{{ exec.executionMessage || 'Contrôle automatique terminé.' }}</p>
                 </div>
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border" [ngClass]="{'bg-emerald-50 text-emerald-800 border-emerald-200': exec.status === 'PASSED', 'bg-rose-50 text-rose-800 border-rose-200': exec.status === 'FAILED', 'bg-slate-100 text-slate-700 border-slate-200': !exec.status}">
                   {{ exec.status || 'INCONNU' }}
@@ -395,21 +563,35 @@
                 <details class="mt-2.5 group/details">
                   <summary class="text-xs font-bold text-indigo-600 hover:text-indigo-800 cursor-pointer list-none flex items-center gap-1.5 transition-colors">
                     <svg class="w-3.5 h-3.5 group-open/details:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    <span>Voir détails OpenSanctions</span>
+                    <span>Détails des détections brutes Yente</span>
                   </summary>
                   <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
                     @for (result of getResultsFromRawResponse(exec.rawResponse); track result.id) {
                       <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
                         <div class="flex justify-between items-start mb-1">
-                          <a href="https://www.opensanctions.org/entities/{{result.id}}" target="_blank" class="text-xs font-bold text-slate-900 hover:text-indigo-600 transition-colors flex items-center gap-1 truncate">
-                             {{ result.properties?.name?.[0] }} <svg class="w-2.5 h-2.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-                          </a>
+                          <div class="text-xs font-bold text-slate-900 truncate">
+                             {{ result.properties?.name?.[0] || result.caption || 'Cible' }}
+                          </div>
                           <span class="text-[10px] font-black px-1.5 py-0.5 rounded text-white shadow-xs" [ngClass]="result.score >= 0.8 ? 'bg-rose-500' : 'bg-amber-500'">
                             {{ (result.score * 100).toFixed(0) }}%
                           </span>
                         </div>
-                        <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
-                          {{ result.schema }} &bull; {{ result.properties?.country?.[0] || 'Inconnu' }}
+                        <div class="flex items-center justify-between mt-1">
+                          <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                            {{ result.schema }} &bull; {{ result.properties?.country?.[0] || 'Inconnu' }}
+                          </span>
+                          @if (getOfficialProviderForMatch(result).url) {
+                            <a [href]="getOfficialProviderForMatch(result).url" target="_blank"
+                              class="text-[10px] font-bold px-1.5 py-0.5 rounded border inline-flex items-center gap-0.5 transition-colors"
+                              [ngClass]="getOfficialProviderForMatch(result).badgeClass">
+                              <span>{{ getOfficialProviderForMatch(result).name }}</span>
+                              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                            </a>
+                          } @else {
+                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border" [ngClass]="getOfficialProviderForMatch(result).badgeClass">
+                              {{ getOfficialProviderForMatch(result).name }}
+                            </span>
+                          }
                         </div>
                       </div>
                     }
@@ -421,10 +603,10 @@
         </div>
         @if (totalExecutionsPages > 1) {
           <div class="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
-            <span class="text-xs font-bold text-slate-500">Page {{ executionsCurrentPage }} / {{ totalExecutionsPages }}</span>
+            <span class="text-xs font-bold text-slate-500">Page {{ executionsCurrentPage }} sur {{ totalExecutionsPages }}</span>
             <div class="flex gap-1.5">
-              <button type="button" (click)="executionsCurrentPage = executionsCurrentPage - 1" [disabled]="executionsCurrentPage === 1" class="px-3 py-1.5 rounded-lg bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 border-2 border-slate-300 hover:border-slate-400 cursor-pointer shadow-xs">Préc.</button>
-              <button type="button" (click)="executionsCurrentPage = executionsCurrentPage + 1" [disabled]="executionsCurrentPage === totalExecutionsPages" class="px-3 py-1.5 rounded-lg bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 border-2 border-slate-300 hover:border-slate-400 cursor-pointer shadow-xs">Suiv.</button>
+              <button type="button" (click)="executionsCurrentPage = executionsCurrentPage - 1" [disabled]="executionsCurrentPage === 1" class="px-3 py-1.5 rounded-lg bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 border border-slate-300 hover:border-slate-400 cursor-pointer shadow-2xs">Précédent</button>
+              <button type="button" (click)="executionsCurrentPage = executionsCurrentPage + 1" [disabled]="executionsCurrentPage === totalExecutionsPages" class="px-3 py-1.5 rounded-lg bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 border border-slate-300 hover:border-slate-400 cursor-pointer shadow-2xs">Suivant</button>
             </div>
           </div>
         }
@@ -433,6 +615,7 @@
     </div>
   </div>
 
+  <!-- ================= MODALES ================= -->
   <!-- Analysis Modal -->
   @if (isAnalysisModalOpen && selectedMatch && client) {
     <app-match-analysis-modal 

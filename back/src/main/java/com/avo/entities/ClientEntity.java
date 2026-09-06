@@ -55,6 +55,9 @@ public class ClientEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
+    @Column(name = "version")
+    private Long version = 1L;
+
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
@@ -63,6 +66,9 @@ public class ClientEntity {
     }
 
     public ClientEntity() {}
+
+    public Long getVersion() { return version; }
+    public void setVersion(Long version) { this.version = version; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

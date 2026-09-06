@@ -61,6 +61,14 @@ public class ScreeningMatchService {
         match.setReviewedBy(reviewer);
         match.setReviewedAt(java.time.LocalDateTime.now());
 
+        if (match.getClient() != null) {
+            Long currentVersion = match.getClient().getVersion() != null ? match.getClient().getVersion() : 1L;
+            match.setClientVersionAtReview(currentVersion);
+        } else if (match.getUbo() != null && match.getUbo().getClientMoral() != null) {
+            Long currentVersion = match.getUbo().getClientMoral().getVersion() != null ? match.getUbo().getClientMoral().getVersion() : 1L;
+            match.setClientVersionAtReview(currentVersion);
+        }
+
         if (decision == com.avo.entities.ScreeningMatchStatus.FALSE_POSITIVE) {
             // Fetch current state from Yente to snapshot the version
             try {
@@ -86,16 +94,39 @@ public class ScreeningMatchService {
         return mapper.toDto(match);
     }
 
-    private void updateClientAmlStatus(com.avo.entities.ClientEntity client) {
-        // Logic: find the last execution for this client and load only matches related to it
-        com.avo.entities.ScreeningExecution lastExec = screeningExecutionRepository.findFirstByClientIdOrderByCreatedAtDesc(client.getId())
-                .orElse(null);
-        
-        if (lastExec == null) return;
+    @org.springframework.transaction.annotation.Transactional
+    public java.util.List<ScreeningMatchDTO> processBatchDecision(java.util.List<Long> matchIds, com.avo.entities.ScreeningMatchStatus decision, String comment, String reviewer) {
+        log.info("[ENTER] Executing processBatchDecision for {} matches", matchIds != null ? matchIds.size() : 0);
+        java.util.List<ScreeningMatchDTO> results = new java.util.ArrayList<>();
+        if (matchIds != null) {
+            for (Long id : matchIds) {
+                results.add(processDecision(id, decision, comment, reviewer));
+            }
+        }
+        return results;
+    }
 
-        java.util.List<ScreeningMatch> matches = repository.findByScreeningExecutionId(lastExec.getId());
-        boolean hasBlocked = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.TRUE_POSITIVE);
-        boolean hasDiligence = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.DILIGENCE_REQUIRED);
+    private void updateClientAmlStatus(com.avo.entities.ClientEntity client) {
+        // Logic: determine client status based on latest active match for each target
+        java.util.List<ScreeningMatch> allMatches = repository.findByClientId(client.getId());
+        java.util.Map<String, ScreeningMatch> latestByTarget = new java.util.HashMap<>();
+        for (ScreeningMatch m : allMatches) {
+            String key = m.getYenteId() != null ? m.getYenteId() : String.valueOf(m.getId());
+            ScreeningMatch existing = latestByTarget.get(key);
+            if (existing == null || (m.getCreatedAt() != null && existing.getCreatedAt() != null && m.getCreatedAt().isAfter(existing.getCreatedAt())) || (m.getId() != null && existing.getId() != null && m.getId() > existing.getId())) {
+                latestByTarget.put(key, m);
+            }
+        }
+        
+        java.util.Collection<ScreeningMatch> matches = latestByTarget.values();
+        boolean hasBlocked = matches.stream().anyMatch(m -> 
+            m.getStatus() == com.avo.entities.ScreeningMatchStatus.TRUE_POSITIVE || 
+            m.getStatus() == com.avo.entities.ScreeningMatchStatus.TRUE_POSITIVE_SANCTION
+        );
+        boolean hasDiligence = matches.stream().anyMatch(m -> 
+            m.getStatus() == com.avo.entities.ScreeningMatchStatus.DILIGENCE_REQUIRED ||
+            m.getStatus() == com.avo.entities.ScreeningMatchStatus.TRUE_POSITIVE_PEP
+        );
         boolean hasPending = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.PENDING);
         boolean hasNoLongerSanctioned = matches.stream().anyMatch(m -> m.getStatus() == com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED);
 
@@ -120,8 +151,8 @@ public class ScreeningMatchService {
             }
 
             notificationRepository.save(new com.avo.entities.Notification(
-                "Indulgence AML Requise",
-                "Le statut du client " + clientName + " est passé à Indulgence/Dérogation requise. Une approbation ou vigilance complémentaire est nécessaire.",
+                "Indulgence AML / Vigilance Requise",
+                "Le statut du client " + clientName + " nécessite une vigilance renforcée (PPE / Dérogation). Une approbation ou diligence complémentaire est requise.",
                 client.getId()
             ));
         } else if (hasPending) {

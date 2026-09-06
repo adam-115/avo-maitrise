@@ -39,20 +39,125 @@ export class ClientConformity implements OnInit {
   executions: ScreeningExecutionDTO[] = [];
   matches: ScreeningMatchDTO[] = [];
   matchDateFilter: string = '';
+  matchStatusFilter: 'ALL' | 'PENDING' | 'FALSE_POSITIVE' | 'TRUE_POSITIVE' | 'DILIGENCE_REQUIRED' = 'ALL';
+  searchQuery: string = '';
 
   showAssignFormModal = false;
   availableForms: FormConfig[] = [];
 
+  get latestMatches(): ScreeningMatchDTO[] {
+    const map = new Map<string, ScreeningMatchDTO>();
+    for (const match of this.matches) {
+      const key = match.yenteId ? `yente_${match.yenteId}` : `id_${match.id}`;
+      const existing = map.get(key);
+      if (!existing) {
+        map.set(key, match);
+      } else {
+        const existingTime = existing.createdAt ? new Date(existing.createdAt).getTime() : (existing.id || 0);
+        const matchTime = match.createdAt ? new Date(match.createdAt).getTime() : (match.id || 0);
+        if (matchTime >= existingTime || (match.id || 0) > (existing.id || 0)) {
+          map.set(key, match);
+        }
+      }
+    }
+    return Array.from(map.values());
+  }
+
+  get pendingMatchesCount(): number {
+    return this.latestMatches.filter(m => m.status === 'PENDING' || !m.status).length;
+  }
+
+  get falsePositivesCount(): number {
+    return this.latestMatches.filter(m => m.status === 'FALSE_POSITIVE').length;
+  }
+
+  get truePositivesCount(): number {
+    return this.latestMatches.filter(m => m.status === 'TRUE_POSITIVE' || m.status === 'TRUE_POSITIVE_SANCTION' || m.status === 'TRUE_POSITIVE_PEP').length;
+  }
+
+  get hasActiveSanction(): boolean {
+    return this.latestMatches.some(m => m.status === 'TRUE_POSITIVE' || m.status === 'TRUE_POSITIVE_SANCTION');
+  }
+
+  get diligenceRequiredCount(): number {
+    return this.latestMatches.filter(m => m.status === 'DILIGENCE_REQUIRED').length;
+  }
+
+  get isClientModifiedSinceLastReview(): boolean {
+    if (!this.client || !this.client.version || this.client.version <= 1) return false;
+    const currentVersion = this.client.version;
+    return this.latestMatches.some(m => 
+      m.status === 'FALSE_POSITIVE' && 
+      (m.clientVersionAtReview || 1) < currentVersion
+    );
+  }
+
+  get riskLevel(): { label: string; textClass: string; bgClass: string; borderClass: string; badgeClass: string } {
+    const highestScore = this.getHighestMatchScore();
+    const hasSanction = this.latestMatches.some(m => m.status === 'TRUE_POSITIVE' || m.status === 'TRUE_POSITIVE_SANCTION');
+    const hasPep = this.latestMatches.some(m => m.status === 'TRUE_POSITIVE_PEP');
+
+    if (hasSanction || highestScore >= 0.8 || this.client?.clientStatus === 'BLOCKED') {
+      return {
+        label: 'Risque Élevé / Sanction',
+        textClass: 'text-rose-700',
+        bgClass: 'bg-rose-50',
+        borderClass: 'border-rose-200',
+        badgeClass: 'bg-rose-500 text-white'
+      };
+    }
+    if (hasPep || highestScore >= 0.5 || this.client?.clientStatus?.startsWith('INDULGENCE') || this.pendingMatchesCount > 0) {
+      return {
+        label: hasPep ? 'Vigilance Renforcée (PPE)' : (this.pendingMatchesCount > 0 ? 'Triage Requis' : 'Risque Modéré'),
+        textClass: 'text-amber-700',
+        bgClass: 'bg-amber-50',
+        borderClass: 'border-amber-200',
+        badgeClass: 'bg-amber-500 text-white'
+      };
+    }
+    return {
+      label: 'Conforme / Risque Faible',
+      textClass: 'text-emerald-700',
+      bgClass: 'bg-emerald-50',
+      borderClass: 'border-emerald-200',
+      badgeClass: 'bg-emerald-500 text-white'
+    };
+  }
+
   getFilteredMatches(): ScreeningMatchDTO[] {
-    if (!this.matchDateFilter) return this.matches;
-    return this.matches.filter(match => {
-      if (!match.createdAt) return false;
-      const dateObj = new Date(match.createdAt);
-      const year = dateObj.getFullYear();
-      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-      const day = String(dateObj.getDate()).padStart(2, '0');
-      const dateStr = `${year}-${month}-${day}`;
-      return dateStr <= this.matchDateFilter;
+    return this.latestMatches.filter(match => {
+      // 1. Status filter
+      if (this.matchStatusFilter === 'PENDING') {
+        if (match.status && match.status !== 'PENDING') return false;
+      } else if (this.matchStatusFilter === 'FALSE_POSITIVE') {
+        if (match.status !== 'FALSE_POSITIVE') return false;
+      } else if (this.matchStatusFilter === 'TRUE_POSITIVE') {
+        if (match.status !== 'TRUE_POSITIVE' && match.status !== 'TRUE_POSITIVE_SANCTION' && match.status !== 'TRUE_POSITIVE_PEP') return false;
+      } else if (this.matchStatusFilter === 'DILIGENCE_REQUIRED') {
+        if (match.status !== 'DILIGENCE_REQUIRED') return false;
+      }
+
+      // 2. Date filter
+      if (this.matchDateFilter) {
+        if (!match.createdAt) return false;
+        const dateObj = new Date(match.createdAt);
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+        const day = String(dateObj.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+        if (dateStr > this.matchDateFilter) return false;
+      }
+
+      // 3. Search text
+      if (this.searchQuery) {
+        const query = this.searchQuery.toLowerCase().trim();
+        const target = (match.targetName || '').toLowerCase();
+        const yenteId = (match.yenteId || '').toLowerCase();
+        const uboName = (match.uboDTO?.fullName || '').toLowerCase();
+        if (!target.includes(query) && !yenteId.includes(query) && !uboName.includes(query)) return false;
+      }
+
+      return true;
     });
   }
 
@@ -109,6 +214,116 @@ export class ClientConformity implements OnInit {
   closeAnalysisModal() {
     this.selectedMatch = null;
     this.isAnalysisModalOpen = false;
+  }
+
+  getClientRegistration(client: any): string {
+    if (!client) return '';
+    return client.numeroRegistreCommerce || client.numeroIdFiscal || client.cin || client.numeroRegistreNational || '';
+  }
+
+  getClientCountry(client: any): string {
+    if (!client) return 'International';
+    return client.paysResidance || client.pays || client.nationalite || 'International';
+  }
+
+  getMatchStatusBadge(status?: string): { label: string; class: string } {
+    switch (status) {
+      case 'FALSE_POSITIVE':
+        return { label: 'Faux Positif (Écarté)', class: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
+      case 'TRUE_POSITIVE_SANCTION':
+      case 'TRUE_POSITIVE':
+        return { label: 'Vrai Positif (Sanction)', class: 'bg-rose-50 text-rose-700 border-rose-200' };
+      case 'TRUE_POSITIVE_PEP':
+        return { label: 'Vrai Positif (PPE)', class: 'bg-amber-50 text-amber-700 border-amber-200' };
+      case 'DILIGENCE_REQUIRED':
+        return { label: 'Diligence Requise', class: 'bg-orange-50 text-orange-700 border-orange-200' };
+      case 'PENDING':
+      default:
+        return { label: 'En attente d\'analyse', class: 'bg-slate-100 text-slate-700 border-slate-200' };
+    }
+  }
+
+  getOfficialProviderForMatch(match: ScreeningMatchDTO | any): { name: string; url?: string; badgeClass: string } {
+    const yenteId = (match?.yenteId || match?.id || '').toLowerCase();
+    
+    // Check rawResponse datasets if available
+    const datasets: string[] = [];
+    if (match?.rawResponse) {
+      let parsed = match.rawResponse;
+      if (typeof parsed === 'string') {
+        try { parsed = JSON.parse(parsed); } catch {}
+      }
+      const responses = parsed?.responses;
+      if (responses) {
+        for (const key of Object.keys(responses)) {
+          const results = responses[key]?.results;
+          if (Array.isArray(results)) {
+            const found = results.find((r: any) => r.id === (match.yenteId || match.id));
+            if (found?.datasets) datasets.push(...found.datasets.map((d: any) => String(d).toLowerCase()));
+          }
+        }
+      }
+    }
+
+    if (datasets.some(d => d.includes('fr_tresor') || d.includes('tresor') || d.includes('gel')) || yenteId.startsWith('fr-')) {
+      return { name: 'DG Trésor 🇫🇷', url: 'https://gels-avoirs.dgtresor.gouv.fr/', badgeClass: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100' };
+    }
+    if (datasets.some(d => d.includes('ofac') || d.includes('sdn')) || yenteId.startsWith('ofac-')) {
+      return { name: 'OFAC 🇺🇸', url: 'https://sanctionssearch.ofac.treas.gov/', badgeClass: 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100' };
+    }
+    if (datasets.some(d => d.includes('eu_fsf') || d.includes('eu_')) || yenteId.startsWith('eu-')) {
+      return { name: 'UE Sanctions 🇪🇺', url: 'https://www.sanctionsmap.eu/', badgeClass: 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100' };
+    }
+    if (datasets.some(d => d.includes('un_sc') || d.includes('un_') || d.includes('unsc')) || yenteId.startsWith('un-')) {
+      return { name: 'ONU 🇺🇳', url: 'https://www.un.org/securitycouncil/content/un-sc-consolidated-list', badgeClass: 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100' };
+    }
+    if (datasets.some(d => d.includes('seco') || d.includes('ch_')) || yenteId.startsWith('ch-')) {
+      return { name: 'SECO 🇨🇭', url: 'https://www.seco.admin.ch/seco/fr/home/Aussenwirtschaftspolitik_Wirtschaftliche_Zusammenarbeit/Wirtschaftsbeziehungen/exportkontrollen-und-sanktionen/sanktionen-embargos.html', badgeClass: 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100' };
+    }
+    if (datasets.some(d => d.includes('gb_hmt') || d.includes('ofsi')) || yenteId.startsWith('gb-')) {
+      return { name: 'UK OFSI 🇬🇧', url: 'https://www.gov.uk/government/publications/financial-sanctions-consolidated-list-of-targets', badgeClass: 'bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100' };
+    }
+    if (datasets.some(d => d.includes('au_dfat') || d.includes('dfat')) || yenteId.startsWith('au-') || yenteId.startsWith('dfat-')) {
+      return { name: 'DFAT 🇦🇺', url: 'https://www.dfat.gov.au/international-relations/security/sanctions/consolidated-list', badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100' };
+    }
+    if (datasets.some(d => d.includes('interpol')) || yenteId.startsWith('interpol-')) {
+      return { name: 'Interpol 🌐', url: 'https://www.interpol.int/How-we-work/Notices/Red-Notices', badgeClass: 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100' };
+    }
+
+    return { name: 'Registre Réglementaire 🛡️', badgeClass: 'bg-slate-50 text-slate-700 border-slate-200' };
+  }
+
+  async dismissAllAsFalsePositive() {
+    const pendingMatches = this.latestMatches.filter(m => m.status === 'PENDING' || !m.status);
+    if (pendingMatches.length === 0) {
+      this.alertService.displayMessage('Information', 'Aucune correspondance en attente à traiter.', 'info');
+      return;
+    }
+
+    const confirmed = await this.alertService.confirmMessage(
+      'Validation collective des correspondances',
+      `Voulez-vous classer les ${pendingMatches.length} correspondance(s) en attente comme "Faux Positifs" (Homonymie vérifiée) ? Le statut AML du client sera automatiquement recalculé.`,
+      'question'
+    );
+
+    if (confirmed && this.client?.id) {
+      const matchIds = pendingMatches.map(m => m.id!).filter(Boolean);
+      this.screeningMatchService.processBatchDecision(
+        matchIds,
+        'FALSE_POSITIVE',
+        'Validation collective : Homonymies écartées après revue documentaire.',
+        'Avocat Référent LCB-FT'
+      ).subscribe({
+        next: () => {
+          this.alertService.success(`${matchIds.length} correspondance(s) classée(s) comme Faux Positif(s).`);
+          this.loadClient(String(this.client!.id));
+        },
+        error: (err) => {
+          console.error(err);
+          this.alertService.displayMessage('Erreur', 'Échec du traitement par lot.', 'error');
+        }
+      });
+    }
   }
 
   onDecisionMade(updatedMatch: ScreeningMatchDTO) {
@@ -310,10 +525,40 @@ export class ClientConformity implements OnInit {
     });
   }
 
+  scrollToMatches(): void {
+    const el = document.getElementById('matches-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   async onStatusChange(newStatus: string) {
     if (!this.client) return;
 
     const previousStatus = this.client.clientStatus;
+
+    // 1. Contrôle préalable : Vérifier si des alertes sont en attente d'analyse (PENDING)
+    if (this.pendingMatchesCount > 0 && (newStatus === 'AML_VALIDATED' || newStatus === 'VALIDATED')) {
+      this.alertService.displayMessage(
+        'Triage des alertes obligatoire',
+        `Impossible de valider la conformité du client : il reste ${this.pendingMatchesCount} alerte(s) en attente d'analyse (PENDING). Vous devez d'abord qualifier chaque correspondance (Faux Positif, PPE, Sanction...) avant de valider le dossier.`,
+        'warning'
+      );
+      this.client.clientStatus = previousStatus;
+      this.scrollToMatches();
+      return;
+    }
+
+    // 2. Contrôle préalable : Vérifier si une sanction est active et confirmée
+    if (this.hasActiveSanction && (newStatus === 'AML_VALIDATED' || newStatus === 'VALIDATED')) {
+      this.alertService.displayMessage(
+        'Action bloquée (Sanction Confirmée)',
+        'Ce client fait l\'objet d\'une alerte confirmée sur liste de sanctions internationales. Son statut ne peut pas être passé à Validé / Conforme.',
+        'error'
+      );
+      this.client.clientStatus = previousStatus;
+      return;
+    }
 
     const confirmed = await this.alertService.confirmMessage(
       'Confirmation de changement de statut',
@@ -329,7 +574,8 @@ export class ClientConformity implements OnInit {
         },
         error: (err) => {
           console.error('Error updating status', err);
-          this.alertService.displayMessage('Erreur', 'Impossible de mettre à jour le statut.', 'error');
+          const errorMsg = err?.error?.message || err?.error?.detail || err?.message || 'Impossible de mettre à jour le statut.';
+          this.alertService.displayMessage('Erreur de conformité', errorMsg, 'error');
           if (this.client) this.client.clientStatus = previousStatus;
         }
       });
@@ -385,12 +631,10 @@ export class ClientConformity implements OnInit {
           }
         }
 
-        if (!this.client!.clientStatus) {
-           this.client!.clientStatus = ClientStatus.AML_REQUIRED;
-        }
-
-        this.clientService.update(this.client!).subscribe({
-          next: () => {
+        const targetStatus = this.client!.clientStatus || ClientStatus.AML_REQUIRED;
+        this.clientService.updateClientStatus(this.client!.id!, targetStatus).subscribe({
+          next: (updatedClient) => {
+            this.client = updatedClient;
             this.alertService.success('Analyse AML terminée et dossier mis à jour.');
             this.loadAmlHistory(String(this.client!.id)); // Reload matches and executions after update
           },
@@ -452,31 +696,22 @@ export class ClientConformity implements OnInit {
   getTargetName(match: ScreeningMatchDTO): string {
     if (match.targetName) return match.targetName;
     
-    if (match.rawResponse) {
-      let parsed = match.rawResponse;
-      if (typeof parsed === 'string') {
-        try { parsed = JSON.parse(parsed); } catch {}
-      }
-      
-      const responses = parsed?.responses;
-      if (responses) {
-        const queryKey = Object.keys(responses)[0];
-        if (queryKey && responses[queryKey]?.results) {
-          const results = responses[queryKey].results;
-          const found = results.find((r: any) => r.id === match.yenteId);
-          if (found?.properties?.name?.[0]) {
-            return found.properties.name[0];
-          }
-        }
-      }
+    const raw = match.rawResponse;
+    if (!raw) return 'Cible non identifiée';
+    
+    const results = this.getResultsFromRawResponse(raw);
+    const targetEntity = results.find((r: any) => r.id === match.yenteId) || results[0];
+    
+    if (targetEntity) {
+      return targetEntity.caption || targetEntity.name || targetEntity.properties?.name?.[0] || 'Entité ' + match.yenteId;
     }
     
-    return 'Inconnu';
+    return 'Entité ' + (match.yenteId || 'Inconnue');
   }
 
   getHighestMatchScore(): number {
-    if (!this.matches || this.matches.length === 0) return 0;
-    return Math.max(...this.matches.map(m => m.score || 0));
+    if (!this.latestMatches || this.latestMatches.length === 0) return 0;
+    return Math.max(...this.latestMatches.map(m => m.score || 0));
   }
 
   getTopics(reasonString?: string): { label: string, description: string, colorClass: string }[] {

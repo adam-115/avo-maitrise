@@ -17,6 +17,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import com.avo.dtos.CabinetProfileDTO;
 import com.avo.entities.ClientEntity;
@@ -629,7 +630,7 @@ public class ReportingService {
             } else {
                 comment.append("Aucun élément d'alerte critique sur listes de sanctions ou de PPE n'est actif au dossier. Le niveau de vigilance standard / normale est préconisé pour l'entrée en relation ou la continuation de mission. ");
             }
-            comment.append("\n[CERTIFICATION LCB-FT] : Criblage d'alertes opéré via le moteur de vérification Yente / OpenSanctions (Sanctions Internationales GEL, UE, OFAC, ONU & registres PPE).");
+            comment.append("\n[CERTIFICATION LCB-FT] : Contrôle de conformité et criblage automatisé opéré sur les registres officiels de sanctions internationales (DG Trésor, Union Européenne, OFAC, ONU, SECO) et répertoires de PPE.");
 
             // Diligence Form Details
             List<com.avo.entities.DiligenceFormResult> forms = diligenceFormResultRepository.findByClientId(clientId);
@@ -828,52 +829,274 @@ public class ReportingService {
         }
     }
 
+    public static class DatasetMeta {
+        public final String name;
+        public final String authority;
+        public final String description;
+
+        public DatasetMeta(String name, String authority, String description) {
+            this.name = name;
+            this.authority = authority;
+            this.description = description;
+        }
+    }
+
+    private static DatasetMeta resolveDatasetMeta(String datasetId, String yenteId) {
+        String code = (datasetId != null ? datasetId : "").toLowerCase();
+        String yId = (yenteId != null ? yenteId : "").toLowerCase();
+
+        if (code.contains("fr_tresor") || code.contains("tresor") || code.contains("gel") || yId.startsWith("fr-") || code.contains("france")) {
+            return new DatasetMeta(
+                "DG Trésor 🇫🇷 (France)",
+                "Ministère de l'Économie, des Finances et de la Souveraineté Industrielle et Numérique",
+                "Registre national officiel des personnes et entités faisant l'objet d'une mesure de gel des avoirs (Art. L.562-2 CMF)."
+            );
+        }
+        if (code.contains("eu_fsf") || code.contains("eu_") || code.contains("european") || code.contains("fsd") || yId.startsWith("eu-")) {
+            return new DatasetMeta(
+                "Union Européenne 🇪🇺 (UE FSF)",
+                "Commission Européenne & Service Européen pour l'Action Extérieure (SEAE)",
+                "Liste consolidée des personnes, groupes et entités soumis aux sanctions financières de l'Union Européenne (Règlements PESC)."
+            );
+        }
+        if (code.contains("ofac") || code.contains("sdn") || code.contains("us_") || yId.startsWith("ofac-")) {
+            return new DatasetMeta(
+                "OFAC SDN 🇺🇸 (États-Unis)",
+                "U.S. Department of the Treasury (Office of Foreign Assets Control)",
+                "Registre fédéral des personnes et entités sous sanctions économiques et financières (Specially Designated Nationals and Blocked Persons)."
+            );
+        }
+        if (code.contains("un_sc") || code.contains("unsc") || code.contains("un_") || yId.startsWith("un-") || code.contains("nations unies") || code.contains("united nations")) {
+            return new DatasetMeta(
+                "Nations Unies 🇺🇳 (Conseil de Sécurité)",
+                "Conseil de Sécurité de l'ONU (Comités des sanctions CSNU 1267, 1989, 2253...)",
+                "Liste récapitulative consolidée des sanctions et embargos internationaux adoptés en application des résolutions contraignantes de l'ONU."
+            );
+        }
+        if (code.contains("dfat") || code.contains("au_") || yId.startsWith("au-") || code.contains("australia") || code.contains("dfat-")) {
+            return new DatasetMeta(
+                "DFAT 🇦🇺 (Australie)",
+                "Department of Foreign Affairs and Trade (Gouvernement Australien)",
+                "Registre officiel consolidé des personnes et entités soumises aux sanctions financières autonomes et ciblées australiennes."
+            );
+        }
+        if (code.contains("seco") || code.contains("ch_") || yId.startsWith("ch-") || code.contains("suisse") || code.contains("switzerland")) {
+            return new DatasetMeta(
+                "SECO 🇨🇭 (Suisse)",
+                "Secrétariat d'État à l'économie (Confédération Suisse)",
+                "Registre officiel suisse des mesures de coercition, blocages des avoirs et sanctions financières (Loi sur les embargos - LEmb)."
+            );
+        }
+        if (code.contains("gb_hmt") || code.contains("ofsi") || code.contains("gb-") || code.contains("uk_") || code.contains("hm treasury")) {
+            return new DatasetMeta(
+                "UK OFSI 🇬🇧 (Royaume-Uni)",
+                "HM Treasury - Office of Financial Sanctions Implementation",
+                "Liste consolidée des sanctions financières du Royaume-Uni (Sanctions and Anti-Money Laundering Act 2018)."
+            );
+        }
+        if (code.contains("interpol") || yId.startsWith("interpol-")) {
+            return new DatasetMeta(
+                "Interpol 🌐 (Notices Rouges)",
+                "Organisation Internationale de Police Criminelle (OIPC - Interpol)",
+                "Signalements criminels et mandats d'arrêt internationaux pour infractions graves et crimes financiers."
+            );
+        }
+        if (code.contains("pep") || code.contains("everypolitician") || code.contains("wd_peps") || code.contains("politician")) {
+            return new DatasetMeta(
+                "Registre International des PPE",
+                "Registres de transparence institutionnels et répertoires publics mondiaux",
+                "Base de vigilance renforcée recensant les Personnes Politiquement Exposées, parlementaires, membres de gouvernement et leurs proches (Art. L.561-10 CMF)."
+            );
+        }
+        if (code.contains("worldbank") || code.contains("iadb") || code.contains("afdb") || code.contains("ebrd") || code.contains("debarment")) {
+            return new DatasetMeta(
+                "Banques Multilatérales de Développement",
+                "Banque Mondiale, Banque Africaine de Développement, BERD, BID",
+                "Liste consolidée des personnes et entreprises exclues des marchés pour manquements éthiques, fraude ou corruption."
+            );
+        }
+
+        String fallbackName = datasetId != null && !datasetId.trim().isEmpty() 
+            ? datasetId.replace("_", " ").replace("-", " ").toUpperCase() 
+            : "Registre Réglementaire Consolidé";
+        return new DatasetMeta(
+            fallbackName,
+            "Autorités de Contrôle & Registres Officiels LCB-FT",
+            "Base de données réglementaire officielle pour le contrôle de vigilance et le filtrage des sanctions internationales."
+        );
+    }
+
+    private JsonNode findEntityNode(JsonNode raw, String targetId) {
+        if (raw == null || raw.isNull()) return null;
+        if (raw.has("caption") || raw.has("properties")) {
+            return raw;
+        }
+        if (raw.has("responses") && raw.get("responses").isObject()) {
+            java.util.Iterator<Map.Entry<String, JsonNode>> fields = raw.get("responses").fields();
+            while (fields.hasNext()) {
+                Map.Entry<String, JsonNode> entry = fields.next();
+                JsonNode queryNode = entry.getValue();
+                if (queryNode != null && queryNode.has("results") && queryNode.get("results").isArray()) {
+                    for (JsonNode res : queryNode.get("results")) {
+                        if (targetId != null && res.has("id") && targetId.equalsIgnoreCase(res.get("id").asText())) {
+                            return res;
+                        }
+                    }
+                    if (queryNode.get("results").size() > 0) {
+                        return queryNode.get("results").get(0);
+                    }
+                }
+            }
+        }
+        if (raw.isArray()) {
+            for (JsonNode res : raw) {
+                if (targetId != null && res.has("id") && targetId.equalsIgnoreCase(res.get("id").asText())) {
+                    return res;
+                }
+            }
+            if (raw.size() > 0) return raw.get(0);
+        }
+        if (raw.has("results") && raw.get("results").isArray()) {
+            for (JsonNode res : raw.get("results")) {
+                if (targetId != null && res.has("id") && targetId.equalsIgnoreCase(res.get("id").asText())) {
+                    return res;
+                }
+            }
+            if (raw.get("results").size() > 0) return raw.get("results").get(0);
+        }
+        return null;
+    }
+
+    private String extractTargetName(ScreeningMatch match, JsonNode entityNode) {
+        if (entityNode != null) {
+            if (entityNode.has("caption") && !entityNode.get("caption").asText().trim().isEmpty()) {
+                return entityNode.get("caption").asText().trim();
+            }
+            if (entityNode.has("properties") && entityNode.get("properties").has("name")) {
+                JsonNode nameNode = entityNode.get("properties").get("name");
+                if (nameNode.isArray() && nameNode.size() > 0) {
+                    return nameNode.get(0).asText().trim();
+                } else if (!nameNode.asText().trim().isEmpty()) {
+                    return nameNode.asText().trim();
+                }
+            }
+        }
+        if (match.getTargetName() != null && !match.getTargetName().trim().isEmpty() && !match.getTargetName().startsWith("Entité ")) {
+            return match.getTargetName().trim();
+        }
+        return "Cible Réglementaire Identifiée (" + (match.getYenteId() != null ? match.getYenteId() : "N/D") + ")";
+    }
+
+    private List<String> extractDatasets(ScreeningMatch match, JsonNode entityNode) {
+        List<String> datasets = new ArrayList<>();
+        if (entityNode != null && entityNode.has("datasets") && entityNode.get("datasets").isArray()) {
+            for (JsonNode d : entityNode.get("datasets")) {
+                datasets.add(d.asText());
+            }
+        }
+        if (datasets.isEmpty() && entityNode != null && entityNode.has("properties")) {
+            JsonNode props = entityNode.get("properties");
+            if (props.has("dataset") && props.get("dataset").isArray()) {
+                for (JsonNode d : props.get("dataset")) datasets.add(d.asText());
+            }
+            if (props.has("program") && props.get("program").isArray()) {
+                for (JsonNode d : props.get("program")) datasets.add(d.asText());
+            }
+        }
+        if (datasets.isEmpty() && match.getYenteId() != null) {
+            datasets.add(match.getYenteId());
+        }
+        return datasets;
+    }
+
     private String formatScreeningMatchesHtml(List<ScreeningMatch> matches) {
         if (matches == null || matches.isEmpty()) return "";
         StringBuilder sf = new StringBuilder();
-        sf.append("<br><br><font color='#0F172A' size='5'><b>Résultats du Screening AML</b></font><br>");
-        sf.append("<font color='#E2E8F0'>____________________________________________________________________</font><br><br>");
+        sf.append("<br><br><font color='#0E7490' size='4'><b>--- DÉTAIL DES CORRESPONDANCES RÉGLEMENTAIRES (LCB-FT) ---</b></font><br>");
+        sf.append("<font color='#CBD5E1'>____________________________________________________________________</font><br><br>");
         
         java.time.format.DateTimeFormatter dtf = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         int count = 1;
         for (ScreeningMatch match : matches) {
-            String targetName = match.getTargetName();
-            if ((targetName == null || targetName.trim().isEmpty()) && match.getRawResponse() != null) {
-                if (match.getRawResponse().has("caption")) {
-                    targetName = match.getRawResponse().get("caption").asText();
-                } else if (match.getRawResponse().has("properties") && match.getRawResponse().get("properties").has("name")) {
-                    targetName = match.getRawResponse().get("properties").get("name").elements().next().asText();
-                }
-            }
-            if (targetName == null || targetName.trim().isEmpty()) {
-                targetName = "Entité " + (match.getYenteId() != null ? match.getYenteId() : "Inconnue");
-            }
+            JsonNode entityNode = findEntityNode(match.getRawResponse(), match.getYenteId());
+            String targetName = extractTargetName(match, entityNode);
+            List<String> datasets = extractDatasets(match, entityNode);
+            String primaryDataset = !datasets.isEmpty() ? datasets.get(0) : match.getYenteId();
+            DatasetMeta dsMeta = resolveDatasetMeta(primaryDataset, match.getYenteId());
 
-            sf.append("<font color='#334155' size='4'><b>#").append(count++).append(" - ").append(targetName).append("</b></font><br>");
+            sf.append("<font color='#0F172A' size='3.5'><b>#").append(count++).append(" - Cible : ").append(targetName).append("</b></font><br>");
             
-            String yenteLink = match.getYenteId() != null ? 
-                "<a href='https://www.opensanctions.org/entities/" + match.getYenteId() + "'><font color='#2563EB'><u>" + match.getYenteId() + "</u></font></a>" : "N/D";
-            sf.append("<i><font color='#64748B' size='3'>Identifiant Yente : </font></i><font color='#0F172A' size='3'>").append(yenteLink).append("</font><br>");
+            // Registre Officiel & Description
+            sf.append("<b><font color='#0E7490' size='2.5'>Registre Officiel : </font></b><font color='#0F172A' size='2.5'><b>")
+              .append(dsMeta.name).append("</b></font><br>");
+            sf.append("<i><font color='#64748B' size='2'>&nbsp;&nbsp;&#8226; Autorité : ").append(dsMeta.authority).append("</font></i><br>");
+            sf.append("<i><font color='#475569' size='2'>&nbsp;&nbsp;&#8226; Description : ").append(dsMeta.description).append("</font></i><br>");
             
+            // Identifiant officiel
+            String refIdStr = match.getYenteId() != null ? match.getYenteId() : "N/D";
+            sf.append("<i><font color='#64748B' size='2.5'>Référence Officielle Cible : </font></i><font color='#0F172A' size='2.5'><b>")
+              .append(refIdStr).append("</b></font><br>");
+            
+            // Score de similarité
             String scoreStr = match.getScore() != null ? String.format("%.2f%%", match.getScore() * 100) : "N/A";
-            String scoreColor = match.getScore() != null && match.getScore() > 0.8 ? "#EF4444" : "#F59E0B";
-            sf.append("<i><font color='#64748B' size='3'>Score de similarité : </font></i><font color='").append(scoreColor).append("' size='3'><b>").append(scoreStr).append("</b></font><br>");
+            String scoreColor = match.getScore() != null && match.getScore() > 0.8 ? "#DC2626" : "#D97706";
+            sf.append("<i><font color='#64748B' size='2.5'>Score de similarité : </font></i><font color='").append(scoreColor).append("' size='2.5'><b>")
+              .append(scoreStr).append("</b></font><br>");
             
-            String statusStr = match.getStatus() != null ? match.getStatus().name() : "PENDING";
-            String statusColor = "REJECTED".equals(statusStr) || "TRUE_POSITIVE".equals(statusStr) ? "#EF4444" : ("CLEARED".equals(statusStr) || "FALSE_POSITIVE".equals(statusStr) ? "#10B981" : "#F59E0B");
-            sf.append("<i><font color='#64748B' size='3'>Statut : </font></i><font color='").append(statusColor).append("' size='3'><b>").append(statusStr).append("</b></font><br>");
+            // Statut & Décision
+            String rawStatus = match.getStatus() != null ? match.getStatus().name() : "PENDING";
+            String statusLabel;
+            String statusColor;
+            switch (rawStatus) {
+                case "FALSE_POSITIVE":
+                    statusLabel = "FAUX POSITIF (Homonymie écartée)";
+                    statusColor = "#16A34A";
+                    break;
+                case "TRUE_POSITIVE_SANCTION":
+                case "TRUE_POSITIVE":
+                    statusLabel = "VRAI POSITIF (Cible sous Sanctions)";
+                    statusColor = "#DC2626";
+                    break;
+                case "TRUE_POSITIVE_PEP":
+                    statusLabel = "VRAI POSITIF (Personne Politiquement Exposée - PPE)";
+                    statusColor = "#D97706";
+                    break;
+                case "DILIGENCE_REQUIRED":
+                    statusLabel = "DILIGENCE APPROFONDIE REQUISE";
+                    statusColor = "#EA580C";
+                    break;
+                case "CLEARED":
+                    statusLabel = "CONFORME (Alerte Validée)";
+                    statusColor = "#16A34A";
+                    break;
+                case "REJECTED":
+                    statusLabel = "REJETÉ (Alerte Critique)";
+                    statusColor = "#DC2626";
+                    break;
+                default:
+                    statusLabel = "EN ATTENTE D'ANALYSE (Alerte Ouverte)";
+                    statusColor = "#64748B";
+                    break;
+            }
+            sf.append("<i><font color='#64748B' size='2.5'>Décision de conformité : </font></i><font color='").append(statusColor).append("' size='2.5'><b>")
+              .append(statusLabel).append("</b></font><br>");
             
+            // Motif / Typologie
             if (match.getMatchReason() != null && !match.getMatchReason().trim().isEmpty()) {
-                sf.append("<i><font color='#64748B' size='3'>Motif : </font></i><font color='#0F172A' size='3'>").append(match.getMatchReason().replace("\n", " ")).append("</font><br>");
+                sf.append("<i><font color='#64748B' size='2.5'>Typologie d'alerte : </font></i><font color='#0F172A' size='2.5'>")
+                  .append(match.getMatchReason().replace("\n", " ")).append("</font><br>");
             }
             if (match.getCreatedAt() != null) {
-                sf.append("<i><font color='#64748B' size='3'>Date de détection : </font></i><font color='#0F172A' size='3'>").append(match.getCreatedAt().format(dtf)).append("</font><br>");
+                sf.append("<i><font color='#64748B' size='2.5'>Date du criblage : </font></i><font color='#0F172A' size='2.5'>")
+                  .append(match.getCreatedAt().format(dtf)).append("</font><br>");
             }
             if (match.getReviewerComment() != null && !match.getReviewerComment().trim().isEmpty()) {
-                sf.append("<i><font color='#64748B' size='3'>Commentaire expert : </font></i><font color='#0F172A' size='3'><b>").append(match.getReviewerComment().replace("\n", " ")).append("</b></font><br>");
+                sf.append("<i><font color='#64748B' size='2.5'>Commentaire de revue : </font></i><font color='#0F172A' size='2.5'><b>")
+                  .append(match.getReviewerComment().replace("\n", " ")).append("</b></font><br>");
             }
-            if (match.getReviewedBy() != null) {
-                sf.append("<i><font color='#64748B' size='3'>Revu par : </font></i><font color='#0F172A' size='3'>").append(match.getReviewedBy());
+            if (match.getReviewedBy() != null && !match.getReviewedBy().trim().isEmpty()) {
+                sf.append("<i><font color='#64748B' size='2.5'>Décision prise par : </font></i><font color='#0F172A' size='2.5'>")
+                  .append(match.getReviewedBy());
                 if (match.getReviewedAt() != null) sf.append(" le ").append(match.getReviewedAt().format(dtf));
                 sf.append("</font><br>");
             }
@@ -882,4 +1105,5 @@ public class ReportingService {
         return sf.toString();
     }
 }
+
 

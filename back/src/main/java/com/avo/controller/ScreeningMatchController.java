@@ -55,6 +55,15 @@ public class ScreeningMatchController {
         return ResponseEntity.ok(service.processDecision(id, decision, comment, reviewer));
     }
 
+    @PostMapping("/batch-decision")
+    public ResponseEntity<java.util.List<ScreeningMatchDTO>> processBatchDecision(
+            @RequestBody java.util.List<Long> matchIds,
+            @RequestParam com.avo.entities.ScreeningMatchStatus decision,
+            @RequestParam(required = false) String comment,
+            @RequestParam(required = false) String reviewer) {
+        return ResponseEntity.ok(service.processBatchDecision(matchIds, decision, comment, reviewer));
+    }
+
     @GetMapping("/by-client/{clientId}")
     public ResponseEntity<Page<ScreeningMatchDTO>> findByClientId(@PathVariable Long clientId, Pageable pageable) {
         return ResponseEntity.ok(service.findByClientId(clientId, pageable));
