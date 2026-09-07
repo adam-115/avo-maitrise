@@ -12,11 +12,12 @@ import { FormsModule } from '@angular/forms';
 import { AlertService } from '../../services/alert-service';
 import { AssignFormModalComponent } from '../assign-form-modal/assign-form-modal.component';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { ClientStatusAlertComponent } from '../../shared/components/client-status-alert/client-status-alert.component';
 
 @Component({
     selector: 'app-client-diligence-results',
     standalone: true,
-    imports: [CommonModule, DatePipe, FormsModule, AssignFormModalComponent, TranslatePipe],
+    imports: [CommonModule, DatePipe, FormsModule, AssignFormModalComponent, TranslatePipe, ClientStatusAlertComponent],
     templateUrl: './client-diligence-results.component.html',
     styles: [`
         @keyframes pulse-subtle {

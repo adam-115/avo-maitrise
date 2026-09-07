@@ -7,12 +7,13 @@ import { FormConfigService } from '../../services/form-config-service';
 import { ClientService } from '../../services/client-service';
 import { NavigationService } from '../../services/navigation-service';
 import { Client, DiligenceFormResult, FieldConfig, FieldResult, FormConfig } from '../../appTypes';
+import { ClientStatusAlertComponent } from '../../shared/components/client-status-alert/client-status-alert.component';
 import { forkJoin, switchMap, map } from 'rxjs';
 
 @Component({
     selector: 'app-diligence-form-result-viewer',
     standalone: true,
-    imports: [CommonModule, TranslatePipe],
+    imports: [CommonModule, TranslatePipe, ClientStatusAlertComponent],
     templateUrl: './diligence-form-result-viewer.component.html',
     styles: [`
         @media print {
@@ -137,6 +138,12 @@ export class DiligenceFormResultViewerComponent implements OnInit {
     getDisplayName(client: any): string {
         if (!client) return '';
         return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+    }
+
+    getClientAddress(client: any): string {
+        if (!client) return '';
+        const parts = [client.adresse, client.pays || client.paysResidance].filter((p: any) => !!p && String(p).trim() !== '');
+        return parts.join(', ');
     }
 
     isCompany(client: any): boolean {

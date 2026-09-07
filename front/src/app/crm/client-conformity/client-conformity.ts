@@ -18,11 +18,12 @@ import { DocumentService } from '../../services/document.service';
 import { MatchAnalysisModal } from './match-analysis-modal';
 import { AssignFormModalComponent } from '../../due-diligence/assign-form-modal/assign-form-modal.component';
 import { DocumentDialog } from '../../document/document-dialog/document-dialog';
+import { ClientStatusAlertComponent } from '../../shared/components/client-status-alert/client-status-alert.component';
 
 @Component({
   selector: 'app-client-conformity',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, MatchAnalysisModal, AssignFormModalComponent, DocumentDialog, TranslatePipe],
+  imports: [CommonModule, FormsModule, RouterModule, MatchAnalysisModal, AssignFormModalComponent, DocumentDialog, TranslatePipe, ClientStatusAlertComponent],
   templateUrl: './client-conformity.html',
   styleUrl: './client-conformity.css'
 })

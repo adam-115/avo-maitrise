@@ -456,12 +456,12 @@ public class YenteClientVerificationJob {
 
                 // 7. CLEANUP: If a previously logged match is no longer flagged by the Yente API,
                 // mark its status as NO_LONGER_SANCTIONED.
-                java.util.List<com.avo.entities.ScreeningMatch> dbMatches = screeningMatchRepository
+                List<ScreeningMatch> dbMatches = screeningMatchRepository
                         .findByUboId(ubo.getId());
-                for (com.avo.entities.ScreeningMatch m : dbMatches) {
-                    if (m.getStatus() != com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED
+                for (ScreeningMatch m : dbMatches) {
+                    if (m.getStatus() != ScreeningMatchStatus.NO_LONGER_SANCTIONED
                             && !currentYenteIds.contains(m.getYenteId())) {
-                        m.setStatus(com.avo.entities.ScreeningMatchStatus.NO_LONGER_SANCTIONED);
+                        m.setStatus(ScreeningMatchStatus.NO_LONGER_SANCTIONED);
                         screeningMatchRepository.save(m);
                     }
                 }

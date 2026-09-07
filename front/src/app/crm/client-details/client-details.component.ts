@@ -9,7 +9,7 @@ import { DossierService } from '../../services/dossier.service';
 import { InvoiceService } from '../../features/billing/services/invoice.service';
 import { ClientDiligenceStatusService } from '../../services/client-diligence-status-service';
 
-import { Client, Dossier, InvoiceEntity, ClientDiligenceStatus } from '../../appTypes';
+import { Client, Dossier, InvoiceEntity, ClientDiligenceStatus, ClientMoral, ClientPersonnePhysique, ClientTypeEnum } from '../../appTypes';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -156,7 +156,37 @@ export class ClientDetailsComponent implements OnInit {
     }
   }
 
+  get isMoral(): boolean {
+    return this.client?.type === ClientTypeEnum.SOCIETE || (this.client?.type as any) === 'MORAL';
+  }
+
+  get isPhysique(): boolean {
+    return this.client?.type === ClientTypeEnum.PERSONNE;
+  }
+
+  get moralClient(): ClientMoral | null {
+    return this.isMoral ? (this.client as ClientMoral) : null;
+  }
+
+  get physiqueClient(): ClientPersonnePhysique | null {
+    return this.isPhysique ? (this.client as ClientPersonnePhysique) : null;
+  }
+
+  get hasAdditionalInfo(): boolean {
+    if (!this.client) return false;
+    if (this.isMoral) {
+      const m = this.moralClient;
+      return !!(m?.formeJuridique || m?.numeroRegistreCommerce || m?.numeroIdFiscal || m?.nomRepresentantLegal || m?.adresse || m?.pays);
+    }
+    if (this.isPhysique) {
+      const p = this.physiqueClient;
+      return !!(p?.nationalite || p?.cin || p?.dateNaissance || p?.adresse || p?.pays);
+    }
+    return !!(this.client.adresse || this.client.pays);
+  }
+
   getDossierStatusBadge(status: any): string {
     return 'bg-indigo-100 text-indigo-800 border border-indigo-200';
   }
 }
+
