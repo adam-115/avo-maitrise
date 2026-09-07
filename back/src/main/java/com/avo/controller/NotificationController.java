@@ -40,6 +40,14 @@ public class NotificationController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/read-all")
+    public ResponseEntity<Void> markAllAsRead() {
+        List<Notification> unread = repository.findByIsReadFalseOrderByCreatedAtDesc();
+        unread.forEach(n -> n.setRead(true));
+        repository.saveAll(unread);
+        return ResponseEntity.ok().build();
+    }
+
     private NotificationDTO toDto(Notification n) {
         return new NotificationDTO(
                 n.getId(),

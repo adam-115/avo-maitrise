@@ -45,28 +45,116 @@
         <!-- Alert & Compliance Zone -->
         <div class="space-y-4">
             @if (notifications.length > 0) {
-                <div class="space-y-3">
-                    <h2 class="text-xs font-black uppercase tracking-widest text-rose-500 flex items-center gap-2 pl-1">
-                        <span class="w-2.5 h-2.5 bg-rose-500 rounded-full animate-pulse"></span>
-                        {{ 'BORD.ALERTS_URGENT' | translate:{ count: notifications.length } }}
-                    </h2>
-                    @for (notif of notifications; track notif.id) {
-                        <div class="bg-gradient-to-r from-rose-50/70 to-red-50/20 border-l-4 border-rose-500 text-rose-950 p-5 rounded-[20px] shadow-sm border border-rose-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:shadow-md pulse-glow-red">
-                            <div class="flex items-start sm:items-center gap-4">
-                                <div class="p-3 bg-rose-100/80 rounded-2xl text-rose-600">
-                                    <svg class="w-6 h-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"/></svg>
+                <div class="bg-white/95 backdrop-blur-md rounded-[28px] border border-rose-200/80 shadow-lg shadow-rose-500/5 p-6 space-y-4 relative overflow-hidden">
+                    <!-- Subtle background tint / gradient highlight -->
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-rose-100/40 via-transparent to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+                    <!-- Header Bar of the Alert Hub -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-rose-100/80 pb-4 relative z-10">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center shadow-md shadow-rose-500/25 shrink-0">
+                                <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2.5">
+                                    <h2 class="text-sm font-black uppercase tracking-wider text-rose-950">
+                                        {{ 'BORD.ALERTS_CENTER_TITLE' | translate }}
+                                    </h2>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-500 text-white shadow-xs">
+                                        {{ notifications.length }}
+                                    </span>
                                 </div>
-                                <div>
-                                    <h4 class="font-black text-sm uppercase tracking-tight text-rose-900">{{ notif.title }}</h4>
-                                    <p class="text-xs text-rose-700/95 font-semibold mt-0.5">{{ notif.message }}</p>
+                                <p class="text-xs text-rose-700/90 font-semibold mt-0.5">
+                                    @if (notifications.length > 3 && !showAllNotifications) {
+                                        {{ 'BORD.SHOW_TOP_3' | translate:{ total: notifications.length } }}
+                                    } @else {
+                                        {{ 'BORD.SHOW_ALL' | translate:{ total: notifications.length } }}
+                                    }
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Hub Action Controls -->
+                        <div class="flex items-center gap-2.5 flex-wrap">
+                            @if (notifications.length > 3) {
+                                <button (click)="toggleShowAllNotifications()"
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-900 bg-rose-100/70 hover:bg-rose-200/80 transition-all border border-rose-200 cursor-pointer">
+                                    @if (showAllNotifications) {
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
+                                        {{ 'BORD.COLLAPSE_ALERTS' | translate }}
+                                    } @else {
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                        {{ 'BORD.EXPAND_ALL_ALERTS' | translate:{ count: notifications.length } }}
+                                    }
+                                </button>
+                            }
+
+                            <button (click)="markAllNotificationsAsRead()"
+                                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition-all border border-slate-200 cursor-pointer"
+                                [title]="'BORD.MARK_ALL_READ' | translate">
+                                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                {{ 'BORD.MARK_ALL_READ' | translate }}
+                            </button>
+
+                            <button (click)="navigateToAmlHub()"
+                                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black text-white bg-slate-900 hover:bg-cyan-700 shadow-sm hover:shadow transition-all cursor-pointer">
+                                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                {{ 'BORD.OPEN_AML_HUB' | translate }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Alert Cards Feed -->
+                    <div class="space-y-3 relative z-10" [ngClass]="{ 'max-h-[460px] overflow-y-auto pe-1': showAllNotifications && notifications.length > 5 }">
+                        @for (notif of displayedNotifications; track notif.id) {
+                            <div class="bg-gradient-to-r from-rose-50/80 via-white to-rose-50/40 border border-rose-200/80 hover:border-rose-300 text-rose-950 p-4 sm:p-5 rounded-2xl shadow-2xs hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
+                                <div class="flex items-start sm:items-center gap-3.5 min-w-0">
+                                    <div class="p-2.5 bg-rose-100 text-rose-600 rounded-xl shrink-0 group-hover:scale-105 transition-transform">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"/></svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <h4 class="font-black text-sm text-slate-900 tracking-tight group-hover:text-rose-700 transition-colors">{{ notif.title }}</h4>
+                                            @if (notif.clientId) {
+                                                <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">#{{ notif.clientId }}</span>
+                                            }
+                                            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-rose-100 text-rose-700 border border-rose-200 tracking-wider">
+                                                {{ 'BORD.ACTION_REQUIRED' | translate }}
+                                            </span>
+                                        </div>
+                                        <p class="text-xs text-slate-600 font-medium mt-1 truncate max-w-2xl">{{ notif.message }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
+                                    <button (click)="markAsRead(notif)" class="px-3.5 py-2 hover:bg-slate-100 text-slate-500 hover:text-slate-800 text-xs font-bold rounded-xl transition-all border border-transparent hover:border-slate-200 cursor-pointer">
+                                        {{ 'BORD.IGNORE' | translate }}
+                                    </button>
+                                    <button (click)="navigateToClientConformity(notif?.clientId!)" class="px-4 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-xs font-black rounded-xl shadow-sm shadow-rose-500/20 transition-all hover:scale-105 cursor-pointer flex items-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                        {{ 'BORD.ANALYZE_CLIENT' | translate }}
+                                    </button>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-3">
-                                <button (click)="markAsRead(notif)" class="px-4 py-2 hover:bg-rose-100/50 text-rose-800 text-xs font-black rounded-xl transition-all">
-                                    {{ 'BORD.IGNORE' | translate }}
+                        }
+                    </div>
+
+                    <!-- Expandable Footer Bar if > 3 notifications -->
+                    @if (notifications.length > 3 && !showAllNotifications) {
+                        <div class="p-3.5 rounded-2xl bg-rose-50/80 border border-rose-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                            <div class="flex items-center gap-2 text-rose-800 font-bold">
+                                <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                                <span>{{ 'BORD.MORE_ALERTS_REMAINING' | translate:{ count: notifications.length - 3 } }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button (click)="toggleShowAllNotifications()"
+                                    class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-rose-100 text-rose-900 font-black border border-rose-200 shadow-2xs hover:shadow-xs transition-all cursor-pointer">
+                                    {{ 'BORD.EXPAND_ALL_ALERTS' | translate:{ count: notifications.length } }}
                                 </button>
-                                <button (click)="navigateToClientDetails(notif?.clientId!)" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-black rounded-xl shadow-md shadow-rose-200 transition-all hover:scale-105">
-                                    {{ 'BORD.ANALYZE_CLIENT' | translate }}
+                                <button (click)="navigateToAmlHub()"
+                                    class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-cyan-700 text-white font-black transition-all cursor-pointer">
+                                    {{ 'BORD.VIEW_ALL_AML' | translate }}
                                 </button>
                             </div>
                         </div>
@@ -74,16 +162,24 @@
                 </div>
             } @else {
                 <!-- Standard compliance dashboard is clean -->
-                <div class="bg-gradient-to-r from-emerald-50/70 to-teal-50/20 border-l-4 border-emerald-500 text-emerald-950 p-5 rounded-[20px] shadow-sm border border-emerald-100 flex items-center justify-between gap-4">
+                <div class="bg-gradient-to-r from-emerald-50/80 via-white to-teal-50/40 border border-emerald-200 text-emerald-950 p-6 rounded-[28px] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div class="flex items-center gap-4">
-                        <div class="p-3 bg-emerald-100/80 rounded-2xl text-emerald-600">
+                        <div class="p-3 bg-emerald-100 text-emerald-600 rounded-2xl shadow-xs">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                         </div>
                         <div>
-                            <h4 class="font-black text-sm uppercase tracking-tight text-emerald-900">{{ 'BORD.AML_STATUS_TITLE' | translate }}</h4>
-                            <p class="text-xs text-emerald-700 font-semibold mt-0.5">{{ 'BORD.AML_STATUS_TEXT' | translate }}</p>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-black text-sm uppercase tracking-tight text-emerald-950">{{ 'BORD.AML_STATUS_TITLE' | translate }}</h4>
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase">Conforme</span>
+                            </div>
+                            <p class="text-xs text-emerald-700/90 font-semibold mt-0.5">{{ 'BORD.AML_STATUS_TEXT' | translate }}</p>
                         </div>
                     </div>
+                    <button (click)="navigateToAmlHub()"
+                        class="px-4 py-2.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-800 font-black text-xs border border-emerald-200 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        {{ 'BORD.VIEW_ALL_AML' | translate }}
+                    </button>
                 </div>
             }
         </div>

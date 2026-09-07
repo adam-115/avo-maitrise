@@ -115,7 +115,9 @@ export interface UBO {
   nationality?: string;
   roleInCompany?: string;
   percentageOfOwnership?: number;
-  amlAnalysisStatus?: 'TODO' | 'OK' | 'SUSPECT' | 'BLOCKED';
+  amlAnalysisStatus?: string | ClientStatus | 'TODO' | 'OK' | 'SUSPECT' | 'BLOCKED';
+  amlTargetEntityName?: string;
+  clientMoralId?: number;
 
   // Compatibility fields
   nom?: string;

@@ -79,22 +79,7 @@ export const routes: Routes = [
         path: NavigationService.CLIENT_EDIT,
         loadComponent: () => import('./crm/client-form/client-form.component').then(m => m.ClientFormComponent),
       },
-      // {
-      //   path: NavigationService.PERSONNE_EDIT,
-      //   loadComponent: () => import('./crm/personne-physique-form/personne-physique-form.component').then(m => m.PersonnePhysiqueFormComponent),
-      // },
-      // {
-      //   path: NavigationService.SOCIETE_EDIT,
-      //   loadComponent: () => import('./crm/client-moral-form/client-moral-form.component').then(m => m.ClientMoralFormComponent),
-      // },
-      // {
-      //   path: NavigationService.ASSOCIATION_EDIT,
-      //   loadComponent: () => import('./crm/association-form/association-form.component').then(m => m.AssociationFormComponent),
-      // },
-      // {
-      //   path: NavigationService.INSTITUTION_EDIT,
-      //   loadComponent: () => import('./crm/institution-form/institution-form.component').then(m => m.InstitutionFormComponent),
-      // },
+ 
       {
         path: NavigationService.CLIENT_CONFORMITY,
         loadComponent: () => import('./crm/client-conformity/client-conformity').then(m => m.ClientConformity)

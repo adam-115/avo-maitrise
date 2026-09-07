@@ -10,22 +10,27 @@
       
       <!-- Titre & Identité Client -->
       <div class="flex items-start sm:items-center gap-4">
-        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-cyan-600 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-indigo-600/20 flex-shrink-0">
+        <div (click)="navigateToClientDetails()" class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-cyan-600 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-indigo-600/20 flex-shrink-0 cursor-pointer hover:scale-105 hover:shadow-indigo-500/30 transition-all" title="Voir la fiche détaillée du client">
           {{ getDisplayName(client).charAt(0) }}
         </div>
         <div>
           <!-- Fil d'Ariane -->
           <nav class="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">
-            <a routerLink="/contacts" class="hover:text-indigo-600 transition-colors">CRM Clients</a> 
+            <a routerLink="/contacts" class="hover:text-indigo-600 transition-colors cursor-pointer">CRM Clients</a> 
+            <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            <a (click)="navigateToClientDetails()" class="hover:text-indigo-600 transition-colors cursor-pointer" title="Voir la fiche client">{{ getDisplayName(client) }}</a>
             <svg class="w-3 h-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             <span class="text-slate-800">Conformité LCB-FT & AML</span>
           </nav>
           
           <div class="flex items-center gap-3 flex-wrap">
-            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              {{ getDisplayName(client) }}
+            <h1 (click)="navigateToClientDetails()" class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight hover:text-indigo-600 cursor-pointer transition-colors flex items-center gap-2 group" title="Voir la fiche détaillée du client">
+              <span>{{ getDisplayName(client) }}</span>
+              <svg class="w-5 h-5 text-slate-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all opacity-0 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
             </h1>
-            <span class="px-2.5 py-0.5 rounded-lg text-xs font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200">
+            <span (click)="navigateToClientDetails()" class="px-2.5 py-0.5 rounded-lg text-xs font-mono font-bold bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 cursor-pointer transition-colors" title="Voir la fiche client">
               #{{ client.id }}
             </span>
             <span class="px-2.5 py-0.5 rounded-lg text-xs font-bold border shadow-2xs"
@@ -47,6 +52,13 @@
       <!-- Actions Rapides -->
       <div class="flex flex-wrap items-center gap-2.5">
         
+        <!-- Bouton Fiche Client Complète -->
+        <button type="button" (click)="navigateToClientDetails()"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-indigo-700 bg-indigo-50/90 border-2 border-indigo-200 hover:bg-indigo-100 hover:border-indigo-300 transition-all shadow-xs cursor-pointer" title="Voir le profil complet et les dossiers du client">
+          <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          <span>Fiche Client</span>
+        </button>
+
         <!-- Bouton Vérification AML Yente -->
         <button type="button" (click)="triggerClientVerification()" [disabled]="isVerifying"
           class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-emerald-700 bg-emerald-50 border-2 border-emerald-300 hover:bg-emerald-100 transition-all shadow-xs disabled:opacity-50 cursor-pointer">
@@ -272,7 +284,7 @@
       <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden p-5 space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
           <h4 class="text-xs font-bold uppercase tracking-wider text-slate-900">Coordonnées & Juridiction</h4>
-          <span class="text-[11px] font-bold text-slate-400">ID: #{{ client.id }}</span>
+          <button type="button" (click)="navigateToClientDetails()" class="text-[11px] font-bold text-slate-400 hover:text-indigo-600 cursor-pointer transition-colors" title="Voir la fiche client">ID: #{{ client.id }}</button>
         </div>
         
         <div class="space-y-2.5">

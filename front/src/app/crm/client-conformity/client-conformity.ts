@@ -485,6 +485,13 @@ export class ClientConformity implements OnInit {
     });
   }
 
+  navigateToClientDetails(id?: number | string) {
+    const targetId = id || this.client?.id;
+    if (targetId) {
+      this.navigationService.navigateToClientDetails(targetId.toString());
+    }
+  }
+
   editClient() {
     console.log('Edit client', this.client?.id);
     this.navigationService.navigateToClientEdit(String(this.client?.id));
