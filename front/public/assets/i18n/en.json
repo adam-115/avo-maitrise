@@ -555,7 +555,13 @@
     "ASSIGN_TO_ME_TITLE": "Assign to myself",
     "CANCEL": "Cancel",
     "UPDATE": "Update",
-    "SAVE": "Save"
+    "SAVE": "Save",
+    "STATUS_A_FACTURE": "To Bill",
+    "STATUS_EN_COURS_DE_FACTURATION": "In Billing Progress",
+    "STATUS_FACTUREE": "Billed",
+    "STATUS_PAS_PRISE_EN_CHARGE": "Non-billable (Pro bono / Free)",
+    "STATUS_ANNULEE": "Cancelled",
+    "STATUS_LOCKED_MSG": "Service linked to an invoice: status is synchronized automatically."
   },
   "DOCUMENT": {
     "UPLOAD": "Upload Document",
@@ -860,6 +866,8 @@
     "SERVICE": "Service",
     "PERFORMED_BY": "Performed by:",
     "NO_PRESTATIONS_PENDING": "No pending services found for this matter.",
+    "NO_PRESTATIONS_SUB": "This matter contains no services pending billing.",
+    "ADD_PRESTATION": "Add a service",
     "VAT_RATE": "VAT Rate (%)",
     "TITLE": "New Invoice"
   },

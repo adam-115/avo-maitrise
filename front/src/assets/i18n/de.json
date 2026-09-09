@@ -813,6 +813,8 @@
     "SERVICE": "Leistung",
     "PERFORMED_BY": "Ausgeführt von:",
     "NO_PRESTATIONS_PENDING": "Keine offenen Leistungen für diese Akte gefunden.",
+    "NO_PRESTATIONS_SUB": "Diese Akte enthält keine abrechenbaren Leistungen.",
+    "ADD_PRESTATION": "Leistung hinzufügen",
     "VAT_RATE": "MwSt.-Satz (%)",
     "TITLE": "Neue Rechnung"
   },

@@ -862,6 +862,8 @@
     "SERVICE": "Servicio",
     "PERFORMED_BY": "Realizado por:",
     "NO_PRESTATIONS_PENDING": "No se encontraron servicios pendientes para este expediente.",
+    "NO_PRESTATIONS_SUB": "Este expediente no contiene prestaciones pendientes de facturación.",
+    "ADD_PRESTATION": "Añadir una prestación",
     "VAT_RATE": "Tipo de IVA (%)"
   },
   "INVOICE_PREVIEW": {

@@ -1,6 +1,7 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InvoiceDossierServiceService } from '../../services/invoice-dossier-service.service';
 import { InvoiceTypeOfServiceService } from '../../services/invoice-type-of-service.service';
 import { InvoiceDossierService, InvoiceTypeOfService, User, InvoiceTimeEntry, InvoiceDossierServiceStatusEnum } from '../../appTypes';
@@ -15,18 +16,31 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-invoice-dossier-service',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, UserSelectionDialog, GenerateInvoiceDialog, TranslatePipe],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, UserSelectionDialog, GenerateInvoiceDialog, TranslatePipe],
   templateUrl: './invoice-dossier-service.component.html',
   styleUrls: []
 })
-export class InvoiceDossierServiceComponent implements OnInit {
+export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
   @Input() dossierId!: string | number;
 
   prestations: InvoiceDossierService[] = [];
   typesOfService: InvoiceTypeOfService[] = [];
   users: User[] = [];
   
-  statusOptions = Object.values(InvoiceDossierServiceStatusEnum);
+  createStatusOptions = [
+    InvoiceDossierServiceStatusEnum.A_FACTURE,
+    InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE
+  ];
+
+  editStatusOptions = [
+    InvoiceDossierServiceStatusEnum.A_FACTURE,
+    InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE,
+    InvoiceDossierServiceStatusEnum.ANNULEE
+  ];
+
+  get currentStatusOptions(): InvoiceDossierServiceStatusEnum[] {
+    return this.editingPrestationId ? this.editStatusOptions : this.createStatusOptions;
+  }
   
   currentUser: User | null = null;
   selectedDoneByUser: User | null = null;
@@ -38,6 +52,8 @@ export class InvoiceDossierServiceComponent implements OnInit {
   editingPrestationId: number | null = null;
   prestationForm: FormGroup;
   
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private prestationService = inject(InvoiceDossierServiceService);
   private typeOfService = inject(InvoiceTypeOfServiceService);
   private fb = inject(FormBuilder);
@@ -55,10 +71,54 @@ export class InvoiceDossierServiceComponent implements OnInit {
     });
   }
 
+  isStatusLocked(status?: InvoiceDossierServiceStatusEnum): boolean {
+    return status === InvoiceDossierServiceStatusEnum.FACTUREE || status === InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION;
+  }
+
+  getStatusBadgeClass(status?: InvoiceDossierServiceStatusEnum): string {
+    switch (status) {
+      case InvoiceDossierServiceStatusEnum.A_FACTURE:
+        return 'bg-blue-50 text-blue-700 border-blue-200';
+      case InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION:
+        return 'bg-amber-50 text-amber-700 border-amber-200';
+      case InvoiceDossierServiceStatusEnum.FACTUREE:
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case InvoiceDossierServiceStatusEnum.ANNULEE:
+        return 'bg-rose-50 text-rose-700 border-rose-200';
+      case InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE:
+        return 'bg-slate-100 text-slate-600 border-slate-300';
+      default:
+        return 'bg-slate-50 text-slate-600 border-slate-200';
+    }
+  }
+
+  getStatusI18nKey(status?: InvoiceDossierServiceStatusEnum): string {
+    if (!status) return '-';
+    return `PRESTATIONS.STATUS_${status}`;
+  }
+
   ngOnInit(): void {
+    if (!this.dossierId) {
+      const idFromRoute = this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id');
+      if (idFromRoute) {
+        this.dossierId = idFromRoute;
+      }
+    }
     this.loadPrestations();
     this.loadTypesOfService();
     this.loadUsers();
+
+    this.route.queryParams.subscribe(params => {
+      if (params['openAdd'] === 'true' || params['action'] === 'new') {
+        setTimeout(() => this.openAddModal(), 300);
+      }
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['dossierId'] && !changes['dossierId'].isFirstChange()) {
+      this.loadPrestations();
+    }
   }
 
   loadUsers(): void {
@@ -273,6 +333,28 @@ export class InvoiceDossierServiceComponent implements OnInit {
           },
           error: (err) => console.error(err)
         });
+      }
+    });
+  }
+
+  toggleNonFacturable(prestation: InvoiceDossierService): void {
+    if (!this.canEditPrestation(prestation) || !prestation.id) return;
+    
+    const targetStatus = prestation.status === InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE 
+      ? InvoiceDossierServiceStatusEnum.A_FACTURE 
+      : InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE;
+
+    const updated = { ...prestation, status: targetStatus };
+    this.prestationService.update(updated).subscribe({
+      next: () => {
+        this.alertService.success(targetStatus === InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE 
+          ? 'Prestation marquée comme non facturable' 
+          : 'Prestation marquée à facturer');
+        this.loadPrestations();
+      },
+      error: (err) => {
+        console.error(err);
+        this.alertService.displayMessage('Erreur', 'Impossible de modifier le statut de la prestation', 'error');
       }
     });
   }

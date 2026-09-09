@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { InvoiceService } from '../../services/invoice.service';
@@ -9,6 +9,7 @@ import { AlertService } from '../../../../services/alert-service';
 import { DossierService } from '../../../../services/dossier.service';
 import { ClientService } from '../../../../services/client-service';
 import { InvoiceDossierServiceService } from '../../../../services/invoice-dossier-service.service';
+import { CabinetProfileService } from '../../../../services/cabinet-profile.service';
 
 import { ClientSelectionDialog } from '../../../../dossier/client-selection-dialog/client-selection-dialog';
 import { DossierSelectionDialog } from '../../../../dossier/dossier-selection-dialog/dossier-selection-dialog';
@@ -21,13 +22,15 @@ import { Dossier, InvoiceStatusEnum, InvoiceTimeEntry } from '../../../../appTyp
     imports: [CommonModule, FormsModule, RouterModule, ClientSelectionDialog, DossierSelectionDialog, TranslatePipe],
     templateUrl: './invoice-frm.component.html'
 })
-export class InvoiceFrmComponent {
+export class InvoiceFrmComponent implements OnInit {
     router = inject(Router);
+    route = inject(ActivatedRoute);
     invoiceService = inject(InvoiceService);
     alertService = inject(AlertService);
     dossierService = inject(DossierService);
     clientService = inject(ClientService);
     invoiceDossierServiceService = inject(InvoiceDossierServiceService);
+    cabinetProfileService = inject(CabinetProfileService);
 
     showClientDialog = signal<boolean>(false);
     showDossierDialog = signal<boolean>(false);
@@ -45,6 +48,50 @@ export class InvoiceFrmComponent {
     // Time entries
     unbilledEntries = signal<any[]>([]);
     vatRate = signal<number>(20);
+
+    ngOnInit(): void {
+        this.cabinetProfileService.getProfile().subscribe({
+            next: (profile) => {
+                if (profile && typeof profile.tvaRate === 'number') {
+                    this.vatRate.set(profile.tvaRate);
+                }
+            },
+            error: (err) => console.error('Erreur chargement profil cabinet', err)
+        });
+
+        this.route.queryParams.subscribe(params => {
+            const dossierId = params['dossierId'];
+            const clientId = params['clientId'];
+
+            if (dossierId) {
+                this.preselectDossier(dossierId);
+            } else if (clientId) {
+                this.onClientSelected({ id: clientId });
+            }
+        });
+    }
+
+    preselectDossier(dossierId: string | number) {
+        this.dossierService.findById(dossierId).subscribe({
+            next: (dossier: any) => {
+                if (!dossier) return;
+                this.selectedDossierId.set(dossier.id);
+                this.selectedDossierData.set(dossier);
+                this.selectedDossierName.set(dossier.titre || dossier.referenceInterne || `Dossier #${dossier.id}`);
+
+                const clientId = dossier.client?.id || dossier.clientId;
+                if (clientId) {
+                    this.selectedClientId.set(clientId);
+                    this.loadClientData(clientId);
+                    this.loadClientDossiers(clientId);
+                }
+                this.loadUnbilledPrestations(dossier.id);
+            },
+            error: (err: any) => {
+                console.error("Erreur lors de la présélection du dossier", err);
+            }
+        });
+    }
 
     subtotalAmount = computed(() => {
         return this.unbilledEntries().reduce((sum, item) => {

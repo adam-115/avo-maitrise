@@ -56,6 +56,14 @@ public class InvoiceDossierServiceService {
         InvoiceDossierService entity = mapper.toEntity(dto);
         entity.setCreationDate(new Date());
         entity.setCreatedBy(currentUserInfoService.getCurrentUser());
+        
+        // Prevent manual creation directly with system-managed statuses
+        if (entity.getStatus() == null 
+                || InvoiceDossierServiceStatusEnum.FACTUREE.equals(entity.getStatus())
+                || InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION.equals(entity.getStatus())) {
+            entity.setStatus(InvoiceDossierServiceStatusEnum.A_FACTURE);
+        }
+        
         return mapper.toDto(repository.save(entity));
     }
 
@@ -71,6 +79,13 @@ public class InvoiceDossierServiceService {
         }
         
         InvoiceDossierService entity = mapper.toEntity(dto);
+        
+        // Prevent manual escalation to system-managed statuses from standalone update
+        if (InvoiceDossierServiceStatusEnum.FACTUREE.equals(entity.getStatus())
+                || InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION.equals(entity.getStatus())) {
+            entity.setStatus(existing.getStatus());
+        }
+        
         entity.setCreationDate(existing.getCreationDate());
         entity.setCreatedBy(existing.getCreatedBy());
         

@@ -81,7 +81,16 @@
         <!-- Section Prestations -->
         <div *ngIf="selectedDossierId()" class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-                <h3 class="text-lg font-bold text-slate-800">{{ 'INVOICE_FRM.STEP_3_PRESTATIONS' | translate }}</h3>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">{{ 'INVOICE_FRM.STEP_3_PRESTATIONS' | translate }}</h3>
+                </div>
+                <a [routerLink]="['/home/dossier-detail', selectedDossierId(), 'prestations']" [queryParams]="{ openAdd: 'true' }"
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-lg border border-indigo-200 transition-colors shadow-2xs hover:shadow-xs cursor-pointer">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>{{ 'INVOICE_FRM.ADD_PRESTATION' | translate }}</span>
+                </a>
             </div>
             
             <div class="overflow-x-auto">
@@ -125,7 +134,15 @@
                         <tr *ngIf="unbilledEntries().length === 0">
                             <td colspan="5" class="px-6 py-12 text-center text-slate-500 text-sm">
                                 <svg class="mx-auto h-12 w-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
-                                {{ 'INVOICE_FRM.NO_PRESTATIONS_PENDING' | translate }}
+                                <p class="font-medium text-slate-700">{{ 'INVOICE_FRM.NO_PRESTATIONS_PENDING' | translate }}</p>
+                                <p class="text-xs text-slate-400 mt-1 mb-4">{{ 'INVOICE_FRM.NO_PRESTATIONS_SUB' | translate }}</p>
+                                <a [routerLink]="['/home/dossier-detail', selectedDossierId(), 'prestations']" [queryParams]="{ openAdd: 'true' }"
+                                   class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-sm transition cursor-pointer">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                    </svg>
+                                    {{ 'INVOICE_FRM.ADD_PRESTATION' | translate }}
+                                </a>
                             </td>
                         </tr>
                     </tbody>

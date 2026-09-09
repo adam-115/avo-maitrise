@@ -862,6 +862,8 @@
     "SERVICE": "Servizio",
     "PERFORMED_BY": "Eseguito da:",
     "NO_PRESTATIONS_PENDING": "Nessuna prestazione in attesa trovata per questa pratica.",
+    "NO_PRESTATIONS_SUB": "Questa pratica non contiene prestazioni in attesa di fatturazione.",
+    "ADD_PRESTATION": "Aggiungi prestazione",
     "VAT_RATE": "Aliquota IVA (%)"
   },
   "INVOICE_PREVIEW": {

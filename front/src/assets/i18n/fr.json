@@ -467,7 +467,13 @@
     "ASSIGN_TO_ME_TITLE": "M'assigner cette prestation",
     "CANCEL": "Annuler",
     "UPDATE": "Mettre à jour",
-    "SAVE": "Enregistrer"
+    "SAVE": "Enregistrer",
+    "STATUS_A_FACTURE": "À facturer",
+    "STATUS_EN_COURS_DE_FACTURATION": "En cours de facturation",
+    "STATUS_FACTUREE": "Facturée",
+    "STATUS_PAS_PRISE_EN_CHARGE": "Non facturable (Offert / Pro bono)",
+    "STATUS_ANNULEE": "Annulée",
+    "STATUS_LOCKED_MSG": "Prestation rattachée à une facture : le statut est synchronisé automatiquement."
   },
   "DOCUMENT": {
     "UPLOAD": "Ajouter un Document",
@@ -723,6 +729,8 @@
     "SERVICE": "Service",
     "PERFORMED_BY": "Effectué par:",
     "NO_PRESTATIONS_PENDING": "Aucune prestation 'En attente' trouvée pour ce dossier.",
+    "NO_PRESTATIONS_SUB": "Ce dossier ne contient aucune prestation en attente de facturation.",
+    "ADD_PRESTATION": "Ajouter une prestation",
     "VAT_RATE": "Taux TVA (%)"
   },
   "INVOICE_PREVIEW": {

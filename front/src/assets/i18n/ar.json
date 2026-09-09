@@ -708,6 +708,8 @@
     "SERVICE": "الخدمة",
     "PERFORMED_BY": "تم بواسطة:",
     "NO_PRESTATIONS_PENDING": "لا توجد خدمات معلقة لهذا الملف.",
+    "NO_PRESTATIONS_SUB": "لا توجد خدمات معلقة للفوترة في هذا الملف.",
+    "ADD_PRESTATION": "إضافة خدمة",
     "VAT_RATE": "نسبة الضريبة (%)",
     "TITLE": "فاتورة جديدة"
   },
