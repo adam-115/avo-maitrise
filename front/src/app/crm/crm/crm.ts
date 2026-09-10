@@ -18,6 +18,8 @@ import { ClientMoralListComponent } from './client-moral-list/client-moral-list.
 import { AssociationListComponent } from './association-list/association-list.component';
 import { InstitutionListComponent } from './institution-list/institution-list.component';
 import { ClientCardComponent } from './client-card/client-card.component';
+import { RoleService } from '../../services/role.service';
+import { HasRoleDirective } from '../../shared/directives/has-role.directive';
 import { TranslatePipe } from '@ngx-translate/core';
 
 
@@ -32,7 +34,8 @@ import { TranslatePipe } from '@ngx-translate/core';
     AssociationListComponent, 
     InstitutionListComponent,
     ClientCardComponent,
-    TranslatePipe
+    TranslatePipe,
+    HasRoleDirective
   ],
   templateUrl: './crm.html',
   styleUrl: './crm.css'
@@ -42,6 +45,8 @@ export class Crm implements OnInit {
   activeTab: 'ALL' | 'PERSONNE' | 'SOCIETE' | 'ASSOCIATION' | 'INSTITUTION' = 'ALL';
   loading = true;
   viewMode: 'grid' | 'table' = 'grid';
+
+  roleService = inject(RoleService);
 
   private readonly navigationService = inject(NavigationService);
   private readonly clientService = inject(ClientService);

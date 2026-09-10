@@ -2,6 +2,7 @@ package com.avo.controller;
 
 import com.avo.services.BillingDashboardService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dashboard/billing")
+@PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT')")
 public class BillingDashboardController {
 
     private final BillingDashboardService billingDashboardService;

@@ -10,4 +10,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<AppUser, Long>, QuerydslPredicateExecutor<AppUser> {
     Optional<AppUser> findByUsername(String username);
+    Optional<AppUser> findByKeycloakId(String keycloakId);
+    Optional<AppUser> findByEmail(String email);
 }
+

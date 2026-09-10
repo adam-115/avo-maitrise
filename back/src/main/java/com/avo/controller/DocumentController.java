@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.avo.dtos.DocumentDTO;
@@ -24,26 +25,31 @@ public class DocumentController {
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<DocumentDTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/search")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<DocumentDTO>> search(@QuerydslPredicate(root = Document.class) Predicate predicate, Pageable pageable) {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE') or @securityUtils.isDocumentOwnerOrAllowed(#id)")
     public ResponseEntity<DocumentDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<DocumentDTO> create(@Valid @RequestBody DocumentDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping(value = {"", "/{id}"})
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE') or @securityUtils.isDocumentOwnerOrAllowed(#id)")
     public ResponseEntity<DocumentDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody DocumentDTO dto) {
         if (id != null && dto.getId() == null) {
             dto.setId(id);
@@ -52,8 +58,10 @@ public class DocumentController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE') or @securityUtils.isDocumentOwnerOrAllowed(#id)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
+

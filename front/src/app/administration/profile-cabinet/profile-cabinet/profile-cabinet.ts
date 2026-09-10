@@ -6,6 +6,7 @@ import { CabinetProfileService } from '../../../services/cabinet-profile.service
 import { AlertService } from '../../../services/alert-service';
 import { NavigationService } from '../../../services/navigation-service';
 import { CabinetProfile } from '../../../appTypes';
+import { RoleService } from '../../../services/role.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -21,9 +22,11 @@ export class ProfileCabinet implements OnInit {
   private profileService = inject(CabinetProfileService);
   private alertService = inject(AlertService);
   private router = inject(Router);
+  public readonly roleService = inject(RoleService);
   
   isLoading = true;
   isSaving = false;
+
 
   ngOnInit(): void {
     this.profileForm = this.fb.group({
@@ -94,6 +97,11 @@ export class ProfileCabinet implements OnInit {
   }
 
   saveProfile(): void {
+    if (!this.roleService.isAssocie) {
+      this.alertService.displayMessage('Accès restreint', 'Seuls les associés et administrateurs peuvent modifier les coordonnées officielles du cabinet.', 'warning');
+      return;
+    }
+
     if (this.profileForm.invalid) {
       this.alertService.displayMessage('Formulaire incomplet', 'Veuillez vérifier les champs obligatoires du profil.', 'warning');
       this.profileForm.markAllAsTouched();

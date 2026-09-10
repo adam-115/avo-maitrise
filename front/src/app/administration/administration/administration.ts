@@ -1,18 +1,21 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavigationService } from '../../services/navigation-service';
+import { RoleService } from '../../services/role.service';
+import { HasRoleDirective } from '../../shared/directives/has-role.directive';
 import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-administration',
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, HasRoleDirective],
   templateUrl: './administration.html',
   styleUrl: './administration.css'
 })
 export class Administration {
 
   navigationService = inject(NavigationService);
+  roleService = inject(RoleService);
 
   constructor(private readonly router: Router) {
   }

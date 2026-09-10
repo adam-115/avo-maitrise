@@ -20,14 +20,15 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // Only logout/reload if Keycloak is enabled and we actually had a token that became invalid
+      // Déconnexion uniquement sur 401 si session Keycloak expirée
       if (error.status === 401 && environment.keycloak.enabled && token) {
         keycloakService.logout();
+      } else if (error.status === 403) {
+        console.warn(`[RBAC Interceptor] Requête non autorisée (403 Forbidden) : ${req.method} ${req.url}`);
       }
-      // Suppression de la déconnexion automatique sur error.status === 0
-      // car un simple problème réseau ou une erreur CORS 500 provoquerait une déconnexion intempestive.
       
       return throwError(() => error);
     })
   );
 };
+

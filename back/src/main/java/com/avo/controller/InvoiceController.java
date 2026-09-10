@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.avo.dtos.InvoiceDTO;
 import com.avo.entities.Invoice;
@@ -26,11 +27,13 @@ public class InvoiceController {
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<InvoiceDTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/search")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<InvoiceDTO>> search(
             @QuerydslPredicate(root = Invoice.class) Predicate predicate,
             Pageable pageable) {
@@ -38,6 +41,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<InvoiceDTO> getById(@PathVariable Long id) {
         InvoiceDTO result = service.findById(id);
         if (result != null) {
@@ -47,11 +51,13 @@ public class InvoiceController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'SECRETARIAT')")
     public ResponseEntity<InvoiceDTO> create(@Valid @RequestBody InvoiceDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping(value = {"", "/{id}"})
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'SECRETARIAT')")
     public ResponseEntity<InvoiceDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody InvoiceDTO dto) {
         if (id != null && dto.getId() == null) {
             dto.setId(id);
@@ -60,12 +66,14 @@ public class InvoiceController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}/pdf")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<byte[]> generatePdf(@PathVariable Long id) {
         byte[] pdfBytes = reportingService.generateInvoicePdf(id);
         org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
@@ -75,6 +83,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/bulk-pdf")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<byte[]> generateBulkPdf(@RequestParam java.util.List<Long> ids) {
         byte[] pdfBytes = reportingService.generateBulkInvoicePdf(ids);
         org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
@@ -83,3 +92,4 @@ public class InvoiceController {
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 }
+

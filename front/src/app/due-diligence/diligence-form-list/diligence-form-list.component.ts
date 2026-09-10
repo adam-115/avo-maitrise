@@ -5,6 +5,8 @@ import { NavigationService } from '../../services/navigation-service';
 import { FormConfig } from '../../appTypes';
 import { FormConfigService } from '../../services/form-config-service';
 import { AlertService } from '../../services/alert-service';
+import { RoleService } from '../../services/role.service';
+import { HasRoleDirective } from '../../shared/directives/has-role.directive';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -13,7 +15,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 @Component({
     selector: 'app-diligence-form-list',
     standalone: true,
-    imports: [CommonModule, FormsModule, TranslatePipe, RouterLink],
+    imports: [CommonModule, FormsModule, TranslatePipe, RouterLink, HasRoleDirective],
     templateUrl: './diligence-form-list.component.html',
     styleUrl: './diligence-form-list.component.css',
 })
@@ -21,6 +23,7 @@ export class DiligenceFormListComponent implements OnInit {
     formConfigService = inject(FormConfigService);
     navigationService = inject(NavigationService);
     alertService = inject(AlertService);
+    roleService = inject(RoleService);
 
     formConfigs: FormConfig[] = [];
     isLoading = false;

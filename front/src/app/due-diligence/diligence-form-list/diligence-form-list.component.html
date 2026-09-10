@@ -59,7 +59,7 @@
                         {{ 'DILIGENCE_FORM_LIST.BTN_TRACKING' | translate }}
                     </button>
 
-                    <button (click)="onAdd()"
+                    <button *hasRole="['COMPLIANCE_OFFICER', 'ADMIN', 'SUPER_ADMIN', 'ASSOCIE']" (click)="onAdd()"
                         class="px-5 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white rounded-xl font-bold text-sm transition-all duration-200 flex items-center gap-2 shadow-lg shadow-indigo-600/20 active:scale-95">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/>
@@ -352,7 +352,7 @@
                                         </button>
 
                                         <!-- Modifier dans Builder -->
-                                        <button (click)="onEdit(config.id!)"
+                                        <button *hasRole="['COMPLIANCE_OFFICER', 'ADMIN', 'SUPER_ADMIN', 'ASSOCIE']" (click)="onEdit(config.id!)"
                                             class="p-2 rounded-xl text-blue-600 hover:bg-blue-50 hover:text-blue-800 transition-colors"
                                             [title]="'DILIGENCE_FORM_LIST.ACTION_EDIT' | translate">
                                             <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -361,7 +361,7 @@
                                         </button>
 
                                         <!-- Supprimer -->
-                                        <button (click)="onDelete(config.id!)"
+                                        <button *hasRole="['COMPLIANCE_OFFICER', 'ADMIN', 'SUPER_ADMIN', 'ASSOCIE']" (click)="onDelete(config.id!)"
                                             class="p-2 rounded-xl text-red-600 hover:bg-red-50 hover:text-red-800 transition-colors"
                                             [title]="'DILIGENCE_FORM_LIST.ACTION_DELETE' | translate">
                                             <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -384,7 +384,7 @@
                                         <p class="text-xs text-slate-500 mt-1 leading-relaxed">
                                             {{ 'DILIGENCE_FORM_LIST.NO_FORM_DESC' | translate }}
                                         </p>
-                                        <button (click)="onAdd()"
+                                        <button *hasRole="['COMPLIANCE_OFFICER', 'ADMIN', 'SUPER_ADMIN', 'ASSOCIE']" (click)="onAdd()"
                                             class="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs transition-all shadow-md shadow-indigo-600/20">
                                             + {{ 'DILIGENCE_FORM_LIST.BTN_CREATE_FIRST' | translate }}
                                         </button>

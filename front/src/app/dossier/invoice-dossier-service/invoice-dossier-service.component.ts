@@ -11,17 +11,21 @@ import { KeycloakService } from '../../services/keycloak.service';
 import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
 import { GenerateInvoiceDialog } from '../generate-invoice-dialog/generate-invoice-dialog';
 import { InvoiceService } from '../../features/billing/services/invoice.service';
+import { RoleService } from '../../services/role.service';
+import { HasRoleDirective } from '../../shared/directives/has-role.directive';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-invoice-dossier-service',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, UserSelectionDialog, GenerateInvoiceDialog, TranslatePipe],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, UserSelectionDialog, GenerateInvoiceDialog, TranslatePipe, HasRoleDirective],
   templateUrl: './invoice-dossier-service.component.html',
   styleUrls: []
 })
 export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
   @Input() dossierId!: string | number;
+
+  roleService = inject(RoleService);
 
   prestations: InvoiceDossierService[] = [];
   typesOfService: InvoiceTypeOfService[] = [];

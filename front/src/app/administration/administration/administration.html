@@ -123,7 +123,7 @@
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
     <!-- Module 1: Gestion des Utilisateurs -->
-    <a (click)="navigateToUserManagement()"
+    <a *hasRole="['ADMIN', 'SUPER_ADMIN']" (click)="navigateToUserManagement()"
       class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-red-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
       <div class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-red-500 group-hover:to-rose-600 transition-all"></div>
 
@@ -162,7 +162,7 @@
     </a>
 
     <!-- Module 2: Listes de Référence & Paramètres -->
-    <a (click)="navigateToAdministrationPrefrences()"
+    <a *hasRole="['ADMIN', 'SUPER_ADMIN']" (click)="navigateToAdministrationPrefrences()"
       class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-indigo-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
       <div class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-indigo-500 group-hover:to-blue-600 transition-all"></div>
 
@@ -199,7 +199,7 @@
     </a>
 
     <!-- Module 3: Profil du Cabinet & Logo -->
-    <a (click)="navigateToProfileCabinet()"
+    <a *hasRole="['ADMIN', 'SUPER_ADMIN', 'ASSOCIE']" (click)="navigateToProfileCabinet()"
       class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-amber-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
       <div class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-amber-500 group-hover:to-yellow-600 transition-all"></div>
 
@@ -237,7 +237,7 @@
     </a>
 
     <!-- Module 4: Formulaires Diligence & Indulgence -->
-    <a (click)="navigateToIndulgence()"
+    <a *hasRole="['COMPLIANCE_OFFICER', 'ADMIN', 'SUPER_ADMIN', 'ASSOCIE']" (click)="navigateToIndulgence()"
       class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-purple-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
       <div class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-purple-500 group-hover:to-indigo-600 transition-all"></div>
 

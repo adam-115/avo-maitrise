@@ -196,7 +196,7 @@
             </div>
 
             <!-- SECTION 2: Conformité & Vigilance (AML / KYC) -->
-            <div class="space-y-1">
+            <div *ngIf="roleService.isComplianceOfficer || roleService.isAvocat" class="space-y-1">
                 <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
                     {{ 'MENU.SECTION_COMPLIANCE' | translate }}
                 </p>
@@ -267,7 +267,7 @@
             </div>
 
             <!-- SECTION 3: Finances & Facturation -->
-            <div class="space-y-1">
+            <div *ngIf="roleService.isAvocat || roleService.isSecretariat" class="space-y-1">
                 <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
                     {{ 'MENU.SECTION_FINANCE' | translate }}
                 </p>
@@ -305,7 +305,7 @@
                 </a>
 
                 <!-- Tableau de Bord Facturation -->
-                <a (click)="navigateToBillingDashboard()"
+                <a *ngIf="roleService.isAvocat || roleService.isAssocie" (click)="navigateToBillingDashboard()"
                     [class.bg-gradient-to-r]="activeRoute === paths.BILLING_DASHBOARD"
                     [class.from-cyan-950/90]="activeRoute === paths.BILLING_DASHBOARD"
                     [class.via-slate-800/80]="activeRoute === paths.BILLING_DASHBOARD"
@@ -376,8 +376,8 @@
                 </a>
             </div>
 
-            <!-- SECTION 5: Système & Administration -->
-            <div class="space-y-1">
+            <!-- SECTION 5: Système & Administration (Visible uniquement pour les Administrateurs) -->
+            <div *ngIf="roleService.isAdmin" class="space-y-1">
                 <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
                     {{ 'MENU.SECTION_SYSTEM' | translate }}
                 </p>
@@ -430,7 +430,7 @@
                     </div>
                     <div class="min-w-0">
                         <p class="text-xs font-black text-white truncate">{{ username }}</p>
-                        <p class="text-[10px] text-cyan-400 font-semibold truncate">{{ 'MENU.USER_ROLE' | translate }}</p>
+                        <p class="text-[10px] text-cyan-400 font-semibold truncate">{{ roleService.primaryRoleLabel }}</p>
                     </div>
                 </div>
 
@@ -443,6 +443,7 @@
                     </svg>
                 </button>
             </div>
+
 
             <!-- Version Tag -->
             <p class="text-center text-[10px] text-slate-500 font-medium">

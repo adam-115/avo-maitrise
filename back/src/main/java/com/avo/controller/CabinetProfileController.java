@@ -3,6 +3,7 @@ package com.avo.controller;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,14 +27,17 @@ public class CabinetProfileController {
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<CabinetProfileDTO> getProfile() {
         log.info("REST request to get CabinetProfile");
         return ResponseEntity.ok(service.getProfile());
     }
 
     @PutMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE')")
     public ResponseEntity<CabinetProfileDTO> updateProfile(@Valid @RequestBody CabinetProfileDTO dto) {
         log.info("REST request to update CabinetProfile");
         return ResponseEntity.ok(service.updateProfile(dto));
     }
 }
+

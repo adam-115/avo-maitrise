@@ -10,6 +10,7 @@ import { ClientSelectionDialog } from '../../../../dossier/client-selection-dial
 import { DossierSelectionDialog } from '../../../../dossier/dossier-selection-dialog/dossier-selection-dialog';
 import { Client, Dossier } from '../../../../appTypes';
 import { DossierService } from '../../../../services/dossier.service';
+import { RoleService } from '../../../../services/role.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -22,6 +23,7 @@ export class InvoiceListComponent implements OnInit {
     invoiceService = inject(InvoiceService);
     router = inject(Router);
     dossierService = inject(DossierService);
+    roleService = inject(RoleService);
     
     // Pagination (0-indexed pour Spring Boot)
     currentPage = signal(0);

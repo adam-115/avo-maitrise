@@ -5,6 +5,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\config\GlobalExceptionHandler.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\KeycloakAdminConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\QueryDslConfig.java
 D:\avo-maitrise\back\src\main\java\com\avo\config\SecurityConfig.java
+D:\avo-maitrise\back\src\main\java\com\avo\config\SecurityUtils.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\AppointementController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\AssociationController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\BillingDashboardController.java

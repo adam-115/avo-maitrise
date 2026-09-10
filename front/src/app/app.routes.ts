@@ -5,6 +5,7 @@ import { Routes } from '@angular/router';
 
 
 import { NavigationService } from './services/navigation-service';
+import { roleGuard } from './services/role.guard';
 
 export const routes: Routes = [
   {
@@ -79,130 +80,175 @@ export const routes: Routes = [
         path: NavigationService.CLIENT_EDIT,
         loadComponent: () => import('./crm/client-form/client-form.component').then(m => m.ClientFormComponent),
       },
- 
       {
         path: NavigationService.CLIENT_CONFORMITY,
-        loadComponent: () => import('./crm/client-conformity/client-conformity').then(m => m.ClientConformity)
+        loadComponent: () => import('./crm/client-conformity/client-conformity').then(m => m.ClientConformity),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
       },
       {
         path: NavigationService.CLIENT_DETAILS,
         loadComponent: () => import('./crm/client-details/client-details.component').then(m => m.ClientDetailsComponent)
       },
 
-
       // gestion des documents models
       {
         path: NavigationService.MODEL,
         loadComponent: () => import('./model/model/model').then(m => m.Model)
-
       },
 
-      // gestion de la facturation
+      // calendrier
       {
         path: NavigationService.CALENDRIER,
         loadComponent: () => import('./calendrier/calendrier/calendrier').then(m => m.Calendrier)
       },
+
+      // Administration (Restreint aux Administrateurs)
       {
         path: NavigationService.ADMINSTRATION,
-        loadComponent: () => import('./administration/administration/administration').then(m => m.Administration)
+        loadComponent: () => import('./administration/administration/administration').then(m => m.Administration),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
       {
         path: NavigationService.UTILISATEURS,
-        loadComponent: () => import('./administration/utilisateurs/utilisateur/utilisateur').then(m => m.Utilisateur)
+        loadComponent: () => import('./administration/utilisateurs/utilisateur/utilisateur').then(m => m.Utilisateur),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
       {
         path: NavigationService.PROFILE_CABINET,
-        loadComponent: () => import('./administration/profile-cabinet/profile-cabinet/profile-cabinet').then(m => m.ProfileCabinet)
+        loadComponent: () => import('./administration/profile-cabinet/profile-cabinet/profile-cabinet').then(m => m.ProfileCabinet),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE'] }
       },
       {
         path: NavigationService.ADMIN_PREFERENCE,
-        loadComponent: () => import('./administration/preferences/preferences').then(m => m.Preferences)
+        loadComponent: () => import('./administration/preferences/preferences').then(m => m.Preferences),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
       {
         path: NavigationService.ADMIN_SECTEUR_ATIVITE,
-        loadComponent: () => import('./administration/secteur-activite/secteur-activite').then(m => m.SecteurActiviteComponent)
+        loadComponent: () => import('./administration/secteur-activite/secteur-activite').then(m => m.SecteurActiviteComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
 
-      // AML Compliance Paths can be found in NavigationService   
+      // AML Compliance Paths
       {
         path: NavigationService.AML_COMPLIANCE,
-        loadComponent: () => import('./due-diligence/aml-compliance/aml-compliance.component').then(m => m.AmlComplianceComponent)
+        loadComponent: () => import('./due-diligence/aml-compliance/aml-compliance.component').then(m => m.AmlComplianceComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
       },
       {
         path: NavigationService.DILIGENCE_FORM_BUILDER,
-        loadComponent: () => import('./due-diligence/diligence-form-builder-component/diligence-form-builder-component').then(m => m.DiligenceFormBuilderComponent)
+        loadComponent: () => import('./due-diligence/diligence-form-builder-component/diligence-form-builder-component').then(m => m.DiligenceFormBuilderComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'COMPLIANCE_OFFICER'] }
       },
       {
         path: NavigationService.DILIGENCE_FORM_BUILDER_EDIT,
-        loadComponent: () => import('./due-diligence/diligence-form-builder-component/diligence-form-builder-component').then(m => m.DiligenceFormBuilderComponent)
+        loadComponent: () => import('./due-diligence/diligence-form-builder-component/diligence-form-builder-component').then(m => m.DiligenceFormBuilderComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'COMPLIANCE_OFFICER'] }
       },
       {
         path: NavigationService.DILIGENCE_FORM_VIEWER,
-        loadComponent: () => import('./due-diligence/diligence-form-viewer/diligence-form-viewer.component').then(m => m.DiligenceFormViewerComponent)
+        loadComponent: () => import('./due-diligence/diligence-form-viewer/diligence-form-viewer.component').then(m => m.DiligenceFormViewerComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
       },
       {
         path: NavigationService.CLIENT_DILIGENCE_RESULTS,
-        loadComponent: () => import('./due-diligence/client-diligence-results/client-diligence-results.component').then(m => m.ClientDiligenceResultsComponent)
+        loadComponent: () => import('./due-diligence/client-diligence-results/client-diligence-results.component').then(m => m.ClientDiligenceResultsComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
       },
-
       {
         path: NavigationService.DILIGENCE_FORM_RESULT_VIEWER,
-        loadComponent: () => import('./due-diligence/diligence-form-result-viewer/diligence-form-result-viewer.component').then(m => m.DiligenceFormResultViewerComponent)
+        loadComponent: () => import('./due-diligence/diligence-form-result-viewer/diligence-form-result-viewer.component').then(m => m.DiligenceFormResultViewerComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
       },
       {
         path: NavigationService.DILIGENCE_FORM_LIST,
-        loadComponent: () => import('./due-diligence/diligence-form-list/diligence-form-list.component').then(m => m.DiligenceFormListComponent)
+        loadComponent: () => import('./due-diligence/diligence-form-list/diligence-form-list.component').then(m => m.DiligenceFormListComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'COMPLIANCE_OFFICER'] }
       },
       {
         path: NavigationService.CLIENT_DILIGENCE_STATUS_LIST,
-        loadComponent: () => import('./due-diligence/diligence-status-list/diligence-status-list.component').then(m => m.DiligenceStatusListComponent)
+        loadComponent: () => import('./due-diligence/diligence-status-list/diligence-status-list.component').then(m => m.DiligenceStatusListComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
       },
       {
         path: NavigationService.DOSSIER_STATUS_FORM,
-        loadComponent: () => import('./administration/dossier-status-form/dossier-status-form.component').then(m => m.DossierStatusFormComponent)
+        loadComponent: () => import('./administration/dossier-status-form/dossier-status-form.component').then(m => m.DossierStatusFormComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
       {
         path: NavigationService.DOSSIER_PRIORITE,
-        loadComponent: () => import('./administration/dossier-priorite/dossier-priorite.component').then(m => m.DossierPrioriteComponent)
+        loadComponent: () => import('./administration/dossier-priorite/dossier-priorite.component').then(m => m.DossierPrioriteComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
       {
         path: NavigationService.DOMAINE_JURIDIQUE,
-        loadComponent: () => import('./administration/domaine-juridique-form/domaine-juridique-form.component').then(m => m.DomaineJuridiqueFormComponent)
+        loadComponent: () => import('./administration/domaine-juridique-form/domaine-juridique-form.component').then(m => m.DomaineJuridiqueFormComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
       {
         path: NavigationService.TASK_CATEGORY,
-        loadComponent: () => import('./administration/task-category-form/task-category-form.component').then(m => m.TaskCategoryFormComponent)
+        loadComponent: () => import('./administration/task-category-form/task-category-form.component').then(m => m.TaskCategoryFormComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
       {
         path: NavigationService.TASK_STATUS,
-        loadComponent: () => import('./administration/task-status-form/task-status-form.component').then(m => m.TaskStatusFormComponent)
+        loadComponent: () => import('./administration/task-status-form/task-status-form.component').then(m => m.TaskStatusFormComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
       {
         path: NavigationService.NOTE_CATEGORY,
-        loadComponent: () => import('./administration/note-category/note-category.component').then(m => m.NoteCategoryComponent)
+        loadComponent: () => import('./administration/note-category/note-category.component').then(m => m.NoteCategoryComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
       {
         path: NavigationService.EVENT_TYPE,
-        loadComponent: () => import('./administration/event-type/event-type.component').then(m => m.EventTypeComponent)
+        loadComponent: () => import('./administration/event-type/event-type.component').then(m => m.EventTypeComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
       {
         path: NavigationService.INVOICE_TYPE_OF_SERVICE_FORM,
-        loadComponent: () => import('./administration/invoice-type-of-service-form/invoice-type-of-service-form.component').then(m => m.InvoiceTypeOfServiceFormComponent)
+        loadComponent: () => import('./administration/invoice-type-of-service-form/invoice-type-of-service-form.component').then(m => m.InvoiceTypeOfServiceFormComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN'] }
       },
 
-
-      // Routes      // Nouvelle Facturation
+      // Facturation & Finance
       {
         path: NavigationService.BILLING,
         loadComponent: () => import('./features/billing/components/invoice-list/invoice-list.component').then(m => m.InvoiceListComponent)
       },
       {
         path: NavigationService.BILLING_DASHBOARD,
-        loadComponent: () => import('./features/billing/components/billing-dashboard/billing-dashboard.component').then(m => m.BillingDashboardComponent)
+        loadComponent: () => import('./features/billing/components/billing-dashboard/billing-dashboard.component').then(m => m.BillingDashboardComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT'] }
       },
       {
         path: NavigationService.BILLING_NEW,
-        loadComponent: () => import('./features/billing/components/invoice-frm/invoice-frm.component').then(m => m.InvoiceFrmComponent)
+        loadComponent: () => import('./features/billing/components/invoice-frm/invoice-frm.component').then(m => m.InvoiceFrmComponent),
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'SECRETARIAT'] }
       },
       {
         path: NavigationService.BILLING_EDITOR,
@@ -221,7 +267,6 @@ export const routes: Routes = [
         loadComponent: () => import('./test/test').then(m => m.Test),
       }
     ]
-
-  },
-
+  }
 ];
+

@@ -10,6 +10,8 @@ import { ScreeningExecutionService } from '../../services/screening-execution.se
 import { NavigationService } from '../../services/navigation-service';
 import { AlertService } from '../../services/alert-service';
 import { Client, ClientStatus, ScreeningMatchDTO, ScreeningExecutionDTO, UBO, ScreeningMatchStatus } from '../../appTypes';
+import { RoleService } from '../../services/role.service';
+import { HasRoleDirective } from '../../shared/directives/has-role.directive';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
 import { MatchAnalysisModal } from '../../crm/client-conformity/match-analysis-modal';
 
@@ -51,7 +53,7 @@ export interface CategoryComplianceStats {
 @Component({
   selector: 'app-aml-compliance',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TranslatePipe, MatchAnalysisModal],
+  imports: [CommonModule, FormsModule, RouterModule, TranslatePipe, MatchAnalysisModal, HasRoleDirective],
   templateUrl: './aml-compliance.component.html'
 })
 export class AmlComplianceComponent implements OnInit {
@@ -62,6 +64,7 @@ export class AmlComplianceComponent implements OnInit {
   private readonly navigationService = inject(NavigationService);
   private readonly alertService = inject(AlertService);
   private readonly translateService = inject(TranslateService);
+  readonly roleService = inject(RoleService);
 
   // Active view / Tab
   activeCategoryFilter: 'ALL' | 'SANCTIONED' | 'SOCIETE' | 'PERSONNE' | 'UBO' = 'ALL';

@@ -5,12 +5,14 @@ import { DocumentDialog } from '../document-dialog/document-dialog';
 import { Dossier, Document } from '../../appTypes';
 import { DocumentService } from '../../services/document.service';
 import { AlertService } from '../../services/alert-service';
+import { RoleService } from '../../services/role.service';
+import { HasRoleDirective } from '../../shared/directives/has-role.directive';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-document',
   standalone: true,
-  imports: [CommonModule, FormsModule, DocumentDialog, TranslatePipe],
+  imports: [CommonModule, FormsModule, DocumentDialog, TranslatePipe, HasRoleDirective],
   templateUrl: './document.component.html',
   styleUrl: './document.component.css'
 })
@@ -26,6 +28,7 @@ export class DocumentComponent implements OnInit, OnChanges {
   documents: Document[] = [];
   documentService = inject(DocumentService);
   alertService = inject(AlertService);
+  roleService = inject(RoleService);
 
   // Search & Filter & View
   searchTerm = '';

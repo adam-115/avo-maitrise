@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { UtilisateursFormDialog } from '../utilisateurs-form-dialog/utilisateurs-form-dialog';
 import { UserService } from '../../../services/user.service';
 import { AlertService } from '../../../services/alert-service';
+import { RoleService } from '../../../services/role.service';
+import { HasRoleDirective } from '../../../shared/directives/has-role.directive';
 import { User } from '../../../appTypes';
 import { PaginatedResponse } from '../../../services/genericService/abstract-crud.service';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -11,7 +13,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 @Component({
   selector: 'app-utilisateur',
   standalone: true,
-  imports: [CommonModule, FormsModule, UtilisateursFormDialog, TranslatePipe],
+  imports: [CommonModule, FormsModule, UtilisateursFormDialog, TranslatePipe, HasRoleDirective],
   templateUrl: './utilisateur.html',
   styleUrl: './utilisateur.css'
 })
@@ -22,6 +24,7 @@ export class Utilisateur implements OnInit {
 
   userService = inject(UserService);
   alertService = inject(AlertService);
+  roleService = inject(RoleService);
   
   users: User[] = [];
   filteredUsers: User[] = [];

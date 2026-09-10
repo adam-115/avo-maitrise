@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterOutlet, NavigationEnd, Event as RouterEvent } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { KeycloakService } from './../services/keycloak.service';
+import { RoleService } from './../services/role.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { filter, Subscription } from 'rxjs';
 
@@ -19,6 +20,7 @@ export class Home implements OnInit, OnDestroy {
 
   private readonly navigationService = inject(NavigationService);
   private readonly keycloakService = inject(KeycloakService);
+  public readonly roleService = inject(RoleService);
   public readonly translate = inject(TranslateService);
   public readonly router = inject(Router);
 
