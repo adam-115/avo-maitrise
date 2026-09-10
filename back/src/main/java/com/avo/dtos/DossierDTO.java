@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
@@ -14,9 +16,17 @@ import java.util.ArrayList;
 @Builder
 public class DossierDTO {
     private Long id;
+
+    @Size(max = 50, message = "La référence interne ne doit pas dépasser 50 caractères")
     private String referenceInterne;
+
+    @NotBlank(message = "Le titre du dossier est obligatoire")
+    @Size(max = 255, message = "Le titre du dossier ne doit pas dépasser 255 caractères")
     private String titre;
+
+    @Size(max = 2000, message = "La description ne doit pas dépasser 2000 caractères")
     private String description;
+
     private ClientEntityDTO client;
     private String responsableId;
     private List<String> intervenantsIds = new ArrayList<>();

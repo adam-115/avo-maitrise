@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import com.avo.dtos.DiligenceFormResultDTO;
 import com.avo.entities.DiligenceFormResult;
 import com.avo.services.DiligenceFormResultService;
@@ -40,12 +42,12 @@ public class DiligenceFormResultController {
     }
 
     @PostMapping
-    public ResponseEntity<DiligenceFormResultDTO> create(@RequestBody DiligenceFormResultDTO dto) {
+    public ResponseEntity<DiligenceFormResultDTO> create(@Valid @RequestBody DiligenceFormResultDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DiligenceFormResultDTO> update(@PathVariable String id, @RequestBody DiligenceFormResultDTO dto) {
+    public ResponseEntity<DiligenceFormResultDTO> update(@PathVariable String id, @Valid @RequestBody DiligenceFormResultDTO dto) {
         dto.setId(id);
         return ResponseEntity.ok(service.update(dto));
     }

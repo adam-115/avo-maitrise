@@ -43,6 +43,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\controller\TestController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\UBOController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controller\UserController.java
 D:\avo-maitrise\back\src\main\java\com\avo\controllers\MatterActivityController.java
+D:\avo-maitrise\back\src\main\java\com\avo\dtos\ApiErrorResponse.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\AppointementDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\AssociationDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\CabinetProfileDTO.java
@@ -86,6 +87,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\dtos\UBODTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\UnbilledDossierSummaryDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\UserDTO.java
 D:\avo-maitrise\back\src\main\java\com\avo\dtos\UserRoleRequest.java
+D:\avo-maitrise\back\src\main\java\com\avo\entities\AppErrorLog.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Appointement.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\AppUser.java
 D:\avo-maitrise\back\src\main\java\com\avo\entities\Association.java
@@ -172,6 +174,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\mappers\TaskStatusMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\TestEntityMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\UBOMapper.java
 D:\avo-maitrise\back\src\main\java\com\avo\mappers\UserMapper.java
+D:\avo-maitrise\back\src\main\java\com\avo\repositories\AppErrorLogRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\AppointementRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\AssociationRepository.java
 D:\avo-maitrise\back\src\main\java\com\avo\repositories\CabinetProfileRepository.java
@@ -225,6 +228,7 @@ D:\avo-maitrise\back\src\main\java\com\avo\services\DossierContactService.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\DossierPrioriteService.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\DossierService.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\EmailService.java
+D:\avo-maitrise\back\src\main\java\com\avo\services\ErrorLogService.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\EventTypeService.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\FormConfigService.java
 D:\avo-maitrise\back\src\main\java\com\avo\services\InstitutionService.java

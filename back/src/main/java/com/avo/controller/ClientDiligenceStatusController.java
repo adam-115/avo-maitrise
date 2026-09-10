@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import com.avo.dtos.ClientDiligenceStatusDTO;
 import com.avo.entities.ClientDiligenceStatus;
 import com.avo.services.ClientDiligenceStatusService;
@@ -39,13 +41,13 @@ public class ClientDiligenceStatusController {
     }
 
     @PostMapping
-    public ResponseEntity<ClientDiligenceStatusDTO> create(@RequestBody ClientDiligenceStatusDTO dto) {
+    public ResponseEntity<ClientDiligenceStatusDTO> create(@Valid @RequestBody ClientDiligenceStatusDTO dto) {
         dto.setEnabled(true);
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientDiligenceStatusDTO> update(@PathVariable String id, @RequestBody ClientDiligenceStatusDTO dto) {
+    public ResponseEntity<ClientDiligenceStatusDTO> update(@PathVariable String id, @Valid @RequestBody ClientDiligenceStatusDTO dto) {
         dto.setId(id);
         return ResponseEntity.ok(service.update(dto));
     }

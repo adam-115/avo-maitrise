@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -84,14 +86,14 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<ClientEntityDTO> create(@RequestBody ClientEntityDTO dto) {
+    public ResponseEntity<ClientEntityDTO> create(@Valid @RequestBody ClientEntityDTO dto) {
         // default AML status creation 
         dto.setClientStatus(ClientStatus.AML_REQUIRED);
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping(value = {"", "/{id}"})
-    public ResponseEntity<ClientEntityDTO> update(@PathVariable(required = false) Long id, @RequestBody ClientEntityDTO dto) {
+    public ResponseEntity<ClientEntityDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody ClientEntityDTO dto) {
         if (id != null && dto.getId() == null) {
             dto.setId(id);
         }
@@ -105,7 +107,7 @@ public class ClientController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ClientEntityDTO> updateStatus(@PathVariable Long id, @RequestBody java.util.Map<String, String> updates) {
+    public ResponseEntity<ClientEntityDTO> updateStatus(@PathVariable Long id, @Valid @RequestBody java.util.Map<String, String> updates) {
         String statusStr = updates.get("clientStatus");
         com.avo.entities.ClientStatus status = com.avo.entities.ClientStatus.valueOf(statusStr);
         return ResponseEntity.ok(service.updateStatus(id, status));

@@ -1,69 +1,203 @@
 package com.avo.config;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.context.request.WebRequest;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.avo.dtos.ApiErrorResponse;
+import com.avo.services.ErrorLogService;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private final ErrorLogService errorLogService;
+
+    public GlobalExceptionHandler(ErrorLogService errorLogService) {
+        this.errorLogService = errorLogService;
+    }
+
+    // 1. Validation errors from @Valid on DTOs
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-            org.springframework.http.HttpHeaders headers, org.springframework.http.HttpStatusCode status,
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatusCode status,
             WebRequest request) {
-        Map<String, String> errors = new HashMap<>();
+
+        Map<String, String> validationErrors = new HashMap<>();
         ex.getBindingResult().getFieldErrors()
-                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
-        return ResponseEntity.badRequest().body(errors);
+                .forEach(error -> validationErrors.put(error.getField(), error.getDefaultMessage()));
+
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Validation Failed")
+                .message("Certains champs du formulaire sont invalides ou manquants.")
+                .path(extractPath(request))
+                .validationErrors(validationErrors)
+                .build();
+
+        return ResponseEntity.badRequest().body(response);
     }
 
+    // 2. Business / Illegal argument errors
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, String>> handleIllegalArgumentException(IllegalArgumentException ex) {
+    public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(
+            IllegalArgumentException ex, WebRequest request) {
+
         log.warn("⚠️ IllegalArgumentException: {}", ex.getMessage());
-        Map<String, String> error = new HashMap<>();
-        error.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .error("Bad Request")
+                .message(ex.getMessage() != null ? ex.getMessage() : "Requête invalide.")
+                .path(extractPath(request))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(org.springframework.dao.DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, String>> handleDataIntegrityViolation(org.springframework.dao.DataIntegrityViolationException ex) {
-        log.warn("⚠️ DataIntegrityViolationException: {}", ex.getMessage());
-        Map<String, String> error = new HashMap<>();
-        String msg = ex.getMessage();
-        if (msg != null && msg.contains("Duplicate entry")) {
-            error.put("message", "Cette référence ou valeur unique existe déjà dans la base de données.");
-        } else {
-            error.put("message", "Erreur de contrainte d'intégrité des données.");
+    // 3. Database / SQL Constraint violation (Duplicate keys, foreign keys) -> Sanitized message without SQL leak
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiErrorResponse> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex, WebRequest request) {
+
+        String rawMsg = ex.getMessage();
+        log.warn("⚠️ DataIntegrityViolationException caught: {}", rawMsg);
+
+        String userFriendlyMessage = "Erreur de contrainte d'intégrité des données.";
+        if (rawMsg != null && rawMsg.contains("Duplicate entry")) {
+            userFriendlyMessage = "Cette référence ou valeur unique existe déjà dans la base de données.";
         }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("Data Integrity Conflict")
+                .message(userFriendlyMessage)
+                .path(extractPath(request))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
+    // 4. Spring Security: Access Denied (403 Forbidden)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiErrorResponse> handleAccessDeniedException(
+            AccessDeniedException ex, WebRequest request) {
+
+        log.warn("⛔ AccessDeniedException: User '{}' attempted unauthorized access to {}", 
+                getCurrentUsername(), extractPath(request));
+
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.FORBIDDEN.value())
+                .error("Forbidden")
+                .message("Vous ne disposez pas des permissions nécessaires pour exécuter cette opération.")
+                .path(extractPath(request))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    // 5. Uncaught 500 Exceptions -> Log to Database & SLF4J, return clean sanitized JSON with ErrorId
     @ExceptionHandler(value = { Throwable.class })
-    protected ResponseEntity<String> handleConflict(Throwable ex, WebRequest request) {
-        log.error("❌ Exception caught by GlobalExceptionHandler!");
-        if (request instanceof ServletWebRequest) {
-            HttpServletRequest servletRequest = ((ServletWebRequest) request).getRequest();
-            log.error("➡️ Request URL: {} {}", servletRequest.getMethod(), servletRequest.getRequestURL());
-            log.error("➡️ Client IP: {}", servletRequest.getRemoteAddr());
-        }
-        log.error("➡️ Exception Message: {}", ex.getMessage());
-        log.error("➡️ Stack Trace:", ex);
+    public ResponseEntity<ApiErrorResponse> handleAllUncaughtExceptions(
+            Throwable ex, WebRequest request) {
 
-        java.io.StringWriter sw = new java.io.StringWriter();
-        java.io.PrintWriter pw = new java.io.PrintWriter(sw);
-        ex.printStackTrace(pw);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(sw.toString());
+        String errorId = "ERR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String path = extractPath(request);
+        String method = extractMethod(request);
+        String username = getCurrentUsername();
+        String clientIp = extractClientIp(request);
+        String userAgent = extractUserAgent(request);
+
+        // Save detailed error context in Database (in a dedicated new transaction)
+        errorLogService.logError(errorId, ex, path, method, HttpStatus.INTERNAL_SERVER_ERROR.value(), username, clientIp, userAgent);
+
+        // Server-side internal log
+        log.error("❌ [{}] Internal Server Error on {} {} (User: '{}', IP: {})", 
+                errorId, method, path, username, clientIp, ex);
+
+        // Clean client response WITHOUT leaking stack trace or SQL schema
+        ApiErrorResponse response = ApiErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error("Internal Server Error")
+                .message("Une erreur interne inattendue s'est produite. Référence support : " + errorId)
+                .path(path)
+                .errorId(errorId)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
+    private String extractPath(WebRequest request) {
+        if (request instanceof ServletWebRequest) {
+            HttpServletRequest req = ((ServletWebRequest) request).getRequest();
+            return req.getRequestURI();
+        }
+        return "";
+    }
+
+    private String extractMethod(WebRequest request) {
+        if (request instanceof ServletWebRequest) {
+            HttpServletRequest req = ((ServletWebRequest) request).getRequest();
+            return req.getMethod();
+        }
+        return "UNKNOWN";
+    }
+
+    private String extractClientIp(WebRequest request) {
+        if (request instanceof ServletWebRequest) {
+            HttpServletRequest req = ((ServletWebRequest) request).getRequest();
+            String xForwardedFor = req.getHeader("X-Forwarded-For");
+            if (xForwardedFor != null && !xForwardedFor.isBlank()) {
+                return xForwardedFor.split(",")[0].trim();
+            }
+            return req.getRemoteAddr();
+        }
+        return "";
+    }
+
+    private String extractUserAgent(WebRequest request) {
+        if (request instanceof ServletWebRequest) {
+            HttpServletRequest req = ((ServletWebRequest) request).getRequest();
+            return req.getHeader("User-Agent");
+        }
+        return "";
+    }
+
+    private String getCurrentUsername() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
+                return auth.getName();
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        return "Anonyme";
+    }
 }

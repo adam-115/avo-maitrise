@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -36,12 +38,12 @@ public class MatterEventController {
     }
 
     @PostMapping
-    public ResponseEntity<MatterEventDTO> create(@RequestBody MatterEventDTO dto) {
+    public ResponseEntity<MatterEventDTO> create(@Valid @RequestBody MatterEventDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping(value = {"", "/{id}"})
-    public ResponseEntity<MatterEventDTO> update(@PathVariable(required = false) Long id, @RequestBody MatterEventDTO dto) {
+    public ResponseEntity<MatterEventDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody MatterEventDTO dto) {
         if (id != null && dto.getId() == null) {
             dto.setId(id);
         }

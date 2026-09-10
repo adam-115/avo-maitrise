@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -83,12 +85,12 @@ public class ScreeningExecutionController {
     }
 
     @PostMapping
-    public ResponseEntity<ScreeningExecutionDTO> create(@RequestBody ScreeningExecutionDTO dto) {
+    public ResponseEntity<ScreeningExecutionDTO> create(@Valid @RequestBody ScreeningExecutionDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping
-    public ResponseEntity<ScreeningExecutionDTO> update(@RequestBody ScreeningExecutionDTO dto) {
+    public ResponseEntity<ScreeningExecutionDTO> update(@Valid @RequestBody ScreeningExecutionDTO dto) {
         return ResponseEntity.ok(service.update(dto));
     }
 

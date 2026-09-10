@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -39,12 +41,12 @@ public class AssociationController {
     }
 
     @PostMapping
-    public ResponseEntity<AssociationDTO> create(@RequestBody AssociationDTO dto) {
+    public ResponseEntity<AssociationDTO> create(@Valid @RequestBody AssociationDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping(value = {"", "/{id}"})
-    public ResponseEntity<AssociationDTO> update(@PathVariable(required = false) Long id, @RequestBody AssociationDTO dto) {
+    public ResponseEntity<AssociationDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody AssociationDTO dto) {
         if (id != null && dto.getId() == null) {
             dto.setId(id);
         }

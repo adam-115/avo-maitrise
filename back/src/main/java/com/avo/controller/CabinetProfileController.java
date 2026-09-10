@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,7 +32,7 @@ public class CabinetProfileController {
     }
 
     @PutMapping
-    public ResponseEntity<CabinetProfileDTO> updateProfile(@RequestBody CabinetProfileDTO dto) {
+    public ResponseEntity<CabinetProfileDTO> updateProfile(@Valid @RequestBody CabinetProfileDTO dto) {
         log.info("REST request to update CabinetProfile");
         return ResponseEntity.ok(service.updateProfile(dto));
     }

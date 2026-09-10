@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -37,12 +39,12 @@ public class TestController {
     }
 
     @PostMapping
-    public ResponseEntity<TestEntityDTO> create(@RequestBody TestEntityDTO dto) {
+    public ResponseEntity<TestEntityDTO> create(@Valid @RequestBody TestEntityDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping
-    public ResponseEntity<TestEntityDTO> update(@RequestBody TestEntityDTO dto) {
+    public ResponseEntity<TestEntityDTO> update(@Valid @RequestBody TestEntityDTO dto) {
         return ResponseEntity.ok(service.update(dto));
     }
 

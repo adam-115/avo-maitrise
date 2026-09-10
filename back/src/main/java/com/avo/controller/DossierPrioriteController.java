@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -36,12 +38,12 @@ public class DossierPrioriteController {
     }
 
     @PostMapping
-    public ResponseEntity<DossierPrioriteDTO> create(@RequestBody DossierPrioriteDTO dto) {
+    public ResponseEntity<DossierPrioriteDTO> create(@Valid @RequestBody DossierPrioriteDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping(value = {"", "/{id}"})
-    public ResponseEntity<DossierPrioriteDTO> update(@PathVariable(required = false) Long id, @RequestBody DossierPrioriteDTO dto) {
+    public ResponseEntity<DossierPrioriteDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody DossierPrioriteDTO dto) {
         if (id != null && dto.getId() == null) {
             dto.setId(id);
         }

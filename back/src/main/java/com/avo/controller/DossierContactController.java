@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -42,12 +44,12 @@ public class DossierContactController {
     }
 
     @PostMapping
-    public ResponseEntity<DossierContactDTO> create(@RequestBody DossierContactDTO dto) {
+    public ResponseEntity<DossierContactDTO> create(@Valid @RequestBody DossierContactDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping(value = {"", "/{id}"})
-    public ResponseEntity<DossierContactDTO> update(@PathVariable(required = false) Long id, @RequestBody DossierContactDTO dto) {
+    public ResponseEntity<DossierContactDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody DossierContactDTO dto) {
         if (id != null && dto.getId() == null) {
             dto.setId(id);
         }

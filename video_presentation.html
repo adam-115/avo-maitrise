@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SI-LÉGAL (Avo-Maîtrise) - Vidéo Officielle de Présentation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.03); }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(1000%); }
+        }
+        .glow-pulse { animation: pulseGlow 4s infinite ease-in-out; }
+        .float-card { animation: float 5s infinite ease-in-out; }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col items-center justify-center p-4 selection:bg-cyan-500 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="w-full max-w-6xl flex items-center justify-between py-3 px-6 glass-panel rounded-2xl mb-4 shadow-2xl">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 via-sky-500 to-blue-600 flex items-center justify-center font-black text-xl shadow-lg shadow-cyan-500/30">
+                ⚖️
+            </div>
+            <div>
+                <h1 class="font-black text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-cyan-300 bg-clip-text text-transparent">
+                    SI-LÉGAL <span class="text-xs font-semibold text-cyan-400 uppercase tracking-widest px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-800/60">Avo-Maîtrise</span>
+                </h1>
+                <p class="text-[11px] text-slate-400">Présentation Commerciale & Conformité AML pour Cabinets d'Avocats</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <span class="text-xs font-bold text-slate-400 flex items-center gap-1.5">
+                <span id="liveStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+                <span id="liveStatusText">Prêt pour lecture</span>
+            </span>
+            <button id="btnToggleRecord" onclick="toggleRecording()" class="px-3.5 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 text-xs font-bold transition flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                <span id="recordBtnText">Enregistrer la vidéo (MP4/WebM)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Video Stage Canvas / Player (16:9 Aspect Ratio) -->
+    <div class="relative w-full max-w-6xl aspect-video rounded-3xl overflow-hidden glass-panel border border-slate-800 shadow-[0_0_60px_rgba(6,182,212,0.15)] flex flex-col justify-between" id="videoCanvas">
+        
+        <!-- Ambient Glowing Background Elements -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl glow-pulse pointer-events-none"></div>
+        <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-blue-600/15 rounded-full blur-3xl glow-pulse pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <!-- Video Top Overlay (Badge, Title, Watermark) -->
+        <div class="relative z-20 p-6 flex justify-between items-start">
+            <div class="flex items-center gap-3">
+                <span id="sceneBadge" class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm">
+                    ACTE 1 • INTRODUCTION
+                </span>
+                <span id="sceneDuration" class="text-xs text-slate-400 font-medium">Scène 1 sur 10</span>
+            </div>
+            <div class="flex items-center gap-2 bg-slate-900/80 px-3 py-1 rounded-full border border-slate-700/60 text-[11px] text-slate-300">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span>SI-LÉGAL SaaS • Édition 2026</span>
+            </div>
+        </div>
+
+        <!-- Dynamic Scene Content Display -->
+        <div class="relative z-20 flex-1 px-8 py-2 flex items-center justify-center" id="sceneContainer">
+            <!-- Scene dynamically rendered here by JS -->
+        </div>
+
+        <!-- Subtitles & Audio Narration Display Bar -->
+        <div class="relative z-20 px-8 pb-4">
+            <div class="glass-card rounded-2xl p-4 border border-cyan-500/30 shadow-2xl flex items-center gap-4">
+                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center flex-shrink-0 text-lg">
+                    🎙️
+                </div>
+                <div class="flex-1">
+                    <p class="text-[11px] font-bold text-cyan-400 uppercase tracking-wider mb-0.5">Voix Off & Narration</p>
+                    <p id="subtitlesText" class="text-sm md:text-base font-semibold text-slate-100 leading-snug transition-all duration-300">
+                        Bienvenue dans la présentation officielle de SI-LÉGAL, la solution tout-en-un pour cabinets d'avocats.
+                    </p>
+                </div>
+                <div id="audioWave" class="flex items-center gap-1 flex-shrink-0 h-6">
+                    <span class="w-1 bg-cyan-400 rounded-full h-2 animate-bounce"></span>
+                    <span class="w-1 bg-cyan-400 rounded-full h-5 animate-bounce [animation-delay:0.1s]"></span>
+                    <span class="w-1 bg-cyan-400 rounded-full h-3 animate-bounce [animation-delay:0.2s]"></span>
+                    <span class="w-1 bg-cyan-400 rounded-full h-6 animate-bounce [animation-delay:0.3s]"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Timeline Progress Bar -->
+        <div class="relative z-20 w-full h-2 bg-slate-900 overflow-hidden cursor-pointer" onclick="seekVideo(event)">
+            <div id="timelineProgress" class="h-full bg-gradient-to-r from-cyan-400 via-sky-500 to-blue-600 transition-all duration-300 w-0"></div>
+        </div>
+    </div>
+
+    <!-- Video Playback & Scene Controls -->
+    <div class="w-full max-w-6xl mt-4 glass-panel p-4 rounded-2xl flex flex-wrap items-center justify-between gap-4 shadow-xl">
+        <div class="flex items-center gap-3">
+            <!-- Play/Pause Button -->
+            <button id="btnPlayPause" onclick="togglePlay()" class="w-12 h-12 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black flex items-center justify-center text-xl shadow-lg shadow-cyan-500/30 transition transform hover:scale-105">
+                ▶
+            </button>
+            
+            <!-- Restart Button -->
+            <button onclick="restartVideo()" class="p-3 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition" title="Recommencer">
+                🔄
+            </button>
+
+            <!-- Time Display -->
+            <div class="text-sm font-mono font-bold text-slate-300 ps-2">
+                <span id="currentTimeDisplay">00:00</span> / <span id="totalTimeDisplay">05:00</span>
+            </div>
+        </div>
+
+        <!-- Quick Scene Switcher Navigation -->
+        <div class="flex items-center gap-1.5 overflow-x-auto py-1">
+            <button onclick="jumpToScene(0)" class="scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-950/80 text-cyan-300 border border-cyan-800">1. Défi</button>
+            <button onclick="jumpToScene(1)" class="scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white">2. Hub</button>
+            <button onclick="jumpToScene(2)" class="scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white">3. AML</button>
+            <button onclick="jumpToScene(3)" class="scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white">4. UBO</button>
+            <button onclick="jumpToScene(4)" class="scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white">5. Diligences</button>
+            <button onclick="jumpToScene(5)" class="scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white">6. Dossiers</button>
+            <button onclick="jumpToScene(6)" class="scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white">7. GED</button>
+            <button onclick="jumpToScene(7)" class="scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white">8. Délais</button>
+            <button onclick="jumpToScene(8)" class="scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white">9. Facturation</button>
+            <button onclick="jumpToScene(9)" class="scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white">10. Démo</button>
+        </div>
+
+        <!-- Audio Settings -->
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400 font-bold">Voix :</span>
+                <button id="btnVoiceToggle" onclick="toggleVoice()" class="text-xs px-2.5 py-1 rounded bg-slate-800 text-cyan-300 font-bold border border-slate-700">
+                    🔊 ON
+                </button>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-400 font-bold">Musique :</span>
+                <button id="btnMusicToggle" onclick="toggleMusic()" class="text-xs px-2.5 py-1 rounded bg-slate-800 text-cyan-300 font-bold border border-slate-700">
+                    🎵 ON
+                </button>
+            </div>
+            <button onclick="toggleFullscreen()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition" title="Plein écran">
+                ⛶
+            </button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DATA & PLAYBACK ENGINE -->
+    <script>
+        const scenes = [
+            {
+                id: 1,
+                title: "ACTE 1 • LES DÉFIS RÉGLEMENTAIRES",
+                duration: 30, // 30s
+                badge: "Conformité LCB-FT • Pression Ordinale",
+                script: "Être avocat aujourd'hui, c'est défendre ses clients avec excellence tout en affrontant une pression réglementaire sans précédent. Directives AML européennes, contrôles de l'Ordre, obligations de vigilance et risque de sanctions disciplinaires. Combien d'heures votre cabinet perd-il chaque mois à sécuriser sa conformité ?",
+                render: () => `
+                    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-4 text-left">
+                            <span class="px-3 py-1 rounded-full text-xs font-black bg-red-500/20 text-red-400 border border-red-500/40">URGENCE RÉGLEMENTAIRE</span>
+                            <h2 class="text-3xl font-black text-white leading-tight">
+                                La conformité LCB-FT ne pardonne <span class="bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">aucune approximation</span>.
+                            </h2>
+                            <p class="text-slate-300 text-sm leading-relaxed">
+                                Les obligations de vigilance, l'identification des bénéficiaires effectifs et les déclarations Tracfin transforment le quotidien des cabinets en un casse-tête juridique chronophage.
+                            </p>
+                            <div class="grid grid-cols-2 gap-3 pt-2">
+                                <div class="glass-card p-3 rounded-xl border border-red-500/30">
+                                    <p class="text-2xl font-black text-red-400">+340%</p>
+                                    <p class="text-[11px] text-slate-400 font-semibold">Contrôles réglementaires</p>
+                                </div>
+                                <div class="glass-card p-3 rounded-xl border border-amber-500/30">
+                                    <p class="text-2xl font-black text-amber-400">12h / mois</p>
+                                    <p class="text-[11px] text-slate-400 font-semibold">Perdues en administratif</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="w-80 glass-card p-5 rounded-2xl border border-slate-700 shadow-2xl float-card relative">
+                                <div class="flex items-center justify-between pb-3 border-b border-slate-700">
+                                    <span class="text-xs font-black text-slate-300">EXIGENCES DE VIGILANCE</span>
+                                    <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                                </div>
+                                <div class="space-y-3 mt-4 text-xs">
+                                    <div class="flex items-center gap-2 p-2 rounded bg-slate-900/80 text-slate-300">
+                                        <span>⚠️</span> <span>Screening Listes Sanctions & PPE</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 p-2 rounded bg-slate-900/80 text-slate-300">
+                                        <span>📋</span> <span>Questionnaires Due Diligence</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 p-2 rounded bg-slate-900/80 text-slate-300">
+                                        <span>🔍</span> <span>Identification UBO & Registres</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 p-2 rounded bg-slate-900/80 text-slate-300">
+                                        <span>🛡️</span> <span>Piste d'Audit Certifiée</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 2,
+                title: "ACTE 2 • LA SOLUTION : SI-LÉGAL",
+                duration: 30,
+                badge: "Plateforme Intégrée • Avo-Maîtrise",
+                script: "Découvrez SI-LÉGAL, la première plateforme de gestion de cabinet nouvelle génération, pensée par et pour les avocats. Un espace unique qui fusionne automatisation AML et pilotage opérationnel à 360 degrés.",
+                render: () => `
+                    <div class="w-full text-center space-y-6">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-black">
+                            ✨ L'ERP JURIDIQUE NOUVELLE GÉNÉRATION
+                        </div>
+                        <h2 class="text-3xl md:text-4xl font-black tracking-tight text-white">
+                            Tout votre cabinet réuni sur <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 bg-clip-text text-transparent">un seul écran</span>.
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-4xl mx-auto pt-2">
+                            <div class="glass-card p-4 rounded-2xl border border-cyan-500/30 hover:border-cyan-400 transition">
+                                <div class="text-2xl mb-2">🛡️</div>
+                                <h3 class="font-black text-sm text-cyan-300">Conformité AML</h3>
+                                <p class="text-[11px] text-slate-400 mt-1">Screening automatique et score de risque</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-sky-500/30 hover:border-sky-400 transition">
+                                <div class="text-2xl mb-2">📁</div>
+                                <h3 class="font-black text-sm text-sky-300">Dossiers 360°</h3>
+                                <p class="text-[11px] text-slate-400 mt-1">Historique, actes, délais et pièces</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-blue-500/30 hover:border-blue-400 transition">
+                                <div class="text-2xl mb-2">💶</div>
+                                <h3 class="font-black text-sm text-blue-300">Facturation</h3>
+                                <p class="text-[11px] text-slate-400 mt-1">Saisie des temps et dashboard financier</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-indigo-500/30 hover:border-indigo-400 transition">
+                                <div class="text-2xl mb-2">🔒</div>
+                                <h3 class="font-black text-sm text-indigo-300">Sécurité Totale</h3>
+                                <p class="text-[11px] text-slate-400 mt-1">Authentification 2FA et rôles stricts</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 3,
+                title: "ACTE 3 • MOTEUR AML & SCREENING SANCTIONS",
+                duration: 30,
+                badge: "Screening International • Yente & Listes",
+                script: "Avec le moteur AML intégré, sécurisez l'onboarding de chaque client en temps réel. Le système interroge instantanément les bases de données internationales : sanctions ONU, Union Européenne et Personnes Politiquement Exposées.",
+                render: () => `
+                    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-4 text-left">
+                            <span class="px-3 py-1 rounded-full text-xs font-black bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">SCREENING TEMPS RÉEL</span>
+                            <h2 class="text-3xl font-black text-white leading-tight">
+                                Détection instantanée des <span class="text-cyan-400">Sanctions & PPE</span>.
+                            </h2>
+                            <ul class="space-y-2.5 text-xs text-slate-300">
+                                <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Interrogation automatique des listes internationales (ONU, OFAC, UE)</li>
+                                <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Détection des Personnes Politiquement Exposées (PPE)</li>
+                                <li class="flex items-center gap-2"><span class="text-emerald-400 font-bold">✓</span> Alertes visuelles instantanées en cas de concordance</li>
+                            </ul>
+                        </div>
+                        <div class="glass-card p-5 rounded-2xl border border-cyan-500/40 shadow-2xl space-y-3">
+                            <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                                <span class="text-xs font-black text-slate-200">RÉSULTAT DU SCREENING</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-black bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">CLEAR - CONFORME</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs font-bold text-white">Alice Smith</p>
+                                    <p class="text-[10px] text-slate-400">Nationalité : Française • Passeport Vérifié</p>
+                                </div>
+                                <span class="text-emerald-400 font-bold text-xs">Score : 0/100</span>
+                            </div>
+                            <div class="p-3 rounded-xl bg-slate-900/90 border border-red-500/30 flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs font-bold text-white">Carlos Danger (Match Alert)</p>
+                                    <p class="text-[10px] text-red-400">Liste Sanctions UE • Réf 2026-X</p>
+                                </div>
+                                <span class="px-2 py-0.5 rounded bg-red-500 text-white font-black text-[10px]">RISQUE ÉLEVÉ</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 4,
+                title: "ACTE 4 • BÉNÉFICIAIRES EFFECTIFS (UBO) & RISQUES",
+                duration: 30,
+                badge: "Cartographie UBO • Matrice de Risque",
+                script: "Identifiez facilement la chaîne de détention des personnes morales. SI-LÉGAL cartographie les bénéficiaires effectifs au-delà du seuil légal et calcule dynamiquement le score de risque global du dossier.",
+                render: () => `
+                    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-4 text-left">
+                            <span class="px-3 py-1 rounded-full text-xs font-black bg-blue-500/20 text-blue-300 border border-blue-500/40">TRANSPARENCE SOCIÉTÉS</span>
+                            <h2 class="text-3xl font-black text-white leading-tight">
+                                Cartographie claire des <span class="text-blue-400">Bénéficiaires Effectifs</span>.
+                            </h2>
+                            <p class="text-slate-300 text-xs leading-relaxed">
+                                Visualisez les participations capitalistiques, les droits de vote et les représentants légaux. Chaque associé bénéficie de son propre audit de conformité.
+                            </p>
+                        </div>
+                        <div class="glass-card p-5 rounded-2xl border border-blue-500/40 shadow-2xl space-y-3">
+                            <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                                <span class="text-xs font-black text-slate-200">Blue Star Tech Inc • Structure UBO</span>
+                                <span class="text-[10px] text-cyan-400 font-bold">100% Capital Déclaré</span>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex justify-between items-center text-xs">
+                                    <div>
+                                        <p class="font-bold text-white">Bob Star (CEO & Fondateur)</p>
+                                        <p class="text-[10px] text-slate-400">Détention : 75% du capital</p>
+                                    </div>
+                                    <span class="text-emerald-400 text-[10px] font-bold">Vérifié ✓</span>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-800 flex justify-between items-center text-xs">
+                                    <div>
+                                        <p class="font-bold text-white">Venture Capital Partner</p>
+                                        <p class="text-[10px] text-slate-400">Détention : 25% du capital</p>
+                                    </div>
+                                    <span class="text-emerald-400 text-[10px] font-bold">Vérifié ✓</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 5,
+                title: "ACTE 5 • SUIVI DES DILIGENCES & PISTE D'AUDIT",
+                duration: 30,
+                badge: "Form Builder • Preuve Ordinale",
+                script: "Adaptez vos questionnaires de vigilance grâce à notre Form Builder sur mesure. En cas de contrôle de votre Ordre, exportez en un clic un dossier de conformité complet, horodaté et certifié.",
+                render: () => `
+                    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-4 text-left">
+                            <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">SÉRÉNITÉ JURIDIQUE</span>
+                            <h2 class="text-3xl font-black text-white leading-tight">
+                                Votre dossier de conformité <span class="text-emerald-400">prêt pour le Bâtonnier</span>.
+                            </h2>
+                            <p class="text-slate-300 text-xs leading-relaxed">
+                                Formulaires dynamiques, pièces justificatives archivées et rapport d'audit horodaté pour justifier toutes vos diligences sans stress.
+                            </p>
+                        </div>
+                        <div class="glass-card p-5 rounded-2xl border border-emerald-500/40 shadow-2xl text-center space-y-4">
+                            <div class="text-4xl">📑</div>
+                            <h3 class="text-sm font-black text-white">Rapport d'Audit de Conformité Certifié</h3>
+                            <p class="text-[11px] text-slate-300">Horodatage cryptographique • Piste d'audit inviolable</p>
+                            <button class="px-4 py-2 rounded-xl bg-emerald-500 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/30">
+                                ⬇ Télécharger Fiche AML (PDF)
+                            </button>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 6,
+                title: "ACTE 6 • GESTION 360° DU DOSSIER JURIDIQUE",
+                duration: 30,
+                badge: "Dossier Centralisé • Vue 360°",
+                script: "Au cœur de votre métier : le dossier client. SI-LÉGAL centralise l'ensemble des pièces, événements, parties prenantes et activités sur un espace clair et collaboratif.",
+                render: () => `
+                    <div class="w-full text-left space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="px-3 py-1 rounded-full text-xs font-black bg-sky-500/20 text-sky-300 border border-sky-500/40">ESPACE AFFAIRES</span>
+                                <h2 class="text-2xl font-black text-white mt-1">Dossier n° 2026-DOS-0142 • Contentieux Commercial</h2>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold border border-emerald-500/40">En cours</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-3">
+                            <div class="glass-card p-3 rounded-xl text-center border border-cyan-500/30">
+                                <p class="text-xs font-bold text-slate-400">Actes & Pièces</p>
+                                <p class="text-lg font-black text-cyan-300">24 Docs</p>
+                            </div>
+                            <div class="glass-card p-3 rounded-xl text-center border border-sky-500/30">
+                                <p class="text-xs font-bold text-slate-400">Événements</p>
+                                <p class="text-lg font-black text-sky-300">8 Dates</p>
+                            </div>
+                            <div class="glass-card p-3 rounded-xl text-center border border-blue-500/30">
+                                <p class="text-xs font-bold text-slate-400">Temps Passé</p>
+                                <p class="text-lg font-black text-blue-300">14h 30m</p>
+                            </div>
+                            <div class="glass-card p-3 rounded-xl text-center border border-indigo-500/30">
+                                <p class="text-xs font-bold text-slate-400">Facturé</p>
+                                <p class="text-lg font-black text-indigo-300">4 250 €</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 7,
+                title: "ACTE 7 • GED & MODÈLES D'ACTES JURIDIQUES",
+                duration: 30,
+                badge: "GED Avocat • Génération Automatique",
+                script: "Générez vos conclusions, assignations et courriers en un clic à partir de votre bibliothèque de modèles d'actes personnalisés. Toutes vos pièces de procédure sont classées et sécurisées.",
+                render: () => `
+                    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-4 text-left">
+                            <span class="px-3 py-1 rounded-full text-xs font-black bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">PRODUCTIVITÉ RÉDACTIONNELLE</span>
+                            <h2 class="text-3xl font-black text-white leading-tight">
+                                Vos actes rédigés en <span class="text-indigo-400">quelques secondes</span>.
+                            </h2>
+                            <p class="text-slate-300 text-xs leading-relaxed">
+                                Fusion automatique des données clients, variables de dossier et clauses types. Éliminez 80% des tâches répétitives de saisie.
+                            </p>
+                        </div>
+                        <div class="glass-card p-4 rounded-2xl border border-indigo-500/30 shadow-2xl space-y-2 text-xs">
+                            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
+                                <span>📄 Modèle Conclusion Récapitulative.docx</span>
+                                <span class="text-cyan-400 font-bold">Générer ➔</span>
+                            </div>
+                            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
+                                <span>📄 Convention d'Honoraires au Temps.pdf</span>
+                                <span class="text-cyan-400 font-bold">Générer ➔</span>
+                            </div>
+                            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 flex justify-between items-center">
+                                <span>📄 Courrier Mise en Demeure.docx</span>
+                                <span class="text-cyan-400 font-bold">Générer ➔</span>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 8,
+                title: "ACTE 8 • CALENDRIER D'AUDIENCES & DÉLAIS LÉGAUX",
+                duration: 30,
+                badge: "Agenda Procédural • Zéro Forclusion",
+                script: "Ne manquez aucune échéance critique. L'agenda d'audiences synchronisé et le gestionnaire de délais légaux vous alertent pour sécuriser vos procédures et vos voies de recours.",
+                render: () => `
+                    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="space-y-4 text-left">
+                            <span class="px-3 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/40">SÉCURITÉ PROCÉDURALE</span>
+                            <h2 class="text-3xl font-black text-white leading-tight">
+                                Maîtrise absolue des <span class="text-amber-400">délais & audiences</span>.
+                            </h2>
+                            <p class="text-slate-300 text-xs leading-relaxed">
+                                Alertes automatiques de forclusion, suivi des délibérés et organisation des agendas partagés pour tous les membres du cabinet.
+                            </p>
+                        </div>
+                        <div class="glass-card p-5 rounded-2xl border border-amber-500/30 shadow-2xl space-y-3">
+                            <div class="flex items-center gap-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs">
+                                <span class="text-2xl">⚖️</span>
+                                <div>
+                                    <p class="font-bold text-white">Audience Plaidoirie - Tribunal Judiciaire</p>
+                                    <p class="text-[10px] text-amber-300">Demain à 14h00 • Salle 4B</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-xs">
+                                <span class="text-2xl">⏳</span>
+                                <div>
+                                    <p class="font-bold text-white">Délai d'Appel (Article 538 CPC)</p>
+                                    <p class="text-[10px] text-slate-400">Expiration dans 6 jours</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 9,
+                title: "ACTE 9 • FACTURATION & RENTABILITÉ DU CABINET",
+                duration: 30,
+                badge: "Time Tracking • Dashboard Financier",
+                script: "Valorisez chaque minute de votre expertise. Chronométrez vos diligences, générez vos factures d'honoraires en un clic et pilotez la rentabilité de votre cabinet avec le dashboard financier.",
+                render: () => `
+                    <div class="w-full text-left space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="px-3 py-1 rounded-full text-xs font-black bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">PILOTAGE FINANCIER</span>
+                                <h2 class="text-2xl font-black text-white mt-1">Tableau de Bord des Honoraires & Encaissements</h2>
+                            </div>
+                            <span class="text-xs font-black text-cyan-400">Année 2026</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="glass-card p-4 rounded-2xl border border-emerald-500/40">
+                                <p class="text-xs text-slate-400 font-bold">Chiffre d'Affaires Émis</p>
+                                <p class="text-2xl font-black text-emerald-400 mt-1">284 500 €</p>
+                                <p class="text-[10px] text-emerald-300 mt-1">+18.5% vs N-1</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-cyan-500/40">
+                                <p class="text-xs text-slate-400 font-bold">Taux de Recouvrement</p>
+                                <p class="text-2xl font-black text-cyan-400 mt-1">94.2%</p>
+                                <p class="text-[10px] text-slate-400 mt-1">Délai moyen : 14j</p>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-sky-500/40">
+                                <p class="text-xs text-slate-400 font-bold">Heures Facturables</p>
+                                <p class="text-2xl font-black text-sky-400 mt-1">1 420 h</p>
+                                <p class="text-[10px] text-slate-400 mt-1">Taux moyen : 250 €/h</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 10,
+                title: "ACTE 10 • SÉCURITÉ & DEMANDE DE DÉMO",
+                duration: 30,
+                badge: "Secret Professionnel • Démo Gratuite",
+                script: "La confidentialité est votre serment, elle est notre priorité absolue. Cloisonnement des rôles, 2FA et souveraineté des données. Prenez une longueur d'avance et demandez votre démonstration dès aujourd'hui sur notre site web.",
+                render: () => `
+                    <div class="w-full text-center space-y-6">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 text-xs font-black">
+                            🚀 PASSEZ À LA VITESSE SUPÉRIEURE
+                        </div>
+                        <h2 class="text-4xl font-black tracking-tight text-white max-w-2xl mx-auto">
+                            Modernisez votre cabinet avec <span class="bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 bg-clip-text text-transparent">SI-LÉGAL</span>.
+                        </h2>
+                        <div class="flex justify-center items-center gap-4 pt-2">
+                            <button class="px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black text-sm shadow-xl shadow-cyan-500/30 transition transform hover:scale-105">
+                                📅 Réserver ma Démonstration Gratuite
+                            </button>
+                            <span class="text-xs text-slate-400 font-semibold">www.si-legal.com</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400">
+                            🔒 Conforme RGPD • Hébergement Souverain • Secret Professionnel Garanti
+                        </p>
+                    </div>
+                `
+            }
+        ];
+
+        let currentSceneIndex = 0;
+        let isPlaying = false;
+        let sceneTimer = null;
+        let secondsRemainingInScene = 0;
+        let totalElapsedSeconds = 0;
+        const totalDurationSeconds = scenes.reduce((acc, s) => acc + s.duration, 0); // 300s = 5min
+
+        // Voice TTS State
+        let isVoiceEnabled = true;
+        let isMusicEnabled = true;
+        let currentUtterance = null;
+
+        // Web Audio Ambient Synthesizer
+        let audioCtx = null;
+        let musicGainNode = null;
+        let musicOsc1 = null;
+        let musicOsc2 = null;
+
+        function initAmbientMusic() {
+            try {
+                if (audioCtx) return;
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+                
+                musicGainNode = audioCtx.createGain();
+                musicGainNode.gain.setValueAtTime(0.04, audioCtx.currentTime); // Soft subtle volume
+
+                // Ambient chord synth (Pad sound)
+                musicOsc1 = audioCtx.createOscillator();
+                musicOsc1.type = 'sine';
+                musicOsc1.frequency.setValueAtTime(130.81, audioCtx.currentTime); // C3
+
+                musicOsc2 = audioCtx.createOscillator();
+                musicOsc2.type = 'triangle';
+                musicOsc2.frequency.setValueAtTime(196.00, audioCtx.currentTime); // G3
+
+                musicOsc1.connect(musicGainNode);
+                musicOsc2.connect(musicGainNode);
+                musicGainNode.connect(audioCtx.destination);
+
+                musicOsc1.start();
+                musicOsc2.start();
+            } catch (e) {
+                console.warn('Audio context error:', e);
+            }
+        }
+
+        function speakCurrentScene() {
+            if (!isVoiceEnabled || !('speechSynthesis' in window)) return;
+            window.speechSynthesis.cancel();
+
+            const text = scenes[currentSceneIndex].script;
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'fr-FR';
+            currentUtterance.rate = 1.05;
+            currentUtterance.pitch = 1.0;
+
+            const voices = window.speechSynthesis.getVoices();
+            const frenchVoice = voices.find(v => v.lang.startsWith('fr') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Henri') || v.name.includes('Julie') || v.name.includes('Denise')));
+            if (frenchVoice) {
+                currentUtterance.voice = frenchVoice;
+            }
+
+            window.speechSynthesis.speak(currentUtterance);
+        }
+
+        function renderScene() {
+            const scene = scenes[currentSceneIndex];
+            document.getElementById('sceneBadge').innerText = scene.badge;
+            document.getElementById('sceneDuration').innerText = `Scène ${currentSceneIndex + 1} sur ${scenes.length}`;
+            document.getElementById('sceneContainer').innerHTML = scene.render();
+            document.getElementById('subtitlesText').innerText = scene.script;
+
+            // Highlight active button
+            const buttons = document.querySelectorAll('.scene-btn');
+            buttons.forEach((btn, idx) => {
+                if (idx === currentSceneIndex) {
+                    btn.className = "scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-cyan-950/80 text-cyan-300 border border-cyan-800 shadow-sm";
+                } else {
+                    btn.className = "scene-btn px-2.5 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 hover:text-white";
+                }
+            });
+
+            if (isPlaying) {
+                speakCurrentScene();
+            }
+        }
+
+        function updateTimeDisplays() {
+            const formatTime = (secs) => {
+                const m = Math.floor(secs / 60).toString().padStart(2, '0');
+                const s = Math.floor(secs % 60).toString().padStart(2, '0');
+                return `${m}:${s}`;
+            };
+            document.getElementById('currentTimeDisplay').innerText = formatTime(totalElapsedSeconds);
+            document.getElementById('totalTimeDisplay').innerText = formatTime(totalDurationSeconds);
+
+            const progressPercent = (totalElapsedSeconds / totalDurationSeconds) * 100;
+            document.getElementById('timelineProgress').style.width = `${progressPercent}%`;
+        }
+
+        function startTick() {
+            if (sceneTimer) clearInterval(sceneTimer);
+
+            sceneTimer = setInterval(() => {
+                if (!isPlaying) return;
+
+                totalElapsedSeconds++;
+                secondsRemainingInScene--;
+
+                updateTimeDisplays();
+
+                if (secondsRemainingInScene <= 0) {
+                    if (currentSceneIndex < scenes.length - 1) {
+                        currentSceneIndex++;
+                        secondsRemainingInScene = scenes[currentSceneIndex].duration;
+                        renderScene();
+                    } else {
+                        // Finished
+                        pauseVideo();
+                        totalElapsedSeconds = totalDurationSeconds;
+                        updateTimeDisplays();
+                        document.getElementById('liveStatusText').innerText = "Vidéo terminée";
+                        document.getElementById('liveStatusDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
+                    }
+                }
+            }, 1000);
+        }
+
+        function playVideo() {
+            isPlaying = true;
+            document.getElementById('btnPlayPause').innerHTML = "❚❚";
+            document.getElementById('liveStatusText').innerText = "Lecture en cours (Son actif)";
+            document.getElementById('liveStatusDot').className = "w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping";
+
+            if (isMusicEnabled) {
+                initAmbientMusic();
+                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            }
+
+            if (secondsRemainingInScene <= 0) {
+                secondsRemainingInScene = scenes[currentSceneIndex].duration;
+            }
+
+            renderScene();
+            startTick();
+        }
+
+        function pauseVideo() {
+            isPlaying = false;
+            document.getElementById('btnPlayPause').innerHTML = "▶";
+            document.getElementById('liveStatusText').innerText = "En pause";
+            document.getElementById('liveStatusDot').className = "w-2.5 h-2.5 rounded-full bg-amber-500";
+
+            if (sceneTimer) clearInterval(sceneTimer);
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            if (audioCtx && audioCtx.state === 'running') audioCtx.suspend();
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                pauseVideo();
+            } else {
+                playVideo();
+            }
+        }
+
+        function restartVideo() {
+            pauseVideo();
+            currentSceneIndex = 0;
+            totalElapsedSeconds = 0;
+            secondsRemainingInScene = scenes[0].duration;
+            updateTimeDisplays();
+            renderScene();
+            playVideo();
+        }
+
+        function jumpToScene(index) {
+            currentSceneIndex = index;
+            // Calculate total elapsed up to this scene
+            totalElapsedSeconds = 0;
+            for (let i = 0; i < index; i++) {
+                totalElapsedSeconds += scenes[i].duration;
+            }
+            secondsRemainingInScene = scenes[index].duration;
+            updateTimeDisplays();
+            renderScene();
+            if (!isPlaying) {
+                playVideo();
+            }
+        }
+
+        function seekVideo(event) {
+            const rect = event.currentTarget.getBoundingClientRect();
+            const clickX = event.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            const targetSeconds = Math.floor(percentage * totalDurationSeconds);
+
+            // Find matching scene
+            let accumulated = 0;
+            for (let i = 0; i < scenes.length; i++) {
+                if (targetSeconds >= accumulated && targetSeconds < accumulated + scenes[i].duration) {
+                    currentSceneIndex = i;
+                    totalElapsedSeconds = targetSeconds;
+                    secondsRemainingInScene = (accumulated + scenes[i].duration) - targetSeconds;
+                    break;
+                }
+                accumulated += scenes[i].duration;
+            }
+            updateTimeDisplays();
+            renderScene();
+            if (!isPlaying) playVideo();
+        }
+
+        function toggleVoice() {
+            isVoiceEnabled = !isVoiceEnabled;
+            document.getElementById('btnVoiceToggle').innerText = isVoiceEnabled ? "🔊 ON" : "🔇 OFF";
+            if (!isVoiceEnabled && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            } else if (isPlaying) {
+                speakCurrentScene();
+            }
+        }
+
+        function toggleMusic() {
+            isMusicEnabled = !isMusicEnabled;
+            document.getElementById('btnMusicToggle').innerText = isMusicEnabled ? "🎵 ON" : "🔇 OFF";
+            if (musicGainNode && audioCtx) {
+                musicGainNode.gain.setValueAtTime(isMusicEnabled ? 0.04 : 0, audioCtx.currentTime);
+            }
+        }
+
+        function toggleFullscreen() {
+            const elem = document.getElementById('videoCanvas');
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Direct Screen/Video Recording Feature via MediaRecorder
+        let mediaRecorder = null;
+        let recordedChunks = [];
+        let isRecording = false;
+
+        async function toggleRecording() {
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getDisplayMedia({
+                        video: { frameRate: 60 },
+                        audio: true
+                    });
+                    recordedChunks = [];
+                    mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+
+                    mediaRecorder.ondataavailable = (e) => {
+                        if (e.data.size > 0) recordedChunks.push(e.data);
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'SI_LEGAL_Marketing_Video_5min.webm';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                        isRecording = false;
+                        document.getElementById('recordBtnText').innerText = "Enregistrer la vidéo (MP4/WebM)";
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    document.getElementById('recordBtnText').innerText = "Arrêter & Télécharger";
+                    restartVideo();
+                } catch (err) {
+                    alert("Pour enregistrer la vidéo, sélectionnez l'onglet de cette présentation lorsque le navigateur vous le demande.");
+                }
+            } else {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
+            }
+        }
+
+        // Initialize voices on load
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                // Preload voices
+                window.speechSynthesis.getVoices();
+            };
+        }
+
+        // Initial render
+        renderScene();
+        updateTimeDisplays();
+    </script>
+</body>
+</html>

@@ -1,14 +1,23 @@
 package com.avo.dtos;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Size;
+
 import java.util.Date;
 
 public class UBODTO {
 
     private Long id;
+    @NotBlank(message = "Le nom complet du bénéficiaire effectif est obligatoire")
+    @Size(max = 150)
     private String fullName;
     private Date dateOfBirth;
     private String nationality;
     private String roleInCompany;
+    @PositiveOrZero(message = "Le pourcentage doit être supérieur ou égal à 0")
+    @Max(value = 100, message = "Le pourcentage ne peut pas dépasser 100%")
     private Double percentageOfOwnership;
     private String amlAnalysisStatus;
     private String amlTargetEntityName;
@@ -61,11 +70,15 @@ public class UBODTO {
 
     public static class UBODTOBuilder {
         private Long id;
-        private String fullName;
+        @NotBlank(message = "Le nom complet du bénéficiaire effectif est obligatoire")
+    @Size(max = 150)
+    private String fullName;
         private Date dateOfBirth;
         private String nationality;
         private String roleInCompany;
-        private Double percentageOfOwnership;
+        @PositiveOrZero(message = "Le pourcentage doit être supérieur ou égal à 0")
+    @Max(value = 100, message = "Le pourcentage ne peut pas dépasser 100%")
+    private Double percentageOfOwnership;
         private String amlAnalysisStatus;
         private String amlTargetEntityName;
         private Long clientMoralId;

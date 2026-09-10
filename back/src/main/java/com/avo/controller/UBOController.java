@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -50,12 +52,12 @@ public class UBOController {
     }
 
     @PostMapping
-    public ResponseEntity<UBODTO> create(@RequestBody UBODTO dto) {
+    public ResponseEntity<UBODTO> create(@Valid @RequestBody UBODTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping(value = {"", "/{id}"})
-    public ResponseEntity<UBODTO> update(@PathVariable(required = false) Long id, @RequestBody UBODTO dto) {
+    public ResponseEntity<UBODTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody UBODTO dto) {
         if (id != null && dto.getId() == null) {
             dto.setId(id);
         }

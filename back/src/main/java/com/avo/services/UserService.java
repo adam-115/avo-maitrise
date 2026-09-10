@@ -8,6 +8,8 @@ import com.avo.entities.AppUser;
 import com.avo.mappers.UserMapper;
 import com.avo.repositories.UserRepository;
 import com.querydsl.core.types.Predicate;
+
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class UserService {
+
+    private static final String CHAR_LOWER = "abcdefghijklmnopqrstuvwxyz";
+    private static final String CHAR_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    private static final String NUMBERS = "0123456789";
+    private static final String SPECIAL_CHARS = "!@#$%^&*()-_=+";
+    private static final String ALL_CHARS = CHAR_LOWER + CHAR_UPPER + NUMBERS + SPECIAL_CHARS;
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private final UserRepository repository;
     private final UserMapper mapper;
@@ -28,6 +37,28 @@ public class UserService {
         this.mapper = mapper;
         this.keycloakService = keycloakService;
         this.emailService = emailService;
+    }
+
+    public static String generateSecurePassword(int length) {
+        if (length < 12) length = 14;
+        StringBuilder sb = new StringBuilder(length);
+        sb.append(CHAR_LOWER.charAt(SECURE_RANDOM.nextInt(CHAR_LOWER.length())));
+        sb.append(CHAR_UPPER.charAt(SECURE_RANDOM.nextInt(CHAR_UPPER.length())));
+        sb.append(NUMBERS.charAt(SECURE_RANDOM.nextInt(NUMBERS.length())));
+        sb.append(SPECIAL_CHARS.charAt(SECURE_RANDOM.nextInt(SPECIAL_CHARS.length())));
+
+        for (int i = 4; i < length; i++) {
+            sb.append(ALL_CHARS.charAt(SECURE_RANDOM.nextInt(ALL_CHARS.length())));
+        }
+
+        char[] array = sb.toString().toCharArray();
+        for (int i = array.length - 1; i > 0; i--) {
+            int j = SECURE_RANDOM.nextInt(i + 1);
+            char temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+        return new String(array);
     }
 
     public Page<UserDTO> findAll(Pageable pageable) {
@@ -54,12 +85,13 @@ public class UserService {
         kcRequest.setFirstName(dto.getFirstName());
         kcRequest.setLastName(dto.getLastName());
         kcRequest.setEnabled(dto.isActive());
-        // Set requested temporary password or fallback
-        if (dto.getTempPassword() != null && !dto.getTempPassword().isEmpty()) {
-            kcRequest.setPassword(dto.getTempPassword());
-        } else {
-            kcRequest.setPassword("AvoMaitrise@123");
-        }
+        
+        // Generate secure temporary password if none supplied
+        String temporaryPassword = (dto.getTempPassword() != null && !dto.getTempPassword().trim().isEmpty())
+                ? dto.getTempPassword()
+                : generateSecurePassword(14);
+        kcRequest.setPassword(temporaryPassword);
+
         if (dto.getRole() != null && !dto.getRole().isEmpty()) {
             kcRequest.setRoles(List.of(dto.getRole()));
         }
@@ -71,12 +103,29 @@ public class UserService {
             String kcId = keycloakService.createUser(kcRequest);
             dto.setKeycloakId(kcId);
         } catch (Exception e) {
-            System.err.println("Failed to create user in Keycloak: " + e.getMessage());
+            log.error("Failed to create user in Keycloak: {}", e.getMessage());
         }
 
         // 2. Save to local DB
         AppUser entity = mapper.toEntity(dto);
-        return mapper.toDto(repository.save(entity));
+        AppUser savedUser = repository.save(entity);
+
+        // 3. Send welcome email with temporary password if email is available
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+            try {
+                String emailText = "Bonjour " + (dto.getFirstName() != null ? dto.getFirstName() : "") + ",\n\n"
+                    + "Votre compte Avo-Maîtrise a été créé.\n"
+                    + "Identifiant : " + dto.getUsername() + "\n"
+                    + "Mot de passe temporaire : " + temporaryPassword + "\n\n"
+                    + "Veuillez vous connecter et définir votre mot de passe personnel dès votre première connexion.\n\n"
+                    + "Cordialement,\nL'équipe Avo-Maitrise.";
+                emailService.sendSimpleEmail(dto.getEmail(), "Bienvenue sur Avo-Maîtrise - Vos identifiants", emailText);
+            } catch (Exception mailEx) {
+                log.warn("Could not send welcome email to {}: {}", dto.getEmail(), mailEx.getMessage());
+            }
+        }
+
+        return mapper.toDto(savedUser);
     }
 
     public UserDTO update(UserDTO dto) {
@@ -99,53 +148,43 @@ public class UserService {
                     dto.setKeycloakId(fetchedKcId);
                 }
             } catch (Exception e) {
-                System.err.println("Could not fetch keycloakId for auto-healing: " + e.getMessage());
+                log.warn("Impossible de récupérer l'ID Keycloak par username: {}", e.getMessage());
             }
         }
 
-        // 1. Save to local DB
         AppUser entity = mapper.toEntity(dto);
-        UserDTO saved = mapper.toDto(repository.save(entity));
+        UserDTO updatedDto = mapper.toDto(repository.save(entity));
 
-        // 2. Update user in Keycloak
+        // Sync with Keycloak
         try {
-            String kcUserId = dto.getKeycloakId() != null ? dto.getKeycloakId() : keycloakService.getUserIdByUsername(dto.getUsername());
+            String kcUserId = getOrSyncKeycloakId(dto);
             if (kcUserId != null) {
                 CreateUserRequest kcRequest = new CreateUserRequest();
                 kcRequest.setFirstName(dto.getFirstName());
                 kcRequest.setLastName(dto.getLastName());
                 kcRequest.setEmail(dto.getEmail());
                 kcRequest.setEnabled(dto.isActive());
-                keycloakService.updateUser(kcUserId, kcRequest);
-
-                // Process manual password reset during update
-                if (dto.getTempPassword() != null && !dto.getTempPassword().trim().isEmpty()) {
-                    com.avo.dtos.PasswordResetRequest req = new com.avo.dtos.PasswordResetRequest(kcUserId, dto.getTempPassword(), true);
-                    keycloakService.resetPassword(req);
-
-                    if (dto.getEmail() != null) {
-                        String emailText = "Bonjour " + dto.getFirstName() + ",\n\n"
-                            + "Votre mot de passe a été réinitialisé par un administrateur.\n"
-                            + "Votre nouveau mot de passe temporaire est : " + dto.getTempPassword() + "\n"
-                            + "Veuillez vous connecter et le modifier immédiatement.\n\n"
-                            + "Cordialement,\nL'équipe Avo-Maitrise.";
-                        emailService.sendSimpleEmail(dto.getEmail(), "Réinitialisation de votre mot de passe", emailText);
-                    }
+                if (dto.getRole() != null && !dto.getRole().isEmpty()) {
+                    kcRequest.setRoles(List.of(dto.getRole()));
                 }
+                keycloakService.updateUser(kcUserId, kcRequest);
             }
         } catch (Exception e) {
-            log.error("Failed to update user in Keycloak", e);
-        } 
+            log.error("Failed to sync user update with Keycloak: {}", e.getMessage());
+        }
 
-        return saved;
+        return updatedDto;
     }
 
     private String getOrSyncKeycloakId(UserDTO dto) {
-        if (dto.getKeycloakId() != null) {
+        if (dto.getKeycloakId() != null && !dto.getKeycloakId().isEmpty()) {
             return dto.getKeycloakId();
         }
-        
-        String kcUserId = keycloakService.getUserIdByUsername(dto.getUsername());
+
+        String kcUserId = null;
+        if (dto.getUsername() != null) {
+            kcUserId = keycloakService.getUserIdByUsername(dto.getUsername());
+        }
         if (kcUserId != null) {
             updateKeycloakIdInDb(dto.getId(), kcUserId);
             return kcUserId;
@@ -160,8 +199,6 @@ public class UserService {
 
         // Auto-create in Keycloak for resilience against manual DB inserts
         CreateUserRequest kcRequest = new CreateUserRequest();
-        
-        // Nettoyage du username pour éviter "error-username-invalid-character"
         String safeUsername = dto.getUsername() != null 
             ? dto.getUsername().replaceAll("[^a-zA-Z0-9\\-_\\.]", "_") 
             : "user_" + dto.getId();
@@ -171,7 +208,7 @@ public class UserService {
         kcRequest.setFirstName(dto.getFirstName());
         kcRequest.setLastName(dto.getLastName());
         kcRequest.setEnabled(dto.isActive());
-        kcRequest.setPassword("AvoMaitrise@123");
+        kcRequest.setPassword(generateSecurePassword(14));
         if (dto.getRole() != null && !dto.getRole().isEmpty()) {
             kcRequest.setRoles(List.of(dto.getRole()));
         }
@@ -181,8 +218,7 @@ public class UserService {
             updateKeycloakIdInDb(dto.getId(), newKcId);
             return newKcId;
         } catch (Exception e) {
-            System.err.println("Failed to auto-create user in Keycloak: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Failed to auto-create user in Keycloak: {}", e.getMessage());
             throw new RuntimeException("Impossible de synchroniser avec Keycloak: " + e.getMessage(), e);
         }
     }
@@ -206,7 +242,7 @@ public class UserService {
                     keycloakService.disableUser(kcUserId);
                 }
             } catch (Exception e) {
-                System.err.println("Failed to disable user in Keycloak: " + e.getMessage());
+                log.error("Failed to disable user in Keycloak: {}", e.getMessage());
             }
         }
     }
@@ -228,7 +264,7 @@ public class UserService {
                     keycloakService.updateUser(kcUserId, updateReq);
                 }
             } catch (Exception e) {
-                System.err.println("Failed to enable user in Keycloak: " + e.getMessage());
+                log.error("Failed to enable user in Keycloak: {}", e.getMessage());
             }
         }
     }
@@ -251,7 +287,7 @@ public class UserService {
                     }
                 }
             } catch (Exception e) {
-                System.err.println("Failed to update role in Keycloak: " + e.getMessage());
+                log.error("Failed to update role in Keycloak: {}", e.getMessage());
             }
         }
     }
@@ -265,13 +301,8 @@ public class UserService {
         if (user != null) {
             String kcUserId = getOrSyncKeycloakId(user);
             if (kcUserId != null) {
-                // Générer un mot de passe temporaire complexe de 12 caractères
-                String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < 12; i++) {
-                    sb.append(chars.charAt((int) (Math.random() * chars.length())));
-                }
-                String newPassword = sb.toString();
+                // Generate cryptographically strong random password
+                String newPassword = generateSecurePassword(14);
                 
                 com.avo.dtos.PasswordResetRequest req = new com.avo.dtos.PasswordResetRequest(kcUserId, newPassword, true);
                 keycloakService.resetPassword(req);

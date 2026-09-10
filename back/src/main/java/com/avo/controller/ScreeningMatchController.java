@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -37,12 +39,12 @@ public class ScreeningMatchController {
     }
 
     @PostMapping
-    public ResponseEntity<ScreeningMatchDTO> create(@RequestBody ScreeningMatchDTO dto) {
+    public ResponseEntity<ScreeningMatchDTO> create(@Valid @RequestBody ScreeningMatchDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping
-    public ResponseEntity<ScreeningMatchDTO> update(@RequestBody ScreeningMatchDTO dto) {
+    public ResponseEntity<ScreeningMatchDTO> update(@Valid @RequestBody ScreeningMatchDTO dto) {
         return ResponseEntity.ok(service.update(dto));
     }
 
@@ -57,7 +59,7 @@ public class ScreeningMatchController {
 
     @PostMapping("/batch-decision")
     public ResponseEntity<java.util.List<ScreeningMatchDTO>> processBatchDecision(
-            @RequestBody java.util.List<Long> matchIds,
+            @Valid @RequestBody java.util.List<Long> matchIds,
             @RequestParam com.avo.entities.ScreeningMatchStatus decision,
             @RequestParam(required = false) String comment,
             @RequestParam(required = false) String reviewer) {

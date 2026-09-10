@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-app-error-logs-table" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="app_error_logs"/>
+            </not>
+        </preConditions>
+        <createTable tableName="app_error_logs">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="error_id" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="http_method" type="VARCHAR(10)"/>
+            <column name="request_uri" type="VARCHAR(500)"/>
+            <column name="http_status" type="INT"/>
+            <column name="exception_class" type="VARCHAR(255)"/>
+            <column name="message" type="TEXT"/>
+            <column name="stack_trace" type="LONGTEXT"/>
+            <column name="username" type="VARCHAR(100)"/>
+            <column name="client_ip" type="VARCHAR(50)"/>
+            <column name="user_agent" type="VARCHAR(500)"/>
+            <column name="resolved" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="app_error_logs" indexName="idx_app_error_logs_error_id">
+            <column name="error_id"/>
+        </createIndex>
+        <createIndex tableName="app_error_logs" indexName="idx_app_error_logs_timestamp">
+            <column name="timestamp"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
