@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Livre Blanc & Benchmark Stratégique : ERP Avocats, Pricing & Conformité LCB-FT</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 10mm 12mm 10mm 12mm;
+      @bottom-left {
+        content: "Vigilex / Avora LegalTech © 2026 — Document Confidentiel & Stratégique";
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 6.8pt;
+        color: #94a3b8;
+      }
+      @bottom-right {
+        content: "Page " counter(page) " sur " counter(pages);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 7.2pt;
+        font-weight: 600;
+        color: #64748b;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1e293b;
+      background-color: #ffffff;
+      line-height: 1.35;
+      font-size: 8.4pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    /* HEADER BANNER */
+    .top-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #334155;
+    }
+
+    .banner-left h1 {
+      font-size: 13pt;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      text-transform: uppercase;
+      color: #ffffff;
+      margin-bottom: 2px;
+    }
+
+    .banner-left .tagline {
+      font-size: 8.2pt;
+      color: #93c5fd;
+      font-weight: 500;
+    }
+
+    .banner-right {
+      text-align: right;
+    }
+
+    .confidential-tag {
+      display: inline-block;
+      background: #dc2626;
+      color: #ffffff;
+      font-size: 6.5pt;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+
+    .banner-meta {
+      font-size: 6.8pt;
+      color: #cbd5e1;
+    }
+
+    /* KPI METRICS BAR */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .kpi-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 6px 8px;
+      text-align: center;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .kpi-card .kpi-num {
+      font-size: 11.5pt;
+      font-weight: 800;
+      color: #1e40af;
+      line-height: 1.1;
+    }
+
+    .kpi-card .kpi-label {
+      font-size: 6.8pt;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* SECTION HEADINGS */
+    h2 {
+      font-size: 9.8pt;
+      font-weight: 800;
+      color: #0f172a;
+      border-left: 3.5px solid #2563eb;
+      padding-left: 6px;
+      margin-top: 8px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* COMPARATIVE TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+      margin-bottom: 8px;
+      font-size: 7.6pt;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 5.5px;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #0f172a;
+      color: #ffffff;
+      font-weight: 700;
+      text-align: center;
+      font-size: 7pt;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+    }
+
+    th.feature-col {
+      text-align: left;
+      width: 25%;
+    }
+
+    th.our-col {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: #ffffff;
+      border: 2px solid #3b82f6;
+    }
+
+    td.our-cell {
+      background-color: #eff6ff;
+      font-weight: 600;
+      color: #1e3a8a;
+      text-align: center;
+      border-left: 1.5px solid #bfdbfe;
+      border-right: 1.5px solid #bfdbfe;
+    }
+
+    td.center {
+      text-align: center;
+    }
+
+    tr:nth-child(even) td:not(.our-cell) {
+      background-color: #f8fafc;
+    }
+
+    /* CARDS & GRIDS */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 7px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 7px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .card.strength {
+      border-top: 2.5px solid #10b981;
+      background: #fcfdfd;
+    }
+
+    .card.aml-box {
+      border-top: 2.5px solid #2563eb;
+      background: #f8faff;
+      border-left: 1px solid #dbeafe;
+    }
+
+    .card.roadmap-box {
+      border-top: 2.5px solid #f59e0b;
+      background: #fffdfa;
+    }
+
+    .card.pricing-card {
+      border: 1px solid #cbd5e1;
+      border-top: 3px solid #0f172a;
+      text-align: center;
+      background: #ffffff;
+    }
+
+    .pricing-card.featured {
+      border: 2px solid #2563eb;
+      border-top: 4px solid #1d4ed8;
+      background: #eff6ff;
+      box-shadow: 0 2px 4px rgba(37,99,235,0.08);
+    }
+
+    .card h4 {
+      font-size: 8.2pt;
+      font-weight: 700;
+      margin-bottom: 2.5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .strength h4 { color: #065f46; }
+    .aml-box h4 { color: #1e40af; }
+    .roadmap-box h4 { color: #92400e; }
+
+    .card p, .card ul {
+      font-size: 7.4pt;
+      color: #475569;
+      margin-bottom: 0;
+      line-height: 1.32;
+    }
+
+    .card ul {
+      padding-left: 12px;
+      margin-top: 2px;
+    }
+
+    .card li {
+      margin-bottom: 1.5px;
+    }
+
+    /* BADGES */
+    .badge {
+      padding: 1.5px 4.5px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 6.6pt;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+    }
+
+    .badge-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .badge-warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .badge-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .badge-blue { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+
+    /* CALLOUT BOXES */
+    .callout-blue {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-left: 3.5px solid #2563eb;
+      padding: 6px 8px;
+      border-radius: 4px;
+      font-size: 7.7pt;
+      color: #1e3a8a;
+      margin-bottom: 6px;
+    }
+
+    .callout-dark {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 7px 9px;
+      border-radius: 4px;
+      font-size: 7.7pt;
+      margin-top: 6px;
+    }
+
+    .callout-dark p {
+      color: #cbd5e1;
+      margin-bottom: 0;
+    }
+
+    .step-circle {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      line-height: 15px;
+      text-align: center;
+      background: #2563eb;
+      color: white;
+      border-radius: 50%;
+      font-size: 6.2pt;
+      font-weight: 800;
+      margin-right: 3px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .footer {
+      border-top: 1px solid #cbd5e1;
+      padding-top: 4px;
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 6.8pt;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ========================================================== -->
+  <!-- PAGE 1 : SYNTHÈSE, BENCHMARK CONCURRENTIEL & TARIFS        -->
+  <!-- ========================================================== -->
+
+  <div class="top-banner">
+    <div class="banner-left">
+      <div class="tagline">Livre Blanc & Benchmark Stratégique — LegalTech 2026</div>
+      <h1>L'ERP Nouvelle Génération des Cabinets d'Avocats & LCB-FT</h1>
+    </div>
+    <div class="banner-right">
+      <div class="confidential-tag">Stratégique / Confidentiel</div>
+      <div class="banner-meta">Version 2.4 — Septembre 2026<br>Barreaux, Associés & Ordre</div>
+    </div>
+  </div>
+
+  <!-- KPI BAR -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-num">100%</div>
+      <div class="kpi-label">Conformité LCB-FT Intégrée</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">3k€ à 8k€</div>
+      <div class="kpi-label">Économie / An (Outil AML Tiers)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">6 Rôles</div>
+      <div class="kpi-label">Cloisonnement RBAC Strict</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-num">&lt; 1 Clic</div>
+      <div class="kpi-label">Rapport Audit Bâtonnier PDF</div>
+    </div>
+  </div>
+
+  <!-- SYNTHÈSE -->
+  <div class="callout-blue">
+    <strong>Constat Marché & Proposition de Valeur :</strong> Les contrôles de l'Ordre des Avocats et de la CARPA imposent désormais une traçabilité rigoureuse en matière de <strong>Lutte Contre le Blanchiment (LCB-FT)</strong>. Les ERP historiques (Secib, Kleos, Diapaz) obligent les cabinets à multiplier les saisies manuelles ou à payer des outils tiers onéreux (World-Check, Altares). Notre solution est la <strong>seule à fusionner la gestion intégrale de cabinet et le screening automatisé natif</strong>.
+  </div>
+
+  <!-- SECTION 1 : BENCHMARK & PRICING CONCURRENTIEL -->
+  <h2>1. Matrice Fonctionnelle & Grille Tarifaire Comparative</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="feature-col">Critères & Modules Clés</th>
+        <th class="our-col">Notre Solution<br><span style="font-size:6.2pt; font-weight:normal;">(Vigilex / Avora)</span></th>
+        <th>SECIB<br><span style="font-size:6.2pt; font-weight:normal;">(Septeo)</span></th>
+        <th>Jarvis Legal</th>
+        <th>KLEOS<br><span style="font-size:6.2pt; font-weight:normal;">(Wolters Kluwer)</span></th>
+        <th>DIAPAZ<br><span style="font-size:6.2pt; font-weight:normal;">(Septeo)</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tarif Moyen / Utilisateur / Mois</strong></td>
+        <td class="our-cell"><span class="badge badge-success">49€ à 79€ HT</span><br><span style="font-size:6.2pt;">Sans frais d'entrée cachés</span></td>
+        <td class="center"><strong>90€ à 150€ HT</strong><br><span style="font-size:6.2pt;">+ 2k€-5k€ setup</span></td>
+        <td class="center"><strong>49€ à 89€ HT</strong><br><span style="font-size:6.2pt;">+ modules payants</span></td>
+        <td class="center"><strong>69€ à 120€ HT</strong><br><span style="font-size:6.2pt;">+ engagement 36 mois</span></td>
+        <td class="center"><strong>95€ à 140€ HT</strong><br><span style="font-size:6.2pt;">+ licences M365</span></td>
+      </tr>
+      <tr>
+        <td><strong>Conformité AML / Screening Sanctions & PPE</strong></td>
+        <td class="our-cell"><span class="badge badge-success">✅ INCLUS (Natif Yente)</span></td>
+        <td class="center"><span class="badge badge-danger">Option payante / Manuel</span></td>
+        <td class="center"><span class="badge badge-danger">Outil externe séparé</span></td>
+        <td class="center"><span class="badge badge-danger">Champs déclaratifs</span></td>
+        <td class="center"><span class="badge badge-danger">Non inclus</span></td>
+      </tr>
+      <tr>
+        <td><strong>Économie Outil AML Tiers (World-Check/Altares)</strong></td>
+        <td class="our-cell"><span class="badge badge-success">Économie 3 000€ à 8 000€/an</span></td>
+        <td class="center">Surcoût tiers</td>
+        <td class="center">Surcoût tiers</td>
+        <td class="center">Surcoût tiers</td>
+        <td class="center">Surcoût tiers</td>
+      </tr>
+      <tr>
+        <td><strong>Génération Rapport Bâtonnier (Audit PDF)</strong></td>
+        <td class="our-cell"><span class="badge badge-success">✅ OUI (1 clic certifié)</span></td>
+        <td class="center"><span class="badge badge-danger">❌ NON (Manuel)</span></td>
+        <td class="center"><span class="badge badge-danger">❌ NON</span></td>
+        <td class="center"><span class="badge badge-danger">❌ NON</span></td>
+        <td class="center"><span class="badge badge-danger">❌ NON</span></td>
+      </tr>
+      <tr>
+        <td><strong>Matrice de Sécurité RBAC (Anti-Fuite interne)</strong></td>
+        <td class="our-cell"><span class="badge badge-success">6 Rôles Stricts + Finance étanche</span></td>
+        <td class="center">Modulaire complexe</td>
+        <td class="center">Rôles standards</td>
+        <td class="center">Rôles standards</td>
+        <td class="center">Groupes AD</td>
+      </tr>
+      <tr>
+        <td><strong>Modernité UI & Réactivité Web</strong></td>
+        <td class="our-cell"><span class="badge badge-success">Angular 20 (Ultra fluide)</span></td>
+        <td class="center"><span class="badge badge-danger">Lourd / Vieillissant</span></td>
+        <td class="center"><span class="badge badge-success">SaaS Moderne</span></td>
+        <td class="center">Classique / Rigide</td>
+        <td class="center">Add-in Outlook</td>
+      </tr>
+      <tr>
+        <td><strong>Authentification Sécurisée & 2FA</strong></td>
+        <td class="our-cell"><span class="badge badge-success">Keycloak (SSO / 2FA / JWT)</span></td>
+        <td class="center">Base propriétaire</td>
+        <td class="center">Cloud Sécurisé</td>
+        <td class="center">Cloud Sécurisé</td>
+        <td class="center">Microsoft Azure</td>
+      </tr>
+      <tr>
+        <td><strong>Passerelle RPVA / E-Barreau</strong></td>
+        <td class="our-cell"><span class="badge badge-warning">Roadmap Q4 (Priorité 1)</span></td>
+        <td class="center"><span class="badge badge-success">✅ Historique</span></td>
+        <td class="center"><span class="badge badge-success">✅ Disponible</span></td>
+        <td class="center"><span class="badge-success">✅ Certifié</span></td>
+        <td class="center"><span class="badge-success">✅ Disponible</span></td>
+      </tr>
+      <tr>
+        <td><strong>Modèle d'Hébergement & Souveraineté</strong></td>
+        <td class="our-cell"><span class="badge badge-success">SaaS SecNumCloud / On-Prem</span></td>
+        <td class="center">Serveur / Cloud Septeo</td>
+        <td class="center">SaaS Cloud</td>
+        <td class="center">Cloud Wolters Kluwer</td>
+        <td class="center">Cloud Microsoft</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 2 : STRATÉGIE TARIFAIRE -->
+  <h2>2. Offres Commerciales & Modèle Tarifaire Recommandé</h2>
+
+  <div class="grid-3">
+    <div class="card pricing-card">
+      <h4 style="color:#0f172a; justify-content:center;">INDÉPENDANT (SOLO)</h4>
+      <div style="font-size:11.5pt; font-weight:800; color:#2563eb; margin:2px 0;">39€ <span style="font-size:6.8pt; font-weight:normal; color:#64748b;">HT / mois</span></div>
+      <p style="font-size:7pt; color:#64748b; margin-bottom:4px;">Pour avocat individuel.</p>
+      <ul style="text-align:left; font-size:7pt;">
+        <li>Dossiers & Clients illimités</li>
+        <li>Temps passés, factures & acomptes</li>
+        <li>GED & modèles d'actes</li>
+        <li><strong>Screening AML / KYC basique</strong></li>
+      </ul>
+    </div>
+
+    <div class="card pricing-card featured">
+      <div class="badge badge-success" style="margin-bottom:1px;">OFFRE PHARE (CABINET)</div>
+      <h4 style="color:#1e40af; justify-content:center;">CABINET ASSOCIÉS (PRO)</h4>
+      <div style="font-size:11.5pt; font-weight:800; color:#1e40af; margin:2px 0;">69€ <span style="font-size:6.8pt; font-weight:normal; color:#64748b;">HT / util. / mois</span></div>
+      <p style="font-size:7pt; color:#475569; margin-bottom:4px;">Pour cabinets structurés (2 à 25 avocats).</p>
+      <ul style="text-align:left; font-size:7pt;">
+        <li><strong>Matrice 6 Rôles (RBAC étanche)</strong></li>
+        <li><strong>Dashboard Financier réservé Associés</strong></li>
+        <li><strong>Screening Sanctions/PPE illimité (Yente)</strong></li>
+        <li><strong>Rapport officiel Bâtonnier (PDF 1 clic)</strong></li>
+        <li>Support prioritaire & sauvegardes automatiques</li>
+      </ul>
+    </div>
+
+    <div class="card pricing-card">
+      <h4 style="color:#0f172a; justify-content:center;">ENTREPRISE / DÉDIÉ</h4>
+      <div style="font-size:11.5pt; font-weight:800; color:#0f172a; margin:2px 0;">Sur Devis</div>
+      <p style="font-size:7pt; color:#64748b; margin-bottom:4px;">Pour grands cabinets d'affaires (+25 util.).</p>
+      <ul style="text-align:left; font-size:7pt;">
+        <li>Cloud Dédié / On-Premise souverain</li>
+        <li>SSO Entreprise (SAML / Active Directory)</li>
+        <li>Connecteurs API sur-mesure</li>
+        <li>DPO & accompagnement conformité dédié</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>Livre Blanc & Benchmark Stratégique LegalTech — Document Confidentiel</div>
+    <div>Page 1 / 3</div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- PAGE 2 : FOCUS APPROFONDI MOTEUR AML / KYC & WORKFLOW      -->
+  <!-- ========================================================== -->
+  <div class="page-break"></div>
+
+  <div class="top-banner" style="padding:6px 12px; margin-bottom:8px;">
+    <div class="banner-left">
+      <h1 style="font-size:11pt;">Le Moteur de Vigilance AML / KYC & Conformité Déontologique</h1>
+      <div class="tagline">Automatisation LCB-FT, Scoring Algorithmique & Rapport Bâtonnier</div>
+    </div>
+    <div class="banner-right">
+      <span class="badge badge-blue" style="background:#ffffff; color:#1e40af;">Différenciateur Majeur</span>
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE AML -->
+  <h2>3. Fonctionnement Détaillé du Moteur LCB-FT (Anti-Blanchiment)</h2>
+  <p>Le module de conformité a été conçu en stricte adéquation avec le <strong>Guide Pratique LCB-FT du Conseil National des Barreaux (CNB)</strong> pour protéger les associés contre tout risque de mise en cause déontologique ou pénale.</p>
+
+  <div class="grid-2">
+    <div class="card aml-box">
+      <h4><span class="step-circle">1</span> Screening Sanctions & PPE Automatisé (Yente)</h4>
+      <p>Dès la création ou la modification de la fiche client / bénéficiaire effectif :</p>
+      <ul>
+        <li><strong>Listes Internationales de Gel des Avoirs :</strong> DG Trésor (France), Union Européenne, OFAC (USA), Conseil de Sécurité ONU.</li>
+        <li><strong>Personnes Politiquement Exposées (PPE) :</strong> Détection automatique des mandats publics français (ministres, parlementaires, magistrats) et internationaux + proches et associés connus (RCA).</li>
+        <li><strong>Algorithme Fuzzy Matching :</strong> Prise en compte des fautes de frappe, translittérations cyrilliques et noms composés arabes.</li>
+      </ul>
+    </div>
+
+    <div class="card aml-box">
+      <h4><span class="step-circle">2</span> Matrice & Algorithme de Scoring de Risque</h4>
+      <p>Calcul dynamique d'un score de vigilance (0 à 100%) selon 3 piliers déontologiques :</p>
+      <ul>
+        <li><strong>Pilier Client :</strong> Personne physique vs structure opaque, société offshore, trusts ou fondations sans bénéficiaire clair.</li>
+        <li><strong>Pilier Opération :</strong> Maniement de fonds CARPA, acquisition immobilière, fiducie, constitution de société, contentieux.</li>
+        <li><strong>Pilier Géographique :</strong> Pays sous surveillance renforcée ou liste noire GAFI.</li>
+        <li><strong>Classification Immédiate :</strong> <em>Risque Faible</em> (Vigilance simplifiée), <em>Moyen</em> (Standard), <em>Élevé</em> (Vigilance renforcée).</li>
+      </ul>
+    </div>
+
+    <div class="card aml-box">
+      <h4><span class="step-circle">3</span> Console Dédiée & Levée d'Alertes Traçable</h4>
+      <p>Console réservée au <strong>Compliance Officer</strong> et aux <strong>Associés</strong> :</p>
+      <ul>
+        <li>Inspection comparative des correspondances (date de naissance, nationalité, homonymies).</li>
+        <li>Workflow de qualification en 4 statuts : <em>Faux Positif</em>, <em>Vrai Positif PPE</em>, <em>Pièces Justificatives Requises</em>, <em>Gel / Alerte Active</em>.</li>
+        <li><strong>Piste d'Audit Inaltérable :</strong> Horodatage certifié, identité de l'avocat valideur et motivation obligatoire enregistrée en base de données.</li>
+      </ul>
+    </div>
+
+    <div class="card aml-box">
+      <h4><span class="step-circle">4</span> Rapport d'Audit pour le Bâtonnier & CARPA (PDF)</h4>
+      <p>Génération en 1 clic d'un dossier de conformité officiel haute fidélité :</p>
+      <ul>
+        <li>Fiche signalétique KYC complète et historique des diligences accomplies.</li>
+        <li>Justification motivée des alertes levées et visas des associés responsables.</li>
+        <li>Document immédiatement recevable lors des inspections de l'Ordre ou des demandes de justificatifs préalables aux transferts CARPA.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TABLEAU COMPARATIF COUT DU PROBLÈME AML -->
+  <h2>4. Impact Économique : Traitement Natif vs Outils Tiers</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Poste de Dépense / Risque</th>
+        <th class="our-col">Notre ERP (Natif Yente)</th>
+        <th>ERP Classique + Outil Tiers (World-Check / Altares)</th>
+        <th>Traitement Manuel / Déclaratif</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Coût d'Abonnement Annuel</strong></td>
+        <td class="our-cell"><span class="badge badge-success">0€ (Inclus dans le forfait)</span></td>
+        <td class="center">3 000€ à 8 000€ HT / an</td>
+        <td class="center">0€ (Apparent)</td>
+      </tr>
+      <tr>
+        <td><strong>Temps de Traitement par Dossier</strong></td>
+        <td class="our-cell"><span class="badge badge-success">&lt; 30 secondes</span></td>
+        <td class="center">10 à 15 minutes (Double saisie)</td>
+        <td class="center">30 à 45 minutes / client</td>
+      </tr>
+      <tr>
+        <td><strong>Sécurité Juridique & Piste d'Audit</strong></td>
+        <td class="our-cell"><span class="badge badge-success">Piste d'audit horodatée & BDD</span></td>
+        <td class="center">Export PDF à reclasser</td>
+        <td class="center"><span class="badge badge-danger">Vulnérable aux contrôles</span></td>
+      </tr>
+      <tr>
+        <td><strong>Risque de Sanction CARPA / Ordre</strong></td>
+        <td class="our-cell"><span class="badge badge-success">Nul (Dossier Bâtonnier conforme)</span></td>
+        <td class="center">Faible (si procédure respectée)</td>
+        <td class="center"><span class="badge badge-danger">Élevé (Blâme / Amende)</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout-dark">
+    <p><strong>🎯 Synthèse de l'Avantage Déontologique :</strong> L'intégration native de la LCB-FT transforme une contrainte administrative pesante en un <strong>argument commercial majeur pour rassurer les clients institutionnels et les partenaires bancaires du cabinet</strong>.</p>
+  </div>
+
+  <div class="footer">
+    <div>Livre Blanc & Benchmark Stratégique LegalTech — Document Confidentiel</div>
+    <div>Page 2 / 3</div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- PAGE 3 : RBAC, ROADMAP, NAMING & CONCLUSION                -->
+  <!-- ========================================================== -->
+  <div class="page-break"></div>
+
+  <div class="top-banner" style="padding:6px 12px; margin-bottom:8px;">
+    <div class="banner-left">
+      <h1 style="font-size:11pt;">Sécurité RBAC, Feuille de Route & Recommandations de Marque</h1>
+      <div class="tagline">Gouvernance Applicative, Développements Futurs & Naming</div>
+    </div>
+    <div class="banner-right">
+      <span class="badge badge-blue" style="background:#ffffff; color:#1e40af;">Stratégie Produit</span>
+    </div>
+  </div>
+
+  <!-- SECTION 5 : CLOISONNEMENT RBAC -->
+  <h2>5. Matrice de Sécurité & Gouvernance des 6 Rôles</h2>
+  <p>L'étanchéité des données respecte rigoureusement la déontologie du secret professionnel et la hiérarchie interne :</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="text-align:left;">Rôle Métier</th>
+        <th>Code Système</th>
+        <th>Visibilité Dossiers</th>
+        <th>Suppression GED</th>
+        <th>Factures & Prestations</th>
+        <th>Dashboard Financier</th>
+        <th>Validation AML / PPE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Administrateur</strong></td>
+        <td><code>ADMIN</code></td>
+        <td class="center">Supervision</td>
+        <td class="center">✅ OUI</td>
+        <td class="center">Technique</td>
+        <td class="center">✅ OUI</td>
+        <td class="center">✅ OUI</td>
+      </tr>
+      <tr>
+        <td><strong>Associé (Partner)</strong></td>
+        <td><code>ASSOCIE</code></td>
+        <td class="center">✅ Tous Dossiers</td>
+        <td class="center">✅ OUI</td>
+        <td class="center">✅ Toutes Factures</td>
+        <td class="center">✅ OUI (CA global)</td>
+        <td class="center">✅ OUI (Pouvoir décision)</td>
+      </tr>
+      <tr>
+        <td><strong>Avocat Titulaire</strong></td>
+        <td><code>AVOCAT</code></td>
+        <td class="center">🔒 Ses Dossiers</td>
+        <td class="center">🔒 Ses Pièces</td>
+        <td class="center">🔒 Ses Dossiers</td>
+        <td class="center">❌ NON (Bloqué)</td>
+        <td class="center">❌ NON (Consultation)</td>
+      </tr>
+      <tr>
+        <td><strong>Collaborateur</strong></td>
+        <td><code>COLLAB</code></td>
+        <td class="center">🔒 Dossiers Assignés</td>
+        <td class="center">❌ NON (Bloqué)</td>
+        <td class="center">Saisie Temps</td>
+        <td class="center">❌ NON (Bloqué)</td>
+        <td class="center">❌ NON (Consultation)</td>
+      </tr>
+      <tr>
+        <td><strong>Compliance Officer</strong></td>
+        <td><code>COMPLIANCE</code></td>
+        <td class="center">Audit KYC</td>
+        <td class="center">❌ NON (Bloqué)</td>
+        <td class="center">❌ NON</td>
+        <td class="center">❌ NON (Bloqué)</td>
+        <td class="center">✅ OUI (Délégation)</td>
+      </tr>
+      <tr>
+        <td><strong>Secrétariat</strong></td>
+        <td><code>SECRETARIAT</code></td>
+        <td class="center">✅ Tous Dossiers</td>
+        <td class="center">❌ NON (Bloqué)</td>
+        <td class="center">✅ Préparation</td>
+        <td class="center">❌ NON (Bloqué)</td>
+        <td class="center">❌ NON</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 6 : FEUILLE DE ROUTE & NAMING -->
+  <h2>6. Feuille de Route Stratégique & Naming Recommandé</h2>
+
+  <div class="grid-2">
+    <div class="card roadmap-box">
+      <h4>🚀 Feuille de Route d'Évolution (Roadmap)</h4>
+      <ul>
+        <li><strong>Connecteur RPVA / E-Barreau (Priorité 1) :</strong> Intégration directe des notifications du greffe et des actes de procédure.</li>
+        <li><strong>Signature Électronique eIDAS :</strong> Signature des conventions d'honoraires et attestations KYC en 1 clic (Yousign/DocuSign).</li>
+        <li><strong>Add-in Microsoft Outlook & Google :</strong> Classement direct des e-mails entrants dans le dossier AVO et synchronisation d'agenda.</li>
+        <li><strong>Portail Extranet Client :</strong> Espace sécurisé de dépôt des pièces d'identité (KYC), suivi du dossier et paiement par CB (Stripe).</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-top: 2.5px solid #1e40af; background:#f8fafc;">
+      <h4>🏷️ Sélection de Naming & Univers de Marque</h4>
+      <ul>
+        <li><strong>Vigilex (Recommandé #1) :</strong> <em>Vigilance LCB-FT + Lex (Droit)</em>. Idéal pour capitaliser sur la sérénité et la maîtrise déontologique.</li>
+        <li><strong>Avora :</strong> <em>Avocat + Aura</em>. Moderne, fluide, parfait pour une adoption SaaS rapide.</li>
+        <li><strong>Avocore :</strong> <em>Le cœur opérationnel du cabinet</em> (dossiers, temps, factures, conformité).</li>
+        <li><strong>NomosCore :</strong> <em>Nomos (Loi fondamentale en grec) + Core</em>. Prestige et rigueur pour cabinets d'affaires.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 7 : CONCLUSION STRATEGIQUE -->
+  <h2>7. Conclusion & Recommandations Stratégiques</h2>
+  <div class="callout-blue" style="margin-bottom:0;">
+    <p style="font-size:7.6pt; line-height:1.35;">
+      En combinant une <strong>tarification claire et sans frais d'entrée</strong>, une <strong>modernité d'interface remarquable (Angular 20)</strong> et une <strong>solution clé en main pour la conformité LCB-FT / CARPA</strong>, l'application possède tous les atouts pour conquérir rapidement des parts de marché face aux solutions historiques vieillissantes et s'imposer comme la référence LegalTech pour les cabinets d'avocats.
+    </p>
+  </div>
+
+  <div class="footer">
+    <div>Livre Blanc & Benchmark Stratégique LegalTech — Document Confidentiel</div>
+    <div>Page 3 / 3</div>
+  </div>
+
+</div>
+
+</body>
+</html>
