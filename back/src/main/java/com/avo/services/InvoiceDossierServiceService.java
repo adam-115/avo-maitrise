@@ -3,7 +3,9 @@ package com.avo.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import com.avo.config.SecurityUtils;
 import com.avo.dtos.InvoiceDossierServiceDTO;
 import com.avo.entities.InvoiceDossierService;
 import com.avo.entities.InvoiceDossierServiceStatusEnum;
@@ -22,40 +24,69 @@ public class InvoiceDossierServiceService {
     private final InvoiceDossierServiceRepository repository;
     private final InvoiceDossierServiceMapper mapper;
     private final CurrentUserInfoService currentUserInfoService;
+    private final SecurityUtils securityUtils;
 
     public InvoiceDossierServiceService(InvoiceDossierServiceRepository repository, 
                                         InvoiceDossierServiceMapper mapper,
-                                        CurrentUserInfoService currentUserInfoService) {
+                                        CurrentUserInfoService currentUserInfoService,
+                                        SecurityUtils securityUtils) {
         this.repository = repository;
         this.mapper = mapper;
         this.currentUserInfoService = currentUserInfoService;
+        this.securityUtils = securityUtils;
     }
 
     public Page<InvoiceDossierServiceDTO> findAll(Pageable pageable) {
         log.info("[ENTER] Executing findAll");
+        if (!securityUtils.canViewAllDossiers()) {
+            List<String> userIds = securityUtils.getCurrentUserIdentifiers();
+            return repository.findAllScoped(true, userIds, pageable).map(mapper::toDto);
+        }
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public List<InvoiceDossierServiceDTO> findAll() {
         log.info("[ENTER] Executing findAll");
+        if (!securityUtils.canViewAllDossiers()) {
+            List<String> userIds = securityUtils.getCurrentUserIdentifiers();
+            return repository.findAllScoped(true, userIds).stream().map(mapper::toDto).collect(Collectors.toList());
+        }
         return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     public Page<InvoiceDossierServiceDTO> search(Predicate predicate, Pageable pageable) {
         log.info("[ENTER] Executing search");
-        return repository.findAll(predicate, pageable).map(mapper::toDto);
+        com.querydsl.core.BooleanBuilder builder = new com.querydsl.core.BooleanBuilder();
+        if (predicate != null) {
+            builder.and(predicate);
+        }
+        com.querydsl.core.types.dsl.BooleanExpression scope = securityUtils.getInvoiceDossierServiceScopeExpression();
+        if (scope != null) {
+            builder.and(scope);
+        }
+        return repository.findAll(builder, pageable).map(mapper::toDto);
     }
 
     public InvoiceDossierServiceDTO findById(Long id) {
         log.info("[ENTER] Executing findById");
-        return repository.findById(id).map(mapper::toDto).orElse(null);
+        InvoiceDossierService entity = repository.findById(id).orElse(null);
+        if (entity != null && entity.getDossier() != null && !securityUtils.isDossierAllowedForUser(entity.getDossier())) {
+            throw new AccessDeniedException("Accès refusé : vous n'avez pas les droits pour consulter cette prestation.");
+        }
+        return entity != null ? mapper.toDto(entity) : null;
     }
 
     public InvoiceDossierServiceDTO create(InvoiceDossierServiceDTO dto) {
         log.info("[ENTER] Executing create");
+        if (dto.getDossier() != null && dto.getDossier().getId() != null) {
+            if (!securityUtils.canAccessDossier(dto.getDossier().getId())) {
+                throw new AccessDeniedException("Accès refusé : vous ne pouvez créer une prestation que sur un dossier qui vous est assigné ou créé par vous.");
+            }
+        }
         InvoiceDossierService entity = mapper.toEntity(dto);
         entity.setCreationDate(new Date());
         entity.setCreatedBy(currentUserInfoService.getCurrentUser());
+
         
         // Prevent manual creation directly with system-managed statuses
         if (entity.getStatus() == null 

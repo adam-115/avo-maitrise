@@ -59,4 +59,18 @@ public interface InvoiceDossierServiceRepository extends JpaRepository<InvoiceDo
     List<UnbilledDossierProjection> getUnbilledDossiersSummaryWithDates(@Param("statusList") List<InvoiceDossierServiceStatusEnum> statusList,
                                                                         @Param("startDate") java.util.Date startDate, 
                                                                         @Param("endDate") java.util.Date endDate);
+
+    @Query("SELECT i FROM InvoiceDossierService i WHERE " +
+           "(:enforceUserScope = false OR i.dossier.responsableId IN :userIds OR i.dossier.createdBy IN :userIds OR EXISTS (SELECT 1 FROM i.dossier.intervenantsIds it WHERE it IN :userIds))")
+    org.springframework.data.domain.Page<InvoiceDossierService> findAllScoped(
+            @Param("enforceUserScope") boolean enforceUserScope,
+            @Param("userIds") List<String> userIds,
+            org.springframework.data.domain.Pageable pageable);
+
+    @Query("SELECT i FROM InvoiceDossierService i WHERE " +
+           "(:enforceUserScope = false OR i.dossier.responsableId IN :userIds OR i.dossier.createdBy IN :userIds OR EXISTS (SELECT 1 FROM i.dossier.intervenantsIds it WHERE it IN :userIds))")
+    List<InvoiceDossierService> findAllScoped(
+            @Param("enforceUserScope") boolean enforceUserScope,
+            @Param("userIds") List<String> userIds);
 }
+

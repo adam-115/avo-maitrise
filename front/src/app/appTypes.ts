@@ -1,10 +1,25 @@
 export enum UserRole {
-  ADMIN = 'ADMIN',             // Accès complet : configuration AML, gestion utilisateurs
-  ASSOCIE = 'ASSOCIE',         // Accès total aux dossiers, validation des indilgences
-  AVOCAT = 'AVOCAT',           // Gestion de ses propres dossiers et dossiers partagés
-  COLLABORATEUR = 'COLLABORATEUR', // Travail sur les dossiers assignés
-  SECRETARIAT = 'SECRETARIAT', // Création clients, upload documents, pas d'accès AML critique
-  COMPLIANCE_OFFICER = 'COMPLIANCE_OFFICER' // Focus exclusif sur le scoring et les risques
+  ADMIN = 'ADMIN',                         // Administrateur Système & Sécurité
+  SUPER_ADMIN = 'SUPER_ADMIN',             // Super Administrateur Global
+  ASSOCIE = 'ASSOCIE',                     // Avocat Associé / Partner
+  AVOCAT = 'AVOCAT',                       // Avocat Titulaire
+  COLLABORATEUR = 'COLLABORATEUR',         // Juriste / Collaborateur de Cabinet
+  COLLAB = 'COLLAB',                       // Alias Collaborateur
+  COMPLIANCE_OFFICER = 'COMPLIANCE_OFFICER', // Responsable Conformité (AML / LCB-FT)
+  COMPLIANCE = 'COMPLIANCE',               // Alias Compliance Officer
+  SECRETARIAT = 'SECRETARIAT',             // Secrétariat Juridique & Accueil
+  COMPTABLE = 'COMPTABLE'                  // Facturation & Comptabilité
+}
+
+export interface UserRoleDefinition {
+  id: UserRole;
+  label: string;
+  category: 'DIRECTION' | 'JURIDIQUE' | 'SUPPORT' | 'TECHNIQUE';
+  description: string;
+  badgeClass: string;
+  borderClass: string;
+  icon: string;
+  permissions: string[];
 }
 
 export interface User {
@@ -14,6 +29,7 @@ export interface User {
   firstName: string;
   lastName: string;
   role: UserRole;
+  roles?: string[] | UserRole[];
 
   photo?: Document;
   photoBlob?: string; // Représente la photo en base64 ou sous forme de blob textuel

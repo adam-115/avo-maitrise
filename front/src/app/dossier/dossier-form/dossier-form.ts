@@ -17,6 +17,7 @@ import { ClientStatusAlertComponent } from '../../shared/components/client-statu
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { forkJoin } from 'rxjs';
 import { AlertService } from '../../services/alert-service';
+import { KeycloakService } from '../../services/keycloak.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -37,7 +38,9 @@ export class DossierForm implements OnInit {
   private userService = inject(UserService);
   private domaineService = inject(DomaineJuridiqueService);
   private alertService = inject(AlertService);
+  private keycloakService = inject(KeycloakService);
   private translate = inject(TranslateService);
+
 
   dossierForm: FormGroup;
   isEditMode = false;
@@ -126,12 +129,28 @@ export class DossierForm implements OnInit {
              this.dossierForm.patchValue({ clientId: res.client.id });
              this.checkClientStatus();
           }
+
+          // Si nouveau dossier et responsable non sélectionné : présélectionner l'utilisateur connecté
+          if (!this.isEditMode && !this.dossierForm.get('responsableId')?.value) {
+            const currentUsername = this.keycloakService.getUsername();
+            if (currentUsername && this.users.length > 0) {
+              const currentUser = this.users.find(u =>
+                (u.username && u.username.toLowerCase() === currentUsername.toLowerCase()) ||
+                (u.email && u.email.toLowerCase() === currentUsername.toLowerCase())
+              );
+              if (currentUser) {
+                this.dossierForm.patchValue({ responsableId: String(currentUser.id) });
+              }
+            }
+          }
+
           this.loading = false;
         },
         error: (err) => {
           console.error('Error loading dossier form dependencies', err);
           this.loading = false;
         }
+
       });
     });
   }

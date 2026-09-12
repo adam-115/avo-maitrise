@@ -121,7 +121,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
-    // 5. Uncaught 500 Exceptions -> Log to Database & SLF4J, return clean sanitized JSON with ErrorId
+    // 5. Client Aborted / Connection Reset (User refreshed page, closed tab, or navigated away)
+    @ExceptionHandler(value = {
+        org.apache.catalina.connector.ClientAbortException.class,
+        org.springframework.web.context.request.async.AsyncRequestNotUsableException.class
+    })
+    public void handleClientAbort(Exception ex) {
+        log.debug("Le client a interrompu la connexion HTTP (rafraîchissement ou navigation rapide) : {}", ex.getMessage());
+    }
+
+    // 6. Uncaught 500 Exceptions -> Log to Database & SLF4J, return clean sanitized JSON with ErrorId
     @ExceptionHandler(value = { Throwable.class })
     public ResponseEntity<ApiErrorResponse> handleAllUncaughtExceptions(
             Throwable ex, WebRequest request) {

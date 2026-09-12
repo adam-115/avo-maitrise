@@ -458,10 +458,25 @@
           </label>
           <textarea 
             [(ngModel)]="comment"
+            [disabled]="!canValidateCompliance || isProcessing"
             placeholder="Ex: Homonymie confirmée suite à la vérification du passeport : date de naissance 1988 vs 1952 sur la fiche sanction..."
-            class="w-full h-24 rounded-2xl border-2 border-slate-200 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all p-4 text-sm font-medium text-slate-800 placeholder-slate-400"
+            class="w-full h-24 rounded-2xl border-2 border-slate-200 focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all p-4 text-sm font-medium text-slate-800 placeholder-slate-400 disabled:bg-slate-100 disabled:cursor-not-allowed"
           ></textarea>
         </div>
+
+        @if (!canValidateCompliance) {
+          <div class="p-4 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-900 flex items-start gap-3 animate-in fade-in duration-200 shadow-xs">
+            <div class="p-2 bg-amber-100 rounded-xl text-amber-700 shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
+            <div>
+              <h5 class="text-xs font-black uppercase tracking-wider text-amber-900">Mode Consultation Uniquement (Matrice RBAC)</h5>
+              <p class="text-xs text-amber-800 font-medium mt-0.5 leading-relaxed">
+                Le rôle <strong>Avocat / Collaborateur</strong> permet de consulter l'analyse de screening mais n'autorise pas la validation du score de risque ni la levée des alertes. Cette décision réglementaire est réservée aux <strong>Avocats Associés (Partners)</strong> et au <strong>Responsable Conformité (Compliance Officer)</strong>.
+              </p>
+            </div>
+          </div>
+        }
 
         <!-- 4 Cartes de Décision Finale -->
         <div class="space-y-3">
@@ -473,8 +488,8 @@
             <button 
               type="button"
               (click)="onDecision('FALSE_POSITIVE')"
-              [disabled]="isProcessing"
-              class="p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 hover:bg-emerald-600 hover:text-white text-emerald-900 transition-all group text-left flex flex-col justify-between shadow-xs hover:shadow-lg hover:shadow-emerald-600/20 cursor-pointer disabled:opacity-50">
+              [disabled]="!canValidateCompliance || isProcessing"
+              class="p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 hover:bg-emerald-600 hover:text-white text-emerald-900 transition-all group text-left flex flex-col justify-between shadow-xs hover:shadow-lg hover:shadow-emerald-600/20 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-emerald-50/50 disabled:hover:text-emerald-900">
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <span class="px-2 py-0.5 bg-emerald-200 group-hover:bg-emerald-700 text-emerald-800 group-hover:text-white rounded-md text-[10px] font-black uppercase">Recommandé si homonyme</span>
@@ -493,8 +508,8 @@
             <button 
               type="button"
               (click)="onDecision('TRUE_POSITIVE_PEP')"
-              [disabled]="isProcessing"
-              class="p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/50 hover:bg-amber-600 hover:text-white text-amber-900 transition-all group text-left flex flex-col justify-between shadow-xs hover:shadow-lg hover:shadow-amber-600/20 cursor-pointer disabled:opacity-50">
+              [disabled]="!canValidateCompliance || isProcessing"
+              class="p-4 rounded-2xl border-2 border-amber-500 bg-amber-50/50 hover:bg-amber-600 hover:text-white text-amber-900 transition-all group text-left flex flex-col justify-between shadow-xs hover:shadow-lg hover:shadow-amber-600/20 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-amber-50/50 disabled:hover:text-amber-900">
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <span class="px-2 py-0.5 bg-amber-200 group-hover:bg-amber-700 text-amber-800 group-hover:text-white rounded-md text-[10px] font-black uppercase">Vigilance Renforcée</span>
@@ -513,8 +528,8 @@
             <button 
               type="button"
               (click)="onDecision('DILIGENCE_REQUIRED')"
-              [disabled]="isProcessing"
-              class="p-4 rounded-2xl border-2 border-orange-400 bg-orange-50/50 hover:bg-orange-500 hover:text-white text-orange-900 transition-all group text-left flex flex-col justify-between shadow-xs hover:shadow-lg hover:shadow-orange-500/20 cursor-pointer disabled:opacity-50">
+              [disabled]="!canValidateCompliance || isProcessing"
+              class="p-4 rounded-2xl border-2 border-orange-400 bg-orange-50/50 hover:bg-orange-500 hover:text-white text-orange-900 transition-all group text-left flex flex-col justify-between shadow-xs hover:shadow-lg hover:shadow-orange-500/20 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-orange-50/50 disabled:hover:text-orange-900">
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <span class="px-2 py-0.5 bg-orange-200 group-hover:bg-orange-600 text-orange-800 group-hover:text-white rounded-md text-[10px] font-black uppercase">Justificatifs Requis</span>
@@ -533,8 +548,8 @@
             <button 
               type="button"
               (click)="onDecision('TRUE_POSITIVE_SANCTION')"
-              [disabled]="isProcessing"
-              class="p-4 rounded-2xl border-2 border-rose-600 bg-rose-50/50 hover:bg-rose-700 hover:text-white text-rose-900 transition-all group text-left flex flex-col justify-between shadow-xs hover:shadow-lg hover:shadow-rose-700/20 cursor-pointer disabled:opacity-50">
+              [disabled]="!canValidateCompliance || isProcessing"
+              class="p-4 rounded-2xl border-2 border-rose-600 bg-rose-50/50 hover:bg-rose-700 hover:text-white text-rose-900 transition-all group text-left flex flex-col justify-between shadow-xs hover:shadow-lg hover:shadow-rose-700/20 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-rose-50/50 disabled:hover:text-rose-900">
               <div>
                 <div class="flex items-center justify-between mb-2">
                   <span class="px-2 py-0.5 bg-rose-200 group-hover:bg-rose-800 text-rose-900 group-hover:text-white rounded-md text-[10px] font-black uppercase">Blocage Légal</span>

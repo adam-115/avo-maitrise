@@ -45,4 +45,18 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long>, Queryds
     java.math.BigDecimal sumBilledAmountHTByStatusesWithDates(@org.springframework.data.repository.query.Param("statuses") java.util.List<com.avo.entities.InvoiceStatusEnum> statuses,
                                                             @org.springframework.data.repository.query.Param("startDate") LocalDate startDate,
                                                             @org.springframework.data.repository.query.Param("endDate") LocalDate endDate);
+
+    @org.springframework.data.jpa.repository.Query("SELECT i FROM Invoice i WHERE " +
+           "(:enforceUserScope = false OR i.dossier.responsableId IN :userIds OR i.dossier.createdBy IN :userIds OR EXISTS (SELECT 1 FROM i.dossier.intervenantsIds it WHERE it IN :userIds))")
+    org.springframework.data.domain.Page<Invoice> findAllScoped(
+            @org.springframework.data.repository.query.Param("enforceUserScope") boolean enforceUserScope,
+            @org.springframework.data.repository.query.Param("userIds") java.util.List<String> userIds,
+            org.springframework.data.domain.Pageable pageable);
+
+    @org.springframework.data.jpa.repository.Query("SELECT i FROM Invoice i WHERE " +
+           "(:enforceUserScope = false OR i.dossier.responsableId IN :userIds OR i.dossier.createdBy IN :userIds OR EXISTS (SELECT 1 FROM i.dossier.intervenantsIds it WHERE it IN :userIds))")
+    java.util.List<Invoice> findAllScoped(
+            @org.springframework.data.repository.query.Param("enforceUserScope") boolean enforceUserScope,
+            @org.springframework.data.repository.query.Param("userIds") java.util.List<String> userIds);
 }
+

@@ -33,22 +33,32 @@ export class Utilisateur implements OnInit {
   selectedRole: string = '';
   viewMode: 'table' | 'grid' = 'table';
 
+  getUserRolesList(user: User): string[] {
+    if (user.roles && user.roles.length > 0) {
+      return user.roles.map(r => String(r));
+    }
+    if (user.role) {
+      return String(user.role).split(',').map(r => r.trim()).filter(r => !!r);
+    }
+    return ['COLLABORATEUR'];
+  }
+
   get activeUsersCount(): number {
     return this.users.filter(u => u.isActive !== false).length;
   }
 
   get adminCount(): number {
-    return this.users.filter(u => (u.role || '').toUpperCase() === 'ADMIN').length;
+    return this.users.filter(u => this.getUserRolesList(u).some(r => r.toUpperCase() === 'ADMIN' || r.toUpperCase() === 'SUPER_ADMIN')).length;
   }
 
   get lawyerCount(): number {
-    return this.users.filter(u => (u.role || '').toUpperCase() === 'AVOCAT').length;
+    return this.users.filter(u => this.getUserRolesList(u).some(r => r.toUpperCase() === 'AVOCAT' || r.toUpperCase() === 'ASSOCIE')).length;
   }
 
   get staffCount(): number {
     return this.users.filter(u => {
-      const r = (u.role || '').toUpperCase();
-      return r === 'COLLABORATEUR' || r === 'SECRETARIAT' || r === 'CONSULTANT' || r === 'STANDARD';
+      const roles = this.getUserRolesList(u).map(r => r.toUpperCase());
+      return roles.some(r => r === 'COLLABORATEUR' || r === 'SECRETARIAT' || r === 'COMPLIANCE_OFFICER' || r === 'COMPTABLE' || r === 'CONSULTANT');
     }).length;
   }
 
@@ -81,12 +91,25 @@ export class Utilisateur implements OnInit {
         (u.firstName || '').toLowerCase().includes(q) ||
         (u.lastName || '').toLowerCase().includes(q) ||
         (u.email || '').toLowerCase().includes(q) ||
-        (u.username || '').toLowerCase().includes(q)
+        (u.username || '').toLowerCase().includes(q) ||
+        this.getUserRolesList(u).some(r => r.toLowerCase().includes(q))
       );
     }
 
     if (this.selectedRole) {
-      list = list.filter(u => (u.role || '').toLowerCase() === this.selectedRole.toLowerCase());
+      const target = this.selectedRole.toUpperCase();
+      list = list.filter(u => 
+        this.getUserRolesList(u).some(r => {
+          const up = r.toUpperCase();
+          if (target === 'COLLABORATEUR' || target === 'COLLAB') {
+            return up === 'COLLABORATEUR' || up === 'COLLAB' || up === 'COLLABORATOR';
+          }
+          if (target === 'COMPLIANCE_OFFICER' || target === 'COMPLIANCE') {
+            return up === 'COMPLIANCE_OFFICER' || up === 'COMPLIANCE';
+          }
+          return up === target;
+        })
+      );
     }
 
     this.filteredUsers = list;
@@ -107,17 +130,29 @@ export class Utilisateur implements OnInit {
   getRoleBadgeClass(role: string | undefined): string {
     const r = (role || '').toUpperCase();
     switch (r) {
+      case 'SUPER_ADMIN':
+        return 'bg-indigo-50 text-indigo-700 border-indigo-200 ring-1 ring-indigo-500/10';
       case 'ADMIN':
         return 'bg-rose-50 text-rose-700 border-rose-200 ring-1 ring-rose-500/10';
+      case 'ASSOCIE':
+      case 'PARTNER':
+        return 'bg-amber-50 text-amber-700 border-amber-200 ring-1 ring-amber-500/10';
       case 'AVOCAT':
+      case 'LAWYER':
         return 'bg-blue-50 text-blue-700 border-blue-200 ring-1 ring-blue-500/10';
       case 'COLLABORATEUR':
+      case 'COLLAB':
+      case 'COLLABORATOR':
         return 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-1 ring-emerald-500/10';
-      case 'SECRETARIAT':
-      case 'STANDARD':
-        return 'bg-amber-50 text-amber-700 border-amber-200 ring-1 ring-amber-500/10';
-      case 'CONSULTANT':
+      case 'COMPLIANCE_OFFICER':
+      case 'COMPLIANCE':
         return 'bg-purple-50 text-purple-700 border-purple-200 ring-1 ring-purple-500/10';
+      case 'SECRETARIAT':
+      case 'SECRETARY':
+      case 'STANDARD':
+        return 'bg-cyan-50 text-cyan-700 border-cyan-200 ring-1 ring-cyan-500/10';
+      case 'COMPTABLE':
+        return 'bg-teal-50 text-teal-700 border-teal-200 ring-1 ring-teal-500/10';
       default:
         return 'bg-slate-50 text-slate-700 border-slate-200 ring-1 ring-slate-500/10';
     }

@@ -92,7 +92,10 @@ public class UserService {
                 : generateSecurePassword(14);
         kcRequest.setPassword(temporaryPassword);
 
-        if (dto.getRole() != null && !dto.getRole().isEmpty()) {
+        List<String> targetRoles = dto.getRoles();
+        if (targetRoles != null && !targetRoles.isEmpty()) {
+            kcRequest.setRoles(targetRoles);
+        } else if (dto.getRole() != null && !dto.getRole().isEmpty()) {
             kcRequest.setRoles(List.of(dto.getRole()));
         }
         
@@ -108,6 +111,9 @@ public class UserService {
 
         // 2. Save to local DB
         AppUser entity = mapper.toEntity(dto);
+        if (targetRoles != null && !targetRoles.isEmpty()) {
+            entity.setRole(String.join(",", targetRoles));
+        }
         AppUser savedUser = repository.save(entity);
 
         // 3. Send welcome email with temporary password if email is available
@@ -153,6 +159,10 @@ public class UserService {
         }
 
         AppUser entity = mapper.toEntity(dto);
+        List<String> targetRoles = dto.getRoles();
+        if (targetRoles != null && !targetRoles.isEmpty()) {
+            entity.setRole(String.join(",", targetRoles));
+        }
         UserDTO updatedDto = mapper.toDto(repository.save(entity));
 
         // Sync with Keycloak
@@ -164,7 +174,9 @@ public class UserService {
                 kcRequest.setLastName(dto.getLastName());
                 kcRequest.setEmail(dto.getEmail());
                 kcRequest.setEnabled(dto.isActive());
-                if (dto.getRole() != null && !dto.getRole().isEmpty()) {
+                if (targetRoles != null && !targetRoles.isEmpty()) {
+                    kcRequest.setRoles(targetRoles);
+                } else if (dto.getRole() != null && !dto.getRole().isEmpty()) {
                     kcRequest.setRoles(List.of(dto.getRole()));
                 }
                 keycloakService.updateUser(kcUserId, kcRequest);

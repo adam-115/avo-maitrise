@@ -29,7 +29,9 @@ public class DossierDTO {
 
     private ClientEntityDTO client;
     private String responsableId;
+    private String createdBy;
     private List<String> intervenantsIds = new ArrayList<>();
+
     private String domaineJuridique;
     private String prioriteID;
     private String statutID;

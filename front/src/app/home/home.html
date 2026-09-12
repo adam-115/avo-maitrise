@@ -304,9 +304,10 @@
                     <span>{{ 'MENU.BILLING' | translate }}</span>
                 </a>
 
-                <!-- Tableau de Bord Facturation -->
-                <a *ngIf="roleService.isAvocat || roleService.isAssocie" (click)="navigateToBillingDashboard()"
+                <!-- Tableau de Bord Facturation (Réservé Direction / Associés) -->
+                <a *ngIf="roleService.canAccessFinancialDashboard" (click)="navigateToBillingDashboard()"
                     [class.bg-gradient-to-r]="activeRoute === paths.BILLING_DASHBOARD"
+
                     [class.from-cyan-950/90]="activeRoute === paths.BILLING_DASHBOARD"
                     [class.via-slate-800/80]="activeRoute === paths.BILLING_DASHBOARD"
                     [class.to-slate-800/40]="activeRoute === paths.BILLING_DASHBOARD"

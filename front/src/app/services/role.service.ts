@@ -51,7 +51,7 @@ export class RoleService {
   }
 
   get isCollaborateur(): boolean {
-    return this.isAvocat || this.hasAnyRole(['COLLABORATEUR', 'COLLABORATOR']);
+    return this.isAvocat || this.hasAnyRole(['COLLABORATEUR', 'COLLAB', 'COLLABORATOR']);
   }
 
   get isComplianceOfficer(): boolean {
@@ -63,6 +63,25 @@ export class RoleService {
   }
 
   /**
+   * Droit de validation du score de risque, levée d'alerte et modification du statut AML client.
+   * Réservé exclusivement à : ADMIN, SUPER_ADMIN, ASSOCIE, COMPLIANCE_OFFICER / COMPLIANCE.
+   * STRICTEMENT INTERDIT aux rôles AVOCAT, COLLABORATEUR et SECRETARIAT (sauf s'ils cumulent avec Associé ou Compliance).
+   */
+  get canValidateRiskScoreAndAml(): boolean {
+    return this.isAdmin || this.isAssocie || this.isComplianceOfficer;
+  }
+
+  /**
+   * Droit d'accès au Tableau de Bord Financier global (CA, encours, rentabilité globale).
+   * Réservé exclusivement aux rôles de Direction : ADMIN, SUPER_ADMIN, ASSOCIE, PARTNER.
+   * STRICTEMENT INTERDIT aux rôles AVOCAT, COLLABORATEUR, SECRETARIAT.
+   */
+  get canAccessFinancialDashboard(): boolean {
+    return this.isAdmin || this.hasAnyRole(['ASSOCIE', 'PARTNER']);
+  }
+
+
+  /**
    * Retourne le libellé principal du rôle pour l'affichage dans le profil utilisateur.
    */
   get primaryRoleLabel(): string {
@@ -70,7 +89,7 @@ export class RoleService {
     if (this.hasAnyRole(['ADMIN'])) return 'Administrateur';
     if (this.hasAnyRole(['ASSOCIE', 'PARTNER'])) return 'Avocat Associé';
     if (this.hasAnyRole(['AVOCAT', 'LAWYER'])) return 'Avocat Titulaire';
-    if (this.hasAnyRole(['COLLABORATEUR', 'COLLABORATOR'])) return 'Collaborateur';
+    if (this.hasAnyRole(['COLLABORATEUR', 'COLLAB', 'COLLABORATOR'])) return 'Collaborateur';
     if (this.hasAnyRole(['COMPLIANCE_OFFICER', 'COMPLIANCE'])) return 'Compliance Officer';
     if (this.hasAnyRole(['SECRETARIAT', 'SECRETARY'])) return 'Secrétariat';
     return 'Utilisateur';

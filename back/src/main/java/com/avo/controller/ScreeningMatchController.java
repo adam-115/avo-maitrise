@@ -44,11 +44,13 @@ public class ScreeningMatchController {
     }
 
     @PutMapping
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'PARTNER', 'COMPLIANCE_OFFICER', 'COMPLIANCE')")
     public ResponseEntity<ScreeningMatchDTO> update(@Valid @RequestBody ScreeningMatchDTO dto) {
         return ResponseEntity.ok(service.update(dto));
     }
 
     @PostMapping("/{id}/process-decision")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'PARTNER', 'COMPLIANCE_OFFICER', 'COMPLIANCE')")
     public ResponseEntity<ScreeningMatchDTO> processDecision(
             @PathVariable Long id,
             @RequestParam com.avo.entities.ScreeningMatchStatus decision,
@@ -58,6 +60,7 @@ public class ScreeningMatchController {
     }
 
     @PostMapping("/batch-decision")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'PARTNER', 'COMPLIANCE_OFFICER', 'COMPLIANCE')")
     public ResponseEntity<java.util.List<ScreeningMatchDTO>> processBatchDecision(
             @Valid @RequestBody java.util.List<Long> matchIds,
             @RequestParam com.avo.entities.ScreeningMatchStatus decision,

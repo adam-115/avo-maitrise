@@ -12,8 +12,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/dashboard/billing")
-@PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT')")
+@PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'PARTNER')")
 public class BillingDashboardController {
+
 
     private final BillingDashboardService billingDashboardService;
 

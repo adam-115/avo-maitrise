@@ -126,7 +126,149 @@ public class KeycloakUserManagementService {
         user.setEmail(request.getEmail());
         user.setEnabled(request.isEnabled());
         userResource.update(user);
+
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            syncRoles(userId, request.getRoles());
+        }
         log.info("Utilisateur mis à jour dans Keycloak: {}", userId);
+    }
+
+    @jakarta.annotation.PostConstruct
+    public void ensureDefaultRolesExist() {
+        List<String> defaultRoles = List.of(
+            "SUPER_ADMIN", "ADMIN", "ASSOCIE", "PARTNER", 
+            "AVOCAT", "COLLABORATEUR", "COLLAB", "COMPLIANCE_OFFICER", "COMPLIANCE", 
+            "SECRETARIAT", "COMPTABLE"
+        );
+        for (String role : defaultRoles) {
+            try {
+                getOrCreateRealmRole(role);
+            } catch (Exception e) {
+                log.warn("Impossible d'assurer l'existence du rôle '{}' au démarrage: {}", role, e.getMessage());
+            }
+        }
+        ensureRealmSessionTimeouts();
+    }
+
+    /**
+     * Configure des timeouts de session confortables (8h d'inactivité, 24h session max) pour éviter les déconnexions intempestives.
+     */
+    public void ensureRealmSessionTimeouts() {
+        try {
+            org.keycloak.representations.idm.RealmRepresentation rep = realmResource.toRepresentation();
+            boolean needsUpdate = false;
+
+            // 8 heures d'inactivité SSO (28800s) au lieu des 60s par défaut
+            if (rep.getSsoSessionIdleTimeout() == null || rep.getSsoSessionIdleTimeout() < 3600) {
+                rep.setSsoSessionIdleTimeout(28800); // 8 heures
+                needsUpdate = true;
+            }
+            // 24 heures de session max (86400s)
+            if (rep.getSsoSessionMaxLifespan() == null || rep.getSsoSessionMaxLifespan() < 7200) {
+                rep.setSsoSessionMaxLifespan(86400); // 24 heures
+                needsUpdate = true;
+            }
+            // 30 minutes de durée de validité du jeton d'accès (1800s)
+            if (rep.getAccessTokenLifespan() == null || rep.getAccessTokenLifespan() < 900) {
+                rep.setAccessTokenLifespan(1800); // 30 minutes
+                needsUpdate = true;
+            }
+            if (rep.getClientSessionIdleTimeout() == null || rep.getClientSessionIdleTimeout() < 3600) {
+                rep.setClientSessionIdleTimeout(28800);
+                needsUpdate = true;
+            }
+            if (rep.getClientSessionMaxLifespan() == null || rep.getClientSessionMaxLifespan() < 7200) {
+                rep.setClientSessionMaxLifespan(86400);
+                needsUpdate = true;
+            }
+            // 7 jours pour remember me
+            if (rep.getSsoSessionIdleTimeoutRememberMe() == null || rep.getSsoSessionIdleTimeoutRememberMe() < 86400) {
+                rep.setSsoSessionIdleTimeoutRememberMe(604800);
+                needsUpdate = true;
+            }
+            if (rep.getSsoSessionMaxLifespanRememberMe() == null || rep.getSsoSessionMaxLifespanRememberMe() < 86400) {
+                rep.setSsoSessionMaxLifespanRememberMe(604800);
+                needsUpdate = true;
+            }
+            // Éviter la révocation agressive des jetons de rafraîchissement lors des appels concurrents
+            if (rep.getRevokeRefreshToken() != null && rep.getRevokeRefreshToken()) {
+                rep.setRevokeRefreshToken(false);
+                needsUpdate = true;
+            }
+
+            if (needsUpdate) {
+                realmResource.update(rep);
+                log.info("Timeouts de session Realm Keycloak configurés avec succès (SSO Idle: 8h, SSO Max: 24h, Access Token: 30m, RememberMe: 7j)");
+            }
+        } catch (Exception e) {
+            log.warn("Impossible d'ajuster les timeouts du realm Keycloak: {}", e.getMessage());
+        }
+    }
+
+    /**
+     * Récupère un rôle Realm Keycloak ou le crée automatiquement s'il n'existe pas.
+     */
+    public RoleRepresentation getOrCreateRealmRole(String roleName) {
+        if (roleName == null || roleName.isBlank()) return null;
+        String normalized = roleName.trim().toUpperCase();
+        try {
+            return realmResource.roles().get(normalized).toRepresentation();
+        } catch (Exception e) {
+            try {
+                return realmResource.roles().get(roleName.trim()).toRepresentation();
+            } catch (Exception e2) {
+                try {
+                    RoleRepresentation newRole = new RoleRepresentation();
+                    newRole.setName(normalized);
+                    newRole.setDescription("Rôle métier " + normalized);
+                    realmResource.roles().create(newRole);
+                    log.info("Rôle Realm Keycloak créé automatiquement: {}", normalized);
+                    return realmResource.roles().get(normalized).toRepresentation();
+                } catch (Exception createEx) {
+                    log.error("Impossible de créer le rôle Keycloak '{}': {}", normalized, createEx.getMessage());
+                    return null;
+                }
+            }
+        }
+    }
+
+    /**
+     * Synchronise la liste des rôles Realm d'un utilisateur dans Keycloak.
+     */
+    public void syncRoles(String userId, List<String> targetRoleNames) {
+        if (targetRoleNames == null) return;
+        try {
+            UserResource userResource = realmResource.users().get(userId);
+            List<RoleRepresentation> currentRoles = userResource.roles().realmLevel().listAll();
+
+            // Filtrer pour ne pas supprimer les rôles système Keycloak par défaut
+            List<RoleRepresentation> rolesToRemove = currentRoles.stream()
+                .filter(r -> !r.getName().startsWith("default-") && !r.getName().equals("offline_access") && !r.getName().equals("uma_authorization"))
+                .filter(r -> !targetRoleNames.contains(r.getName()) && !targetRoleNames.contains(r.getName().toUpperCase()))
+                .toList();
+
+            if (!rolesToRemove.isEmpty()) {
+                userResource.roles().realmLevel().remove(rolesToRemove);
+                log.info("Anciens rôles retirés de l'utilisateur {} : {}", userId, rolesToRemove.stream().map(RoleRepresentation::getName).toList());
+            }
+
+            List<String> existingNames = currentRoles.stream().map(RoleRepresentation::getName).toList();
+            List<RoleRepresentation> rolesToAdd = new ArrayList<>();
+            for (String roleName : targetRoleNames) {
+                if (!existingNames.contains(roleName) && !existingNames.contains(roleName.toUpperCase())) {
+                    RoleRepresentation role = getOrCreateRealmRole(roleName);
+                    if (role != null) {
+                        rolesToAdd.add(role);
+                    }
+                }
+            }
+            if (!rolesToAdd.isEmpty()) {
+                userResource.roles().realmLevel().add(rolesToAdd);
+                log.info("Nouveaux rôles assignés à l'utilisateur {} : {}", userId, rolesToAdd.stream().map(RoleRepresentation::getName).toList());
+            }
+        } catch (Exception e) {
+            log.error("Erreur lors de la synchronisation des rôles Keycloak pour {}: {}", userId, e.getMessage());
+        }
     }
 
     /**
@@ -142,26 +284,36 @@ public class KeycloakUserManagementService {
 
     public void assignRole(String userId, String roleName) {
         UserResource userResource = realmResource.users().get(userId);
-        RoleRepresentation role = realmResource.roles().get(roleName).toRepresentation();
-        userResource.roles().realmLevel().add(Collections.singletonList(role));
-        log.info("Rôle '{}' assigné à l'utilisateur: {}", roleName, userId);
+        RoleRepresentation role = getOrCreateRealmRole(roleName);
+        if (role != null) {
+            userResource.roles().realmLevel().add(Collections.singletonList(role));
+            log.info("Rôle '{}' assigné à l'utilisateur: {}", roleName, userId);
+        }
     }
 
     public void assignRoles(String userId, List<String> roleNames) {
         UserResource userResource = realmResource.users().get(userId);
         List<RoleRepresentation> roles = new ArrayList<>();
         for (String roleName : roleNames) {
-            RoleRepresentation role = realmResource.roles().get(roleName).toRepresentation();
-            roles.add(role);
+            RoleRepresentation role = getOrCreateRealmRole(roleName);
+            if (role != null) {
+                roles.add(role);
+            }
         }
-        userResource.roles().realmLevel().add(roles);
+        if (!roles.isEmpty()) {
+            userResource.roles().realmLevel().add(roles);
+        }
     }
 
     public void removeRole(String userId, String roleName) {
         UserResource userResource = realmResource.users().get(userId);
-        RoleRepresentation role = realmResource.roles().get(roleName).toRepresentation();
-        userResource.roles().realmLevel().remove(Collections.singletonList(role));
-        log.info("Rôle '{}' retiré de l'utilisateur: {}", roleName, userId);
+        try {
+            RoleRepresentation role = realmResource.roles().get(roleName).toRepresentation();
+            userResource.roles().realmLevel().remove(Collections.singletonList(role));
+            log.info("Rôle '{}' retiré de l'utilisateur: {}", roleName, userId);
+        } catch (Exception e) {
+            log.warn("Impossible de retirer le rôle '{}': {}", roleName, e.getMessage());
+        }
     }
 
     /**

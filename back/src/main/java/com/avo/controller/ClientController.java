@@ -107,6 +107,7 @@ public class ClientController {
     }
 
     @PatchMapping("/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'PARTNER', 'COMPLIANCE_OFFICER', 'COMPLIANCE')")
     public ResponseEntity<ClientEntityDTO> updateStatus(@PathVariable Long id, @Valid @RequestBody java.util.Map<String, String> updates) {
         String statusStr = updates.get("clientStatus");
         com.avo.entities.ClientStatus status = com.avo.entities.ClientStatus.valueOf(statusStr);

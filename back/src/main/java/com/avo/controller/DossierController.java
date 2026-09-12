@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.avo.dtos.DossierDTO;
 import com.avo.entities.Dossier;
@@ -14,6 +15,7 @@ import com.querydsl.core.types.Predicate;
 
 @RestController
 @RequestMapping("/api/Dossier")
+@PreAuthorize("isAuthenticated()")
 public class DossierController {
 
     private final DossierService service;
@@ -37,6 +39,7 @@ public class DossierController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("@securityUtils.canAccessDossier(#id)")
     public ResponseEntity<DossierDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
@@ -47,6 +50,7 @@ public class DossierController {
     }
 
     @PutMapping(value = {"", "/{id}"})
+    @PreAuthorize("@securityUtils.canAccessDossier(#dto.id != null ? #dto.id : #id)")
     public ResponseEntity<DossierDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody DossierDTO dto) {
         if (id != null && dto.getId() == null) {
             dto.setId(id);
@@ -55,8 +59,10 @@ public class DossierController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'PARTNER') or @securityUtils.canAccessDossier(#id)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
+

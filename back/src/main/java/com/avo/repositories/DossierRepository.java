@@ -38,10 +38,27 @@ public interface DossierRepository extends JpaRepository<Dossier, Long>, Queryds
            " ))" +
            ") AND " +
            "(:statusFilter IS NULL OR :statusFilter = '' OR :statusFilter = 'Tous' OR d.statutID = :statusFilter) AND " +
-           "(:lawyerFilter IS NULL OR :lawyerFilter = '' OR :lawyerFilter = 'Tous' OR d.responsableId = :lawyerFilter)")
+           "(:lawyerFilter IS NULL OR :lawyerFilter = '' OR :lawyerFilter = 'Tous' OR d.responsableId = :lawyerFilter) AND " +
+           "(:enforceUserScope = false OR d.responsableId IN :userIds OR d.createdBy IN :userIds OR EXISTS (SELECT 1 FROM d.intervenantsIds i WHERE i IN :userIds))")
     org.springframework.data.domain.Page<Dossier> searchWithFilters(
             @org.springframework.data.repository.query.Param("searchTerm") String searchTerm,
             @org.springframework.data.repository.query.Param("statusFilter") String statusFilter,
             @org.springframework.data.repository.query.Param("lawyerFilter") String lawyerFilter,
+            @org.springframework.data.repository.query.Param("enforceUserScope") boolean enforceUserScope,
+            @org.springframework.data.repository.query.Param("userIds") List<String> userIds,
             org.springframework.data.domain.Pageable pageable);
+
+    @org.springframework.data.jpa.repository.Query("SELECT d FROM Dossier d WHERE " +
+           "(:enforceUserScope = false OR d.responsableId IN :userIds OR d.createdBy IN :userIds OR EXISTS (SELECT 1 FROM d.intervenantsIds i WHERE i IN :userIds))")
+    org.springframework.data.domain.Page<Dossier> findAllScoped(
+            @org.springframework.data.repository.query.Param("enforceUserScope") boolean enforceUserScope,
+            @org.springframework.data.repository.query.Param("userIds") List<String> userIds,
+            org.springframework.data.domain.Pageable pageable);
+
+    @org.springframework.data.jpa.repository.Query("SELECT d FROM Dossier d WHERE " +
+           "(:enforceUserScope = false OR d.responsableId IN :userIds OR d.createdBy IN :userIds OR EXISTS (SELECT 1 FROM d.intervenantsIds i WHERE i IN :userIds))")
+    List<Dossier> findAllScoped(
+            @org.springframework.data.repository.query.Param("enforceUserScope") boolean enforceUserScope,
+            @org.springframework.data.repository.query.Param("userIds") List<String> userIds);
 }
+

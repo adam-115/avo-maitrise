@@ -84,7 +84,7 @@ export const routes: Routes = [
         path: NavigationService.CLIENT_CONFORMITY,
         loadComponent: () => import('./crm/client-conformity/client-conformity').then(m => m.ClientConformity),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COLLABORATEUR', 'COLLAB', 'COMPLIANCE_OFFICER', 'COMPLIANCE'] }
       },
       {
         path: NavigationService.CLIENT_DETAILS,
@@ -140,49 +140,49 @@ export const routes: Routes = [
         path: NavigationService.AML_COMPLIANCE,
         loadComponent: () => import('./due-diligence/aml-compliance/aml-compliance.component').then(m => m.AmlComplianceComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COLLABORATEUR', 'COLLAB', 'COMPLIANCE_OFFICER', 'COMPLIANCE'] }
       },
       {
         path: NavigationService.DILIGENCE_FORM_BUILDER,
         loadComponent: () => import('./due-diligence/diligence-form-builder-component/diligence-form-builder-component').then(m => m.DiligenceFormBuilderComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'COMPLIANCE_OFFICER'] }
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'COMPLIANCE_OFFICER', 'COMPLIANCE'] }
       },
       {
         path: NavigationService.DILIGENCE_FORM_BUILDER_EDIT,
         loadComponent: () => import('./due-diligence/diligence-form-builder-component/diligence-form-builder-component').then(m => m.DiligenceFormBuilderComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'COMPLIANCE_OFFICER'] }
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'COMPLIANCE_OFFICER', 'COMPLIANCE'] }
       },
       {
         path: NavigationService.DILIGENCE_FORM_VIEWER,
         loadComponent: () => import('./due-diligence/diligence-form-viewer/diligence-form-viewer.component').then(m => m.DiligenceFormViewerComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COLLABORATEUR', 'COLLAB', 'COMPLIANCE_OFFICER', 'COMPLIANCE'] }
       },
       {
         path: NavigationService.CLIENT_DILIGENCE_RESULTS,
         loadComponent: () => import('./due-diligence/client-diligence-results/client-diligence-results.component').then(m => m.ClientDiligenceResultsComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COLLABORATEUR', 'COLLAB', 'COMPLIANCE_OFFICER', 'COMPLIANCE'] }
       },
       {
         path: NavigationService.DILIGENCE_FORM_RESULT_VIEWER,
         loadComponent: () => import('./due-diligence/diligence-form-result-viewer/diligence-form-result-viewer.component').then(m => m.DiligenceFormResultViewerComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COLLABORATEUR', 'COLLAB', 'COMPLIANCE_OFFICER', 'COMPLIANCE'] }
       },
       {
         path: NavigationService.DILIGENCE_FORM_LIST,
         loadComponent: () => import('./due-diligence/diligence-form-list/diligence-form-list.component').then(m => m.DiligenceFormListComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'COMPLIANCE_OFFICER'] }
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'COMPLIANCE_OFFICER', 'COMPLIANCE'] }
       },
       {
         path: NavigationService.CLIENT_DILIGENCE_STATUS_LIST,
         loadComponent: () => import('./due-diligence/diligence-status-list/diligence-status-list.component').then(m => m.DiligenceStatusListComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COMPLIANCE_OFFICER'] }
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'COLLABORATEUR', 'COLLAB', 'COMPLIANCE_OFFICER', 'COMPLIANCE'] }
       },
       {
         path: NavigationService.DOSSIER_STATUS_FORM,
@@ -242,8 +242,9 @@ export const routes: Routes = [
         path: NavigationService.BILLING_DASHBOARD,
         loadComponent: () => import('./features/billing/components/billing-dashboard/billing-dashboard.component').then(m => m.BillingDashboardComponent),
         canActivate: [roleGuard],
-        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT'] }
+        data: { roles: ['ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'PARTNER'] }
       },
+
       {
         path: NavigationService.BILLING_NEW,
         loadComponent: () => import('./features/billing/components/invoice-frm/invoice-frm.component').then(m => m.InvoiceFrmComponent),

@@ -46,22 +46,58 @@ public class SecurityConfig {
                         
                         // 6. Any other request requires authentication
                         .anyRequest().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .build();
     }
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setPrincipalClaimName("preferred_username");
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            java.util.Set<org.springframework.security.core.GrantedAuthority> authorities = new java.util.HashSet<>();
+
+            // 1. Extract Keycloak Realm Roles (realm_access.roles)
             Map<String, Object> realmAccess = jwt.getClaim("realm_access");
-            if (realmAccess == null || !realmAccess.containsKey("roles")) {
-                return Collections.emptyList();
+            if (realmAccess != null && realmAccess.get("roles") instanceof Collection<?> roles) {
+                for (Object roleObj : roles) {
+                    if (roleObj instanceof String role && !role.isBlank()) {
+                        String clean = role.trim();
+                        authorities.add(new SimpleGrantedAuthority("ROLE_" + clean));
+                        authorities.add(new SimpleGrantedAuthority("ROLE_" + clean.toUpperCase()));
+                        authorities.add(new SimpleGrantedAuthority(clean));
+                        authorities.add(new SimpleGrantedAuthority(clean.toUpperCase()));
+                    }
+                }
             }
-            Collection<String> roles = (Collection<String>) realmAccess.get("roles");
-            return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                    .collect(Collectors.toList());
+
+            // 2. Extract Keycloak Client Roles (resource_access.*.roles)
+            Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
+            if (resourceAccess != null) {
+                for (Object clientObj : resourceAccess.values()) {
+                    if (clientObj instanceof Map<?, ?> clientMap && clientMap.get("roles") instanceof Collection<?> clientRoles) {
+                        for (Object roleObj : clientRoles) {
+                            if (roleObj instanceof String role && !role.isBlank()) {
+                                String clean = role.trim();
+                                authorities.add(new SimpleGrantedAuthority("ROLE_" + clean));
+                                authorities.add(new SimpleGrantedAuthority("ROLE_" + clean.toUpperCase()));
+                                authorities.add(new SimpleGrantedAuthority(clean));
+                                authorities.add(new SimpleGrantedAuthority(clean.toUpperCase()));
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 3. Extract standard OAuth2 scopes (scope claim)
+            String scope = jwt.getClaimAsString("scope");
+            if (scope != null && !scope.isBlank()) {
+                for (String s : scope.split("\\s+")) {
+                    authorities.add(new SimpleGrantedAuthority("SCOPE_" + s));
+                }
+            }
+
+            return authorities;
         });
         return converter;
     }

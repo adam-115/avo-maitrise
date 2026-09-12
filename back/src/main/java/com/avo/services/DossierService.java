@@ -3,7 +3,9 @@ package com.avo.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import com.avo.config.SecurityUtils;
 import com.avo.dtos.DossierDTO;
 import com.avo.entities.Dossier;
 import com.avo.mappers.DossierMapper;
@@ -20,13 +22,18 @@ public class DossierService {
     private final com.avo.repositories.ClientRepository clientRepository;
     private final DossierMapper mapper;
     private final org.springframework.context.ApplicationEventPublisher eventPublisher;
+    private final SecurityUtils securityUtils;
 
-    public DossierService(DossierRepository repository, com.avo.repositories.ClientRepository clientRepository,
-            DossierMapper mapper, org.springframework.context.ApplicationEventPublisher eventPublisher) {
+    public DossierService(DossierRepository repository,
+                          com.avo.repositories.ClientRepository clientRepository,
+                          DossierMapper mapper,
+                          org.springframework.context.ApplicationEventPublisher eventPublisher,
+                          SecurityUtils securityUtils) {
         this.repository = repository;
         this.clientRepository = clientRepository;
         this.mapper = mapper;
         this.eventPublisher = eventPublisher;
+        this.securityUtils = securityUtils;
     }
 
     private void linkDocuments(Dossier entity) {
@@ -42,27 +49,50 @@ public class DossierService {
 
     public Page<DossierDTO> findAll(Pageable pageable) {
         log.info("[ENTER] Executing findAll");
+        if (!securityUtils.canViewAllDossiers()) {
+            List<String> userIds = securityUtils.getCurrentUserIdentifiers();
+            return repository.findAllScoped(true, userIds, pageable).map(mapper::toDto);
+        }
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
     public Page<DossierDTO> findAllWithFilters(String searchTerm, String statusFilter, String lawyerFilter, Pageable pageable) {
         log.info("[ENTER] Executing findAllWithFilters");
-        return repository.searchWithFilters(searchTerm, statusFilter, lawyerFilter, pageable).map(mapper::toDto);
+        boolean enforceScope = !securityUtils.canViewAllDossiers();
+        List<String> userIds = enforceScope ? securityUtils.getCurrentUserIdentifiers() : List.of("__NONE__");
+        return repository.searchWithFilters(searchTerm, statusFilter, lawyerFilter, enforceScope, userIds, pageable).map(mapper::toDto);
     }
 
     public List<DossierDTO> findAll() {
         log.info("[ENTER] Executing findAll");
+        if (!securityUtils.canViewAllDossiers()) {
+            List<String> userIds = securityUtils.getCurrentUserIdentifiers();
+            return repository.findAllScoped(true, userIds).stream().map(mapper::toDto).collect(Collectors.toList());
+        }
         return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     public Page<DossierDTO> search(Predicate predicate, Pageable pageable) {
         log.info("[ENTER] Executing search");
-        return repository.findAll(predicate, pageable).map(mapper::toDto);
+        com.querydsl.core.BooleanBuilder builder = new com.querydsl.core.BooleanBuilder();
+        if (predicate != null) {
+            builder.and(predicate);
+        }
+        com.querydsl.core.types.dsl.BooleanExpression scope = securityUtils.getDossierScopeExpression();
+        if (scope != null) {
+            builder.and(scope);
+        }
+        return repository.findAll(builder, pageable).map(mapper::toDto);
     }
 
     public DossierDTO findById(Long id) {
-        log.info("[ENTER] Executing findById");
-        return repository.findById(id).map(mapper::toDto).orElse(null);
+        log.info("[ENTER] Executing findById for dossier id: {}", id);
+        Dossier dossier = repository.findById(id).orElse(null);
+        if (dossier != null && !securityUtils.isDossierAllowedForUser(dossier)) {
+            log.warn("[SECURITY] Accès non autorisé au dossier {} par l'utilisateur {}", id, securityUtils.getCurrentUsername());
+            throw new AccessDeniedException("Accès refusé : vous n'avez pas les droits pour consulter ce dossier.");
+        }
+        return dossier != null ? mapper.toDto(dossier) : null;
     }
 
     public DossierDTO create(DossierDTO dto) {
@@ -74,6 +104,12 @@ public class DossierService {
             }
             dto.setReferenceInterne(ref);
         }
+
+        // Attribution automatique du créateur
+        if (dto.getCreatedBy() == null || dto.getCreatedBy().isBlank()) {
+            dto.setCreatedBy(securityUtils.getCurrentUsername());
+        }
+
         Dossier entity = mapper.toEntity(dto);
         linkDocuments(entity);
         Dossier saved = repository.save(entity);
@@ -87,6 +123,11 @@ public class DossierService {
 
     public DossierDTO update(DossierDTO dto) {
         log.info("[ENTER] Executing update");
+        if (dto.getId() != null && !securityUtils.canAccessDossier(dto.getId())) {
+            log.warn("[SECURITY] Tentative de modification non autorisée du dossier {} par {}", dto.getId(), securityUtils.getCurrentUsername());
+            throw new AccessDeniedException("Accès refusé : vous n'avez pas les droits pour modifier ce dossier.");
+        }
+
         if (dto.getReferenceInterne() != null && !dto.getReferenceInterne().trim().isEmpty() && dto.getId() != null) {
             String ref = dto.getReferenceInterne().trim();
             if (repository.existsByReferenceInterneAndIdNot(ref, dto.getId())) {
@@ -115,18 +156,16 @@ public class DossierService {
     }
 
     private String getCurrentUsername() {
-        try {
-            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
-                    .getContext().getAuthentication();
-            if (auth != null)
-                return auth.getName();
-        } catch (Exception e) {
-        }
-        return "Système";
+        return securityUtils.getCurrentUsername() != null ? securityUtils.getCurrentUsername() : "Système";
     }
 
     public void delete(Long id) {
         log.info("[ENTER] Executing delete");
+        if (id != null && !securityUtils.canAccessDossier(id)) {
+            log.warn("[SECURITY] Tentative de suppression non autorisée du dossier {} par {}", id, securityUtils.getCurrentUsername());
+            throw new AccessDeniedException("Accès refusé : vous n'avez pas les droits pour supprimer ce dossier.");
+        }
         repository.deleteById(id);
     }
 }
+

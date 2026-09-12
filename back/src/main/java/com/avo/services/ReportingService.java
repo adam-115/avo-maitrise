@@ -57,6 +57,7 @@ public class ReportingService {
     private final UBORepository uboRepository;
     private final ScreeningMatchRepository screeningMatchRepository;
     private final com.avo.repositories.DiligenceFormResultRepository diligenceFormResultRepository;
+    private final com.avo.config.SecurityUtils securityUtils;
 
     public byte[] generateGlobalAmlReport(String startDateStr, String endDateStr) {
         try {
@@ -279,6 +280,11 @@ public class ReportingService {
     private JasperPrint generateJasperPrint(Long invoiceId) throws Exception {
         Invoice invoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new RuntimeException("Invoice not found: " + invoiceId));
+
+        if (invoice.getDossier() != null && !securityUtils.isDossierAllowedForUser(invoice.getDossier())) {
+            throw new org.springframework.security.access.AccessDeniedException(
+                "Accès refusé : vous n'avez pas les droits pour accéder à la facture #" + invoiceId);
+        }
 
         CabinetProfileDTO cabinetProfile = cabinetProfileService.getProfile();
 

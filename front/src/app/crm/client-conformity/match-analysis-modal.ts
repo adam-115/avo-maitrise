@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ScreeningMatchDTO, ScreeningMatchStatus, Client } from '../../appTypes';
 import { ScreeningMatchService } from '../../services/screening-match.service';
 import { AlertService } from '../../services/alert-service';
+import { RoleService } from '../../services/role.service';
 
 export interface QuickReason {
   code: string;
@@ -40,13 +41,18 @@ export class MatchAnalysisModal {
   @Output() close = new EventEmitter<void>();
   @Output() decisionMade = new EventEmitter<ScreeningMatchDTO>();
 
-  private readonly matchService = inject(ScreeningMatchService);
-  private readonly alertService = inject(AlertService);
+  readonly matchService = inject(ScreeningMatchService);
+  readonly alertService = inject(AlertService);
+  readonly roleService = inject(RoleService);
 
   comment: string = '';
   selectedReasonCode: string = '';
   isProcessing: boolean = false;
   activeTab: 'summary' | 'sanctions' | 'aliases' | 'raw' = 'summary';
+
+  get canValidateCompliance(): boolean {
+    return this.roleService.canValidateRiskScoreAndAml;
+  }
 
   readonly quickReasons: QuickReason[] = [
     {
@@ -463,6 +469,15 @@ export class MatchAnalysisModal {
 
   onDecision(decision: string) {
     if (this.isProcessing) return;
+
+    if (!this.canValidateCompliance) {
+      this.alertService.displayMessage(
+        'Action non autorisée (Matrice RBAC)',
+        'Le rôle Avocat / Collaborateur ne permet pas de valider les scores de risque ni de lever les alertes AML. Cette décision est strictement réservée aux Avocats Associés et au Responsable Conformité (Compliance Officer).',
+        'error'
+      );
+      return;
+    }
 
     if (!this.comment || this.comment.trim().length === 0) {
       this.alertService.displayMessage(

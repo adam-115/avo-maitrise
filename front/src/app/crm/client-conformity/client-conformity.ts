@@ -19,6 +19,7 @@ import { MatchAnalysisModal } from './match-analysis-modal';
 import { AssignFormModalComponent } from '../../due-diligence/assign-form-modal/assign-form-modal.component';
 import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { ClientStatusAlertComponent } from '../../shared/components/client-status-alert/client-status-alert.component';
+import { RoleService } from '../../services/role.service';
 
 @Component({
   selector: 'app-client-conformity',
@@ -35,6 +36,11 @@ export class ClientConformity implements OnInit {
   formConfigService = inject(FormConfigService);
   diligenceStatusService = inject(ClientDiligenceStatusService);
   documentService = inject(DocumentService);
+  roleService = inject(RoleService);
+
+  get canValidateCompliance(): boolean {
+    return this.roleService.canValidateRiskScoreAndAml;
+  }
 
   client: Client | null = null;
   executions: ScreeningExecutionDTO[] = [];
@@ -550,6 +556,17 @@ export class ClientConformity implements OnInit {
     if (!this.client) return;
 
     const previousStatus = this.client.clientStatus;
+
+    // 0. Contrôle de Sécurité RBAC : Réservé exclusivement à ADMIN, ASSOCIE, COMPLIANCE_OFFICER
+    if (!this.canValidateCompliance) {
+      this.alertService.displayMessage(
+        'Action non autorisée (Matrice RBAC)',
+        'Le rôle Avocat / Collaborateur ne permet pas de modifier manuellement le statut de conformité AML du client. Cette décision est strictement réservée aux Avocats Associés (Partners) et au Responsable Conformité (Compliance Officer).',
+        'error'
+      );
+      this.client.clientStatus = previousStatus;
+      return;
+    }
 
     // 1. Contrôle préalable : Vérifier si des alertes sont en attente d'analyse (PENDING)
     if (this.pendingMatchesCount > 0 && (newStatus === 'AML_VALIDATED' || newStatus === 'VALIDATED')) {

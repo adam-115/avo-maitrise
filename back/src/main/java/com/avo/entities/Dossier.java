@@ -29,10 +29,14 @@ public class Dossier {
     @Column(name = "responsable_id")
     private String responsableId;
 
+    @Column(name = "created_by")
+    private String createdBy;
+
     @ElementCollection
     @CollectionTable(name = "dossier_intervenants", joinColumns = @JoinColumn(name = "dossier_id"))
     @Column(name = "intervenant_id")
     private List<String> intervenantsIds = new ArrayList<>();
+
 
     private String domaineJuridique;
     
@@ -79,6 +83,10 @@ public class Dossier {
 
     public String getResponsableId() { return responsableId; }
     public void setResponsableId(String responsableId) { this.responsableId = responsableId; }
+
+    public String getCreatedBy() { return createdBy; }
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+
 
     public List<String> getIntervenantsIds() { return intervenantsIds; }
     public void setIntervenantsIds(List<String> intervenantsIds) { this.intervenantsIds = intervenantsIds; }

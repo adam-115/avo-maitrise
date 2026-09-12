@@ -34,8 +34,38 @@ public class UserDTO {
     @Size(max = 60, message = "Le nom ne peut pas dépasser 60 caractères")
     private String lastName;
 
-    @NotBlank(message = "Le rôle est obligatoire")
     private String role;
+    private java.util.List<String> roles;
+
+    public java.util.List<String> getRoles() {
+        if (roles != null && !roles.isEmpty()) {
+            return roles;
+        }
+        if (role != null && !role.isBlank()) {
+            return java.util.Arrays.stream(role.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .toList();
+        }
+        return java.util.Collections.emptyList();
+    }
+
+    public String getRole() {
+        if (role != null && !role.isBlank()) {
+            return role;
+        }
+        if (roles != null && !roles.isEmpty()) {
+            return String.join(",", roles);
+        }
+        return "COLLABORATEUR";
+    }
+
+    public void setRoles(java.util.List<String> roles) {
+        this.roles = roles;
+        if (roles != null && !roles.isEmpty()) {
+            this.role = String.join(",", roles);
+        }
+    }
 
     private String photoBlob;
 

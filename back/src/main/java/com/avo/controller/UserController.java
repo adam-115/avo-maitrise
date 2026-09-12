@@ -24,13 +24,13 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
     }
 
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT')")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Page<UserDTO>> search(@QuerydslPredicate(root = AppUser.class) Predicate predicate, Pageable pageable) {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }

@@ -20,10 +20,12 @@ public class InvoiceController {
 
     private final InvoiceService service;
     private final ReportingService reportingService;
+    private final com.avo.config.SecurityUtils securityUtils;
 
-    public InvoiceController(InvoiceService service, ReportingService reportingService) {
+    public InvoiceController(InvoiceService service, ReportingService reportingService, com.avo.config.SecurityUtils securityUtils) {
         this.service = service;
         this.reportingService = reportingService;
+        this.securityUtils = securityUtils;
     }
 
     @GetMapping
@@ -41,7 +43,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE') or @securityUtils.canAccessInvoice(#id)")
     public ResponseEntity<InvoiceDTO> getById(@PathVariable Long id) {
         InvoiceDTO result = service.findById(id);
         if (result != null) {
@@ -57,7 +59,7 @@ public class InvoiceController {
     }
 
     @PutMapping(value = {"", "/{id}"})
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'AVOCAT', 'SECRETARIAT')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'SECRETARIAT') or @securityUtils.canAccessInvoice(#dto.id != null ? #dto.id : #id)")
     public ResponseEntity<InvoiceDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody InvoiceDTO dto) {
         if (id != null && dto.getId() == null) {
             dto.setId(id);
@@ -66,14 +68,14 @@ public class InvoiceController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE') or @securityUtils.canAccessInvoice(#id)")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}/pdf")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'ASSOCIE', 'SECRETARIAT') or @securityUtils.canAccessInvoice(#id)")
     public ResponseEntity<byte[]> generatePdf(@PathVariable Long id) {
         byte[] pdfBytes = reportingService.generateInvoicePdf(id);
         org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
@@ -85,6 +87,14 @@ public class InvoiceController {
     @GetMapping("/bulk-pdf")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<byte[]> generateBulkPdf(@RequestParam java.util.List<Long> ids) {
+        if (ids != null && !ids.isEmpty()) {
+            for (Long id : ids) {
+                if (!securityUtils.canAccessInvoice(id)) {
+                    throw new org.springframework.security.access.AccessDeniedException(
+                        "Accès refusé : vous n'avez pas les droits pour accéder à la facture #" + id);
+                }
+            }
+        }
         byte[] pdfBytes = reportingService.generateBulkInvoicePdf(ids);
         org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
         headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
@@ -92,4 +102,5 @@ public class InvoiceController {
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 }
+
 
