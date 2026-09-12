@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Étude Comparative, Grille Tarifaire & Intégration AML-KYC - Logiciel Avocats</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 9mm 11mm 9mm 11mm;
+      @bottom-center {
+        content: "Page " counter(page) " sur " counter(pages);
+        font-family: 'Inter', sans-serif;
+        font-size: 7.5pt;
+        color: #64748b;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1e293b;
+      background-color: #ffffff;
+      line-height: 1.35;
+      font-size: 8.5pt;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .container {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    .header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .header-left h1 {
+      font-size: 13.5pt;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.4px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .header-left .subtitle {
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: #2563eb;
+    }
+
+    .header-right {
+      text-align: right;
+      font-size: 7pt;
+      color: #64748b;
+    }
+
+    .badge-confidential {
+      display: inline-block;
+      background: #fee2e2;
+      color: #991b1b;
+      font-weight: 700;
+      font-size: 6.8pt;
+      padding: 2px 5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    /* SECTION TITLES */
+    h2 {
+      font-size: 10pt;
+      font-weight: 700;
+      color: #0f172a;
+      border-left: 3.5px solid #2563eb;
+      padding-left: 6px;
+      margin-top: 8px;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+    }
+
+    h3 {
+      font-size: 8.8pt;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-top: 6px;
+      margin-bottom: 3px;
+    }
+
+    p {
+      margin-bottom: 5px;
+      text-align: justify;
+    }
+
+    /* EXECUTIVE SUMMARY BOX */
+    .exec-summary {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3.5px solid #0f172a;
+      padding: 6px 8px;
+      border-radius: 4px;
+      margin-bottom: 7px;
+      font-size: 8pt;
+    }
+
+    .exec-summary p {
+      margin-bottom: 0;
+      color: #334155;
+    }
+
+    /* TABLES */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 3px;
+      margin-bottom: 8px;
+      font-size: 7.8pt;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 5px;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #0f172a;
+      color: #ffffff;
+      font-weight: 600;
+      text-align: center;
+      font-size: 7.2pt;
+      text-transform: uppercase;
+    }
+
+    th.feature-col {
+      text-align: left;
+      width: 25%;
+    }
+
+    th.our-col {
+      background-color: #1e40af;
+      border: 2px solid #2563eb;
+    }
+
+    td.our-cell {
+      background-color: #eff6ff;
+      font-weight: 600;
+      color: #1e3a8a;
+      text-align: center;
+    }
+
+    td.center {
+      text-align: center;
+    }
+
+    tr:nth-child(even) td:not(.our-cell) {
+      background-color: #f8fafc;
+    }
+
+    /* CARDS GRID */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 7px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 7px;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 6px 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .card.strength {
+      border-top: 2.5px solid #10b981;
+      background: #fcfdfd;
+    }
+
+    .card.improvement {
+      border-top: 2.5px solid #f59e0b;
+      background: #fdfdfc;
+    }
+
+    .card.aml-box {
+      border-top: 2.5px solid #2563eb;
+      background: #f8faff;
+    }
+
+    .card.pricing-card {
+      border-top: 2.5px solid #0f172a;
+      text-align: center;
+    }
+
+    .pricing-card.featured {
+      border-top: 3px solid #2563eb;
+      background: #eff6ff;
+    }
+
+    .card h4 {
+      font-size: 8.3pt;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .strength h4 {
+      color: #065f46;
+    }
+
+    .improvement h4 {
+      color: #92400e;
+    }
+
+    .aml-box h4 {
+      color: #1e40af;
+    }
+
+    .card p, .card ul {
+      font-size: 7.6pt;
+      color: #475569;
+      margin-bottom: 0;
+      line-height: 1.3;
+    }
+
+    .card ul {
+      padding-left: 12px;
+      margin-top: 2px;
+    }
+
+    .card li {
+      margin-bottom: 2px;
+    }
+
+    /* BADGES & HIGHLIGHTS */
+    .badge-success {
+      background-color: #d1fae5;
+      color: #065f46;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 6.8pt;
+      display: inline-block;
+    }
+
+    .badge-warning {
+      background-color: #fef3c7;
+      color: #92400e;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 6.8pt;
+      display: inline-block;
+    }
+
+    .badge-danger {
+      background-color: #fee2e2;
+      color: #991b1b;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 6.8pt;
+      display: inline-block;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    /* FOOTER */
+    .doc-footer {
+      margin-top: 8px;
+      border-top: 1px solid #cbd5e1;
+      padding-top: 4px;
+      font-size: 6.8pt;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .step-badge {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      text-align: center;
+      background: #2563eb;
+      color: white;
+      border-radius: 50%;
+      font-size: 6.5pt;
+      font-weight: 700;
+      margin-right: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ==================== PAGE 1 ==================== -->
+  
+  <div class="header">
+    <div class="header-left">
+      <div class="subtitle">Document de Stratégie, Pricing & Conformité Déontologique</div>
+      <h1>Étude Comparative, Tarifs & Intégration AML / KYC</h1>
+    </div>
+    <div class="header-right">
+      <div class="badge-confidential">Confidentiel / Stratégique</div>
+      <div>Édition : Septembre 2026</div>
+      <div>Cabinets d'Avocats & Ordre</div>
+    </div>
+  </div>
+
+  <div class="exec-summary">
+    <strong>Synthèse Exécutive :</strong> Face au durcissement des contrôles LCB-FT du Conseil National des Barreaux (CNB) et de la CARPA, notre solution réinvente l'ERP juridique en intégrant <strong>nativement le screening Sanctions / PPE et le scoring de risque AML/KYC</strong> sans aucun surcoût d'API tierce. Cette étude détaille le benchmark concurrentiel, la grille tarifaire du marché et le fonctionnement du moteur de vigilance.
+  </div>
+
+  <!-- SECTION 1 : BENCHMARK & PRICING CONCURRENTIEL -->
+  <h2>1. Matrice Fonctionnelle & Grille Tarifaire Comparative</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th class="feature-col">Critères & Modules</th>
+        <th class="our-col">Notre Solution<br><span style="font-size:6.5pt; font-weight:normal;">(Vigilex / Avora)</span></th>
+        <th>SECIB<br><span style="font-size:6.5pt; font-weight:normal;">(Septeo)</span></th>
+        <th>Jarvis Legal</th>
+        <th>KLEOS<br><span style="font-size:6.5pt; font-weight:normal;">(Wolters Kluwer)</span></th>
+        <th>DIAPAZ<br><span style="font-size:6.5pt; font-weight:normal;">(Septeo)</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tarif Moyen / Utilisateur</strong></td>
+        <td class="our-cell"><span class="badge-success">49€ à 79€ HT / mois</span><br><span style="font-size:6.5pt;">(Sans engagement lourd)</span></td>
+        <td class="center"><strong>90€ à 150€ HT / mois</strong><br><span style="font-size:6.5pt;">+ Frais setup 2k€-5k€</span></td>
+        <td class="center"><strong>49€ à 89€ HT / mois</strong><br><span style="font-size:6.5pt;">+ Options facturées</span></td>
+        <td class="center"><strong>69€ à 120€ HT / mois</strong><br><span style="font-size:6.5pt;">+ Engagement 12/36m</span></td>
+        <td class="center"><strong>95€ à 140€ HT / mois</strong><br><span style="font-size:6.5pt;">+ Licences M365</span></td>
+      </tr>
+      <tr>
+        <td><strong>Module Conformité AML / KYC</strong></td>
+        <td class="our-cell"><span class="badge-success">✅ INCLUS (Natif Yente)</span></td>
+        <td class="center"><span class="badge-danger">Option payante / Manuel</span></td>
+        <td class="center"><span class="badge-danger">Outil externe séparé</span></td>
+        <td class="center"><span class="badge-danger">Champs déclaratifs</span></td>
+        <td class="center"><span class="badge-danger">Non inclus</span></td>
+      </tr>
+      <tr>
+        <td><strong>Coût Outil AML Tiers Évité</strong></td>
+        <td class="our-cell"><span class="badge-success">Économie de 3k€ à 8k€/an</span></td>
+        <td class="center">Abonnement tiers requis</td>
+        <td class="center">Abonnement tiers requis</td>
+        <td class="center">Abonnement tiers requis</td>
+        <td class="center">Abonnement tiers requis</td>
+      </tr>
+      <tr>
+        <td><strong>Rapport Audit Bâtonnier (PDF)</strong></td>
+        <td class="our-cell"><span class="badge-success">✅ OUI (1 clic certifié)</span></td>
+        <td class="center"><span class="badge-danger">❌ NON (Saisie manuelle)</span></td>
+        <td class="center"><span class="badge-danger">❌ NON</span></td>
+        <td class="center"><span class="badge-danger">❌ NON</span></td>
+        <td class="center"><span class="badge-danger">❌ NON</span></td>
+      </tr>
+      <tr>
+        <td><strong>Contrôle d'Accès RBAC & Anti-IDOR</strong></td>
+        <td class="our-cell"><span class="badge-success">6 Rôles Stricts + Finance étanche</span></td>
+        <td class="center">Modulaire (Complexe)</td>
+        <td class="center">Standard</td>
+        <td class="center">Standard</td>
+        <td class="center">Groupes AD</td>
+      </tr>
+      <tr>
+        <td><strong>Modernité UI & Réactivité Web</strong></td>
+        <td class="our-cell"><span class="badge-success">Angular 20 (Ultra fluide)</span></td>
+        <td class="center"><span class="badge-danger">Lourd / Vieillissant</span></td>
+        <td class="center"><span class="badge-success">SaaS Moderne</span></td>
+        <td class="center">Classique / Rigide</td>
+        <td class="center">Add-in Outlook</td>
+      </tr>
+      <tr>
+        <td><strong>Sécurité, Authentification & 2FA</strong></td>
+        <td class="our-cell"><span class="badge-success">Keycloak (SSO / 2FA / JWT)</span></td>
+        <td class="center">Base propriétaire</td>
+        <td class="center">Cloud Sécurisé</td>
+        <td class="center">Cloud Sécurisé</td>
+        <td class="center">Microsoft Azure</td>
+      </tr>
+      <tr>
+        <td><strong>Passerelle RPVA / E-Barreau</strong></td>
+        <td class="our-cell"><span class="badge-warning">Roadmap (Priorité 1)</span></td>
+        <td class="center"><span class="badge-success">✅ Historique</span></td>
+        <td class="center"><span class="badge-success">✅ Disponible</span></td>
+        <td class="center"><span class="badge-success">✅ Certifié</span></td>
+        <td class="center"><span class="badge-success">✅ Disponible</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- SECTION 2 : STRATEGIE DE PRICING PROPOSEE -->
+  <h2>2. Grille Tarifaire Recommandée (Stratégie d'Offre)</h2>
+
+  <div class="grid-3">
+    <div class="card pricing-card">
+      <h4 style="color:#0f172a;">SOLO / INDÉPENDANT</h4>
+      <div style="font-size:12pt; font-weight:800; color:#2563eb; margin:3px 0;">39€ <span style="font-size:7pt; font-weight:normal; color:#64748b;">HT / mois</span></div>
+      <p style="font-size:7.2pt; color:#475569; margin-bottom:4px;">Pour avocat individuel démarrant son activité.</p>
+      <ul style="text-align:left; font-size:7.2pt;">
+        <li>Dossiers & Clients illimités</li>
+        <li>Facturation, temps & acomptes</li>
+        <li>GED & modèles de documents</li>
+        <li><strong>Screening AML / KYC basique</strong></li>
+      </ul>
+    </div>
+
+    <div class="card pricing-card featured">
+      <div class="badge-success" style="margin-bottom:2px;">RECOMMANDÉ</div>
+      <h4 style="color:#1e40af;">CABINET ASSOCIÉS (PRO)</h4>
+      <div style="font-size:12pt; font-weight:800; color:#1e40af; margin:3px 0;">69€ <span style="font-size:7pt; font-weight:normal; color:#64748b;">HT / util. / mois</span></div>
+      <p style="font-size:7.2pt; color:#475569; margin-bottom:4px;">Pour cabinets structurés de 2 à 25 avocats.</p>
+      <ul style="text-align:left; font-size:7.2pt;">
+        <li><strong>Matrice 6 rôles (RBAC étanche)</strong></li>
+        <li><strong>Dashboard Financier Associés</strong></li>
+        <li><strong>Screening Sanctions/PPE illimité</strong></li>
+        <li><strong>Rapport d'audit Bâtonnier PDF</strong></li>
+        <li>Support prioritaire & sauvegarde auto</li>
+      </ul>
+    </div>
+
+    <div class="card pricing-card">
+      <h4 style="color:#0f172a;">CORPORATE / DÉDIÉ</h4>
+      <div style="font-size:12pt; font-weight:800; color:#0f172a; margin:3px 0;">Sur Devis</div>
+      <p style="font-size:7.2pt; color:#475569; margin-bottom:4px;">Pour grands cabinets d'affaires (+25 util.).</p>
+      <ul style="text-align:left; font-size:7.2pt;">
+        <li>Déploiement Cloud dédié ou On-Prem</li>
+        <li>SSO entreprise & Annuaire LDAP/AD</li>
+        <li>API & Intégrations sur-mesure</li>
+        <li>Accompagnement conformité & DPO</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <div>Étude Stratégique & Tarifaire - Page 1/2</div>
+    <div>Application AVO / Vigilex &copy; 2026</div>
+  </div>
+
+  <!-- ==================== PAGE 2 ==================== -->
+  <div class="page-break"></div>
+
+  <!-- SECTION 3 : FOCUS INTEGRATION AML / KYC -->
+  <h2>3. L'Intégration AML / KYC : Le Moteur de Vigilance & Conformité</h2>
+  <p>L'intégration de la <strong>Lutte Contre le Blanchiment (LCB-FT)</strong> au cœur de notre solution élimine les démarches manuelles chronophages et protège le cabinet contre tout manquement déontologique.</p>
+
+  <div class="grid-2">
+    <div class="card aml-box">
+      <h4><span class="step-badge">1</span> Screening Sanctions & PPE Automatisé (Yente)</h4>
+      <p>À la création ou modification d'un client, le moteur interroge instantanément la base consolidée <strong>OpenSanctions / Yente</strong> :</p>
+      <ul>
+        <li><strong>Listes Internationales :</strong> Gel des avoirs DG Trésor (France), Union Européenne, OFAC (USA), ONU.</li>
+        <li><strong>Personnes Politiquement Exposées (PPE) :</strong> Détection des mandats publics français et internationaux ainsi que des proches/associés.</li>
+        <li><strong>Fuzzy Matching :</strong> Tolérance aux variations orthographiques, translittérations arabes/cyrilliques et fautes de frappe.</li>
+      </ul>
+    </div>
+
+    <div class="card aml-box">
+      <h4><span class="step-badge">2</span> Matrice & Algorithme de Scoring de Risque</h4>
+      <p>Calcul dynamique d'un indice de vigilance (de 0 à 100%) basé sur des critères déontologiques multicritères :</p>
+      <ul>
+        <li><strong>Typologie Client :</strong> Personne physique vs structure opaque, holding offshore ou trusts.</li>
+        <li><strong>Nature de l'Acte :</strong> Maniement de fonds CARPA, acquisition immobilière, fiducie, contentieux.</li>
+        <li><strong>Indice Pays :</strong> Pays sous surveillance renforcée ou liste noire GAFI.</li>
+        <li><strong>Statut Résultant :</strong> <em>Faible</em> (Vigilance simplifiée), <em>Moyen</em> (Standard), <em>Élevé</em> (Vigilance renforcée).</li>
+      </ul>
+    </div>
+
+    <div class="card aml-box">
+      <h4><span class="step-badge">3</span> Console Dédiée & Levée d'Alertes Traçable</h4>
+      <p>Espace sécurisé réservé au <strong>Compliance Officer</strong> et aux <strong>Associés</strong> :</p>
+      <ul>
+        <li>Visualisation détaillée des correspondances (photos, dates de naissance, fonctions).</li>
+        <li>Qualification en 4 statuts : <em>Faux Positif</em>, <em>Vrai Positif PPE</em>, <em>Pièces Requises</em>, <em>Gel / Alerte</em>.</li>
+        <li><strong>Piste d'Audit Inaltérable :</strong> Horodatage, identité du valideur et justification écrite obligatoire stockés en base de données.</li>
+      </ul>
+    </div>
+
+    <div class="card aml-box">
+      <h4><span class="step-badge">4</span> Rapport d'Audit pour le Bâtonnier & CARPA (PDF)</h4>
+      <p>Génération en un clic du dossier de conformité officiel au format PDF haute fidélité :</p>
+      <ul>
+        <li>Fiche d'identité KYC complète et historique des diligences.</li>
+        <li>Justificatifs des alertes levées et visas du responsable conformité.</li>
+        <li>Document recevable immédiatement lors des contrôles de l'Ordre ou transferts de fonds CARPA.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 4 : FEUILLE DE ROUTE & NAMING -->
+  <h2>4. Feuille de Route d'Évolution & Naming Recommandé</h2>
+
+  <div class="grid-2">
+    <div class="card improvement">
+      <h4>🚀 Roadmap Prioritaire</h4>
+      <ul>
+        <li><strong>RPVA / E-Barreau :</strong> Import auto des notifications du greffe.</li>
+        <li><strong>Signature Électronique eIDAS :</strong> Conventions d'honoraires (Yousign).</li>
+        <li><strong>Add-in Outlook :</strong> Classement direct des e-mails et calendrier.</li>
+        <li><strong>Extranet Client :</strong> Collecte de pièces KYC et paiement en ligne.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-top: 2.5px solid #1e40af;">
+      <h4>🏷️ Noms Recommandés</h4>
+      <ul>
+        <li><strong>Vigilex (Top 1) :</strong> Vigilance LCB-FT + Lex (Droit). Idéal pour valoriser la maîtrise déontologique.</li>
+        <li><strong>Avora :</strong> Moderne, court et mémorable pour un ERP juridique.</li>
+        <li><strong>Avocore :</strong> Le cœur opérationnel du cabinet d'avocats.</li>
+        <li><strong>NomosCore :</strong> Prestige institutionnel (Loi fondamentale + Core).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 5 : CONCLUSION -->
+  <div class="exec-summary" style="border-left-color: #2563eb; background: #eff6ff; margin-top:6px; margin-bottom:0;">
+    <p style="color: #1e3a8a; font-weight: 600; font-size:7.8pt;">
+      💡 <strong>Proposition de Valeur Unique :</strong> En associant la gestion opérationnelle complète à un moteur AML/KYC souverain, la solution permet aux cabinets d'économiser entre 3 000€ et 8 000€/an en outils tiers tout en garantissant une immunité déontologique totale face aux contrôles de l'Ordre.
+    </p>
+  </div>
+
+  <div class="doc-footer">
+    <div>Étude Stratégique & Tarifaire - Page 2/2</div>
+    <div>Application AVO / Vigilex &copy; 2026 - Tous droits réservés</div>
+  </div>
+
+</div>
+
+</body>
+</html>
