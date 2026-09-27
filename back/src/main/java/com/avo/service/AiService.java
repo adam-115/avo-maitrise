@@ -104,7 +104,27 @@ public class AiService {
         }
 
         dev.langchain4j.model.output.Response<dev.langchain4j.data.message.AiMessage> response = chatLanguageModel.generate(messages);
-        return response.content().text();
+        String reply = response.content().text();
+        
+        // Sauvegarde de l'historique dans la base de données
+        if (dossier != null) {
+            java.util.Map<String, String> aiMsg = new java.util.HashMap<>();
+            aiMsg.put("role", "ai");
+            aiMsg.put("content", reply);
+            
+            java.util.List<java.util.Map<String, String>> updatedHistory = new java.util.ArrayList<>(history);
+            updatedHistory.add(aiMsg);
+            
+            try {
+                String jsonHistory = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(updatedHistory);
+                dossier.setAiChatHistory(jsonHistory);
+                dossierRepository.save(dossier);
+            } catch (Exception e) {
+                System.err.println("Erreur sauvegarde historique chat: " + e.getMessage());
+            }
+        }
+        
+        return reply;
     }
 
     /**

@@ -15,15 +15,18 @@ public class AiController {
     private final com.avo.repositories.DocumentRepository documentRepository;
     private final com.avo.service.ai.RAGDocumentService ragDocumentService;
     private final com.avo.service.ai.AvoAiTools avoAiTools;
+    private final com.avo.repositories.DossierRepository dossierRepository;
 
     public AiController(AiService aiService, 
                         com.avo.repositories.DocumentRepository documentRepository,
                         com.avo.service.ai.RAGDocumentService ragDocumentService,
-                        com.avo.service.ai.AvoAiTools avoAiTools) {
+                        com.avo.service.ai.AvoAiTools avoAiTools,
+                        com.avo.repositories.DossierRepository dossierRepository) {
         this.aiService = aiService;
         this.documentRepository = documentRepository;
         this.ragDocumentService = ragDocumentService;
         this.avoAiTools = avoAiTools;
+        this.dossierRepository = dossierRepository;
     }
 
     @PostMapping("/summarize")
@@ -108,5 +111,16 @@ public class AiController {
             }
         }
         return ResponseEntity.ok(Map.of("result", "Synchronisation terminée avec succès pour " + count + " documents."));
+    }
+
+    @DeleteMapping("/dossier/{dossierId}/chat")
+    public ResponseEntity<Map<String, String>> clearChatHistory(@PathVariable Long dossierId) {
+        com.avo.entities.Dossier dossier = dossierRepository.findById(dossierId).orElse(null);
+        if (dossier != null) {
+            dossier.setAiChatHistory(null);
+            dossierRepository.save(dossier);
+            return ResponseEntity.ok(Map.of("result", "Historique supprimé"));
+        }
+        return ResponseEntity.notFound().build();
     }
 }

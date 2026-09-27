@@ -38,4 +38,5 @@ public class DossierDTO {
     private Date dateCloture;
     private Date updated_at;
     private String aiStrategy;
+    private String aiChatHistory;
 }

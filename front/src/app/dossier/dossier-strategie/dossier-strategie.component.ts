@@ -38,9 +38,110 @@ export class DossierStrategieComponent implements OnInit {
     if (this.selectedDossier && this.selectedDossier.aiStrategy) {
         this.rawResponse.set(this.selectedDossier.aiStrategy);
         this.parseResponse(this.selectedDossier.aiStrategy);
+        
+        if (this.selectedDossier.aiChatHistory) {
+            try {
+                const history = JSON.parse(this.selectedDossier.aiChatHistory);
+                this.chatHistory.set(history);
+            } catch(e) {
+                console.error("Erreur parsing historique chat:", e);
+            }
+        }
     } else {
         this.generateStrategy();
     }
+  }
+
+  clearChat() {
+      if (!confirm("Voulez-vous vraiment effacer l'historique de cette discussion ?")) return;
+      
+      this.chatHistory.set([]);
+      this.http.delete(`${environment.apiUrl}ai/dossier/${this.dossierId}/chat`).subscribe({
+          next: () => {
+              if (this.selectedDossier) {
+                  this.selectedDossier.aiChatHistory = null;
+              }
+          },
+          error: (err) => console.error("Erreur suppression historique:", err)
+      });
+  }
+
+  exportToPdf(elementId: string, title: string) {
+    const data = document.getElementById(elementId);
+    if (!data) return;
+
+    // Création d'une iframe invisible pour l'impression
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    // Récupération de tous les styles (y compris ceux injectés par JS/Vite)
+    let styles = '';
+    for (let i = 0; i < document.styleSheets.length; i++) {
+      try {
+        const sheet = document.styleSheets[i];
+        if (sheet.href) {
+            styles += `<link rel="stylesheet" href="${sheet.href}">`;
+        } else {
+            let cssText = '';
+            const rules = sheet.cssRules || sheet.rules;
+            if (rules) {
+                for (let j = 0; j < rules.length; j++) {
+                    cssText += rules[j].cssText + '\n';
+                }
+                styles += `<style>${cssText}</style>`;
+            }
+        }
+      } catch (e) {
+          // Ignore CORS issues for external stylesheets
+      }
+    }
+
+    const currentDate = new Date().toLocaleString('fr-FR');
+    const cleanTitle = title.replace(/_/g, ' ');
+
+    iframe.contentWindow?.document.open();
+    iframe.contentWindow?.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>${cleanTitle}</title>
+          ${styles}
+          <style>
+             body { font-family: ui-sans-serif, system-ui, sans-serif; }
+             /* Sécurité pour forcer la taille des icônes SVG si le CSS Tailwind manque */
+             svg { max-width: 24px !important; max-height: 24px !important; display: inline-block; }
+             
+             @media print {
+                 body { padding: 20px; background-color: white !important; -webkit-print-color-adjust: exact; }
+                 .shadow-sm, .shadow-md, .shadow-2xl { box-shadow: none !important; }
+                 /* Affichage propre des grilles en mode impression */
+                 #strategy-grid { display: block !important; }
+                 #strategy-grid > div { margin-bottom: 24px !important; page-break-inside: avoid; }
+             }
+          </style>
+        </head>
+        <body class="bg-white">
+          <div class="mb-8 border-b pb-4">
+              <h1 class="text-3xl font-bold text-slate-900">${cleanTitle}</h1>
+              <p class="text-sm text-slate-500 mt-2">Généré le ${currentDate}</p>
+          </div>
+          ${data.innerHTML}
+        </body>
+      </html>
+    `);
+    iframe.contentWindow?.document.close();
+
+    // Petit délai pour laisser le navigateur parser le CSS de Tailwind dans l'iframe
+    setTimeout(() => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+        
+        // Nettoyage après impression
+        setTimeout(() => {
+            document.body.removeChild(iframe);
+        }, 1000);
+    }, 1000);
   }
 
   generateStrategy() {
@@ -147,7 +248,7 @@ export class DossierStrategieComponent implements OnInit {
     this.tachesRecommandees.set(this.formatMarkdown(this.tachesStr));
   }
   
-  private formatMarkdown(text: string): string {
+  formatMarkdown(text: string): string {
       return text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
                  .replace(/\*(.*?)\*/g, '<em>$1</em>')
                  .replace(/- (.*)/g, '<li class="ml-4 list-disc">$1</li>')
