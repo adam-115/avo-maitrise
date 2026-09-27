@@ -43,4 +43,8 @@ export class Administration {
   navigateToAiAssistant(): void {
     this.router.navigate(['home', 'ai-test']);
   }
+
+  navigateToAiConfiguration(): void {
+    this.router.navigate(['home', 'ai-configuration']);
+  }
 }

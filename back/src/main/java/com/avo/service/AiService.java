@@ -10,32 +10,25 @@ import jakarta.annotation.PostConstruct;
 @Service
 public class AiService {
 
-    private final ChatLanguageModel chatLanguageModel;
     private final AvoAiTools avoAiTools;
-    private final dev.langchain4j.model.chat.StreamingChatLanguageModel streamingChatLanguageModel;
     private final dev.langchain4j.rag.content.retriever.ContentRetriever contentRetriever;
     private final com.avo.repositories.DossierRepository dossierRepository;
-    private LegalAssistant legalAssistant;
+    private final AiConfigurationService aiConfigurationService;
 
-    public AiService(ChatLanguageModel chatLanguageModel, 
-                     dev.langchain4j.model.chat.StreamingChatLanguageModel streamingChatLanguageModel,
-                     AvoAiTools avoAiTools,
+    public AiService(AvoAiTools avoAiTools,
             dev.langchain4j.rag.content.retriever.ContentRetriever contentRetriever,
-            com.avo.repositories.DossierRepository dossierRepository) {
-        this.chatLanguageModel = chatLanguageModel;
-        this.streamingChatLanguageModel = streamingChatLanguageModel;
+            com.avo.repositories.DossierRepository dossierRepository,
+            AiConfigurationService aiConfigurationService) {
         this.avoAiTools = avoAiTools;
         this.contentRetriever = contentRetriever;
         this.dossierRepository = dossierRepository;
+        this.aiConfigurationService = aiConfigurationService;
     }
 
-    @PostConstruct
-    public void init() {
-        this.legalAssistant = AiServices.builder(LegalAssistant.class)
-                .chatLanguageModel(chatLanguageModel)
+    private LegalAssistant getDynamicLegalAssistant() {
+        return AiServices.builder(LegalAssistant.class)
+                .chatLanguageModel(aiConfigurationService.buildChatModel())
                 .tools(avoAiTools)
-                // Activation de la mémoire de conversation (ChatMemory).
-                // On garde en mémoire les 20 derniers messages pour chaque "sessionId".
                 .chatMemoryProvider(memoryId -> dev.langchain4j.memory.chat.MessageWindowChatMemory.withMaxMessages(20))
                 .build();
     }
@@ -46,7 +39,7 @@ public class AiService {
     public String summarizeText(String text) {
         String prompt = "Tu es un assistant juridique expert. Résume le texte suivant de manière professionnelle, " +
                 "en faisant ressortir les points clés, les dates importantes et les enjeux. \n\nTexte :\n" + text;
-        return chatLanguageModel.generate(prompt);
+        return aiConfigurationService.buildChatModel().generate(prompt);
     }
 
     /**
@@ -56,21 +49,21 @@ public class AiService {
         String prompt = String.format("Tu es un avocat français rédigeant un document. " +
                 "Rédige un(e) %s en utilisant le contexte suivant : %s. " +
                 "Utilise un ton formel et juridique.", documentType, context);
-        return chatLanguageModel.generate(prompt);
+        return aiConfigurationService.buildChatModel().generate(prompt);
     }
 
     /**
      * Générique pour discuter avec l'IA en utilisant les Tools !
      */
     public String chat(String sessionId, String userMessage) {
-        return legalAssistant.chat(sessionId, userMessage);
+        return getDynamicLegalAssistant().chat(sessionId, userMessage);
     }
 
     /**
      * Fait appel à l'agent 'Avocat Senior' pour analyser une stratégie (Synchrone - Déprécié)
      */
     public String analyzeDossierStrategy(String sessionId, String prompt) {
-        return legalAssistant.analyzeStrategy(sessionId, prompt);
+        return getDynamicLegalAssistant().analyzeStrategy(sessionId, prompt);
     }
 
     /**
@@ -103,7 +96,7 @@ public class AiService {
             }
         }
 
-        dev.langchain4j.model.output.Response<dev.langchain4j.data.message.AiMessage> response = chatLanguageModel.generate(messages);
+        dev.langchain4j.model.output.Response<dev.langchain4j.data.message.AiMessage> response = aiConfigurationService.buildChatModel().generate(messages);
         String reply = response.content().text();
         
         // Sauvegarde de l'historique dans la base de données
@@ -156,7 +149,7 @@ public class AiService {
                         "Rédige maintenant l'analyse stratégique de façon très professionnelle :", documentsContext, jurisContext);
 
                 // 3. Appel du modèle en Streaming
-                streamingChatLanguageModel.generate(prompt, new dev.langchain4j.model.StreamingResponseHandler<dev.langchain4j.data.message.AiMessage>() {
+                aiConfigurationService.buildStreamingChatModel().generate(prompt, new dev.langchain4j.model.StreamingResponseHandler<dev.langchain4j.data.message.AiMessage>() {
                     @Override
                     public void onNext(String token) {
                         try {

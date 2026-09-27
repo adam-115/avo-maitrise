@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="add-ai-configuration-table" author="adam">
+        <createTable tableName="ai_configuration">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="provider" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="api_key" type="VARCHAR(255)"/>
+            <column name="base_url" type="VARCHAR(255)"/>
+            <column name="temperature" type="DOUBLE"/>
+            <column name="timeout_minutes" type="INT"/>
+            <column name="is_active" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <insert tableName="ai_configuration">
+            <column name="provider" value="OLLAMA"/>
+            <column name="model_name" value="qwen2.5:7b"/>
+            <column name="base_url" value="http://127.0.0.1:11434"/>
+            <column name="temperature" valueNumeric="0.3"/>
+            <column name="timeout_minutes" valueNumeric="15"/>
+            <column name="is_active" valueBoolean="true"/>
+            <column name="updated_at" valueDate="CURRENT_TIMESTAMP"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

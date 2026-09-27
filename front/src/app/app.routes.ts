@@ -228,6 +228,10 @@ export const routes: Routes = [
       {
         path: NavigationService.AI_ASSISTANT,
         loadComponent: () => import('./features/ai-tester/ai-tester.component').then(m => m.AiTesterComponent),
+      },
+      {
+        path: 'ai-configuration',
+        loadComponent: () => import('./administration/ai-configuration/ai-configuration').then(m => m.AiConfiguration),
       }
     ]
 

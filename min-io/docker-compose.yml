@@ -1,0 +1,54 @@
+services:
+  minio:
+    image: chrislusf/seaweedfs:latest
+    container_name: minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: adam
+      MINIO_ROOT_PASSWORD: adam
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Service de sauvegarde automatique
+  minio-backup:
+    image: acouvreur/minio-backup-local:latest
+    container_name: minio-backup
+    restart: always
+    depends_on:
+      - minio
+    volumes:
+      # Monte le volume de données de MinIO en lecture seule
+      - minio_data:/minio_data:ro
+      # Monte un volume pour stocker les sauvegardes
+      - minio_backups:/backups
+    environment:
+      # --- Configuration de la source ---
+      # Chemin des données de MinIO dans le conteneur
+      MINIO_DIR: /minio_data
+      # Nom du ou des buckets à sauvegarder (séparés par des virgules)
+      MINIO_BUCKET: "mes-documents"
+      
+      # --- Configuration de la planification ---
+      # Fréquence : @daily, @weekly, ou une expression cron (ex: "0 2 * * *" pour 2h du matin)
+      SCHEDULE: "@daily"
+      # Fuseau horaire pour la planification
+      TZ: "Europe/Paris"
+      
+      # --- Configuration de la rétention ---
+      # Nombre de sauvegardes à conserver
+      BACKUP_KEEP_DAYS: 7
+      BACKUP_KEEP_WEEKS: 4
+      BACKUP_KEEP_MONTHS: 6
+
+volumes:
+  minio_data: {}
+  minio_backups: {}

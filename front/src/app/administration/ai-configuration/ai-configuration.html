@@ -1,0 +1,123 @@
+<div class="p-4 sm:p-6 lg:p-8 bg-slate-50 min-h-screen space-y-6">
+  <!-- Header -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-black text-slate-800">Configuration IA</h1>
+      <p class="text-slate-500 text-sm mt-1">Gérez les modèles d'intelligence artificielle et leurs clés API.</p>
+    </div>
+    <button *ngIf="!isEditing" (click)="createNew()" class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-bold transition-colors flex items-center gap-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      Ajouter
+    </button>
+  </div>
+
+  <!-- Formulaire / Edition -->
+  <div *ngIf="isEditing && selectedConfig" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+    <h2 class="text-lg font-bold text-slate-800 mb-4">{{ selectedConfig.id ? 'Modifier' : 'Nouvelle' }} Configuration</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-bold text-slate-700 mb-1">Fournisseur</label>
+        <select [(ngModel)]="selectedConfig.provider" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all">
+          <option *ngFor="let p of providers" [value]="p">{{p}}</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-slate-700 mb-1">Modèle (ex: qwen2.5:7b, gpt-4)</label>
+        <input type="text" [(ngModel)]="selectedConfig.modelName" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all" placeholder="Nom du modèle">
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-sm font-bold text-slate-700 mb-1">Clé API (Vide pour Ollama local)</label>
+        <input type="text" [(ngModel)]="selectedConfig.apiKey" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all" placeholder="sk-...">
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-sm font-bold text-slate-700 mb-1">Base URL (Ollama par défaut: http://localhost:11434)</label>
+        <input type="text" [(ngModel)]="selectedConfig.baseUrl" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all" placeholder="http://localhost:11434">
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-slate-700 mb-1">Température (0.0 à 1.0)</label>
+        <input type="number" step="0.1" [(ngModel)]="selectedConfig.temperature" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all">
+      </div>
+
+      <div>
+        <label class="block text-sm font-bold text-slate-700 mb-1">Timeout (Minutes)</label>
+        <input type="number" [(ngModel)]="selectedConfig.timeoutMinutes" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all">
+      </div>
+
+      <div class="md:col-span-2 flex items-center gap-2 mt-2">
+        <input type="checkbox" id="isActive" [(ngModel)]="selectedConfig.isActive" class="w-5 h-5 text-pink-600 rounded focus:ring-pink-500">
+        <label for="isActive" class="text-sm font-bold text-slate-700 cursor-pointer">Activer cette configuration par défaut</label>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3 mt-6">
+      <button (click)="cancelEdit()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-colors">
+        Annuler
+      </button>
+      <button (click)="saveConfig()" class="px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-xl font-bold transition-colors">
+        Sauvegarder
+      </button>
+    </div>
+  </div>
+
+  <!-- Liste -->
+  <div *ngIf="!isEditing" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div *ngFor="let config of configurations" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 relative overflow-hidden group">
+      
+      <div *ngIf="config.isActive" class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
+      <div *ngIf="!config.isActive" class="absolute top-0 inset-x-0 h-1 bg-slate-200"></div>
+
+      <div class="flex justify-between items-start mb-4">
+        <div>
+          <span *ngIf="config.isActive" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Actif
+          </span>
+          <span *ngIf="!config.isActive" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 mb-2">
+            Inactif
+          </span>
+          <h3 class="text-xl font-black text-slate-800">{{ config.provider }}</h3>
+          <p class="text-sm font-medium text-pink-600">{{ config.modelName }}</p>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <button (click)="editConfig(config)" class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+          </button>
+          <button (click)="deleteConfig(config.id)" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="space-y-2 mt-4 text-sm text-slate-600">
+        <div class="flex justify-between">
+          <span class="text-slate-400">Timeout</span>
+          <span class="font-medium text-slate-700">{{ config.timeoutMinutes }} min</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Température</span>
+          <span class="font-medium text-slate-700">{{ config.temperature }}</span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="text-slate-400">Clé API</span>
+          <span class="font-mono text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-500 truncate max-w-[120px]">
+            {{ config.apiKey ? '****************' : 'Non définie' }}
+          </span>
+        </div>
+        <div *ngIf="config.baseUrl" class="flex justify-between items-center">
+          <span class="text-slate-400">Base URL</span>
+          <span class="font-mono text-xs bg-slate-100 px-2 py-0.5 rounded text-slate-500 truncate max-w-[120px]">
+            {{ config.baseUrl }}
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

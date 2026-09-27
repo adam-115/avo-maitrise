@@ -12,6 +12,7 @@ import { forkJoin } from 'rxjs';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { NavigationService } from '../../services/navigation-service';
 import { TranslatePipe } from '@ngx-translate/core';
+import { BillingDashboardService } from '../../features/billing/services/billing-dashboard.service';
 
 @Component({
   selector: 'app-dossier',
@@ -27,6 +28,7 @@ export class DossierComponent implements OnInit {
   private statusService = inject(StatutDossierService);
   private userService = inject(UserService);
   private router = inject(Router);
+  private billingDashboardService = inject(BillingDashboardService);
 
   dossiers: DossierModel[] = [];
   filteredDossiers: DossierModel[] = [];
@@ -45,8 +47,8 @@ export class DossierComponent implements OnInit {
   closedThisMonthCount = 0;
   closureRate = 0;
 
-  // TODO: Add services for time tracking and billing to calculate these
-  unbilledHours = 124;
+  unbilledHours = 0;
+  unbilledAmount = 0;
   successRate = 11;
 
   searchTerm: string = '';
@@ -91,12 +93,34 @@ export class DossierComponent implements OnInit {
         this.users = (users as PaginatedResponse<User>).content;
 
         this.calculateKPIs();
+        this.loadBillingKPIs();
         this.loading = false;
       },
       error: (err) => {
         console.error('Error loading dossiers data', err);
         this.loading = false;
       }
+    });
+  }
+
+  loadBillingKPIs(): void {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const pad = (n: number) => n < 10 ? `0${n}` : `${n}`;
+    const startDate = `${firstDay.getFullYear()}-${pad(firstDay.getMonth() + 1)}-01`;
+    const endDate = `${lastDay.getFullYear()}-${pad(lastDay.getMonth() + 1)}-${pad(lastDay.getDate())}`;
+
+    forkJoin({
+      unbilledMin: this.billingDashboardService.getUnbilledMinutes(startDate, endDate),
+      unbilledAmt: this.billingDashboardService.getUnbilledAmounts(startDate, endDate)
+    }).subscribe({
+      next: (res) => {
+        const totalMinutes = res.unbilledMin.count || 0;
+        this.unbilledHours = Math.floor(totalMinutes / 60);
+        this.unbilledAmount = res.unbilledAmt.ht || 0;
+      },
+      error: (err) => console.error('Error loading billing KPIs', err)
     });
   }
 
@@ -161,7 +185,7 @@ export class DossierComponent implements OnInit {
   }
 
   calculateKPIs(): void {
-    const now = new Date("2026-05-17");
+    const now = new Date();
     const currentMonth = now.getMonth();
     const currentYear = now.getFullYear();
 

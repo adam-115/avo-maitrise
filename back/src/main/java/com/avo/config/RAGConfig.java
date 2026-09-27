@@ -42,6 +42,16 @@ public class RAGConfig {
     }
 
     @Bean
+    public dev.langchain4j.model.chat.ChatLanguageModel chatLanguageModel() {
+        return dev.langchain4j.model.ollama.OllamaChatModel.builder()
+                .baseUrl(ollamaBaseUrl.replace("localhost", "127.0.0.1"))
+                .modelName("qwen2.5:7b")
+                .temperature(0.3)
+                .timeout(java.time.Duration.ofMinutes(15)) // 15 minutes timeout pour les chats très longs
+                .build();
+    }
+
+    @Bean
     public EmbeddingStore<TextSegment> embeddingStore() {
         // Connexion à Qdrant
         return QdrantEmbeddingStore.builder()
@@ -53,9 +63,9 @@ public class RAGConfig {
 
     @Bean
     public dev.langchain4j.rag.content.retriever.ContentRetriever contentRetriever(
-            EmbeddingStore<TextSegment> embeddingStore, 
+            EmbeddingStore<TextSegment> embeddingStore,
             EmbeddingModel embeddingModel) {
-        
+
         // Le Retriever permet à l'IA de chercher dans Qdrant
         return dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever.builder()
                 .embeddingStore(embeddingStore)

@@ -780,3 +780,14 @@ export interface CabinetProfile {
   currency?: string;
   tvaRate?: number;
 }
+
+export interface AiConfigurationDTO {
+  id?: number;
+  provider: string;
+  modelName: string;
+  apiKey: string;
+  baseUrl?: string;
+  temperature?: number;
+  timeoutMinutes?: number;
+  isActive: boolean;
+}
