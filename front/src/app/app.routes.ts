@@ -48,7 +48,8 @@ export const routes: Routes = [
           { path: 'notes', loadComponent: () => import('./note/note/note.component').then(m => m.NoteComponent) },
           { path: 'contacts', loadComponent: () => import('./contact/contact/contact.component').then(m => m.ContactComponent) },
           { path: 'prestations', loadComponent: () => import('./dossier/invoice-dossier-service/invoice-dossier-service.component').then(m => m.InvoiceDossierServiceComponent) },
-          { path: 'journal', loadComponent: () => import('./dossier/matter-activity/matter-activity').then(m => m.MatterActivityComponent) }
+          { path: 'journal', loadComponent: () => import('./dossier/matter-activity/matter-activity').then(m => m.MatterActivityComponent) },
+          { path: 'strategie', loadComponent: () => import('./dossier/dossier-strategie/dossier-strategie.component').then(m => m.DossierStrategieComponent) }
         ]
       },
       {
@@ -189,6 +190,10 @@ export const routes: Routes = [
         path: NavigationService.INVOICE_TYPE_OF_SERVICE_FORM,
         loadComponent: () => import('./administration/invoice-type-of-service-form/invoice-type-of-service-form.component').then(m => m.InvoiceTypeOfServiceFormComponent)
       },
+      {
+        path: NavigationService.JURISPRUDENCE_MANAGEMENT,
+        loadComponent: () => import('./administration/jurisprudence-management/jurisprudence-management').then(m => m.JurisprudenceManagement)
+      },
 
 
       // Routes      // Nouvelle Facturation
@@ -219,6 +224,10 @@ export const routes: Routes = [
       {
         path: 'test',
         loadComponent: () => import('./test/test').then(m => m.Test),
+      },
+      {
+        path: NavigationService.AI_ASSISTANT,
+        loadComponent: () => import('./features/ai-tester/ai-tester.component').then(m => m.AiTesterComponent),
       }
     ]
 

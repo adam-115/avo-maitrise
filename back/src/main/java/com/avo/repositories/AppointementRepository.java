@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AppointementRepository extends JpaRepository<Appointement, Long>, QuerydslPredicateExecutor<Appointement> {
+    java.util.List<Appointement> findByDossier_Id(Long dossierId);
 }

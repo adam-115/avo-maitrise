@@ -1,0 +1,76 @@
+<div class="ai-assistant-wrapper">
+  <div class="ai-sidebar">
+    <div class="sidebar-header">
+      <i class="fa fa-robot"></i>
+      <h2>Assistant IA</h2>
+    </div>
+    
+    <div class="mode-selector">
+      <button 
+        [class.active]="activeMode() === 'avocat-assistant'" 
+        (click)="setMode('avocat-assistant')">
+        <i class="fa fa-gavel"></i> Avocat Assistant (Stratégie)
+      </button>
+      <button 
+        [class.active]="activeMode() === 'chat'" 
+        (click)="setMode('chat')">
+        <i class="fa fa-comments"></i> Chat Libre
+      </button>
+      <button 
+        [class.active]="activeMode() === 'summarize'" 
+        (click)="setMode('summarize')">
+        <i class="fa fa-compress-alt"></i> Résumer un texte
+      </button>
+      <button 
+        [class.active]="activeMode() === 'draft'" 
+        (click)="setMode('draft')">
+        <i class="fa fa-pen-nib"></i> Rédiger un brouillon
+      </button>
+    </div>
+
+    <div class="sidebar-info">
+      <p><small>L'assistant a accès à vos dossiers, clients, et à la jurisprudence (selon le pays demandé).</small></p>
+    </div>
+  </div>
+
+  <div class="ai-chat-area">
+    <div class="chat-history" #chatContainer>
+      <div *ngFor="let msg of messages()" class="message-wrapper" [ngClass]="msg.role">
+        <div class="message-avatar">
+          <i *ngIf="msg.role === 'assistant'" class="fa fa-robot"></i>
+          <i *ngIf="msg.role === 'user'" class="fa fa-user"></i>
+        </div>
+        <div class="message-content">
+          <!-- Si isLoading est true et qu'il n'y a pas de texte -->
+          <div *ngIf="msg.isLoading" class="typing-indicator">
+            <span></span><span></span><span></span>
+          </div>
+          <!-- Sinon on affiche le texte -->
+          <pre *ngIf="!msg.isLoading">{{ msg.text }}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <!-- Zone d'input spéciale pour le draft -->
+      <div *ngIf="activeMode() === 'draft'" class="draft-inputs">
+        <input type="text" [(ngModel)]="draftType" placeholder="Type (ex: Mise en demeure)" />
+        <textarea [(ngModel)]="draftContext" rows="3" placeholder="Contexte... (ex: retard de paiement)"></textarea>
+      </div>
+
+      <!-- Zone d'input normale (pour chat, avocat, summarize) -->
+      <div *ngIf="activeMode() !== 'draft'" class="normal-input">
+        <textarea 
+          [(ngModel)]="promptText" 
+          rows="2" 
+          placeholder="Posez votre question à l'assistant..."
+          (keydown)="onKeydown($event)">
+        </textarea>
+      </div>
+      
+      <button class="btn-send" (click)="submit()" [disabled]="isLoading() || (activeMode() !== 'draft' && !promptText().trim()) || (activeMode() === 'draft' && !draftContext().trim())">
+        <i class="fa fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -60,7 +60,13 @@ public class Dossier {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @Column(name = "ai_strategy", columnDefinition = "LONGTEXT")
+    private String aiStrategy;
+
     public Dossier() {}
+
+    public String getAiStrategy() { return aiStrategy; }
+    public void setAiStrategy(String aiStrategy) { this.aiStrategy = aiStrategy; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

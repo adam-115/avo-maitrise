@@ -6,11 +6,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import org.springframework.scheduling.annotation.EnableAsync;
+
 @SpringBootApplication
 @EnableScheduling
+@EnableAsync
 public class AvoApplication {
 
     public static void main(String[] args) {
+        System.setProperty("file.encoding", "UTF-8");
         org.springframework.context.ConfigurableApplicationContext context = SpringApplication.run(AvoApplication.class,
                 args);
         System.out

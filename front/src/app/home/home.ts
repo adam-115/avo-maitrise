@@ -74,6 +74,8 @@ export class Home implements OnInit, OnDestroy {
       this.activeRoute = NavigationService.BILLING;
     } else if (url.includes('/home/' + NavigationService.ADMINSTRATION) || url.includes('/home/' + NavigationService.ADMIN_PREFERENCE)) {
       this.activeRoute = NavigationService.ADMINSTRATION;
+    } else if (url.includes('/home/' + NavigationService.AI_ASSISTANT)) {
+      this.activeRoute = NavigationService.AI_ASSISTANT;
     } else if (url === '/home' || url === '/home/') {
       this.activeRoute = 'home';
     }
@@ -169,6 +171,12 @@ export class Home implements OnInit, OnDestroy {
   navigateToHome() {
     this.router.navigateByUrl(NavigationService.HOME);
     this.activeRoute = 'home';
+    this.isSidebarOpen = false;
+  }
+
+  navigateToAiAssistant() {
+    this.navigationService.navigateToAiAssistant();
+    this.activeRoute = NavigationService.AI_ASSISTANT;
     this.isSidebarOpen = false;
   }
 }

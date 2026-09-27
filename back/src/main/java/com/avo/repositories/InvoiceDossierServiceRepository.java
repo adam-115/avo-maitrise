@@ -12,6 +12,7 @@ import com.avo.entities.InvoiceDossierServiceStatusEnum;
 
 @Repository
 public interface InvoiceDossierServiceRepository extends JpaRepository<InvoiceDossierService, Long>, QuerydslPredicateExecutor<InvoiceDossierService> {
+    List<InvoiceDossierService> findByDossier_Id(Long dossierId);
 
     @Query("SELECT COALESCE(SUM(i.nbrOfMinutes), 0) FROM InvoiceDossierService i WHERE i.status IN :statusList")
     long sumNbrOfMinutesByStatusCodes(@Param("statusList") List<InvoiceDossierServiceStatusEnum> statusList);

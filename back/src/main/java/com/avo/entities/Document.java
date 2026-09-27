@@ -36,6 +36,8 @@ public class Document {
     private String filename;
 
     private String urlStockage;
+    
+    private String pays; // For Jurisprudence classification
 
     private LocalDateTime dateUpload = LocalDateTime.now();
 
@@ -86,6 +88,9 @@ public class Document {
 
     public String getUrlStockage() { return urlStockage; }
     public void setUrlStockage(String urlStockage) { this.urlStockage = urlStockage; }
+    
+    public String getPays() { return pays; }
+    public void setPays(String pays) { this.pays = pays; }
 
     public LocalDateTime getDateUpload() { return dateUpload; }
     public void setDateUpload(LocalDateTime dateUpload) { this.dateUpload = dateUpload; }

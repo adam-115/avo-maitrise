@@ -14,6 +14,8 @@ public interface ClientRepository extends JpaRepository<ClientEntity, Long> , Qu
 
     Page<ClientEntity> findAll(Pageable pageable);
     Page<ClientEntity> findAll(Predicate predicate, Pageable pageable);
+    
+    java.util.Optional<ClientEntity> findByEmail(String email);
 
     @org.springframework.data.jpa.repository.Query("SELECT c FROM ClientEntity c WHERE " +
            "(:searchTerm IS NULL OR :searchTerm = '' OR " +

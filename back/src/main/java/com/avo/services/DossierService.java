@@ -129,4 +129,29 @@ public class DossierService {
         log.info("[ENTER] Executing delete");
         repository.deleteById(id);
     }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public String getDossierContextAsText(Long id) {
+        Dossier dossier = repository.findById(id).orElse(null);
+        if (dossier == null) return "Dossier introuvable.";
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== DOSSIER #").append(dossier.getId()).append(" ===\n");
+        sb.append("Titre : ").append(dossier.getTitre()).append("\n");
+        sb.append("Référence : ").append(dossier.getReferenceInterne()).append("\n");
+        sb.append("Description : ").append(dossier.getDescription() != null ? dossier.getDescription() : "N/A").append("\n\n");
+        
+        if (dossier.getClient() != null) {
+            sb.append("=== CLIENT ===\n");
+            String nom = "";
+            if (dossier.getClient() instanceof com.avo.entities.ClientPersonnePhysique) {
+                nom = ((com.avo.entities.ClientPersonnePhysique) dossier.getClient()).getNom();
+            } else if (dossier.getClient() instanceof com.avo.entities.ClientMoral) {
+                nom = ((com.avo.entities.ClientMoral) dossier.getClient()).getNomCommercial();
+            }
+            sb.append("Nom : ").append(nom).append("\n");
+        }
+        
+        return sb.toString();
+    }
 }

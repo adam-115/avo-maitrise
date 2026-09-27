@@ -37,4 +37,5 @@ public class DossierDTO {
     private Date dateOuverture;
     private Date dateCloture;
     private Date updated_at;
+    private String aiStrategy;
 }

@@ -193,6 +193,42 @@
                     </svg>
                     <span>{{ 'MENU.CLIENTS' | translate }}</span>
                 </a>
+
+                <!-- Avocat Assistant IA -->
+                <a (click)="navigateToAiAssistant()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.AI_ASSISTANT"
+                    [class.from-cyan-950/90]="activeRoute === paths.AI_ASSISTANT"
+                    [class.via-slate-800/80]="activeRoute === paths.AI_ASSISTANT"
+                    [class.to-slate-800/40]="activeRoute === paths.AI_ASSISTANT"
+                    [class.text-cyan-200]="activeRoute === paths.AI_ASSISTANT"
+                    [class.border-cyan-500/40]="activeRoute === paths.AI_ASSISTANT"
+                    [class.shadow-sm]="activeRoute === paths.AI_ASSISTANT"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.AI_ASSISTANT"
+                    [class.before:absolute]="activeRoute === paths.AI_ASSISTANT"
+                    [class.before:inset-y-1.5]="activeRoute === paths.AI_ASSISTANT"
+                    [class.before:start-0]="activeRoute === paths.AI_ASSISTANT"
+                    [class.before:w-1.5]="activeRoute === paths.AI_ASSISTANT"
+                    [class.before:rounded-e-full]="activeRoute === paths.AI_ASSISTANT"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.AI_ASSISTANT"
+                    [class.before:from-cyan-400]="activeRoute === paths.AI_ASSISTANT"
+                    [class.before:to-blue-500]="activeRoute === paths.AI_ASSISTANT"
+                    [class.text-slate-300]="activeRoute !== paths.AI_ASSISTANT"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.AI_ASSISTANT"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.AI_ASSISTANT"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.AI_ASSISTANT"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.AI_ASSISTANT"
+                        [class.text-slate-400]="activeRoute !== paths.AI_ASSISTANT"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                    <span class="flex-1">Avocat Assistant</span>
+                    <span class="flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-cyan-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                    </span>
+                </a>
             </div>
 
             <!-- SECTION 2: Conformité & Vigilance (AML / KYC) -->

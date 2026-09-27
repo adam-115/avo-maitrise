@@ -22,6 +22,11 @@ public class DossierController {
         this.service = service;
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<java.util.List<DossierDTO>> findAllNoPage() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
     @GetMapping
     public ResponseEntity<Page<DossierDTO>> findAll(
             @RequestParam(required = false) String searchTerm,

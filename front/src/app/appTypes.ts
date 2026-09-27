@@ -218,6 +218,7 @@ export interface Document {
   dateUpload?: Date;
   estValide?: boolean;
   filename?: string; // For compatibility
+  pays?: string; // Jurisprudence classification
   
   // Frontend specific fields (for file upload & compatibility)
   title?: string;
@@ -440,6 +441,7 @@ export interface Dossier {
 
   // Métadonnées
   tags?: string[];             // Pour la recherche rapide
+  aiStrategy?: string;         // Analyse stratégique générée par l'IA
 }
 
 

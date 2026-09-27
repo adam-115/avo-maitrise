@@ -1,0 +1,123 @@
+<div class="min-h-screen bg-slate-50 p-4 sm:p-6 lg:p-8 space-y-6">
+
+  <!-- Header -->
+  <div class="relative overflow-hidden rounded-3xl bg-white border-2 border-slate-300 shadow-sm p-6 sm:p-8 flex flex-col md:flex-row justify-between items-center gap-4">
+    <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-emerald-500 to-teal-600"></div>
+    <div>
+      <h1 class="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-3">
+        Base de Jurisprudence (IA)
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          Actif
+        </span>
+      </h1>
+      <p class="text-sm text-slate-500 mt-2">Gérez les documents de jurisprudence par pays pour alimenter l'Avocat IA Senior.</p>
+    </div>
+    
+    <button (click)="openUploadModal()" class="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all active:scale-95">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+      Ajouter une source
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    
+    <!-- Sidebar: Countries -->
+    <div class="lg:col-span-1 space-y-2">
+      <div class="bg-white rounded-2xl border-2 border-slate-200 p-3 shadow-sm">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 px-3 mb-3">Pays</h3>
+        <div class="space-y-1">
+          <button *ngFor="let country of countries" 
+                  (click)="onCountryChange(country)"
+                  [class]="country === selectedCountry ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-transparent text-slate-600 border-transparent hover:bg-slate-50'"
+                  class="w-full text-left px-4 py-3 rounded-xl border font-bold text-sm transition-colors flex justify-between items-center">
+            {{ country }}
+            <svg *ngIf="country === selectedCountry" class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Data Area -->
+    <div class="lg:col-span-3">
+      <div class="bg-white rounded-2xl border-2 border-slate-200 shadow-sm overflow-hidden">
+        
+        <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+          <h2 class="text-lg font-bold text-slate-800">Documents pour : {{ selectedCountry }}</h2>
+          <span class="text-xs font-bold text-slate-400">{{ documents.length }} document(s)</span>
+        </div>
+
+        <div *ngIf="isLoading" class="p-10 flex justify-center items-center">
+          <div class="w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
+        </div>
+
+        <div *ngIf="!isLoading && documents.length === 0" class="p-12 text-center">
+          <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          </div>
+          <p class="text-slate-500 font-medium">Aucune jurisprudence disponible pour ce pays.</p>
+        </div>
+
+        <ul *ngIf="!isLoading && documents.length > 0" class="divide-y divide-slate-100">
+          <li *ngFor="let doc of documents" class="p-5 hover:bg-slate-50 transition-colors flex items-center justify-between group">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 shrink-0">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+              </div>
+              <div>
+                <h4 class="text-sm font-bold text-slate-800">{{ doc.title }}</h4>
+                <p class="text-xs text-slate-500 mt-0.5">{{ doc.filename }} &bull; {{ doc.dateUpload | date:'shortDate' }}</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button (click)="downloadDocument(doc)" class="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Télécharger">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              </button>
+              <button (click)="deleteDocument(doc)" class="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Supprimer">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Modal -->
+<div *ngIf="showUploadModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" (click)="closeUploadModal()"></div>
+  <div class="relative bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-slate-200">
+    <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+      <h2 class="text-xl font-bold text-slate-800">Ajouter une Jurisprudence</h2>
+      <button (click)="closeUploadModal()" class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-2 transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+    
+    <div class="p-6 space-y-5">
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Pays Cible</label>
+        <select [(ngModel)]="newDocCountry" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all">
+          <option *ngFor="let c of countries" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+      
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Titre du document</label>
+        <input type="text" [(ngModel)]="newDocTitle" placeholder="Ex: Code Civil, Arrêt X..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-700 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all">
+      </div>
+      
+      <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Fichier (PDF, Word...)</label>
+        <input type="file" (change)="onFileSelected($event)" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-colors">
+      </div>
+    </div>
+    
+    <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+      <button (click)="closeUploadModal()" class="px-5 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-200 bg-slate-100 rounded-xl transition-colors">Annuler</button>
+      <button (click)="uploadDocument()" class="px-5 py-2.5 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-sm">Uploader et Vectoriser</button>
+    </div>
+  </div>
+</div>
