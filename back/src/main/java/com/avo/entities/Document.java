@@ -43,10 +43,8 @@ public class Document {
 
     private boolean estValide = true;
 
-    @jakarta.persistence.Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "file_data", columnDefinition = "LONGBLOB")
-    private byte[] fileData;
+    @Column(name = "minio_object_id")
+    private String minioObjectId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
@@ -98,8 +96,8 @@ public class Document {
     public boolean isEstValide() { return estValide; }
     public void setEstValide(boolean estValide) { this.estValide = estValide; }
 
-    public byte[] getFileData() { return fileData; }
-    public void setFileData(byte[] fileData) { this.fileData = fileData; }
+    public String getMinioObjectId() { return minioObjectId; }
+    public void setMinioObjectId(String minioObjectId) { this.minioObjectId = minioObjectId; }
 
     public ClientEntity getClient() { return client; }
     public void setClient(ClientEntity client) { this.client = client; }

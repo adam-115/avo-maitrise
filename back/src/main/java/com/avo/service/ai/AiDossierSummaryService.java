@@ -11,6 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Service dédié à la génération d'un résumé complet (synthèse) d'un dossier.
+ * Ce service agrège toutes les informations liées à un dossier (client, réunions,
+ * notes, tâches, documents, prestations, historique) pour construire une chaîne
+ * de caractères textuelle riche.
+ * 
+ * Ce texte sert de "Contexte" (Prompt context) fourni à l'Intelligence Artificielle
+ * pour qu'elle puisse répondre aux questions de l'avocat en ayant une vue d'ensemble du dossier.
+ */
 @Service
 @Transactional(readOnly = true)
 public class AiDossierSummaryService {
@@ -36,7 +45,17 @@ public class AiDossierSummaryService {
         this.invoiceDossierServiceRepository = invoiceDossierServiceRepository;
     }
 
+    /**
+     * Génère une représentation textuelle exhaustive d'un dossier juridique.
+     * Cette méthode rassemble l'ensemble des métadonnées du dossier.
+     * Le résultat est utilisé par Langchain4j (AvoAiTools) pour injecter l'état
+     * actuel du dossier dans la mémoire du LLM (Large Language Model).
+     *
+     * @param dossierId L'identifiant unique du dossier à synthétiser.
+     * @return Un texte formaté contenant l'historique, les tâches, les clients et les notes du dossier.
+     */
     public String generateDossierSummary(Long dossierId) {
+        // 1. Récupération des informations principales du dossier
         Dossier dossier = dossierRepository.findById(dossierId).orElse(null);
         if (dossier == null) {
             return "Dossier introuvable avec l'ID: " + dossierId;
@@ -49,6 +68,7 @@ public class AiDossierSummaryService {
         sb.append("Description : ").append(dossier.getDescription() != null ? dossier.getDescription() : "N/A").append("\n");
         sb.append("Statut : ").append(dossier.getStatutID() != null ? dossier.getStatutID() : "N/A").append("\n");
 
+        // 2. Ajout des informations du Client (Personne physique ou morale)
         if (dossier.getClient() != null) {
             sb.append("\n--- Client ---\n");
             String nom = "";
@@ -60,6 +80,7 @@ public class AiDossierSummaryService {
             sb.append("Nom : ").append(nom).append("\n");
         }
 
+        // 3. Ajout de l'agenda (Réunions liées au dossier)
         sb.append("\n--- Réunions (Appointments) ---\n");
         List<com.avo.entities.Appointement> appointements = appointementRepository.findByDossier_Id(dossierId);
         if (appointements != null && !appointements.isEmpty()) {
@@ -72,6 +93,7 @@ public class AiDossierSummaryService {
             sb.append("Aucune réunion.\n");
         }
 
+        // 4. Ajout des notes de travail
         sb.append("\n--- Remarques / Notes ---\n");
         List<com.avo.entities.Note> notes = noteRepository.findByDossier_Id(dossierId);
         if (notes != null && !notes.isEmpty()) {
@@ -83,6 +105,7 @@ public class AiDossierSummaryService {
             sb.append("Aucune remarque/note.\n");
         }
 
+        // 5. Ajout des prestations (Temps passé facturable)
         sb.append("\n--- Prestations (Temps facturé) ---\n");
         List<com.avo.entities.InvoiceDossierService> prestations = invoiceDossierServiceRepository.findByDossier_Id(dossierId);
         if (prestations != null && !prestations.isEmpty()) {
@@ -93,6 +116,7 @@ public class AiDossierSummaryService {
             sb.append("Aucune prestation enregistrée.\n");
         }
 
+        // 6. Liste des documents du dossier (métadonnées uniquement)
         sb.append("\n--- Documents associés ---\n");
         if (dossier.getDocuments() != null && !dossier.getDocuments().isEmpty()) {
             dossier.getDocuments().forEach(doc -> {
@@ -102,6 +126,7 @@ public class AiDossierSummaryService {
             sb.append("Aucun document.\n");
         }
 
+        // 7. Suivi de l'avancement via les Tâches
         sb.append("\n--- Tâches ---\n");
         List<Task> tasks = taskRepository.findByDossierId(dossierId);
         if (tasks != null && !tasks.isEmpty()) {
@@ -114,6 +139,7 @@ public class AiDossierSummaryService {
             sb.append("Aucune tâche.\n");
         }
 
+        // 8. Historique d'audit (Logs des 15 dernières actions de l'équipe sur ce dossier)
         sb.append("\n--- Historique des actions récentes ---\n");
         List<MatterActivity> activities = matterActivityRepository.findByDossierIdOrderByCreatedAtDesc(dossierId);
         if (activities != null && !activities.isEmpty()) {

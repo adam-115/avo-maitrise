@@ -2,8 +2,22 @@ package com.avo.service.ai;
 
 import dev.langchain4j.service.SystemMessage;
 
+/**
+ * Interface définissant les personas et capacités de l'Intelligence Artificielle (via LangChain4j).
+ * Spring Boot et LangChain4j vont générer automatiquement l'implémentation de cette interface
+ * pour se connecter au LLM (ex: Ollama) et gérer l'historique des conversations.
+ */
 public interface LegalAssistant {
     
+    /**
+     * Mode "Assistant Général".
+     * L'IA se comporte comme un assistant classique qui peut chercher des informations
+     * sur les clients et les dossiers à l'aide des outils (@Tool) fournis dans AvoAiTools.
+     *
+     * @param sessionId L'identifiant de la session (mémoire) pour retenir l'historique du chat.
+     * @param userMessage Le message ou la question de l'utilisateur.
+     * @return La réponse générée par l'IA.
+     */
     @SystemMessage({
         "Tu es l'assistant IA officiel du cabinet d'avocats Avo-Maîtrise.",
         "Ton rôle est d'aider les avocats à gérer leurs dossiers et leurs clients.",
@@ -12,6 +26,16 @@ public interface LegalAssistant {
     })
     String chat(@dev.langchain4j.service.MemoryId String sessionId, @dev.langchain4j.service.UserMessage String userMessage);
 
+    /**
+     * Mode "Stratégie Contentieuse" (Avocat Associé Senior).
+     * Dans ce mode, l'IA endosse un rôle d'expert. Elle est forcée (via le prompt) 
+     * d'utiliser la base de données vectorielle (RAG) pour lire les documents du dossier 
+     * et de structurer sa réponse en 4 parties claires.
+     *
+     * @param sessionId L'identifiant de la session de chat.
+     * @param userMessage La demande d'analyse stratégique (contenant généralement l'ID du dossier).
+     * @return L'analyse stratégique complète générée par l'IA.
+     */
     @SystemMessage({
         "Tu es un avocat associé senior très expérimenté, expert en stratégie contentieuse.",
         "Ton objectif est d'analyser les informations du dossier fourni et de proposer la meilleure stratégie pour GAGNER l'affaire.",

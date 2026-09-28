@@ -159,8 +159,13 @@ export class DocumentComponent implements OnInit, OnChanges {
   }
 
   downloadDocument(doc: Document): void {
+    if (doc.urlStockage) {
+      window.open(doc.urlStockage, '_blank');
+      return;
+    }
+
     if (!doc.fileData) {
-      this.alertService.displayMessage('Erreur', 'Aucune donnée de fichier disponible', 'error');
+      this.alertService.displayMessage('Erreur', 'Aucune donnée de fichier ou URL disponible', 'error');
       return;
     }
 

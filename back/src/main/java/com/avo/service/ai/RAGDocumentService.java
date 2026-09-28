@@ -14,36 +14,61 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.ByteArrayInputStream;
 import org.springframework.scheduling.annotation.Async;
 
+/**
+ * Service gérant l'ingestion de documents dans la base de données vectorielle Qdrant.
+ * Ce service est crucial pour le système RAG (Retrieval-Augmented Generation), car il permet
+ * à l'IA de rechercher et comprendre le contenu des documents (PDF, Word, etc.) téléversés.
+ */
 @Service
 public class RAGDocumentService {
 
     private final EmbeddingStore<TextSegment> embeddingStore;
     private final EmbeddingModel embeddingModel;
     private final DocumentRepository documentRepository;
+    private final com.avo.services.MinioService minioService;
 
     public RAGDocumentService(EmbeddingStore<TextSegment> embeddingStore,
             EmbeddingModel embeddingModel,
-            DocumentRepository documentRepository) {
+            DocumentRepository documentRepository,
+            com.avo.services.MinioService minioService) {
         this.embeddingStore = embeddingStore;
         this.embeddingModel = embeddingModel;
         this.documentRepository = documentRepository;
+        this.minioService = minioService;
     }
 
-    @Async
+    /**
+     * Ingestion asynchrone d'un document dans Qdrant.
+     * Cette méthode est exécutée en arrière-plan via le pool de threads personnalisé (aiIngestionExecutor).
+     * Elle lit le fichier depuis MinIO, extrait son texte, le découpe en petits morceaux (segments),
+     * vectorise chaque morceau avec le modèle d'Embedding, et les sauvegarde dans Qdrant avec leurs métadonnées.
+     *
+     * @param documentId L'identifiant du document en base de données MySQL
+     */
+    @Async("aiIngestionExecutor")
     @Transactional(readOnly = true)
     public void ingestDocumentIntoQdrant(Long documentId) {
+        // Étape 1 : Récupérer le document en base
         Document doc = documentRepository.findById(documentId)
                 .orElseThrow(() -> new IllegalArgumentException("Document introuvable: " + documentId));
 
-        if (doc.getFileData() == null || doc.getFileData().length == 0) {
-            throw new IllegalArgumentException("Le document ne contient pas de données binaires.");
+        // Vérifier si le document possède bien un fichier associé
+        if (doc.getMinioObjectId() == null || doc.getMinioObjectId().isBlank()) {
+            throw new IllegalArgumentException("Le document n'a pas de fichier associé dans MinIO.");
         }
 
-        // 1. Parsing du fichier (PDF, Word, etc.) via Apache Tika
-        DocumentParser parser = new ApacheTikaDocumentParser();
-        dev.langchain4j.data.document.Document lcDocument = parser.parse(new ByteArrayInputStream(doc.getFileData()));
+        // Étape 2 : Télécharger le flux (stream) du fichier depuis MinIO
+        java.io.InputStream fileStream = minioService.getFileStream(doc.getMinioObjectId());
+        if (fileStream == null) {
+            throw new IllegalArgumentException("Impossible de lire le fichier depuis MinIO.");
+        }
 
-        // 2. Ajout des métadonnées (Metadata pour le filtrage ultérieur)
+        // Étape 3 : Parsing du fichier (Extraction du texte brut depuis le PDF, Word, etc.) via Apache Tika
+        DocumentParser parser = new ApacheTikaDocumentParser();
+        dev.langchain4j.data.document.Document lcDocument = parser.parse(fileStream);
+
+        // Étape 4 : Ajout des métadonnées (Metadata)
+        // Les métadonnées sont cruciales pour filtrer les recherches de l'IA (ex: chercher uniquement dans les contrats d'un dossier précis)
         lcDocument.metadata().put("document_id", doc.getId().toString());
         lcDocument.metadata().put("nom_fichier", doc.getNomFichier() != null ? doc.getNomFichier() : "Inconnu");
         
@@ -70,28 +95,42 @@ public class RAGDocumentService {
             }
         }
 
-        // 3. Ingestion dans Qdrant (Découpage + Vectorisation)
-        // On découpe en blocs de 500 caractères avec un chevauchement de 50 caractères
+        // Étape 5 : Configuration de l'Ingestor et exécution
+        // Le DocumentSplitter découpe le texte en blocs de 500 caractères, avec un chevauchement (overlap) de 50 caractères
+        // Le chevauchement évite qu'une phrase importante soit coupée au milieu entre deux blocs
         EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()
                 .documentSplitter(DocumentSplitters.recursive(500, 50))
-                .embeddingModel(embeddingModel)
-                .embeddingStore(embeddingStore)
+                .embeddingModel(embeddingModel) // Modèle utilisé pour transformer le texte en vecteurs mathématiques
+                .embeddingStore(embeddingStore) // La base de données vectorielle (Qdrant) où stocker les vecteurs
                 .build();
 
+        // Lancement de l'ingestion (Transformation en vecteurs et sauvegarde)
         ingestor.ingest(lcDocument);
     }
 
+    /**
+     * Ingestion synchrone d'un document dans Qdrant.
+     * Identique à la version asynchrone, mais bloque le thread courant jusqu'à la fin du processus.
+     * Utilisé généralement pour les tests ou des traitements en mode batch stricts.
+     *
+     * @param documentId L'identifiant du document
+     */
     @Transactional(readOnly = true)
     public void ingestDocumentIntoQdrantSync(Long documentId) {
         Document doc = documentRepository.findById(documentId)
                 .orElseThrow(() -> new IllegalArgumentException("Document introuvable: " + documentId));
 
-        if (doc.getFileData() == null || doc.getFileData().length == 0) {
-            throw new IllegalArgumentException("Le document ne contient pas de données binaires.");
+        if (doc.getMinioObjectId() == null || doc.getMinioObjectId().isBlank()) {
+            throw new IllegalArgumentException("Le document n'a pas de fichier associé dans MinIO.");
+        }
+
+        java.io.InputStream fileStream = minioService.getFileStream(doc.getMinioObjectId());
+        if (fileStream == null) {
+            throw new IllegalArgumentException("Impossible de lire le fichier depuis MinIO.");
         }
 
         DocumentParser parser = new ApacheTikaDocumentParser();
-        dev.langchain4j.data.document.Document lcDocument = parser.parse(new ByteArrayInputStream(doc.getFileData()));
+        dev.langchain4j.data.document.Document lcDocument = parser.parse(fileStream);
 
         lcDocument.metadata().put("document_id", doc.getId().toString());
         lcDocument.metadata().put("nom_fichier", doc.getNomFichier() != null ? doc.getNomFichier() : "Inconnu");

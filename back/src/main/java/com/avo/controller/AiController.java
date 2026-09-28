@@ -101,7 +101,7 @@ public class AiController {
         java.util.List<com.avo.entities.Document> allDocs = documentRepository.findAll();
         int count = 0;
         for (com.avo.entities.Document doc : allDocs) {
-            if (doc.getFileData() != null && doc.getFileData().length > 0) {
+            if (doc.getMinioObjectId() != null && !doc.getMinioObjectId().isBlank()) {
                 try {
                     ragDocumentService.ingestDocumentIntoQdrantSync(doc.getId());
                     count++;

@@ -23,40 +23,99 @@ public class DocumentService {
     private final com.avo.repositories.ClientRepository clientRepository;
     private final com.avo.repositories.DossierRepository dossierRepository;
     private final org.springframework.context.ApplicationEventPublisher eventPublisher;
+    private final MinioService minioService;
     private final com.avo.service.ai.RAGDocumentService ragDocumentService;
 
     public DocumentService(DocumentRepository repository, DocumentMapper mapper,
             com.avo.repositories.ClientRepository clientRepository,
             com.avo.repositories.DossierRepository dossierRepository,
             org.springframework.context.ApplicationEventPublisher eventPublisher,
+            MinioService minioService,
             com.avo.service.ai.RAGDocumentService ragDocumentService) {
         this.repository = repository;
         this.mapper = mapper;
         this.clientRepository = clientRepository;
         this.dossierRepository = dossierRepository;
         this.eventPublisher = eventPublisher;
+        this.minioService = minioService;
         this.ragDocumentService = ragDocumentService;
     }
 
     public Page<DocumentDTO> findAll(Pageable pageable) {
         log.info("[ENTER] Executing findAll");
-        return repository.findAll(pageable).map(mapper::toDto);
+        return repository.findAll(pageable).map(doc -> {
+            DocumentDTO dto = mapper.toDto(doc);
+            enrichWithPresignedUrl(dto);
+            return dto;
+        });
     }
 
     public Page<DocumentDTO> search(Predicate predicate, Pageable pageable) {
         log.info("[ENTER] Executing search");
-        return repository.findAll(predicate, pageable).map(mapper::toDto);
+        return repository.findAll(predicate, pageable).map(doc -> {
+            DocumentDTO dto = mapper.toDto(doc);
+            enrichWithPresignedUrl(dto);
+            return dto;
+        });
     }
 
     public DocumentDTO findById(Long id) {
         log.info("[ENTER] Executing findById");
-        return repository.findById(id).map(mapper::toDto).orElse(null);
+        return repository.findById(id).map(doc -> {
+            DocumentDTO dto = mapper.toDto(doc);
+            enrichWithPresignedUrl(dto);
+            return dto;
+        }).orElse(null);
     }
 
+    private void enrichWithPresignedUrl(DocumentDTO dto) {
+        if (dto != null && dto.getMinioObjectId() != null) {
+            dto.setUrlStockage(minioService.getPresignedUrl(dto.getMinioObjectId()));
+        }
+    }
+
+    @org.springframework.transaction.annotation.Transactional
     public DocumentDTO create(DocumentDTO dto) {
         log.info("[ENTER] Executing create");
         Document entity = mapper.toEntity(dto);
         entity.setDateUpload(LocalDateTime.now());
+
+        if (dto.getFileData() != null && !dto.getFileData().isEmpty()) {
+            try {
+                String contentType = java.net.URLConnection.guessContentTypeFromName(dto.getNomFichier());
+                if (contentType == null) {
+                    String lowerName = dto.getNomFichier() != null ? dto.getNomFichier().toLowerCase() : "";
+                    if (lowerName.endsWith(".pdf")) contentType = "application/pdf";
+                    else if (lowerName.endsWith(".doc")) contentType = "application/msword";
+                    else if (lowerName.endsWith(".docx")) contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    else if (lowerName.endsWith(".xls")) contentType = "application/vnd.ms-excel";
+                    else if (lowerName.endsWith(".xlsx")) contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    else if (lowerName.endsWith(".txt")) contentType = "text/plain";
+                    else if (lowerName.endsWith(".png")) contentType = "image/png";
+                    else if (lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg")) contentType = "image/jpeg";
+                    else contentType = "application/octet-stream";
+                }
+
+                String base64Data = dto.getFileData();
+                // Remove data:image/png;base64, prefix if present
+                if (base64Data.contains(",")) {
+                    base64Data = base64Data.split(",")[1];
+                }
+
+                byte[] decodedBytes = java.util.Base64.getDecoder().decode(base64Data);
+                try (java.io.InputStream is = new java.io.ByteArrayInputStream(decodedBytes)) {
+                    String minioObjectId = minioService.uploadFile(
+                            dto.getNomFichier() != null ? dto.getNomFichier() : "document",
+                            is,
+                            decodedBytes.length,
+                            contentType);
+                    entity.setMinioObjectId(minioObjectId);
+                }
+            } catch (Exception e) {
+                log.error("Failed to upload file to MinIO", e);
+                throw new RuntimeException("Erreur lors de la sauvegarde du fichier dans MinIO : " + e.getMessage(), e);
+            }
+        }
 
         if (dto.getClientId() != null) {
             clientRepository.findById(dto.getClientId()).ifPresent(entity::setClient);
@@ -96,9 +155,52 @@ public class DocumentService {
         return mapper.toDto(saved);
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public DocumentDTO update(DocumentDTO dto) {
         log.info("[ENTER] Executing update");
         Document entity = mapper.toEntity(dto);
+
+        if (dto.getFileData() != null && !dto.getFileData().isEmpty()) {
+            try {
+                String contentType = java.net.URLConnection.guessContentTypeFromName(dto.getNomFichier());
+                if (contentType == null) {
+                    String lowerName = dto.getNomFichier() != null ? dto.getNomFichier().toLowerCase() : "";
+                    if (lowerName.endsWith(".pdf")) contentType = "application/pdf";
+                    else if (lowerName.endsWith(".doc")) contentType = "application/msword";
+                    else if (lowerName.endsWith(".docx")) contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    else if (lowerName.endsWith(".xls")) contentType = "application/vnd.ms-excel";
+                    else if (lowerName.endsWith(".xlsx")) contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    else if (lowerName.endsWith(".txt")) contentType = "text/plain";
+                    else if (lowerName.endsWith(".png")) contentType = "image/png";
+                    else if (lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg")) contentType = "image/jpeg";
+                    else contentType = "application/octet-stream";
+                }
+
+                String base64Data = dto.getFileData();
+                if (base64Data.contains(",")) {
+                    base64Data = base64Data.split(",")[1];
+                }
+
+                byte[] decodedBytes = java.util.Base64.getDecoder().decode(base64Data);
+                try (java.io.InputStream is = new java.io.ByteArrayInputStream(decodedBytes)) {
+                    String minioObjectId = minioService.uploadFile(
+                            dto.getNomFichier() != null ? dto.getNomFichier() : "document",
+                            is,
+                            decodedBytes.length,
+                            contentType);
+                    entity.setMinioObjectId(minioObjectId);
+                }
+            } catch (Exception e) {
+                log.error("Failed to upload file to MinIO during update", e);
+                throw new RuntimeException("Erreur lors de la mise à jour du fichier dans MinIO : " + e.getMessage(),
+                        e);
+            }
+        } else {
+            // Keep existing minioObjectId if fileData wasn't updated
+            repository.findById(dto.getId()).ifPresent(existing -> {
+                entity.setMinioObjectId(existing.getMinioObjectId());
+            });
+        }
 
         if (dto.getClientId() != null) {
             clientRepository.findById(dto.getClientId()).ifPresent(entity::setClient);
@@ -140,6 +242,9 @@ public class DocumentService {
                         this, doc.getDossier() != null ? doc.getDossier().getId() : null,
                         getCurrentUsername(), "Suppression", "Document", doc.getId(),
                         "Document supprimé : " + doc.getNomFichier()));
+            }
+            if (doc.getMinioObjectId() != null) {
+                minioService.deleteFile(doc.getMinioObjectId());
             }
             repository.deleteDossierDocumentAssociation(doc.getId());
             repository.delete(doc);

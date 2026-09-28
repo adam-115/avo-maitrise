@@ -184,8 +184,13 @@ export class Model implements OnInit {
   }
 
   downloadModel(doc: Document): void {
+    if (doc.urlStockage) {
+      window.open(doc.urlStockage, '_blank');
+      return;
+    }
+
     if (!doc.fileData) {
-      this.alertService.displayMessage('Erreur', 'Aucune donnée de fichier disponible pour ce modèle', 'error');
+      this.alertService.displayMessage('Erreur', 'Aucune donnée de fichier ou URL disponible pour ce modèle', 'error');
       return;
     }
 

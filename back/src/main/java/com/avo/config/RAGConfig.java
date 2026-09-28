@@ -74,4 +74,17 @@ public class RAGConfig {
                 .minScore(0.6) // Pertinence minimum
                 .build();
     }
+
+    @Bean(name = "aiIngestionExecutor")
+    public org.springframework.core.task.TaskExecutor aiIngestionExecutor() {
+        org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor executor = new org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor();
+        // Limiter strictement à 1 ou 2 threads pour ne pas saturer Ollama
+        executor.setCorePoolSize(1);
+        executor.setMaxPoolSize(2);
+        // Les autres documents attendent sagement dans la file d'attente (jusqu'à 500 documents)
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("AI-Ingest-");
+        executor.initialize();
+        return executor;
+    }
 }

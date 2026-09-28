@@ -132,8 +132,13 @@ export class JurisprudenceManagement implements OnInit {
   }
 
   downloadDocument(doc: Document) {
+    if (doc.urlStockage) {
+      window.open(doc.urlStockage, '_blank');
+      return;
+    }
+
     if (!doc.fileData) {
-      this.alertService.displayMessage('Erreur', 'Fichier introuvable.', 'error');
+      this.alertService.displayMessage('Erreur', 'Fichier ou URL introuvable.', 'error');
       return;
     }
     try {

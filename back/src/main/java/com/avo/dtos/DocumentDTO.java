@@ -20,11 +20,12 @@ public class DocumentDTO {
     private String pays;
     private Long clientId;
     private Long dossierId;
-    private byte[] fileData;
+    private String minioObjectId;
+    private String fileData; // Transient base64 data for frontend uploads
 
     public DocumentDTO() {}
 
-    public DocumentDTO(Long id, String nomFichier, DocumentType typeDocument, String urlStockage, LocalDateTime dateUpload, boolean estValide, String title, String name, String label, String description, String tags, String filename, String pays, Long clientId, Long dossierId, byte[] fileData) {
+    public DocumentDTO(Long id, String nomFichier, DocumentType typeDocument, String urlStockage, LocalDateTime dateUpload, boolean estValide, String title, String name, String label, String description, String tags, String filename, String pays, Long clientId, Long dossierId, String minioObjectId, String fileData) {
         this.id = id;
         this.nomFichier = nomFichier;
         this.typeDocument = typeDocument;
@@ -40,6 +41,7 @@ public class DocumentDTO {
         this.pays = pays;
         this.clientId = clientId;
         this.dossierId = dossierId;
+        this.minioObjectId = minioObjectId;
         this.fileData = fileData;
     }
 
@@ -88,8 +90,11 @@ public class DocumentDTO {
     public Long getDossierId() { return dossierId; }
     public void setDossierId(Long dossierId) { this.dossierId = dossierId; }
 
-    public byte[] getFileData() { return fileData; }
-    public void setFileData(byte[] fileData) { this.fileData = fileData; }
+    public String getMinioObjectId() { return minioObjectId; }
+    public void setMinioObjectId(String minioObjectId) { this.minioObjectId = minioObjectId; }
+
+    public String getFileData() { return fileData; }
+    public void setFileData(String fileData) { this.fileData = fileData; }
 
     public static DocumentDTOBuilder builder() {
         return new DocumentDTOBuilder();
@@ -111,7 +116,8 @@ public class DocumentDTO {
         private String pays;
         private Long clientId;
         private Long dossierId;
-        private byte[] fileData;
+        private String minioObjectId;
+        private String fileData;
 
         public DocumentDTOBuilder id(Long id) { this.id = id; return this; }
         public DocumentDTOBuilder nomFichier(String nomFichier) { this.nomFichier = nomFichier; return this; }
@@ -128,10 +134,11 @@ public class DocumentDTO {
         public DocumentDTOBuilder pays(String pays) { this.pays = pays; return this; }
         public DocumentDTOBuilder clientId(Long clientId) { this.clientId = clientId; return this; }
         public DocumentDTOBuilder dossierId(Long dossierId) { this.dossierId = dossierId; return this; }
-        public DocumentDTOBuilder fileData(byte[] fileData) { this.fileData = fileData; return this; }
+        public DocumentDTOBuilder minioObjectId(String minioObjectId) { this.minioObjectId = minioObjectId; return this; }
+        public DocumentDTOBuilder fileData(String fileData) { this.fileData = fileData; return this; }
 
         public DocumentDTO build() {
-            return new DocumentDTO(id, nomFichier, typeDocument, urlStockage, dateUpload, estValide, title, name, label, description, tags, filename, pays, clientId, dossierId, fileData);
+            return new DocumentDTO(id, nomFichier, typeDocument, urlStockage, dateUpload, estValide, title, name, label, description, tags, filename, pays, clientId, dossierId, minioObjectId, fileData);
         }
     }
 }

@@ -72,7 +72,7 @@ public class FictionalCaseInitializer implements CommandLineRunner {
         doc1.setTitle("Contrat de Vente Immobilière");
         doc1.setDescription("Contrat signé entre Jean Dupont et SCI Les Mimosas");
         doc1.setTypeDocument(DocumentType.DOSSIER);
-        doc1.setFileData(contratText.getBytes(StandardCharsets.UTF_8));
+        doc1.setFileData(java.util.Base64.getEncoder().encodeToString(contratText.getBytes(StandardCharsets.UTF_8)));
         documentService.create(doc1);
 
         // Document 2: Rapport d'expertise
@@ -85,7 +85,7 @@ public class FictionalCaseInitializer implements CommandLineRunner {
         doc2.setTitle("Rapport d'Expertise Mérule");
         doc2.setDescription("Rapport constatant la mérule");
         doc2.setTypeDocument(DocumentType.DOSSIER);
-        doc2.setFileData(expertiseText.getBytes(StandardCharsets.UTF_8));
+        doc2.setFileData(java.util.Base64.getEncoder().encodeToString(expertiseText.getBytes(StandardCharsets.UTF_8)));
         documentService.create(doc2);
 
         // Document 3: Mise en demeure
@@ -98,7 +98,7 @@ public class FictionalCaseInitializer implements CommandLineRunner {
         doc3.setTitle("Mise en Demeure SCI");
         doc3.setDescription("Lettre d'avocat de mise en demeure");
         doc3.setTypeDocument(DocumentType.DOSSIER);
-        doc3.setFileData(miseEnDemeureText.getBytes(StandardCharsets.UTF_8));
+        doc3.setFileData(java.util.Base64.getEncoder().encodeToString(miseEnDemeureText.getBytes(StandardCharsets.UTF_8)));
         documentService.create(doc3);
 
         log.info("Fictional case initialization complete! You can now test the AI Assistant on this dossier.");
