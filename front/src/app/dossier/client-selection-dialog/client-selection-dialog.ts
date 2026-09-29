@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Client } from '../../appTypes';
 import { ClientService } from '../../services/client-service';
+import { DossierService } from '../../services/dossier.service';
 
 @Component({
     selector: 'app-client-selection-dialog',
@@ -14,16 +15,22 @@ import { ClientService } from '../../services/client-service';
 })
 export class ClientSelectionDialog implements OnInit {
     @Input() initialSelection: string | number | null = null;
+    @Input() currentAutresParties: any[] = [];
     @Output() confirmSelection = new EventEmitter<Client>();
     @Output() closeDialog = new EventEmitter<void>();
 
     private readonly clientService = inject(ClientService);
+    private readonly dossierService = inject(DossierService);
 
     filteredClients: Client[] = [];
     totalElements = 0;
     selectedClientId: string | number | null = null;
     searchTerm: string = '';
     loading = false;
+
+    // Conflict Check
+    hasConflict = false;
+    conflictMessage = '';
 
     // Pagination
     currentPage = 1;
@@ -91,6 +98,27 @@ export class ClientSelectionDialog implements OnInit {
 
     selectClient(clientId: string | number): void {
         this.selectedClientId = clientId;
+        this.hasConflict = false;
+        this.conflictMessage = '';
+
+        // 1. Check local conflicts first
+        const existingPartie = this.currentAutresParties.find(p => String(p.partie.id) === String(clientId));
+        if (existingPartie) {
+            this.hasConflict = true;
+            this.conflictMessage = `Conflit direct : Ce contact est déjà ajouté comme ${existingPartie.role}.`;
+            return;
+        }
+
+        // 2. Check backend conflicts
+        this.dossierService.checkConflict(Number(clientId)).subscribe({
+            next: (res) => {
+                if (res && res.hasConflict) {
+                    this.hasConflict = true;
+                    this.conflictMessage = res.message || 'Attention : Un conflit d\'intérêt a été détecté pour ce client.';
+                }
+            },
+            error: (err) => console.error('Error checking conflict', err)
+        });
     }
 
     isSelected(clientId: string | number): boolean {

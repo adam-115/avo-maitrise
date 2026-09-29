@@ -46,6 +46,9 @@ public class Dossier {
     @JoinTable(name = "dossier_documents", joinColumns = @JoinColumn(name = "dossier_id"), inverseJoinColumns = @JoinColumn(name = "document_id"))
     private List<Document> documents = new ArrayList<>();
 
+    @OneToMany(mappedBy = "dossier", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DossierPartie> autresParties = new ArrayList<>();
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOuverture;
 
@@ -167,6 +170,14 @@ public class Dossier {
 
     public void setDocuments(List<Document> documents) {
         this.documents = documents;
+    }
+
+    public List<DossierPartie> getAutresParties() {
+        return autresParties;
+    }
+
+    public void setAutresParties(List<DossierPartie> autresParties) {
+        this.autresParties = autresParties;
     }
 
     public Date getDateOuverture() {

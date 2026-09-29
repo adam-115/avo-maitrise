@@ -11,6 +11,13 @@
                 </svg>
             </button>
         </div>
+        
+        <!-- Conflict Alert -->
+        <div *ngIf="hasConflict" class="px-6 py-2 bg-red-100 border-b border-red-200 text-center animate-pulse">
+            <span class="text-sm font-bold text-red-700 uppercase tracking-wide">
+                <i class="fas fa-exclamation-triangle mr-2"></i> {{ conflictMessage }}
+            </span>
+        </div>
 
         <!-- Search -->
         <div class="p-4 border-b border-gray-200">

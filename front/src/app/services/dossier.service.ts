@@ -72,4 +72,8 @@ export class DossierService extends AbstractCrudService<Dossier> {
 
         return this.http.get<PaginatedResponse<Dossier>>(`${this.apiUrl}/search`, { params });
     }
+
+    checkConflict(contactId: number): Observable<any> {
+        return this.http.get<any>(`${this.apiUrl}/conflict-check/${contactId}`);
+    }
 }

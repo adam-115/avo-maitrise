@@ -442,6 +442,9 @@ export interface Dossier {
   // Métadonnées
   tags?: string[];             // Pour la recherche rapide
   aiStrategy?: string;         // Analyse stratégique générée par l'IA
+
+  // Tiers & Adversaires
+  autresParties?: any[];
 }
 
 
@@ -790,4 +793,17 @@ export interface AiConfigurationDTO {
   temperature?: number;
   timeoutMinutes?: number;
   isActive: boolean;
+}
+
+export interface ConflictDetail {
+  dossierId: number;
+  dossierTitre: string;
+  dossierReference: string;
+  role: string;
+}
+
+export interface ConflictCheckResult {
+  hasConflict: boolean;
+  message: string;
+  details: ConflictDetail[];
 }

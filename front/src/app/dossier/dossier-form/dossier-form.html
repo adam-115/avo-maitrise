@@ -184,7 +184,8 @@
                 }
 
                 <app-client-selection-dialog *ngIf="showClientDialog"
-                  [initialSelection]="dossierForm.get('clientId')?.value" (confirmSelection)="onClientSelected($event)"
+                  [initialSelection]="dossierForm.get('clientId')?.value"
+                  [currentAutresParties]="autresParties" (confirmSelection)="onClientSelected($event)"
                   (closeDialog)="closeClientDialog()">
                 </app-client-selection-dialog>
               </div>
@@ -238,6 +239,68 @@
               <!-- Client AML Compliance Status Alert (Full Width of Card Grid) -->
               <div *ngIf="getSelectedClientStatus()" class="md:col-span-2 pt-2 border-t border-slate-100">
                 <app-client-status-alert [status]="getSelectedClientStatus()" [clientId]="selectedClient?.id"></app-client-status-alert>
+              </div>
+
+              <!-- Adversaires et Tiers -->
+              <div class="md:col-span-2 pt-2 border-t border-slate-100">
+                <div class="flex items-center justify-between mb-2">
+                  <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    Adversaires et Tiers
+                  </label>
+                  <div class="flex items-center gap-2">
+                    <select [(ngModel)]="selectedPartieRole" [ngModelOptions]="{standalone: true}"
+                      class="text-xs px-2 py-1 border-slate-300 rounded-md focus:border-indigo-500 focus:ring-indigo-500 text-slate-700 font-semibold shadow-sm">
+                      <option value="ADVERSAIRE">Adversaire</option>
+                      <option value="TIERS">Tiers</option>
+                      <option value="AVOCAT_ADVERSE">Avocat adverse</option>
+                      <option value="JUGE">Juge</option>
+                      <option value="EXPERT">Expert</option>
+                      <option value="TEMOIN">Témoin</option>
+                    </select>
+                    <button type="button" (click)="openPartieDialog()"
+                      class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                      </svg>
+                      Ajouter
+                    </button>
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-2" *ngIf="autresParties.length > 0">
+                  <div *ngFor="let p of autresParties; let i = index"
+                    class="flex items-center justify-between p-2.5 rounded-xl bg-orange-50/40 border border-orange-200 transition-all shadow-sm">
+                    <div class="flex items-center gap-3">
+                      <div class="h-8 w-8 rounded-md bg-orange-500 text-white flex items-center justify-center text-xs font-black">
+                        {{ getPartieName(p.partie).charAt(0) | uppercase }}
+                      </div>
+                      <div>
+                        <p class="text-sm font-bold text-slate-900">{{ getPartieName(p.partie) }}</p>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black bg-orange-100 text-orange-800 uppercase">
+                          {{ p.role }}
+                        </span>
+                      </div>
+                    </div>
+                    <button type="button" (click)="removePartie(i)"
+                      class="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div *ngIf="autresParties.length === 0"
+                  class="p-3 bg-slate-50 border border-dashed border-slate-200 rounded-xl text-center">
+                  <p class="text-xs font-medium text-slate-400">Aucun adversaire ou tiers lié à ce dossier.</p>
+                </div>
+
+                <app-partie-selection-dialog *ngIf="showPartieDialog" 
+                  [roleLabel]="selectedPartieRole"
+                  [currentClientId]="dossierForm.get('clientId')?.value"
+                  [currentAutresParties]="autresParties"
+                  (confirmSelection)="onPartieSelected($event)" (closeDialog)="closePartieDialog()">
+                </app-partie-selection-dialog>
               </div>
 
               <!-- Équipe & Collaborateurs -->

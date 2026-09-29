@@ -16,6 +16,8 @@ public interface DossierRepository extends JpaRepository<Dossier, Long>, Queryds
 
        java.util.Optional<Dossier> findByReferenceInterne(String referenceInterne);
 
+       List<Dossier> findByClientId(Long clientId);
+
        @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
        long countDistinctClientIdByStatutIDNotIn(List<String> statutIds);
 

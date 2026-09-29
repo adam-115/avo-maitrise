@@ -11,6 +11,7 @@ import { Client, StatutDossier, DossierPriorite, User, Dossier, Document, Domain
 import { CommonModule } from '@angular/common';
 import { ClientSelectionDialog } from '../client-selection-dialog/client-selection-dialog';
 import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
+import { PartieSelectionDialog } from '../partie-selection-dialog/partie-selection-dialog';
 import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { DomaineJuridiqueSelectionDialog } from '../domaine-juridique-selection-dialog/domaine-juridique-selection-dialog';
 import { ClientStatusAlertComponent } from '../../shared/components/client-status-alert/client-status-alert.component';
@@ -22,7 +23,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-dossier-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, UserSelectionDialog, ClientSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent, TranslatePipe],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, UserSelectionDialog, ClientSelectionDialog, PartieSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent, TranslatePipe],
   templateUrl: './dossier-form.html',
   styleUrl: './dossier-form.css'
 })
@@ -52,6 +53,8 @@ export class DossierForm implements OnInit {
 
   showUserDialog = false;
   showClientDialog = false;
+  showPartieDialog = false;
+  selectedPartieRole = 'ADVERSAIRE'; // Default
   showResponsableDialog = false;
   showDocumentDialog = false;
   showDomaineDialog = false;
@@ -69,7 +72,8 @@ export class DossierForm implements OnInit {
       statutID: ['', Validators.required],
       dateOuverture: [new Date().toISOString().substring(0, 10), Validators.required],
       tags: [[]],
-      documents: [[]]
+      documents: [[]],
+      autresParties: [[]]
     });
 
     this.dossierForm.valueChanges.subscribe(() => {
@@ -158,10 +162,122 @@ export class DossierForm implements OnInit {
   }
 
   onClientSelected(client: Client): void {
+    if (!client.id) return;
+
+    // We no longer block or alert via SweetAlert for local conflicts here
+    // because the user was already warned in the ClientSelectionDialog 
+    // and chose to confirm anyway.
+
+    this.continueClientSelection(client);
+  }
+
+  private continueClientSelection(client: Client): void {
+    this.loading = true;
+    this.dossierService.checkConflict(client.id!).subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (res.hasConflict) {
+          let conflictDetails = res.details.map((d: any) => `- ${d.role} dans le dossier: ${d.dossierTitre} (${d.dossierReference})`).join('\n');
+          this.alertService.confirmMessage(
+            'Conflit d\'intérêts potentiel !',
+            `${res.message}\n\n${conflictDetails}\n\nVoulez-vous quand même utiliser ce contact ?`,
+            'warning'
+          ).then((confirmed) => {
+            if (confirmed) {
+              this.setClientAndClose(client);
+            }
+          });
+        } else {
+          this.setClientAndClose(client);
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error checking conflict', err);
+        this.setClientAndClose(client);
+      }
+    });
+  }
+
+  private setClientAndClose(client: Client): void {
     this.selectedClient = client;
     this.dossierForm.patchValue({ clientId: client.id });
     this.checkClientStatus();
     this.closeClientDialog();
+  }
+
+  // Autres Parties Selection Dialog Methods
+  openPartieDialog(): void {
+    this.showPartieDialog = true;
+  }
+
+  closePartieDialog(): void {
+    this.showPartieDialog = false;
+  }
+
+  onPartieSelected(client: Client): void {
+    if (!client.id) return;
+
+    // We no longer block or alert via SweetAlert for local conflicts here
+    // because the user was already warned in the PartieSelectionDialog 
+    // and chose to confirm anyway.
+
+    this.continuePartieSelection(client);
+  }
+
+  private continuePartieSelection(client: Client): void {
+    this.loading = true;
+    this.dossierService.checkConflict(client.id!).subscribe({
+      next: (res) => {
+        this.loading = false;
+        if (res.hasConflict) {
+          let conflictDetails = res.details.map((d: any) => `- ${d.role} dans le dossier: ${d.dossierTitre} (${d.dossierReference})`).join('\n');
+          this.alertService.confirmMessage(
+            'Conflit d\'intérêts potentiel !',
+            `${res.message}\n\n${conflictDetails}\n\nVoulez-vous quand même l'ajouter comme ${this.selectedPartieRole} ?`,
+            'warning'
+          ).then((confirmed) => {
+            if (confirmed) {
+              this.addPartieAndClose(client);
+            }
+          });
+        } else {
+          this.addPartieAndClose(client);
+        }
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error checking conflict', err);
+        this.addPartieAndClose(client);
+      }
+    });
+  }
+
+  private addPartieAndClose(client: Client): void {
+    const currentParties = this.autresParties;
+    // Eviter les doublons
+    if (!currentParties.some(p => p.partie.id === client.id)) {
+      this.dossierForm.patchValue({
+        autresParties: [...currentParties, { partie: client, role: this.selectedPartieRole }]
+      });
+    }
+    this.closePartieDialog();
+  }
+
+  get autresParties(): any[] {
+    return this.dossierForm.get('autresParties')?.value || [];
+  }
+
+  removePartie(index: number): void {
+    const currentParties = this.autresParties;
+    this.dossierForm.patchValue({
+      autresParties: currentParties.filter((_, i) => i !== index)
+    });
+  }
+
+  getPartieName(client: Client): string {
+    const c = client as any;
+    return c ? `${c.nom || c.nomCommercial || ''} ${c.prenom || ''}`.trim() : '';
   }
 
   getSelectedClientName(): string {

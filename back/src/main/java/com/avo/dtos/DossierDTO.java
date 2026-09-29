@@ -39,4 +39,5 @@ public class DossierDTO {
     private Date updated_at;
     private String aiStrategy;
     private String aiChatHistory;
+    private List<DossierPartieDTO> autresParties = new ArrayList<>();
 }

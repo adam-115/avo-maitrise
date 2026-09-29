@@ -29,7 +29,7 @@ public class DossierService {
         this.eventPublisher = eventPublisher;
     }
 
-    private void linkDocuments(Dossier entity) {
+    private void linkDocumentsAndParties(Dossier entity) {
         if (entity.getDocuments() != null) {
             entity.getDocuments().forEach(doc -> {
                 doc.setDossier(entity);
@@ -37,6 +37,9 @@ public class DossierService {
                     clientRepository.findById(entity.getClient().getId()).ifPresent(doc::setClient);
                 }
             });
+        }
+        if (entity.getAutresParties() != null) {
+            entity.getAutresParties().forEach(p -> p.setDossier(entity));
         }
     }
 
@@ -75,7 +78,7 @@ public class DossierService {
             dto.setReferenceInterne(ref);
         }
         Dossier entity = mapper.toEntity(dto);
-        linkDocuments(entity);
+        linkDocumentsAndParties(entity);
         Dossier saved = repository.save(entity);
 
         eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
@@ -95,7 +98,7 @@ public class DossierService {
             dto.setReferenceInterne(ref);
         }
         Dossier entity = mapper.toEntity(dto);
-        linkDocuments(entity);
+        linkDocumentsAndParties(entity);
         Dossier saved = repository.save(entity);
 
         if (saved.getDocuments().size() > dto.getDocuments().size()) {
