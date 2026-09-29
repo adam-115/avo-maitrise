@@ -22,20 +22,19 @@ public class AiConfigurationService {
         this.repository = repository;
     }
 
+    public boolean isAiEnabled() {
+        return repository.findByIsActiveTrue().isPresent();
+    }
+
     public AiConfiguration getActiveConfiguration() {
-        return repository.findByIsActiveTrue().orElseGet(() -> {
-            AiConfiguration fallback = new AiConfiguration();
-            fallback.setProvider("OLLAMA");
-            fallback.setModelName("qwen2.5:7b");
-            fallback.setBaseUrl("http://127.0.0.1:11434");
-            fallback.setTemperature(0.3);
-            fallback.setTimeoutMinutes(15);
-            return fallback;
-        });
+        return repository.findByIsActiveTrue().orElse(null);
     }
 
     public ChatLanguageModel buildChatModel() {
         AiConfiguration config = getActiveConfiguration();
+        if (config == null) {
+            throw new IllegalStateException("L'Intelligence Artificielle est actuellement désactivée.");
+        }
         Duration timeout = Duration.ofMinutes(config.getTimeoutMinutes() != null ? config.getTimeoutMinutes() : 15);
         double temp = config.getTemperature() != null ? config.getTemperature() : 0.3;
 
@@ -66,6 +65,9 @@ public class AiConfigurationService {
 
     public StreamingChatLanguageModel buildStreamingChatModel() {
         AiConfiguration config = getActiveConfiguration();
+        if (config == null) {
+            throw new IllegalStateException("L'Intelligence Artificielle est actuellement désactivée.");
+        }
         Duration timeout = Duration.ofMinutes(config.getTimeoutMinutes() != null ? config.getTimeoutMinutes() : 15);
         double temp = config.getTemperature() != null ? config.getTemperature() : 0.3;
 
@@ -76,6 +78,12 @@ public class AiConfigurationService {
                         .modelName(config.getModelName())
                         .temperature(temp)
                         .timeout(timeout)
+                        .build();
+            case "GEMINI":
+                return dev.langchain4j.model.googleai.GoogleAiGeminiStreamingChatModel.builder()
+                        .apiKey(config.getApiKey())
+                        .modelName(config.getModelName())
+                        .temperature(temp)
                         .build();
             case "OLLAMA":
             default:

@@ -16,6 +16,7 @@ import { DossierInfo } from "../dossier-info/dossier-info";
 import { MatterActivityComponent } from "../matter-activity/matter-activity";
 import { TaskManagerComponent } from "../task-manager/task-manager.component";
 import { InvoiceDossierServiceComponent } from '../invoice-dossier-service/invoice-dossier-service.component';
+import { AiStatusService } from '../../services/ai-status.service';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -64,7 +65,15 @@ export class DossierDetails implements OnInit {
   // Example: You might fetch dossier details here
   dossierDetails: any;
 
+  private aiStatusService = inject(AiStatusService);
+
   ngOnInit(): void {
+    this.aiStatusService.isAiEnabled$.subscribe(isEnabled => {
+      if (!isEnabled) {
+        this.tabs = this.tabs.filter(tab => tab.path !== 'strategie');
+      }
+    });
+
     this.getDossierById();
     this.loadUsers();
     this.loadStatuses();

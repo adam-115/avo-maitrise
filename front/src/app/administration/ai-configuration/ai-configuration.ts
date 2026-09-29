@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AiConfigurationDTO } from '../../appTypes';
 import { environment } from '../../../environments/environment';
+import { AiStatusService } from '../../services/ai-status.service';
 
 @Component({
   selector: 'app-ai-configuration',
@@ -16,12 +17,13 @@ export class AiConfiguration implements OnInit {
   configurations: AiConfigurationDTO[] = [];
   selectedConfig: AiConfigurationDTO | null = null;
   isEditing = false;
-  
-  providers = ['OLLAMA', 'OPENAI', 'GEMINI'];
-  
-  private apiUrl = `${environment.apiUrl}/api/ai-configuration`;
 
-  constructor(private http: HttpClient) {}
+  providers = ['OLLAMA', 'OPENAI', 'GEMINI'];
+
+  private apiUrl = `${environment.apiUrl}ai-configuration`;
+  private aiStatusService = inject(AiStatusService);
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.loadConfigurations();
@@ -57,13 +59,14 @@ export class AiConfiguration implements OnInit {
   saveConfig() {
     if (!this.selectedConfig) return;
 
-    const req = this.selectedConfig.id 
+    const req = this.selectedConfig.id
       ? this.http.put<AiConfigurationDTO>(`${this.apiUrl}/${this.selectedConfig.id}`, this.selectedConfig)
       : this.http.post<AiConfigurationDTO>(this.apiUrl, this.selectedConfig);
 
     req.subscribe({
       next: () => {
         this.loadConfigurations();
+        this.aiStatusService.checkAiStatus();
         this.isEditing = false;
         this.selectedConfig = null;
       },
@@ -75,7 +78,10 @@ export class AiConfiguration implements OnInit {
     if (!id) return;
     if (confirm('Êtes-vous sûr de vouloir supprimer cette configuration ?')) {
       this.http.delete(`${this.apiUrl}/${id}`).subscribe({
-        next: () => this.loadConfigurations(),
+        next: () => {
+          this.loadConfigurations();
+          this.aiStatusService.checkAiStatus();
+        },
         error: (err) => console.error('Erreur suppression config', err)
       });
     }

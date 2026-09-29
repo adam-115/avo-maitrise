@@ -8,6 +8,8 @@ import { KeycloakService } from './../services/keycloak.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { filter, Subscription } from 'rxjs';
 
+import { AiStatusService } from './../services/ai-status.service';
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -21,6 +23,7 @@ export class Home implements OnInit, OnDestroy {
   private readonly keycloakService = inject(KeycloakService);
   public readonly translate = inject(TranslateService);
   public readonly router = inject(Router);
+  public readonly aiStatusService = inject(AiStatusService);
 
   // Variable d'état pour le contrôle de la barre latérale
   isSidebarOpen: boolean = false;
@@ -38,6 +41,9 @@ export class Home implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Vérifier si l'IA est activée
+    this.aiStatusService.checkAiStatus();
+
     // Synchroniser activeRoute dès le chargement initial
     this.updateActiveRouteFromUrl(this.router.url);
 

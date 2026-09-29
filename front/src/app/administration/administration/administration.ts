@@ -1,18 +1,21 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NavigationService } from '../../services/navigation-service';
+import { AiStatusService } from '../../services/ai-status.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-administration',
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, CommonModule],
   templateUrl: './administration.html',
   styleUrl: './administration.css'
 })
 export class Administration {
 
   navigationService = inject(NavigationService);
+  aiStatusService = inject(AiStatusService);
 
   constructor(private readonly router: Router) {
   }

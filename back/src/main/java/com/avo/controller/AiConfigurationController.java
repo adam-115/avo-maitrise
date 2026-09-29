@@ -38,6 +38,11 @@ public class AiConfigurationController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/status")
+    public ResponseEntity<Boolean> getAiStatus() {
+        return ResponseEntity.ok(repository.findByIsActiveTrue().isPresent());
+    }
+
     @PostMapping
     public ResponseEntity<AiConfigurationDTO> saveConfiguration(@RequestBody AiConfigurationDTO dto) {
         AiConfiguration entity = mapper.toEntity(dto);
@@ -57,7 +62,8 @@ public class AiConfigurationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AiConfigurationDTO> updateConfiguration(@PathVariable Long id, @RequestBody AiConfigurationDTO dto) {
+    public ResponseEntity<AiConfigurationDTO> updateConfiguration(@PathVariable Long id,
+            @RequestBody AiConfigurationDTO dto) {
         return repository.findById(id).map(existing -> {
             existing.setProvider(dto.getProvider());
             existing.setModelName(dto.getModelName());

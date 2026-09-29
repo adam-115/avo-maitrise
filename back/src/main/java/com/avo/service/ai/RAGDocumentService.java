@@ -26,15 +26,18 @@ public class RAGDocumentService {
     private final EmbeddingModel embeddingModel;
     private final DocumentRepository documentRepository;
     private final com.avo.services.MinioService minioService;
+    private final com.avo.service.AiConfigurationService aiConfigurationService;
 
     public RAGDocumentService(EmbeddingStore<TextSegment> embeddingStore,
             EmbeddingModel embeddingModel,
             DocumentRepository documentRepository,
-            com.avo.services.MinioService minioService) {
+            com.avo.services.MinioService minioService,
+            com.avo.service.AiConfigurationService aiConfigurationService) {
         this.embeddingStore = embeddingStore;
         this.embeddingModel = embeddingModel;
         this.documentRepository = documentRepository;
         this.minioService = minioService;
+        this.aiConfigurationService = aiConfigurationService;
     }
 
     /**
@@ -48,6 +51,10 @@ public class RAGDocumentService {
     @Async("aiIngestionExecutor")
     @Transactional(readOnly = true)
     public void ingestDocumentIntoQdrant(Long documentId) {
+        if (!aiConfigurationService.isAiEnabled()) {
+            return; // L'IA est désactivée, on ne fait pas d'ingestion RAG
+        }
+
         // Étape 1 : Récupérer le document en base
         Document doc = documentRepository.findById(documentId)
                 .orElseThrow(() -> new IllegalArgumentException("Document introuvable: " + documentId));
@@ -117,6 +124,10 @@ public class RAGDocumentService {
      */
     @Transactional(readOnly = true)
     public void ingestDocumentIntoQdrantSync(Long documentId) {
+        if (!aiConfigurationService.isAiEnabled()) {
+            return; // L'IA est désactivée, on ne fait pas d'ingestion RAG
+        }
+
         Document doc = documentRepository.findById(documentId)
                 .orElseThrow(() -> new IllegalArgumentException("Document introuvable: " + documentId));
 
