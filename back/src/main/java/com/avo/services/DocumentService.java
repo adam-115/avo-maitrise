@@ -146,8 +146,19 @@ public class DocumentService {
         }
 
         try {
-            // Lancer l'ingestion vers Qdrant en arrière-plan (Asynchrone)
-            ragDocumentService.ingestDocumentIntoQdrant(saved.getId());
+            // Lancer l'ingestion vers Qdrant en arrière-plan (Asynchrone) APRÈS le commit de la transaction
+            if (org.springframework.transaction.support.TransactionSynchronizationManager.isSynchronizationActive()) {
+                org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
+                    new org.springframework.transaction.support.TransactionSynchronization() {
+                        @Override
+                        public void afterCommit() {
+                            ragDocumentService.ingestDocumentIntoQdrant(saved.getId());
+                        }
+                    }
+                );
+            } else {
+                ragDocumentService.ingestDocumentIntoQdrant(saved.getId());
+            }
         } catch (Exception e) {
             log.error("Erreur lors de l'ingestion automatique vers Qdrant pour le doc: " + saved.getId(), e);
         }

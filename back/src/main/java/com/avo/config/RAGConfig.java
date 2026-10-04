@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 @Configuration
 public class RAGConfig {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(RAGConfig.class);
+
     @Value("${langchain4j.ollama.chat-model.base-url:http://localhost:11434}")
     private String ollamaBaseUrl;
 
@@ -20,6 +22,47 @@ public class RAGConfig {
 
     @Value("${ai.qdrant.port:6334}")
     private int qdrantPort;
+
+    @jakarta.annotation.PostConstruct
+    public void initQdrantCollection() {
+        try {
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            // L'API HTTP REST de Qdrant utilise par défaut le port 6333 (6334 est pour gRPC)
+            int restPort = (qdrantPort == 6334) ? 6333 : qdrantPort;
+            String baseUrl = "http://" + qdrantHost + ":" + restPort;
+            String collectionUrl = baseUrl + "/collections/avo_docs_collection";
+
+            try {
+                // Vérifier si la collection existe
+                org.springframework.http.ResponseEntity<String> response = restTemplate.getForEntity(collectionUrl, String.class);
+                if (response.getStatusCode().is2xxSuccessful()) {
+                    log.info("Qdrant collection 'avo_docs_collection' already exists.");
+                    return;
+                }
+            } catch (org.springframework.web.client.HttpClientErrorException.NotFound e) {
+                // La collection n'existe pas, on procède à la création
+                log.info("Qdrant collection 'avo_docs_collection' not found. Creating it...");
+            }
+
+            // Création de la collection avec 768 dimensions (pour nomic-embed-text)
+            java.util.Map<String, Object> vectors = new java.util.HashMap<>();
+            vectors.put("size", 768);
+            vectors.put("distance", "Cosine");
+            
+            java.util.Map<String, Object> requestBody = new java.util.HashMap<>();
+            requestBody.put("vectors", vectors);
+
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+            org.springframework.http.HttpEntity<java.util.Map<String, Object>> entity = new org.springframework.http.HttpEntity<>(requestBody, headers);
+
+            restTemplate.exchange(collectionUrl, org.springframework.http.HttpMethod.PUT, entity, String.class);
+            log.info("Qdrant collection 'avo_docs_collection' created successfully.");
+
+        } catch (Exception e) {
+            log.error("Could not initialize Qdrant collection: " + e.getMessage(), e);
+        }
+    }
 
     @Bean
     public EmbeddingModel embeddingModel() {
