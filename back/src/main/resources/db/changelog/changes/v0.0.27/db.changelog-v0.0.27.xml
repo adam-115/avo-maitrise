@@ -6,6 +6,11 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
 
     <changeSet id="add-ai-configuration-table" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="ai_configuration"/>
+            </not>
+        </preConditions>
         <createTable tableName="ai_configuration">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>

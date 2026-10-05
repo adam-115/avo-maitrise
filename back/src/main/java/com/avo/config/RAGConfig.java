@@ -27,14 +27,16 @@ public class RAGConfig {
     public void initQdrantCollection() {
         try {
             org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
-            // L'API HTTP REST de Qdrant utilise par défaut le port 6333 (6334 est pour gRPC)
+            // L'API HTTP REST de Qdrant utilise par défaut le port 6333 (6334 est pour
+            // gRPC)
             int restPort = (qdrantPort == 6334) ? 6333 : qdrantPort;
             String baseUrl = "http://" + qdrantHost + ":" + restPort;
             String collectionUrl = baseUrl + "/collections/avo_docs_collection";
 
             try {
                 // Vérifier si la collection existe
-                org.springframework.http.ResponseEntity<String> response = restTemplate.getForEntity(collectionUrl, String.class);
+                org.springframework.http.ResponseEntity<String> response = restTemplate.getForEntity(collectionUrl,
+                        String.class);
                 if (response.getStatusCode().is2xxSuccessful()) {
                     log.info("Qdrant collection 'avo_docs_collection' already exists.");
                     return;
@@ -48,13 +50,14 @@ public class RAGConfig {
             java.util.Map<String, Object> vectors = new java.util.HashMap<>();
             vectors.put("size", 768);
             vectors.put("distance", "Cosine");
-            
+
             java.util.Map<String, Object> requestBody = new java.util.HashMap<>();
             requestBody.put("vectors", vectors);
 
             org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
             headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
-            org.springframework.http.HttpEntity<java.util.Map<String, Object>> entity = new org.springframework.http.HttpEntity<>(requestBody, headers);
+            org.springframework.http.HttpEntity<java.util.Map<String, Object>> entity = new org.springframework.http.HttpEntity<>(
+                    requestBody, headers);
 
             restTemplate.exchange(collectionUrl, org.springframework.http.HttpMethod.PUT, entity, String.class);
             log.info("Qdrant collection 'avo_docs_collection' created successfully.");
@@ -124,7 +127,8 @@ public class RAGConfig {
         // Limiter strictement à 1 ou 2 threads pour ne pas saturer Ollama
         executor.setCorePoolSize(1);
         executor.setMaxPoolSize(2);
-        // Les autres documents attendent sagement dans la file d'attente (jusqu'à 500 documents)
+        // Les autres documents attendent sagement dans la file d'attente (jusqu'à 500
+        // documents)
         executor.setQueueCapacity(500);
         executor.setThreadNamePrefix("AI-Ingest-");
         executor.initialize();
