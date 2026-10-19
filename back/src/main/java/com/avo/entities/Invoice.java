@@ -22,6 +22,8 @@ import lombok.Data;
 @Data
 public class Invoice {
 
+    public Invoice() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -22,10 +22,15 @@ import lombok.Setter;
 })
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class AppErrorLog {
+
+    public AppErrorLog() {}
+
+    public static class AppErrorLogBuilder {
+        public AppErrorLogBuilder() {}
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

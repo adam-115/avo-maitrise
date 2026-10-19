@@ -12,10 +12,15 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class DiligenceFormResult {
+
+    public DiligenceFormResult() {}
+
+    public static class DiligenceFormResultBuilder {
+        public DiligenceFormResultBuilder() {}
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

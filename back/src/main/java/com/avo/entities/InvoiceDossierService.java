@@ -17,8 +17,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "invoice_dossier_services")
 @Data
-@NoArgsConstructor
 public class InvoiceDossierService {
+
+    public InvoiceDossierService() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

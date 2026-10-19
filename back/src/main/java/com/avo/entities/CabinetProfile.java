@@ -14,6 +14,8 @@ import lombok.Data;
 @Data
 public class CabinetProfile {
 
+    public CabinetProfile() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

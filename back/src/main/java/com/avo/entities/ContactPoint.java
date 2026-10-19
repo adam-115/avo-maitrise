@@ -19,8 +19,9 @@ import lombok.Setter;
 @Table(name = "contact_points")
 @Getter
 @Setter
-@NoArgsConstructor
 public class ContactPoint {
+
+    public ContactPoint() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

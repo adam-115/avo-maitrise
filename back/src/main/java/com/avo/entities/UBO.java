@@ -20,8 +20,9 @@ import lombok.Setter;
 @Table(name = "ubos")
 @Getter
 @Setter
-@NoArgsConstructor
 public class UBO {
+
+    public UBO() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

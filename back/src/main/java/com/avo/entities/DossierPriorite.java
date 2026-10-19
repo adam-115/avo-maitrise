@@ -10,8 +10,9 @@ import java.util.Date;
 @Table(name = "dossiers_priorites")
 @Getter
 @Setter
-@NoArgsConstructor
 public class DossierPriorite {
+
+    public DossierPriorite() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,10 +10,15 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FormConfig {
+
+    public FormConfig() {}
+
+    public static class FormConfigBuilder {
+        public FormConfigBuilder() {}
+    }
 
     @Id
     private String id;

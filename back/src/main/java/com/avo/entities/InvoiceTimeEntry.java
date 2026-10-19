@@ -16,6 +16,8 @@ import lombok.Data;
 @Table(name = "invoice_time_entry")
 @Data
 public class InvoiceTimeEntry {
+
+    public InvoiceTimeEntry() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

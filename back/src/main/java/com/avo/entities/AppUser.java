@@ -20,8 +20,9 @@ import lombok.Setter;
 @Table(name = "app_users")
 @Getter
 @Setter
-@NoArgsConstructor
 public class AppUser {
+
+    public AppUser() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

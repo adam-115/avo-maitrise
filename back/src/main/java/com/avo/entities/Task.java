@@ -12,8 +12,9 @@ import java.util.ArrayList;
 @Table(name = "tasks")
 @Getter
 @Setter
-@NoArgsConstructor
 public class Task {
+
+    public Task() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,10 +8,15 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FieldOption {
+
+    public FieldOption() {}
+
+    public static class FieldOptionBuilder {
+        public FieldOptionBuilder() {}
+    }
 
     @Id
     private String id;

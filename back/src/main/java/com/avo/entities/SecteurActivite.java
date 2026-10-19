@@ -18,8 +18,9 @@ import lombok.Setter;
 @Table(name = "secteurs_activite")
 @Getter
 @Setter
-@NoArgsConstructor
 public class SecteurActivite {
+
+    public SecteurActivite() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

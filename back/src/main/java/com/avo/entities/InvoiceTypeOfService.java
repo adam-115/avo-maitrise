@@ -15,8 +15,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "invoice_types_of_service")
 @Data
-@NoArgsConstructor
-public class InvoiceTypeOfService  {
+public class InvoiceTypeOfService {
+
+    public InvoiceTypeOfService() {}
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

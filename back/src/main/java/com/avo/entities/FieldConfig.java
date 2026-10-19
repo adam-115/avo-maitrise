@@ -9,10 +9,15 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FieldConfig {
+
+    public FieldConfig() {}
+
+    public static class FieldConfigBuilder {
+        public FieldConfigBuilder() {}
+    }
 
     @Id
     private String id;

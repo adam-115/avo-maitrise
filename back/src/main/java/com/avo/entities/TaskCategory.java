@@ -10,8 +10,9 @@ import java.util.Date;
 @Table(name = "task_categories")
 @Getter
 @Setter
-@NoArgsConstructor
 public class TaskCategory {
+
+    public TaskCategory() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,11 +10,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiErrorResponse {
+
+    public ApiErrorResponse() {}
+
+    public static class ApiErrorResponseBuilder {
+        public ApiErrorResponseBuilder() {}
+    }
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime timestamp;

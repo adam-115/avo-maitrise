@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class AiConfigurationDTO {
+    public AiConfigurationDTO() {}
     private Long id;
     private String provider;
     private String modelName;

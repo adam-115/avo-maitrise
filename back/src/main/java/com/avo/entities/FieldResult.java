@@ -8,10 +8,15 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FieldResult {
+
+    public FieldResult() {}
+
+    public static class FieldResultBuilder {
+        public FieldResultBuilder() {}
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

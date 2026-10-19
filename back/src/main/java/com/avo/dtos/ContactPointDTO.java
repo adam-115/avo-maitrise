@@ -6,10 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ContactPointDTO {
+
+    public ContactPointDTO() {}
+
+    public static class ContactPointDTOBuilder {
+        public ContactPointDTOBuilder() {}
+    }
 
     private Long id;
     private String nom;

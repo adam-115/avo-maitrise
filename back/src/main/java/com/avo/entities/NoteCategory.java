@@ -10,8 +10,9 @@ import java.util.Date;
 @Table(name = "note_categories")
 @Getter
 @Setter
-@NoArgsConstructor
 public class NoteCategory {
+
+    public NoteCategory() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

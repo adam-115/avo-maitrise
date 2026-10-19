@@ -10,8 +10,9 @@ import java.util.Date;
 @Table(name = "event_types")
 @Getter
 @Setter
-@NoArgsConstructor
 public class EventType {
+
+    public EventType() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

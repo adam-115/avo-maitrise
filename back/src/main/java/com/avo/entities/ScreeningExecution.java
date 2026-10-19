@@ -26,8 +26,9 @@ import lombok.Setter;
 @Table(name = "screening_execution")
 @Getter
 @Setter
-@NoArgsConstructor
 public class ScreeningExecution {
+
+    public ScreeningExecution() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,10 +39,9 @@ public class ScreeningExecution {
     @org.hibernate.annotations.NotFound(action = org.hibernate.annotations.NotFoundAction.IGNORE)
     private ClientEntity client;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ubo_id", nullable = true)
-    private UBO ubo ;
+    private UBO ubo;
 
     /**
      * The raw JSON response received from the Yente API, stored for audit and
@@ -62,5 +62,5 @@ public class ScreeningExecution {
 
     @jakarta.persistence.Enumerated(jakarta.persistence.EnumType.STRING)
     @Column(name = "status")
-    private ScreeningExecutionStatus status ;
+    private ScreeningExecutionStatus status;
 }
