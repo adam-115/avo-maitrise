@@ -132,6 +132,28 @@ export class JurisprudenceManagement implements OnInit {
   }
 
   downloadDocument(doc: Document) {
+    if (doc.id) {
+      this.documentService.downloadDocumentFile(doc.id).subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = window.document.createElement('a');
+          a.href = url;
+          a.download = doc.filename || doc.nomFichier || doc.title || 'jurisprudence.pdf';
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: (err) => {
+          console.error('Error downloading jurisprudence via stream', err);
+          if (doc.urlStockage) {
+            window.open(doc.urlStockage, '_blank');
+          } else {
+            this.alertService.displayMessage('Erreur', 'Erreur de téléchargement.', 'error');
+          }
+        }
+      });
+      return;
+    }
+
     if (doc.urlStockage) {
       window.open(doc.urlStockage, '_blank');
       return;

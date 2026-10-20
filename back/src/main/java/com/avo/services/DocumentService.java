@@ -69,8 +69,8 @@ public class DocumentService {
     }
 
     private void enrichWithPresignedUrl(DocumentDTO dto) {
-        if (dto != null && dto.getMinioObjectId() != null) {
-            dto.setUrlStockage(minioService.getPresignedUrl(dto.getMinioObjectId()));
+        if (dto != null && dto.getId() != null) {
+            dto.setUrlStockage("/api/documents/" + dto.getId() + "/download");
         }
     }
 
@@ -163,7 +163,9 @@ public class DocumentService {
             log.error("Erreur lors de l'ingestion automatique vers Qdrant pour le doc: " + saved.getId(), e);
         }
 
-        return mapper.toDto(saved);
+        DocumentDTO result = mapper.toDto(saved);
+        enrichWithPresignedUrl(result);
+        return result;
     }
 
     @org.springframework.transaction.annotation.Transactional
@@ -241,7 +243,9 @@ public class DocumentService {
                     "Document mis à jour : " + saved.getNomFichier()));
         }
 
-        return mapper.toDto(saved);
+        DocumentDTO result = mapper.toDto(saved);
+        enrichWithPresignedUrl(result);
+        return result;
     }
 
     @org.springframework.transaction.annotation.Transactional
@@ -271,5 +275,69 @@ public class DocumentService {
         } catch (Exception e) {
         }
         return "Système";
+    }
+
+    public org.springframework.http.ResponseEntity<org.springframework.core.io.Resource> downloadFile(Long id) {
+        log.info("[ENTER] Executing downloadFile for document id: {}", id);
+        Document doc = repository.findById(id).orElse(null);
+        if (doc == null) {
+            return org.springframework.http.ResponseEntity.notFound().build();
+        }
+
+        String filename = doc.getNomFichier();
+        if (filename == null || filename.isBlank()) {
+            filename = doc.getName();
+        }
+        if (filename == null || filename.isBlank()) {
+            filename = "document_" + id;
+        }
+
+        String contentType = java.net.URLConnection.guessContentTypeFromName(filename);
+        if (contentType == null) {
+            String lower = filename.toLowerCase();
+            if (lower.endsWith(".pdf")) contentType = "application/pdf";
+            else if (lower.endsWith(".doc")) contentType = "application/msword";
+            else if (lower.endsWith(".docx")) contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            else if (lower.endsWith(".xls")) contentType = "application/vnd.ms-excel";
+            else if (lower.endsWith(".xlsx")) contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            else if (lower.endsWith(".png")) contentType = "image/png";
+            else if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) contentType = "image/jpeg";
+            else contentType = "application/octet-stream";
+        }
+
+        org.springframework.http.MediaType mediaType;
+        try {
+            mediaType = org.springframework.http.MediaType.parseMediaType(contentType);
+        } catch (Exception e) {
+            mediaType = org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
+        }
+
+        String encodedFilename;
+        try {
+            encodedFilename = java.net.URLEncoder.encode(filename, java.nio.charset.StandardCharsets.UTF_8.toString()).replace("+", "%20");
+        } catch (Exception e) {
+            encodedFilename = filename;
+        }
+
+        String contentDisposition = "attachment; filename=\"" + filename.replace("\"", "\\\"") + "\"; filename*=UTF-8''" + encodedFilename;
+
+        // 1. Try streaming from MinIO first if minioObjectId is set
+        if (doc.getMinioObjectId() != null && !doc.getMinioObjectId().isBlank()) {
+            java.io.InputStream is = minioService.getFileStream(doc.getMinioObjectId());
+            if (is != null) {
+                org.springframework.core.io.InputStreamResource resource = new org.springframework.core.io.InputStreamResource(is);
+                var responseBuilder = org.springframework.http.ResponseEntity.ok()
+                        .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                        .contentType(mediaType);
+
+                io.minio.StatObjectResponse stat = minioService.getFileStat(doc.getMinioObjectId());
+                if (stat != null && stat.size() > 0) {
+                    responseBuilder.contentLength(stat.size());
+                }
+                return responseBuilder.body(resource);
+            }
+        }
+
+        return org.springframework.http.ResponseEntity.notFound().build();
     }
 }

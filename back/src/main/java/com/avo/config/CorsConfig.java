@@ -22,16 +22,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * par la politique de même origine (Same-Origin Policy) du navigateur.
  */
 @Configuration // Déclare cette classe comme une source de configuration Spring (@Bean)
-@Profile({"dev", "test", "staging"}) // SÉCURITÉ : Active cette configuration UNIQUEMENT pour les profils 'dev', 'test' et 'staging'.
-                          // En production ('prod'), cette classe est totalement ignorée car le frontend et le backend
-                          // partagent le même domaine, éliminant tout risque d'attaque cross-origin.
 public class CorsConfig implements WebMvcConfigurer {
 
     /**
-     * Récupère la liste des origines autorisées depuis le fichier application-dev.properties.
-     * Si la propriété n'est pas définie, utilise par défaut "http://localhost:4200".
+     * Récupère la liste des origines autorisées depuis les propriétés de l'application.
+     * Si la propriété n'est pas définie, utilise les valeurs par défaut pour dev et prod.
      */
-    @Value("${app.cors.allowed-origins:http://localhost:4200}")
+    @Value("${app.cors.allowed-origins:http://localhost:4200,https://si-legal2.duckdns.org}")
     private String allowedOrigins;
 
     /**

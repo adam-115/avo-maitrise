@@ -159,6 +159,28 @@ export class DocumentComponent implements OnInit, OnChanges {
   }
 
   downloadDocument(doc: Document): void {
+    if (doc.id) {
+      this.documentService.downloadDocumentFile(doc.id).subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = window.document.createElement('a');
+          a.href = url;
+          a.download = doc.filename || doc.nomFichier || doc.name || 'document';
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: (err) => {
+          console.error('Error downloading document via API:', err);
+          if (doc.urlStockage) {
+            window.open(doc.urlStockage, '_blank');
+          } else {
+            this.alertService.displayMessage('Erreur', 'Impossible de télécharger le document', 'error');
+          }
+        }
+      });
+      return;
+    }
+
     if (doc.urlStockage) {
       window.open(doc.urlStockage, '_blank');
       return;

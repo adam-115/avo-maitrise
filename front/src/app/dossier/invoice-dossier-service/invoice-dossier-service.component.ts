@@ -11,7 +11,7 @@ import { KeycloakService } from '../../services/keycloak.service';
 import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
 import { GenerateInvoiceDialog } from '../generate-invoice-dialog/generate-invoice-dialog';
 import { InvoiceService } from '../../features/billing/services/invoice.service';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-invoice-dossier-service',
@@ -61,14 +61,21 @@ export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
   private userService = inject(UserService);
   private keycloakService = inject(KeycloakService);
   private invoiceService = inject(InvoiceService);
+  private translate = inject(TranslateService);
 
   constructor() {
     this.prestationForm = this.fb.group({
+      serviceDate: [this.getTodayDateString(), Validators.required],
       info: ['', Validators.required],
       nbrOfMinutes: [5, [Validators.required, Validators.min(5)]],
       invoiceTypeOfServiceId: [null, Validators.required],
       status: [InvoiceDossierServiceStatusEnum.A_FACTURE, Validators.required]
     });
+  }
+
+  getTodayDateString(): string {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
   }
 
   isStatusLocked(status?: InvoiceDossierServiceStatusEnum): boolean {
@@ -162,6 +169,7 @@ export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
   openAddModal(): void {
     this.editingPrestationId = null;
     this.prestationForm.reset({ 
+      serviceDate: this.getTodayDateString(),
       nbrOfMinutes: 5,
       status: InvoiceDossierServiceStatusEnum.A_FACTURE
     });
@@ -180,8 +188,20 @@ export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
       return;
     }
 
+    let sDate = this.getTodayDateString();
+    if (prestation.serviceDate) {
+      sDate = typeof prestation.serviceDate === 'string' 
+        ? prestation.serviceDate.substring(0, 10) 
+        : new Date(prestation.serviceDate).toISOString().split('T')[0];
+    } else if (prestation.creationDate) {
+      sDate = typeof prestation.creationDate === 'string'
+        ? (prestation.creationDate as string).substring(0, 10)
+        : new Date(prestation.creationDate).toISOString().split('T')[0];
+    }
+
     this.editingPrestationId = prestation.id || null;
     this.prestationForm.patchValue({
+      serviceDate: sDate,
       info: prestation.info,
       nbrOfMinutes: prestation.nbrOfMinutes,
       invoiceTypeOfServiceId: prestation.invoiceTypeOfService?.id,
@@ -286,6 +306,7 @@ export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
       const type = this.typesOfService.find(t => String(t.id) === String(formValue.invoiceTypeOfServiceId));
       const newPrestation: InvoiceDossierService = {
         id: this.editingPrestationId || undefined,
+        serviceDate: formValue.serviceDate,
         info: formValue.info,
         nbrOfMinutes: formValue.nbrOfMinutes,
         dossier: { id: Number(this.dossierId) } as any,
@@ -322,16 +343,35 @@ export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
     }
   }
 
-  deletePrestation(id: number | undefined): void {
-    if (!id) return;
-    this.alertService.confirmMessage('Supprimer', 'Voulez-vous vraiment supprimer cette prestation ?', 'warning').then(confirmed => {
+  deletePrestation(prestation: InvoiceDossierService): void {
+    if (!prestation?.id) return;
+    if (!this.canEditPrestation(prestation)) {
+      this.alertService.displayMessage(
+        this.translate.instant('PRESTATIONS.ACTION_UNAUTHORIZED') || 'Action non autorisée',
+        this.translate.instant('PRESTATIONS.CANNOT_DELETE_BILLED') || 'Impossible de supprimer une prestation déjà facturée ou en cours de facturation.',
+        'warning'
+      );
+      return;
+    }
+
+    const title = this.translate.instant('PRESTATIONS.DELETE_CONFIRM_TITLE') || 'Supprimer la prestation';
+    const msg = this.translate.instant('PRESTATIONS.DELETE_CONFIRM_MSG') || 'Voulez-vous vraiment supprimer cette prestation ?';
+
+    this.alertService.confirmMessage(title, msg, 'warning').then(confirmed => {
       if (confirmed) {
-        this.prestationService.delete(id).subscribe({
+        this.prestationService.delete(prestation.id).subscribe({
           next: () => {
-            this.alertService.success('Prestation supprimée');
+            this.alertService.success(this.translate.instant('PRESTATIONS.DELETE_SUCCESS') || 'Prestation supprimée avec succès');
             this.loadPrestations();
           },
-          error: (err) => console.error(err)
+          error: (err) => {
+            console.error(err);
+            this.alertService.displayMessage(
+              this.translate.instant('ALERT.ERROR_TITLE') || 'Erreur',
+              this.translate.instant('PRESTATIONS.DELETE_ERROR') || 'Impossible de supprimer la prestation',
+              'error'
+            );
+          }
         });
       }
     });

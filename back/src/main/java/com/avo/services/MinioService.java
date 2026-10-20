@@ -114,4 +114,18 @@ public class MinioService {
             return null;
         }
     }
+
+    public io.minio.StatObjectResponse getFileStat(String objectName) {
+        try {
+            return minioClient.statObject(
+                    io.minio.StatObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(objectName)
+                            .build()
+            );
+        } catch (Exception e) {
+            log.warn("Could not retrieve file stat from MinIO for object: {}", objectName);
+            return null;
+        }
+    }
 }

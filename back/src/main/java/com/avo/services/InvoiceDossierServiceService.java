@@ -55,6 +55,9 @@ public class InvoiceDossierServiceService {
         log.info("[ENTER] Executing create");
         InvoiceDossierService entity = mapper.toEntity(dto);
         entity.setCreationDate(new Date());
+        if (entity.getServiceDate() == null) {
+            entity.setServiceDate(java.time.LocalDate.now());
+        }
         entity.setCreatedBy(currentUserInfoService.getCurrentUser());
         
         // Prevent manual creation directly with system-managed statuses
@@ -88,6 +91,9 @@ public class InvoiceDossierServiceService {
         
         entity.setCreationDate(existing.getCreationDate());
         entity.setCreatedBy(existing.getCreatedBy());
+        if (entity.getServiceDate() == null) {
+            entity.setServiceDate(existing.getServiceDate() != null ? existing.getServiceDate() : java.time.LocalDate.now());
+        }
         
         return mapper.toDto(repository.save(entity));
     }

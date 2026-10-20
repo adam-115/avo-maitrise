@@ -39,4 +39,8 @@ export class DocumentService extends AbstractCrudService<Document> {
             .set('size', size.toString());
         return this.http.get<PaginatedResponse<Document>>(`${this.apiUrl}/search`, { params });
     }
+
+    downloadDocumentFile(id: number | string): Observable<Blob> {
+        return this.http.get(`${this.apiUrl}/${id}/download`, { responseType: 'blob' });
+    }
 }

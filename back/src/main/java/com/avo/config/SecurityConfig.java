@@ -42,7 +42,16 @@ public class SecurityConfig {
                         .requestMatchers("/api/**").authenticated()
                         
                         // 5. Frontend SPA static routes & assets
-                        .requestMatchers("/", "/index.html", "/favicon.ico", "/*.js", "/*.css", "/assets/**", "/home/**", "/test/**", "/{path:[^\\.]*}").permitAll()
+                        .requestMatchers(
+                                "/", "/index.html", "/favicon.ico",
+                                "/*.js", "/*.css", "/*.map",
+                                "/*.jpg", "/*.jpeg", "/*.png", "/*.gif", "/*.webp", "/*.svg", "/*.ico", "/*.mp4",
+                                "/*.woff", "/*.woff2", "/*.ttf", "/*.json",
+                                "/assets/**",
+                                "/error",
+                                "/home/**", "/test/**",
+                                "/{path:[^\\.]*}"
+                        ).permitAll()
                         
                         // 6. Any other request requires authentication
                         .anyRequest().authenticated())

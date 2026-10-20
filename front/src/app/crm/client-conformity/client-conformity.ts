@@ -504,37 +504,24 @@ export class ClientConformity implements OnInit {
       return;
     }
 
-    this.documentService.findById(doc.id).subscribe({
-      next: (fullDoc) => {
-        if (fullDoc.fileData) {
-          try {
-            const byteCharacters = atob(fullDoc.fileData);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-              byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: fullDoc.typeDocument || 'application/octet-stream' });
-            
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fullDoc.nomFichier || fullDoc.name || 'document';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-          } catch (e) {
-            console.error('Error decoding file data', e);
-            this.alertService.displayMessage('Erreur', 'Données de fichier corrompues.', 'error');
-          }
-        } else {
-          this.alertService.displayMessage('Erreur', 'Le contenu du fichier est vide ou non disponible.', 'error');
-        }
+    this.documentService.downloadDocumentFile(doc.id).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = doc.nomFichier || doc.name || 'document';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
       },
       error: (err) => {
-        console.error('Error downloading document', err);
-        this.alertService.displayMessage('Erreur', 'Impossible de récupérer le document depuis le serveur.', 'error');
+        console.error('Error downloading document via stream', err);
+        if (doc.urlStockage) {
+          window.open(doc.urlStockage, '_blank');
+        } else {
+          this.alertService.displayMessage('Erreur', 'Impossible de télécharger le document.', 'error');
+        }
       }
     });
   }

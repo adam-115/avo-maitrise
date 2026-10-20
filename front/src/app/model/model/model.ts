@@ -184,6 +184,28 @@ export class Model implements OnInit {
   }
 
   downloadModel(doc: Document): void {
+    if (doc.id) {
+      this.documentService.downloadDocumentFile(doc.id).subscribe({
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const a = window.document.createElement('a');
+          a.href = url;
+          a.download = doc.filename || doc.nomFichier || 'modele_document';
+          a.click();
+          window.URL.revokeObjectURL(url);
+        },
+        error: (err) => {
+          console.error('Error downloading model via stream', err);
+          if (doc.urlStockage) {
+            window.open(doc.urlStockage, '_blank');
+          } else {
+            this.alertService.displayMessage('Erreur', 'Impossible de télécharger le modèle', 'error');
+          }
+        }
+      });
+      return;
+    }
+
     if (doc.urlStockage) {
       window.open(doc.urlStockage, '_blank');
       return;

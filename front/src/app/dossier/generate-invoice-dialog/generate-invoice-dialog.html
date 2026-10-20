@@ -42,6 +42,7 @@
               <th class="px-4 py-3 font-semibold w-12 text-center">
                 <input type="checkbox" checked disabled class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" [title]="'GENERATE_INVOICE_DIALOG.SELECTION' | translate" />
               </th>
+              <th class="px-4 py-3 font-semibold">{{ 'GENERATE_INVOICE_DIALOG.DATE' | translate }}</th>
               <th class="px-4 py-3 font-semibold">{{ 'GENERATE_INVOICE_DIALOG.DESCRIPTION' | translate }}</th>
               <th class="px-4 py-3 font-semibold text-center">{{ 'GENERATE_INVOICE_DIALOG.DURATION' | translate }}</th>
               <th class="px-4 py-3 font-semibold text-right">{{ 'GENERATE_INVOICE_DIALOG.PRICE' | translate }}</th>
@@ -52,6 +53,9 @@
             <tr *ngFor="let itemWrapper of selectableEntries" class="hover:bg-slate-50 transition" [class.opacity-50]="!itemWrapper.selected && !itemWrapper.disabled" [class.opacity-40]="itemWrapper.disabled" [class.bg-slate-50]="itemWrapper.disabled">
               <td class="px-4 py-3 text-center">
                 <input type="checkbox" [(ngModel)]="itemWrapper.selected" [disabled]="itemWrapper.disabled" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer disabled:cursor-not-allowed disabled:bg-slate-200" />
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-xs text-slate-600">
+                {{ (itemWrapper.entry.invoiceDossierService?.serviceDate || itemWrapper.entry.invoiceDossierService?.creationDate) | date:'dd/MM/yyyy' }}
               </td>
               <td class="px-4 py-3 font-medium flex items-center gap-2">
                 <span *ngIf="itemWrapper.disabled" class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-200 text-slate-600">{{ 'GENERATE_INVOICE_DIALOG.NOT_ELIGIBLE' | translate }}</span>

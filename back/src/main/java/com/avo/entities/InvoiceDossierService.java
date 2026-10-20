@@ -1,7 +1,9 @@
 package com.avo.entities;
 
+import java.time.LocalDate;
 import java.util.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -12,7 +14,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "invoice_dossier_services")
@@ -25,6 +26,10 @@ public class InvoiceDossierService {
     private Long id;
     private String info;
     private Date creationDate = new Date();
+
+    @Column(name = "service_date")
+    private LocalDate serviceDate = LocalDate.now();
+
     private int nbrOfMinutes;
     @ManyToOne
     private Dossier dossier;

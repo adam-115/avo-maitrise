@@ -2,6 +2,7 @@ package com.avo.controller;
 
 import jakarta.validation.Valid;
 
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -36,6 +37,11 @@ public class DocumentController {
     @GetMapping("/{id}")
     public ResponseEntity<DocumentDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
+    }
+
+    @GetMapping("/{id}/download")
+    public ResponseEntity<Resource> download(@PathVariable Long id) {
+        return service.downloadFile(id);
     }
 
     @PostMapping

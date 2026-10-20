@@ -722,6 +722,7 @@ export interface InvoiceDossierService {
   id?: number;
   info?: string;
   creationDate?: Date;
+  serviceDate?: string | Date;
   nbrOfMinutes?: number;
   dossier?: Dossier;
   invoiceTypeOfService?: InvoiceTypeOfService;

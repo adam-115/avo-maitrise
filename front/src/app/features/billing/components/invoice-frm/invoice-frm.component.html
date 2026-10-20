@@ -98,6 +98,7 @@
                     <thead class="bg-slate-50">
                         <tr>
                             <th scope="col" class="px-6 py-3 w-10 text-center"></th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'INVOICE_EDITOR.DATE' | translate }}</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'INVOICE_FRM.SERVICE' | translate }}</th>
                             <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'INVOICE_EDITOR.DURATION_MIN' | translate }}</th>
                             <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ 'INVOICE_EDITOR.PRICE_5_MIN' | translate }}</th>
@@ -109,6 +110,9 @@
                             <td class="px-6 py-4 text-center">
                                 <input type="checkbox" [checked]="entry.selected" (change)="toggleEntrySelection(i)"
                                     class="w-5 h-5 text-indigo-600 bg-gray-100 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer">
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                {{ (entry.invoiceDossierService?.serviceDate || entry.invoiceDossierService?.creationDate) | date:'dd/MM/yyyy' }}
                             </td>
                             <td class="px-6 py-4">
                                 <div class="text-sm font-medium text-slate-900">
@@ -132,7 +136,7 @@
                             </td>
                         </tr>
                         <tr *ngIf="unbilledEntries().length === 0">
-                            <td colspan="5" class="px-6 py-12 text-center text-slate-500 text-sm">
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-500 text-sm">
                                 <svg class="mx-auto h-12 w-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
                                 <p class="font-medium text-slate-700">{{ 'INVOICE_FRM.NO_PRESTATIONS_PENDING' | translate }}</p>
                                 <p class="text-xs text-slate-400 mt-1 mb-4">{{ 'INVOICE_FRM.NO_PRESTATIONS_SUB' | translate }}</p>
