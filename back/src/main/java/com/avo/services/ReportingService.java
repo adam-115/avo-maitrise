@@ -48,7 +48,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
-@lombok.RequiredArgsConstructor
 public class ReportingService {
 
     private final InvoiceRepository invoiceRepository;
@@ -57,6 +56,21 @@ public class ReportingService {
     private final UBORepository uboRepository;
     private final ScreeningMatchRepository screeningMatchRepository;
     private final com.avo.repositories.DiligenceFormResultRepository diligenceFormResultRepository;
+
+    public ReportingService(
+            InvoiceRepository invoiceRepository,
+            CabinetProfileService cabinetProfileService,
+            ClientRepository clientRepository,
+            UBORepository uboRepository,
+            ScreeningMatchRepository screeningMatchRepository,
+            com.avo.repositories.DiligenceFormResultRepository diligenceFormResultRepository) {
+        this.invoiceRepository = invoiceRepository;
+        this.cabinetProfileService = cabinetProfileService;
+        this.clientRepository = clientRepository;
+        this.uboRepository = uboRepository;
+        this.screeningMatchRepository = screeningMatchRepository;
+        this.diligenceFormResultRepository = diligenceFormResultRepository;
+    }
 
     public byte[] generateGlobalAmlReport(String startDateStr, String endDateStr) {
         try {

@@ -4,18 +4,25 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiErrorResponse {
 
     public ApiErrorResponse() {}
+
+    public ApiErrorResponse(LocalDateTime timestamp, int status, String error, String message, String path, String errorId, Map<String, String> validationErrors) {
+        this.timestamp = timestamp;
+        this.status = status;
+        this.error = error;
+        this.message = message;
+        this.path = path;
+        this.errorId = errorId;
+        this.validationErrors = validationErrors;
+    }
 
     public static class ApiErrorResponseBuilder {
         public ApiErrorResponseBuilder() {}

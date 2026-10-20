@@ -8,10 +8,15 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FormConfigDTO {
+    public FormConfigDTO() {}
+
+    public static class FormConfigDTOBuilder {
+        public FormConfigDTOBuilder() {}
+    }
+
     private String id;
     private String type;
     private String targetClientType;

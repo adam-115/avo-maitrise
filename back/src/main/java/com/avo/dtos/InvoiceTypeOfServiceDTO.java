@@ -8,10 +8,15 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class InvoiceTypeOfServiceDTO {
+    public InvoiceTypeOfServiceDTO() {}
+
+    public static class InvoiceTypeOfServiceDTOBuilder {
+        public InvoiceTypeOfServiceDTOBuilder() {}
+    }
+
     private Long id;
     private String code;
     private String description;

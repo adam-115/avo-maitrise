@@ -47,12 +47,34 @@ public class InvoiceTypeOfServiceService {
     public InvoiceTypeOfServiceDTO create(InvoiceTypeOfServiceDTO dto) {
         log.info("[ENTER] Executing create");
         InvoiceTypeOfService entity = mapper.toEntity(dto);
+        if (entity.getCreationDate() == null) {
+            entity.setCreationDate(new java.util.Date());
+        }
         return mapper.toDto(repository.save(entity));
     }
 
     public InvoiceTypeOfServiceDTO update(InvoiceTypeOfServiceDTO dto) {
         log.info("[ENTER] Executing update");
+        if (dto.getId() != null) {
+            return repository.findById(dto.getId()).map(existing -> {
+                existing.setCode(dto.getCode());
+                existing.setDescription(dto.getDescription());
+                existing.setActif(dto.isActif());
+                existing.setPrice5min(dto.getPrice5min());
+                existing.setUpdateDate(new java.util.Date());
+                return mapper.toDto(repository.save(existing));
+            }).orElseGet(() -> {
+                InvoiceTypeOfService entity = mapper.toEntity(dto);
+                if (entity.getCreationDate() == null) {
+                    entity.setCreationDate(new java.util.Date());
+                }
+                return mapper.toDto(repository.save(entity));
+            });
+        }
         InvoiceTypeOfService entity = mapper.toEntity(dto);
+        if (entity.getCreationDate() == null) {
+            entity.setCreationDate(new java.util.Date());
+        }
         return mapper.toDto(repository.save(entity));
     }
 

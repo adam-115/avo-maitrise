@@ -7,10 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class NoteCategoryDTO {
+    public NoteCategoryDTO() {}
+
+    public static class NoteCategoryDTOBuilder {
+        public NoteCategoryDTOBuilder() {}
+    }
+
     private Long id;
     private String code;
     private String label;

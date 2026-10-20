@@ -9,10 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -22,11 +20,28 @@ import lombok.Setter;
 })
 @Getter
 @Setter
-@AllArgsConstructor
 @Builder
 public class AppErrorLog {
 
     public AppErrorLog() {}
+
+    public AppErrorLog(Long id, String errorId, LocalDateTime timestamp, String httpMethod, String requestUri,
+                       Integer httpStatus, String exceptionClass, String message, String stackTrace,
+                       String username, String clientIp, String userAgent, boolean resolved) {
+        this.id = id;
+        this.errorId = errorId;
+        this.timestamp = timestamp;
+        this.httpMethod = httpMethod;
+        this.requestUri = requestUri;
+        this.httpStatus = httpStatus;
+        this.exceptionClass = exceptionClass;
+        this.message = message;
+        this.stackTrace = stackTrace;
+        this.username = username;
+        this.clientIp = clientIp;
+        this.userAgent = userAgent;
+        this.resolved = resolved;
+    }
 
     public static class AppErrorLogBuilder {
         public AppErrorLogBuilder() {}

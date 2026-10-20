@@ -8,10 +8,15 @@ import java.util.Date;
 import com.avo.entities.InvoiceDossierServiceStatusEnum;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class InvoiceDossierServiceDTO {
+    public InvoiceDossierServiceDTO() {}
+
+    public static class InvoiceDossierServiceDTOBuilder {
+        public InvoiceDossierServiceDTOBuilder() {}
+    }
+
     private Long id;
     private String info;
     private Date creationDate;

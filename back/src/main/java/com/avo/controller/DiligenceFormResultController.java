@@ -16,10 +16,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/diligenceFormResult")
-@RequiredArgsConstructor
 public class DiligenceFormResultController {
 
     private final DiligenceFormResultService service;
+    private final com.avo.services.ReportingService reportingService;
+
+    public DiligenceFormResultController(DiligenceFormResultService service, com.avo.services.ReportingService reportingService) {
+        this.service = service;
+        this.reportingService = reportingService;
+    }
 
     @GetMapping
     public ResponseEntity<Page<DiligenceFormResultDTO>> findAll(Pageable pageable) {
@@ -57,8 +62,6 @@ public class DiligenceFormResultController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
-
-    private final com.avo.services.ReportingService reportingService;
 
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> generatePdf(@PathVariable String id) {

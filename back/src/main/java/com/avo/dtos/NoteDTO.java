@@ -5,8 +5,9 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 public class NoteDTO {
+    public NoteDTO() {}
+
     private Long id;
     private Long dossierId;
     private Long auteurId;

@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +34,17 @@ public class InvoiceTypeOfService {
     private BigDecimal price5min = BigDecimal.ZERO; 
     @Column(nullable = false)
     private Date creationDate = new Date();
-    private Date updateDate = null ;
+    private Date updateDate = null;
 
+    @PrePersist
+    protected void onCreate() {
+        if (creationDate == null) {
+            creationDate = new Date();
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updateDate = new Date();
+    }
 }

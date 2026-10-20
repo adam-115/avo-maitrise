@@ -13,12 +13,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class FormConfigService {
 
     private final FormConfigRepository repository;
     private final FormConfigMapper mapper;
+
+    public FormConfigService(FormConfigRepository repository, FormConfigMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
 
     @Transactional(readOnly = true)
     public Page<FormConfigDTO> findAll(Pageable pageable) {

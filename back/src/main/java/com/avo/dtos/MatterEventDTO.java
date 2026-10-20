@@ -6,8 +6,9 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 public class MatterEventDTO {
+    public MatterEventDTO() {}
+
     private Long id;
     private Long dossierId;
     private String titre;

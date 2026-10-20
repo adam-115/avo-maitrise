@@ -11,10 +11,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class DossierDTO {
+    public DossierDTO() {}
+
+    public static class DossierDTOBuilder {
+        public DossierDTOBuilder() {}
+    }
+
     private Long id;
 
     @Size(max = 50, message = "La référence interne ne doit pas dépasser 50 caractères")

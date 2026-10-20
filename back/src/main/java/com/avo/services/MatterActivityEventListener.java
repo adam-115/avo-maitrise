@@ -7,11 +7,14 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class MatterActivityEventListener {
 
     private final MatterActivityService activityService;
+
+    public MatterActivityEventListener(MatterActivityService activityService) {
+        this.activityService = activityService;
+    }
 
     @EventListener
     public void handleMatterActionEvent(MatterActionEvent event) {

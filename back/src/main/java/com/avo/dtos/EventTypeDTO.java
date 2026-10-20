@@ -7,10 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class EventTypeDTO {
+    public EventTypeDTO() {}
+
+    public static class EventTypeDTOBuilder {
+        public EventTypeDTOBuilder() {}
+    }
+
     private Long id;
     private String code;
     private String label;

@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/formConfig")
-@RequiredArgsConstructor
 public class FormConfigController {
 
     private final FormConfigService service;
+
+    public FormConfigController(FormConfigService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public ResponseEntity<Page<FormConfigDTO>> findAll(Pageable pageable) {

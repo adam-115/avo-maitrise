@@ -13,10 +13,15 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class InvoiceDTO {
+    public InvoiceDTO() {}
+
+    public static class InvoiceDTOBuilder {
+        public InvoiceDTOBuilder() {}
+    }
+
     private Long id;
 
     @Size(max = 50, message = "Le numéro de facture ne doit pas dépasser 50 caractères")

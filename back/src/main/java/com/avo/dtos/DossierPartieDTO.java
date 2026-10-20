@@ -7,10 +7,15 @@ import lombok.NoArgsConstructor;
 import com.avo.entities.RolePartie;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class DossierPartieDTO {
+    public DossierPartieDTO() {}
+
+    public static class DossierPartieDTOBuilder {
+        public DossierPartieDTOBuilder() {}
+    }
+
     private Long id;
     private ClientEntityDTO partie;
     private RolePartie role;

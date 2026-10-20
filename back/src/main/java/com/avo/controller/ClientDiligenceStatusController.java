@@ -16,10 +16,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/clientDiligenceStatus")
-@RequiredArgsConstructor
 public class ClientDiligenceStatusController {
 
     private final ClientDiligenceStatusService service;
+
+    public ClientDiligenceStatusController(ClientDiligenceStatusService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public ResponseEntity<Page<ClientDiligenceStatusDTO>> findAll(Pageable pageable) {

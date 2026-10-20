@@ -10,9 +10,10 @@ import lombok.Builder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
 @AllArgsConstructor
 public class InstitutionDTO extends ClientEntityDTO {
+    public InstitutionDTO() {}
+
 
     private String nom;
     private String numeroRegistreNational;

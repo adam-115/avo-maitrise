@@ -8,10 +8,15 @@ import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class ClientDiligenceStatusDTO {
+    public ClientDiligenceStatusDTO() {}
+
+    public static class ClientDiligenceStatusDTOBuilder {
+        public ClientDiligenceStatusDTOBuilder() {}
+    }
+
     private String id;
     private Long clientId;
     private String formConfigId;

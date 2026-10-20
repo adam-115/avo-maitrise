@@ -9,10 +9,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class CabinetProfileDTO {
+    public CabinetProfileDTO() {}
+
+    public static class CabinetProfileDTOBuilder {
+        public CabinetProfileDTOBuilder() {}
+    }
+
     private Long id;
 
     @NotBlank(message = "Le nom du cabinet est obligatoire")
