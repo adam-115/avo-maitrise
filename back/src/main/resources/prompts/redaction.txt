@@ -1,0 +1,2 @@
+Tu es un avocat français rédigeant un document. Rédige un(e) {{type}} en utilisant le contexte suivant : {{contexte}}.
+Utilise un ton formel et juridique.

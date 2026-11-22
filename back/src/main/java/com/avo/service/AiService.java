@@ -1,201 +1,274 @@
 package com.avo.service;
 
-import com.avo.service.ai.LegalAssistant;
 import com.avo.service.ai.AvoAiTools;
-import dev.langchain4j.model.chat.ChatLanguageModel;
-import dev.langchain4j.service.AiServices;
+import com.avo.service.ai.Pays;
+import com.avo.service.ai.Prompts;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.ChatMemoryRepository;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
+import org.springframework.ai.chat.messages.AssistantMessage;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.SystemMessage;
+import org.springframework.ai.chat.messages.UserMessage;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import jakarta.annotation.PostConstruct;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Tous les usages de l'IA. Un seul principe : charger un prompt (fichier prompts/*.txt),
+ * y ajouter le contexte utile, puis appeler le modèle actif via ChatClient (Spring AI).
+ */
 @Service
 public class AiService {
 
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AiService.class);
+    private static final ObjectMapper JSON = new ObjectMapper();
+
+    private static final int MAX_MESSAGES_PER_SESSION = 20;
+    private static final int MAX_SESSIONS = 500;
+
     private final AvoAiTools avoAiTools;
-    private final dev.langchain4j.rag.content.retriever.ContentRetriever contentRetriever;
+    private final com.avo.service.ai.RAGDocumentService ragDocumentService;
     private final com.avo.repositories.DossierRepository dossierRepository;
     private final AiConfigurationService aiConfigurationService;
+    private final Prompts prompts;
+    private final TaskExecutor aiStreamingExecutor;
+
+    /** Mémoire des conversations du chat général (20 derniers messages, 500 conversations max). */
+    private final ChatMemory chatMemory = MessageWindowChatMemory.builder()
+            .chatMemoryRepository(new BoundedChatMemoryRepository(MAX_SESSIONS))
+            .maxMessages(MAX_MESSAGES_PER_SESSION)
+            .build();
 
     public AiService(AvoAiTools avoAiTools,
-            dev.langchain4j.rag.content.retriever.ContentRetriever contentRetriever,
+            com.avo.service.ai.RAGDocumentService ragDocumentService,
             com.avo.repositories.DossierRepository dossierRepository,
-            AiConfigurationService aiConfigurationService) {
+            AiConfigurationService aiConfigurationService,
+            Prompts prompts,
+            @Qualifier("aiStreamingExecutor") TaskExecutor aiStreamingExecutor) {
         this.avoAiTools = avoAiTools;
-        this.contentRetriever = contentRetriever;
+        this.ragDocumentService = ragDocumentService;
         this.dossierRepository = dossierRepository;
         this.aiConfigurationService = aiConfigurationService;
+        this.prompts = prompts;
+        this.aiStreamingExecutor = aiStreamingExecutor;
     }
 
-    private LegalAssistant getDynamicLegalAssistant() {
-        return AiServices.builder(LegalAssistant.class)
-                .chatLanguageModel(aiConfigurationService.buildChatModel())
-                .tools(avoAiTools)
-                .chatMemoryProvider(memoryId -> dev.langchain4j.memory.chat.MessageWindowChatMemory.withMaxMessages(20))
-                .build();
+    /** Client de chat sur le modèle actuellement configuré en base. */
+    private ChatClient chatClient() {
+        return ChatClient.create(aiConfigurationService.buildChatModel());
     }
 
-    /**
-     * Un cas d'usage : résumer un texte juridique long
-     */
+    // ------------------------------------------------------------------ Prompts simples
+
     public String summarizeText(String text) {
-        String prompt = "Tu es un assistant juridique expert. Résume le texte suivant de manière professionnelle, " +
-                "en faisant ressortir les points clés, les dates importantes et les enjeux. \n\nTexte :\n" + text;
-        return aiConfigurationService.buildChatModel().generate(prompt);
+        return chatClient().prompt()
+                .user(prompts.render("resume", "texte", text))
+                .call().content();
     }
 
-    /**
-     * Un cas d'usage : rédiger un brouillon de lettre ou de document
-     */
     public String draftDocument(String context, String documentType) {
-        String prompt = String.format("Tu es un avocat français rédigeant un document. " +
-                "Rédige un(e) %s en utilisant le contexte suivant : %s. " +
-                "Utilise un ton formel et juridique.", documentType, context);
-        return aiConfigurationService.buildChatModel().generate(prompt);
+        return chatClient().prompt()
+                .user(prompts.render("redaction", "type", documentType, "contexte", context))
+                .call().content();
     }
 
-    /**
-     * Générique pour discuter avec l'IA en utilisant les Tools !
-     */
+    // ------------------------------------------------------------------ Assistant avec outils
+
+    /** Assistant général : le modèle peut appeler les outils de AvoAiTools (clients, factures, AML...). */
     public String chat(String sessionId, String userMessage) {
-        return getDynamicLegalAssistant().chat(sessionId, userMessage);
+        return chatWithTools("assistant-system", sessionId, userMessage);
     }
 
-    /**
-     * Fait appel à l'agent 'Avocat Senior' pour analyser une stratégie (Synchrone - Déprécié)
-     */
+    /** Avocat senior : le modèle cherche lui-même dans les pièces et la jurisprudence (synchrone). */
     public String analyzeDossierStrategy(String sessionId, String prompt) {
-        return getDynamicLegalAssistant().analyzeStrategy(sessionId, prompt);
+        return chatWithTools("avocat-senior-system", sessionId, prompt);
+    }
+
+    private String chatWithTools(String systemPrompt, String sessionId, String userMessage) {
+        String conversationId = memoryKey(sessionId);
+        return chatClient().prompt()
+                .system(prompts.render(systemPrompt))
+                .user(userMessage)
+                .tools(avoAiTools)
+                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, conversationId))
+                .call().content();
     }
 
     /**
-     * Chat avec l'IA sur la base de la stratégie générée pour un dossier
+     * Clé de mémoire = utilisateur connecté + sessionId : deux utilisateurs qui enverraient le même
+     * sessionId ne partagent jamais leur historique.
      */
-    public String chatDossierStrategy(Long dossierId, java.util.List<java.util.Map<String, String>> history) {
+    private String memoryKey(String sessionId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String user = (auth != null && auth.getName() != null) ? auth.getName() : "anonymous";
+        return user + ":" + sessionId;
+    }
+
+    // ------------------------------------------------------------------ Stratégie d'un dossier
+
+    /**
+     * Questions de suivi sur la stratégie : la stratégie sauvegardée sert de contexte (message système),
+     * l'historique est envoyé par le front. La réponse est ajoutée à l'historique en base.
+     */
+    public String chatDossierStrategy(Long dossierId, List<Map<String, String>> history) {
         com.avo.entities.Dossier dossier = dossierRepository.findById(dossierId).orElse(null);
-        String strategy = "";
-        if (dossier != null && dossier.getAiStrategy() != null) {
-            strategy = dossier.getAiStrategy();
-        }
+        String strategy = (dossier != null && dossier.getAiStrategy() != null) ? dossier.getAiStrategy() : "";
 
-        java.util.List<dev.langchain4j.data.message.ChatMessage> messages = new java.util.ArrayList<>();
-        
-        // System message avec le contexte
-        String systemPrompt = "Tu es un avocat associé expert. Tu as analysé ce dossier et établi cette stratégie :\n\n" +
-                              "### STRATÉGIE ###\n" + strategy + "\n### FIN STRATÉGIE ###\n\n" +
-                              "Réponds aux questions de l'avocat en charge du dossier concernant cette stratégie de manière claire, " +
-                              "concise, professionnelle et directement applicable.";
-        messages.add(dev.langchain4j.data.message.SystemMessage.from(systemPrompt));
-
-        // Historique
-        for (java.util.Map<String, String> msg : history) {
-            String role = msg.get("role");
-            String content = msg.get("content");
-            if ("user".equals(role)) {
-                messages.add(dev.langchain4j.data.message.UserMessage.from(content));
-            } else if ("ai".equals(role)) {
-                messages.add(dev.langchain4j.data.message.AiMessage.from(content));
+        List<Message> messages = new ArrayList<>();
+        messages.add(new SystemMessage(prompts.render("suivi-strategie-system", "strategie", strategy)));
+        for (Map<String, String> msg : history) {
+            if ("user".equals(msg.get("role"))) {
+                messages.add(new UserMessage(msg.get("content")));
+            } else if ("ai".equals(msg.get("role"))) {
+                messages.add(new AssistantMessage(msg.get("content")));
             }
         }
 
-        dev.langchain4j.model.output.Response<dev.langchain4j.data.message.AiMessage> response = aiConfigurationService.buildChatModel().generate(messages);
-        String reply = response.content().text();
-        
-        // Sauvegarde de l'historique dans la base de données
+        String reply = aiConfigurationService.buildChatModel().call(new Prompt(messages)).getResult().getOutput()
+                .getText();
+
         if (dossier != null) {
-            java.util.Map<String, String> aiMsg = new java.util.HashMap<>();
-            aiMsg.put("role", "ai");
-            aiMsg.put("content", reply);
-            
-            java.util.List<java.util.Map<String, String>> updatedHistory = new java.util.ArrayList<>(history);
-            updatedHistory.add(aiMsg);
-            
+            List<Map<String, String>> updatedHistory = new ArrayList<>(history);
+            updatedHistory.add(Map.of("role", "ai", "content", reply));
             try {
-                String jsonHistory = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(updatedHistory);
-                dossier.setAiChatHistory(jsonHistory);
+                dossier.setAiChatHistory(JSON.writeValueAsString(updatedHistory));
                 dossierRepository.save(dossier);
             } catch (Exception e) {
-                System.err.println("Erreur sauvegarde historique chat: " + e.getMessage());
+                log.error("Erreur sauvegarde historique chat du dossier {}", dossierId, e);
             }
         }
-        
         return reply;
     }
 
     /**
-     * Nouveau mode d'analyse : Manuelle et en Streaming (Plus rapide et ne timeout pas)
+     * Analyse stratégique en streaming (SSE).
+     * 1. Le backend cherche lui-même les passages utiles (pièces du dossier + jurisprudence du pays).
+     * 2. Il construit le prompt "strategie".
+     * 3. Le modèle répond en flux : chaque morceau est envoyé au front, puis la réponse complète
+     *    est sauvegardée dans le dossier.
      */
-    public void analyzeDossierStrategyStream(Long dossierId, org.springframework.web.servlet.mvc.method.annotation.SseEmitter emitter) {
-        new Thread(() -> {
+    public void analyzeDossierStrategyStream(Long dossierId, SseEmitter emitter) {
+        aiStreamingExecutor.execute(() -> {
             try {
-                // 1. Récupération manuelle et rapide du contexte RAG (Bypass du Tool Calling lent de LLM)
-                String documentsContext = avoAiTools.searchDocumentsInDossier(dossierId, "faits importants, clauses, failles, enjeux, risques");
-                String jurisContext = avoAiTools.searchJurisprudence("FRANCE", "lois applicables, arguments de défense");
+                String pays = paysDuDossier(dossierId);
+                String documents = avoAiTools.searchDocumentsInDossier(dossierId,
+                        "faits importants, clauses, failles, enjeux, risques");
+                String jurisprudence = avoAiTools.searchJurisprudence(pays, "lois applicables, arguments de défense");
+                String prompt = prompts.render("strategie",
+                        "pays", pays, "documents", documents, "jurisprudence", jurisprudence);
 
-                // 2. Construction d'un prompt unique optimisé
-                String prompt = String.format("Tu es un avocat associé senior très expérimenté, expert en stratégie contentieuse.\n" +
-                        "Ton objectif est d'analyser les informations du dossier fourni et de proposer la meilleure stratégie pour GAGNER l'affaire.\n" +
-                        "Structure TOUJOURS ta réponse EXACTEMENT en 7 parties avec ces titres précis (utiliser des balises markdown ###) :\n\n" +
-                        "### Synthèse des enjeux\n" +
-                        "### Analyse Jurisprudence\n" +
-                        "### Les Failles et Risques\n" +
-                        "### Analyse des chances\n" +
-                        "### La Stratégie Gagnante\n" +
-                        "### Workflow prévu\n" +
-                        "### Tâches recommandées\n\n" +
-                        "Pour l'Analyse Jurisprudence, explique les lois applicables et cite des affaires similaires si possible en te basant sur la base légale fournie.\n" +
-                        "Pour l'Analyse des chances, réponds à la question : c'est combien la chance de gagner cette affaire ?\n" +
-                        "Pour le Workflow prévu, réponds à la question : ça sera quoi le workflow (déroulement) de cette affaire, comment ça peut être ?\n\n" +
-                        "CONTEXTE DU DOSSIER :\n%s\n\n" +
-                        "BASE LÉGALE :\n%s\n\n" +
-                        "Rédige maintenant l'analyse stratégique de façon très professionnelle :", documentsContext, jurisContext);
-
-                // 3. Appel du modèle en Streaming
-                aiConfigurationService.buildStreamingChatModel().generate(prompt, new dev.langchain4j.model.StreamingResponseHandler<dev.langchain4j.data.message.AiMessage>() {
-                    @Override
-                    public void onNext(String token) {
-                        try {
-                            // On envoie le token de texte encapsulé en JSON pour éviter les problèmes de sauts de ligne avec SSE
-                            java.util.Map<String, String> data = new java.util.HashMap<>();
-                            data.put("token", token);
-                            String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(data);
-                            emitter.send(org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event()
-                                .data(json.getBytes(java.nio.charset.StandardCharsets.UTF_8), org.springframework.http.MediaType.APPLICATION_JSON));
-                        } catch (Exception e) {
-                            // Client déconnecté, on ignore
-                        }
-                    }
-
-                    @Override
-                    public void onComplete(dev.langchain4j.model.output.Response<dev.langchain4j.data.message.AiMessage> response) {
-                        try {
-                            // On sauvegarde la réponse finale dans la base de données
-                            if (response.content() != null && response.content().text() != null) {
-                                String finalStrategy = response.content().text();
-                                com.avo.entities.Dossier dossier = dossierRepository.findById(dossierId).orElse(null);
-                                if (dossier != null) {
-                                    dossier.setAiStrategy(finalStrategy);
-                                    dossierRepository.save(dossier);
-                                }
-                            }
-                            emitter.send(org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event().name("DONE").data("[DONE]"));
-                            emitter.complete();
-                        } catch (Exception e) {
-                            emitter.completeWithError(e);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable error) {
-                        try {
+                StringBuilder fullText = new StringBuilder();
+                chatClient().prompt().user(prompt).stream().content().subscribe(
+                        token -> {
+                            fullText.append(token);
+                            sendToken(emitter, token);
+                        },
+                        error -> {
+                            log.error("Erreur streaming analyse stratégique du dossier {}", dossierId, error);
                             emitter.completeWithError(error);
-                        } catch (Exception e) {}
-                    }
-                });
-
+                        },
+                        () -> {
+                            saveStrategy(dossierId, fullText.toString());
+                            try {
+                                emitter.send(SseEmitter.event().name("DONE").data("[DONE]"));
+                                emitter.complete();
+                            } catch (Exception e) {
+                                emitter.completeWithError(e);
+                            }
+                        });
             } catch (Exception e) {
-                try {
-                    emitter.completeWithError(e);
-                } catch (Exception ignored) {}
+                log.error("Erreur analyse stratégique du dossier {}", dossierId, e);
+                emitter.completeWithError(e);
             }
-        }).start();
+        });
+    }
+
+    /** Le token est encapsulé en JSON pour que les sauts de ligne passent correctement en SSE. */
+    private static void sendToken(SseEmitter emitter, String token) {
+        try {
+            byte[] json = JSON.writeValueAsString(Map.of("token", token)).getBytes(StandardCharsets.UTF_8);
+            emitter.send(SseEmitter.event().data(json, MediaType.APPLICATION_JSON));
+        } catch (Exception e) {
+            // Client déconnecté : on ignore
+        }
+    }
+
+    private void saveStrategy(Long dossierId, String strategy) {
+        if (strategy.isBlank()) {
+            return;
+        }
+        dossierRepository.findById(dossierId).ifPresent(dossier -> {
+            dossier.setAiStrategy(strategy);
+            dossierRepository.save(dossier);
+        });
+    }
+
+    /** Pays du droit applicable : celui du client du dossier, FRANCE par défaut. */
+    private String paysDuDossier(Long dossierId) {
+        return dossierRepository.findById(dossierId)
+                .map(d -> d.getClient() != null ? d.getClient().getPays() : null)
+                .map(Pays::normalize)
+                .orElse(Pays.PAR_DEFAUT);
+    }
+
+    // ------------------------------------------------------------------ Mémoire du chat
+
+    /**
+     * Stockage en mémoire des conversations, borné : au-delà de maxSessions, la conversation la moins
+     * récemment utilisée est oubliée. (Pour garder l'historique après un redémarrage, remplacer par
+     * le JdbcChatMemoryRepository de Spring AI.)
+     */
+    private static final class BoundedChatMemoryRepository implements ChatMemoryRepository {
+
+        private final Map<String, List<Message>> conversations;
+
+        BoundedChatMemoryRepository(int maxSessions) {
+            this.conversations = Collections.synchronizedMap(new LinkedHashMap<>(16, 0.75f, true) {
+                @Override
+                protected boolean removeEldestEntry(Map.Entry<String, List<Message>> eldest) {
+                    return size() > maxSessions;
+                }
+            });
+        }
+
+        @Override
+        public List<String> findConversationIds() {
+            synchronized (conversations) {
+                return new ArrayList<>(conversations.keySet());
+            }
+        }
+
+        @Override
+        public List<Message> findByConversationId(String conversationId) {
+            List<Message> messages = conversations.get(conversationId);
+            return messages == null ? new ArrayList<>() : new ArrayList<>(messages);
+        }
+
+        @Override
+        public void saveAll(String conversationId, List<Message> messages) {
+            conversations.put(conversationId, new ArrayList<>(messages));
+        }
+
+        @Override
+        public void deleteByConversationId(String conversationId) {
+            conversations.remove(conversationId);
+        }
     }
 }

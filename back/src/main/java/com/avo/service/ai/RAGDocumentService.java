@@ -2,179 +2,184 @@ package com.avo.service.ai;
 
 import com.avo.entities.Document;
 import com.avo.repositories.DocumentRepository;
-import dev.langchain4j.data.document.DocumentParser;
-import dev.langchain4j.data.document.parser.apache.tika.ApacheTikaDocumentParser;
-import dev.langchain4j.data.document.splitter.DocumentSplitters;
-import dev.langchain4j.data.segment.TextSegment;
-import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.store.embedding.EmbeddingStore;
-import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.ai.reader.tika.TikaDocumentReader;
+import org.springframework.ai.transformer.splitter.TokenTextSplitter;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.io.ByteArrayInputStream;
-import org.springframework.scheduling.annotation.Async;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
- * Service gérant l'ingestion de documents dans la base de données vectorielle Qdrant.
- * Ce service est crucial pour le système RAG (Retrieval-Augmented Generation), car il permet
- * à l'IA de rechercher et comprendre le contenu des documents (PDF, Word, etc.) téléversés.
+ * Le RAG (Retrieval-Augmented Generation) en un seul service :
+ * - indexer un document : MinIO → Tika (texte) → découpage → embeddings →
+ * Qdrant ;
+ * - retirer un document de Qdrant ;
+ * - chercher les passages proches d'une question (dans un dossier, ou dans la
+ * jurisprudence d'un pays).
+ *
+ * Tout passe par le VectorStore de Spring AI (Qdrant), qui calcule lui-même les
+ * embeddings
+ * avec le modèle Ollama configuré (spring.ai.ollama.embedding.options.model).
  */
 @Service
 public class RAGDocumentService {
 
-    private final EmbeddingStore<TextSegment> embeddingStore;
-    private final EmbeddingModel embeddingModel;
+    private static final Logger log = LoggerFactory.getLogger(RAGDocumentService.class);
+
+    /**
+     * ~150 tokens ≈ 500 à 600 caractères en français : des passages courts et
+     * précis.
+     */
+    private final TokenTextSplitter splitter = TokenTextSplitter.builder()
+            .withChunkSize(150)
+            .withMinChunkSizeChars(100)
+            .withMinChunkLengthToEmbed(5)
+            .withMaxNumChunks(10000)
+            .withKeepSeparator(true)
+            .build();
+
+    private final VectorStore vectorStore;
     private final DocumentRepository documentRepository;
     private final com.avo.services.MinioService minioService;
     private final com.avo.service.AiConfigurationService aiConfigurationService;
 
-    public RAGDocumentService(EmbeddingStore<TextSegment> embeddingStore,
-            EmbeddingModel embeddingModel,
+    public RAGDocumentService(VectorStore vectorStore,
             DocumentRepository documentRepository,
             com.avo.services.MinioService minioService,
             com.avo.service.AiConfigurationService aiConfigurationService) {
-        this.embeddingStore = embeddingStore;
-        this.embeddingModel = embeddingModel;
+        this.vectorStore = vectorStore;
         this.documentRepository = documentRepository;
         this.minioService = minioService;
         this.aiConfigurationService = aiConfigurationService;
     }
 
+    // ------------------------------------------------------------------ Indexation
+
     /**
-     * Ingestion asynchrone d'un document dans Qdrant.
-     * Cette méthode est exécutée en arrière-plan via le pool de threads personnalisé (aiIngestionExecutor).
-     * Elle lit le fichier depuis MinIO, extrait son texte, le découpe en petits morceaux (segments),
-     * vectorise chaque morceau avec le modèle d'Embedding, et les sauvegarde dans Qdrant avec leurs métadonnées.
-     *
-     * @param documentId L'identifiant du document en base de données MySQL
+     * Indexation en arrière-plan (pool aiIngestionExecutor), déclenchée après
+     * l'upload.
      */
     @Async("aiIngestionExecutor")
     @Transactional(readOnly = true)
     public void ingestDocumentIntoQdrant(Long documentId) {
+        ingest(documentId);
+    }
+
+    /** Indexation bloquante, utilisée par la resynchronisation complète. */
+    @Transactional(readOnly = true)
+    public void ingestDocumentIntoQdrantSync(Long documentId) {
+        ingest(documentId);
+    }
+
+    private void ingest(Long documentId) {
         if (!aiConfigurationService.isAiEnabled()) {
-            return; // L'IA est désactivée, on ne fait pas d'ingestion RAG
+            return; // L'IA est désactivée : pas d'indexation
         }
 
-        // Étape 1 : Récupérer le document en base
         Document doc = documentRepository.findById(documentId)
                 .orElseThrow(() -> new IllegalArgumentException("Document introuvable: " + documentId));
-
-        // Vérifier si le document possède bien un fichier associé
         if (doc.getMinioObjectId() == null || doc.getMinioObjectId().isBlank()) {
             throw new IllegalArgumentException("Le document n'a pas de fichier associé dans MinIO.");
         }
 
-        // Étape 2 : Télécharger le flux (stream) du fichier depuis MinIO
-        java.io.InputStream fileStream = minioService.getFileStream(doc.getMinioObjectId());
-        if (fileStream == null) {
-            throw new IllegalArgumentException("Impossible de lire le fichier depuis MinIO.");
+        // 1. Lire le fichier depuis MinIO et extraire le texte avec Tika (PDF, Word...)
+        List<org.springframework.ai.document.Document> pages;
+        try (InputStream in = minioService.getFileStream(doc.getMinioObjectId())) {
+            if (in == null) {
+                throw new IllegalArgumentException("Impossible de lire le fichier depuis MinIO.");
+            }
+            pages = new TikaDocumentReader(new InputStreamResource(in)).get();
+        } catch (java.io.IOException e) {
+            throw new IllegalStateException("Erreur de lecture du fichier du document " + documentId, e);
         }
 
-        // Étape 3 : Parsing du fichier (Extraction du texte brut depuis le PDF, Word, etc.) via Apache Tika
-        DocumentParser parser = new ApacheTikaDocumentParser();
-        dev.langchain4j.data.document.Document lcDocument = parser.parse(fileStream);
+        // 2. Métadonnées : elles servent à filtrer les recherches (par dossier, type,
+        // pays...)
+        Map<String, Object> metadata = metadataOf(doc);
+        List<org.springframework.ai.document.Document> withMetadata = pages.stream()
+                .filter(p -> p.getText() != null && !p.getText().isBlank())
+                .map(p -> new org.springframework.ai.document.Document(p.getText(), new HashMap<>(metadata)))
+                .toList();
 
-        // Étape 4 : Ajout des métadonnées (Metadata)
-        // Les métadonnées sont cruciales pour filtrer les recherches de l'IA (ex: chercher uniquement dans les contrats d'un dossier précis)
-        lcDocument.metadata().put("document_id", doc.getId().toString());
-        lcDocument.metadata().put("nom_fichier", doc.getNomFichier() != null ? doc.getNomFichier() : "Inconnu");
-        
+        // 3. Retirer l'ancienne version du document (pas de doublons), découper,
+        // vectoriser, stocker
+        removeDocumentFromQdrant(doc.getId());
+        vectorStore.add(splitter.apply(withMetadata));
+    }
+
+    private static Map<String, Object> metadataOf(Document doc) {
+        Map<String, Object> metadata = new HashMap<>();
+        metadata.put("document_id", doc.getId().toString());
+        metadata.put("nom_fichier", doc.getNomFichier() != null ? doc.getNomFichier() : "Inconnu");
         if (doc.getTypeDocument() != null) {
-            lcDocument.metadata().put("type_document", doc.getTypeDocument().name());
+            metadata.put("type_document", doc.getTypeDocument().name());
         }
-        
         if (doc.getPays() != null && !doc.getPays().isBlank()) {
-            lcDocument.metadata().put("pays", doc.getPays().toUpperCase());
+            metadata.put("pays", doc.getPays().toUpperCase());
         }
-
         if (doc.getDossier() != null) {
-            lcDocument.metadata().put("dossier_id", doc.getDossier().getId().toString());
+            metadata.put("dossier_id", doc.getDossier().getId().toString());
             if (doc.getDossier().getTitre() != null) {
-                lcDocument.metadata().put("dossier_nom", doc.getDossier().getTitre());
+                metadata.put("dossier_nom", doc.getDossier().getTitre());
             }
         }
-
         if (doc.getClient() != null) {
-            lcDocument.metadata().put("client_id", doc.getClient().getId().toString());
+            metadata.put("client_id", doc.getClient().getId().toString());
             String clientName = doc.getClient().getDisplayName();
             if (clientName != null) {
-                lcDocument.metadata().put("client_nom", clientName.trim());
+                metadata.put("client_nom", clientName.trim());
             }
         }
-
-        // Étape 5 : Configuration de l'Ingestor et exécution
-        // Le DocumentSplitter découpe le texte en blocs de 500 caractères, avec un chevauchement (overlap) de 50 caractères
-        // Le chevauchement évite qu'une phrase importante soit coupée au milieu entre deux blocs
-        EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()
-                .documentSplitter(DocumentSplitters.recursive(500, 50))
-                .embeddingModel(embeddingModel) // Modèle utilisé pour transformer le texte en vecteurs mathématiques
-                .embeddingStore(embeddingStore) // La base de données vectorielle (Qdrant) où stocker les vecteurs
-                .build();
-
-        // Lancement de l'ingestion (Transformation en vecteurs et sauvegarde)
-        ingestor.ingest(lcDocument);
+        return metadata;
     }
 
     /**
-     * Ingestion synchrone d'un document dans Qdrant.
-     * Identique à la version asynchrone, mais bloque le thread courant jusqu'à la fin du processus.
-     * Utilisé généralement pour les tests ou des traitements en mode batch stricts.
-     *
-     * @param documentId L'identifiant du document
+     * Supprime tous les passages d'un document (réindexation ou suppression du
+     * document).
+     * Une erreur Qdrant est journalisée sans être propagée.
      */
-    @Transactional(readOnly = true)
-    public void ingestDocumentIntoQdrantSync(Long documentId) {
-        if (!aiConfigurationService.isAiEnabled()) {
-            return; // L'IA est désactivée, on ne fait pas d'ingestion RAG
+    public void removeDocumentFromQdrant(Long documentId) {
+        try {
+            vectorStore.delete("document_id == '" + documentId + "'");
+        } catch (Exception e) {
+            log.warn("Impossible de retirer le document {} de Qdrant : {}", documentId, e.getMessage());
         }
+    }
 
-        Document doc = documentRepository.findById(documentId)
-                .orElseThrow(() -> new IllegalArgumentException("Document introuvable: " + documentId));
+    // ------------------------------------------------------------------ Recherche
 
-        if (doc.getMinioObjectId() == null || doc.getMinioObjectId().isBlank()) {
-            throw new IllegalArgumentException("Le document n'a pas de fichier associé dans MinIO.");
-        }
+    /**
+     * Passages les plus proches de la question, uniquement dans les pièces du
+     * dossier.
+     */
+    public List<org.springframework.ai.document.Document> searchInDossier(Long dossierId, String question) {
+        return vectorStore.similaritySearch(SearchRequest.builder()
+                .query(question)
+                .topK(5)
+                .similarityThreshold(0.5)
+                .filterExpression("dossier_id == '" + dossierId + "'")
+                .build());
+    }
 
-        java.io.InputStream fileStream = minioService.getFileStream(doc.getMinioObjectId());
-        if (fileStream == null) {
-            throw new IllegalArgumentException("Impossible de lire le fichier depuis MinIO.");
-        }
-
-        DocumentParser parser = new ApacheTikaDocumentParser();
-        dev.langchain4j.data.document.Document lcDocument = parser.parse(fileStream);
-
-        lcDocument.metadata().put("document_id", doc.getId().toString());
-        lcDocument.metadata().put("nom_fichier", doc.getNomFichier() != null ? doc.getNomFichier() : "Inconnu");
-        
-        if (doc.getTypeDocument() != null) {
-            lcDocument.metadata().put("type_document", doc.getTypeDocument().name());
-        }
-        
-        if (doc.getPays() != null && !doc.getPays().isBlank()) {
-            lcDocument.metadata().put("pays", doc.getPays().toUpperCase());
-        }
-
-        if (doc.getDossier() != null) {
-            lcDocument.metadata().put("dossier_id", doc.getDossier().getId().toString());
-            if (doc.getDossier().getTitre() != null) {
-                lcDocument.metadata().put("dossier_nom", doc.getDossier().getTitre());
-            }
-        }
-
-        if (doc.getClient() != null) {
-            lcDocument.metadata().put("client_id", doc.getClient().getId().toString());
-            String clientName = doc.getClient().getDisplayName();
-            if (clientName != null) {
-                lcDocument.metadata().put("client_nom", clientName.trim());
-            }
-        }
-
-        EmbeddingStoreIngestor ingestor = EmbeddingStoreIngestor.builder()
-                .documentSplitter(DocumentSplitters.recursive(500, 50))
-                .embeddingModel(embeddingModel)
-                .embeddingStore(embeddingStore)
-                .build();
-
-        ingestor.ingest(lcDocument);
+    /**
+     * Passages de jurisprudence / lois du pays donné (documents de type
+     * JURISPRUDENCE).
+     */
+    public List<org.springframework.ai.document.Document> searchJurisprudence(String pays, String question) {
+        return vectorStore.similaritySearch(SearchRequest.builder()
+                .query(question)
+                .topK(4)
+                .similarityThreshold(0.5)
+                .filterExpression("type_document == 'JURISPRUDENCE' && pays == '" + pays + "'")
+                .build());
     }
 }

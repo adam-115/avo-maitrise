@@ -1,18 +1,41 @@
 package com.avo.services;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Base64;
 
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.avo.dtos.DocumentDTO;
 import com.avo.entities.Document;
-import com.avo.mappers.DocumentMapper;
-import com.avo.repositories.DocumentRepository;
-import com.querydsl.core.types.Predicate;
 import com.avo.entities.DocumentType;
+import com.avo.events.MatterActionEvent;
+import com.avo.mappers.DocumentMapper;
+import com.avo.repositories.ClientRepository;
+import com.avo.repositories.DocumentRepository;
+import com.avo.repositories.DossierRepository;
+import com.avo.service.ai.RAGDocumentService;
+import com.querydsl.core.types.Predicate;
+
+import io.minio.StatObjectResponse;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
@@ -20,18 +43,18 @@ public class DocumentService {
 
     private final DocumentRepository repository;
     private final DocumentMapper mapper;
-    private final com.avo.repositories.ClientRepository clientRepository;
-    private final com.avo.repositories.DossierRepository dossierRepository;
-    private final org.springframework.context.ApplicationEventPublisher eventPublisher;
+    private final ClientRepository clientRepository;
+    private final DossierRepository dossierRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final MinioService minioService;
-    private final com.avo.service.ai.RAGDocumentService ragDocumentService;
+    private final RAGDocumentService ragDocumentService;
 
     public DocumentService(DocumentRepository repository, DocumentMapper mapper,
-            com.avo.repositories.ClientRepository clientRepository,
-            com.avo.repositories.DossierRepository dossierRepository,
-            org.springframework.context.ApplicationEventPublisher eventPublisher,
+            ClientRepository clientRepository,
+            DossierRepository dossierRepository,
+            ApplicationEventPublisher eventPublisher,
             MinioService minioService,
-            com.avo.service.ai.RAGDocumentService ragDocumentService) {
+            RAGDocumentService ragDocumentService) {
         this.repository = repository;
         this.mapper = mapper;
         this.clientRepository = clientRepository;
@@ -74,26 +97,35 @@ public class DocumentService {
         }
     }
 
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public DocumentDTO create(DocumentDTO dto) {
         log.info("[ENTER] Executing create");
-        Document entity = mapper.toEntity(dto);
-        entity.setDateUpload(LocalDateTime.now());
+        Document documentEntity = mapper.toEntity(dto);
+        documentEntity.setDateUpload(LocalDateTime.now());
 
         if (dto.getFileData() != null && !dto.getFileData().isEmpty()) {
             try {
-                String contentType = java.net.URLConnection.guessContentTypeFromName(dto.getNomFichier());
+                String contentType = URLConnection.guessContentTypeFromName(dto.getNomFichier());
                 if (contentType == null) {
                     String lowerName = dto.getNomFichier() != null ? dto.getNomFichier().toLowerCase() : "";
-                    if (lowerName.endsWith(".pdf")) contentType = "application/pdf";
-                    else if (lowerName.endsWith(".doc")) contentType = "application/msword";
-                    else if (lowerName.endsWith(".docx")) contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                    else if (lowerName.endsWith(".xls")) contentType = "application/vnd.ms-excel";
-                    else if (lowerName.endsWith(".xlsx")) contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    else if (lowerName.endsWith(".txt")) contentType = "text/plain";
-                    else if (lowerName.endsWith(".png")) contentType = "image/png";
-                    else if (lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg")) contentType = "image/jpeg";
-                    else contentType = "application/octet-stream";
+                    if (lowerName.endsWith(".pdf"))
+                        contentType = "application/pdf";
+                    else if (lowerName.endsWith(".doc"))
+                        contentType = "application/msword";
+                    else if (lowerName.endsWith(".docx"))
+                        contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    else if (lowerName.endsWith(".xls"))
+                        contentType = "application/vnd.ms-excel";
+                    else if (lowerName.endsWith(".xlsx"))
+                        contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    else if (lowerName.endsWith(".txt"))
+                        contentType = "text/plain";
+                    else if (lowerName.endsWith(".png"))
+                        contentType = "image/png";
+                    else if (lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg"))
+                        contentType = "image/jpeg";
+                    else
+                        contentType = "application/octet-stream";
                 }
 
                 String base64Data = dto.getFileData();
@@ -102,14 +134,15 @@ public class DocumentService {
                     base64Data = base64Data.split(",")[1];
                 }
 
-                byte[] decodedBytes = java.util.Base64.getDecoder().decode(base64Data);
-                try (java.io.InputStream is = new java.io.ByteArrayInputStream(decodedBytes)) {
+                // create file in and get minioObjectIdminIO
+                byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
+                try (InputStream is = new ByteArrayInputStream(decodedBytes)) {
                     String minioObjectId = minioService.uploadFile(
                             dto.getNomFichier() != null ? dto.getNomFichier() : "document",
                             is,
                             decodedBytes.length,
                             contentType);
-                    entity.setMinioObjectId(minioObjectId);
+                    documentEntity.setMinioObjectId(minioObjectId);
                 }
             } catch (Exception e) {
                 log.error("Failed to upload file to MinIO", e);
@@ -118,44 +151,45 @@ public class DocumentService {
         }
 
         if (dto.getClientId() != null) {
-            clientRepository.findById(dto.getClientId()).ifPresent(entity::setClient);
+            clientRepository.findById(dto.getClientId()).ifPresent(documentEntity::setClient);
         }
         if (dto.getDossierId() != null) {
-            dossierRepository.findById(dto.getDossierId()).ifPresent(entity::setDossier);
+            dossierRepository.findById(dto.getDossierId()).ifPresent(documentEntity::setDossier);
         }
 
         // Dynamically classify document type if not explicitly set to special types
-        if (entity.getTypeDocument() == null || (entity.getTypeDocument() != DocumentType.JURISPRUDENCE
-                && entity.getTypeDocument() != DocumentType.LEGISLATION)) {
-            if (entity.getDossier() != null) {
-                entity.setTypeDocument(DocumentType.DOSSIER);
-            } else if (entity.getClient() != null) {
-                entity.setTypeDocument(DocumentType.CLIENT);
-            } else if (entity.getTypeDocument() == null) {
-                entity.setTypeDocument(DocumentType.MODEL);
+        if (documentEntity.getTypeDocument() == null || (documentEntity.getTypeDocument() != DocumentType.JURISPRUDENCE
+                && documentEntity.getTypeDocument() != DocumentType.LEGISLATION)) {
+            if (documentEntity.getDossier() != null) {
+                documentEntity.setTypeDocument(DocumentType.DOSSIER);
+            } else if (documentEntity.getClient() != null) {
+                documentEntity.setTypeDocument(DocumentType.CLIENT);
+            } else if (documentEntity.getTypeDocument() == null) {
+                documentEntity.setTypeDocument(DocumentType.MODEL);
             }
         }
+        // save document into MySql with minioObjectId
+        Document saved = repository.save(documentEntity);
 
-        Document saved = repository.save(entity);
-
+        // add logs via the the Events
         if (saved.getTypeDocument() == DocumentType.DOSSIER) {
-            eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+            eventPublisher.publishEvent(new MatterActionEvent(
                     this, saved.getDossier() != null ? saved.getDossier().getId() : dto.getDossierId(),
                     getCurrentUsername(), "Upload", "Document", saved.getId(),
                     "Document uploadé : " + saved.getNomFichier()));
         }
 
         try {
-            // Lancer l'ingestion vers Qdrant en arrière-plan (Asynchrone) APRÈS le commit de la transaction
-            if (org.springframework.transaction.support.TransactionSynchronizationManager.isSynchronizationActive()) {
-                org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
-                    new org.springframework.transaction.support.TransactionSynchronization() {
-                        @Override
-                        public void afterCommit() {
-                            ragDocumentService.ingestDocumentIntoQdrant(saved.getId());
-                        }
-                    }
-                );
+            // Lancer l'ingestion vers Qdrant en arrière-plan (Asynchrone) APRÈS le commit
+            // de la transaction
+            if (TransactionSynchronizationManager.isSynchronizationActive()) {
+                TransactionSynchronizationManager.registerSynchronization(
+                        new TransactionSynchronization() {
+                            @Override
+                            public void afterCommit() {
+                                ragDocumentService.ingestDocumentIntoQdrant(saved.getId());
+                            }
+                        });
             } else {
                 ragDocumentService.ingestDocumentIntoQdrant(saved.getId());
             }
@@ -168,25 +202,34 @@ public class DocumentService {
         return result;
     }
 
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public DocumentDTO update(DocumentDTO dto) {
         log.info("[ENTER] Executing update");
         Document entity = mapper.toEntity(dto);
 
         if (dto.getFileData() != null && !dto.getFileData().isEmpty()) {
             try {
-                String contentType = java.net.URLConnection.guessContentTypeFromName(dto.getNomFichier());
+                String contentType = URLConnection.guessContentTypeFromName(dto.getNomFichier());
                 if (contentType == null) {
                     String lowerName = dto.getNomFichier() != null ? dto.getNomFichier().toLowerCase() : "";
-                    if (lowerName.endsWith(".pdf")) contentType = "application/pdf";
-                    else if (lowerName.endsWith(".doc")) contentType = "application/msword";
-                    else if (lowerName.endsWith(".docx")) contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-                    else if (lowerName.endsWith(".xls")) contentType = "application/vnd.ms-excel";
-                    else if (lowerName.endsWith(".xlsx")) contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                    else if (lowerName.endsWith(".txt")) contentType = "text/plain";
-                    else if (lowerName.endsWith(".png")) contentType = "image/png";
-                    else if (lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg")) contentType = "image/jpeg";
-                    else contentType = "application/octet-stream";
+                    if (lowerName.endsWith(".pdf"))
+                        contentType = "application/pdf";
+                    else if (lowerName.endsWith(".doc"))
+                        contentType = "application/msword";
+                    else if (lowerName.endsWith(".docx"))
+                        contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                    else if (lowerName.endsWith(".xls"))
+                        contentType = "application/vnd.ms-excel";
+                    else if (lowerName.endsWith(".xlsx"))
+                        contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    else if (lowerName.endsWith(".txt"))
+                        contentType = "text/plain";
+                    else if (lowerName.endsWith(".png"))
+                        contentType = "image/png";
+                    else if (lowerName.endsWith(".jpg") || lowerName.endsWith(".jpeg"))
+                        contentType = "image/jpeg";
+                    else
+                        contentType = "application/octet-stream";
                 }
 
                 String base64Data = dto.getFileData();
@@ -194,8 +237,8 @@ public class DocumentService {
                     base64Data = base64Data.split(",")[1];
                 }
 
-                byte[] decodedBytes = java.util.Base64.getDecoder().decode(base64Data);
-                try (java.io.InputStream is = new java.io.ByteArrayInputStream(decodedBytes)) {
+                byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
+                try (InputStream is = new ByteArrayInputStream(decodedBytes)) {
                     String minioObjectId = minioService.uploadFile(
                             dto.getNomFichier() != null ? dto.getNomFichier() : "document",
                             is,
@@ -237,7 +280,7 @@ public class DocumentService {
         Document saved = repository.save(entity);
 
         if (saved.getTypeDocument() == DocumentType.DOSSIER) {
-            eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+            eventPublisher.publishEvent(new MatterActionEvent(
                     this, saved.getDossier() != null ? saved.getDossier().getId() : dto.getDossierId(),
                     getCurrentUsername(), "Mise à jour", "Document", saved.getId(),
                     "Document mis à jour : " + saved.getNomFichier()));
@@ -248,12 +291,12 @@ public class DocumentService {
         return result;
     }
 
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     public void delete(Long id) {
         log.info("[ENTER] Executing delete");
         repository.findById(id).ifPresent(doc -> {
             if (doc.getTypeDocument() == DocumentType.DOSSIER) {
-                eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                eventPublisher.publishEvent(new MatterActionEvent(
                         this, doc.getDossier() != null ? doc.getDossier().getId() : null,
                         getCurrentUsername(), "Suppression", "Document", doc.getId(),
                         "Document supprimé : " + doc.getNomFichier()));
@@ -263,12 +306,14 @@ public class DocumentService {
             }
             repository.deleteDossierDocumentAssociation(doc.getId());
             repository.delete(doc);
+            // Retirer aussi le document de la base vectorielle : l'IA ne doit plus le citer
+            ragDocumentService.removeDocumentFromQdrant(doc.getId());
         });
     }
 
     private String getCurrentUsername() {
         try {
-            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
+            Authentication auth = SecurityContextHolder
                     .getContext().getAuthentication();
             if (auth != null)
                 return auth.getName();
@@ -277,11 +322,11 @@ public class DocumentService {
         return "Système";
     }
 
-    public org.springframework.http.ResponseEntity<org.springframework.core.io.Resource> downloadFile(Long id) {
+    public ResponseEntity<Resource> downloadFile(Long id) {
         log.info("[ENTER] Executing downloadFile for document id: {}", id);
         Document doc = repository.findById(id).orElse(null);
         if (doc == null) {
-            return org.springframework.http.ResponseEntity.notFound().build();
+            return ResponseEntity.notFound().build();
         }
 
         String filename = doc.getNomFichier();
@@ -292,45 +337,55 @@ public class DocumentService {
             filename = "document_" + id;
         }
 
-        String contentType = java.net.URLConnection.guessContentTypeFromName(filename);
+        String contentType = URLConnection.guessContentTypeFromName(filename);
         if (contentType == null) {
             String lower = filename.toLowerCase();
-            if (lower.endsWith(".pdf")) contentType = "application/pdf";
-            else if (lower.endsWith(".doc")) contentType = "application/msword";
-            else if (lower.endsWith(".docx")) contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-            else if (lower.endsWith(".xls")) contentType = "application/vnd.ms-excel";
-            else if (lower.endsWith(".xlsx")) contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            else if (lower.endsWith(".png")) contentType = "image/png";
-            else if (lower.endsWith(".jpg") || lower.endsWith(".jpeg")) contentType = "image/jpeg";
-            else contentType = "application/octet-stream";
+            if (lower.endsWith(".pdf"))
+                contentType = "application/pdf";
+            else if (lower.endsWith(".doc"))
+                contentType = "application/msword";
+            else if (lower.endsWith(".docx"))
+                contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            else if (lower.endsWith(".xls"))
+                contentType = "application/vnd.ms-excel";
+            else if (lower.endsWith(".xlsx"))
+                contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            else if (lower.endsWith(".png"))
+                contentType = "image/png";
+            else if (lower.endsWith(".jpg") || lower.endsWith(".jpeg"))
+                contentType = "image/jpeg";
+            else
+                contentType = "application/octet-stream";
         }
 
-        org.springframework.http.MediaType mediaType;
+        MediaType mediaType;
         try {
-            mediaType = org.springframework.http.MediaType.parseMediaType(contentType);
+            mediaType = MediaType.parseMediaType(contentType);
         } catch (Exception e) {
-            mediaType = org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
+            mediaType = MediaType.APPLICATION_OCTET_STREAM;
         }
 
         String encodedFilename;
         try {
-            encodedFilename = java.net.URLEncoder.encode(filename, java.nio.charset.StandardCharsets.UTF_8.toString()).replace("+", "%20");
+            encodedFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8.toString())
+                    .replace("+", "%20");
         } catch (Exception e) {
             encodedFilename = filename;
         }
 
-        String contentDisposition = "attachment; filename=\"" + filename.replace("\"", "\\\"") + "\"; filename*=UTF-8''" + encodedFilename;
+        String contentDisposition = "attachment; filename=\"" + filename.replace("\"", "\\\"") + "\"; filename*=UTF-8''"
+                + encodedFilename;
 
         // 1. Try streaming from MinIO first if minioObjectId is set
         if (doc.getMinioObjectId() != null && !doc.getMinioObjectId().isBlank()) {
-            java.io.InputStream is = minioService.getFileStream(doc.getMinioObjectId());
+            InputStream is = minioService.getFileStream(doc.getMinioObjectId());
             if (is != null) {
-                org.springframework.core.io.InputStreamResource resource = new org.springframework.core.io.InputStreamResource(is);
-                var responseBuilder = org.springframework.http.ResponseEntity.ok()
-                        .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                InputStreamResource resource = new InputStreamResource(is);
+                var responseBuilder = ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
                         .contentType(mediaType);
 
-                io.minio.StatObjectResponse stat = minioService.getFileStat(doc.getMinioObjectId());
+                StatObjectResponse stat = minioService.getFileStat(doc.getMinioObjectId());
                 if (stat != null && stat.size() > 0) {
                     responseBuilder.contentLength(stat.size());
                 }
@@ -338,6 +393,6 @@ public class DocumentService {
             }
         }
 
-        return org.springframework.http.ResponseEntity.notFound().build();
+        return ResponseEntity.notFound().build();
     }
 }

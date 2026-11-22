@@ -46,3 +46,4 @@ back/src/main/resources/application.properties
 back/target/classes/application.properties
 front/src/environments/environment.ts
 front/src/index.html
+/back/target

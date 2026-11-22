@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Intégration IA Avo-Maîtrise</title>
+<style>
+  @page { size: A4; margin: 16mm 14mm 18mm 14mm; }
+  :root { --ink:#1f2328; --muted:#5b6470; --line:#d8dde3; --accent:#3c3489; --accent-bg:#eeedfe; --teal:#0f6e56; --teal-bg:#e1f5ee; --code-bg:#f4f5f7; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.55; margin: 0; background:#fff; }
+  h1 { font-size: 22pt; margin: 0 0 4px; color: var(--accent); font-weight: 600; }
+  h2 { font-size: 15pt; margin: 0 0 8px; color: var(--accent); border-bottom: 2px solid var(--accent-bg); padding-bottom: 4px; font-weight: 600; }
+  h3 { font-size: 11.5pt; margin: 16px 0 6px; font-weight: 600; }
+  p { margin: 6px 0; }
+  .subtitle { color: var(--muted); font-size: 11pt; margin-bottom: 18px; }
+  section { page-break-before: always; }
+  section.first { page-break-before: auto; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 9pt; background: var(--code-bg); padding: 1px 4px; border-radius: 3px; }
+  pre { font-family: Consolas, "Courier New", monospace; font-size: 8.6pt; background: var(--code-bg); padding: 8px 10px; border-radius: 6px; white-space: pre-wrap; margin: 6px 0; page-break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9.6pt; page-break-inside: avoid; }
+  th, td { border: 1px solid var(--line); padding: 5px 7px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+  .diagram { border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin: 10px 0; text-align: center; page-break-inside: avoid; }
+  .diagram .mermaid { display: flex; justify-content: center; }
+  .diagram svg { max-width: 100% !important; max-height: 205mm; height: auto; }
+  .caption { color: var(--muted); font-size: 9pt; margin-top: 4px; }
+  .box { border-left: 4px solid var(--teal); background: var(--teal-bg); padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .box.warn { border-left-color: #a32d2d; background: #fcebeb; }
+  ol.steps { padding-left: 20px; margin: 6px 0; }
+  ol.steps li { margin: 3px 0; }
+  .toc li { margin: 2px 0; }
+  .legend span { display:inline-block; margin-right:14px; font-size:9pt; color:var(--muted); }
+  .sw { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:4px; vertical-align:middle; }
+</style>
+</head>
+<body>
+
+<section class="first">
+<h1>Intégration de l'IA dans Avo-Maîtrise</h1>
+<div class="subtitle">Architecture, composants et interaction des classes · Spring Boot 3.5 + Spring AI 1.1 · Ollama · Qdrant · 22/11/2026</div>
+
+<h3>Sommaire</h3>
+<ol class="toc">
+  <li>Vue d'ensemble des composants</li>
+  <li>Les deux modèles d'IA et Qdrant : qui fait quoi</li>
+  <li>Configuration du modèle actif (écran admin)</li>
+  <li>Infrastructure Spring AI (starters, propriétés, prompts)</li>
+  <li>Indexation d'un document (upload → Qdrant)</li>
+  <li>Analyse stratégique d'un dossier (RAG + streaming)</li>
+  <li>Chat de suivi sur la stratégie</li>
+  <li>Assistant général avec outils (tool calling)</li>
+  <li>Résumé et rédaction simples</li>
+  <li>Resynchronisation et suppression de documents</li>
+  <li>Récapitulatif des classes, fichiers et variables d'environnement</li>
+</ol>
+
+<h2 style="margin-top:22px">1. Vue d'ensemble des composants</h2>
+<p>L'application s'appuie sur six briques. Le front n'appelle jamais directement l'IA : tout passe par le backend Spring Boot, qui orchestre les appels avec <b>Spring AI</b> (le module IA officiel de l'écosystème Spring).</p>
+
+<div class="diagram">
+<pre class="mermaid">
+flowchart TB
+  F["Front Angular<br/>DossierStrategieComponent · AiTesterComponent<br/>AiConfiguration (admin) · AiStatusService"]
+  B["Backend Spring Boot 3.5 + Spring AI 1.1<br/>AiController · AiConfigurationController<br/>AiService · AvoAiTools · RAGDocumentService · Prompts"]
+  M[("MySQL<br/>clients, dossiers,<br/>ai_configuration")]
+  N[("MinIO<br/>fichiers PDF / Word")]
+  O["Ollama<br/>qwen2.5 (chat)<br/>nomic-embed-text (vecteurs)"]
+  Q[("Qdrant<br/>collection avo_documents")]
+  F -- "HTTP REST / SSE" --> B
+  B -- "JPA" --> M
+  B -- "S3 API" --> N
+  B -- "HTTP :11434" --> O
+  B -- "gRPC :6334<br/>(VectorStore)" --> Q
+  classDef ia fill:#eeedfe,stroke:#534ab7,color:#26215c;
+  classDef data fill:#e1f5ee,stroke:#0f6e56,color:#04342c;
+  classDef app fill:#f1efe8,stroke:#5f5e5a,color:#2c2c2a;
+  class O,Q ia;
+  class M,N data;
+  class F,B app;
+</pre>
+<div class="legend"><span><i class="sw" style="background:#eeedfe;border:1px solid #534ab7"></i>Brique IA</span><span><i class="sw" style="background:#e1f5ee;border:1px solid #0f6e56"></i>Données classiques</span><span><i class="sw" style="background:#f1efe8;border:1px solid #5f5e5a"></i>Application</span></div>
+</div>
+
+<table>
+<tr><th style="width:22%">Composant</th><th>Rôle</th><th style="width:32%">Côté code (Spring AI)</th></tr>
+<tr><td>Ollama</td><td>Serveur qui exécute les modèles d'IA localement (port 11434).</td><td><code>OllamaChatModel</code>, <code>OllamaEmbeddingModel</code></td></tr>
+<tr><td>qwen2.5:7b</td><td>Modèle de langage : lit un prompt et rédige une réponse. Remplaçable par OpenAI ou Gemini.</td><td><code>ChatModel</code> construit par <code>AiConfigurationService</code>, utilisé via <code>ChatClient</code></td></tr>
+<tr><td>nomic-embed-text</td><td>Modèle d'embedding : transforme un texte en vecteur de 768 nombres.</td><td>bean <code>EmbeddingModel</code> auto-configuré</td></tr>
+<tr><td>Qdrant</td><td>Base vectorielle : stocke les vecteurs + le texte + les métadonnées, et retrouve les plus proches.</td><td>bean <code>VectorStore</code> auto-configuré</td></tr>
+<tr><td>MinIO</td><td>Stockage des fichiers originaux.</td><td><code>MinioService</code></td></tr>
+<tr><td>MySQL</td><td>Données métier, configuration IA, stratégie et historique du chat.</td><td>Repositories JPA</td></tr>
+</table>
+</section>
+
+<section>
+<h2>2. Les deux modèles d'IA et Qdrant : qui fait quoi</h2>
+<p>Le point clé : <b>il y a deux modèles différents</b>, qui ne font pas le même travail, et <b>Qdrant</b> fait le lien entre eux. C'est le principe du <b>RAG</b> (Retrieval-Augmented Generation) : on <i>cherche</i> d'abord les bons passages, puis on demande au modèle d'<i>écrire</i> à partir d'eux.</p>
+
+<div class="diagram">
+<pre class="mermaid">
+flowchart LR
+  T1(["Temps 1<br/>indexation"]) --> D["Document<br/>PDF / Word"] --> E1["nomic-embed-text<br/>texte → vecteur"] --> Q1[("Qdrant<br/>vecteur + texte<br/>+ dossier_id")]
+  T2(["Temps 2<br/>question"]) --> Qn["Question"] --> E2["nomic-embed-text<br/>question → vecteur"] --> Q2[("Qdrant<br/>passages proches")] --> P["Prompt =<br/>consignes + passages"] --> L["qwen2.5<br/>rédige la réponse"]
+  classDef ia fill:#eeedfe,stroke:#534ab7,color:#26215c;
+  classDef step fill:#f1efe8,stroke:#5f5e5a,color:#2c2c2a;
+  class E1,E2,L,Q1,Q2 ia;
+  class T1,T2 step;
+</pre>
+</div>
+
+<table>
+<tr><th style="width:28%">Relation</th><th>Explication</th></tr>
+<tr><td>nomic-embed-text ↔ Qdrant</td><td>Toujours ensemble. Avec Spring AI, c'est le <code>VectorStore</code> qui appelle lui-même l'<code>EmbeddingModel</code>, à l'écriture comme à la recherche : le même modèle est donc forcément utilisé des deux côtés. Changer de modèle d'embedding impose une nouvelle collection et une réindexation.</td></tr>
+<tr><td>Qdrant → qwen</td><td>Qdrant fournit la matière (les extraits), qwen rédige. Qdrant ne génère rien ; qwen ne cherche rien et ne « connaît » pas les dossiers.</td></tr>
+<tr><td>qwen ↔ OpenAI / Gemini</td><td>Le modèle de chat est interchangeable depuis l'écran admin (table <code>ai_configuration</code>). Les embeddings, eux, restent toujours sur Ollama.</td></tr>
+<tr><td>MySQL → qwen</td><td>Dans le chat général, qwen <b>décide</b> d'appeler des méthodes Java (<code>@Tool</code> de <code>AvoAiTools</code>) qui lisent MySQL, puis utilise le résultat.</td></tr>
+</table>
+
+<div class="box"><b>Ressources :</b> seule la génération (qwen) est gourmande et bénéficie d'un GPU. L'embedding et Qdrant sont légers et tournent sans difficulté sur un VPS sans GPU.</div>
+</section>
+
+<section>
+<h2>3. Configuration du modèle actif (écran admin)</h2>
+<p>Le choix du fournisseur et du modèle de chat est stocké en base, dans la table <code>ai_configuration</code>. Une seule ligne est active à la fois. Si aucune ligne n'est active, l'IA est désactivée (aucune indexation, aucun appel).</p>
+
+<h3>Classes impliquées</h3>
+<table>
+<tr><th style="width:32%">Classe</th><th>Rôle</th></tr>
+<tr><td><code>AiConfiguration</code> (front, administration)</td><td>Écran de saisie : provider, modèle, clé API, URL, température, timeout, actif.</td></tr>
+<tr><td><code>AiStatusService</code> (front)</td><td>Appelle <code>/api/ai-configuration/status</code> pour afficher ou masquer les fonctions IA.</td></tr>
+<tr><td><code>AiConfigurationController</code></td><td>CRUD REST <code>/api/ai-configuration</code>, <code>/active</code>, <code>/status</code>.</td></tr>
+<tr><td><code>AiConfigurationRepository</code></td><td>JPA, méthode clé <code>findByIsActiveTrue()</code>.</td></tr>
+<tr><td><code>AiConfiguration</code> (entité)</td><td>Champs <code>provider</code>, <code>modelName</code>, <code>apiKey</code>, <code>baseUrl</code>, <code>temperature</code>, <code>timeoutMinutes</code>, <code>isActive</code>.</td></tr>
+<tr><td><code>AiConfigurationService</code></td><td><code>isAiEnabled()</code> et <code>buildChatModel()</code> : fabrique un <code>ChatModel</code> Spring AI (<code>OllamaChatModel</code> ou <code>OpenAiChatModel</code>). Gemini passe par son API compatible OpenAI. Le même <code>ChatModel</code> sait répondre d'un bloc (<code>call</code>) ou en flux (<code>stream</code>).</td></tr>
+</table>
+
+<div class="diagram">
+<pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant Admin as AiConfiguration (front)
+  participant Ctrl as AiConfigurationController
+  participant Repo as AiConfigurationRepository
+  participant Svc as AiConfigurationService
+  participant Any as AiService / RAGDocumentService
+  Admin->>Ctrl: POST / PUT /api/ai-configuration
+  Ctrl->>Repo: save(config, isActive=true)
+  Note over Repo: une seule config active
+  Any->>Svc: buildChatModel()
+  Svc->>Repo: findByIsActiveTrue()
+  Repo-->>Svc: AiConfiguration
+  alt provider = OLLAMA
+    Svc-->>Any: OllamaChatModel(OllamaApi(baseUrl), OllamaChatOptions(model))
+  else provider = OPENAI
+    Svc-->>Any: OpenAiChatModel(OpenAiApi(apiKey), OpenAiChatOptions(model))
+  else provider = GEMINI
+    Svc-->>Any: OpenAiChatModel(baseUrl Gemini compatible OpenAI)
+  end
+</pre>
+<div class="caption">Le modèle est reconstruit à chaque appel : un changement dans l'écran admin s'applique immédiatement, sans redémarrage. Le délai de lecture HTTP suit <code>timeoutMinutes</code>.</div>
+</div>
+</section>
+
+<section>
+<h2>4. Infrastructure Spring AI</h2>
+<p>Avec Spring AI, l'infrastructure n'est plus écrite à la main : les <b>starters</b> créent automatiquement les beans à partir de <code>application.properties</code>. Il ne reste dans le code que les pools de threads et le chargement des prompts.</p>
+
+<h3>Dépendances (back/pom.xml)</h3>
+<table>
+<tr><th style="width:40%">Artefact (BOM <code>spring-ai-bom</code> 1.1.8)</th><th>Apporte</th></tr>
+<tr><td><code>spring-ai-starter-model-ollama</code></td><td>Bean <code>EmbeddingModel</code> (Ollama) + classes <code>OllamaChatModel</code></td></tr>
+<tr><td><code>spring-ai-openai</code></td><td>Classes <code>OpenAiChatModel</code> (OpenAI et Gemini), sans auto-configuration</td></tr>
+<tr><td><code>spring-ai-starter-vector-store-qdrant</code></td><td>Bean <code>VectorStore</code> (Qdrant, gRPC), création automatique de la collection</td></tr>
+<tr><td><code>spring-ai-tika-document-reader</code></td><td><code>TikaDocumentReader</code> : extraction du texte des PDF / Word</td></tr>
+</table>
+
+<h3>Beans et classes</h3>
+<table>
+<tr><th style="width:32%">Bean / classe</th><th>Rôle</th></tr>
+<tr><td><code>EmbeddingModel</code> (auto)</td><td>Ollama, modèle <code>spring.ai.ollama.embedding.options.model</code> (défaut <code>nomic-embed-text</code>).</td></tr>
+<tr><td><code>VectorStore</code> (auto)</td><td>Qdrant, collection <code>avo_documents</code> créée au démarrage à la dimension du modèle (<code>initialize-schema=true</code>). Écriture, recherche filtrée et suppression passent par lui.</td></tr>
+<tr><td><code>RAGConfig</code></td><td>Pools <code>aiIngestionExecutor</code> (1 à 2 threads, file 500) et <code>aiStreamingExecutor</code> (2 à 4 threads).</td></tr>
+<tr><td><code>Prompts</code></td><td>Charge <code>resources/prompts/*.txt</code> et remplace les variables <code>{{nom}}</code>. Les prompts se modifient sans toucher au Java.</td></tr>
+</table>
+
+<div class="diagram">
+<pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant Spring as Spring Boot
+  participant Ollama as Starter Ollama
+  participant Qd as Starter Qdrant
+  participant Cfg as RAGConfig
+  Spring->>Ollama: lit spring.ai.ollama.*
+  Ollama-->>Spring: bean EmbeddingModel (nomic-embed-text)
+  Spring->>Qd: lit spring.ai.vectorstore.qdrant.*
+  Qd->>Qd: collection avo_documents absente ?
+  Qd-->>Spring: crée la collection (dimension 768) + bean VectorStore
+  Spring->>Cfg: pools de threads IA
+  Note over Spring: spring.ai.model.chat=none :<br/>le modèle de chat vient de la base
+</pre>
+</div>
+
+<h3>Prompts (back/src/main/resources/prompts)</h3>
+<table>
+<tr><th style="width:34%">Fichier</th><th>Utilisé par</th></tr>
+<tr><td><code>strategie.txt</code></td><td>Analyse stratégique en streaming (variables <code>pays</code>, <code>documents</code>, <code>jurisprudence</code>)</td></tr>
+<tr><td><code>suivi-strategie-system.txt</code></td><td>Chat de suivi (variable <code>strategie</code>)</td></tr>
+<tr><td><code>assistant-system.txt</code> / <code>avocat-senior-system.txt</code></td><td>Assistant général / analyse avec outils</td></tr>
+<tr><td><code>resume.txt</code> / <code>redaction.txt</code></td><td>Résumé / rédaction</td></tr>
+</table>
+</section>
+
+<section>
+<h2>5. Indexation d'un document (upload → Qdrant)</h2>
+<p>À chaque upload, le document est enregistré normalement (MySQL + MinIO), puis indexé <b>en arrière-plan</b>, une fois la transaction validée. L'utilisateur n'attend pas la vectorisation. <b>qwen n'intervient pas</b> dans cette étape.</p>
+
+<h3>Classes impliquées</h3>
+<table>
+<tr><th style="width:32%">Classe</th><th>Rôle dans l'indexation</th></tr>
+<tr><td><code>DocumentService</code> (front)</td><td>Envoie le document à <code>POST /api/documents</code>.</td></tr>
+<tr><td><code>DocumentController</code></td><td>Délègue à <code>DocumentService.create(dto)</code>.</td></tr>
+<tr><td><code>DocumentService</code> (back)</td><td>Upload MinIO, sauvegarde MySQL, puis enregistre un <code>TransactionSynchronization.afterCommit()</code> qui lance l'indexation.</td></tr>
+<tr><td><code>RAGDocumentService</code></td><td><code>ingestDocumentIntoQdrant()</code> (<code>@Async("aiIngestionExecutor")</code>) → méthode privée <code>ingest()</code>.</td></tr>
+<tr><td><code>MinioService</code></td><td><code>uploadFile()</code> puis <code>getFileStream()</code> pour relire le fichier.</td></tr>
+<tr><td><code>TikaDocumentReader</code></td><td>Extrait le texte brut du PDF / Word.</td></tr>
+<tr><td><code>TokenTextSplitter</code></td><td>Découpe en morceaux d'environ 150 tokens (≈ 500 à 600 caractères).</td></tr>
+<tr><td><code>VectorStore</code></td><td><code>delete("document_id == 'X'")</code> puis <code>add(morceaux)</code> : calcule les embeddings et écrit dans Qdrant.</td></tr>
+</table>
+
+<div class="diagram">
+<pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant UI as Front (DocumentService)
+  participant DC as DocumentController
+  participant DS as DocumentService
+  participant Mi as MinioService
+  participant RAG as RAGDocumentService
+  participant Tika as TikaDocumentReader
+  participant Sp as TokenTextSplitter
+  participant VS as VectorStore
+  participant Emb as nomic-embed-text
+  participant Qd as Qdrant
+  UI->>DC: POST /api/documents
+  DC->>DS: create(dto)
+  DS->>Mi: uploadFile()
+  DS->>DS: repository.save(document)
+  DS-->>UI: DocumentDTO (réponse immédiate)
+  Note over DS,RAG: afterCommit() → thread AI-Ingest
+  DS-)RAG: ingestDocumentIntoQdrant(id)
+  RAG->>RAG: isAiEnabled() ? findById(id)
+  RAG->>Mi: getFileStream(minioObjectId)
+  RAG->>Tika: get()
+  Tika-->>RAG: texte + métadonnées ajoutées
+  RAG->>VS: delete("document_id == 'id'")
+  RAG->>Sp: apply(documents)
+  Sp-->>RAG: morceaux
+  RAG->>VS: add(morceaux)
+  loop pour chaque morceau
+    VS->>Emb: embed(texte)
+    Emb-->>VS: vecteur[768]
+  end
+  VS->>Qd: upsert vecteurs + payload
+</pre>
+</div>
+
+<h3>Métadonnées stockées avec chaque morceau</h3>
+<p><code>document_id</code>, <code>nom_fichier</code>, <code>type_document</code> (DOSSIER, JURISPRUDENCE…), <code>pays</code>, <code>dossier_id</code>, <code>dossier_nom</code>, <code>client_id</code>, <code>client_nom</code>. Elles permettent de chercher <b>uniquement</b> dans les pièces d'un dossier (<code>dossier_id == '1494'</code>) ou dans la jurisprudence d'un pays (<code>type_document == 'JURISPRUDENCE' &amp;&amp; pays == 'FRANCE'</code>).</p>
+</section>
+
+<section>
+<h2>6. Analyse stratégique d'un dossier (RAG + streaming)</h2>
+<p>C'est le flux principal, déclenché depuis l'onglet stratégie d'un dossier. Le backend <b>ne laisse pas</b> le modèle choisir ses outils (trop lent) : il fait lui-même les deux recherches, remplit le prompt <code>strategie.txt</code>, puis diffuse la réponse mot par mot au front via <b>SSE</b> (Server-Sent Events). Le flux de tokens est un <code>Flux&lt;String&gt;</code> fourni par <code>ChatClient.stream()</code>.</p>
+
+<h3>Classes impliquées</h3>
+<table>
+<tr><th style="width:32%">Classe</th><th>Rôle</th></tr>
+<tr><td><code>DossierStrategieComponent</code> (front)</td><td>Ouvre un <code>EventSource</code>, accumule les tokens, découpe en 7 sections (<code>parseResponse</code>).</td></tr>
+<tr><td><code>AiController.analyzeStream()</code></td><td><code>GET /api/ai/analyze-stream?dossierId=</code>, crée un <code>SseEmitter</code> (timeout 15 min).</td></tr>
+<tr><td><code>AiService.analyzeDossierStrategyStream()</code></td><td>Sur <code>aiStreamingExecutor</code> : recherches, prompt, puis abonnement au flux.</td></tr>
+<tr><td><code>Pays</code></td><td>Pays du client du dossier (France, FR, LU…) → valeur connue pour le filtre, défaut FRANCE.</td></tr>
+<tr><td><code>AvoAiTools.searchDocumentsInDossier()</code> / <code>searchJurisprudence()</code></td><td>Mettent en forme les passages trouvés par <code>RAGDocumentService</code>.</td></tr>
+<tr><td><code>RAGDocumentService.searchInDossier()</code> / <code>searchJurisprudence()</code></td><td><code>VectorStore.similaritySearch(SearchRequest)</code> avec <code>topK</code>, seuil 0,5 et filtre.</td></tr>
+<tr><td><code>Prompts</code></td><td><code>render("strategie", pays, documents, jurisprudence)</code>.</td></tr>
+<tr><td><code>ChatClient</code></td><td><code>prompt().user(...).stream().content()</code> → <code>Flux&lt;String&gt;</code>.</td></tr>
+</table>
+
+<div class="diagram">
+<pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant UI as DossierStrategieComponent
+  participant AC as AiController
+  participant AS as AiService
+  participant Tools as AvoAiTools
+  participant RAG as RAGDocumentService
+  participant VS as VectorStore (Qdrant)
+  participant P as Prompts
+  participant CC as ChatClient (qwen2.5)
+  participant DR as DossierRepository
+  UI->>AC: EventSource GET /api/ai/analyze-stream?dossierId
+  AC->>AS: analyzeDossierStrategyStream(id, SseEmitter)
+  AC-->>UI: flux SSE ouvert
+  Note over AS: thread AI-Stream
+  AS->>DR: findById → client.pays → Pays.normalize
+  AS->>Tools: searchDocumentsInDossier(id, "faits, clauses, risques")
+  Tools->>RAG: searchInDossier(id, question)
+  RAG->>VS: similaritySearch(dossier_id == id, top 5)
+  VS-->>Tools: passages
+  AS->>Tools: searchJurisprudence(pays, "lois applicables")
+  Tools->>RAG: searchJurisprudence(pays, question)
+  RAG->>VS: similaritySearch(JURISPRUDENCE + pays, top 4)
+  VS-->>Tools: passages
+  AS->>P: render("strategie", ...)
+  AS->>CC: prompt(texte).stream().content()
+  loop chaque token du Flux
+    CC-->>AS: token
+    AS-->>UI: SSE {"token": "..."}
+  end
+  CC-->>AS: fin du Flux
+  AS->>DR: save(dossier.aiStrategy)
+  AS-->>UI: event DONE
+</pre>
+</div>
+
+<h3>Les 7 sections attendues dans la réponse</h3>
+<p>Synthèse des enjeux · Analyse jurisprudence · Les failles et risques · Analyse des chances · La stratégie gagnante · Workflow prévu · Tâches recommandées. Le front repère les titres <code>###</code> pour remplir chaque bloc au fur et à mesure.</p>
+</section>
+
+<section>
+<h2>7. Chat de suivi sur la stratégie</h2>
+<p>Une fois la stratégie générée, l'avocat peut poser des questions de suivi. Ici, <b>pas de RAG</b> : la stratégie sauvegardée sert de contexte (message système), et l'historique complet est renvoyé par le front à chaque question.</p>
+
+<table>
+<tr><th style="width:32%">Classe</th><th>Rôle</th></tr>
+<tr><td><code>DossierStrategieComponent</code></td><td><code>POST /api/ai/chat-dossier</code> avec <code>{dossierId, history[]}</code> ; <code>DELETE /api/ai/dossier/{id}/chat</code> pour effacer.</td></tr>
+<tr><td><code>AiController.chatDossier()</code></td><td>Valide la requête, délègue au service.</td></tr>
+<tr><td><code>AiService.chatDossierStrategy()</code></td><td>Construit <code>SystemMessage</code> (prompt <code>suivi-strategie-system</code>) + <code>UserMessage</code> / <code>AssistantMessage</code> (historique), appelle <code>ChatModel.call(Prompt)</code>, sauvegarde l'historique JSON.</td></tr>
+<tr><td><code>Dossier</code> (entité)</td><td>Champs <code>aiStrategy</code> et <code>aiChatHistory</code>.</td></tr>
+</table>
+
+<div class="diagram">
+<pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant UI as DossierStrategieComponent
+  participant AC as AiController
+  participant AS as AiService
+  participant DR as DossierRepository
+  participant Cfg as AiConfigurationService
+  participant LLM as ChatModel (qwen2.5)
+  UI->>AC: POST /api/ai/chat-dossier {dossierId, history}
+  AC->>AS: chatDossierStrategy(id, history)
+  AS->>DR: findById → aiStrategy
+  AS->>AS: SystemMessage(stratégie) + User/AssistantMessage
+  AS->>Cfg: buildChatModel()
+  AS->>LLM: call(new Prompt(messages))
+  LLM-->>AS: réponse
+  AS->>DR: save(aiChatHistory JSON)
+  AS-->>AC: réponse
+  AC-->>UI: {result}
+</pre>
+</div>
+</section>
+
+<section>
+<h2>8. Assistant général avec outils (tool calling)</h2>
+<p>Pour <code>/api/ai/chat</code> et <code>/api/ai/analyze</code>, c'est <b>le modèle qui décide</b> quelles méthodes Java appeler. On passe l'objet <code>AvoAiTools</code> au <code>ChatClient</code> (<code>.tools(avoAiTools)</code>) : Spring AI envoie au modèle la description de chaque méthode <code>@Tool</code>, exécute l'outil demandé, renvoie le résultat au modèle, puis récupère la réponse finale. La mémoire de la conversation est gérée par un <b>advisor</b>.</p>
+
+<table>
+<tr><th style="width:32%">Classe</th><th>Rôle</th></tr>
+<tr><td><code>AiTesterComponent</code> (front)</td><td>Envoie <code>{message, sessionId}</code> (UUID par session).</td></tr>
+<tr><td><code>AiService.chatWithTools()</code></td><td><code>ChatClient.prompt().system(prompt).user(msg).tools(avoAiTools).advisors(MessageChatMemoryAdvisor)</code>.</td></tr>
+<tr><td><code>MessageChatMemoryAdvisor</code> + <code>MessageWindowChatMemory</code></td><td>Mémoire : 20 derniers messages par conversation. Identifiant = <code>utilisateur:sessionId</code> (paramètre <code>ChatMemory.CONVERSATION_ID</code>).</td></tr>
+<tr><td><code>BoundedChatMemoryRepository</code></td><td>Stockage en RAM borné à 500 conversations (remplaçable par <code>JdbcChatMemoryRepository</code> pour garder l'historique en base).</td></tr>
+<tr><td><code>AvoAiTools</code></td><td>Outils <code>@Tool</code> / <code>@ToolParam</code> : <code>searchClients</code>, <code>getClientDetails</code>, <code>getRecentDossiers</code>, <code>getInvoicesForClient</code>, <code>getClientAmlMatches</code>, <code>getRecentDocuments</code>, <code>summarizeDossier</code>, <code>searchDocumentsInDossier</code>, <code>searchJurisprudence</code>.</td></tr>
+<tr><td>Services métier</td><td><code>ClientService</code>, <code>DossierService</code>, <code>InvoiceService</code>, <code>ScreeningMatchService</code>, <code>DocumentService</code>, <code>AiDossierSummaryService</code>, <code>RAGDocumentService</code>.</td></tr>
+</table>
+
+<div class="diagram">
+<pre class="mermaid">
+sequenceDiagram
+  autonumber
+  participant UI as AiTesterComponent
+  participant AC as AiController
+  participant AS as AiService
+  participant CC as ChatClient
+  participant Mem as MessageChatMemoryAdvisor
+  participant LLM as qwen2.5
+  participant Tools as AvoAiTools
+  participant CS as ClientService (MySQL)
+  UI->>AC: POST /api/ai/chat {message, sessionId}
+  AC->>AS: chat(sessionId, message)
+  AS->>CC: system + user + tools(avoAiTools) + advisor(user:sessionId)
+  CC->>Mem: ajoute l'historique de la conversation
+  CC->>LLM: messages + description des @Tool
+  LLM-->>CC: demande l'outil searchClients("Dupont")
+  CC->>Tools: searchClients("Dupont")
+  Tools->>CS: findAllWithFilters(...)
+  CS-->>Tools: clients
+  Tools-->>CC: texte résultat
+  CC->>LLM: résultat de l'outil
+  LLM-->>CC: réponse finale
+  CC->>Mem: enregistre question + réponse
+  CC-->>AS: content()
+  AS-->>UI: {result}
+</pre>
+<div class="caption">Testé contre Ollama local : le modèle appelle bien l'outil, et retrouve le nom du client au message suivant grâce à la mémoire.</div>
+</div>
+</section>
+
+<section>
+<h2>9. Résumé et rédaction simples</h2>
+<p>Les deux cas les plus simples : un prompt unique (fichier <code>resume.txt</code> ou <code>redaction.txt</code>) envoyé au modèle actif, sans outils, sans RAG ni mémoire.</p>
+<table>
+<tr><th style="width:30%">Endpoint</th><th>Méthode</th><th>Prompt</th></tr>
+<tr><td><code>POST /api/ai/summarize</code></td><td><code>AiService.summarizeText(text)</code></td><td><code>resume.txt</code> (variable <code>texte</code>)</td></tr>
+<tr><td><code>POST /api/ai/draft</code></td><td><code>AiService.draftDocument(context, type)</code></td><td><code>redaction.txt</code> (variables <code>type</code>, <code>contexte</code>)</td></tr>
+</table>
+<div class="diagram">
+<pre class="mermaid">
+sequenceDiagram
+  participant UI as AiTesterComponent
+  participant AC as AiController
+  participant AS as AiService
+  participant P as Prompts
+  participant CC as ChatClient (modèle actif)
+  UI->>AC: POST /summarize ou /draft
+  AC->>AS: summarizeText / draftDocument
+  AS->>P: render("resume" ou "redaction")
+  AS->>CC: prompt().user(texte).call().content()
+  CC-->>AS: texte
+  AS-->>UI: {result}
+</pre>
+</div>
+
+<h2 style="margin-top:20px">10. Resynchronisation et suppression de documents</h2>
+<table>
+<tr><th style="width:34%">Action</th><th>Flux de classes</th></tr>
+<tr><td>Réindexer tous les documents<br/><code>POST /api/ai/sync-all-documents</code></td><td><code>AiController.syncAllDocuments()</code> → pour chaque document ayant un fichier : <code>RAGDocumentService.ingestDocumentIntoQdrantSync()</code> → <code>ingest()</code>. L'ancienne version est supprimée avant l'écriture : relancer la synchro ne crée pas de doublons (vérifié : 1 seul point après deux indexations).</td></tr>
+<tr><td>Supprimer un document<br/><code>DELETE /api/documents/{id}</code></td><td><code>DocumentController</code> → <code>DocumentService.delete()</code> → MinIO + MySQL → <code>RAGDocumentService.removeDocumentFromQdrant()</code> → <code>VectorStore.delete("document_id == 'id'")</code>. Une erreur Qdrant est journalisée sans bloquer la suppression.</td></tr>
+<tr><td>Changer de modèle d'embedding</td><td>Modifier <code>AI_EMBEDDING_MODEL</code> <b>et</b> <code>QDRANT_COLLECTION</code> (nouvelle collection, créée à la bonne dimension au démarrage), puis lancer la synchro.</td></tr>
+</table>
+<div class="box warn"><b>Migration depuis LangChain4j :</b> l'ancienne collection <code>avo_docs_collection</code> n'est plus lue (format différent). Après le déploiement, lancer <code>POST /api/ai/sync-all-documents</code> pour remplir <code>avo_documents</code>, puis supprimer l'ancienne collection.</div>
+</section>
+
+<section>
+<h2>11. Récapitulatif</h2>
+<h3>Fichiers back (back/src/main/java/com/avo)</h3>
+<table>
+<tr><th style="width:44%">Fichier</th><th>Responsabilité</th></tr>
+<tr><td><code>config/RAGConfig.java</code></td><td>Pools de threads IA</td></tr>
+<tr><td><code>controller/AiController.java</code></td><td>Endpoints <code>/api/ai/*</code></td></tr>
+<tr><td><code>controller/AiConfigurationController.java</code></td><td>Endpoints <code>/api/ai-configuration/*</code></td></tr>
+<tr><td><code>entities/AiConfiguration.java</code></td><td>Configuration du modèle actif</td></tr>
+<tr><td><code>service/AiConfigurationService.java</code></td><td>Fabrique du <code>ChatModel</code> (Ollama / OpenAI / Gemini)</td></tr>
+<tr><td><code>service/AiService.java</code></td><td>Tous les usages : résumé, rédaction, chat avec outils, stratégie en streaming, suivi, mémoire</td></tr>
+<tr><td><code>service/ai/RAGDocumentService.java</code></td><td>Indexation, suppression et recherche dans Qdrant (<code>VectorStore</code>)</td></tr>
+<tr><td><code>service/ai/AvoAiTools.java</code></td><td>Outils <code>@Tool</code> exposés au modèle</td></tr>
+<tr><td><code>service/ai/AiDossierSummaryService.java</code></td><td>Résumé complet d'un dossier (tâches, activités, notes, RDV, facturation)</td></tr>
+<tr><td><code>service/ai/Prompts.java</code></td><td>Chargement des prompts <code>resources/prompts/*.txt</code></td></tr>
+<tr><td><code>service/ai/Pays.java</code></td><td>Normalisation du pays pour la jurisprudence</td></tr>
+<tr><td><code>services/DocumentService.java</code></td><td>Déclenche l'indexation à l'upload et le retrait à la suppression</td></tr>
+</table>
+
+<h3>Fichiers front (front/src/app)</h3>
+<table>
+<tr><th style="width:44%">Fichier</th><th>Responsabilité</th></tr>
+<tr><td><code>dossier/dossier-strategie/dossier-strategie.component.ts</code></td><td>Analyse streaming (SSE) + chat de suivi</td></tr>
+<tr><td><code>features/ai-tester/ai-tester.component.ts</code></td><td>Banc d'essai : résumé, rédaction, chat, analyse</td></tr>
+<tr><td><code>administration/ai-configuration/ai-configuration.ts</code></td><td>Écran de configuration du modèle</td></tr>
+<tr><td><code>services/ai-status.service.ts</code></td><td>IA activée ou non</td></tr>
+</table>
+
+<h3>Variables d'environnement</h3>
+<table>
+<tr><th style="width:30%">Variable</th><th style="width:28%">Défaut</th><th>Usage</th></tr>
+<tr><td><code>OLLAMA_BASE_URL</code></td><td><code>http://127.0.0.1:11434</code></td><td>Ollama pour les embeddings (le chat Ollama utilise l'URL saisie dans l'écran admin)</td></tr>
+<tr><td><code>AI_EMBEDDING_MODEL</code></td><td><code>nomic-embed-text</code></td><td>Modèle de vectorisation</td></tr>
+<tr><td><code>QDRANT_HOST</code></td><td><code>localhost</code></td><td>Hôte Qdrant</td></tr>
+<tr><td><code>QDRANT_GRPC_PORT</code></td><td><code>6334</code></td><td>Port gRPC de Qdrant</td></tr>
+<tr><td><code>QDRANT_COLLECTION</code></td><td><code>avo_documents</code></td><td>Collection des vecteurs</td></tr>
+</table>
+
+<h3>Tester l'IA en local</h3>
+<p>Un test de bout en bout (<code>SpringAiLocalSmokeTest</code>) vérifie l'indexation, l'absence de doublons, la recherche filtrée, la suppression, le streaming, le tool calling et la mémoire contre Ollama et Qdrant locaux. Il est désactivé par défaut :</p>
+<pre>$env:AI_SMOKE_TEST="true"; mvn test -Dtest=SpringAiLocalSmokeTest</pre>
+
+<div class="box warn"><b>À retenir pour le déploiement :</b> Ollama doit toujours être joignable pour les embeddings, même si le chat passe par OpenAI ou Gemini. Installer <code>nomic-embed-text</code> (<code>ollama pull nomic-embed-text</code>) et le modèle de chat configuré en base si le provider est OLLAMA.</div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({ startOnLoad: false, theme: 'base', securityLevel: 'loose',
+    themeVariables: { fontFamily: 'Segoe UI, Arial, sans-serif', fontSize: '13px', primaryColor: '#eeedfe', primaryBorderColor: '#534ab7', primaryTextColor: '#26215c', lineColor: '#5f5e5a', actorBkg: '#eeedfe', actorBorder: '#534ab7', noteBkgColor: '#faeeda', noteBorderColor: '#ba7517', signalColor: '#444441', signalTextColor: '#2c2c2a' },
+    sequence: { useMaxWidth: true, mirrorActors: false, wrap: true, actorMargin: 30, messageFontSize: 12, actorFontSize: 12 },
+    flowchart: { useMaxWidth: true, htmlLabels: true } });
+  mermaid.run().then(() => {
+    document.body.setAttribute('data-ready', '1');
+    console.log('MERMAID_RENDERED ' + document.querySelectorAll('.mermaid svg').length + '/' + document.querySelectorAll('.mermaid').length);
+  }).catch(e => console.log('MERMAID_ERROR ' + e));
+</script>
+</body>
+</html>
