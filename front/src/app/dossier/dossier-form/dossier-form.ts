@@ -19,6 +19,7 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
 import { forkJoin } from 'rxjs';
 import { AlertService } from '../../services/alert-service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { PAYS_JURIDICTION, normalizePays } from '../../shared/ai-sources/pays';
 
 @Component({
   selector: 'app-dossier-form',
@@ -58,6 +59,7 @@ export class DossierForm implements OnInit {
   showResponsableDialog = false;
   showDocumentDialog = false;
   showDomaineDialog = false;
+  readonly paysJuridiction = PAYS_JURIDICTION;
 
   constructor() {
     this.dossierForm = this.fb.group({
@@ -68,6 +70,8 @@ export class DossierForm implements OnInit {
       responsableId: ['', Validators.required],
       intervenantsIds: [[]],
       domaineJuridique: ['', Validators.required],
+      // Droit applicable au litige : l'IA n'analyse le dossier qu'avec la jurisprudence de ce pays (+ international)
+      paysJuridiction: ['', Validators.required],
       prioriteID: ['', Validators.required],
       statutID: ['', Validators.required],
       dateOuverture: [new Date().toISOString().substring(0, 10), Validators.required],
@@ -128,6 +132,7 @@ export class DossierForm implements OnInit {
           } else if (res.client) {
              this.selectedClient = res.client;
              this.dossierForm.patchValue({ clientId: res.client.id });
+             this.prefillPaysJuridiction(res.client);
              this.checkClientStatus();
           }
           this.loading = false;
@@ -202,8 +207,18 @@ export class DossierForm implements OnInit {
   private setClientAndClose(client: Client): void {
     this.selectedClient = client;
     this.dossierForm.patchValue({ clientId: client.id });
+    this.prefillPaysJuridiction(client);
     this.checkClientStatus();
     this.closeClientDialog();
+  }
+
+  /** Préremplit le pays de juridiction avec le pays du client (s'il est géré), sans écraser un choix existant. */
+  private prefillPaysJuridiction(client: Client): void {
+    const current = this.dossierForm.get('paysJuridiction');
+    const pays = normalizePays((client as any)?.pays);
+    if (current && !current.value && pays) {
+      current.setValue(pays);
+    }
   }
 
   // Autres Parties Selection Dialog Methods

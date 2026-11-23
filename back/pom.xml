@@ -37,6 +37,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        <!-- Lecture des PDF page par page pour l'IA (la source citée renvoie à la page). Même version que celle de Tika. -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.7</version>
+        </dependency>
         <!-- Journal d'audit : historique automatique des modifications (version gérée par Spring Boot) -->
         <dependency>
             <groupId>org.hibernate.orm</groupId>
@@ -237,4 +243,25 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--
+            L'IDE (extension Java Red Hat / Eclipse JDT, m2e) compile en tâche de fond. S'il écrivait dans le même
+            dossier « target » que Maven en ligne de commande, les deux se marcheraient dessus (fichiers *MapperImpl
+            réécrits pendant la compilation Maven → « error reading ... »). Ce profil, actif uniquement dans l'IDE
+            (m2e définit la propriété m2e.version), lui donne son propre dossier « target-ide ».
+            Maven en ligne de commande, le Dockerfile et les déploiements continuent d'utiliser « target ».
+        -->
+        <profile>
+            <id>ide-separate-output</id>
+            <activation>
+                <property>
+                    <name>m2e.version</name>
+                </property>
+            </activation>
+            <build>
+                <directory>${project.basedir}/target-ide</directory>
+            </build>
+        </profile>
+    </profiles>
 </project>

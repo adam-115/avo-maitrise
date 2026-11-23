@@ -43,6 +43,26 @@ public class DossierService {
         }
     }
 
+    /**
+     * Pays de juridiction du dossier (droit applicable utilisé par l'IA) :
+     * 1. la valeur saisie, si c'est un pays géré ;
+     * 2. sinon la valeur déjà enregistrée (le front peut ne pas renvoyer le champ) ;
+     * 3. sinon le pays du client, s'il est géré ;
+     * 4. sinon null : « à définir », jamais de France par défaut en silence.
+     */
+    private void resolvePaysJuridiction(Dossier entity, String previousPays) {
+        String pays = com.avo.service.ai.Pays.normalizeOrNull(entity.getPaysJuridiction());
+        if (pays == null) {
+            pays = com.avo.service.ai.Pays.normalizeOrNull(previousPays);
+        }
+        if (pays == null && entity.getClient() != null && entity.getClient().getId() != null) {
+            pays = clientRepository.findById(entity.getClient().getId())
+                    .map(c -> com.avo.service.ai.Pays.normalizeOrNull(c.getPays()))
+                    .orElse(null);
+        }
+        entity.setPaysJuridiction(pays);
+    }
+
     public Page<DossierDTO> findAll(Pageable pageable) {
         log.info("[ENTER] Executing findAll");
         return repository.findAll(pageable).map(mapper::toDto);
@@ -79,6 +99,7 @@ public class DossierService {
         }
         Dossier entity = mapper.toEntity(dto);
         linkDocumentsAndParties(entity);
+        resolvePaysJuridiction(entity, null);
         Dossier saved = repository.save(entity);
 
         eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
@@ -97,8 +118,11 @@ public class DossierService {
             }
             dto.setReferenceInterne(ref);
         }
+        String previousPays = dto.getId() == null ? null
+                : repository.findById(dto.getId()).map(Dossier::getPaysJuridiction).orElse(null);
         Dossier entity = mapper.toEntity(dto);
         linkDocumentsAndParties(entity);
+        resolvePaysJuridiction(entity, previousPays);
         Dossier saved = repository.save(entity);
 
         if (saved.getDocuments().size() > dto.getDocuments().size()) {

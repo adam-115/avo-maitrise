@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { forkJoin, finalize } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -21,8 +22,18 @@ export class JurisprudenceManagement implements OnInit {
   isLoading = false;
   
   showUploadModal = false;
+  /** Upload en cours : bloque le double envoi et la fermeture de la fenêtre */
+  isUploading = false;
   newDocTitle = '';
   newDocCountry = 'LUXEMBOURG';
+  /** Décision de justice ou texte de loi (code, loi, règlement) */
+  newDocType: 'JURISPRUDENCE' | 'LEGISLATION' = 'JURISPRUDENCE';
+  // Fiche de la décision
+  newDocJuridiction = '';
+  newDocDateDecision = '';
+  newDocNumero = '';
+  newDocEcli = '';
+  newDocSourceUrl = '';
   selectedFile: File | null = null;
   selectedFileBase64: string | null = null;
 
@@ -35,9 +46,13 @@ export class JurisprudenceManagement implements OnInit {
 
   loadDocuments() {
     this.isLoading = true;
-    this.documentService.getJurisprudence(this.selectedCountry).subscribe({
-      next: (res: any) => {
-        this.documents = res.content || res || [];
+    // Décisions et textes de loi du pays : les deux forment la base légale consultée par l'IA
+    forkJoin([
+      this.documentService.getJurisprudence(this.selectedCountry, 0, 100, 'JURISPRUDENCE'),
+      this.documentService.getJurisprudence(this.selectedCountry, 0, 100, 'LEGISLATION')
+    ]).subscribe({
+      next: ([jurisprudence, legislation]: any[]) => {
+        this.documents = [...(legislation.content || []), ...(jurisprudence.content || [])];
         this.isLoading = false;
       },
       error: (err: any) => {
@@ -54,13 +69,20 @@ export class JurisprudenceManagement implements OnInit {
 
   openUploadModal() {
     this.newDocTitle = '';
+    this.newDocType = 'JURISPRUDENCE';
     this.newDocCountry = this.selectedCountry;
+    this.newDocJuridiction = '';
+    this.newDocDateDecision = '';
+    this.newDocNumero = '';
+    this.newDocEcli = '';
+    this.newDocSourceUrl = '';
     this.selectedFile = null;
     this.selectedFileBase64 = null;
     this.showUploadModal = true;
   }
 
   closeUploadModal() {
+    if (this.isUploading) return;
     this.showUploadModal = false;
   }
 
@@ -82,6 +104,7 @@ export class JurisprudenceManagement implements OnInit {
   }
 
   uploadDocument() {
+    if (this.isUploading) return;
     if (!this.selectedFile || !this.selectedFileBase64 || !this.newDocTitle) {
       this.alertService.displayMessage('Erreur', 'Veuillez remplir le titre et sélectionner un fichier.', 'error');
       return;
@@ -92,14 +115,24 @@ export class JurisprudenceManagement implements OnInit {
       filename: this.selectedFile.name,
       title: this.newDocTitle,
       pays: this.newDocCountry,
-      typeDocument: 'JURISPRUDENCE',
+      juridiction: this.newDocJuridiction.trim() || undefined,
+      dateDecision: this.newDocDateDecision || undefined,
+      numeroDecision: this.newDocNumero.trim() || undefined,
+      ecli: this.newDocEcli.trim() || undefined,
+      sourceUrl: this.newDocSourceUrl.trim() || undefined,
+      typeDocument: this.newDocType,
       dateUpload: new Date(),
       fileData: this.selectedFileBase64
     };
 
-    this.documentService.create(docToSave).subscribe({
+    this.isUploading = true;
+    this.documentService.create(docToSave).pipe(
+      finalize(() => this.isUploading = false)
+    ).subscribe({
       next: () => {
-        this.alertService.success('Jurisprudence ajoutée avec succès !');
+        // L'indexation pour l'IA se poursuit en arrière-plan côté serveur
+        this.isUploading = false;
+        this.alertService.success('Document ajouté. La vectorisation se poursuit en arrière-plan.');
         this.closeUploadModal();
         if (this.selectedCountry === this.newDocCountry) {
           this.loadDocuments();

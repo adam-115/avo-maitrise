@@ -8,9 +8,13 @@ import org.springframework.data.domain.PageRequest;
 import com.avo.audit.AuditAction;
 import com.avo.audit.AuditOutcome;
 import com.avo.audit.AuditService;
+import com.avo.service.ai.sources.SourceRef;
+import com.avo.service.ai.sources.SourceRegistry;
 import com.avo.services.ClientService;
 import com.avo.services.DossierService;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -35,6 +39,7 @@ public class AvoAiTools {
     private final AiDossierSummaryService aiDossierSummaryService;
     private final RAGDocumentService ragDocumentService;
     private final AuditService auditService;
+    private final SourceRegistry sourceRegistry;
 
     public AvoAiTools(ClientService clientService, DossierService dossierService,
             com.avo.services.InvoiceService invoiceService,
@@ -42,7 +47,8 @@ public class AvoAiTools {
             com.avo.services.DocumentService documentService,
             AiDossierSummaryService aiDossierSummaryService,
             RAGDocumentService ragDocumentService,
-            AuditService auditService) {
+            AuditService auditService,
+            SourceRegistry sourceRegistry) {
         this.clientService = clientService;
         this.dossierService = dossierService;
         this.invoiceService = invoiceService;
@@ -51,6 +57,7 @@ public class AvoAiTools {
         this.aiDossierSummaryService = aiDossierSummaryService;
         this.ragDocumentService = ragDocumentService;
         this.auditService = auditService;
+        this.sourceRegistry = sourceRegistry;
     }
 
     /**
@@ -61,6 +68,34 @@ public class AvoAiTools {
         auditService.record(AuditAction.ACCES_IA, resourceType, resourceId, AuditOutcome.SUCCES, details);
     }
 
+    /**
+     * Inscrit une donnée du logiciel (fiche client, liste de dossiers...) comme source citable et la renvoie
+     * précédée de son identifiant : l'IA doit citer [S#] pour toute affirmation tirée de cette donnée.
+     */
+    private String asSource(String title, String link, String content) {
+        String id = sourceRegistry.register(SourceRef.DONNEE, title, null, null, content, link, null, null);
+        return "[" + id + "] " + title + " :\n" + content;
+    }
+
+    /** Inscrit un passage de document (pièce ou jurisprudence) et le formate pour le modèle. */
+    private String passage(String kind, org.springframework.ai.document.Document p) {
+        Map<String, Object> meta = p.getMetadata();
+        String fileName = String.valueOf(meta.getOrDefault("nom_fichier", "Document"));
+        Long documentId = parseLong(meta.get("document_id"));
+        Integer page = parseInt(meta.get("page_number"));
+        Map<String, String> details = new HashMap<>();
+        // Un texte de loi (LEGISLATION) est distingué d'une décision, et chaque source affiche son pays
+        if ("LEGISLATION".equals(String.valueOf(meta.get("type_document")))) {
+            kind = SourceRef.LEGISLATION;
+        }
+        for (String key : new String[]{"pays", "juridiction", "date_decision", "numero_decision", "ecli"}) {
+            Object v = meta.get(key);
+            if (v != null && !String.valueOf(v).isBlank()) {
+                details.put(key, String.valueOf(v));
+            }
+        }
+        Object url = meta.get("source_url");
+
     @Tool(description = "Recherche un client par nom, prénom ou email. Retourne une liste simplifiée (ID, Nom, Email, Statut).")
     public String searchClients(String searchTerm) {
         traceIa("CLIENT", null, "Recherche de clients : " + searchTerm);
@@ -69,14 +104,14 @@ public class AvoAiTools {
             if (result.isEmpty())
                 return "Aucun client trouvé pour : " + searchTerm;
 
-            return result.getContent().stream()
+            return asSource("Recherche de clients « " + searchTerm + " »", null, result.getContent().stream()
                     .map(c -> String.format("- Client ID: %d, Nom/Raison Sociale: %s, Email: %s, Statut AML: %s",
                             c.getId(),
                             c.getNom() != null ? c.getNom()
                                     : (c.getNomCommercial() != null ? c.getNomCommercial() : "Inconnu"),
                             c.getEmail(),
                             c.getClientStatus()))
-                    .collect(Collectors.joining("\n"));
+                    .collect(Collectors.joining("\n")));
         } catch (Exception e) {
             return "Erreur technique lors de la recherche du client: " + e.getMessage();
         }
@@ -90,12 +125,12 @@ public class AvoAiTools {
             if (client == null)
                 return "Client introuvable avec l'ID: " + clientId;
 
-            return String.format(
+            return asSource("Fiche client #" + clientId, "/home/client-details?id=" + clientId, String.format(
                     "Détails Client ID: %d\nType: %s\nNom: %s\nEmail: %s\nTéléphone: %s\nStatut: %s\nDate de création: %s",
                     client.getId(), client.getType(),
                     client.getNom() != null ? client.getNom() : client.getNomCommercial(),
                     client.getEmail(), client.getTelephone(),
-                    client.getClientStatus(), client.getCreatedAt());
+                    client.getClientStatus(), client.getCreatedAt()));
         } catch (Exception e) {
             return "Erreur technique lors de la récupération du client: " + e.getMessage();
         }
@@ -113,11 +148,11 @@ public class AvoAiTools {
             if (result.isEmpty())
                 return "Aucun dossier trouvé.";
 
-            return result.getContent().stream()
+            return asSource("Liste des dossiers récents", null, result.getContent().stream()
                     .map(d -> String.format("- Dossier ID: %d, Titre: '%s', Référence: %s, Statut: %s",
                             d.getId(), d.getTitre(), d.getReferenceInterne(),
                             d.getStatutID() != null ? d.getStatutID() : "Non défini"))
-                    .collect(Collectors.joining("\n"));
+                    .collect(Collectors.joining("\n")));
         } catch (Exception e) {
             return "Erreur technique lors de la récupération des dossiers: " + e.getMessage();
         }
@@ -136,11 +171,11 @@ public class AvoAiTools {
             if (clientInvoices.isEmpty())
                 return "Aucune facture trouvée pour le client ID: " + clientId;
 
-            return clientInvoices.stream()
+            return asSource("Factures du client #" + clientId, "/home/client-details?id=" + clientId, clientInvoices.stream()
                     .map(i -> String.format(
                             "- Facture ID: %d, Numéro: %s, Statut: %s, Total: %s, Lien: http://localhost:4200/invoices/%d",
                             i.getId(), i.getNumeroFacture(), i.getStatus(), i.getTotalAmount(), i.getId()))
-                    .collect(Collectors.joining("\n"));
+                    .collect(Collectors.joining("\n")));
         } catch (Exception e) {
             return "Erreur lors de la récupération des factures: " + e.getMessage();
         }
@@ -154,10 +189,10 @@ public class AvoAiTools {
             if (matches.isEmpty())
                 return "Aucune alerte AML trouvée pour le client ID: " + clientId;
 
-            return matches.getContent().stream()
+            return asSource("Alertes LCB-FT du client #" + clientId, "/home/client-details?id=" + clientId, matches.getContent().stream()
                     .map(m -> String.format("- Match ID: %d, Statut de décision: %s, Identifiant Yente: %s",
                             m.getId(), m.getStatus(), m.getYenteId()))
-                    .collect(Collectors.joining("\n"));
+                    .collect(Collectors.joining("\n")));
         } catch (Exception e) {
             return "Erreur technique lors de la vérification AML: " + e.getMessage();
         }
@@ -173,10 +208,10 @@ public class AvoAiTools {
             if (docs.isEmpty())
                 return "Aucun document trouvé.";
 
-            return docs.getContent().stream()
+            return asSource("Liste des documents récents", null, docs.getContent().stream()
                     .map(d -> String.format("- Document ID: %d, Nom: %s, Type: %s, Date: %s",
                             d.getId(), d.getNomFichier(), d.getTypeDocument(), d.getDateUpload()))
-                    .collect(Collectors.joining("\n"));
+                    .collect(Collectors.joining("\n")));
         } catch (Exception e) {
             return "Erreur technique lors de la récupération des documents: " + e.getMessage();
         }
@@ -186,7 +221,8 @@ public class AvoAiTools {
     public String summarizeDossier(Long dossierId) {
         traceIa("DOSSIER", dossierId, "Résumé du dossier");
         try {
-            return aiDossierSummaryService.generateDossierSummary(dossierId);
+            return asSource("Résumé du dossier #" + dossierId, "/home/dossier-detail/" + dossierId,
+                    aiDossierSummaryService.generateDossierSummary(dossierId));
         } catch (Exception e) {
             e.printStackTrace();
             return "Erreur technique lors du résumé du dossier: " + e.getMessage();
@@ -213,8 +249,7 @@ public class AvoAiTools {
                         + question;
             }
             return passages.stream()
-                    .map(p -> String.format("[Doc %s - %s] %s", p.getMetadata().getOrDefault("document_id", "?"),
-                            p.getMetadata().getOrDefault("nom_fichier", "Inconnu"), p.getText()))
+                    .map(p -> passage(SourceRef.DOCUMENT, p))
                     .collect(Collectors.joining("\n\n"));
         } catch (Exception e) {
             log.error("Erreur recherche RAG dossier {}", dossierId, e);
@@ -223,15 +258,17 @@ public class AvoAiTools {
     }
 
     /**
-     * Recherche sémantique dans la base de jurisprudence (type_document = JURISPRUDENCE),
-     * filtrée par pays (ex: FRANCE).
+     * Recherche sémantique dans la base légale du cabinet : jurisprudence et textes de loi du pays, plus
+     * l'international. Si l'avocat a imposé un droit applicable (AiJurisdiction), il remplace le pays demandé.
      */
     @Tool(description = "Cherche des textes de lois, des arrêts de cassation ou de la jurisprudence dans la base de connaissances globale du cabinet. "
             + "Utilise cet outil pour trouver les articles de loi et la base légale pour défendre ton dossier.")
     public String searchJurisprudence(
             @ToolParam(description = "Pays du droit applicable : FRANCE, LUXEMBOURG, BELGIQUE, ALLEMAGNE, SUISSE ou INTERNATIONAL") String pays,
             @ToolParam(description = "Question juridique à rechercher") String question) {
-        String paysFiltre = Pays.normalize(pays);
+        // Le droit choisi par l'avocat (chat) ou le pays du dossier (stratégie) prime sur celui demandé par le modèle
+        String impose = com.avo.service.ai.sources.AiJurisdiction.get();
+        String paysFiltre = Pays.normalize(impose != null ? impose : pays);
         try {
             if (question == null || question.isBlank()) {
                 question = "jurisprudence et lois";
@@ -242,8 +279,7 @@ public class AvoAiTools {
                         + " et la requête : " + question;
             }
             return passages.stream()
-                    .map(p -> String.format("[Source: %s] %s", p.getMetadata().getOrDefault("nom_fichier", "Inconnu"),
-                            p.getText()))
+                    .map(p -> passage(SourceRef.JURISPRUDENCE, p))
                     .collect(Collectors.joining("\n\n"));
         } catch (Exception e) {
             log.error("Erreur recherche jurisprudence ({})", paysFiltre, e);

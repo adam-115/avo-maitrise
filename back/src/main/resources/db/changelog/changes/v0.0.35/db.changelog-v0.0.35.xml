@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!--
+        Pays de juridiction d'un dossier : droit applicable au litige. L'analyse stratégique de l'IA s'appuie
+        uniquement sur la jurisprudence et la législation de ce pays (+ international).
+        Ajouté aussi à dossiers_aud : la table Dossier est historisée par Envers.
+    -->
+    <changeSet id="add-pays-juridiction-to-dossiers" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="dossiers" columnName="pays_juridiction"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="dossiers">
+            <column name="pays_juridiction" type="VARCHAR(30)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-pays-juridiction-to-dossiers-aud" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="dossiers_aud"/>
+                <not>
+                    <columnExists tableName="dossiers_aud" columnName="pays_juridiction"/>
+                </not>
+            </and>
+        </preConditions>
+        <addColumn tableName="dossiers_aud">
+            <column name="pays_juridiction" type="VARCHAR(30)"/>
+        </addColumn>
+    </changeSet>
+
+    <!--
+        Dossiers existants : pays du client quand il est reconnu, sinon NULL (« à définir »).
+        Volontairement pas de France par défaut : un client marocain ou espagnol ne doit pas être analysé
+        en droit français sans que personne ne le sache.
+    -->
+    <changeSet id="init-pays-juridiction-from-client" author="adam" dbms="mysql">
+        <sql>
+            UPDATE dossiers d
+            JOIN clients c ON c.id = d.client_id
+            SET d.pays_juridiction = CASE UPPER(TRIM(c.pays))
+                WHEN 'FRANCE' THEN 'FRANCE' WHEN 'FR' THEN 'FRANCE'
+                WHEN 'LUXEMBOURG' THEN 'LUXEMBOURG' WHEN 'LU' THEN 'LUXEMBOURG'
+                WHEN 'BELGIQUE' THEN 'BELGIQUE' WHEN 'BE' THEN 'BELGIQUE' WHEN 'BELGIUM' THEN 'BELGIQUE'
+                WHEN 'ALLEMAGNE' THEN 'ALLEMAGNE' WHEN 'DE' THEN 'ALLEMAGNE' WHEN 'GERMANY' THEN 'ALLEMAGNE'
+                WHEN 'SUISSE' THEN 'SUISSE' WHEN 'CH' THEN 'SUISSE' WHEN 'SWITZERLAND' THEN 'SUISSE'
+                ELSE NULL END
+            WHERE d.pays_juridiction IS NULL;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

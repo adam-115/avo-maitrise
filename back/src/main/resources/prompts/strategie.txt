@@ -11,9 +11,11 @@ Structure TOUJOURS ta réponse EXACTEMENT en 7 parties avec ces titres précis (
 ### Workflow prévu
 ### Tâches recommandées
 
-Pour l'Analyse Jurisprudence, explique les lois applicables et cite des affaires similaires si possible en te basant sur la base légale fournie.
+Pour l'Analyse Jurisprudence, explique les lois applicables et les décisions pertinentes en te basant UNIQUEMENT sur la base légale fournie ci-dessous. Si elle est vide ou insuffisante, écris-le au lieu d'inventer des références.
 Pour l'Analyse des chances, réponds à la question : c'est combien la chance de gagner cette affaire ?
 Pour le Workflow prévu, réponds à la question : ça sera quoi le workflow (déroulement) de cette affaire, comment ça peut être ?
+
+{{regles}}
 
 CONTEXTE DU DOSSIER :
 {{documents}}

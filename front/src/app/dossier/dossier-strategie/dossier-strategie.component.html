@@ -16,6 +16,18 @@
          secondes)</p>
    </div>
 
+   <!-- Pays de juridiction à définir -->
+   <div *ngIf="paysManquant()"
+      class="flex flex-col items-center justify-center py-10 px-4 text-center bg-amber-50 rounded-2xl border border-amber-200">
+      <h3 class="text-lg font-bold text-amber-800">Pays de juridiction à définir</h3>
+      <p class="mt-2 text-amber-700 max-w-xl">{{ paysManquant() }}</p>
+      <p class="mt-1 text-xs text-amber-700/80 max-w-xl">L'analyse s'appuie uniquement sur la jurisprudence et la législation du droit applicable au litige : elle n'est pas lancée tant qu'il n'est pas choisi, pour ne pas raisonner dans le mauvais droit.</p>
+      <a [href]="'/home/dossier/edit/' + dossierId"
+         class="mt-5 px-6 py-2.5 bg-amber-600 text-white font-semibold rounded-full hover:bg-amber-700 transition-colors shadow-sm">
+         Modifier le dossier
+      </a>
+   </div>
+
    <!-- Error State -->
    <div *ngIf="hasError()"
       class="flex flex-col items-center justify-center py-12 px-4 text-center bg-red-50 rounded-2xl border border-red-100">
@@ -68,6 +80,7 @@
       </button>
    </div>
    <div id="strategy-grid" *ngIf="!isLoading() && !hasError() && rawResponse()"
+      (click)="onStrategyClick($event)"
       class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
 
       <!-- Synthèse -->
@@ -204,6 +217,13 @@
             [innerHTML]="tachesRecommandees()"></div>
       </div>
 
+   </div>
+
+   <!-- Fiabilité : sources consultées et vérification automatique des références -->
+   <div *ngIf="!isLoading() && !hasError() && rawResponse() && aiVerification()" class="mt-6 bg-white rounded-3xl border border-slate-200 p-6">
+      <h3 class="text-lg font-bold text-slate-800">Sources et vérification</h3>
+      <p *ngIf="aiPerimetre().length" class="text-xs text-slate-500 mt-1">Base légale recherchée dans : <b>{{ aiPerimetre().join(' + ') }}</b></p>
+      <app-ai-sources-panel #sourcesPanel [sources]="aiSources()" [verification]="aiVerification()" [perimetre]="aiPerimetre()"></app-ai-sources-panel>
    </div>
 
    <!-- Refresh Button -->

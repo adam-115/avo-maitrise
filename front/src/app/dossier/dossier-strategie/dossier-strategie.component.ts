@@ -1,18 +1,21 @@
-import { Component, Input, OnInit, signal } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
+import { AiSource, AiVerification } from '../../shared/ai-sources/ai-sources.model';
+import { AiSourcesPanelComponent } from '../../shared/ai-sources/ai-sources-panel.component';
 
 @Component({
   selector: 'app-dossier-strategie',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AiSourcesPanelComponent],
   templateUrl: './dossier-strategie.component.html'
 })
 export class DossierStrategieComponent implements OnInit {
   @Input() dossierId!: string;
   @Input() selectedDossier: any;
+  @ViewChild('sourcesPanel') sourcesPanel?: AiSourcesPanelComponent;
 
   isLoading = signal<boolean>(false);
   hasError = signal<boolean>(false);
@@ -26,6 +29,13 @@ export class DossierStrategieComponent implements OnInit {
   tachesRecommandees = signal<string>('');
 
   rawResponse = signal<string>('');
+  /** Sources consultées pour l'analyse et verdict de la vérification automatique (événement SSE « SOURCES »). */
+  aiSources = signal<AiSource[]>([]);
+  aiVerification = signal<AiVerification | undefined>(undefined);
+  /** Droit dans lequel la base légale a été cherchée (ex. FRANCE + INTERNATIONAL). */
+  aiPerimetre = signal<string[]>([]);
+  /** Message du serveur quand le pays de juridiction du dossier n'est pas défini (analyse non lancée). */
+  paysManquant = signal<string | null>(null);
 
   // Chat properties
   chatHistory = signal<{role: string, content: string}[]>([]);
@@ -36,6 +46,16 @@ export class DossierStrategieComponent implements OnInit {
 
   ngOnInit() {
     if (this.selectedDossier && this.selectedDossier.aiStrategy) {
+        if (this.selectedDossier.aiStrategySources) {
+            try {
+                const savedSources = JSON.parse(this.selectedDossier.aiStrategySources);
+                this.aiSources.set(savedSources.sources || []);
+                this.aiVerification.set(savedSources.verification);
+                this.aiPerimetre.set(savedSources.perimetre || []);
+            } catch (e) {
+                console.error("Erreur parsing sources stratégie:", e);
+            }
+        }
         this.rawResponse.set(this.selectedDossier.aiStrategy);
         this.parseResponse(this.selectedDossier.aiStrategy);
         
@@ -149,6 +169,8 @@ export class DossierStrategieComponent implements OnInit {
 
     this.isLoading.set(true);
     this.hasError.set(false);
+    this.paysManquant.set(null);
+    this.aiPerimetre.set([]);
     this.rawResponse.set('');
     
     // Initialiser les blocs à "En cours de génération..."
@@ -168,6 +190,8 @@ export class DossierStrategieComponent implements OnInit {
     this.workflow.set(this.workflowStr);
     this.tachesRecommandees.set(this.tachesStr);
 
+    this.aiSources.set([]);
+    this.aiVerification.set(undefined);
     const url = `${environment.apiUrl}ai/analyze-stream?dossierId=${this.dossierId}`;
     const eventSource = new EventSource(url);
 
@@ -185,6 +209,33 @@ export class DossierStrategieComponent implements OnInit {
            console.error("Erreur parsing SSE JSON:", e);
        }
     };
+
+    eventSource.addEventListener('SOURCES', (event: MessageEvent) => {
+       try {
+           const payload = JSON.parse(event.data);
+           this.aiSources.set(payload.sources || []);
+           this.aiVerification.set(payload.verification);
+           this.aiPerimetre.set(payload.perimetre || []);
+           if (this.selectedDossier) {
+               this.selectedDossier.aiStrategySources = event.data;
+           }
+           // Re-parse pour enrichir les infobulles (title) des pastilles [S#] dès que les sources arrivent
+           if (accumulatedText) {
+               this.parseResponse(accumulatedText);
+           }
+       } catch (e) {
+           console.error('Erreur lecture des sources:', e);
+       }
+    });
+
+    // Pays de juridiction non défini : le serveur n'analyse pas (il ne devine pas le droit applicable)
+    eventSource.addEventListener('PAYS_MANQUANT', (event: MessageEvent) => {
+       let message = 'Le pays de juridiction du dossier n\'est pas défini.';
+       try { message = JSON.parse(event.data).message || message; } catch (e) { /* message par défaut */ }
+       this.paysManquant.set(message);
+       this.isLoading.set(false);
+       eventSource.close();
+    });
 
     eventSource.addEventListener('DONE', () => {
        console.log("Streaming terminé.");
@@ -249,10 +300,31 @@ export class DossierStrategieComponent implements OnInit {
   }
   
   formatMarkdown(text: string): string {
+      const sources = this.aiSources();
       return text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
                  .replace(/\*(.*?)\*/g, '<em>$1</em>')
                  .replace(/- (.*)/g, '<li class="ml-4 list-disc">$1</li>')
+                 // Citations [S1] / [S1, S3] : pastilles cliquables renvoyant au panneau « Sources et vérification »
+                 .replace(/\[(S\d+(?:\s*[,;]\s*S\d+)*)\]/g, (_m: string, ids: string) => ids.split(/\s*[,;]\s*/)
+                    .map(rawId => {
+                        const id = rawId.trim();
+                        const src = sources.find(s => s.id === id);
+                        const title = src
+                            ? `${src.title}${src.page ? ' · p. ' + src.page : ''} (cliquer pour voir la source)`.replace(/"/g, '&quot;')
+                            : `Voir la source ${id}`;
+                        return `<button type="button" data-cite-id="${id}" title="${title}" class="inline-flex items-center px-1.5 mx-0.5 rounded-md text-[10px] font-bold leading-4 bg-pink-600 text-white hover:bg-pink-700 cursor-pointer align-baseline transition-colors">${id}</button>`;
+                    })
+                    .join(''))
                  .replace(/\n/g, '<br/>');
+  }
+
+  /** Intercepte le clic sur une pastille [S#] dans les cartes pour scroller vers la source correspondante. */
+  onStrategyClick(event: MouseEvent): void {
+      const target = (event.target as HTMLElement | null)?.closest('[data-cite-id]') as HTMLElement | null;
+      const citeId = target?.getAttribute('data-cite-id');
+      if (citeId && this.sourcesPanel) {
+          this.sourcesPanel.focus(citeId);
+      }
   }
 
   sendMessage() {

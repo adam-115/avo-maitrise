@@ -65,8 +65,17 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
               </div>
               <div>
-                <h4 class="text-sm font-bold text-slate-800">{{ doc.title }}</h4>
+                <h4 class="text-sm font-bold text-slate-800">{{ doc.title }}
+                  <span *ngIf="doc.typeDocument === 'LEGISLATION'" class="ml-1 px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-bold uppercase">Texte de loi</span>
+                </h4>
                 <p class="text-xs text-slate-500 mt-0.5">{{ doc.filename }} &bull; {{ doc.dateUpload | date:'shortDate' }}</p>
+                <p *ngIf="doc.juridiction || doc.numeroDecision || doc.ecli || doc.dateDecision" class="text-xs text-indigo-700 mt-1 flex flex-wrap gap-x-2">
+                  <span *ngIf="doc.juridiction">{{ doc.juridiction }}</span>
+                  <span *ngIf="doc.dateDecision">{{ doc.dateDecision | date:'dd/MM/yyyy' }}</span>
+                  <span *ngIf="doc.numeroDecision">n° {{ doc.numeroDecision }}</span>
+                  <span *ngIf="doc.ecli" class="font-mono">{{ doc.ecli }}</span>
+                  <a *ngIf="doc.sourceUrl" [href]="doc.sourceUrl" target="_blank" rel="noopener" class="font-bold underline">Texte officiel ↗</a>
+                </p>
               </div>
             </div>
             
@@ -91,12 +100,12 @@
   <div class="relative bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border border-slate-200">
     <div class="p-6 border-b border-slate-100 flex justify-between items-center">
       <h2 class="text-xl font-bold text-slate-800">Ajouter une Jurisprudence</h2>
-      <button (click)="closeUploadModal()" class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-2 transition-colors">
+      <button (click)="closeUploadModal()" [disabled]="isUploading" class="disabled:opacity-40 disabled:cursor-not-allowed text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full p-2 transition-colors">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
       </button>
     </div>
     
-    <div class="p-6 space-y-5">
+    <fieldset [disabled]="isUploading" class="p-6 space-y-5" [class.opacity-60]="isUploading">
       <div>
         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Pays Cible</label>
         <select [(ngModel)]="newDocCountry" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-700 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 transition-all">
@@ -110,14 +119,45 @@
       </div>
       
       <div>
+        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Type de texte</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" (click)="newDocType = 'JURISPRUDENCE'" class="px-3 py-2 rounded-xl border text-sm font-semibold" [ngClass]="newDocType === 'JURISPRUDENCE' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 border-slate-200'">Décision de justice</button>
+          <button type="button" (click)="newDocType = 'LEGISLATION'" class="px-3 py-2 rounded-xl border text-sm font-semibold" [ngClass]="newDocType === 'LEGISLATION' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-700 border-slate-200'">Texte de loi (code, loi…)</button>
+        </div>
+      </div>
+
+      <!-- Fiche décision : permet à l'IA de citer la décision avec son identifiant officiel et un lien -->
+      <div *ngIf="newDocType === 'JURISPRUDENCE'" class="rounded-xl border border-indigo-100 bg-indigo-50/40 p-4 space-y-3">
+        <div>
+          <div class="text-xs font-bold text-indigo-800 uppercase tracking-wider">Fiche de la décision (recommandé)</div>
+          <p class="text-[11px] text-indigo-700/80 mt-0.5">Si le n° ou l'ECLI sont laissés vides, ils sont détectés automatiquement dans le texte.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <input type="text" [(ngModel)]="newDocJuridiction" placeholder="Juridiction (ex : Cass. com.)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-indigo-400">
+          <input type="date" [(ngModel)]="newDocDateDecision" title="Date de la décision" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-indigo-400">
+          <input type="text" [(ngModel)]="newDocNumero" placeholder="N° de pourvoi / RG (ex : 17-28.123)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-indigo-400">
+          <input type="text" [(ngModel)]="newDocEcli" placeholder="ECLI (ex : ECLI:FR:CCASS:2019:CO00231)" class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-indigo-400">
+        </div>
+        <input type="url" [(ngModel)]="newDocSourceUrl" placeholder="Lien vers le texte officiel (Judilibre, Légifrance…)" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-indigo-400">
+      </div>
+
+      <div>
         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Fichier (PDF, Word...)</label>
         <input type="file" (change)="onFileSelected($event)" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 transition-colors">
       </div>
+    </fieldset>
+
+    <div *ngIf="isUploading" class="mx-6 mb-4 flex items-center gap-3 rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+      <svg class="w-5 h-5 animate-spin shrink-0" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+      <span>Envoi du document en cours… Les fichiers volumineux peuvent prendre plusieurs minutes, ne fermez pas cette fenêtre.</span>
     </div>
     
     <div class="p-6 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
-      <button (click)="closeUploadModal()" class="px-5 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-200 bg-slate-100 rounded-xl transition-colors">Annuler</button>
-      <button (click)="uploadDocument()" class="px-5 py-2.5 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors shadow-sm">Uploader et Vectoriser</button>
+      <button (click)="closeUploadModal()" [disabled]="isUploading" class="disabled:opacity-40 disabled:cursor-not-allowed px-5 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-200 bg-slate-100 rounded-xl transition-colors">Annuler</button>
+      <button (click)="uploadDocument()" [disabled]="isUploading" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 disabled:cursor-wait rounded-xl transition-colors shadow-sm">
+        <svg *ngIf="isUploading" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+        {{ isUploading ? 'Envoi en cours…' : 'Uploader et Vectoriser' }}
+      </button>
     </div>
   </div>
 </div>

@@ -46,7 +46,13 @@
             <span></span><span></span><span></span>
           </div>
           <!-- Sinon on affiche le texte -->
-          <pre *ngIf="!msg.isLoading">{{ msg.text }}</pre>
+          <pre *ngIf="!msg.isLoading && !msg.verification">{{ msg.text }}</pre>
+          <!-- Réponse vérifiée : citations cliquables, références à contrôler en rouge, sources consultées -->
+          <ng-container *ngIf="!msg.isLoading && msg.verification">
+            <app-ai-answer-text [text]="msg.text" [sources]="msg.sources || []" [verification]="msg.verification"
+              (cite)="panel.focus($event)"></app-ai-answer-text>
+            <app-ai-sources-panel #panel [sources]="msg.sources || []" [verification]="msg.verification" [perimetre]="msg.perimetre || []" [compact]="true"></app-ai-sources-panel>
+          </ng-container>
         </div>
       </div>
     </div>
@@ -56,6 +62,14 @@
       <div *ngIf="activeMode() === 'draft'" class="draft-inputs">
         <input type="text" [(ngModel)]="draftType" placeholder="Type (ex: Mise en demeure)" />
         <textarea [(ngModel)]="draftContext" rows="3" placeholder="Contexte... (ex: retard de paiement)"></textarea>
+      </div>
+
+      <!-- Droit applicable : l'IA ne cherche la jurisprudence que dans ce pays (+ international) -->
+      <div *ngIf="activeMode() === 'chat' || activeMode() === 'avocat-assistant'" class="pays-select">
+        <label for="ai-pays">{{ 'AI_SOURCES.COUNTRY_LABEL' | translate }}</label>
+        <select id="ai-pays" [ngModel]="pays()" (ngModelChange)="setPays($event)">
+          <option *ngFor="let p of paysOptions" [value]="p">{{ ('AI_SOURCES.COUNTRY.' + p) | translate }}</option>
+        </select>
       </div>
 
       <!-- Zone d'input normale (pour chat, avocat, summarize) -->

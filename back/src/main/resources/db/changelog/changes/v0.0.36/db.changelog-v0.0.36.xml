@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!--
+        Persistance des sources consultées, du périmètre et du verdict de vérification (JSON)
+        pour la stratégie IA d'un dossier, afin que les liens [S1], [S2]... et le panneau
+        « Sources et vérification » restent visibles après rechargement de la page.
+    -->
+    <changeSet id="add-ai-strategy-sources-to-dossiers" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="dossiers" columnName="ai_strategy_sources"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="dossiers">
+            <column name="ai_strategy_sources" type="LONGTEXT"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

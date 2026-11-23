@@ -1129,7 +1129,10 @@
     "CONFIRM_REMOVE_DOC_TITLE": "إزالة هذا المستند؟",
     "CONFIRM_REMOVE_DOC_MSG": "هل أنت متأكد من رغبتك في إزالة هذا المستند من الملف؟",
     "DOC_REMOVED_SUCCESS": "تمت إزالة المستند بنجاح.",
-    "REQUIRED": "هذا الحقل مطلوب"
+    "REQUIRED": "هذا الحقل مطلوب",
+    "PAYS_JURIDICTION": "بلد الاختصاص (القانون الواجب التطبيق)",
+    "PAYS_TO_DEFINE": "— يُحدَّد لاحقاً —",
+    "PAYS_JURIDICTION_HELP": "يعتمد التحليل الاستراتيجي للذكاء الاصطناعي فقط على اجتهادات وتشريعات هذا البلد، بالإضافة إلى القانون الدولي."
   },
   "DOSSIER_SELECTION": {
     "TITLE": "اختر ملفاً / قضية",
@@ -2454,6 +2457,57 @@
       "DILIGENCE": "العناية الواجبة",
       "UBO": "المستفيد الحقيقي",
       "JOURNAL_AUDIT": "سجل التدقيق"
+    }
+  },
+  "AI_SOURCES": {
+    "STATUS": {
+      "VERIFIEE": "إجابة موثّقة",
+      "PARTIELLE": "موثّقة جزئياً",
+      "A_CONTROLER": "تحتاج إلى تحقق",
+      "NON_SOURCEE": "بدون مصادر",
+      "SANS_SOURCE": "لم يُرجع إلى أي مصدر"
+    },
+    "COUNT": "{{consulted}} مصدر تم الرجوع إليه، {{cited}} مذكور",
+    "OFFICIAL_ON": "التحقق عبر محكمة النقض مفعّل",
+    "SHOW": "عرض المصادر",
+    "HIDE": "إخفاء المصادر",
+    "TO_CHECK": "يجب التحقق قبل أي استخدام:",
+    "REFERENCES": "المراجع القانونية المتحقق منها",
+    "SOURCES": "المصادر التي رجع إليها الذكاء الاصطناعي",
+    "PAGE": "صفحة",
+    "REF": {
+      "TROUVEE_DANS_SOURCE": "موجودة في المصادر",
+      "VERIFIEE_OFFICIELLE": "مؤكدة (Judilibre)",
+      "NON_VERIFIEE": "غير متحقق منها",
+      "INTROUVABLE": "غير موجودة"
+    },
+    "KIND": {
+      "DOCUMENT": "مستند",
+      "JURISPRUDENCE": "اجتهاد قضائي",
+      "DONNEE": "بيانات البرنامج",
+      "LEGISLATION": "نص قانوني"
+    },
+    "NOT_CITED": "تم الرجوع إليه دون ذكره",
+    "OPEN": "فتح",
+    "OPENING": "جارٍ الفتح…",
+    "OFFICIAL": "النص الرسمي",
+    "DETAIL": {
+      "juridiction": "المحكمة",
+      "date_decision": "التاريخ",
+      "numero_decision": "رقم",
+      "ecli": "ECLI",
+      "pays": "البلد"
+    },
+    "UNKNOWN_SOURCE": "مصدر غير معروف: لم يرجع الذكاء الاصطناعي إلى {{id}}",
+    "SCOPE": "تم البحث عن الأساس القانوني في:",
+    "COUNTRY_LABEL": "القانون الواجب التطبيق",
+    "COUNTRY": {
+      "FRANCE": "فرنسا",
+      "LUXEMBOURG": "لوكسمبورغ",
+      "BELGIQUE": "بلجيكا",
+      "ALLEMAGNE": "ألمانيا",
+      "SUISSE": "سويسرا",
+      "INTERNATIONAL": "دولي"
     }
   }
 }

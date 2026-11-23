@@ -60,3 +60,6 @@ avo-maitrise-docker/**/qdrant_data/
 
 # Node/npm installés par frontend-maven-plugin
 front/node/
+
+# Compilation de l IDE (profil ide-separate-output de back/pom.xml)
+back/target-ide/

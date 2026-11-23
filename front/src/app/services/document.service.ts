@@ -31,9 +31,14 @@ export class DocumentService extends AbstractCrudService<Document> {
         return this.http.get<PaginatedResponse<Document>>(`${this.apiUrl}/search`, { params });
     }
 
-    getJurisprudence(pays: string, page: number = 0, size: number = 100): Observable<PaginatedResponse<Document>> {
+    /**
+     * Base légale d'un pays : décisions (JURISPRUDENCE) ou textes de loi (LEGISLATION). Les deux sont consultés
+     * par l'IA pour le droit applicable d'un dossier.
+     */
+    getJurisprudence(pays: string, page: number = 0, size: number = 100,
+                     typeDocument: 'JURISPRUDENCE' | 'LEGISLATION' = 'JURISPRUDENCE'): Observable<PaginatedResponse<Document>> {
         const params = new HttpParams()
-            .set('typeDocument', 'JURISPRUDENCE')
+            .set('typeDocument', typeDocument)
             .set('pays', pays)
             .set('page', page.toString())
             .set('size', size.toString());

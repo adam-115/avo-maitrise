@@ -202,6 +202,27 @@ public class DocumentService {
         return result;
     }
 
+    /**
+     * Réindexe le document dans Qdrant après la validation de la transaction
+     * (fichier ou fiche modifiés).
+     */
+    private void reindexAfterCommit(Long documentId) {
+        try {
+            if (TransactionSynchronizationManager.isSynchronizationActive()) {
+                TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                    @Override
+                    public void afterCommit() {
+                        ragDocumentService.ingestDocumentIntoQdrant(documentId);
+                    }
+                });
+            } else {
+                ragDocumentService.ingestDocumentIntoQdrant(documentId);
+            }
+        } catch (Exception e) {
+            log.error("Erreur lors de la réindexation Qdrant du document {}", documentId, e);
+        }
+    }
+
     @Transactional
     public DocumentDTO update(DocumentDTO dto) {
         log.info("[ENTER] Executing update");
@@ -278,6 +299,11 @@ public class DocumentService {
         }
 
         Document saved = repository.save(entity);
+        // La fiche (juridiction, n° de décision, ECLI...) ou le fichier ont pu changer
+        // : on réindexe pour l'IA
+        if (saved.getMinioObjectId() != null && !saved.getMinioObjectId().isBlank()) {
+            reindexAfterCommit(saved.getId());
+        }
 
         if (saved.getTypeDocument() == DocumentType.DOSSIER) {
             eventPublisher.publishEvent(new MatterActionEvent(

@@ -3,17 +3,26 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
+import { AiAnswerPayload, AiSource, AiVerification } from '../../shared/ai-sources/ai-sources.model';
+import { AiAnswerTextComponent } from '../../shared/ai-sources/ai-answer-text.component';
+import { AiSourcesPanelComponent } from '../../shared/ai-sources/ai-sources-panel.component';
+import { PAYS_JURIDICTION, normalizePays } from '../../shared/ai-sources/pays';
+import { TranslatePipe } from '@ngx-translate/core';
 
 interface ChatMessage {
   role: 'user' | 'assistant';
   text: string;
   isLoading?: boolean;
+  /** Sources consultées et verdict de la vérification automatique (réponses de l'assistant). */
+  sources?: AiSource[];
+  verification?: AiVerification;
+  perimetre?: string[];
 }
 
 @Component({
   selector: 'app-ai-tester',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AiAnswerTextComponent, AiSourcesPanelComponent, TranslatePipe],
   templateUrl: './ai-tester.component.html',
   styleUrls: ['./ai-tester.component.css']
 })
@@ -30,6 +39,19 @@ export class AiTesterComponent implements AfterViewChecked {
   activeMode = signal<'chat' | 'avocat-assistant' | 'summarize' | 'draft'>('avocat-assistant');
   
   sessionId = crypto.randomUUID();
+
+  /** Droit applicable choisi par l'avocat : la jurisprudence n'est cherchée que dans ce pays (+ international). */
+  readonly paysOptions = PAYS_JURIDICTION;
+  pays = signal<string>(AiTesterComponent.loadPays());
+
+  private static loadPays(): string {
+    try { return normalizePays(localStorage.getItem('avo.ai.pays')) || 'FRANCE'; } catch { return 'FRANCE'; }
+  }
+
+  setPays(value: string): void {
+    this.pays.set(value);
+    try { localStorage.setItem('avo.ai.pays', value); } catch { /* stockage indisponible */ }
+  }
 
   // For draft
   draftContext = signal<string>('');
@@ -77,10 +99,10 @@ export class AiTesterComponent implements AfterViewChecked {
       if (!this.draftContext().trim()) return;
     } else if (mode === 'avocat-assistant') {
       endpoint = `${environment.apiUrl}ai/analyze`;
-      body = { message: prompt, sessionId: this.sessionId };
+      body = { message: prompt, sessionId: this.sessionId, pays: this.pays() };
     } else {
       endpoint = `${environment.apiUrl}ai/chat`;
-      body = { message: prompt, sessionId: this.sessionId };
+      body = { message: prompt, sessionId: this.sessionId, pays: this.pays() };
     }
 
     this.messages.update(msgs => [...msgs, { role: 'user', text: displayPrompt }]);
@@ -94,12 +116,12 @@ export class AiTesterComponent implements AfterViewChecked {
     // Add loading bubble
     this.messages.update(msgs => [...msgs, { role: 'assistant', text: '', isLoading: true }]);
 
-    this.http.post<{result: string}>(endpoint, body).subscribe({
+    this.http.post<AiAnswerPayload>(endpoint, body).subscribe({
       next: (res) => {
         this.messages.update(msgs => {
           const newMsgs = [...msgs];
           newMsgs.pop(); // remove loading bubble
-          newMsgs.push({ role: 'assistant', text: res.result });
+          newMsgs.push({ role: 'assistant', text: res.result, sources: res.sources, verification: res.verification, perimetre: res.perimetre });
           return newMsgs;
         });
         this.isLoading.set(false);

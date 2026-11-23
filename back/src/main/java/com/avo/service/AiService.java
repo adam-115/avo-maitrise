@@ -3,6 +3,14 @@ package com.avo.service;
 import com.avo.service.ai.AvoAiTools;
 import com.avo.service.ai.Pays;
 import com.avo.service.ai.Prompts;
+import com.avo.audit.AuditAction;
+import com.avo.audit.AuditOutcome;
+import com.avo.audit.AuditService;
+import com.avo.service.ai.sources.AiAnswer;
+import com.avo.service.ai.sources.CitationVerifier;
+import com.avo.service.ai.sources.SourceRef;
+import com.avo.service.ai.sources.SourceRegistry;
+import com.avo.service.ai.sources.VerificationReport;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
@@ -48,6 +56,9 @@ public class AiService {
     private final AiConfigurationService aiConfigurationService;
     private final Prompts prompts;
     private final TaskExecutor aiStreamingExecutor;
+    private final SourceRegistry sourceRegistry;
+    private final CitationVerifier citationVerifier;
+    private final AuditService auditService;
 
     /** Mémoire des conversations du chat général (20 derniers messages, 500 conversations max). */
     private final ChatMemory chatMemory = MessageWindowChatMemory.builder()
@@ -60,13 +71,19 @@ public class AiService {
             com.avo.repositories.DossierRepository dossierRepository,
             AiConfigurationService aiConfigurationService,
             Prompts prompts,
-            @Qualifier("aiStreamingExecutor") TaskExecutor aiStreamingExecutor) {
+            @Qualifier("aiStreamingExecutor") TaskExecutor aiStreamingExecutor,
+            SourceRegistry sourceRegistry,
+            CitationVerifier citationVerifier,
+            AuditService auditService) {
         this.avoAiTools = avoAiTools;
         this.ragDocumentService = ragDocumentService;
         this.dossierRepository = dossierRepository;
         this.aiConfigurationService = aiConfigurationService;
         this.prompts = prompts;
         this.aiStreamingExecutor = aiStreamingExecutor;
+        this.sourceRegistry = sourceRegistry;
+        this.citationVerifier = citationVerifier;
+        this.auditService = auditService;
     }
 
     /** Client de chat sur le modèle actuellement configuré en base. */
@@ -90,25 +107,87 @@ public class AiService {
 
     // ------------------------------------------------------------------ Assistant avec outils
 
-    /** Assistant général : le modèle peut appeler les outils de AvoAiTools (clients, factures, AML...). */
-    public String chat(String sessionId, String userMessage) {
-        return chatWithTools("assistant-system", sessionId, userMessage);
+    /**
+     * Assistant général : le modèle peut appeler les outils de AvoAiTools (clients, factures, AML...).
+     *
+     * @param pays droit applicable choisi par l'avocat dans l'écran (null : détecté dans la question, France
+     *             par défaut). Si le modèle cherche de la jurisprudence, c'est dans ce droit uniquement.
+     */
+    public AiAnswer chat(String sessionId, String userMessage, String pays) {
+        return chatWithTools("assistant-system", sessionId, userMessage, choisirPays(pays, userMessage), false);
     }
 
-    /** Avocat senior : le modèle cherche lui-même dans les pièces et la jurisprudence (synchrone). */
-    public String analyzeDossierStrategy(String sessionId, String prompt) {
-        return chatWithTools("avocat-senior-system", sessionId, prompt);
+    /**
+     * Avocat senior. La base légale du droit choisi (jurisprudence + législation du pays + international) est
+     * recherchée AVANT l'appel au modèle et jointe à la question : les modèles locaux n'appellent pas toujours
+     * leurs outils, et une réponse juridique sans source consultée n'est pas acceptable. Les outils restent
+     * disponibles pour les recherches complémentaires (pièces d'un dossier, fiches...).
+     *
+     * @param pays droit applicable choisi par l'avocat (null : détecté dans la question, France par défaut)
+     */
+    public AiAnswer analyzeDossierStrategy(String sessionId, String prompt, String pays) {
+        return chatWithTools("avocat-senior-system", sessionId, prompt, choisirPays(pays, prompt), true);
     }
 
-    private String chatWithTools(String systemPrompt, String sessionId, String userMessage) {
+    /** Pays choisi dans l'écran s'il est géré, sinon celui mentionné dans la question, sinon FRANCE. */
+    private static String choisirPays(String paysChoisi, String question) {
+        String pays = Pays.normalizeOrNull(paysChoisi);
+        return pays != null ? pays : Pays.detect(question);
+    }
+
+    /**
+     * Appel avec outils : chaque source lue par un outil est inscrite au registre (S1, S2...), puis la réponse
+     * est vérifiée par le code (citations, références juridiques, guillemets) avant d'être renvoyée.
+     * Le droit applicable est imposé pour toute la réponse (AiJurisdiction) : l'outil de jurisprudence ne peut
+     * pas chercher ailleurs, même si le modèle le demande.
+     *
+     * @param preRetrieval true : la base légale du pays est recherchée par le logiciel avant l'appel et jointe
+     *                     à la question
+     */
+    private AiAnswer chatWithTools(String systemPrompt, String sessionId, String userMessage, String pays,
+            boolean preRetrieval) {
         String conversationId = memoryKey(sessionId);
-        return chatClient().prompt()
-                .system(prompts.render(systemPrompt))
-                .user(userMessage)
-                .tools(avoAiTools)
-                .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
-                .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, conversationId))
-                .call().content();
+        List<String> perimetre = Pays.perimetre(pays);
+        sourceRegistry.open();
+        com.avo.service.ai.sources.AiJurisdiction.set(pays);
+        try {
+            StringBuilder fullMessage = new StringBuilder(userMessage)
+                    .append("\n\nDROIT APPLICABLE CHOISI PAR L'AVOCAT : ").append(String.join(" + ", perimetre))
+                    .append(". Raisonne uniquement dans ce droit.");
+            if (preRetrieval) {
+                String passages = avoAiTools.searchJurisprudence(pays, userMessage);
+                if (passages.startsWith("[S")) {
+                    fullMessage.append("\n\nEXTRAITS DE LA BASE LÉGALE DU CABINET (cite-les avec leur identifiant) :\n")
+                            .append(passages);
+                }
+            }
+            String content = chatClient().prompt()
+                    .system(prompts.render(systemPrompt) + "\n\n" + prompts.render("regles-citation"))
+                    .user(fullMessage.toString())
+                    .tools(avoAiTools)
+                    .advisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
+                    .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, conversationId))
+                    .call().content();
+            List<SourceRef> sources = sourceRegistry.snapshot();
+            return verified(content, sources, perimetre);
+        } finally {
+            com.avo.service.ai.sources.AiJurisdiction.clear();
+            sourceRegistry.close();
+        }
+    }
+
+    /** Vérifie la réponse et trace son verdict dans le journal d'audit (preuve de ce que l'IA a affirmé). */
+    private AiAnswer verified(String content, List<SourceRef> sources, List<String> perimetre) {
+        VerificationReport report = citationVerifier.verify(content, sources);
+        String unverified = report.references().stream()
+                .filter(r -> "NON_VERIFIEE".equals(r.status()) || "INTROUVABLE".equals(r.status()))
+                .map(VerificationReport.CheckedReference::text)
+                .reduce((a, b) -> a + ", " + b).orElse("aucune");
+        auditService.record(AuditAction.ACCES_IA, "REPONSE_IA", null, AuditOutcome.SUCCES,
+                "Réponse " + report.status() + " · droit " + String.join(" + ", perimetre) + " · "
+                        + sources.size() + " source(s) consultée(s), " + report.citedSources().size()
+                        + " citée(s) · références non vérifiées : " + unverified);
+        return new AiAnswer(content, sources, report, perimetre);
     }
 
     /**
@@ -166,13 +245,27 @@ public class AiService {
      */
     public void analyzeDossierStrategyStream(Long dossierId, SseEmitter emitter) {
         aiStreamingExecutor.execute(() -> {
+            // Droit applicable = pays de juridiction du dossier. Non défini : on n'analyse pas (on ne devine pas
+            // le droit applicable) et on demande à l'avocat de le renseigner.
+            String pays = paysDuDossier(dossierId);
+            if (pays == null) {
+                sendEvent(emitter, "PAYS_MANQUANT", Map.of("message",
+                        "Le pays de juridiction du dossier n'est pas défini : renseignez-le dans la fiche du dossier "
+                                + "pour que l'analyse s'appuie sur le bon droit."));
+                emitter.complete();
+                return;
+            }
+            List<String> perimetre = Pays.perimetre(pays);
+            sourceRegistry.open();
             try {
-                String pays = paysDuDossier(dossierId);
                 String documents = avoAiTools.searchDocumentsInDossier(dossierId,
                         "faits importants, clauses, failles, enjeux, risques");
                 String jurisprudence = avoAiTools.searchJurisprudence(pays, "lois applicables, arguments de défense");
                 String prompt = prompts.render("strategie",
-                        "pays", pays, "documents", documents, "jurisprudence", jurisprudence);
+                        "pays", String.join(" + ", perimetre), "documents", documents, "jurisprudence", jurisprudence,
+                        "regles", prompts.render("regles-citation"));
+                // Le flux se termine sur un autre thread : on capture les sources maintenant
+                List<SourceRef> sources = sourceRegistry.snapshot();
 
                 StringBuilder fullText = new StringBuilder();
                 chatClient().prompt().user(prompt).stream().content().subscribe(
@@ -185,7 +278,9 @@ public class AiService {
                             emitter.completeWithError(error);
                         },
                         () -> {
-                            saveStrategy(dossierId, fullText.toString());
+                            AiAnswer verifiedAnswer = verified(fullText.toString(), sources, perimetre);
+                            saveStrategy(dossierId, fullText.toString(), verifiedAnswer);
+                            sendVerification(emitter, verifiedAnswer);
                             try {
                                 emitter.send(SseEmitter.event().name("DONE").data("[DONE]"));
                                 emitter.complete();
@@ -196,8 +291,29 @@ public class AiService {
             } catch (Exception e) {
                 log.error("Erreur analyse stratégique du dossier {}", dossierId, e);
                 emitter.completeWithError(e);
+            } finally {
+                sourceRegistry.close();
             }
         });
+    }
+
+    /** Événement SSE « SOURCES » : sources consultées et verdict, envoyé juste avant « DONE ». */
+    private static void sendVerification(SseEmitter emitter, AiAnswer answer) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("sources", answer.sources());
+        body.put("verification", answer.verification());
+        body.put("perimetre", answer.perimetre());
+        sendEvent(emitter, "SOURCES", body);
+    }
+
+    /** Événement SSE nommé, au format JSON. */
+    private static void sendEvent(SseEmitter emitter, String name, Object body) {
+        try {
+            byte[] json = JSON.writeValueAsString(body).getBytes(StandardCharsets.UTF_8);
+            emitter.send(SseEmitter.event().name(name).data(json, MediaType.APPLICATION_JSON));
+        } catch (Exception e) {
+            // Client déconnecté : on ignore
+        }
     }
 
     /** Le token est encapsulé en JSON pour que les sauts de ligne passent correctement en SSE. */
@@ -210,22 +326,36 @@ public class AiService {
         }
     }
 
-    private void saveStrategy(Long dossierId, String strategy) {
+    private void saveStrategy(Long dossierId, String strategy, AiAnswer verifiedAnswer) {
         if (strategy.isBlank()) {
             return;
         }
+        String sourcesJson = null;
+        if (verifiedAnswer != null) {
+            try {
+                Map<String, Object> payload = new LinkedHashMap<>();
+                payload.put("sources", verifiedAnswer.sources());
+                payload.put("verification", verifiedAnswer.verification());
+                payload.put("perimetre", verifiedAnswer.perimetre());
+                sourcesJson = JSON.writeValueAsString(payload);
+            } catch (Exception e) {
+                log.error("Erreur sérialisation des sources de stratégie du dossier {}", dossierId, e);
+            }
+        }
+        final String finalSourcesJson = sourcesJson;
         dossierRepository.findById(dossierId).ifPresent(dossier -> {
             dossier.setAiStrategy(strategy);
+            dossier.setAiStrategySources(finalSourcesJson);
             dossierRepository.save(dossier);
         });
     }
 
-    /** Pays du droit applicable : celui du client du dossier, FRANCE par défaut. */
+    /** Droit applicable : le pays de juridiction du dossier, ou null s'il n'est pas défini (« à définir »). */
     private String paysDuDossier(Long dossierId) {
         return dossierRepository.findById(dossierId)
-                .map(d -> d.getClient() != null ? d.getClient().getPays() : null)
-                .map(Pays::normalize)
-                .orElse(Pays.PAR_DEFAUT);
+                .map(com.avo.entities.Dossier::getPaysJuridiction)
+                .map(Pays::normalizeOrNull)
+                .orElse(null);
     }
 
     // ------------------------------------------------------------------ Mémoire du chat

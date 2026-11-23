@@ -231,6 +231,12 @@ export interface Document {
   fileData?: string; // Base64 content for backend BLOB
   clientId?: number;
   dossierId?: string | number;
+  // Fiche décision (jurisprudence) : présentée avec la source citée par l'IA
+  juridiction?: string;
+  dateDecision?: string; // AAAA-MM-JJ
+  numeroDecision?: string; // n° de pourvoi ou de RG
+  ecli?: string;
+  sourceUrl?: string; // lien vers le texte officiel (Judilibre, Légifrance...)
 }
 
 
@@ -428,6 +434,7 @@ export interface Dossier {
 
   // Classification
   domaineJuridique: DomaineJuridique;    // Ex: Droit des Affaires, Droit Social, Immobilier
+  paysJuridiction?: string | null;       // Droit applicable au litige (base légale utilisée par l'IA), null = à définir
   prioriteID: DossierPriorite; // Relies on DossierPriorite
   statutID: StatutDossier; // Relies on StatutDossier
 

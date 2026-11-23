@@ -37,6 +37,14 @@ public class Dossier {
 
     private String domaineJuridique;
 
+    /**
+     * Droit applicable au litige (FRANCE, LUXEMBOURG, BELGIQUE, ALLEMAGNE, SUISSE, INTERNATIONAL) : l'analyse
+     * stratégique de l'IA s'appuie uniquement sur la jurisprudence et la législation de ce pays (+ international).
+     * Null = « à définir » : l'IA refuse alors d'analyser plutôt que de deviner le droit applicable.
+     */
+    @Column(name = "pays_juridiction", length = 30)
+    private String paysJuridiction;
+
     @Column(name = "priorite_id")
     private String prioriteID;
 
@@ -66,6 +74,15 @@ public class Dossier {
     @Column(name = "ai_strategy", columnDefinition = "LONGTEXT")
     private String aiStrategy;
 
+    /**
+     * Sources consultées, périmètre juridique et rapport de vérification (JSON) associés à {@link #aiStrategy}.
+     * Permet de réafficher les liens cliquables [S1], [S2]... et le panneau « Sources et vérification »
+     * après rechargement de la page.
+     */
+    @org.hibernate.envers.NotAudited
+    @Column(name = "ai_strategy_sources", columnDefinition = "LONGTEXT")
+    private String aiStrategySources;
+
     @org.hibernate.envers.NotAudited
     @Column(name = "ai_chat_history", columnDefinition = "LONGTEXT")
     private String aiChatHistory;
@@ -79,6 +96,14 @@ public class Dossier {
 
     public void setAiStrategy(String aiStrategy) {
         this.aiStrategy = aiStrategy;
+    }
+
+    public String getAiStrategySources() {
+        return aiStrategySources;
+    }
+
+    public void setAiStrategySources(String aiStrategySources) {
+        this.aiStrategySources = aiStrategySources;
     }
 
     public String getAiChatHistory() {
@@ -151,6 +176,14 @@ public class Dossier {
 
     public void setDomaineJuridique(String domaineJuridique) {
         this.domaineJuridique = domaineJuridique;
+    }
+
+    public String getPaysJuridiction() {
+        return paysJuridiction;
+    }
+
+    public void setPaysJuridiction(String paysJuridiction) {
+        this.paysJuridiction = paysJuridiction;
     }
 
     public String getPrioriteID() {

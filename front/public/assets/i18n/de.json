@@ -318,7 +318,10 @@
     "CONFIRM_REMOVE_DOC_TITLE": "Dieses Dokument entfernen?",
     "CONFIRM_REMOVE_DOC_MSG": "Möchten Sie dieses Dokument wirklich aus der Akte entfernen?",
     "DOC_REMOVED_SUCCESS": "Dokument erfolgreich entfernt.",
-    "REQUIRED": "Dieses Feld ist erforderlich"
+    "REQUIRED": "Dieses Feld ist erforderlich",
+    "PAYS_JURIDICTION": "Gerichtsstand (anwendbares Recht)",
+    "PAYS_TO_DEFINE": "— Festzulegen —",
+    "PAYS_JURIDICTION_HELP": "Die strategische KI-Analyse stützt sich nur auf Rechtsprechung und Gesetzgebung dieses Landes sowie auf internationales Recht."
   },
   "DOSSIER_SELECTION": {
     "TITLE": "Akte auswählen",
@@ -2385,6 +2388,57 @@
       "DILIGENCE": "Sorgfaltsprüfung",
       "UBO": "Wirtschaftlich Berechtigter",
       "JOURNAL_AUDIT": "Audit-Protokoll"
+    }
+  },
+  "AI_SOURCES": {
+    "STATUS": {
+      "VERIFIEE": "Geprüfte Antwort",
+      "PARTIELLE": "Teilweise belegt",
+      "A_CONTROLER": "Zu prüfen",
+      "NON_SOURCEE": "Ohne Beleg",
+      "SANS_SOURCE": "Keine Quelle herangezogen"
+    },
+    "COUNT": "{{consulted}} Quelle(n) herangezogen, {{cited}} zitiert",
+    "OFFICIAL_ON": "Prüfung Kassationshof aktiv",
+    "SHOW": "Quellen anzeigen",
+    "HIDE": "Quellen ausblenden",
+    "TO_CHECK": "Vor jeder Verwendung prüfen:",
+    "REFERENCES": "Geprüfte Rechtsverweise",
+    "SOURCES": "Von der KI herangezogene Quellen",
+    "PAGE": "Seite",
+    "REF": {
+      "TROUVEE_DANS_SOURCE": "in den Quellen",
+      "VERIFIEE_OFFICIELLE": "bestätigt (Judilibre)",
+      "NON_VERIFIEE": "nicht geprüft",
+      "INTROUVABLE": "nicht auffindbar"
+    },
+    "KIND": {
+      "DOCUMENT": "Dokument",
+      "JURISPRUDENCE": "Rechtsprechung",
+      "DONNEE": "Softwaredaten",
+      "LEGISLATION": "Gesetzestext"
+    },
+    "NOT_CITED": "herangezogen, nicht zitiert",
+    "OPEN": "Öffnen",
+    "OPENING": "Wird geöffnet…",
+    "OFFICIAL": "Amtlicher Text",
+    "DETAIL": {
+      "juridiction": "Gericht",
+      "date_decision": "Datum",
+      "numero_decision": "Nr.",
+      "ecli": "ECLI",
+      "pays": "Land"
+    },
+    "UNKNOWN_SOURCE": "Unbekannte Quelle: Die KI hat {{id}} nie herangezogen",
+    "SCOPE": "Rechtsgrundlage gesucht in:",
+    "COUNTRY_LABEL": "Anwendbares Recht",
+    "COUNTRY": {
+      "FRANCE": "Frankreich",
+      "LUXEMBOURG": "Luxemburg",
+      "BELGIQUE": "Belgien",
+      "ALLEMAGNE": "Deutschland",
+      "SUISSE": "Schweiz",
+      "INTERNATIONAL": "International"
     }
   }
 }

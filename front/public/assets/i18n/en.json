@@ -336,7 +336,10 @@
     "CONFIRM_REMOVE_DOC_TITLE": "Remove this document?",
     "CONFIRM_REMOVE_DOC_MSG": "Are you sure you want to remove this document from the matter?",
     "DOC_REMOVED_SUCCESS": "Document removed successfully.",
-    "REQUIRED": "This field is required"
+    "REQUIRED": "This field is required",
+    "PAYS_JURIDICTION": "Jurisdiction (applicable law)",
+    "PAYS_TO_DEFINE": "— To be defined —",
+    "PAYS_JURIDICTION_HELP": "The AI strategy analysis relies only on the case law and legislation of this country, plus international law."
   },
   "DOSSIER_SELECTION": {
     "TITLE": "Select a Matter",
@@ -2394,6 +2397,57 @@
       "DILIGENCE": "Due diligence",
       "UBO": "Beneficial owner",
       "JOURNAL_AUDIT": "Audit trail"
+    }
+  },
+  "AI_SOURCES": {
+    "STATUS": {
+      "VERIFIEE": "Verified answer",
+      "PARTIELLE": "Partially sourced",
+      "A_CONTROLER": "To be checked",
+      "NON_SOURCEE": "Unsourced",
+      "SANS_SOURCE": "No source consulted"
+    },
+    "COUNT": "{{consulted}} source(s) consulted, {{cited}} cited",
+    "OFFICIAL_ON": "Court of cassation check enabled",
+    "SHOW": "Show sources",
+    "HIDE": "Hide sources",
+    "TO_CHECK": "Check before any use:",
+    "REFERENCES": "Legal references checked",
+    "SOURCES": "Sources consulted by the AI",
+    "PAGE": "page",
+    "REF": {
+      "TROUVEE_DANS_SOURCE": "in the sources",
+      "VERIFIEE_OFFICIELLE": "confirmed (Judilibre)",
+      "NON_VERIFIEE": "unverified",
+      "INTROUVABLE": "not found"
+    },
+    "KIND": {
+      "DOCUMENT": "Document",
+      "JURISPRUDENCE": "Case law",
+      "DONNEE": "Software data",
+      "LEGISLATION": "Legislation"
+    },
+    "NOT_CITED": "consulted, not cited",
+    "OPEN": "Open",
+    "OPENING": "Opening…",
+    "OFFICIAL": "Official text",
+    "DETAIL": {
+      "juridiction": "Court",
+      "date_decision": "Date",
+      "numero_decision": "No.",
+      "ecli": "ECLI",
+      "pays": "Country"
+    },
+    "UNKNOWN_SOURCE": "Unknown source: the AI never consulted {{id}}",
+    "SCOPE": "Legal basis searched in:",
+    "COUNTRY_LABEL": "Applicable law",
+    "COUNTRY": {
+      "FRANCE": "France",
+      "LUXEMBOURG": "Luxembourg",
+      "BELGIQUE": "Belgium",
+      "ALLEMAGNE": "Germany",
+      "SUISSE": "Switzerland",
+      "INTERNATIONAL": "International"
     }
   }
 }

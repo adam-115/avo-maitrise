@@ -172,6 +172,39 @@
   flex: 1;
 }
 
+/* Droit applicable choisi par l'avocat (à gauche de la zone de saisie) */
+.pays-select {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 150px;
+}
+
+.pays-select label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+}
+
+.pays-select select {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+  outline: none;
+  cursor: pointer;
+}
+
+.pays-select select:focus {
+  border-color: #0ea5e9;
+  background-color: white;
+}
+
 .normal-input textarea {
   width: 100%;
   padding: 15px;

@@ -36,6 +36,8 @@ public class DossierDTO {
     private String responsableId;
     private List<String> intervenantsIds = new ArrayList<>();
     private String domaineJuridique;
+    /** Droit applicable au litige (pays de la jurisprudence utilisée par l'IA), null = à définir. */
+    private String paysJuridiction;
     private String prioriteID;
     private String statutID;
     private List<DocumentDTO> documents = new ArrayList<>();
@@ -43,6 +45,7 @@ public class DossierDTO {
     private Date dateCloture;
     private Date updated_at;
     private String aiStrategy;
+    private String aiStrategySources;
     private String aiChatHistory;
     private List<DossierPartieDTO> autresParties = new ArrayList<>();
 }

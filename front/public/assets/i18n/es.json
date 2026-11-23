@@ -310,7 +310,10 @@
     "CONFIRM_REMOVE_DOC_TITLE": "¿Eliminar este documento?",
     "CONFIRM_REMOVE_DOC_MSG": "¿Está seguro de que desea retirar este documento del expediente?",
     "DOC_REMOVED_SUCCESS": "El documento ha sido retirado con éxito.",
-    "REQUIRED": "Este campo es obligatorio"
+    "REQUIRED": "Este campo es obligatorio",
+    "PAYS_JURIDICTION": "País de jurisdicción (derecho aplicable)",
+    "PAYS_TO_DEFINE": "— Por definir —",
+    "PAYS_JURIDICTION_HELP": "El análisis estratégico de la IA se basa únicamente en la jurisprudencia y la legislación de este país, más el derecho internacional."
   },
   "DOSSIER_SELECTION": {
     "TITLE": "Seleccionar un Expediente",
@@ -2491,6 +2494,57 @@
       "DILIGENCE": "Diligencia",
       "UBO": "Titular real",
       "JOURNAL_AUDIT": "Registro de auditoría"
+    }
+  },
+  "AI_SOURCES": {
+    "STATUS": {
+      "VERIFIEE": "Respuesta verificada",
+      "PARTIELLE": "Parcialmente fundamentada",
+      "A_CONTROLER": "A comprobar",
+      "NON_SOURCEE": "Sin fuentes",
+      "SANS_SOURCE": "Ninguna fuente consultada"
+    },
+    "COUNT": "{{consulted}} fuente(s) consultada(s), {{cited}} citada(s)",
+    "OFFICIAL_ON": "Verificación Tribunal de Casación activa",
+    "SHOW": "Ver las fuentes",
+    "HIDE": "Ocultar las fuentes",
+    "TO_CHECK": "A comprobar antes de cualquier uso:",
+    "REFERENCES": "Referencias jurídicas comprobadas",
+    "SOURCES": "Fuentes consultadas por la IA",
+    "PAGE": "página",
+    "REF": {
+      "TROUVEE_DANS_SOURCE": "en las fuentes",
+      "VERIFIEE_OFFICIELLE": "confirmada (Judilibre)",
+      "NON_VERIFIEE": "no verificada",
+      "INTROUVABLE": "inexistente"
+    },
+    "KIND": {
+      "DOCUMENT": "Documento",
+      "JURISPRUDENCE": "Jurisprudencia",
+      "DONNEE": "Dato del software",
+      "LEGISLATION": "Texto legal"
+    },
+    "NOT_CITED": "consultada, no citada",
+    "OPEN": "Abrir",
+    "OPENING": "Abriendo…",
+    "OFFICIAL": "Texto oficial",
+    "DETAIL": {
+      "juridiction": "Tribunal",
+      "date_decision": "Fecha",
+      "numero_decision": "N.º",
+      "ecli": "ECLI",
+      "pays": "País"
+    },
+    "UNKNOWN_SOURCE": "Fuente desconocida: la IA nunca consultó {{id}}",
+    "SCOPE": "Base legal buscada en:",
+    "COUNTRY_LABEL": "Derecho aplicable",
+    "COUNTRY": {
+      "FRANCE": "Francia",
+      "LUXEMBOURG": "Luxemburgo",
+      "BELGIQUE": "Bélgica",
+      "ALLEMAGNE": "Alemania",
+      "SUISSE": "Suiza",
+      "INTERNATIONAL": "Internacional"
     }
   }
 }
