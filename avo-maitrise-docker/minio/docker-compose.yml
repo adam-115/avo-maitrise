@@ -1,0 +1,36 @@
+services:
+  minio:
+    image: chrislusf/seaweedfs:latest
+    container_name: minio
+    restart: unless-stopped
+    ports:
+      - "9000:8333"   # Port S3 compatible (utilisez localhost:9000 dans vos apps)
+      - "9333:9333"   # Interface / Master port de SeaweedFS
+      - "8888:8888"   # Filer UI (Interface graphique pour voir les fichiers)
+    env_file:
+      - .env
+    command: "server -dir=/data -s3 -filer"
+    volumes:
+      - ${MINIO_DATA_DIR:-D:/min-io-data}:/data
+    networks:
+      - shared-network
+
+  # Service de sauvegarde automatique
+  minio-backup:
+    image: acouvreur/minio-backup-local:latest
+    container_name: minio-backup
+    restart: always
+    depends_on:
+      - minio
+    volumes:
+      - ${MINIO_DATA_DIR:-D:/min-io-data}:/minio_data:ro
+      - ${MINIO_BACKUP_DIR:-D:/mion-io-data-sauvegarde}:/backups
+    env_file:
+      - .env
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    external: true
+    name: ${NETWORK_NAME:-shared-network}

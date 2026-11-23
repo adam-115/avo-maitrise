@@ -793,6 +793,7 @@ export interface AiConfigurationDTO {
   baseUrl?: string;
   temperature?: number;
   timeoutMinutes?: number;
+  enableThinking?: boolean;
   isActive: boolean;
 }
 

@@ -69,12 +69,26 @@ public class AiConfigurationService {
                                 .baseUrl(config.getBaseUrl())
                                 .restClientBuilder(restClient)
                                 .build())
-                        .defaultOptions(OllamaChatOptions.builder()
-                                .model(config.getModelName())
-                                .temperature(temperature)
-                                .build())
+                        .defaultOptions(ollamaOptions(config, temperature))
                         .build();
         }
+    }
+
+    /**
+     * Sans consigne explicite, les modèles « à réflexion » (Qwen3...) écrivent un long bloc &lt;think&gt;
+     * avant de répondre : sur un serveur CPU, cela multiplie le temps de réponse par ~10.
+     * La réflexion n'est donc activée que si l'administrateur l'a demandé.
+     */
+    private static OllamaChatOptions ollamaOptions(AiConfiguration config, double temperature) {
+        OllamaChatOptions.Builder options = OllamaChatOptions.builder()
+                .model(config.getModelName())
+                .temperature(temperature);
+        if (Boolean.TRUE.equals(config.getEnableThinking())) {
+            options.enableThinking();
+        } else {
+            options.disableThinking();
+        }
+        return options.build();
     }
 
     private ChatModel openAi(String apiKey, String baseUrl, String model, double temperature,

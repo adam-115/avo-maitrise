@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Mode "réflexion" des modèles (Qwen3...) : désactivé par défaut, car très lent sur CPU. -->
+    <changeSet id="add-enable-thinking-to-ai-configuration" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="ai_configuration" columnName="enable_thinking"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="ai_configuration">
+            <column name="enable_thinking" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

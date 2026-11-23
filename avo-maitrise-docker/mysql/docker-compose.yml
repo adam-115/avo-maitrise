@@ -1,0 +1,34 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: avo-mysql
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    env_file:
+      - .env
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: always
+    networks:
+      - shared-network
+
+  db-backup:
+    image: fradelg/mysql-cron-backup
+    container_name: avo-mysql-backup
+    restart: always
+    depends_on:
+      - mysql
+    env_file:
+      - .env
+    volumes:
+      - ${DB_BACKUP_DIR:-/home/adam/sauvegardeDb}:/backup
+    networks:
+      - shared-network
+
+volumes:
+  mysql-data:
+
+networks:
+  shared-network:
+    external: true
+    name: ${NETWORK_NAME:-shared-network}

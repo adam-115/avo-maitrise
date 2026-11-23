@@ -1,0 +1,60 @@
+{
+    # Configuration globale
+    email {$EMAIL}
+}
+
+{$DOMAIN_NAME} {
+    # ---------------------------------------------------------
+    # JOURNALISATION DES ACCÈS
+    # ---------------------------------------------------------
+    log {
+        output file /logs/avo-access.log {
+            roll_size 100mb
+            roll_keep 10
+            roll_keep_for 720h
+        }
+        format json
+    }
+    # On ne pollue pas les logs avec les health checks éventuels
+    # log_skip /healthz
+
+    # ---------------------------------------------------------
+    # ROUTAGE DE L'APPLICATION BACKEND (Spring Boot)
+    # On redirige les requêtes commençant par /api vers le backend
+    # ---------------------------------------------------------
+    handle /api/* {
+        reverse_proxy avo-back-app:8080
+    }
+
+    # ---------------------------------------------------------
+    # ROUTAGE PAR DEFAUT (Sera utile pour le Frontend plus tard)
+    # ---------------------------------------------------------
+    # handle /* {
+    #     reverse_proxy avo-front-app:80
+    # }
+
+    # Pour le moment, si la requête ne correspond pas à /api, on la renvoie quand même au backend
+    # (A modifier une fois que le frontend sera dockerisé)
+    handle /* {
+        reverse_proxy avo-back-app:8080
+    }
+}
+
+# ---------------------------------------------------------
+# ROUTAGE DE PORTAINER (Monitoring)
+# ---------------------------------------------------------
+{$PORTAINER_DOMAIN} {
+    # ---------------------------------------------------------
+    # JOURNALISATION DES ACCÈS (fichier séparé pour Portainer)
+    # ---------------------------------------------------------
+    log {
+        output file /logs/portainer-access.log {
+            roll_size 100mb
+            roll_keep 10
+            roll_keep_for 720h
+        }
+        format json
+    }
+
+    reverse_proxy portainer:9000
+}

@@ -1,0 +1,24 @@
+services:
+  back:
+    image: ${DOCKER_IMAGE:-eclipse-temurin:21-jre-alpine}
+    container_name: avo-back-app
+    restart: always
+    ports:
+      - "${APP_PORT:-8080}:${APP_PORT_INTERNAL:-8080}"
+    env_file:
+      - .env
+    environment:
+      - JAVA_OPTS=${JAVA_OPTS:--Xmx512m -Xms256m}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./${APP_JAR_NAME:-app.jar}:/app/app.jar:ro
+    working_dir: /app
+    command: sh -c "java $$JAVA_OPTS -jar app.jar"
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    external: true
+    name: ${NETWORK_NAME:-shared-network}

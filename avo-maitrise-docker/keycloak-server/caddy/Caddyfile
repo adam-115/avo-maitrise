@@ -1,0 +1,36 @@
+{
+	email {$LE_EMAIL}
+}
+
+{$DOMAIN_NAME} {
+	encode gzip
+
+	reverse_proxy keycloak:8080 {
+		# Transmet les en-têtes X-Forwarded-* que Keycloak attend
+		header_up X-Forwarded-Proto {scheme}
+		header_up X-Forwarded-Host {host}
+	}
+
+	# En-têtes de sécurité
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+
+	# Optionnel : restreindre l'accès à la console admin à certaines IPs
+	# @admin path /admin*
+	# handle @admin {
+	#     @trusted remote_ip 203.0.113.0/24 198.51.100.0/24
+	#     handle @trusted {
+	#         reverse_proxy keycloak:8080
+	#     }
+	#     respond 403
+	# }
+}
+
+# Redirection HTTP -> HTTPS automatique
+http://{$DOMAIN_NAME} {
+	redir https://{host}{uri} permanent
+}

@@ -1,0 +1,19 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: always
+    ports:
+      - "${QDRANT_PORT:-6333}:6333"
+      - "${QDRANT_GRPC_PORT:-6334}:6334"
+    env_file:
+      - .env
+    volumes:
+      - ${QDRANT_DATA_DIR:-./qdrant_data}:/qdrant/storage
+    networks:
+      - shared-network
+
+networks:
+  shared-network:
+    external: true
+    name: ${NETWORK_NAME:-shared-network}

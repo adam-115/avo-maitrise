@@ -46,6 +46,7 @@ public class AiConfigurationController {
     @PostMapping
     public ResponseEntity<AiConfigurationDTO> saveConfiguration(@RequestBody AiConfigurationDTO dto) {
         AiConfiguration entity = mapper.toEntity(dto);
+        entity.setEnableThinking(Boolean.TRUE.equals(dto.getEnableThinking()));
         entity.setUpdatedAt(new Date());
 
         // Si on l'active, on désactive les autres
@@ -71,6 +72,7 @@ public class AiConfigurationController {
             existing.setBaseUrl(dto.getBaseUrl());
             existing.setTemperature(dto.getTemperature());
             existing.setTimeoutMinutes(dto.getTimeoutMinutes());
+            existing.setEnableThinking(Boolean.TRUE.equals(dto.getEnableThinking()));
             existing.setUpdatedAt(new Date());
 
             if (Boolean.TRUE.equals(dto.getIsActive())) {

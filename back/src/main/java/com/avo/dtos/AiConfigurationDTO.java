@@ -12,5 +12,6 @@ public class AiConfigurationDTO {
     private String baseUrl;
     private Double temperature;
     private Integer timeoutMinutes;
+    private Boolean enableThinking;
     private Boolean isActive;
 }

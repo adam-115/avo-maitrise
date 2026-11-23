@@ -29,6 +29,10 @@ public class AiConfiguration {
     @Column(name = "timeout_minutes")
     private Integer timeoutMinutes;
 
+    // Mode "réflexion" des modèles (Qwen3, DeepSeek-R1...) : très lent sur CPU, désactivé par défaut.
+    @Column(name = "enable_thinking", nullable = false)
+    private Boolean enableThinking = false;
+
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
@@ -58,6 +62,9 @@ public class AiConfiguration {
 
     public Integer getTimeoutMinutes() { return timeoutMinutes; }
     public void setTimeoutMinutes(Integer timeoutMinutes) { this.timeoutMinutes = timeoutMinutes; }
+
+    public Boolean getEnableThinking() { return enableThinking; }
+    public void setEnableThinking(Boolean enableThinking) { this.enableThinking = enableThinking; }
 
     public Boolean getIsActive() { return isActive; }
     public void setIsActive(Boolean isActive) { this.isActive = isActive; }

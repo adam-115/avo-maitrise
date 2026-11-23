@@ -46,6 +46,7 @@ export class AiConfiguration implements OnInit {
       baseUrl: '',
       temperature: 0.7,
       timeoutMinutes: 15,
+      enableThinking: false,
       isActive: false
     };
     this.isEditing = true;

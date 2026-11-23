@@ -1,0 +1,22 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: always
+    ports:
+      # Port HTTPS (Sécurisé par défaut avec un certificat auto-signé)
+      - "9443:9443"
+    volumes:
+      # Permet à Portainer de lire l'état de Docker
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Sauvegarde la configuration et les mots de passe de Portainer
+      - portainer_data:/data
+    networks:
+      - shared-network
+
+volumes:
+  portainer_data:
+
+networks:
+  shared-network:
+    external: true

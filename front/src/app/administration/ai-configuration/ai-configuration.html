@@ -50,6 +50,14 @@
         <input type="number" [(ngModel)]="selectedConfig.timeoutMinutes" class="w-full px-4 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none transition-all">
       </div>
 
+      <div *ngIf="selectedConfig.provider === 'OLLAMA'" class="md:col-span-2 mt-2">
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="enableThinking" [(ngModel)]="selectedConfig.enableThinking" class="w-5 h-5 text-pink-600 rounded focus:ring-pink-500">
+          <label for="enableThinking" class="text-sm font-bold text-slate-700 cursor-pointer">Activer la réflexion (mode « thinking »)</label>
+        </div>
+        <p class="text-xs text-slate-500 mt-1 ml-7">Le modèle raisonne avant de répondre : un peu plus précis, mais environ 10 fois plus lent sur un serveur sans GPU. À laisser décoché sur CPU.</p>
+      </div>
+
       <div class="md:col-span-2 flex items-center gap-2 mt-2">
         <input type="checkbox" id="isActive" [(ngModel)]="selectedConfig.isActive" class="w-5 h-5 text-pink-600 rounded focus:ring-pink-500">
         <label for="isActive" class="text-sm font-bold text-slate-700 cursor-pointer">Activer cette configuration par défaut</label>
@@ -103,6 +111,10 @@
         <div class="flex justify-between">
           <span class="text-slate-400">Température</span>
           <span class="font-medium text-slate-700">{{ config.temperature }}</span>
+        </div>
+        <div *ngIf="config.provider === 'OLLAMA'" class="flex justify-between">
+          <span class="text-slate-400">Réflexion</span>
+          <span class="font-medium text-slate-700">{{ config.enableThinking ? 'Activée' : 'Désactivée' }}</span>
         </div>
         <div class="flex justify-between items-center">
           <span class="text-slate-400">Clé API</span>

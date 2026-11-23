@@ -1,0 +1,51 @@
+# Serveur LLM dédié (VPS séparé de l'application) : Qwen3.6-35B-A3B + embeddings nomic-embed-text.
+# Pas de réseau "shared-network" ici : l'application l'appelle à distance via OLLAMA_BASE_URL.
+services:
+  ollama:
+    image: ${OLLAMA_IMAGE:-ollama/ollama:latest}
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      # ATTENTION : Docker contourne ufw. Mettre l'IP du tunnel WireGuard/Tailscale dans OLLAMA_BIND_IP,
+      # ou filtrer le port avec le pare-feu réseau OVH / la chaîne iptables DOCKER-USER.
+      - "${OLLAMA_BIND_IP:-127.0.0.1}:${OLLAMA_PORT:-11434}:11434"
+    env_file:
+      - .env
+    environment:
+      OLLAMA_HOST: "0.0.0.0:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        limits:
+          memory: ${OLLAMA_MEMORY_LIMIT:-22g}
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  # Service ponctuel : télécharge les modèles puis s'arrête.
+  ollama-init:
+    image: ${OLLAMA_IMAGE:-ollama/ollama:latest}
+    container_name: ollama-init
+    depends_on:
+      ollama:
+        condition: service_healthy
+    environment:
+      OLLAMA_HOST: "ollama:11434"
+      EMBEDDING_MODEL: ${EMBEDDING_MODEL:-nomic-embed-text}
+      CHAT_MODEL_NAME: ${CHAT_MODEL_NAME:-avo-qwen}
+    volumes:
+      - ./Modelfile:/Modelfile:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        ollama pull "$$EMBEDDING_MODEL" &&
+        ollama create "$$CHAT_MODEL_NAME" -f /Modelfile &&
+        echo "Modèles prêts : $$CHAT_MODEL_NAME + $$EMBEDDING_MODEL"
+    restart: "no"
+
+volumes:
+  ollama_data:
