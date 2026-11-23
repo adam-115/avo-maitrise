@@ -50,4 +50,8 @@ export class Administration {
   navigateToAiConfiguration(): void {
     this.router.navigate(['home', 'ai-configuration']);
   }
+
+  navigateToAuditJournal(): void {
+    this.router.navigate(['home', 'audit-journal']);
+  }
 }

@@ -381,10 +381,15 @@
               </div>
             </div>
           </div>
-          
+
         </div>
       </div>
-      
+
+      <!-- Journal d'audit (administrateurs) : chargé à la demande pour ne pas alourdir la fiche -->
+      <div *ngIf="canViewAudit && client.id" class="mt-6">
+        <app-audit-timeline scope="CLIENT" [resourceId]="client.id" [deferred]="true"></app-audit-timeline>
+      </div>
+
     </ng-container>
   </div>
 </div>

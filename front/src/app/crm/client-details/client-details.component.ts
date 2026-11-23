@@ -12,11 +12,13 @@ import { ClientDiligenceStatusService } from '../../services/client-diligence-st
 import { Client, Dossier, InvoiceEntity, ClientDiligenceStatus, ClientMoral, ClientPersonnePhysique, ClientTypeEnum } from '../../appTypes';
 
 import { TranslatePipe } from '@ngx-translate/core';
+import { KeycloakService } from '../../services/keycloak.service';
+import { AuditTimelineComponent, canViewAudit } from '../../shared/audit-timeline/audit-timeline.component';
 
 @Component({
   selector: 'app-client-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe],
+  imports: [CommonModule, RouterModule, TranslatePipe, AuditTimelineComponent],
   templateUrl: './client-details.component.html',
   styleUrl: './client-details.component.css'
 })
@@ -26,6 +28,10 @@ export class ClientDetailsComponent implements OnInit {
   private dossierService = inject(DossierService);
   private invoiceService = inject(InvoiceService);
   private amlStatusService = inject(ClientDiligenceStatusService);
+  private keycloakService = inject(KeycloakService);
+
+  /** Le journal d'audit n'est proposé qu'aux administrateurs (le serveur refuse de toute façon les autres). */
+  readonly canViewAudit = canViewAudit(this.keycloakService);
 
   clientId: string | null = null;
   client: Client | null = null;

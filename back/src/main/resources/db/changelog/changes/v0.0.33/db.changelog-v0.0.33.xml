@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!--
+        Journal d'audit, phase 2 : scellement chaîné et ajout seul.
+
+        audit_log_seal / audit_revision_seal : une ligne par élément scellé, dans l'ordre de scellement (seq).
+        hash = HMAC-SHA256(clé secrète, hash précédent + contenu canonique de l'élément).
+        Pour une révision Envers, le contenu inclut toutes les lignes *_aud de cette révision :
+        une valeur historique modifiée directement en base casse donc la chaîne.
+    -->
+    <changeSet id="create-audit-seal-tables" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="audit_log_seal"/>
+            </not>
+        </preConditions>
+        <createTable tableName="audit_log_seal">
+            <column name="seq" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="log_id" type="BIGINT">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_audit_log_seal_log"/>
+            </column>
+            <column name="prev_hash" type="CHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hash" type="CHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="algorithm" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sealed_at" type="DATETIME(6)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="audit_revision_seal">
+            <column name="seq" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="revision_id" type="BIGINT">
+                <constraints nullable="false" unique="true" uniqueConstraintName="uk_audit_revision_seal_rev"/>
+            </column>
+            <column name="prev_hash" type="CHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hash" type="CHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="algorithm" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sealed_at" type="DATETIME(6)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="audit-tables-append-only-triggers" author="adam" dbms="mysql">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from information_schema.triggers
+                where trigger_schema = database() and trigger_name = 'trg_audit_log_no_update'
+            </sqlCheck>
+        </preConditions>
+        <sqlFile path="audit-append-only-triggers.sql" relativeToChangelogFile="true" splitStatements="true"
+                 endDelimiter=";" stripComments="true" encoding="UTF-8"/>
+    </changeSet>
+
+</databaseChangeLog>

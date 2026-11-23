@@ -502,6 +502,48 @@
       </div>
     </a>
 
+    <!-- Module 9: Journal d'audit -->
+    <a (click)="navigateToAuditJournal()"
+      class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-pink-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
+      <div
+        class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:to-rose-500 transition-all">
+      </div>
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div
+            class="w-12 h-12 rounded-2xl bg-pink-50 border border-pink-200 text-pink-600 flex items-center justify-center shadow-xs group-hover:bg-pink-600 group-hover:text-white transition-colors duration-200">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+              </path>
+            </svg>
+          </div>
+          <span
+            class="p-2 rounded-xl bg-slate-50 group-hover:bg-pink-50 text-slate-400 group-hover:text-pink-600 transition-colors">
+            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </span>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 group-hover:text-pink-700 transition-colors">
+            {{ 'AUDIT.ADMIN_CARD_TITLE' | translate }}
+          </h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+            {{ 'AUDIT.ADMIN_CARD_TEXT' | translate }}
+          </p>
+        </div>
+      </div>
+      <div
+        class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-pink-700">
+        <span>{{ 'AUDIT.ADMIN_CARD_CTA' | translate }}</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+        </svg>
+      </div>
+    </a>
+
   </div>
 
 </div>

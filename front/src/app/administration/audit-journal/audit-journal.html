@@ -1,0 +1,228 @@
+<div class="p-4 sm:p-6 lg:p-8 bg-slate-50 min-h-screen space-y-6">
+  <!-- En-tête -->
+  <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+    <h1 class="text-2xl font-black text-slate-800">{{ 'AUDIT.PAGE_TITLE' | translate }}</h1>
+    <p class="text-slate-500 text-sm mt-1">{{ 'AUDIT.PAGE_SUBTITLE' | translate }}</p>
+    <div class="mt-5 inline-flex flex-wrap rounded-xl bg-slate-100 p-1 text-sm font-bold">
+      <button (click)="select('integrity')" [class.bg-white]="tab === 'integrity'" [class.shadow-sm]="tab === 'integrity'" class="px-4 py-2 rounded-lg text-slate-700">{{ 'AUDIT.TAB_INTEGRITY' | translate }}</button>
+      <button (click)="select('access')" [class.bg-white]="tab === 'access'" [class.shadow-sm]="tab === 'access'" class="px-4 py-2 rounded-lg text-slate-700">{{ 'AUDIT.TAB_ACCESS' | translate }}</button>
+      <button (click)="select('revisions')" [class.bg-white]="tab === 'revisions'" [class.shadow-sm]="tab === 'revisions'" class="px-4 py-2 rounded-lg text-slate-700">{{ 'AUDIT.TAB_CHANGES' | translate }}</button>
+      <button (click)="select('alerts')" [class.bg-white]="tab === 'alerts'" [class.shadow-sm]="tab === 'alerts'" class="px-4 py-2 rounded-lg text-slate-700">
+        {{ 'AUDIT.TAB_ALERTS' | translate }}
+        <span *ngIf="alertCount > 0" class="ml-1 px-1.5 py-0.5 rounded-full bg-red-600 text-white text-[10px]">{{ alertCount }}</span>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700">{{ error | translate }}</div>
+
+  <!-- ============ INTÉGRITÉ ============ -->
+  <div *ngIf="tab === 'integrity'" class="space-y-4">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-lg font-bold text-slate-800">{{ 'AUDIT.INTEGRITY_TITLE' | translate }}</h2>
+          <p class="text-xs text-slate-500 mt-1">{{ 'AUDIT.INTEGRITY_HELP' | translate }}</p>
+        </div>
+        <div class="flex gap-2">
+          <button (click)="sealNow()" [disabled]="sealing" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold disabled:opacity-50">
+            {{ (sealing ? 'AUDIT.SEALING' : 'AUDIT.SEAL_NOW') | translate }}
+          </button>
+          <button (click)="verify()" [disabled]="verifying" class="px-4 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-sm font-bold disabled:opacity-50">
+            {{ (verifying ? 'AUDIT.VERIFYING' : 'AUDIT.VERIFY') | translate }}
+          </button>
+        </div>
+      </div>
+      <p *ngIf="sealedMessage !== null" class="mt-3 text-xs text-slate-500">{{ 'AUDIT.SEALED_COUNT' | translate: { count: sealedMessage } }}</p>
+
+      <div *ngIf="integrity" class="mt-5 space-y-4">
+        <div class="rounded-xl p-4 border-2"
+          [ngClass]="integrity.status === 'INTACT' ? 'bg-emerald-50 border-emerald-300' : 'bg-red-50 border-red-300'">
+          <div class="text-lg font-black" [ngClass]="integrity.status === 'INTACT' ? 'text-emerald-700' : 'text-red-700'">
+            {{ (integrity.status === 'INTACT' ? 'AUDIT.STATUS_INTACT' : 'AUDIT.STATUS_ANOMALIES') | translate: { count: integrity.anomalyCount } }}
+          </div>
+          <div class="mt-1 text-xs text-slate-600">
+            {{ 'AUDIT.VERIFIED_AT' | translate }} {{ integrity.verifiedAt | date:'dd/MM/yyyy HH:mm:ss' }} ·
+            {{ integrity.currentAlgorithm }} ·
+            {{ 'AUDIT.PROTECTED_TABLES' | translate }} {{ integrity.protectedTables }}/{{ integrity.protectedTables + integrity.unprotectedTables }}
+          </div>
+          <div *ngIf="!integrity.keyConfigured" class="mt-2 text-xs font-bold text-amber-700">⚠ {{ 'AUDIT.NO_KEY_WARNING' | translate }}</div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="text-xs text-slate-500 bg-slate-50">
+              <tr>
+                <th class="text-left px-3 py-2">{{ 'AUDIT.CHAIN' | translate }}</th>
+                <th class="text-right px-3 py-2">{{ 'AUDIT.SEALED' | translate }}</th>
+                <th class="text-right px-3 py-2">{{ 'AUDIT.PENDING' | translate }}</th>
+                <th class="text-left px-3 py-2">{{ 'AUDIT.FINAL_HASH' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of integrity.chains" class="border-t border-slate-100">
+                <td class="px-3 py-2 font-semibold text-slate-700">{{ ('AUDIT.CHAIN_' + c.chain) | translate }}</td>
+                <td class="px-3 py-2 text-right">{{ c.sealedItems }}</td>
+                <td class="px-3 py-2 text-right">{{ c.pendingItems }}</td>
+                <td class="px-3 py-2 font-mono text-xs text-slate-600 break-all">{{ c.lastHash || '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="mt-2 text-xs text-slate-500">{{ 'AUDIT.FINAL_HASH_HELP' | translate }}</p>
+        </div>
+
+        <div *ngIf="integrity.anomalies.length > 0">
+          <h3 class="text-sm font-bold text-red-700 mb-2">{{ 'AUDIT.ANOMALIES' | translate }}</h3>
+          <div *ngFor="let a of integrity.anomalies" class="mb-2 p-3 rounded-xl border border-red-200 bg-white text-sm">
+            <span class="px-2 py-0.5 rounded-full bg-red-600 text-white text-xs font-bold">{{ a.type }}</span>
+            <span *ngIf="a.chain" class="ml-2 text-xs text-slate-500">{{ ('AUDIT.CHAIN_' + a.chain) | translate }}<span *ngIf="a.itemId"> · #{{ a.itemId }}</span></span>
+            <div class="mt-1 text-slate-700">{{ a.description }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ACCÈS ============ -->
+  <div *ngIf="tab === 'access'" class="bg-white rounded-2xl border border-slate-200">
+    <form (ngSubmit)="searchAccess(0)" class="grid grid-cols-1 md:grid-cols-6 gap-3 p-4 border-b border-slate-100">
+      <input name="user" [(ngModel)]="accessFilters.user" [placeholder]="'AUDIT.USER' | translate" class="px-3 py-2 text-sm rounded-xl border border-slate-200">
+      <select name="action" [(ngModel)]="accessFilters.action" class="px-3 py-2 text-sm rounded-xl border border-slate-200">
+        <option [ngValue]="undefined">{{ 'AUDIT.ALL_ACTIONS' | translate }}</option>
+        <option *ngFor="let a of actions" [value]="a">{{ ('AUDIT.ACTION.' + a) | translate }}</option>
+      </select>
+      <select name="resourceType" [(ngModel)]="accessFilters.resourceType" class="px-3 py-2 text-sm rounded-xl border border-slate-200">
+        <option [ngValue]="undefined">{{ 'AUDIT.ALL_RESOURCES' | translate }}</option>
+        <option *ngFor="let r of resourceTypes" [value]="r">{{ ('AUDIT.RESOURCE.' + r) | translate }}</option>
+      </select>
+      <input name="from" type="date" [(ngModel)]="accessFilters.from" class="px-3 py-2 text-sm rounded-xl border border-slate-200">
+      <input name="to" type="date" [(ngModel)]="accessFilters.to" class="px-3 py-2 text-sm rounded-xl border border-slate-200">
+      <div class="flex gap-2">
+        <button type="submit" class="flex-1 px-3 py-2 rounded-xl bg-pink-600 text-white text-sm font-bold">{{ 'AUDIT.SEARCH' | translate }}</button>
+        <button type="button" (click)="resetAccess()" class="px-3 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm font-bold">↺</button>
+      </div>
+    </form>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="text-xs text-slate-500 bg-slate-50">
+          <tr>
+            <th class="text-left px-3 py-2">{{ 'AUDIT.DATE' | translate }}</th>
+            <th class="text-left px-3 py-2">{{ 'AUDIT.USER' | translate }}</th>
+            <th class="text-left px-3 py-2">{{ 'AUDIT.ACTION_LABEL' | translate }}</th>
+            <th class="text-left px-3 py-2">{{ 'AUDIT.ELEMENT' | translate }}</th>
+            <th class="text-left px-3 py-2">{{ 'AUDIT.RESULT' | translate }}</th>
+            <th class="text-left px-3 py-2">IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of accessPage?.content" class="border-t border-slate-100 align-top">
+            <td class="px-3 py-2 font-mono text-xs whitespace-nowrap">{{ r.time | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td class="px-3 py-2">{{ r.user }}</td>
+            <td class="px-3 py-2 font-semibold">{{ ('AUDIT.ACTION.' + r.action) | translate }}</td>
+            <td class="px-3 py-2">{{ r.resourceLabel }}<div *ngIf="r.details" class="text-xs text-slate-500">{{ r.details }}</div></td>
+            <td class="px-3 py-2"><span class="px-2 py-0.5 rounded-full border text-xs font-bold" [ngClass]="outcomeClass(r.outcome)">{{ ('AUDIT.OUTCOME.' + r.outcome) | translate }}</span></td>
+            <td class="px-3 py-2 font-mono text-xs">{{ r.ipAddress || '—' }}</td>
+          </tr>
+          <tr *ngIf="accessPage && accessPage.content.length === 0"><td colspan="6" class="p-8 text-center text-slate-500">{{ 'AUDIT.EMPTY' | translate }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="accessPage" class="flex items-center justify-between px-4 py-3 border-t border-slate-100 text-xs text-slate-500">
+      <span>{{ accessPage.totalElements }} {{ 'AUDIT.RESULTS' | translate }}</span>
+      <div class="flex items-center gap-2">
+        <button (click)="searchAccess(accessPage.page - 1)" [disabled]="accessPage.page === 0 || accessLoading" class="px-3 py-1 rounded-lg bg-slate-100 disabled:opacity-40">‹</button>
+        <span>{{ accessPage.page + 1 }} / {{ totalPages(accessPage) }}</span>
+        <button (click)="searchAccess(accessPage.page + 1)" [disabled]="accessPage.page + 1 >= totalPages(accessPage) || accessLoading" class="px-3 py-1 rounded-lg bg-slate-100 disabled:opacity-40">›</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODIFICATIONS ============ -->
+  <div *ngIf="tab === 'revisions'" class="bg-white rounded-2xl border border-slate-200">
+    <form (ngSubmit)="searchRevisions(0)" class="grid grid-cols-1 md:grid-cols-4 gap-3 p-4 border-b border-slate-100">
+      <input name="ruser" [(ngModel)]="revisionFilters.user" [placeholder]="'AUDIT.USER' | translate" class="px-3 py-2 text-sm rounded-xl border border-slate-200">
+      <input name="rfrom" type="date" [(ngModel)]="revisionFilters.from" class="px-3 py-2 text-sm rounded-xl border border-slate-200">
+      <input name="rto" type="date" [(ngModel)]="revisionFilters.to" class="px-3 py-2 text-sm rounded-xl border border-slate-200">
+      <div class="flex gap-2">
+        <button type="submit" class="flex-1 px-3 py-2 rounded-xl bg-pink-600 text-white text-sm font-bold">{{ 'AUDIT.SEARCH' | translate }}</button>
+        <button type="button" (click)="resetRevisions()" class="px-3 py-2 rounded-xl bg-slate-100 text-slate-700 text-sm font-bold">↺</button>
+      </div>
+    </form>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="text-xs text-slate-500 bg-slate-50">
+          <tr>
+            <th class="text-left px-3 py-2">{{ 'AUDIT.REVISION' | translate }}</th>
+            <th class="text-left px-3 py-2">{{ 'AUDIT.DATE' | translate }}</th>
+            <th class="text-left px-3 py-2">{{ 'AUDIT.USER' | translate }}</th>
+            <th class="text-left px-3 py-2">{{ 'AUDIT.CHANGED_ELEMENTS' | translate }}</th>
+            <th class="text-left px-3 py-2">IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of revisionPage?.content" class="border-t border-slate-100 align-top">
+            <td class="px-3 py-2 font-mono text-xs">#{{ r.revision }}</td>
+            <td class="px-3 py-2 font-mono text-xs whitespace-nowrap">{{ r.time | date:'dd/MM/yyyy HH:mm:ss' }}</td>
+            <td class="px-3 py-2">{{ r.user }} <span *ngIf="r.origin === 'SYSTEME'" class="ml-1 px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 text-xs">{{ 'AUDIT.SYSTEM' | translate }}</span></td>
+            <td class="px-3 py-2">
+              <span *ngFor="let c of r.changedElements" class="inline-block mr-1 mb-1 px-2 py-0.5 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs">{{ c }}</span>
+            </td>
+            <td class="px-3 py-2 font-mono text-xs">{{ r.ipAddress || '—' }}</td>
+          </tr>
+          <tr *ngIf="revisionPage && revisionPage.content.length === 0"><td colspan="5" class="p-8 text-center text-slate-500">{{ 'AUDIT.EMPTY' | translate }}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="revisionPage" class="flex items-center justify-between px-4 py-3 border-t border-slate-100 text-xs text-slate-500">
+      <span>{{ revisionPage.totalElements }} {{ 'AUDIT.RESULTS' | translate }}</span>
+      <div class="flex items-center gap-2">
+        <button (click)="searchRevisions(revisionPage.page - 1)" [disabled]="revisionPage.page === 0 || revisionLoading" class="px-3 py-1 rounded-lg bg-slate-100 disabled:opacity-40">‹</button>
+        <span>{{ revisionPage.page + 1 }} / {{ totalPages(revisionPage) }}</span>
+        <button (click)="searchRevisions(revisionPage.page + 1)" [disabled]="revisionPage.page + 1 >= totalPages(revisionPage) || revisionLoading" class="px-3 py-1 rounded-lg bg-slate-100 disabled:opacity-40">›</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ALERTES ============ -->
+  <div *ngIf="tab === 'alerts'" class="space-y-4">
+    <div class="bg-white rounded-2xl border border-slate-200 p-4 flex items-center gap-3">
+      <span class="text-sm text-slate-600">{{ 'AUDIT.ALERTS_PERIOD' | translate }}</span>
+      <select [(ngModel)]="alertDays" (change)="loadAlerts()" class="px-3 py-2 text-sm rounded-xl border border-slate-200">
+        <option [ngValue]="1">24 h</option>
+        <option [ngValue]="7">7 j</option>
+        <option [ngValue]="30">30 j</option>
+        <option [ngValue]="90">90 j</option>
+      </select>
+    </div>
+
+    <div *ngIf="alerts" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div class="bg-white rounded-2xl border border-slate-200 p-5">
+        <h3 class="font-bold text-slate-800">{{ 'AUDIT.ALERT_MASS' | translate }}</h3>
+        <p class="text-xs text-slate-500 mt-1">{{ 'AUDIT.ALERT_MASS_HELP' | translate: { threshold: alerts.massThreshold } }}</p>
+        <div *ngIf="alerts.massAccess.length === 0" class="mt-4 text-sm text-emerald-700">✓ {{ 'AUDIT.ALERT_NONE' | translate }}</div>
+        <button *ngFor="let m of alerts.massAccess" (click)="showUserAccess(m.user)" class="mt-3 w-full text-left p-3 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100">
+          <div class="text-sm font-bold text-red-800">{{ m.user }}</div>
+          <div class="text-xs text-red-700">{{ m.count }} · {{ m.hour | date:'dd/MM/yyyy HH:00' }}</div>
+        </button>
+      </div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-5">
+        <h3 class="font-bold text-slate-800">{{ 'AUDIT.ALERT_REFUSED' | translate }}</h3>
+        <p class="text-xs text-slate-500 mt-1">{{ 'AUDIT.ALERT_REFUSED_HELP' | translate }}</p>
+        <div *ngIf="alerts.refusedAccess.length === 0" class="mt-4 text-sm text-emerald-700">✓ {{ 'AUDIT.ALERT_NONE' | translate }}</div>
+        <div *ngFor="let r of alerts.refusedAccess" class="mt-3 p-3 rounded-xl border border-red-200 bg-white">
+          <div class="text-sm font-bold text-slate-800">{{ r.user }}</div>
+          <div class="text-xs text-slate-600">{{ r.time | date:'dd/MM/yyyy HH:mm' }} · {{ r.resourceLabel }}</div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-5">
+        <h3 class="font-bold text-slate-800">{{ 'AUDIT.ALERT_NIGHT' | translate }}</h3>
+        <p class="text-xs text-slate-500 mt-1">{{ 'AUDIT.ALERT_NIGHT_HELP' | translate }}</p>
+        <div *ngIf="alerts.nightActivity.length === 0" class="mt-4 text-sm text-emerald-700">✓ {{ 'AUDIT.ALERT_NONE' | translate }}</div>
+        <button *ngFor="let n of alerts.nightActivity" (click)="showUserAccess(n.user)" class="mt-3 w-full text-left p-3 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100">
+          <div class="text-sm font-bold text-amber-800">{{ n.user }}</div>
+          <div class="text-xs text-amber-700">{{ n.count }} {{ 'AUDIT.ACCESSES' | translate }}</div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

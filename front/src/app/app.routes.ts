@@ -49,6 +49,7 @@ export const routes: Routes = [
           { path: 'contacts', loadComponent: () => import('./contact/contact/contact.component').then(m => m.ContactComponent) },
           { path: 'prestations', loadComponent: () => import('./dossier/invoice-dossier-service/invoice-dossier-service.component').then(m => m.InvoiceDossierServiceComponent) },
           { path: 'journal', loadComponent: () => import('./dossier/matter-activity/matter-activity').then(m => m.MatterActivityComponent) },
+          { path: 'audit', loadComponent: () => import('./shared/audit-timeline/audit-timeline.component').then(m => m.AuditTimelineComponent) },
           { path: 'strategie', loadComponent: () => import('./dossier/dossier-strategie/dossier-strategie.component').then(m => m.DossierStrategieComponent) }
         ]
       },
@@ -232,6 +233,10 @@ export const routes: Routes = [
       {
         path: 'ai-configuration',
         loadComponent: () => import('./administration/ai-configuration/ai-configuration').then(m => m.AiConfiguration),
+      },
+      {
+        path: 'audit-journal',
+        loadComponent: () => import('./administration/audit-journal/audit-journal').then(m => m.AuditJournal),
       }
     ]
 
