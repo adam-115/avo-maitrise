@@ -50,6 +50,8 @@ export const routes: Routes = [
           { path: 'prestations', loadComponent: () => import('./dossier/invoice-dossier-service/invoice-dossier-service.component').then(m => m.InvoiceDossierServiceComponent) },
           { path: 'journal', loadComponent: () => import('./dossier/matter-activity/matter-activity').then(m => m.MatterActivityComponent) },
           { path: 'audit', loadComponent: () => import('./shared/audit-timeline/audit-timeline.component').then(m => m.AuditTimelineComponent) },
+          { path: 'delais', loadComponent: () => import('./dossier/dossier-deadlines/dossier-deadlines.component').then(m => m.DossierDeadlinesComponent) },
+          { path: 'actes', loadComponent: () => import('./dossier/dossier-acts/dossier-acts.component').then(m => m.DossierActsComponent) },
           { path: 'strategie', loadComponent: () => import('./dossier/dossier-strategie/dossier-strategie.component').then(m => m.DossierStrategieComponent) }
         ]
       },
@@ -237,6 +239,14 @@ export const routes: Routes = [
       {
         path: 'audit-journal',
         loadComponent: () => import('./administration/audit-journal/audit-journal').then(m => m.AuditJournal),
+      },
+      {
+        path: 'act-templates',
+        loadComponent: () => import('./administration/act-templates-admin/act-templates-admin.component').then(m => m.ActTemplatesAdminComponent),
+      },
+      {
+        path: 'deadline-rules',
+        loadComponent: () => import('./administration/deadline-rules-admin/deadline-rules-admin.component').then(m => m.DeadlineRulesAdminComponent),
       }
     ]
 

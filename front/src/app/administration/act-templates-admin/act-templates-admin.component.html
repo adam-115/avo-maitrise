@@ -1,0 +1,168 @@
+<div class="p-4 sm:p-6 lg:p-8 bg-slate-50/50 min-h-screen space-y-6">
+
+  <!-- En-tête -->
+  <div class="bg-white rounded-3xl border-2 border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-indigo-700">
+        <a routerLink="/home/administration" class="hover:underline">Administration</a>
+        <span class="text-slate-300">/</span>
+        <span class="text-slate-600">Modèles d'actes</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-black text-slate-900">Modèles d'actes &amp; génération automatique</h1>
+      <p class="text-sm text-slate-600">
+        Créez, modifiez ou importez (.docx) les modèles utilisés dans l'onglet « Actes &amp; Modèles » de chaque dossier.
+      </p>
+    </div>
+
+    <button type="button" (click)="openCreate()"
+      class="px-5 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700 shadow-sm active:scale-95 self-start lg:self-center">
+      + Nouveau modèle d'acte
+    </button>
+  </div>
+
+  <!-- Alertes -->
+  <div *ngIf="errorMessage()" class="bg-red-50 border border-red-200 text-red-800 text-sm px-4 py-3 rounded-xl">
+    {{ errorMessage() }}
+  </div>
+  <div *ngIf="successMessage()" class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm px-4 py-3 rounded-xl">
+    {{ successMessage() }}
+  </div>
+
+  <!-- Formulaire Ajout / Modification -->
+  <div *ngIf="showEditor()" class="bg-white rounded-2xl border-2 border-indigo-200 shadow-md p-6 space-y-5">
+    <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+      <h2 class="text-lg font-bold text-indigo-950">
+        {{ form.id ? 'Modifier le modèle d\'acte' : 'Ajouter un nouveau modèle d\'acte' }}
+      </h2>
+      <button type="button" (click)="closeEditor()" class="text-xs font-bold text-slate-500 hover:text-slate-800">Fermer ✕</button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="md:col-span-2">
+        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Titre du modèle *</label>
+        <input type="text" [(ngModel)]="form.titre" placeholder="Ex : Mise en demeure de payer (LRAR)"
+          class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Catégorie</label>
+        <select [(ngModel)]="form.categorie" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+          <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Pays</label>
+        <select [(ngModel)]="form.pays" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+          <option *ngFor="let p of paysOptions" [value]="p">{{ p === 'ALL' ? 'TOUS PAYS' : p }}</option>
+        </select>
+      </div>
+      <div class="md:col-span-3">
+        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Description</label>
+        <input type="text" [(ngModel)]="form.description" placeholder="Usage, juridiction, articles applicables..."
+          class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+      </div>
+      <div>
+        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Code technique (auto si vide)</label>
+        <input type="text" [(ngModel)]="form.code" placeholder="FR_MON_MODELE"
+          class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono" />
+      </div>
+    </div>
+
+    <div class="flex items-center gap-6 text-xs font-bold text-slate-700">
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="radio" name="adminTplFmt" value="TEXT_TEMPLATE" [(ngModel)]="form.format" />
+        <span ngNonBindable>Modèle texte éditable (balises {{variable}})</span>
+      </label>
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="radio" name="adminTplFmt" value="DOCX_FILE" [(ngModel)]="form.format" />
+        Fichier Word (.docx) personnalisé
+      </label>
+    </div>
+
+    <div *ngIf="form.format === 'TEXT_TEMPLATE'" class="space-y-2">
+      <div class="text-xs font-bold text-slate-600">Palette de variables (cliquer pour insérer) :</div>
+      <div class="flex flex-wrap gap-1.5">
+        <button *ngFor="let v of variablePalette" type="button" (click)="insertVariable(v)"
+          class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-indigo-100 text-[11px] font-mono text-slate-700 hover:text-indigo-800">
+          {{ v }}
+        </button>
+      </div>
+      <textarea [(ngModel)]="form.content" rows="14" [placeholder]="templatePlaceholder"
+        class="w-full rounded-xl border border-slate-300 p-3.5 text-sm font-mono leading-relaxed"></textarea>
+    </div>
+
+    <div *ngIf="form.format === 'DOCX_FILE'" class="space-y-2 bg-slate-50 rounded-xl p-4 border border-slate-200">
+      <input type="file" accept=".docx" (change)="onDocxSelected($event)"
+        class="block w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-50 file:text-indigo-700" />
+      <p *ngIf="form.nomFichier" class="text-xs font-semibold text-indigo-700">Fichier sélectionné : {{ form.nomFichier }}</p>
+      <p class="text-xs text-slate-500" ngNonBindable>Utilisez les balises {{client.nomComplet}}, {{adversaire.nomComplet}}, {{dossier.reference}}, etc. dans votre fichier Word.</p>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-2 border-t border-slate-100">
+      <button type="button" (click)="closeEditor()"
+        class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200">Annuler</button>
+      <button type="button" (click)="save()" [disabled]="isSaving()"
+        class="px-5 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50">
+        {{ isSaving() ? 'Enregistrement...' : (form.id ? 'Enregistrer les modifications' : 'Créer le modèle') }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="bg-white rounded-2xl border border-slate-200 p-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+    <input type="text" [ngModel]="searchTerm()" (ngModelChange)="searchTerm.set($event)"
+      placeholder="Rechercher un modèle (titre, code, description)..."
+      class="rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+    <select [ngModel]="filterPays()" (ngModelChange)="filterPays.set($event)"
+      class="rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+      <option value="">Tous les pays</option>
+      <option *ngFor="let p of paysOptions" [value]="p">{{ p === 'ALL' ? 'TOUS PAYS (Universel)' : p }}</option>
+    </select>
+    <select [ngModel]="filterCategorie()" (ngModelChange)="filterCategorie.set($event)"
+      class="rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+      <option value="">Toutes les catégories</option>
+      <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+    </select>
+  </div>
+
+  <!-- Liste des modèles -->
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+      <h2 class="text-base font-bold text-slate-900">Bibliothèque active ({{ filteredTemplates().length }})</h2>
+    </div>
+
+    <div *ngIf="isLoading()" class="p-8 text-center text-sm text-slate-400">Chargement des modèles...</div>
+
+    <div *ngIf="!isLoading() && filteredTemplates().length === 0" class="p-8 text-center text-sm text-slate-400">
+      Aucun modèle trouvé.
+    </div>
+
+    <div *ngIf="!isLoading() && filteredTemplates().length > 0" class="divide-y divide-slate-100">
+      <div *ngFor="let tpl of filteredTemplates()" class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/70">
+        <div class="space-y-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 text-[11px] font-bold">{{ tpl.categorie }}</span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[11px] font-bold">{{ tpl.pays }}</span>
+            <span class="px-2 py-0.5 rounded text-[11px] font-bold"
+              [ngClass]="tpl.format === 'DOCX_FILE' ? 'bg-blue-50 text-blue-700' : 'bg-emerald-50 text-emerald-700'">
+              {{ tpl.format === 'DOCX_FILE' ? 'Word (.docx)' : 'Texte' }}
+            </span>
+            <h3 class="font-bold text-slate-900 text-sm">{{ tpl.titre }}</h3>
+          </div>
+          <p *ngIf="tpl.description" class="text-xs text-slate-600">{{ tpl.description }}</p>
+          <div class="text-[11px] font-mono text-slate-400">Code : {{ tpl.code }}</div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" (click)="openEdit(tpl)"
+            class="px-3.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xs font-bold border border-indigo-200">
+            Modifier
+          </button>
+          <button type="button" (click)="deleteTemplate(tpl)"
+            class="px-3.5 py-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 text-xs font-bold border border-red-200">
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

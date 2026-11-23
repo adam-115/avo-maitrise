@@ -1,0 +1,279 @@
+<div class="space-y-8">
+
+  <!-- Bandeau RCP -->
+  <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-start gap-3">
+    <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+    </svg>
+    <div class="text-xs text-amber-900">
+      <span class="font-bold">Moteur déterministe &amp; sécurité RCP :</span>
+      les dates d'échéance sont calculées de manière déterministe (quantième à quantième, jours fériés nationaux et Alsace-Moselle, prorogation art. 642 CPC uniquement hors prescription, délai de distance art. 643 CPC). Chaque délai enregistré est audité et déclenche des alertes automatiques (J-30, J-15, J-7, J-3 avec escalade suppléant, J-1, Jour J).
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="errorMessage()" class="bg-red-50 border border-red-200 text-red-800 text-sm px-4 py-3 rounded-xl">
+    {{ errorMessage() }}
+  </div>
+  <div *ngIf="successMessage()" class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm px-4 py-3 rounded-xl">
+    {{ successMessage() }}
+  </div>
+
+  <!-- Grille principale : Calculateur + Détection IA -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Calculateur déterministe (2 colonnes) -->
+    <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">Calculateur de délai de procédure</h3>
+          <p class="text-xs text-slate-500">Appel, prescription, péremption, pourvoi, conclusions</p>
+        </div>
+        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
+          Droit : {{ selectedPays }}
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Pays / Juridiction</label>
+          <select [(ngModel)]="selectedPays" (ngModelChange)="onPaysChange()"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+            <option *ngFor="let p of paysOptions" [value]="p">{{ p }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Règle légale</label>
+          <select [(ngModel)]="selectedRuleId" (ngModelChange)="onRuleChange()"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+            <option [ngValue]="null">-- Délai personnalisé --</option>
+            <option *ngFor="let r of rules()" [ngValue]="r.id">
+              [{{ r.categorie }}] {{ r.libelle }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Date de départ (point de départ)</label>
+          <input type="date" [(ngModel)]="dateDepart" (ngModelChange)="computePreview()"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Intitulé de l'échéance</label>
+          <input type="text" [(ngModel)]="titre" placeholder="Ex : Appel jugement CPH Lyon"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+        </div>
+
+        <!-- Champs personnalisés si aucune règle -->
+        <ng-container *ngIf="!selectedRuleId">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Durée personnalisée</label>
+            <div class="flex gap-2">
+              <input type="number" min="1" [(ngModel)]="customDureeValeur" (ngModelChange)="computePreview()"
+                class="w-24 rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+              <select [(ngModel)]="customDureeUnite" (ngModelChange)="computePreview()"
+                class="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+                <option value="DAYS">Jours</option>
+                <option value="MONTHS">Mois</option>
+                <option value="YEARS">Années</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 pt-5 text-xs font-semibold text-slate-700">
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" [(ngModel)]="customProrogeWeekendFerie" (ngModelChange)="computePreview()" />
+              Proroger week-end / férié (art. 642)
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" [(ngModel)]="customEstFranc" (ngModelChange)="computePreview()" />
+              Délai franc (+1j)
+            </label>
+          </div>
+        </ng-container>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Délai de distance (art. 643 CPC)</label>
+          <select [(ngModel)]="delaiDistanceMois" (ngModelChange)="computePreview()"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+            <option [ngValue]="0">Aucun (+0 mois)</option>
+            <option [ngValue]="1">Outre-mer (+1 mois)</option>
+            <option [ngValue]="2">Étranger (+2 mois)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Suspension (jours : médiation, AJ…)</label>
+          <input type="number" min="0" [(ngModel)]="suspensionJours" (ngModelChange)="computePreview()"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Avocat responsable</label>
+          <select [(ngModel)]="responsableId" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+            <option value="">-- Non assigné --</option>
+            <option *ngFor="let u of users" [value]="u.id">{{ u.firstName || u.username }} {{ u.lastName || '' }}</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Suppléant / Associé (escalade J-3)</label>
+          <select [(ngModel)]="suppleantId" class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+            <option value="">-- Aucun suppléant --</option>
+            <option *ngFor="let u of users" [value]="u.id">{{ u.firstName || u.username }} {{ u.lastName || '' }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-6 text-xs font-semibold text-slate-700 pt-1">
+        <label *ngIf="selectedPays === 'FRANCE'" class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" [(ngModel)]="alsaceMoselle" (ngModelChange)="computePreview()" />
+          Droit local Alsace-Moselle (Vendredi Saint &amp; 26 déc.)
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="checkbox" [(ngModel)]="syncAgenda" />
+          Synchroniser dans l'agenda du dossier (Événement rouge)
+        </label>
+      </div>
+
+      <!-- Aperçu instantané du calcul -->
+      <div *ngIf="previewResult() as p" class="bg-indigo-50/80 border border-indigo-200 rounded-2xl p-4 space-y-2">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <div class="text-xs font-bold uppercase text-indigo-600">Date limite calculée</div>
+            <div class="text-2xl font-black text-indigo-950">
+              {{ p.dateEcheanceFinale | date:'EEEE dd/MM/yyyy' }}
+            </div>
+          </div>
+          <span class="px-3 py-1 rounded-full text-xs font-black border"
+            [ngClass]="p.enRetard ? 'bg-red-600 text-white border-red-700' : 'bg-white text-indigo-700 border-indigo-200'">
+            {{ p.enRetard ? ('Échu depuis ' + (-p.joursRestants!) + ' j') : ('Dans ' + p.joursRestants + ' jour(s)') }}
+          </span>
+        </div>
+        <ul *ngIf="p.etapesCalcul?.length" class="text-xs text-slate-700 space-y-1 list-disc ms-4">
+          <li *ngFor="let step of p.etapesCalcul">{{ step }}</li>
+        </ul>
+        <div *ngIf="p.sourceUrl" class="pt-1">
+          <a [href]="p.sourceUrl" target="_blank" rel="noopener" class="text-xs font-bold text-indigo-700 hover:underline">
+            Consulter le texte officiel ({{ p.baseLegale }}) ↗
+          </a>
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <button type="button" (click)="saveDeadline()"
+          class="px-5 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 shadow-sm transition-all active:scale-95">
+          Valider et enregistrer le délai
+        </button>
+      </div>
+    </div>
+
+    <!-- Phase 3 : Détection assistée par IA depuis une pièce -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between space-y-4">
+      <div class="space-y-4">
+        <div class="border-b border-slate-100 pb-3">
+          <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-pink-600"></span>
+            Détection IA depuis une pièce
+          </h3>
+          <p class="text-xs text-slate-500 mt-1">
+            L'IA repère les dates d'actes dans un document (jugement, signification, lettre de licenciement), puis le moteur déterministe Java calcule l'échéance.
+          </p>
+        </div>
+
+        <div *ngIf="dossierDocuments().length > 0; else noDocs">
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Pièce du dossier</label>
+          <select [(ngModel)]="selectedDocumentIdForAi"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm bg-white">
+            <option *ngFor="let doc of dossierDocuments()" [ngValue]="doc.id">
+              {{ doc.nomFichier || doc.title }}
+            </option>
+          </select>
+
+          <button type="button" (click)="detectWithAi()" [disabled]="isDetecting()"
+            class="mt-3 w-full px-4 py-2.5 bg-slate-900 text-white text-xs font-bold rounded-xl hover:bg-pink-700 disabled:opacity-50 transition-colors">
+            {{ isDetecting() ? 'Analyse de la pièce en cours...' : 'Analyser la pièce et proposer les délais' }}
+          </button>
+        </div>
+
+        <ng-template #noDocs>
+          <p class="text-xs text-slate-400 italic">Aucune pièce n'est encore attachée à ce dossier.</p>
+        </ng-template>
+
+        <!-- Propositions IA à valider -->
+        <div *ngIf="aiProposals().length > 0" class="space-y-3 pt-2">
+          <div class="text-xs font-bold uppercase text-pink-700">Propositions à valider ({{ aiProposals().length }})</div>
+          <div *ngFor="let prop of aiProposals()" class="rounded-xl border border-pink-200 bg-pink-50/60 p-3 space-y-1.5">
+            <div class="text-xs font-bold text-slate-900">{{ prop.titre }}</div>
+            <div class="text-xs text-slate-600">{{ prop.triggerEventLabel }}</div>
+            <div class="text-xs font-bold text-pink-800">
+              Départ : {{ prop.dateDepart | date:'dd/MM/yyyy' }} → Échéance : {{ prop.dateEcheanceFinale | date:'dd/MM/yyyy' }}
+            </div>
+            <button type="button" (click)="validateAiProposal(prop)"
+              class="mt-1 px-3 py-1.5 bg-pink-600 text-white text-xs font-bold rounded-lg hover:bg-pink-700">
+              Valider ce délai
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-[11px] text-slate-400 border-t border-slate-100 pt-3">
+        Aucune proposition IA n'est enregistrée automatiquement : validation humaine requise.
+      </p>
+    </div>
+  </div>
+
+  <!-- Liste des délais enregistrés sur le dossier -->
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+      <h3 class="text-lg font-bold text-slate-900">Échéances enregistrées sur le dossier ({{ deadlines().length }})</h3>
+    </div>
+
+    <div *ngIf="deadlines().length === 0" class="p-8 text-center text-sm text-slate-400">
+      Aucun délai de procédure enregistré pour ce dossier.
+    </div>
+
+    <div *ngIf="deadlines().length > 0" class="divide-y divide-slate-100">
+      <div *ngFor="let d of deadlines()" class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-slate-50/60">
+        <div class="space-y-1 min-w-0">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border" [ngClass]="countdownBadgeClass(d)">
+              <ng-container *ngIf="d.statut === 'ACTIF'">
+                {{ d.enRetard ? ('EN RETARD (' + (-d.joursRestants!) + 'j)') : ('J-' + d.joursRestants) }}
+              </ng-container>
+              <ng-container *ngIf="d.statut !== 'ACTIF'">{{ d.statut }}</ng-container>
+            </span>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[11px] font-bold">{{ d.categorie }}</span>
+            <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 text-[11px] font-bold">{{ d.pays }}</span>
+            <h4 class="font-bold text-slate-900 text-sm">{{ d.titre }}</h4>
+          </div>
+          <div class="text-xs text-slate-600">
+            Départ : <b>{{ d.dateDepart | date:'dd/MM/yyyy' }}</b> → Échéance : <b class="text-slate-900">{{ d.dateEcheanceFinale | date:'dd/MM/yyyy' }}</b>
+            <span *ngIf="d.baseLegale"> · {{ d.baseLegale }}</span>
+          </div>
+          <div *ngIf="d.detailCalcul" class="text-[11px] text-slate-500">{{ d.detailCalcul }}</div>
+          <div *ngIf="d.justificatifAccomplissement" class="text-xs text-emerald-700 font-semibold">
+            Accompli par {{ d.accompliPar }} : {{ d.justificatifAccomplissement }}
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <button *ngIf="d.statut === 'ACTIF'" type="button" (click)="completeDeadline(d)"
+            class="px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700">
+            Accompli (RPVA)
+          </button>
+          <button *ngIf="d.statut === 'ACTIF'" type="button" (click)="interruptDeadline(d)"
+            class="px-3 py-1.5 rounded-lg bg-amber-100 text-amber-900 text-xs font-bold hover:bg-amber-200 border border-amber-300">
+            Interrompre / Relancer
+          </button>
+          <button type="button" (click)="deleteDeadline(d)"
+            class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-red-600 hover:bg-red-50">
+            Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
