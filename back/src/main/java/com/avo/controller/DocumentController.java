@@ -1,5 +1,8 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
 import jakarta.validation.Valid;
 
 import org.springframework.core.io.Resource;
@@ -34,11 +37,13 @@ public class DocumentController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "DOCUMENT")
     @GetMapping("/{id}")
     public ResponseEntity<DocumentDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    @AuditAccess(action = AuditAction.TELECHARGEMENT, resource = "DOCUMENT")
     @GetMapping("/{id}/download")
     public ResponseEntity<Resource> download(@PathVariable Long id) {
         return service.downloadFile(id);

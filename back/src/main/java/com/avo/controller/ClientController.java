@@ -1,5 +1,8 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -27,6 +30,7 @@ public class ClientController {
         this.reportingService = reportingService;
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "CLIENT", idParam = "", details = "Rapport LCB-FT global (PDF)")
     @GetMapping("/aml-report/pdf")
     public ResponseEntity<byte[]> generateAmlReport(
             @RequestParam(required = false) String startDate,
@@ -38,6 +42,7 @@ public class ClientController {
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "CLIENT", details = "Rapport d'audit KYC (PDF)")
     @GetMapping("/{id}/kyc-audit-report/pdf")
     public ResponseEntity<byte[]> generateClientKycAuditReport(@PathVariable Long id) {
         byte[] pdfBytes = reportingService.generateClientKycAuditReport(id);
@@ -47,6 +52,7 @@ public class ClientController {
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "CLIENT", details = "Rapport d'audit GAFI (PDF)")
     @GetMapping("/{id}/fatf-audit-report/pdf")
     public ResponseEntity<byte[]> generateClientFatfAuditReport(@PathVariable Long id) {
         byte[] pdfBytes = reportingService.generateClientFatfAuditReport(id);
@@ -80,6 +86,7 @@ public class ClientController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "CLIENT")
     @GetMapping("/{id}")
     public ResponseEntity<ClientEntityDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));

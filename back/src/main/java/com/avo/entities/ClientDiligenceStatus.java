@@ -9,6 +9,7 @@ import java.time.OffsetDateTime;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+@org.hibernate.envers.Audited
 @Entity
 @Data
 @AllArgsConstructor

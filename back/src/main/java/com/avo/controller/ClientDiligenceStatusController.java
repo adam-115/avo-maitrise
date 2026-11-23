@@ -1,5 +1,8 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
 import jakarta.validation.Valid;
 
 import com.avo.dtos.ClientDiligenceStatusDTO;
@@ -33,6 +36,7 @@ public class ClientDiligenceStatusController {
     public ResponseEntity<Page<ClientDiligenceStatusDTO>> search(@QuerydslPredicate(root = ClientDiligenceStatus.class) Predicate predicate, Pageable pageable) {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "CLIENT", idParam = "clientId", details = "Statuts de diligence du client")
     @GetMapping("/client/{clientId}")
     public ResponseEntity<List<ClientDiligenceStatusDTO>> findByClientId(@PathVariable Long clientId) {
         return ResponseEntity.ok(service.findByClientId(clientId));

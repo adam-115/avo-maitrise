@@ -1,5 +1,8 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
 import jakarta.validation.Valid;
 
 import com.avo.dtos.DiligenceFormResultDTO;
@@ -36,11 +39,13 @@ public class DiligenceFormResultController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "CLIENT", idParam = "clientId", details = "Résultats de diligence du client")
     @GetMapping("/client/{clientId}")
     public ResponseEntity<List<DiligenceFormResultDTO>> findByClientId(@PathVariable Long clientId) {
         return ResponseEntity.ok(service.findByClientId(clientId));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "DILIGENCE")
     @GetMapping("/{id}")
     public ResponseEntity<DiligenceFormResultDTO> findById(@PathVariable String id) {
         return ResponseEntity.ok(service.findById(id));
@@ -63,6 +68,7 @@ public class DiligenceFormResultController {
         return ResponseEntity.noContent().build();
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "DILIGENCE", details = "Formulaire de diligence (PDF)")
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> generatePdf(@PathVariable String id) {
         byte[] pdfBytes = reportingService.generateDiligenceFormResultReport(id);

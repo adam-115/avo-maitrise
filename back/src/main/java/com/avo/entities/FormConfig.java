@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+@org.hibernate.envers.Audited
 @Entity
 @Data
 @AllArgsConstructor

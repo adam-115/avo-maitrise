@@ -1,5 +1,8 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -35,6 +38,7 @@ public class ScreeningExecutionController {
         this.clientRepository = clientRepository;
     }
 
+    @AuditAccess(action = AuditAction.DECLENCHEMENT_FILTRAGE, resource = "CLIENT", idParam = "", details = "Filtrage de tous les clients")
     @PostMapping("/trigger-clients")
     public ResponseEntity<Void> triggerClients() {
         verificationJob.executeMatchClient();
@@ -42,12 +46,14 @@ public class ScreeningExecutionController {
         return ResponseEntity.ok().build();
     }
 
+    @AuditAccess(action = AuditAction.DECLENCHEMENT_FILTRAGE, resource = "UBO", idParam = "", details = "Filtrage de tous les bénéficiaires effectifs")
     @PostMapping("/trigger-ubos")
     public ResponseEntity<Void> triggerUbos() {
         verificationJob.executeMatchUbos();
         return ResponseEntity.ok().build();
     }
 
+    @AuditAccess(action = AuditAction.DECLENCHEMENT_FILTRAGE, resource = "CLIENT", idParam = "clientId")
     @PostMapping("/trigger-client/{clientId}")
     public ResponseEntity<java.util.Map<String, String>> triggerClient(@PathVariable Long clientId) {
         ClientEntity client = clientRepository.findById(clientId)
@@ -69,16 +75,19 @@ public class ScreeningExecutionController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "CLIENT", idParam = "clientId", details = "Historique des filtrages du client")
     @GetMapping("/by-client/{clientId}")
     public ResponseEntity<Page<ScreeningExecutionDTO>> findByClientId(@PathVariable Long clientId, Pageable pageable) {
         return ResponseEntity.ok(service.findByClientId(clientId, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "UBO", idParam = "uboId", details = "Historique des filtrages du bénéficiaire effectif")
     @GetMapping("/by-ubo/{uboId}")
     public ResponseEntity<Page<ScreeningExecutionDTO>> findByUboId(@PathVariable Long uboId, Pageable pageable) {
         return ResponseEntity.ok(service.findByUboId(uboId, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "FILTRAGE_LCBFT")
     @GetMapping("/{id}")
     public ResponseEntity<ScreeningExecutionDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));

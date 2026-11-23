@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "clients_moraux")
 public class ClientMoral extends ClientEntity {

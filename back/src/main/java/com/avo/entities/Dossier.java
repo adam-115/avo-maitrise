@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "dossiers")
 public class Dossier {
@@ -59,9 +60,13 @@ public class Dossier {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    // Contenus générés par l'IA : volumineux et réécrits à chaque échange, ils ne sont pas historisés
+    // (sinon chaque message du chat dupliquerait tout l'historique dans dossiers_aud).
+    @org.hibernate.envers.NotAudited
     @Column(name = "ai_strategy", columnDefinition = "LONGTEXT")
     private String aiStrategy;
 
+    @org.hibernate.envers.NotAudited
     @Column(name = "ai_chat_history", columnDefinition = "LONGTEXT")
     private String aiChatHistory;
 

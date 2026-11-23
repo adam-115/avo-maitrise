@@ -1,5 +1,8 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -37,6 +40,7 @@ public class InvoiceController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "FACTURE")
     @GetMapping("/{id}")
     public ResponseEntity<InvoiceDTO> getById(@PathVariable Long id) {
         InvoiceDTO result = service.findById(id);
@@ -65,6 +69,7 @@ public class InvoiceController {
         return ResponseEntity.ok().build();
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "FACTURE", details = "Facture (PDF)")
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> generatePdf(@PathVariable Long id) {
         byte[] pdfBytes = reportingService.generateInvoicePdf(id);
@@ -74,6 +79,7 @@ public class InvoiceController {
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "FACTURE", idParam = "ids", details = "Export groupé de factures (PDF)")
     @GetMapping("/bulk-pdf")
     public ResponseEntity<byte[]> generateBulkPdf(@RequestParam java.util.List<Long> ids) {
         byte[] pdfBytes = reportingService.generateBulkInvoicePdf(ids);

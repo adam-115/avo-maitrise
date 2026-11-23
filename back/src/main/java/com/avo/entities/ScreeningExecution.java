@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "screening_execution")
 @Getter

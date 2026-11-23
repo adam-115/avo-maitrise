@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@org.hibernate.envers.Audited
 @Entity
 @Data
 @AllArgsConstructor

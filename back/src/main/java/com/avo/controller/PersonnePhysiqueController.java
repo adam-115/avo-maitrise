@@ -1,5 +1,8 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -33,6 +36,7 @@ public class PersonnePhysiqueController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "CLIENT")
     @GetMapping("/{id}")
     public ResponseEntity<ClientPersonnePhysiqueDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));

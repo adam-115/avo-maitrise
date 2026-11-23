@@ -2,6 +2,7 @@ package com.avo.entities;
 
 import jakarta.persistence.*;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "dossier_parties")
 public class DossierPartie {

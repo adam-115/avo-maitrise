@@ -5,6 +5,9 @@ import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.stereotype.Component;
 import org.springframework.data.domain.PageRequest;
 
+import com.avo.audit.AuditAction;
+import com.avo.audit.AuditOutcome;
+import com.avo.audit.AuditService;
 import com.avo.services.ClientService;
 import com.avo.services.DossierService;
 
@@ -31,13 +34,15 @@ public class AvoAiTools {
 
     private final AiDossierSummaryService aiDossierSummaryService;
     private final RAGDocumentService ragDocumentService;
+    private final AuditService auditService;
 
     public AvoAiTools(ClientService clientService, DossierService dossierService,
             com.avo.services.InvoiceService invoiceService,
             com.avo.services.ScreeningMatchService screeningMatchService,
             com.avo.services.DocumentService documentService,
             AiDossierSummaryService aiDossierSummaryService,
-            RAGDocumentService ragDocumentService) {
+            RAGDocumentService ragDocumentService,
+            AuditService auditService) {
         this.clientService = clientService;
         this.dossierService = dossierService;
         this.invoiceService = invoiceService;
@@ -45,10 +50,20 @@ public class AvoAiTools {
         this.documentService = documentService;
         this.aiDossierSummaryService = aiDossierSummaryService;
         this.ragDocumentService = ragDocumentService;
+        this.auditService = auditService;
+    }
+
+    /**
+     * Chaque lecture de données par l'IA est tracée au nom de l'utilisateur qui a posé la question
+     * (les outils s'exécutent dans le thread de sa requête). La jurisprudence, publique, n'est pas tracée.
+     */
+    private void traceIa(String resourceType, Object resourceId, String details) {
+        auditService.record(AuditAction.ACCES_IA, resourceType, resourceId, AuditOutcome.SUCCES, details);
     }
 
     @Tool(description = "Recherche un client par nom, prénom ou email. Retourne une liste simplifiée (ID, Nom, Email, Statut).")
     public String searchClients(String searchTerm) {
+        traceIa("CLIENT", null, "Recherche de clients : " + searchTerm);
         try {
             var result = clientService.findAllWithFilters(searchTerm, null, null, null, PageRequest.of(0, 5));
             if (result.isEmpty())
@@ -69,6 +84,7 @@ public class AvoAiTools {
 
     @Tool(description = "Récupère le détail complet d'un client spécifique en utilisant son ID (identifiant numérique).")
     public String getClientDetails(Long clientId) {
+        traceIa("CLIENT", clientId, "Détail du client");
         try {
             var client = clientService.findById(clientId);
             if (client == null)
@@ -87,6 +103,7 @@ public class AvoAiTools {
 
     @Tool(description = "Récupère la liste des dossiers juridiques récents. Retourne le titre et le statut de chaque dossier. 'limit' indique le nombre maximum de dossiers à retourner (par exemple 5).")
     public String getRecentDossiers(int limit) {
+        traceIa("DOSSIER", null, "Liste des dossiers récents");
         try {
             // Sécurité de base sur la limite
             if (limit <= 0 || limit > 20)
@@ -108,6 +125,7 @@ public class AvoAiTools {
 
     @Tool(description = "Recherche les factures associées à un client spécifique. Retourne les montants et le lien URL de la facture.")
     public String getInvoicesForClient(Long clientId) {
+        traceIa("CLIENT", clientId, "Factures du client");
         try {
             var invoices = invoiceService.findAll(PageRequest.of(0, 100));
             var clientInvoices = invoices.getContent().stream()
@@ -130,6 +148,7 @@ public class AvoAiTools {
 
     @Tool(description = "Vérifie les correspondances de filtrage AML (Anti-Money Laundering / Sanctions) pour un client donné.")
     public String getClientAmlMatches(Long clientId) {
+        traceIa("CLIENT", clientId, "Alertes LCB-FT du client");
         try {
             var matches = screeningMatchService.findByClientId(clientId, PageRequest.of(0, 10));
             if (matches.isEmpty())
@@ -146,6 +165,7 @@ public class AvoAiTools {
 
     @Tool(description = "Récupère les documents récemment ajoutés au système. 'limit' indique le nombre maximum de documents à retourner (par exemple 5).")
     public String getRecentDocuments(int limit) {
+        traceIa("DOCUMENT", null, "Liste des documents récents");
         try {
             if (limit <= 0 || limit > 20)
                 limit = 5;
@@ -164,6 +184,7 @@ public class AvoAiTools {
 
     @Tool(description = "Génère un résumé complet d'un dossier. Retourne les informations, documents, tâches et l'historique d'actions (temps passé, qui a travaillé dessus, etc.).")
     public String summarizeDossier(Long dossierId) {
+        traceIa("DOSSIER", dossierId, "Résumé du dossier");
         try {
             return aiDossierSummaryService.generateDossierSummary(dossierId);
         } catch (Exception e) {
@@ -181,6 +202,7 @@ public class AvoAiTools {
     public String searchDocumentsInDossier(
             @ToolParam(description = "Identifiant numérique du dossier") Long dossierId,
             @ToolParam(description = "Question ou mots-clés à rechercher dans les pièces") String question) {
+        traceIa("DOSSIER", dossierId, "Recherche dans les pièces : " + question);
         try {
             if (question == null || question.isBlank()) {
                 question = "résumé du dossier et des pièces importantes";

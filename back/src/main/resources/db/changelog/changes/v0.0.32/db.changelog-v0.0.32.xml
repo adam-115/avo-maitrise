@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!--
+        Journal d'audit, phase 1 : tables de révisions (audit_revision), journal des consultations (audit_log)
+        et historique Hibernate Envers (*_aud). Aucune table existante n'est modifiée.
+        Si le modèle Envers change (nouvelle entité auditée, nouveau champ), relancer AuditSchemaExportTest
+        et ajouter une nouvelle migration avec les colonnes manquantes.
+    -->
+    <changeSet id="create-audit-trail-tables" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="audit_revision"/>
+            </not>
+        </preConditions>
+        <sqlFile path="audit-tables.sql" relativeToChangelogFile="true" splitStatements="true" endDelimiter=";"
+                 stripComments="true" encoding="UTF-8"/>
+    </changeSet>
+
+</databaseChangeLog>

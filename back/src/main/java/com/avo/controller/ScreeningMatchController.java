@@ -1,5 +1,8 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -33,6 +36,7 @@ public class ScreeningMatchController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "ALERTE_LCBFT")
     @GetMapping("/{id}")
     public ResponseEntity<ScreeningMatchDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
@@ -66,11 +70,13 @@ public class ScreeningMatchController {
         return ResponseEntity.ok(service.processBatchDecision(matchIds, decision, comment, reviewer));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "CLIENT", idParam = "clientId", details = "Alertes LCB-FT du client")
     @GetMapping("/by-client/{clientId}")
     public ResponseEntity<Page<ScreeningMatchDTO>> findByClientId(@PathVariable Long clientId, Pageable pageable) {
         return ResponseEntity.ok(service.findByClientId(clientId, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "UBO", idParam = "uboId", details = "Alertes LCB-FT du bénéficiaire effectif")
     @GetMapping("/by-ubo/{uboId}")
     public ResponseEntity<Page<ScreeningMatchDTO>> findByUboId(@PathVariable Long uboId, Pageable pageable) {
         return ResponseEntity.ok(service.findByUboId(uboId, pageable));

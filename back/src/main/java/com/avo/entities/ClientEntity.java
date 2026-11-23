@@ -17,6 +17,7 @@ import jakarta.persistence.TemporalType;
 import jakarta.persistence.PrePersist;
 import java.util.Date;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "clients")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -45,6 +46,7 @@ public class ClientEntity {
     @OneToMany(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Document> documents;
 
+    @org.hibernate.envers.NotAudited
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContactPoint> contacts;
 

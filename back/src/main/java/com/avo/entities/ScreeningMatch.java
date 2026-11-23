@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "screening_matches")
 public class ScreeningMatch {

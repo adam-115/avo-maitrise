@@ -1,5 +1,8 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
 import jakarta.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -25,6 +28,7 @@ public class UBOController {
         this.reportingService = reportingService;
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "UBO", idParam = "", details = "Rapport LCB-FT des bénéficiaires effectifs (PDF)")
     @GetMapping("/aml-report/pdf")
     public ResponseEntity<byte[]> generateAmlReportPdf(
             @RequestParam(required = false) String startDate,
@@ -46,6 +50,7 @@ public class UBOController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "UBO")
     @GetMapping("/{id}")
     public ResponseEntity<UBODTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
