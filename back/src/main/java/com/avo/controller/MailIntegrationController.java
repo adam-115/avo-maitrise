@@ -187,11 +187,6 @@ public class MailIntegrationController {
 
     // ==================== CALENDRIER (ÉCRITURE + EXPORT .ICS) ====================
 
-    @PostMapping("/calendar/sync/deadline/{deadlineId}")
-    public ResponseEntity<ExternalCalendarSyncService.SyncResult> syncDeadline(@PathVariable Long deadlineId) {
-        return ResponseEntity.ok(calendarSyncService.syncDeadlineById(deadlineId));
-    }
-
     @PostMapping("/calendar/sync/matter-event/{eventId}")
     public ResponseEntity<ExternalCalendarSyncService.SyncResult> syncMatterEvent(@PathVariable Long eventId) {
         return ResponseEntity.ok(calendarSyncService.syncMatterEventById(eventId));
@@ -202,28 +197,16 @@ public class MailIntegrationController {
         return ResponseEntity.ok(calendarSyncService.syncAppointementById(appointementId));
     }
 
-    @GetMapping(value = "/calendar/ics/deadline/{deadlineId}", produces = "text/calendar;charset=UTF-8")
-    public ResponseEntity<byte[]> downloadDeadlineIcs(@PathVariable Long deadlineId) {
-        String ics = calendarSyncService.buildIcsForDeadline(deadlineId);
-        return icsResponse(ics, "echeance-" + deadlineId + ".ics");
-    }
-
     @GetMapping(value = "/calendar/ics/appointement/{appointementId}", produces = "text/calendar;charset=UTF-8")
     public ResponseEntity<byte[]> downloadAppointementIcs(@PathVariable Long appointementId) {
         String ics = calendarSyncService.buildIcsForAppointement(appointementId);
         return icsResponse(ics, "rdv-" + appointementId + ".ics");
     }
 
-    @GetMapping(value = "/calendar/ics/dossier/{dossierId}", produces = "text/calendar;charset=UTF-8")
-    public ResponseEntity<byte[]> downloadDossierIcs(@PathVariable Long dossierId) {
-        String ics = calendarSyncService.buildIcsForDossier(dossierId);
-        return icsResponse(ics, "dossier-" + dossierId + "-echeances.ics");
-    }
-
     @GetMapping(value = "/calendar/ics/cabinet", produces = "text/calendar;charset=UTF-8")
-    public ResponseEntity<byte[]> downloadCabinetDeadlinesIcs(@RequestParam(defaultValue = "90") int days) {
-        String ics = calendarSyncService.buildIcsForUpcomingCabinetDeadlines(days);
-        return icsResponse(ics, "avo-maitrise-echeances.ics");
+    public ResponseEntity<byte[]> downloadCabinetIcs() {
+        String ics = calendarSyncService.buildIcsForCabinetAppointments();
+        return icsResponse(ics, "avo-maitrise-agenda.ics");
     }
 
     private ResponseEntity<byte[]> icsResponse(String ics, String filename) {

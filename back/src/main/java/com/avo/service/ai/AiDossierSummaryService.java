@@ -30,22 +30,19 @@ public class AiDossierSummaryService {
     private final com.avo.repositories.NoteRepository noteRepository;
     private final com.avo.repositories.AppointementRepository appointementRepository;
     private final com.avo.repositories.InvoiceDossierServiceRepository invoiceDossierServiceRepository;
-    private final com.avo.repositories.DossierDeadlineRepository dossierDeadlineRepository;
 
     public AiDossierSummaryService(DossierRepository dossierRepository, 
                                    TaskRepository taskRepository,
                                    MatterActivityRepository matterActivityRepository,
                                    com.avo.repositories.NoteRepository noteRepository,
                                    com.avo.repositories.AppointementRepository appointementRepository,
-                                   com.avo.repositories.InvoiceDossierServiceRepository invoiceDossierServiceRepository,
-                                   com.avo.repositories.DossierDeadlineRepository dossierDeadlineRepository) {
+                                   com.avo.repositories.InvoiceDossierServiceRepository invoiceDossierServiceRepository) {
         this.dossierRepository = dossierRepository;
         this.taskRepository = taskRepository;
         this.matterActivityRepository = matterActivityRepository;
         this.noteRepository = noteRepository;
         this.appointementRepository = appointementRepository;
         this.invoiceDossierServiceRepository = invoiceDossierServiceRepository;
-        this.dossierDeadlineRepository = dossierDeadlineRepository;
     }
 
     /**
@@ -140,19 +137,6 @@ public class AiDossierSummaryService {
             });
         } else {
             sb.append("Aucune tâche.\n");
-        }
-
-        // 7b. Délais de procédure (échéances légales critiques)
-        sb.append("\n--- Délais de procédure & Échéances légales ---\n");
-        var deadlines = dossierDeadlineRepository.findByDossierIdOrderByDateEcheanceFinaleAsc(dossierId);
-        if (deadlines != null && !deadlines.isEmpty()) {
-            deadlines.forEach(dl -> {
-                sb.append("- [").append(dl.getStatut()).append(" | ").append(dl.getCategorie()).append("] ")
-                  .append(dl.getTitre()).append(" — Échéance : ").append(dl.getDateEcheanceFinale())
-                  .append(" (").append(dl.getBaseLegale() != null ? dl.getBaseLegale() : "délai personnalisé").append(")\n");
-            });
-        } else {
-            sb.append("Aucun délai de procédure enregistré.\n");
         }
 
         // 8. Historique d'audit (Logs des 15 dernières actions de l'équipe sur ce dossier)

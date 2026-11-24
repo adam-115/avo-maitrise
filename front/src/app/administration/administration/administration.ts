@@ -58,14 +58,6 @@ export class Administration {
     this.router.navigate(['home', 'audit-journal']);
   }
 
-  navigateToActTemplates(): void {
-    this.router.navigate(['home', 'act-templates']);
-  }
-
-  navigateToDeadlineRules(): void {
-    this.router.navigate(['home', 'deadline-rules']);
-  }
-
   navigateToMessagerie(): void {
     this.router.navigate(['home', 'messagerie']);
   }

@@ -1,9 +1,7 @@
 package com.avo.services.mail;
 
-import com.avo.entities.Dossier;
-import com.avo.entities.DossierDeadline;
+import com.avo.entities.Appointement;
 import com.avo.repositories.AppointementRepository;
-import com.avo.repositories.DossierDeadlineRepository;
 import com.avo.repositories.DossierRepository;
 import com.avo.repositories.MailAccountRepository;
 import com.avo.repositories.MatterEventRepository;
@@ -11,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -53,47 +52,36 @@ class MailIntegrationTest {
     }
 
     @Test
-    void buildIcsForDeadlineContainsDateAndValarms() {
-        DossierDeadlineRepository deadlineRepo = Mockito.mock(DossierDeadlineRepository.class);
-        DossierRepository dossierRepo = Mockito.mock(DossierRepository.class);
+    void buildIcsForAppointementContainsEventAndAlarm() {
+        AppointementRepository apptRepo = Mockito.mock(AppointementRepository.class);
 
-        DossierDeadline d = new DossierDeadline();
-        d.setId(42L);
-        d.setDossierId(1497L);
-        d.setTitre("Appel jugement CPH");
-        d.setCategorie("APPEL");
-        d.setCriticite("CRITIQUE");
-        d.setDateDepart(LocalDate.of(2026, 11, 1));
-        d.setDateEcheanceFinale(LocalDate.of(2026, 12, 1));
-        d.setBaseLegale("Art. R. 1461-1 Code du travail");
+        Appointement a = new Appointement();
+        a.setId(77L);
+        a.setTitle("Audience CPH Lyon");
+        a.setLocation("Tribunal de Lyon");
+        a.setDate(Date.valueOf(LocalDate.of(2026, 12, 10)));
+        a.setTime("09:30");
+        a.setEndTime("11:00");
+        a.setStatus("Urgent");
 
-        Dossier dossier = new Dossier();
-        dossier.setId(1497L);
-        dossier.setReferenceInterne("DOS-SOC-2026-MOREAU");
-        dossier.setTitre("Licenciement sans cause réelle");
-
-        Mockito.when(deadlineRepo.findById(42L)).thenReturn(Optional.of(d));
-        Mockito.when(dossierRepo.findById(1497L)).thenReturn(Optional.of(dossier));
+        Mockito.when(apptRepo.findById(77L)).thenReturn(Optional.of(a));
 
         ExternalCalendarSyncService svc = new ExternalCalendarSyncService(
                 Mockito.mock(MailAccountRepository.class),
                 Mockito.mock(MailOAuth2Service.class),
                 Mockito.mock(MicrosoftGraphClient.class),
                 Mockito.mock(GoogleWorkspaceClient.class),
-                deadlineRepo,
                 Mockito.mock(MatterEventRepository.class),
-                Mockito.mock(AppointementRepository.class),
-                dossierRepo,
+                apptRepo,
+                Mockito.mock(DossierRepository.class),
                 Mockito.mock(MailIntegrationConfigService.class)
         );
 
-        String ics = svc.buildIcsForDeadline(42L);
+        String ics = svc.buildIcsForAppointement(77L);
         assertTrue(ics.contains("BEGIN:VCALENDAR"));
-        assertTrue(ics.contains("DTSTART;VALUE=DATE:20261201"));
-        assertTrue(ics.contains("DOS-SOC-2026-MOREAU"));
-        assertTrue(ics.contains("TRIGGER:-P7D"));
-        assertTrue(ics.contains("TRIGGER:-P3D"));
-        assertTrue(ics.contains("TRIGGER:-P1D"));
+        assertTrue(ics.contains("SUMMARY:Audience CPH Lyon"));
+        assertTrue(ics.contains("LOCATION:Tribunal de Lyon"));
+        assertTrue(ics.contains("TRIGGER:-PT30M"));
         assertTrue(ics.contains("END:VCALENDAR"));
     }
 }

@@ -23,6 +23,6 @@ export class Calendrier {
   showAddAppointementDialog: boolean = false;
 
   get cabinetIcsUrl(): string {
-    return this.mailService.getCabinetIcsUrl(90);
+    return this.mailService.getCabinetIcsUrl();
   }
 }

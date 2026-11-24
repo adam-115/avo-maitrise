@@ -1,15 +1,21 @@
 <div class="min-h-screen bg-slate-50/50 pb-16">
     <main class="max-w-[1600px] mx-auto p-6 sm:p-8 lg:p-10 space-y-10">
-        
+
         <!-- Welcome Header Banner -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-8 rounded-[32px] shadow-xl relative overflow-hidden border border-slate-800">
+        <div
+            class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-8 rounded-[32px] shadow-xl relative overflow-hidden border border-slate-800">
             <!-- Decorative light leaks -->
-            <div class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-            <div class="absolute left-1/3 -bottom-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-            
+            <div
+                class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none">
+            </div>
+            <div
+                class="absolute left-1/3 -bottom-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none">
+            </div>
+
             <div class="space-y-2 relative z-10">
                 <div class="flex items-center gap-3">
-                    <span class="px-3.5 py-1 bg-indigo-500/20 text-indigo-300 font-extrabold text-xs uppercase tracking-widest rounded-full border border-indigo-500/30">
+                    <span
+                        class="px-3.5 py-1 bg-indigo-500/20 text-indigo-300 font-extrabold text-xs uppercase tracking-widest rounded-full border border-indigo-500/30">
                         {{ 'BORD.ONLINE_MASTER' | translate }}
                     </span>
                     <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
@@ -21,208 +27,222 @@
                     {{ 'BORD.WELCOME_TEXT' | translate }}
                 </p>
             </div>
-            
+
             <!-- Quick Actions Hub -->
             <div class="flex flex-wrap items-center gap-3 relative z-10">
                 <button (click)="navigateToNewClient()"
                     class="flex items-center gap-2 px-5 py-3 bg-white text-slate-950 font-black text-sm rounded-2xl hover:bg-slate-50 hover:scale-105 transition-all shadow-md active:scale-95">
-                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
                     {{ 'BORD.NEW_CLIENT' | translate }}
                 </button>
                 <button (click)="navigateToNewDossier()"
                     class="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white font-black text-sm rounded-2xl hover:bg-indigo-700 hover:scale-105 transition-all shadow-md shadow-indigo-200 active:scale-95">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 13h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M9 13h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    </svg>
                     {{ 'BORD.NEW_DOSSIER' | translate }}
                 </button>
                 <button (click)="navigateToCalendar()"
                     class="flex items-center justify-center w-12 h-12 bg-slate-800/40 text-slate-300 hover:text-white rounded-2xl hover:bg-slate-800 border border-slate-700/50 hover:scale-105 transition-all active:scale-95"
                     [title]="'BORD.AGENDA' | translate">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
                 </button>
             </div>
         </div>
 
         <!-- Alert & Compliance Zone -->
         <div class="space-y-4">
-            <!-- Widget Échéances de Procédure Critiques (RCP) -->
-            @if (upcomingDeadlines.length > 0) {
-                <div class="bg-white rounded-[28px] border border-amber-200 shadow-lg shadow-amber-500/5 p-6 space-y-4">
-                    <div class="flex items-center justify-between border-b border-amber-100 pb-3">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-500 to-red-600 text-white flex items-center justify-center shadow-md shrink-0">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <h2 class="text-sm font-black uppercase tracking-wider text-slate-900">Échéances de procédure critiques (30 jours)</h2>
-                                    <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-red-600 text-white">{{ upcomingDeadlines.length }}</span>
-                                </div>
-                                <p class="text-xs text-slate-500 font-semibold">Délais d'appel, prescription, péremption et conclusions à surveiller (RCP)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        @for (dl of upcomingDeadlines.slice(0, 6); track dl.id) {
-                            <a [routerLink]="['/home/dossier-detail', dl.dossierId, 'delais']"
-                                class="flex items-center justify-between gap-3 p-4 rounded-2xl border transition-all hover:shadow-md"
-                                [ngClass]="dl.enRetard || (dl.joursRestants ?? 99) <= 3 ? 'bg-red-50/70 border-red-200 hover:border-red-400' : 'bg-amber-50/40 border-amber-200/80 hover:border-amber-400'">
-                                <div class="min-w-0">
-                                    <div class="flex items-center gap-2">
-                                        <span class="px-2 py-0.5 rounded-full text-[11px] font-black"
-                                            [ngClass]="dl.enRetard || (dl.joursRestants ?? 99) <= 3 ? 'bg-red-600 text-white' : 'bg-amber-500 text-white'">
-                                            {{ dl.enRetard ? ('RETARD ' + (-dl.joursRestants!) + 'j') : ('J-' + dl.joursRestants) }}
-                                        </span>
-                                        <span class="text-xs font-bold text-slate-500">{{ dl.dossierReference }}</span>
-                                    </div>
-                                    <div class="font-bold text-sm text-slate-900 truncate mt-1">{{ dl.titre }}</div>
-                                    <div class="text-xs text-slate-600 truncate">{{ dl.dossierTitre }} · Échéance : <b>{{ dl.dateEcheanceFinale | date:'dd/MM/yyyy' }}</b></div>
-                                </div>
-                                <span class="text-xs font-bold text-indigo-700 shrink-0">Ouvrir →</span>
-                            </a>
-                        }
-                    </div>
-                </div>
-            }
-
             @if (notifications.length > 0) {
-                <div class="bg-white/95 backdrop-blur-md rounded-[28px] border border-rose-200/80 shadow-lg shadow-rose-500/5 p-6 space-y-4 relative overflow-hidden">
-                    <!-- Subtle background tint / gradient highlight -->
-                    <div class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-rose-100/40 via-transparent to-transparent rounded-full blur-3xl pointer-events-none"></div>
-
-                    <!-- Header Bar of the Alert Hub -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-rose-100/80 pb-4 relative z-10">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center shadow-md shadow-rose-500/25 shrink-0">
-                                <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <div class="flex items-center gap-2.5">
-                                    <h2 class="text-sm font-black uppercase tracking-wider text-rose-950">
-                                        {{ 'BORD.ALERTS_CENTER_TITLE' | translate }}
-                                    </h2>
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-500 text-white shadow-xs">
-                                        {{ notifications.length }}
-                                    </span>
-                                </div>
-                                <p class="text-xs text-rose-700/90 font-semibold mt-0.5">
-                                    @if (notifications.length > 3 && !showAllNotifications) {
-                                        {{ 'BORD.SHOW_TOP_3' | translate:{ total: notifications.length } }}
-                                    } @else {
-                                        {{ 'BORD.SHOW_ALL' | translate:{ total: notifications.length } }}
-                                    }
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Hub Action Controls -->
-                        <div class="flex items-center gap-2.5 flex-wrap">
-                            @if (notifications.length > 3) {
-                                <button (click)="toggleShowAllNotifications()"
-                                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-900 bg-rose-100/70 hover:bg-rose-200/80 transition-all border border-rose-200 cursor-pointer">
-                                    @if (showAllNotifications) {
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/></svg>
-                                        {{ 'BORD.COLLAPSE_ALERTS' | translate }}
-                                    } @else {
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                                        {{ 'BORD.EXPAND_ALL_ALERTS' | translate:{ count: notifications.length } }}
-                                    }
-                                </button>
-                            }
-
-                            <button (click)="markAllNotificationsAsRead()"
-                                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition-all border border-slate-200 cursor-pointer"
-                                [title]="'BORD.MARK_ALL_READ' | translate">
-                                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                {{ 'BORD.MARK_ALL_READ' | translate }}
-                            </button>
-
-                            <button (click)="navigateToAmlHub()"
-                                class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black text-white bg-slate-900 hover:bg-cyan-700 shadow-sm hover:shadow transition-all cursor-pointer">
-                                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                {{ 'BORD.OPEN_AML_HUB' | translate }}
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Alert Cards Feed -->
-                    <div class="space-y-3 relative z-10" [ngClass]="{ 'max-h-[460px] overflow-y-auto pe-1': showAllNotifications && notifications.length > 5 }">
-                        @for (notif of displayedNotifications; track notif.id) {
-                            <div class="bg-gradient-to-r from-rose-50/80 via-white to-rose-50/40 border border-rose-200/80 hover:border-rose-300 text-rose-950 p-4 sm:p-5 rounded-2xl shadow-2xs hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
-                                <div class="flex items-start sm:items-center gap-3.5 min-w-0">
-                                    <div class="p-2.5 bg-rose-100 text-rose-600 rounded-xl shrink-0 group-hover:scale-105 transition-transform">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"/></svg>
-                                    </div>
-                                    <div class="min-w-0">
-                                        <div class="flex items-center gap-2 flex-wrap">
-                                            <h4 class="font-black text-sm text-slate-900 tracking-tight group-hover:text-rose-700 transition-colors">{{ notif.title }}</h4>
-                                            @if (notif.clientId) {
-                                                <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">#{{ notif.clientId }}</span>
-                                            }
-                                            <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-rose-100 text-rose-700 border border-rose-200 tracking-wider">
-                                                {{ 'BORD.ACTION_REQUIRED' | translate }}
-                                            </span>
-                                        </div>
-                                        <p class="text-xs text-slate-600 font-medium mt-1 truncate max-w-2xl">{{ notif.message }}</p>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
-                                    <button (click)="markAsRead(notif)" class="px-3.5 py-2 hover:bg-slate-100 text-slate-500 hover:text-slate-800 text-xs font-bold rounded-xl transition-all border border-transparent hover:border-slate-200 cursor-pointer">
-                                        {{ 'BORD.IGNORE' | translate }}
-                                    </button>
-                                    <button (click)="navigateToClientConformity(notif?.clientId!)" class="px-4 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-xs font-black rounded-xl shadow-sm shadow-rose-500/20 transition-all hover:scale-105 cursor-pointer flex items-center gap-1.5">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                        {{ 'BORD.ANALYZE_CLIENT' | translate }}
-                                    </button>
-                                </div>
-                            </div>
-                        }
-                    </div>
-
-                    <!-- Expandable Footer Bar if > 3 notifications -->
-                    @if (notifications.length > 3 && !showAllNotifications) {
-                        <div class="p-3.5 rounded-2xl bg-rose-50/80 border border-rose-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                            <div class="flex items-center gap-2 text-rose-800 font-bold">
-                                <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
-                                <span>{{ 'BORD.MORE_ALERTS_REMAINING' | translate:{ count: notifications.length - 3 } }}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <button (click)="toggleShowAllNotifications()"
-                                    class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-rose-100 text-rose-900 font-black border border-rose-200 shadow-2xs hover:shadow-xs transition-all cursor-pointer">
-                                    {{ 'BORD.EXPAND_ALL_ALERTS' | translate:{ count: notifications.length } }}
-                                </button>
-                                <button (click)="navigateToAmlHub()"
-                                    class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-cyan-700 text-white font-black transition-all cursor-pointer">
-                                    {{ 'BORD.VIEW_ALL_AML' | translate }}
-                                </button>
-                            </div>
-                        </div>
-                    }
+            <div
+                class="bg-white/95 backdrop-blur-md rounded-[28px] border border-rose-200/80 shadow-lg shadow-rose-500/5 p-6 space-y-4 relative overflow-hidden">
+                <!-- Subtle background tint / gradient highlight -->
+                <div
+                    class="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-rose-100/40 via-transparent to-transparent rounded-full blur-3xl pointer-events-none">
                 </div>
-            } @else {
-                <!-- Standard compliance dashboard is clean -->
-                <div class="bg-gradient-to-r from-emerald-50/80 via-white to-teal-50/40 border border-emerald-200 text-emerald-950 p-6 rounded-[28px] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 bg-emerald-100 text-emerald-600 rounded-2xl shadow-xs">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+
+                <!-- Header Bar of the Alert Hub -->
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-rose-100/80 pb-4 relative z-10">
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center shadow-md shadow-rose-500/25 shrink-0">
+                            <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
                         </div>
                         <div>
-                            <div class="flex items-center gap-2">
-                                <h4 class="font-black text-sm uppercase tracking-tight text-emerald-950">{{ 'BORD.AML_STATUS_TITLE' | translate }}</h4>
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase">Conforme</span>
+                            <div class="flex items-center gap-2.5">
+                                <h2 class="text-sm font-black uppercase tracking-wider text-rose-950">
+                                    {{ 'BORD.ALERTS_CENTER_TITLE' | translate }}
+                                </h2>
+                                <span
+                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-500 text-white shadow-xs">
+                                    {{ notifications.length }}
+                                </span>
                             </div>
-                            <p class="text-xs text-emerald-700/90 font-semibold mt-0.5">{{ 'BORD.AML_STATUS_TEXT' | translate }}</p>
+                            <p class="text-xs text-rose-700/90 font-semibold mt-0.5">
+                                @if (notifications.length > 3 && !showAllNotifications) {
+                                {{ 'BORD.SHOW_TOP_3' | translate:{ total: notifications.length } }}
+                                } @else {
+                                {{ 'BORD.SHOW_ALL' | translate:{ total: notifications.length } }}
+                                }
+                            </p>
                         </div>
                     </div>
-                    <button (click)="navigateToAmlHub()"
-                        class="px-4 py-2.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-800 font-black text-xs border border-emerald-200 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center gap-2">
-                        <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        {{ 'BORD.VIEW_ALL_AML' | translate }}
-                    </button>
+
+                    <!-- Hub Action Controls -->
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        @if (notifications.length > 3) {
+                        <button (click)="toggleShowAllNotifications()"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-rose-900 bg-rose-100/70 hover:bg-rose-200/80 transition-all border border-rose-200 cursor-pointer">
+                            @if (showAllNotifications) {
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 15l7-7 7 7" />
+                            </svg>
+                            {{ 'BORD.COLLAPSE_ALERTS' | translate }}
+                            } @else {
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+                            </svg>
+                            {{ 'BORD.EXPAND_ALL_ALERTS' | translate:{ count: notifications.length } }}
+                            }
+                        </button>
+                        }
+
+                        <button (click)="markAllNotificationsAsRead()"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition-all border border-slate-200 cursor-pointer"
+                            [title]="'BORD.MARK_ALL_READ' | translate">
+                            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            {{ 'BORD.MARK_ALL_READ' | translate }}
+                        </button>
+
+                        <button (click)="navigateToAmlHub()"
+                            class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black text-white bg-slate-900 hover:bg-cyan-700 shadow-sm hover:shadow transition-all cursor-pointer">
+                            <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            {{ 'BORD.OPEN_AML_HUB' | translate }}
+                        </button>
+                    </div>
                 </div>
+
+                <!-- Alert Cards Feed -->
+                <div class="space-y-3 relative z-10"
+                    [ngClass]="{ 'max-h-[460px] overflow-y-auto pe-1': showAllNotifications && notifications.length > 5 }">
+                    @for (notif of displayedNotifications; track notif.id) {
+                    <div
+                        class="bg-gradient-to-r from-rose-50/80 via-white to-rose-50/40 border border-rose-200/80 hover:border-rose-300 text-rose-950 p-4 sm:p-5 rounded-2xl shadow-2xs hover:shadow-md transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 group">
+                        <div class="flex items-start sm:items-center gap-3.5 min-w-0">
+                            <div
+                                class="p-2.5 bg-rose-100 text-rose-600 rounded-xl shrink-0 group-hover:scale-105 transition-transform">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h4
+                                        class="font-black text-sm text-slate-900 tracking-tight group-hover:text-rose-700 transition-colors">
+                                        {{ notif.title }}</h4>
+                                    @if (notif.clientId) {
+                                    <span
+                                        class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded border border-slate-200">#{{
+                                        notif.clientId }}</span>
+                                    }
+                                    <span
+                                        class="text-[10px] font-black uppercase px-2 py-0.5 rounded-md bg-rose-100 text-rose-700 border border-rose-200 tracking-wider">
+                                        {{ 'BORD.ACTION_REQUIRED' | translate }}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-600 font-medium mt-1 truncate max-w-2xl">{{ notif.message
+                                    }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center">
+                            <button (click)="markAsRead(notif)"
+                                class="px-3.5 py-2 hover:bg-slate-100 text-slate-500 hover:text-slate-800 text-xs font-bold rounded-xl transition-all border border-transparent hover:border-slate-200 cursor-pointer">
+                                {{ 'BORD.IGNORE' | translate }}
+                            </button>
+                            <button (click)="navigateToClientConformity(notif?.clientId!)"
+                                class="px-4 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white text-xs font-black rounded-xl shadow-sm shadow-rose-500/20 transition-all hover:scale-105 cursor-pointer flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                {{ 'BORD.ANALYZE_CLIENT' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                    }
+                </div>
+
+                <!-- Expandable Footer Bar if > 3 notifications -->
+                @if (notifications.length > 3 && !showAllNotifications) {
+                <div
+                    class="p-3.5 rounded-2xl bg-rose-50/80 border border-rose-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                    <div class="flex items-center gap-2 text-rose-800 font-bold">
+                        <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                        <span>{{ 'BORD.MORE_ALERTS_REMAINING' | translate:{ count: notifications.length - 3 } }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button (click)="toggleShowAllNotifications()"
+                            class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-rose-100 text-rose-900 font-black border border-rose-200 shadow-2xs hover:shadow-xs transition-all cursor-pointer">
+                            {{ 'BORD.EXPAND_ALL_ALERTS' | translate:{ count: notifications.length } }}
+                        </button>
+                        <button (click)="navigateToAmlHub()"
+                            class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-cyan-700 text-white font-black transition-all cursor-pointer">
+                            {{ 'BORD.VIEW_ALL_AML' | translate }}
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <!-- Standard compliance dashboard is clean -->
+            <div
+                class="bg-gradient-to-r from-emerald-50/80 via-white to-teal-50/40 border border-emerald-200 text-emerald-950 p-6 rounded-[28px] shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="p-3 bg-emerald-100 text-emerald-600 rounded-2xl shadow-xs">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-black text-sm uppercase tracking-tight text-emerald-950">{{
+                                'BORD.AML_STATUS_TITLE' | translate }}</h4>
+                            <span
+                                class="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase">Conforme</span>
+                        </div>
+                        <p class="text-xs text-emerald-700/90 font-semibold mt-0.5">{{ 'BORD.AML_STATUS_TEXT' |
+                            translate }}</p>
+                    </div>
+                </div>
+                <button (click)="navigateToAmlHub()"
+                    class="px-4 py-2.5 rounded-xl bg-white hover:bg-emerald-50 text-emerald-800 font-black text-xs border border-emerald-200 shadow-2xs hover:shadow-xs transition-all cursor-pointer flex items-center gap-2">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    {{ 'BORD.VIEW_ALL_AML' | translate }}
+                </button>
+            </div>
             }
         </div>
 
@@ -232,22 +252,36 @@
             <div (click)="navigateToDossiers()"
                 class="bg-white p-6 rounded-3xl glow-card-indigo border border-slate-200/60 flex items-center justify-between hover-premium cursor-pointer group">
                 <div class="space-y-1">
-                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">{{ 'BORD.ACTIVE_DOSSIERS' | translate }}</p>
-                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors">{{ totalDossiersCount }}</p>
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">{{ 'BORD.ACTIVE_DOSSIERS' |
+                        translate }}</p>
+                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors">{{
+                        totalDossiersCount }}</p>
                 </div>
-                <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2h2m4 0V7a2 2 0 012-2h2m-4 4h.01"/></svg>
+                <div
+                    class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2h2m4 0V7a2 2 0 012-2h2m-4 4h.01" />
+                    </svg>
                 </div>
             </div>
 
             <!-- Risk Warnings -->
-            <div class="bg-white p-6 rounded-3xl glow-card-rose border border-slate-200/60 flex items-center justify-between hover-premium cursor-pointer group">
+            <div
+                class="bg-white p-6 rounded-3xl glow-card-rose border border-slate-200/60 flex items-center justify-between hover-premium cursor-pointer group">
                 <div class="space-y-1">
-                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">{{ 'BORD.RISKS_ALERTS' | translate }}</p>
-                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-rose-600 transition-colors">{{ notifications.length }}</p>
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">{{ 'BORD.RISKS_ALERTS' |
+                        translate }}</p>
+                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-rose-600 transition-colors">{{
+                        notifications.length }}</p>
                 </div>
-                <div class="w-14 h-14" [ngClass]="notifications.length > 0 ? 'bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white' : 'bg-slate-50 text-slate-400'" class="rounded-2xl flex items-center justify-center transition-all shadow-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"/></svg>
+                <div class="w-14 h-14"
+                    [ngClass]="notifications.length > 0 ? 'bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white' : 'bg-slate-50 text-slate-400'"
+                    class="rounded-2xl flex items-center justify-center transition-all shadow-sm">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
                 </div>
             </div>
 
@@ -255,11 +289,17 @@
             <div (click)="navigateToCalendar()"
                 class="bg-white p-6 rounded-3xl glow-card-amber border border-slate-200/60 flex items-center justify-between hover-premium cursor-pointer group">
                 <div class="space-y-1">
-                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">{{ 'BORD.MY_AGENDA' | translate }}</p>
-                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-amber-600 transition-colors">{{ totalAppointmentsCount }}</p>
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">{{ 'BORD.MY_AGENDA' |
+                        translate }}</p>
+                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-amber-600 transition-colors">{{
+                        totalAppointmentsCount }}</p>
                 </div>
-                <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-all shadow-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z"/></svg>
+                <div
+                    class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-all shadow-sm">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z" />
+                    </svg>
                 </div>
             </div>
 
@@ -267,18 +307,24 @@
             <div (click)="navigateToClients()"
                 class="bg-white p-6 rounded-3xl glow-card-emerald border border-slate-200/60 flex items-center justify-between hover-premium cursor-pointer group">
                 <div class="space-y-1">
-                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">{{ 'BORD.ACTIVE_CLIENTS' | translate }}</p>
-                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-emerald-600 transition-colors">{{ totalClientsCount }}</p>
+                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">{{ 'BORD.ACTIVE_CLIENTS' |
+                        translate }}</p>
+                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-emerald-600 transition-colors">{{
+                        totalClientsCount }}</p>
                 </div>
-                <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                <div
+                    class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
                 </div>
             </div>
         </div>
 
         <!-- Secondary Layout: Columns Split -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
+
             <!-- Left Side: Appointments & Timeline (7 Cols) -->
             <div class="lg:col-span-7 space-y-8">
                 <!-- Timeline Calendar Panel -->
@@ -286,46 +332,61 @@
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div class="flex items-center gap-3">
                             <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                             </div>
                             <h3 class="text-lg font-black text-slate-900">{{ 'BORD.AGENDA_TITLE' | translate }}</h3>
                         </div>
-                        <button (click)="navigateToCalendar()" class="text-xs font-black text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest">
+                        <button (click)="navigateToCalendar()"
+                            class="text-xs font-black text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest">
                             {{ 'BORD.SEE_ALL' | translate }}
                         </button>
                     </div>
 
                     <div class="space-y-6 relative pl-6 border-l-2 border-slate-100 mt-2">
                         @for (app of upcomingAppointments; track app.id) {
-                            <div class="relative space-y-1.5 hover:bg-slate-50/50 p-4 rounded-2xl transition-all border border-transparent hover:border-slate-150">
-                                <!-- Bullet point -->
-                                <div class="absolute -left-[31px] top-5 w-4.5 h-4.5 rounded-full border-[3px] border-white shadow-sm flex items-center justify-center"
-                                     [ngClass]="app.status === 'Urgent' ? 'bg-rose-500' : app.status === 'Reporté' ? 'bg-amber-500' : 'bg-indigo-500'">
-                                </div>
-                                
-                                <div class="flex flex-wrap items-center justify-between gap-2">
-                                    <span class="text-xs font-black uppercase tracking-wider text-slate-400">
-                                        {{ app.date | date:'dd MMM yyyy' }} • {{ app.time }}
-                                    </span>
-                                    <span class="px-2.5 py-0.5 font-bold text-[10px] rounded-full uppercase border"
-                                        [ngClass]="app.status === 'Urgent' ? 'bg-rose-50 border-rose-200 text-rose-700' : app.status === 'Reporté' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-slate-50 border-slate-200 text-slate-600'">
-                                        {{ app.status }}
-                                    </span>
-                                </div>
-                                
-                                <h4 class="text-base font-black text-slate-800">{{ app.title }}</h4>
-                                <p class="text-xs text-slate-500 font-bold flex items-center gap-1.5">
-                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                    {{ app.location || ('BORD.OFFICE' | translate) }}
-                                </p>
+                        <div
+                            class="relative space-y-1.5 hover:bg-slate-50/50 p-4 rounded-2xl transition-all border border-transparent hover:border-slate-150">
+                            <!-- Bullet point -->
+                            <div class="absolute -left-[31px] top-5 w-4.5 h-4.5 rounded-full border-[3px] border-white shadow-sm flex items-center justify-center"
+                                [ngClass]="app.status === 'Urgent' ? 'bg-rose-500' : app.status === 'Reporté' ? 'bg-amber-500' : 'bg-indigo-500'">
                             </div>
+
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <span class="text-xs font-black uppercase tracking-wider text-slate-400">
+                                    {{ app.date | date:'dd MMM yyyy' }} • {{ app.time }}
+                                </span>
+                                <span class="px-2.5 py-0.5 font-bold text-[10px] rounded-full uppercase border"
+                                    [ngClass]="app.status === 'Urgent' ? 'bg-rose-50 border-rose-200 text-rose-700' : app.status === 'Reporté' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-slate-50 border-slate-200 text-slate-600'">
+                                    {{ app.status }}
+                                </span>
+                            </div>
+
+                            <h4 class="text-base font-black text-slate-800">{{ app.title }}</h4>
+                            <p class="text-xs text-slate-500 font-bold flex items-center gap-1.5">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                {{ app.location || ('BORD.OFFICE' | translate) }}
+                            </p>
+                        </div>
                         } @empty {
-                            <div class="py-8 text-center space-y-3">
-                                <div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                </div>
-                                <p class="text-sm font-bold text-slate-400">{{ 'BORD.NO_APPOINTMENTS' | translate }}</p>
+                        <div class="py-8 text-center space-y-3">
+                            <div
+                                class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
                             </div>
+                            <p class="text-sm font-bold text-slate-400">{{ 'BORD.NO_APPOINTMENTS' | translate }}</p>
+                        </div>
                         }
                     </div>
                 </div>
@@ -335,47 +396,63 @@
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div class="flex items-center gap-3">
                             <div class="p-2 bg-slate-50 text-slate-600 rounded-xl">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                </svg>
                             </div>
                             <h3 class="text-lg font-black text-slate-900">{{ 'BORD.IMPORTANT_TASKS' | translate }}</h3>
                         </div>
-                        <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 font-extrabold text-[10px] uppercase tracking-widest rounded-full">
+                        <span
+                            class="px-2.5 py-0.5 bg-slate-100 text-slate-700 font-extrabold text-[10px] uppercase tracking-widest rounded-full">
                             {{ pendingTasks.length }} {{ 'BORD.REMAINING' | translate }}
                         </span>
                     </div>
 
                     <div class="space-y-4">
                         @for (task of pendingTasks; track task.id) {
-                            <div class="flex items-start justify-between gap-4 p-4 border border-slate-100 rounded-2xl hover:bg-slate-50/50 transition-all group">
-                                <div class="flex items-start gap-4">
-                                    <!-- Custom interactable checkbox -->
-                                    <button (click)="completeTask(task)"
-                                        class="w-6 h-6 border-2 border-slate-200 hover:border-emerald-500 rounded-lg flex items-center justify-center bg-white transition-all text-transparent hover:text-emerald-500 active:scale-90 mt-0.5"
-                                        [title]="'BORD.MARK_DONE' | translate">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                    </button>
-                                    <div>
-                                        <h4 class="text-sm font-black text-slate-800 group-hover:text-slate-900 transition-colors">{{ task.titre }}</h4>
-                                        <p class="text-xs text-slate-400 font-bold mt-1">
-                                            {{ 'BORD.DUE_DATE' | translate }} : {{ task.dateEcheance | date:'dd MMM yyyy' }} • {{ 'BORD.PRIORITY' | translate }} : 
-                                            <span class="font-extrabold"
-                                                [ngClass]="task.priorite === 'URGENTE' || task.priorite === 'HAUTE' ? 'text-red-500' : 'text-slate-500'">
-                                                {{ task.priorite }}
-                                            </span>
-                                        </p>
-                                    </div>
+                        <div
+                            class="flex items-start justify-between gap-4 p-4 border border-slate-100 rounded-2xl hover:bg-slate-50/50 transition-all group">
+                            <div class="flex items-start gap-4">
+                                <!-- Custom interactable checkbox -->
+                                <button (click)="completeTask(task)"
+                                    class="w-6 h-6 border-2 border-slate-200 hover:border-emerald-500 rounded-lg flex items-center justify-center bg-white transition-all text-transparent hover:text-emerald-500 active:scale-90 mt-0.5"
+                                    [title]="'BORD.MARK_DONE' | translate">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </button>
+                                <div>
+                                    <h4
+                                        class="text-sm font-black text-slate-800 group-hover:text-slate-900 transition-colors">
+                                        {{ task.titre }}</h4>
+                                    <p class="text-xs text-slate-400 font-bold mt-1">
+                                        {{ 'BORD.DUE_DATE' | translate }} : {{ task.dateEcheance | date:'dd MMM yyyy' }}
+                                        • {{ 'BORD.PRIORITY' | translate }} :
+                                        <span class="font-extrabold"
+                                            [ngClass]="task.priorite === 'URGENTE' || task.priorite === 'HAUTE' ? 'text-red-500' : 'text-slate-500'">
+                                            {{ task.priorite }}
+                                        </span>
+                                    </p>
                                 </div>
-                                <span class="px-2.5 py-1 bg-slate-100 text-slate-600 font-black text-[10px] uppercase tracking-wider rounded-xl">
-                                    {{ task.category?.libelle || 'Dossier' }}
-                                </span>
                             </div>
+                            <span
+                                class="px-2.5 py-1 bg-slate-100 text-slate-600 font-black text-[10px] uppercase tracking-wider rounded-xl">
+                                {{ task.category?.libelle || 'Dossier' }}
+                            </span>
+                        </div>
                         } @empty {
-                            <div class="py-8 text-center space-y-3">
-                                <div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                                </div>
-                                <p class="text-sm font-bold text-slate-400">{{ 'BORD.ALL_TASKS_DONE' | translate }}</p>
+                        <div class="py-8 text-center space-y-3">
+                            <div
+                                class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
                             </div>
+                            <p class="text-sm font-bold text-slate-400">{{ 'BORD.ALL_TASKS_DONE' | translate }}</p>
+                        </div>
                         }
                     </div>
                 </div>
@@ -388,51 +465,63 @@
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div class="flex items-center gap-3">
                             <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                                </svg>
                             </div>
                             <h3 class="text-lg font-black text-slate-900">{{ 'BORD.RECENT_DOSSIERS' | translate }}</h3>
                         </div>
-                        <button (click)="navigateToDossiers()" class="text-xs font-black text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest">
+                        <button (click)="navigateToDossiers()"
+                            class="text-xs font-black text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest">
                             {{ 'BORD.SEE_ALL' | translate }}
                         </button>
                     </div>
 
                     <div class="space-y-4">
                         @for (dossier of recentDossiers; track dossier.id) {
-                            <div (click)="navigateToDossierDetails(dossier.id!)"
-                                class="p-4 border border-slate-150 rounded-2xl hover:border-indigo-200 hover:bg-slate-50/50 transition-all cursor-pointer group flex flex-col gap-2.5">
-                                <div class="flex items-start justify-between gap-3">
-                                    <div class="space-y-0.5">
-                                        <h4 class="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors leading-snug">
-                                            {{ dossier.titre }}
-                                        </h4>
-                                        <p class="text-xs text-slate-400 font-bold">{{ 'BORD.REF' | translate }}: {{ dossier.referenceInterne }}</p>
-                                    </div>
-                                    <span class="px-2 py-0.5 bg-slate-100 text-slate-600 font-extrabold text-[9px] uppercase tracking-widest rounded border border-slate-200/50">
-                                        {{ dossier.statutID.label || 'OUVERT' }}
-                                    </span>
+                        <div (click)="navigateToDossierDetails(dossier.id!)"
+                            class="p-4 border border-slate-150 rounded-2xl hover:border-indigo-200 hover:bg-slate-50/50 transition-all cursor-pointer group flex flex-col gap-2.5">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="space-y-0.5">
+                                    <h4
+                                        class="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors leading-snug">
+                                        {{ dossier.titre }}
+                                    </h4>
+                                    <p class="text-xs text-slate-400 font-bold">{{ 'BORD.REF' | translate }}: {{
+                                        dossier.referenceInterne }}</p>
                                 </div>
-                                
-                                <div class="flex items-center justify-between border-t border-slate-100/80 pt-2.5 mt-0.5">
-                                    <span class="text-[11px] font-black uppercase text-indigo-600 bg-indigo-50/50 border border-indigo-100/50 px-2.5 py-0.5 rounded-md">
-                                        ⚖️ {{ dossier.domaineJuridique.label || ('BORD.GENERAL_LAW' | translate) }}
-                                    </span>
-                                    <span class="text-[11px] text-slate-400 font-bold">
-                                        {{ dossier.dateOuverture | date:'dd MMM yyyy' }}
-                                    </span>
-                                </div>
+                                <span
+                                    class="px-2 py-0.5 bg-slate-100 text-slate-600 font-extrabold text-[9px] uppercase tracking-widest rounded border border-slate-200/50">
+                                    {{ dossier.statutID.label || 'OUVERT' }}
+                                </span>
                             </div>
+
+                            <div class="flex items-center justify-between border-t border-slate-100/80 pt-2.5 mt-0.5">
+                                <span
+                                    class="text-[11px] font-black uppercase text-indigo-600 bg-indigo-50/50 border border-indigo-100/50 px-2.5 py-0.5 rounded-md">
+                                    ⚖️ {{ dossier.domaineJuridique.label || ('BORD.GENERAL_LAW' | translate) }}
+                                </span>
+                                <span class="text-[11px] text-slate-400 font-bold">
+                                    {{ dossier.dateOuverture | date:'dd MMM yyyy' }}
+                                </span>
+                            </div>
+                        </div>
                         } @empty {
-                            <div class="py-12 text-center space-y-4">
-                                <div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
-                                </div>
-                                <p class="text-sm font-bold text-slate-400">{{ 'BORD.NO_DOSSIERS' | translate }}</p>
-                                <button (click)="navigateToNewDossier()"
-                                    class="px-5 py-2.5 bg-indigo-600 text-white text-xs font-black rounded-xl hover:bg-indigo-700 hover:scale-105 transition-all">
-                                    {{ 'BORD.CREATE_FIRST_DOSSIER' | translate }}
-                                </button>
+                        <div class="py-12 text-center space-y-4">
+                            <div
+                                class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                                </svg>
                             </div>
+                            <p class="text-sm font-bold text-slate-400">{{ 'BORD.NO_DOSSIERS' | translate }}</p>
+                            <button (click)="navigateToNewDossier()"
+                                class="px-5 py-2.5 bg-indigo-600 text-white text-xs font-black rounded-xl hover:bg-indigo-700 hover:scale-105 transition-all">
+                                {{ 'BORD.CREATE_FIRST_DOSSIER' | translate }}
+                            </button>
+                        </div>
                         }
                     </div>
                 </div>

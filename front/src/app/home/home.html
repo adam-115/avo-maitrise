@@ -134,7 +134,8 @@
                 </a>
 
                 <!-- Messagerie (Outlook / Gmail / IMAP) — Optionnel -->
-                <a *ngIf="mailStatusService.isEnabled$ | async" (click)="navigateToMessagerie()" [class.bg-gradient-to-r]="activeRoute === paths.MESSAGERIE"
+                <a *ngIf="mailStatusService.isEnabled$ | async" (click)="navigateToMessagerie()"
+                    [class.bg-gradient-to-r]="activeRoute === paths.MESSAGERIE"
                     [class.from-cyan-950/90]="activeRoute === paths.MESSAGERIE"
                     [class.via-slate-800/80]="activeRoute === paths.MESSAGERIE"
                     [class.to-slate-800/40]="activeRoute === paths.MESSAGERIE"

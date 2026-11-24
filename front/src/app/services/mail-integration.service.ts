@@ -161,10 +161,6 @@ export class MailIntegrationService {
 
   // ===== Calendrier externe & ICS =====
 
-  syncDeadlineToCalendar(deadlineId: number): Observable<CalendarSyncResult> {
-    return this.http.post<CalendarSyncResult>(`${this.baseUrl}/calendar/sync/deadline/${deadlineId}`, {});
-  }
-
   syncMatterEventToCalendar(eventId: number): Observable<CalendarSyncResult> {
     return this.http.post<CalendarSyncResult>(`${this.baseUrl}/calendar/sync/matter-event/${eventId}`, {});
   }
@@ -173,15 +169,7 @@ export class MailIntegrationService {
     return this.http.post<CalendarSyncResult>(`${this.baseUrl}/calendar/sync/appointement/${appointementId}`, {});
   }
 
-  getDeadlineIcsUrl(deadlineId: number): string {
-    return `${this.baseUrl}/calendar/ics/deadline/${deadlineId}`;
-  }
-
-  getDossierIcsUrl(dossierId: number | string): string {
-    return `${this.baseUrl}/calendar/ics/dossier/${dossierId}`;
-  }
-
-  getCabinetIcsUrl(days = 90): string {
-    return `${this.baseUrl}/calendar/ics/cabinet?days=${days}`;
+  getCabinetIcsUrl(): string {
+    return `${this.baseUrl}/calendar/ics/cabinet`;
   }
 }

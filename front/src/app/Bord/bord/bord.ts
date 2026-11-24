@@ -7,7 +7,6 @@ import { DossierService } from '../../services/dossier.service';
 import { AppointementService } from '../../services/appointement.service';
 import { TaskService } from '../../services/task.service';
 import { NavigationService } from '../../services/navigation-service';
-import { DeadlineService, DossierDeadline } from '../../services/deadline.service';
 import { Notification, Client, Dossier, Appointement, Task } from '../../appTypes';
 import { KeycloakService } from '../../services/keycloak.service';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -28,12 +27,10 @@ export class Bord implements OnInit {
   private readonly taskService = inject(TaskService);
   private readonly navigationService = inject(NavigationService);
   private readonly keycloakService = inject(KeycloakService);
-  private readonly deadlineService = inject(DeadlineService);
 
   // States
   username = '';
   notifications: Notification[] = [];
-  upcomingDeadlines: DossierDeadline[] = [];
   recentDossiers: Dossier[] = [];
   upcomingAppointments: Appointement[] = [];
   pendingTasks: Task[] = [];
@@ -92,14 +89,6 @@ export class Bord implements OnInit {
         this.notifications = data || [];
       },
       error: (err) => console.error('Error fetching notifications', err)
-    });
-
-    // Fetch critical procedural deadlines (next 30 days + overdue)
-    this.deadlineService.findUpcoming(30).subscribe({
-      next: (data) => {
-        this.upcomingDeadlines = data || [];
-      },
-      error: (err) => console.error('Error fetching procedural deadlines', err)
     });
 
     // Fetch total clients

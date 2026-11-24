@@ -41,7 +41,6 @@ public class AvoAiTools {
     private final RAGDocumentService ragDocumentService;
     private final AuditService auditService;
     private final SourceRegistry sourceRegistry;
-    private final com.avo.services.deadline.DossierDeadlineService dossierDeadlineService;
 
     public AvoAiTools(ClientService clientService, DossierService dossierService,
             com.avo.services.InvoiceService invoiceService,
@@ -50,8 +49,7 @@ public class AvoAiTools {
             AiDossierSummaryService aiDossierSummaryService,
             RAGDocumentService ragDocumentService,
             AuditService auditService,
-            SourceRegistry sourceRegistry,
-            com.avo.services.deadline.DossierDeadlineService dossierDeadlineService) {
+            SourceRegistry sourceRegistry) {
         this.clientService = clientService;
         this.dossierService = dossierService;
         this.invoiceService = invoiceService;
@@ -61,7 +59,6 @@ public class AvoAiTools {
         this.ragDocumentService = ragDocumentService;
         this.auditService = auditService;
         this.sourceRegistry = sourceRegistry;
-        this.dossierDeadlineService = dossierDeadlineService;
     }
 
     /**
@@ -265,33 +262,6 @@ public class AvoAiTools {
         } catch (Exception e) {
             e.printStackTrace();
             return "Erreur technique lors du résumé du dossier: " + e.getMessage();
-        }
-    }
-
-    @Tool(description = "Récupère la liste officielle des délais de procédure (appel, prescription, péremption, conclusions) calculés et enregistrés sur un dossier, avec leur date limite exacte, leur statut et le nombre de jours restants.")
-    public String getDossierDeadlines(
-            @ToolParam(description = "Identifiant numérique du dossier") Long dossierId) {
-        traceIa("DOSSIER", dossierId, "Consultation des délais de procédure");
-        try {
-            var deadlines = dossierDeadlineService.findByDossier(dossierId);
-            if (deadlines.isEmpty()) {
-                return "Aucun délai de procédure n'est encore enregistré sur le dossier " + dossierId + ".";
-            }
-            String content = deadlines.stream()
-                    .map(d -> String.format("- [%s | %s] %s : échéance le %s (%s) · Base légale : %s · Calcul : %s",
-                            d.getStatut(),
-                            d.getCategorie(),
-                            d.getTitre(),
-                            d.getDateEcheanceFinale(),
-                            d.isEnRetard() ? ("EN RETARD de " + Math.abs(d.getJoursRestants()) + " j")
-                                    : ("J-" + d.getJoursRestants()),
-                            d.getBaseLegale() != null ? d.getBaseLegale() : "N/A",
-                            d.getDetailCalcul() != null ? d.getDetailCalcul() : ""))
-                    .collect(Collectors.joining("\n"));
-            return asSource("Délais de procédure du dossier #" + dossierId,
-                    "/home/dossier-detail/" + dossierId + "/delais", content);
-        } catch (Exception e) {
-            return "Erreur lors de la récupération des délais du dossier : " + e.getMessage();
         }
     }
 
