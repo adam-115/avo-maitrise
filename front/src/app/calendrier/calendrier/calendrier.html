@@ -29,10 +29,15 @@
       <!-- Sélecteurs de vue (Jour / Semaine) + Sync Outlook/Google & .ics (optionnel) -->
       <div class="flex flex-wrap items-center gap-2.5 flex-shrink-0">
         <ng-container *ngIf="mailStatusService.isEnabled$ | async">
-          <a routerLink="/home/messagerie"
-            class="px-3 py-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 font-bold text-xs transition-colors">
-            Sync Outlook / Google
-          </a>
+          <button type="button" (click)="syncExternalCalendar()" [disabled]="syncingCalendar"
+            class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 disabled:opacity-60 font-bold text-xs transition-colors cursor-pointer"
+            title="Importer les événements depuis Google Calendar / Outlook et synchroniser vos rendez-vous">
+            <svg class="w-4 h-4" [class.animate-spin]="syncingCalendar" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span>{{ syncingCalendar ? 'Synchronisation...' : 'Sync Outlook / Google' }}</span>
+          </button>
           <a [href]="cabinetIcsUrl"
             class="px-3 py-2 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 font-bold text-xs transition-colors"
             title="Télécharger les échéances du cabinet au format iCalendar (.ics)">
@@ -71,6 +76,41 @@
 
     </div>
   </div>
+
+  <!-- Bandeau de retour de synchronisation Google Calendar / Outlook -->
+  @if (syncResult) {
+  <div [class]="syncResult.synced
+    ? 'rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-900 px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-sm shadow-sm'
+    : 'rounded-xl border border-amber-200 bg-amber-50 text-amber-900 px-4 py-3 flex flex-wrap items-center justify-between gap-3 text-sm shadow-sm'">
+    <div class="flex items-center gap-2.5">
+      <span class="font-semibold">{{ syncResult.message }}</span>
+      @if (!syncResult.synced) {
+      <a routerLink="/home/messagerie"
+        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs transition-colors">
+        Configurer dans Messagerie →
+      </a>
+      }
+    </div>
+    <button type="button" (click)="dismissSyncBanner()" class="text-xs font-bold opacity-70 hover:opacity-100 cursor-pointer">
+      ✕
+    </button>
+  </div>
+  }
+
+  @if (syncError) {
+  <div class="rounded-xl border border-rose-200 bg-rose-50 text-rose-900 px-4 py-3 flex items-center justify-between gap-3 text-sm shadow-sm">
+    <div class="flex items-center gap-2.5">
+      <span class="font-semibold">{{ syncError }}</span>
+      <a routerLink="/home/messagerie"
+        class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-100 hover:bg-rose-200 text-rose-900 font-bold text-xs transition-colors">
+        Vérifier le compte →
+      </a>
+    </div>
+    <button type="button" (click)="dismissSyncBanner()" class="text-xs font-bold opacity-70 hover:opacity-100 cursor-pointer">
+      ✕
+    </button>
+  </div>
+  }
 
   <!-- Affichage conditionnel des composants -->
   @if (selectedView === 'day') {

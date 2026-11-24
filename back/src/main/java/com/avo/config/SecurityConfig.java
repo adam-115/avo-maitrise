@@ -38,8 +38,8 @@ public class SecurityConfig {
                         // 3. Sensitive actuator endpoints restricted to ADMIN / SUPER_ADMIN
                         .requestMatchers("/actuator/**").hasAnyRole("ADMIN", "SUPER_ADMIN", "admin", "super_admin")
                         
-                        // 3b. Journal d'audit (vérification d'intégrité, scellement) : administrateurs uniquement
-                        .requestMatchers("/api/audit/**").hasAnyRole("ADMIN", "SUPER_ADMIN", "admin", "super_admin")
+                        // 3b. Journal d'audit & configuration OAuth2 messagerie : administrateurs uniquement
+                        .requestMatchers("/api/audit/**", "/api/mail-integration/config").hasAnyRole("ADMIN", "SUPER_ADMIN", "admin", "super_admin")
 
                         // 4. All business API endpoints require authentication
                         .requestMatchers("/api/**").authenticated()

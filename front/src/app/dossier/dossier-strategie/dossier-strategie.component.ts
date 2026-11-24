@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ViewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
 import { AiSource, AiVerification } from '../../shared/ai-sources/ai-sources.model';
 import { AiSourcesPanelComponent } from '../../shared/ai-sources/ai-sources-panel.component';
@@ -20,13 +21,13 @@ export class DossierStrategieComponent implements OnInit {
     isLoading = signal<boolean>(false);
     hasError = signal<boolean>(false);
 
-    synthese = signal<string>('');
-    jurisprudence = signal<string>('');
-    failles = signal<string>('');
-    chances = signal<string>('');
-    strategieGagnante = signal<string>('');
-    workflow = signal<string>('');
-    tachesRecommandees = signal<string>('');
+    synthese = signal<SafeHtml>('');
+    jurisprudence = signal<SafeHtml>('');
+    failles = signal<SafeHtml>('');
+    chances = signal<SafeHtml>('');
+    strategieGagnante = signal<SafeHtml>('');
+    workflow = signal<SafeHtml>('');
+    tachesRecommandees = signal<SafeHtml>('');
 
     rawResponse = signal<string>('');
     /** Sources consultées pour l'analyse et verdict de la vérification automatique (événement SSE « SOURCES »). */
@@ -42,7 +43,7 @@ export class DossierStrategieComponent implements OnInit {
     chatInput = signal<string>('');
     isChatLoading = signal<boolean>(false);
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private sanitizer: DomSanitizer) { }
 
     ngOnInit() {
         if (this.selectedDossier && this.selectedDossier.aiStrategy) {
@@ -182,13 +183,13 @@ export class DossierStrategieComponent implements OnInit {
         this.workflowStr = '<span class="animate-pulse">Génération en cours...</span>';
         this.tachesStr = '<span class="animate-pulse">Génération en cours...</span>';
 
-        this.synthese.set(this.syntheseStr);
-        this.jurisprudence.set(this.jurisprudenceStr);
-        this.failles.set(this.faillesStr);
-        this.chances.set(this.chancesStr);
-        this.strategieGagnante.set(this.strategieStr);
-        this.workflow.set(this.workflowStr);
-        this.tachesRecommandees.set(this.tachesStr);
+        this.synthese.set(this.sanitizer.bypassSecurityTrustHtml(this.syntheseStr));
+        this.jurisprudence.set(this.sanitizer.bypassSecurityTrustHtml(this.jurisprudenceStr));
+        this.failles.set(this.sanitizer.bypassSecurityTrustHtml(this.faillesStr));
+        this.chances.set(this.sanitizer.bypassSecurityTrustHtml(this.chancesStr));
+        this.strategieGagnante.set(this.sanitizer.bypassSecurityTrustHtml(this.strategieStr));
+        this.workflow.set(this.sanitizer.bypassSecurityTrustHtml(this.workflowStr));
+        this.tachesRecommandees.set(this.sanitizer.bypassSecurityTrustHtml(this.tachesStr));
 
         this.aiSources.set([]);
         this.aiVerification.set(undefined);
@@ -299,28 +300,104 @@ export class DossierStrategieComponent implements OnInit {
         this.tachesRecommandees.set(this.formatMarkdown(this.tachesStr));
     }
 
-    formatMarkdown(text: string): string {
+    private escapeHtml(raw: string): string {
+        return raw
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    private escapeAttr(raw: string): string {
+        return raw
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+    }
+
+    private getSourceBadgeStyle(src?: AiSource): { badge: string; link: string; icon: string } {
+        switch (src?.kind) {
+            case 'DOCUMENT':
+                return { badge: 'bg-pink-600 text-white hover:bg-pink-700', link: 'bg-pink-100 text-pink-800 hover:bg-pink-200', icon: '📄' };
+            case 'JURISPRUDENCE':
+                return { badge: 'bg-indigo-600 text-white hover:bg-indigo-700', link: 'bg-indigo-100 text-indigo-800 hover:bg-indigo-200', icon: '⚖️' };
+            case 'LEGISLATION':
+                return { badge: 'bg-sky-600 text-white hover:bg-sky-700', link: 'bg-sky-100 text-sky-800 hover:bg-sky-200', icon: '📘' };
+            case 'DONNEE':
+                return { badge: 'bg-emerald-600 text-white hover:bg-emerald-700', link: 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200', icon: '🗂️' };
+            default:
+                return { badge: 'bg-pink-600 text-white hover:bg-pink-700', link: 'bg-pink-100 text-pink-800 hover:bg-pink-200', icon: '🔗' };
+        }
+    }
+
+    formatMarkdown(text: string): SafeHtml {
+        if (!text) return '';
+        if (text.includes('Génération en cours...')) {
+            return this.sanitizer.bypassSecurityTrustHtml(text);
+        }
         const sources = this.aiSources();
-        return text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
+        const html = this.escapeHtml(text)
+            .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
-            .replace(/- (.*)/g, '<li class="ml-4 list-disc">$1</li>')
-            // Citations [S1] / [S1, S3] : pastilles cliquables renvoyant au panneau « Sources et vérification »
+            .replace(/^- (.*)$/gm, '<li class="ml-4 list-disc">$1</li>')
+            // Citations [S1] / [S1, S3] : pastilles distinctes + lien direct vers la source
             .replace(/\[(S\d+(?:\s*[,;]\s*S\d+)*)\]/g, (_m: string, ids: string) => ids.split(/\s*[,;]\s*/)
                 .map(rawId => {
                     const id = rawId.trim();
                     const src = sources.find(s => s.id === id);
-                    const title = src
-                        ? `${src.title}${src.page ? ' · p. ' + src.page : ''} (cliquer pour voir la source)`.replace(/"/g, '&quot;')
-                        : `Voir la source ${id}`;
-                    return `<button type="button" data-cite-id="${id}" title="${title}" class="inline-flex items-center px-1.5 mx-0.5 rounded-md text-[10px] font-bold leading-4 bg-pink-600 text-white hover:bg-pink-700 cursor-pointer align-baseline transition-colors">${id}</button>`;
+                    const style = this.getSourceBadgeStyle(src);
+                    const title = this.escapeAttr(
+                        src
+                            ? `${src.title}${src.page ? ' · p. ' + src.page : ''} — Cliquer pour voir l'extrait`
+                            : `Voir la source ${id}`
+                    );
+                    const badgeBtn = `<button type="button" data-cite-id="${id}" title="${title}" class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-md text-[10px] font-extrabold leading-4 shadow-sm cursor-pointer align-baseline transition-colors ${style.badge}">${style.icon} ${id}</button>`;
+
+                    let directLink = '';
+                    if (src?.officialUrl) {
+                        const safeUrl = this.escapeAttr(src.officialUrl);
+                        directLink = `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" title="Ouvrir le texte officiel (${this.escapeAttr(src.title)})" class="inline-flex items-center px-1 py-0.5 rounded-md text-[10px] font-bold leading-4 transition-colors no-underline ${style.link}">↗</a>`;
+                    } else if (src?.documentId) {
+                        directLink = `<button type="button" data-open-doc="${id}" title="Ouvrir le document (${this.escapeAttr(src.title)}${src.page ? ' · p. ' + src.page : ''})" class="inline-flex items-center px-1 py-0.5 rounded-md text-[10px] font-bold leading-4 cursor-pointer transition-colors ${style.link}">↗</button>`;
+                    } else if (src?.link) {
+                        directLink = `<button type="button" data-open-link="${id}" title="Ouvrir la source dans l'application (${this.escapeAttr(src.title)})" class="inline-flex items-center px-1 py-0.5 rounded-md text-[10px] font-bold leading-4 cursor-pointer transition-colors ${style.link}">↗</button>`;
+                    }
+
+                    return `<span class="inline-flex items-center gap-0.5 mx-0.5 align-baseline">${badgeBtn}${directLink}</span>`;
                 })
                 .join(''))
             .replace(/\n/g, '<br/>');
+        return this.sanitizer.bypassSecurityTrustHtml(html);
     }
 
-    /** Intercepte le clic sur une pastille [S#] dans les cartes pour scroller vers la source correspondante. */
+    /** Intercepte le clic sur une pastille [S#] ou son lien direct ↗ pour scroller ou ouvrir la source. */
     onStrategyClick(event: MouseEvent): void {
-        const target = (event.target as HTMLElement | null)?.closest('[data-cite-id]') as HTMLElement | null;
+        const el = event.target as HTMLElement | null;
+        if (!el) return;
+
+        const openDocEl = el.closest('[data-open-doc]') as HTMLElement | null;
+        if (openDocEl) {
+            event.preventDefault();
+            const id = openDocEl.getAttribute('data-open-doc');
+            const src = this.aiSources().find(s => s.id === id);
+            if (src && this.sourcesPanel) {
+                this.sourcesPanel.openDocument(src);
+            }
+            return;
+        }
+
+        const openLinkEl = el.closest('[data-open-link]') as HTMLElement | null;
+        if (openLinkEl) {
+            event.preventDefault();
+            const id = openLinkEl.getAttribute('data-open-link');
+            const src = this.aiSources().find(s => s.id === id);
+            if (src && this.sourcesPanel) {
+                this.sourcesPanel.openLink(src);
+            }
+            return;
+        }
+
+        const target = el.closest('[data-cite-id]') as HTMLElement | null;
         const citeId = target?.getAttribute('data-cite-id');
         if (citeId && this.sourcesPanel) {
             this.sourcesPanel.focus(citeId);

@@ -129,7 +129,14 @@
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
       <div class="text-xs font-bold uppercase text-slate-400 mb-3">Comptes connectés ({{ accounts().length }})</div>
-      <div *ngIf="accounts().length === 0" class="text-xs text-slate-500 py-2">
+      <div *ngIf="isLoadingAccounts()" class="flex items-center gap-2 text-xs text-indigo-600 font-semibold py-2">
+        <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+        </svg>
+        <span>Chargement des comptes connectés...</span>
+      </div>
+      <div *ngIf="!isLoadingAccounts() && accounts().length === 0" class="text-xs text-slate-500 py-2">
         Aucun compte connecté. Cliquez sur <b>Outlook / Microsoft 365</b>, <b>Gmail / Google</b> ou <b>+ Boîte IMAP</b> ci-dessus.
       </div>
       <div class="flex flex-wrap gap-3">
@@ -164,14 +171,22 @@
     </div>
 
     <!-- Import .eml rapide -->
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-2.5">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-2">
       <div class="text-xs font-bold uppercase text-slate-400">Import rapide fichier .eml</div>
-      <select [(ngModel)]="emlDossierId" class="w-full rounded-xl border border-slate-300 px-3 py-1.5 text-xs bg-white">
-        <option *ngFor="let d of dossiers()" [ngValue]="d.id">{{ d.referenceInterne }} — {{ d.titre }}</option>
-      </select>
-      <label class="block w-full text-center px-3 py-2 rounded-xl border-2 border-dashed border-indigo-200 bg-indigo-50/40 text-xs font-bold text-indigo-700 hover:bg-indigo-50 cursor-pointer">
-        <input type="file" accept=".eml,message/rfc822" (change)="onEmlFileSelected($event)" class="hidden" />
-        {{ isUploadingEml() ? 'Import en cours...' : 'Choisir un fichier .eml à classer' }}
+      <div class="flex items-center gap-1.5">
+        <button type="button" (click)="openClientDialog('eml')"
+          class="flex-1 text-left px-3 py-1.5 rounded-xl border border-slate-300 bg-slate-50 hover:border-indigo-400 text-xs font-semibold text-slate-700 truncate cursor-pointer">
+          {{ emlClientName() ? ('👤 ' + emlClientName()) : '1. Chercher un client...' }}
+        </button>
+        <button type="button" (click)="openDossierDialog('eml')"
+          class="flex-1 text-left px-3 py-1.5 rounded-xl border border-slate-300 bg-slate-50 hover:border-cyan-400 text-xs font-semibold text-slate-700 truncate cursor-pointer">
+          {{ emlDossierName() ? ('📂 ' + emlDossierName()) : '2. Choisir dossier...' }}
+        </button>
+      </div>
+      <label class="block w-full text-center px-3 py-2 rounded-xl border-2 border-dashed border-indigo-200 bg-indigo-50/40 text-xs font-bold text-indigo-700 hover:bg-indigo-50 cursor-pointer"
+        [class.opacity-50]="!emlDossierId">
+        <input type="file" accept=".eml,message/rfc822" [disabled]="!emlDossierId" (change)="onEmlFileSelected($event)" class="hidden" />
+        {{ isUploadingEml() ? 'Import en cours...' : (emlDossierId ? 'Choisir un fichier .eml à classer' : 'Sélectionnez d\'abord un dossier') }}
       </label>
     </div>
   </div>
@@ -186,13 +201,35 @@
           placeholder="Rechercher par expéditeur, objet, référence..."
           class="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-xs" />
         <button type="button" (click)="refreshInbox()" [disabled]="isLoadingInbox()"
-          class="px-3 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-indigo-600 disabled:opacity-50">
-          {{ isLoadingInbox() ? '...' : 'Actualiser' }}
+          class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-indigo-600 disabled:opacity-60 cursor-pointer transition-colors">
+          <svg class="w-3.5 h-3.5" [class.animate-spin]="isLoadingInbox()" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>{{ isLoadingInbox() ? 'Chargement...' : 'Actualiser' }}</span>
         </button>
       </div>
 
-      <div *ngIf="isLoadingInbox()" class="p-8 text-center text-xs text-slate-400">
-        Chargement de la boîte de réception...
+      <!-- État de chargement de la boîte de réception (spinner + skeleton) -->
+      <div *ngIf="isLoadingInbox()" class="p-4 space-y-4">
+        <div class="flex items-center justify-center gap-2.5 py-3 px-4 rounded-xl bg-indigo-50/80 border border-indigo-100 text-indigo-700 text-xs font-bold">
+          <svg class="w-4 h-4 animate-spin shrink-0" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+          </svg>
+          <span>Chargement des e-mails en cours...</span>
+        </div>
+
+        <div class="divide-y divide-slate-100">
+          <div *ngFor="let s of [1, 2, 3, 4, 5]" class="py-3.5 space-y-2 animate-pulse">
+            <div class="flex items-center justify-between gap-2">
+              <div class="h-3 bg-slate-200 rounded w-1/3"></div>
+              <div class="h-2.5 bg-slate-100 rounded w-14"></div>
+            </div>
+            <div class="h-3 bg-slate-200/90 rounded w-3/4"></div>
+            <div class="h-2.5 bg-slate-100 rounded w-full"></div>
+          </div>
+        </div>
       </div>
 
       <div *ngIf="!isLoadingInbox() && inbox().length === 0" class="p-8 text-center text-xs text-slate-400">
@@ -236,23 +273,71 @@
         <div class="p-4 bg-slate-50 border-b border-slate-200 space-y-3">
           <div *ngIf="mail.suggestedDossierId" class="text-xs text-indigo-800 bg-indigo-50 border border-indigo-200 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
             <span>
-              <b>Dossier suggéré :</b> {{ mail.suggestedDossierReference }} — {{ mail.suggestedDossierTitre }}
-              <span class="text-indigo-600">({{ mail.suggestionReason }})</span>
+              <b>Dossier suggéré :</b>
+              <a [routerLink]="['/home/dossier-detail', mail.suggestedDossierId, 'vue-ensemble']"
+                class="font-bold underline hover:text-indigo-950 ms-1">
+                {{ mail.suggestedDossierReference }} — {{ mail.suggestedDossierTitre }} ↗
+              </a>
+              <span class="text-indigo-600 ms-1">({{ mail.suggestionReason }})</span>
             </span>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2">
-            <select [(ngModel)]="selectedDossierIdForFiling"
-              class="flex-1 min-w-[220px] rounded-xl border border-slate-300 px-3 py-2 text-xs bg-white font-semibold">
-              <option [ngValue]="null">-- Choisir un dossier --</option>
-              <option *ngFor="let d of dossiers()" [ngValue]="d.id">{{ d.referenceInterne }} — {{ d.titre }}</option>
-            </select>
+          <!-- Sélection Client & Dossier via Dialogues (identique à /home/billing/new) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Étape 1 : Client -->
+            <div>
+              <div class="text-[10px] font-bold uppercase text-slate-500 mb-1">1. Client</div>
+              <div *ngIf="selectedClientNameForFiling()" class="flex items-center justify-between px-3 py-2 rounded-xl border border-indigo-200 bg-indigo-50/70 gap-2">
+                <div class="min-w-0">
+                  <a [routerLink]="['/home/client-details']" [queryParams]="{ id: selectedClientIdForFiling }"
+                    class="block text-xs font-bold text-indigo-700 hover:text-indigo-900 hover:underline truncate"
+                    title="Ouvrir la fiche client">
+                    {{ selectedClientNameForFiling() }} ↗
+                  </a>
+                  <div class="text-[10px] text-slate-500">Réf. #{{ selectedClientIdForFiling }}</div>
+                </div>
+                <button type="button" (click)="openClientDialog('filing')"
+                  class="text-xs font-bold text-indigo-600 hover:text-indigo-800 px-2 py-1 rounded-lg hover:bg-indigo-100 cursor-pointer shrink-0">
+                  Modifier
+                </button>
+              </div>
+              <button *ngIf="!selectedClientNameForFiling()" type="button" (click)="openClientDialog('filing')"
+                class="w-full flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-white px-3 py-2.5 text-xs font-bold text-slate-700 hover:border-indigo-400 hover:bg-indigo-50 hover:text-indigo-700 transition-all cursor-pointer">
+                <span>🔍 Rechercher un client</span>
+              </button>
+            </div>
+
+            <!-- Étape 2 : Dossier -->
+            <div>
+              <div class="text-[10px] font-bold uppercase text-slate-500 mb-1">2. Dossier</div>
+              <div *ngIf="selectedDossierNameForFiling()" class="flex items-center justify-between px-3 py-2 rounded-xl border border-cyan-200 bg-cyan-50/70 gap-2">
+                <div class="min-w-0">
+                  <a [routerLink]="['/home/dossier-detail', selectedDossierIdForFiling, 'vue-ensemble']"
+                    class="block text-xs font-bold text-cyan-800 hover:text-cyan-950 hover:underline truncate"
+                    [title]="'Ouvrir le dossier : ' + selectedDossierNameForFiling()">
+                    {{ selectedDossierNameForFiling() }} ↗
+                  </a>
+                  <div class="text-[10px] text-slate-500">Dossier #{{ selectedDossierIdForFiling }}</div>
+                </div>
+                <button type="button" (click)="openDossierDialog('filing')"
+                  class="text-xs font-bold text-cyan-700 hover:text-cyan-900 px-2 py-1 rounded-lg hover:bg-cyan-100 cursor-pointer shrink-0">
+                  Modifier
+                </button>
+              </div>
+              <button *ngIf="!selectedDossierNameForFiling()" type="button" (click)="openDossierDialog('filing')"
+                class="w-full flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-white px-3 py-2.5 text-xs font-bold text-slate-700 hover:border-cyan-400 hover:bg-cyan-50 hover:text-cyan-700 transition-all cursor-pointer">
+                <span>📂 Choisir un dossier</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
             <label class="flex items-center gap-1.5 text-xs font-semibold text-slate-700 cursor-pointer">
               <input type="checkbox" [(ngModel)]="importAttachments" />
-              Importer PJ en GED/IA
+              Importer les pièces jointes dans la GED &amp; IA
             </label>
             <button type="button" (click)="fileEmailToDossier(mail)" [disabled]="isFiling() || !selectedDossierIdForFiling"
-              class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 disabled:opacity-50 shadow-sm">
+              class="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 disabled:opacity-50 shadow-sm cursor-pointer">
               {{ isFiling() ? 'Classement...' : 'Classer dans ce dossier' }}
             </button>
           </div>
@@ -279,7 +364,21 @@
 
         <!-- Corps du mail -->
         <div class="p-5 overflow-y-auto max-h-[460px] text-sm text-slate-800 whitespace-pre-wrap leading-relaxed">
-          <div *ngIf="isLoadingDetail()" class="text-xs text-slate-400">Chargement du contenu...</div>
+          <div *ngIf="isLoadingDetail()" class="space-y-3 py-2">
+            <div class="flex items-center gap-2 text-xs font-semibold text-indigo-600">
+              <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+              </svg>
+              <span>Chargement du contenu complet de l'e-mail...</span>
+            </div>
+            <div class="space-y-2 animate-pulse pt-1">
+              <div class="h-3 bg-slate-200 rounded w-5/6"></div>
+              <div class="h-3 bg-slate-200 rounded w-full"></div>
+              <div class="h-3 bg-slate-100 rounded w-4/5"></div>
+              <div class="h-3 bg-slate-100 rounded w-2/3"></div>
+            </div>
+          </div>
           <ng-container *ngIf="!isLoadingDetail()">
             {{ mail.bodyText || mail.snippet || '(Contenu vide)' }}
           </ng-container>
@@ -295,3 +394,17 @@
   </div>
 
 </div>
+
+<!-- Dialogs de sélection Client & Dossier (identiques à /home/billing/new) -->
+<app-client-selection-dialog *ngIf="showClientDialog()"
+  [initialSelection]="dialogTarget === 'filing' ? selectedClientIdForFiling : emlClientId"
+  (confirmSelection)="onClientDialogSelected($event)"
+  (closeDialog)="closeClientDialog()">
+</app-client-selection-dialog>
+
+<app-dossier-selection-dialog *ngIf="showDossierDialog()"
+  [dossiers]="dialogClientDossiers()"
+  [initialSelection]="dialogTarget === 'filing' ? selectedDossierIdForFiling : emlDossierId"
+  (confirmSelection)="onDossierDialogSelected($event)"
+  (closeDialog)="closeDossierDialog()">
+</app-dossier-selection-dialog>

@@ -242,6 +242,10 @@ export const routes: Routes = [
       {
         path: 'audit-journal',
         loadComponent: () => import('./administration/audit-journal/audit-journal').then(m => m.AuditJournal),
+      },
+      {
+        path: 'mail-configuration',
+        loadComponent: () => import('./administration/mail-configuration/mail-configuration.component').then(m => m.MailConfigurationComponent),
       }
     ]
 

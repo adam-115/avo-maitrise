@@ -10,11 +10,14 @@ import {
   ProvidersStatus
 } from '../services/mail-integration.service';
 import { environment } from '../../environments/environment';
+import { ClientSelectionDialog } from '../dossier/client-selection-dialog/client-selection-dialog';
+import { DossierSelectionDialog } from '../dossier/dossier-selection-dialog/dossier-selection-dialog';
+import { Dossier } from '../appTypes';
 
 @Component({
   selector: 'app-messagerie',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ClientSelectionDialog, DossierSelectionDialog],
   templateUrl: './messagerie.component.html'
 })
 export class MessagerieComponent implements OnInit {
@@ -27,8 +30,10 @@ export class MessagerieComponent implements OnInit {
   selectedAccountId = signal<number | null>(null);
   inbox = signal<InboxEmail[]>([]);
   selectedEmail = signal<InboxEmail | null>(null);
-  dossiers = signal<Array<{ id: number; referenceInterne: string; titre: string }>>([]);
+  dossiers = signal<Array<{ id: number; referenceInterne: string; titre: string; clientId: number | null; clientName: string; clientEmail: string }>>([]);
+  clients = signal<Array<{ id: number; name: string; email: string; count: number }>>([]);
 
+  isLoadingAccounts = signal(false);
   isLoadingInbox = signal(false);
   isLoadingDetail = signal(false);
   isFiling = signal(false);
@@ -38,8 +43,18 @@ export class MessagerieComponent implements OnInit {
   successMessage = signal<string | null>(null);
 
   searchQuery = '';
+  selectedClientIdForFiling: number | null = null;
+  selectedClientNameForFiling = signal<string | null>(null);
+  dossierSearchTerm = '';
   selectedDossierIdForFiling: number | null = null;
+  selectedDossierNameForFiling = signal<string | null>(null);
   importAttachments = true;
+
+  // Dialogues de sélection Client & Dossier (identiques à /home/billing/new)
+  showClientDialog = signal(false);
+  showDossierDialog = signal(false);
+  dialogTarget: 'filing' | 'eml' = 'filing';
+  dialogClientDossiers = signal<Dossier[]>([]);
 
   // Formulaire IMAP
   showImapForm = false;
@@ -52,7 +67,10 @@ export class MessagerieComponent implements OnInit {
   imapPassword = '';
 
   // Import .eml direct
+  emlClientId: number | null = null;
+  emlClientName = signal<string | null>(null);
   emlDossierId: number | null = null;
+  emlDossierName = signal<string | null>(null);
   isUploadingEml = signal(false);
 
   ngOnInit(): void {
@@ -78,32 +96,192 @@ export class MessagerieComponent implements OnInit {
   }
 
   loadAccounts(): void {
+    this.isLoadingAccounts.set(true);
     this.mailService.listAccounts().subscribe({
       next: list => {
+        this.isLoadingAccounts.set(false);
         this.accounts.set(list || []);
         if (list && list.length > 0 && !this.selectedAccountId()) {
           this.selectAccount(list[0].id!);
         }
       },
-      error: err => this.errorMessage.set(err?.error?.message || 'Impossible de charger les comptes connectés.')
+      error: err => {
+        this.isLoadingAccounts.set(false);
+        this.errorMessage.set(err?.error?.message || 'Impossible de charger les comptes connectés.');
+      }
     });
   }
 
   loadDossiers(): void {
-    this.http.get<any>(`${environment.apiUrl}Dossier/search?page=0&size=200`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}Dossier/search?page=0&size=500`).subscribe({
       next: res => {
-        const items = (res?.content || []).map((d: any) => ({
-          id: Number(d.id),
-          referenceInterne: d.referenceInterne || `DOS-${d.id}`,
-          titre: d.titre || ''
-        }));
+        const clientMap = new Map<number, { id: number; name: string; email: string; count: number }>();
+        const items = (res?.content || []).map((d: any) => {
+          const c = d.client;
+          const clientId = c?.id ? Number(c.id) : (d.clientId ? Number(d.clientId) : null);
+          const clientName = this.formatClientName(c);
+          const clientEmail = c?.email || '';
+          if (clientId && clientName) {
+            const existing = clientMap.get(clientId);
+            if (existing) {
+              existing.count++;
+            } else {
+              clientMap.set(clientId, { id: clientId, name: clientName, email: clientEmail, count: 1 });
+            }
+          }
+          return {
+            id: Number(d.id),
+            referenceInterne: d.referenceInterne || `DOS-${d.id}`,
+            titre: d.titre || '',
+            clientId,
+            clientName,
+            clientEmail
+          };
+        });
         this.dossiers.set(items);
+        this.clients.set(
+          Array.from(clientMap.values()).sort((a, b) => a.name.localeCompare(b.name, 'fr'))
+        );
         if (items.length > 0 && !this.emlDossierId) {
           this.emlDossierId = items[0].id;
         }
       },
       error: () => {}
     });
+  }
+
+  private formatClientName(c: any): string {
+    if (!c) return '';
+    if (c.nomCommercial) return String(c.nomCommercial).trim();
+    const full = `${c.prenom || ''} ${c.nom || ''}`.trim();
+    return full || c.email || '';
+  }
+
+  get filteredDossiersForFiling() {
+    const q = this.dossierSearchTerm.trim().toLowerCase();
+    return this.dossiers().filter(d => {
+      if (this.selectedClientIdForFiling && d.clientId !== Number(this.selectedClientIdForFiling)) {
+        return false;
+      }
+      if (!q) return true;
+      return d.referenceInterne.toLowerCase().includes(q)
+        || d.titre.toLowerCase().includes(q)
+        || d.clientName.toLowerCase().includes(q)
+        || d.clientEmail.toLowerCase().includes(q)
+        || String(d.id) === q;
+    });
+  }
+
+  onFilingClientChange(): void {
+    const filtered = this.filteredDossiersForFiling;
+    this.selectedDossierIdForFiling = filtered.length > 0 ? filtered[0].id : null;
+  }
+
+  onDossierSearchChange(): void {
+    const filtered = this.filteredDossiersForFiling;
+    if (filtered.length > 0 && !filtered.some(d => d.id === Number(this.selectedDossierIdForFiling))) {
+      this.selectedDossierIdForFiling = filtered[0].id;
+    } else if (filtered.length === 0) {
+      this.selectedDossierIdForFiling = null;
+    }
+  }
+
+  get filteredDossiersForEml() {
+    if (!this.emlClientId) return this.dossiers();
+    return this.dossiers().filter(d => d.clientId === Number(this.emlClientId));
+  }
+
+  onEmlClientChange(): void {
+    const list = this.filteredDossiersForEml;
+    this.emlDossierId = list.length > 0 ? list[0].id : null;
+  }
+
+  // ==================== DIALOGS CLIENT & DOSSIER (STYLE /home/billing/new) ====================
+
+  openClientDialog(target: 'filing' | 'eml'): void {
+    this.dialogTarget = target;
+    this.showClientDialog.set(true);
+  }
+
+  closeClientDialog(): void {
+    this.showClientDialog.set(false);
+  }
+
+  onClientDialogSelected(client: any): void {
+    if (!client || !client.id) return;
+    const clientId = Number(client.id);
+    const clientName = this.formatClientName(client) || `Client #${clientId}`;
+    this.showClientDialog.set(false);
+
+    if (this.dialogTarget === 'filing') {
+      this.selectedClientIdForFiling = clientId;
+      this.selectedClientNameForFiling.set(clientName);
+      this.selectedDossierIdForFiling = null;
+      this.selectedDossierNameForFiling.set(null);
+    } else {
+      this.emlClientId = clientId;
+      this.emlClientName.set(clientName);
+      this.emlDossierId = null;
+      this.emlDossierName.set(null);
+    }
+
+    // Charger les dossiers du client puis ouvrir le dialog de choix du dossier (ou présélectionner s'il n'y en a qu'un)
+    this.http.get<any>(`${environment.apiUrl}Dossier/search?client.id=${clientId}&size=100`).subscribe({
+      next: res => {
+        const list: Dossier[] = res?.content || res || [];
+        this.dialogClientDossiers.set(list);
+        if (list.length === 1) {
+          this.applySelectedDossier(list[0]);
+        } else {
+          this.showDossierDialog.set(true);
+        }
+      },
+      error: () => {
+        this.dialogClientDossiers.set([]);
+        this.showDossierDialog.set(true);
+      }
+    });
+  }
+
+  openDossierDialog(target: 'filing' | 'eml'): void {
+    this.dialogTarget = target;
+    const clientId = target === 'filing' ? this.selectedClientIdForFiling : this.emlClientId;
+    if (!clientId) {
+      this.openClientDialog(target);
+      return;
+    }
+    this.http.get<any>(`${environment.apiUrl}Dossier/search?client.id=${clientId}&size=100`).subscribe({
+      next: res => {
+        this.dialogClientDossiers.set(res?.content || res || []);
+        this.showDossierDialog.set(true);
+      },
+      error: () => {
+        this.dialogClientDossiers.set([]);
+        this.showDossierDialog.set(true);
+      }
+    });
+  }
+
+  closeDossierDialog(): void {
+    this.showDossierDialog.set(false);
+  }
+
+  onDossierDialogSelected(dossier: any): void {
+    if (!dossier || !dossier.id) return;
+    this.showDossierDialog.set(false);
+    this.applySelectedDossier(dossier);
+  }
+
+  private applySelectedDossier(dossier: any): void {
+    const id = Number(dossier.id);
+    const label = `${dossier.referenceInterne || 'DOS-' + id} — ${dossier.titre || ''}`.trim();
+    if (this.dialogTarget === 'filing') {
+      this.selectedDossierIdForFiling = id;
+      this.selectedDossierNameForFiling.set(label);
+    } else {
+      this.emlDossierId = id;
+      this.emlDossierName.set(label);
+    }
   }
 
   connectOAuth(provider: 'microsoft' | 'google'): void {
@@ -206,13 +384,33 @@ export class MessagerieComponent implements OnInit {
     const accId = this.selectedAccountId();
     if (!accId) return;
     this.selectedEmail.set(email);
-    this.selectedDossierIdForFiling = email.suggestedDossierId || (this.dossiers()[0]?.id ?? null);
+    this.selectedClientIdForFiling = null;
+    this.selectedClientNameForFiling.set(null);
+    this.selectedDossierNameForFiling.set(null);
+    this.dossierSearchTerm = '';
+    if (email.suggestedDossierId) {
+      this.selectedDossierIdForFiling = email.suggestedDossierId;
+      const match = this.dossiers().find(d => d.id === email.suggestedDossierId);
+      if (match) {
+        this.selectedDossierNameForFiling.set(`${match.referenceInterne} — ${match.titre}`);
+        if (match.clientId) {
+          this.selectedClientIdForFiling = match.clientId;
+          this.selectedClientNameForFiling.set(match.clientName || `Client #${match.clientId}`);
+        }
+      } else {
+        this.selectedDossierNameForFiling.set(`${email.suggestedDossierReference || ''} — ${email.suggestedDossierTitre || ''}`);
+      }
+    } else {
+      this.selectedDossierIdForFiling = null;
+    }
     this.isLoadingDetail.set(true);
     this.mailService.getMessageDetail(accId, email.externalMessageId).subscribe({
       next: full => {
         this.selectedEmail.set(full);
         if (full.suggestedDossierId) {
           this.selectedDossierIdForFiling = full.suggestedDossierId;
+          const match = this.dossiers().find(d => d.id === full.suggestedDossierId);
+          if (match?.clientId) this.selectedClientIdForFiling = match.clientId;
         }
         this.isLoadingDetail.set(false);
       },

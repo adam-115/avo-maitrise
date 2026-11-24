@@ -62,6 +62,10 @@ export class Administration {
     this.router.navigate(['home', 'messagerie']);
   }
 
+  navigateToMailConfiguration(): void {
+    this.router.navigate(['home', 'mail-configuration']);
+  }
+
   toggleMailIntegration(event: Event): void {
     event.stopPropagation();
     if (this.togglingMailIntegration) return;

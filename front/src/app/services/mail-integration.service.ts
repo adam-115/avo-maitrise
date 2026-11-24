@@ -91,6 +91,35 @@ export interface CalendarSyncResult {
   message: string;
 }
 
+export interface BidirectionalCalendarSyncResult {
+  synced: boolean;
+  provider?: string;
+  accountEmail?: string;
+  imported: number;
+  updated: number;
+  pushed: number;
+  message: string;
+}
+
+export interface MailIntegrationConfig {
+  enabled: boolean;
+  frontendUrl?: string;
+  microsoftClientId?: string;
+  microsoftClientSecret?: string;
+  hasMicrosoftClientSecret?: boolean;
+  clearMicrosoftSecret?: boolean;
+  microsoftTenantId?: string;
+  microsoftRedirectUri?: string;
+  microsoftConfigured?: boolean;
+  googleClientId?: string;
+  googleClientSecret?: string;
+  hasGoogleClientSecret?: boolean;
+  clearGoogleSecret?: boolean;
+  googleRedirectUri?: string;
+  googleConfigured?: boolean;
+  updatedAt?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class MailIntegrationService {
   private http = inject(HttpClient);
@@ -98,6 +127,14 @@ export class MailIntegrationService {
 
   getProvidersStatus(): Observable<ProvidersStatus> {
     return this.http.get<ProvidersStatus>(`${this.baseUrl}/providers/status`);
+  }
+
+  getConfig(): Observable<MailIntegrationConfig> {
+    return this.http.get<MailIntegrationConfig>(`${this.baseUrl}/config`);
+  }
+
+  saveConfig(config: MailIntegrationConfig): Observable<MailIntegrationConfig> {
+    return this.http.put<MailIntegrationConfig>(`${this.baseUrl}/config`, config);
   }
 
   listAccounts(): Observable<MailAccount[]> {
@@ -160,6 +197,13 @@ export class MailIntegrationService {
   }
 
   // ===== Calendrier externe & ICS =====
+
+  syncCalendarBidirectional(daysBack = 30, daysAhead = 90): Observable<BidirectionalCalendarSyncResult> {
+    const params = new HttpParams()
+      .set('daysBack', String(daysBack))
+      .set('daysAhead', String(daysAhead));
+    return this.http.post<BidirectionalCalendarSyncResult>(`${this.baseUrl}/calendar/sync-all`, {}, { params });
+  }
 
   syncMatterEventToCalendar(eventId: number): Observable<CalendarSyncResult> {
     return this.http.post<CalendarSyncResult>(`${this.baseUrl}/calendar/sync/matter-event/${eventId}`, {});

@@ -221,7 +221,7 @@
    </div>
 
    <!-- Fiabilité : sources consultées et vérification automatique des références -->
-   <div *ngIf="!isLoading() && !hasError() && rawResponse() && aiVerification()"
+   <div *ngIf="!isLoading() && !hasError() && rawResponse() && (aiVerification() || aiSources().length > 0)"
       class="mt-6 bg-white rounded-3xl border border-slate-200 p-6">
       <h3 class="text-lg font-bold text-slate-800">Sources et vérification</h3>
       <p *ngIf="aiPerimetre().length" class="text-xs text-slate-500 mt-1">Base légale recherchée dans : <b>{{
@@ -301,7 +301,7 @@
             </div>
 
             <!-- AI Message -->
-            <div *ngIf="msg.role === 'ai'"
+            <div *ngIf="msg.role === 'ai'" (click)="onStrategyClick($event)"
                class="bg-white border border-slate-200 text-slate-700 rounded-r-2xl rounded-tl-2xl shadow-sm px-6 py-4 text-sm leading-relaxed prose prose-sm prose-indigo max-w-none"
                [innerHTML]="formatMarkdown(msg.content)">
             </div>

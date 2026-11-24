@@ -139,6 +139,7 @@ public class MailIntegrationService {
 
     @Transactional
     public void deleteAccount(Long accountId) {
+        oauth2Service.evictAccessToken(accountId);
         accountRepository.deleteById(accountId);
     }
 

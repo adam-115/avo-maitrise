@@ -89,7 +89,70 @@ public class GoogleWorkspaceClient {
         }
     }
 
-    // ==================== GOOGLE CALENDAR (ÉCRITURE) ====================
+    // ==================== GOOGLE CALENDAR (LECTURE & ÉCRITURE) ====================
+
+    public List<ExternalCalendarEvent> listCalendarEvents(String accessToken,
+                                                          String calendarId,
+                                                          LocalDate from,
+                                                          LocalDate to) {
+        try {
+            String calId = (calendarId == null || calendarId.isBlank()) ? "primary" : calendarId;
+            ZoneId zone = ZoneId.systemDefault();
+            String timeMin = URLEncoder.encode(
+                    from.atStartOfDay(zone).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                    StandardCharsets.UTF_8);
+            String timeMax = URLEncoder.encode(
+                    to.plusDays(1).atStartOfDay(zone).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                    StandardCharsets.UTF_8);
+
+            String url = GCAL_BASE + "/" + URLEncoder.encode(calId, StandardCharsets.UTF_8)
+                    + "/events?singleEvents=true&orderBy=startTime&maxResults=250"
+                    + "&timeMin=" + timeMin + "&timeMax=" + timeMax;
+
+            JsonNode root = sendJson("GET", url, accessToken, null);
+            List<ExternalCalendarEvent> events = new ArrayList<>();
+            for (JsonNode item : root.path("items")) {
+                String id = item.path("id").asText("");
+                if (id.isBlank()) continue;
+
+                boolean cancelled = "cancelled".equalsIgnoreCase(item.path("status").asText(""));
+                String summary = item.path("summary").asText("(Sans titre)");
+                if (summary.isBlank()) summary = "(Sans titre)";
+                String description = item.hasNonNull("description") ? item.get("description").asText() : null;
+                String location = item.hasNonNull("location") ? item.get("location").asText() : null;
+
+                JsonNode startNode = item.path("start");
+                JsonNode endNode = item.path("end");
+                LocalDateTime startDt;
+                LocalDateTime endDt;
+                boolean allDay;
+
+                if (startNode.hasNonNull("dateTime")) {
+                    allDay = false;
+                    startDt = OffsetDateTime.parse(startNode.get("dateTime").asText())
+                            .atZoneSameInstant(zone).toLocalDateTime();
+                    if (endNode.hasNonNull("dateTime")) {
+                        endDt = OffsetDateTime.parse(endNode.get("dateTime").asText())
+                                .atZoneSameInstant(zone).toLocalDateTime();
+                    } else {
+                        endDt = startDt.plusHours(1);
+                    }
+                } else if (startNode.hasNonNull("date")) {
+                    allDay = true;
+                    LocalDate d = LocalDate.parse(startNode.get("date").asText());
+                    startDt = d.atTime(9, 0);
+                    endDt = d.atTime(10, 0);
+                } else {
+                    continue;
+                }
+
+                events.add(new ExternalCalendarEvent(id, summary, description, location, startDt, endDt, allDay, cancelled));
+            }
+            return events;
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lecture Google Calendar : " + e.getMessage(), e);
+        }
+    }
 
     public String upsertCalendarEvent(String accessToken,
                                       String calendarId,

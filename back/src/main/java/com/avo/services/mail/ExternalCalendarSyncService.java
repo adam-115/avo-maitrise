@@ -59,6 +59,159 @@ public class ExternalCalendarSyncService {
     public record SyncResult(boolean synced, String provider, String externalEventId, String message) {
     }
 
+    public record BidirectionalSyncResult(
+            boolean synced,
+            String provider,
+            String accountEmail,
+            int imported,
+            int updated,
+            int pushed,
+            String message
+    ) {
+    }
+
+    // ==================== SYNCHRONISATION BIDIRECTIONNELLE ====================
+
+    /**
+     * Synchronise le calendrier dans les deux sens :
+     * 1. Pull : récupère les événements Google Calendar / Outlook et les crée ou met à jour dans Avo-Maîtrise.
+     * 2. Push : envoie les rendez-vous locaux non encore synchronisés vers Google Calendar / Outlook.
+     */
+    public BidirectionalSyncResult syncCalendarBidirectional(int daysBack, int daysAhead) {
+        if (!configService.isEnabled()) {
+            return new BidirectionalSyncResult(false, null, null, 0, 0, 0,
+                    "L'intégration Messagerie & Calendrier est désactivée dans Administration.");
+        }
+        Optional<MailAccount> accountOpt = resolveCalendarAccount();
+        if (accountOpt.isEmpty()) {
+            return new BidirectionalSyncResult(false, null, null, 0, 0, 0,
+                    "Aucun compte Google Calendar ou Outlook actif avec synchronisation calendrier activée. Connectez un compte dans Messagerie.");
+        }
+
+        MailAccount account = accountOpt.get();
+        String provider = account.getProvider();
+        String providerLabel = MailAccount.PROVIDER_GOOGLE.equalsIgnoreCase(provider) ? "Google Calendar" : "Outlook";
+
+        LocalDate from = LocalDate.now().minusDays(Math.max(1, daysBack));
+        LocalDate to = LocalDate.now().plusDays(Math.max(1, daysAhead));
+
+        int imported = 0;
+        int updated = 0;
+        int pushed = 0;
+
+        try {
+            String token = oauth2Service.getValidAccessToken(account);
+
+            // 1. PULL : Externe -> Avo-Maîtrise
+            List<ExternalCalendarEvent> remoteEvents;
+            if (MailAccount.PROVIDER_GOOGLE.equalsIgnoreCase(provider)) {
+                remoteEvents = googleClient.listCalendarEvents(token, account.getCalendarId(), from, to);
+            } else if (MailAccount.PROVIDER_MICROSOFT.equalsIgnoreCase(provider)) {
+                remoteEvents = microsoftClient.listCalendarEvents(token, from, to);
+            } else {
+                return new BidirectionalSyncResult(false, provider, account.getEmailAddress(), 0, 0, 0,
+                        "Ce fournisseur ne supporte pas la synchronisation calendrier API : " + provider);
+            }
+
+            DateTimeFormatter hhmm = DateTimeFormatter.ofPattern("HH:mm");
+            for (ExternalCalendarEvent ev : remoteEvents) {
+                if (ev.cancelled() || ev.externalEventId() == null || ev.start() == null) {
+                    continue;
+                }
+                // Ne pas dupliquer un événement déjà lié à un MatterEvent
+                if (matterEventRepository.existsByExternalCalendarEventId(ev.externalEventId())) {
+                    continue;
+                }
+
+                LocalDate eventDate = ev.start().toLocalDate();
+                LocalTime startTime = ev.start().toLocalTime();
+                LocalTime endTime;
+                if (ev.end() != null && ev.end().toLocalDate().equals(eventDate) && ev.end().toLocalTime().isAfter(startTime)) {
+                    endTime = ev.end().toLocalTime();
+                } else if (ev.end() != null && ev.end().toLocalDate().isAfter(eventDate)) {
+                    endTime = LocalTime.of(23, 59);
+                } else {
+                    endTime = startTime.isBefore(LocalTime.of(23, 0)) ? startTime.plusHours(1) : LocalTime.of(23, 59);
+                }
+
+                String startStr = startTime.format(hhmm);
+                String endStr = endTime.format(hhmm);
+                String safeTitle = truncate(ev.title(), 255);
+                String safeLocation = truncate(ev.location(), 255);
+                java.sql.Date sqlDate = java.sql.Date.valueOf(eventDate);
+
+                Optional<Appointement> existingOpt = appointementRepository
+                        .findByExternalCalendarEventId(ev.externalEventId());
+                if (existingOpt.isPresent()) {
+                    Appointement existing = existingOpt.get();
+                    boolean changed = !Objects.equals(existing.getTitle(), safeTitle)
+                            || !Objects.equals(toLocalDate(existing.getDate()), eventDate)
+                            || !Objects.equals(existing.getTime(), startStr)
+                            || !Objects.equals(existing.getEndTime(), endStr)
+                            || !Objects.equals(existing.getLocation(), safeLocation);
+                    if (changed) {
+                        existing.setTitle(safeTitle);
+                        existing.setDate(sqlDate);
+                        existing.setTime(startStr);
+                        existing.setEndTime(endStr);
+                        existing.setLocation(safeLocation);
+                        existing.setExternalCalendarProvider(provider);
+                        appointementRepository.save(existing);
+                        updated++;
+                    }
+                } else {
+                    Appointement appt = new Appointement();
+                    appt.setTitle(safeTitle);
+                    appt.setDate(sqlDate);
+                    appt.setTime(startStr);
+                    appt.setEndTime(endStr);
+                    appt.setLocation(safeLocation);
+                    appt.setStatus("Standard");
+                    appt.setClientCase("Importé depuis " + providerLabel);
+                    appt.setExternalCalendarEventId(ev.externalEventId());
+                    appt.setExternalCalendarProvider(provider);
+                    appointementRepository.save(appt);
+                    imported++;
+                }
+            }
+
+            // 2. PUSH : Avo-Maîtrise -> Externe (rendez-vous locaux non encore synchronisés dans la fenêtre)
+            List<Appointement> unsynced = appointementRepository.findByExternalCalendarEventIdIsNull();
+            for (Appointement appt : unsynced) {
+                if (appt.getDate() == null) continue;
+                LocalDate apptDate = toLocalDate(appt.getDate());
+                if (apptDate.isBefore(from) || apptDate.isAfter(to)) continue;
+
+                SyncResult pushRes = syncAppointement(appt);
+                if (pushRes.synced()) {
+                    pushed++;
+                }
+            }
+
+            account.setLastSyncAt(LocalDateTime.now());
+            account.setLastError(null);
+            accountRepository.save(account);
+
+            String summary = String.format(
+                    "Synchronisation %s réussie (%s) : %d importé(s), %d mis à jour, %d envoyé(s).",
+                    providerLabel, account.getEmailAddress(), imported, updated, pushed);
+            return new BidirectionalSyncResult(true, provider, account.getEmailAddress(),
+                    imported, updated, pushed, summary);
+        } catch (Exception e) {
+            log.warn("Échec synchronisation bidirectionnelle calendrier ({}): {}", provider, e.getMessage());
+            recordError(account, e.getMessage());
+            return new BidirectionalSyncResult(false, provider, account.getEmailAddress(),
+                    imported, updated, pushed,
+                    "Erreur de synchronisation " + providerLabel + " : " + e.getMessage());
+        }
+    }
+
+    private static String truncate(String val, int max) {
+        if (val == null) return null;
+        String trimmed = val.trim();
+        return trimmed.length() > max ? trimmed.substring(0, max) : trimmed;
+    }
+
     // ==================== SYNCHRONISATION ÉCRITURE ====================
 
     /**

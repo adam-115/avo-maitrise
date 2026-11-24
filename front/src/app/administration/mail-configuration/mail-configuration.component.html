@@ -1,0 +1,293 @@
+<div class="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto space-y-6 font-sans min-h-full">
+
+  <!-- En-tête -->
+  <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <button type="button" (click)="goBack()"
+          class="text-xs font-bold text-slate-500 hover:text-indigo-600 inline-flex items-center gap-1 mb-1 cursor-pointer">
+          ← Retour à l'Administration
+        </button>
+        <h1 class="text-2xl font-black text-slate-900 tracking-tight">Configuration Messagerie &amp; Calendrier (à chaud)</h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Configurez une seule fois les clés OAuth2 Google / Microsoft 365 pour votre cabinet. Chaque avocat connecte ensuite sa propre boîte mail depuis <b>Messagerie</b>.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <button *ngIf="config.enabled" type="button" (click)="openMessagerie()"
+          class="px-4 py-2 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold hover:bg-indigo-100 cursor-pointer">
+          Ouvrir la Messagerie →
+        </button>
+      </div>
+    </div>
+
+    <!-- Badges d'état -->
+    <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs">
+      <span class="px-2.5 py-1 rounded-full font-bold border"
+        [ngClass]="config.enabled ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-600 border-slate-200'">
+        Module : {{ config.enabled ? 'Activé' : 'Désactivé' }}
+      </span>
+      <span class="px-2.5 py-1 rounded-full font-bold border"
+        [ngClass]="config.googleConfigured ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'">
+        Gmail / Google : {{ config.googleConfigured ? 'Configuré ✓' : 'Non configuré' }}
+      </span>
+      <span class="px-2.5 py-1 rounded-full font-bold border"
+        [ngClass]="config.microsoftConfigured ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'">
+        Outlook / M365 : {{ config.microsoftConfigured ? 'Configuré ✓' : 'Non configuré' }}
+      </span>
+      <span class="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-bold">
+        Secrets chiffrés AES-256-GCM en base
+      </span>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="errorMessage()" class="bg-red-50 border border-red-200 text-red-800 text-sm px-4 py-3 rounded-xl">
+    {{ errorMessage() }}
+  </div>
+  <div *ngIf="successMessage()" class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm px-4 py-3 rounded-xl">
+    {{ successMessage() }}
+  </div>
+
+  <div *ngIf="isLoading()" class="bg-white rounded-2xl border border-slate-200 p-10 text-center text-sm text-slate-400">
+    Chargement de la configuration...
+  </div>
+
+  <div *ngIf="!isLoading()" class="space-y-6">
+
+    <!-- Activation & URL Frontend -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Activation du module</h2>
+          <p class="text-xs text-slate-500">Si désactivé, l'application masque totalement les menus Messagerie et synchronisation calendrier.</p>
+        </div>
+        <label class="inline-flex items-center gap-3 cursor-pointer select-none">
+          <input type="checkbox" [(ngModel)]="config.enabled" class="w-5 h-5 rounded text-indigo-600" />
+          <span class="text-sm font-black" [ngClass]="config.enabled ? 'text-emerald-700' : 'text-slate-500'">
+            {{ config.enabled ? 'Module activé' : 'Module désactivé' }}
+          </span>
+        </label>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">URL publique du Frontend (retour OAuth2)</label>
+        <input type="text" [(ngModel)]="config.frontendUrl" placeholder="http://localhost:8080 ou https://si-legal2.duckdns.org"
+          class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-mono" />
+      </div>
+    </div>
+
+    <!-- Google Workspace / Gmail -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Google Workspace / Gmail</h2>
+          <p class="text-xs text-slate-500">Scopes demandés : <code>gmail.readonly</code> (lecture seule) + <code>calendar.events</code> (calendrier bidirectionnel).</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" (click)="showGoogleGuide.set(!showGoogleGuide())"
+            class="px-3 py-1.5 rounded-xl bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 text-xs font-bold cursor-pointer transition-colors">
+            {{ showGoogleGuide() ? 'Masquer le guide' : '📖 Guide d\'intégration Gmail' }}
+          </button>
+          <span class="px-2.5 py-1 rounded-full text-xs font-bold"
+            [ngClass]="config.googleConfigured ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'">
+            {{ config.googleConfigured ? 'Prêt ✓' : 'À configurer' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Guide pas à pas Google Cloud / Gmail -->
+      <div *ngIf="showGoogleGuide()" class="rounded-xl border border-red-200 bg-red-50/40 p-4 space-y-3 text-xs text-slate-700">
+        <div class="flex items-center justify-between gap-2">
+          <div class="font-extrabold text-red-900 text-sm">Guide Administrateur — Configurer Gmail &amp; Google Calendar</div>
+          <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer"
+            class="text-xs font-bold text-red-700 hover:underline">
+            Ouvrir Google Cloud Console ↗
+          </a>
+        </div>
+        <ol class="list-decimal pl-5 space-y-2 leading-relaxed">
+          <li>
+            <b>Créer un projet :</b> dans <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" class="text-indigo-700 underline font-semibold">Google Cloud Console</a>, créez un projet (ex. <code>Avo-Maitrise</code>).
+          </li>
+          <li>
+            <b>Activer les 2 APIs :</b> allez dans <i>API et services → Bibliothèque</i>, puis activez <b>Gmail API</b> et <b>Google Calendar API</b>.
+          </li>
+          <li>
+            <b>Configurer l'écran de consentement OAuth :</b> dans <i>Google Auth Platform → Audience</i>, choisissez <b>Externe</b> (ou <i>Interne</i> si tout le cabinet est sous Google Workspace), renseignez le nom de l'application et votre e-mail de support.
+            <div class="mt-1 p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-900">
+              <b>Important (Erreur 403 access_denied) :</b> tant que l'application est en statut <i>« Test »</i>, ajoutez chaque adresse Gmail autorisée dans la section <b>Utilisateurs test</b> (jusqu'à 100 comptes), ou publiez l'application en production.
+            </div>
+          </li>
+          <li>
+            <b>Créer un identifiant OAuth 2.0 :</b> dans <i>Clients → Créer un client</i>, sélectionnez le type <b>Application Web</b>.
+          </li>
+          <li>
+            <b>Ajouter l'URI de redirection autorisée :</b> dans la section <i>URI de redirection autorisés</i>, collez exactement cette URL :
+            <div class="mt-1 flex items-center gap-2">
+              <code class="px-2 py-1 rounded bg-white border border-slate-200 text-[11px] break-all">{{ config.googleRedirectUri }}</code>
+              <button type="button" (click)="copyValue(config.googleRedirectUri, 'google-guide')"
+                class="px-2 py-1 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-[11px] font-bold cursor-pointer shrink-0">
+                {{ copiedField() === 'google-guide' ? 'Copié ✓' : 'Copier' }}
+              </button>
+            </div>
+          </li>
+          <li>
+            <b>Finaliser ici :</b> copiez le <b>Client ID</b> et le <b>Client Secret</b> dans les champs ci-dessous, activez le module et cliquez sur <b>Enregistrer</b>. Chaque avocat pourra ensuite cliquer sur <i>Gmail / Google</i> dans <b>Messagerie</b>.
+          </li>
+        </ol>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Google Client ID</label>
+          <input type="text" [(ngModel)]="config.googleClientId" placeholder="xxxx.apps.googleusercontent.com"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">
+            Google Client Secret
+            <span *ngIf="config.hasGoogleClientSecret" class="text-emerald-700 normal-case ms-1">(enregistré ✓)</span>
+          </label>
+          <input type="password" [(ngModel)]="config.googleClientSecret"
+            [placeholder]="config.hasGoogleClientSecret ? '•••••••• (laisser vide pour conserver)' : 'GOCSPX-...'"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono" />
+          <label *ngIf="config.hasGoogleClientSecret" class="inline-flex items-center gap-1.5 text-[11px] text-red-600 mt-1 cursor-pointer">
+            <input type="checkbox" [(ngModel)]="config.clearGoogleSecret" /> Effacer le secret enregistré
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">URI de redirection autorisée (à coller dans Google Cloud Console)</label>
+        <div class="flex gap-2">
+          <input type="text" [(ngModel)]="config.googleRedirectUri"
+            class="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-xs font-mono bg-slate-50" />
+          <button type="button" (click)="copyValue(config.googleRedirectUri, 'google')"
+            class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 cursor-pointer">
+            {{ copiedField() === 'google' ? 'Copié ✓' : 'Copier' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Microsoft 365 / Outlook -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Microsoft 365 / Outlook</h2>
+          <p class="text-xs text-slate-500">Scopes demandés : <code>Mail.Read</code> (lecture seule) + <code>Calendars.ReadWrite</code> (calendrier bidirectionnel).</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" (click)="showMicrosoftGuide.set(!showMicrosoftGuide())"
+            class="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 text-xs font-bold cursor-pointer transition-colors">
+            {{ showMicrosoftGuide() ? 'Masquer le guide' : '📖 Guide d\'intégration Outlook' }}
+          </button>
+          <span class="px-2.5 py-1 rounded-full text-xs font-bold"
+            [ngClass]="config.microsoftConfigured ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'">
+            {{ config.microsoftConfigured ? 'Prêt ✓' : 'À configurer' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Guide pas à pas Microsoft Entra ID / Outlook -->
+      <div *ngIf="showMicrosoftGuide()" class="rounded-xl border border-blue-200 bg-blue-50/40 p-4 space-y-3 text-xs text-slate-700">
+        <div class="flex items-center justify-between gap-2">
+          <div class="font-extrabold text-blue-900 text-sm">Guide Administrateur — Configurer Outlook &amp; Microsoft 365</div>
+          <a href="https://entra.microsoft.com/" target="_blank" rel="noopener noreferrer"
+            class="text-xs font-bold text-blue-700 hover:underline">
+            Ouvrir Microsoft Entra ID ↗
+          </a>
+        </div>
+        <ol class="list-decimal pl-5 space-y-2 leading-relaxed">
+          <li>
+            <b>Inscrire une application :</b> ouvrez <a href="https://entra.microsoft.com/" target="_blank" rel="noopener noreferrer" class="text-indigo-700 underline font-semibold">Microsoft Entra Admin Center</a> → <i>Identité → Applications → Inscriptions d'applications → Nouvelle inscription</i> (ex. <code>Avo-Maitrise</code>).
+          </li>
+          <li>
+            <b>Types de comptes pris en charge :</b> choisissez <b>Comptes dans un annuaire d'organisation quelconque et comptes Microsoft personnels</b> (cela permet d'utiliser <code>Tenant ID = common</code> pour tous les comptes Outlook/M365).
+          </li>
+          <li>
+            <b>URI de redirection :</b> sélectionnez la plateforme <b>Web</b> et collez exactement cette URL :
+            <div class="mt-1 flex items-center gap-2">
+              <code class="px-2 py-1 rounded bg-white border border-slate-200 text-[11px] break-all">{{ config.microsoftRedirectUri }}</code>
+              <button type="button" (click)="copyValue(config.microsoftRedirectUri, 'microsoft-guide')"
+                class="px-2 py-1 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-[11px] font-bold cursor-pointer shrink-0">
+                {{ copiedField() === 'microsoft-guide' ? 'Copié ✓' : 'Copier' }}
+              </button>
+            </div>
+          </li>
+          <li>
+            <b>Créer un Client Secret :</b> dans le menu <i>Certificats &amp; secrets → Secrets client → Nouveau secret client</i>.
+            <div class="mt-1 p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-900">
+              <b>Attention :</b> copiez immédiatement la colonne <b>Valeur</b> (et non l'<i>ID du secret</i>), car Microsoft ne l'affiche qu'une seule fois.
+            </div>
+          </li>
+          <li>
+            <b>Ajouter les autorisations Microsoft Graph :</b> dans <i>Autorisations de l'API → Ajouter une autorisation → Microsoft Graph → Autorisations déléguées</i>, ajoutez :
+            <div class="mt-1 flex flex-wrap gap-1.5">
+              <code class="px-2 py-0.5 rounded bg-white border border-blue-200">User.Read</code>
+              <code class="px-2 py-0.5 rounded bg-white border border-blue-200">Mail.Read</code>
+              <code class="px-2 py-0.5 rounded bg-white border border-blue-200">Calendars.ReadWrite</code>
+              <code class="px-2 py-0.5 rounded bg-white border border-blue-200">offline_access</code>
+            </div>
+          </li>
+          <li>
+            <b>Finaliser ici :</b> dans la vue d'ensemble de l'application Azure, copiez l'<b>ID d'application (client)</b>, collez la <b>Valeur</b> du secret et laissez <code>Tenant ID = common</code> (ou l'ID de votre tenant si usage strictement interne), puis cliquez sur <b>Enregistrer</b>.
+          </li>
+        </ol>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Application (Client) ID</label>
+          <input type="text" [(ngModel)]="config.microsoftClientId" placeholder="00000000-0000-..."
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">
+            Client Secret
+            <span *ngIf="config.hasMicrosoftClientSecret" class="text-emerald-700 normal-case ms-1">(enregistré ✓)</span>
+          </label>
+          <input type="password" [(ngModel)]="config.microsoftClientSecret"
+            [placeholder]="config.hasMicrosoftClientSecret ? '•••••••• (laisser vide pour conserver)' : 'Secret Azure Entra ID'"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono" />
+          <label *ngIf="config.hasMicrosoftClientSecret" class="inline-flex items-center gap-1.5 text-[11px] text-red-600 mt-1 cursor-pointer">
+            <input type="checkbox" [(ngModel)]="config.clearMicrosoftSecret" /> Effacer le secret enregistré
+          </label>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Tenant ID</label>
+          <input type="text" [(ngModel)]="config.microsoftTenantId" placeholder="common"
+            class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm font-mono" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">URI de redirection autorisée (à coller dans Azure Entra ID)</label>
+        <div class="flex gap-2">
+          <input type="text" [(ngModel)]="config.microsoftRedirectUri"
+            class="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-xs font-mono bg-slate-50" />
+          <button type="button" (click)="copyValue(config.microsoftRedirectUri, 'microsoft')"
+            class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700 cursor-pointer">
+            {{ copiedField() === 'microsoft' ? 'Copié ✓' : 'Copier' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barre d'enregistrement -->
+    <div class="flex items-center justify-end gap-3">
+      <button type="button" (click)="goBack()"
+        class="px-4 py-2.5 rounded-xl bg-slate-100 text-slate-700 text-sm font-bold hover:bg-slate-200 cursor-pointer">
+        Annuler
+      </button>
+      <button type="button" (click)="save()" [disabled]="isSaving()"
+        class="px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-700 disabled:opacity-50 shadow-sm cursor-pointer">
+        {{ isSaving() ? 'Enregistrement...' : 'Enregistrer la configuration (à chaud)' }}
+      </button>
+    </div>
+
+  </div>
+</div>

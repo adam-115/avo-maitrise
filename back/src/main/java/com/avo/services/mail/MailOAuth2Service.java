@@ -5,7 +5,6 @@ import com.avo.repositories.MailAccountRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -23,76 +22,63 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Gère le flux OAuth2 (Microsoft 365 & Google Workspace) en mode :
- * - E-mail : LECTURE SEULE (Mail.Read / gmail.readonly) — aucune permission d'envoi.
+ * - E-mail : LECTURE SEULE (Mail.Read / gmail.readonly) — aucune permission
+ * d'envoi.
  * - Calendrier : ÉCRITURE (Calendars.ReadWrite / calendar.events).
+ * Lit la configuration OAuth2 dynamiquement à chaud via
+ * {@link MailIntegrationConfigService}.
  */
 @Service
 @Slf4j
 public class MailOAuth2Service {
 
     private static final String MS_SCOPES = "openid profile email offline_access User.Read Mail.Read Calendars.ReadWrite";
-    private static final String GOOGLE_SCOPES =
-            "https://www.googleapis.com/auth/gmail.readonly " +
+    private static final String GOOGLE_SCOPES = "https://www.googleapis.com/auth/gmail.readonly " +
             "https://www.googleapis.com/auth/calendar.events " +
             "https://www.googleapis.com/auth/userinfo.email " +
             "https://www.googleapis.com/auth/userinfo.profile";
 
-    private record OAuthState(String ownerUsername, String provider, Instant expiresAt) {}
+    private record OAuthState(String ownerUsername, String provider, Instant expiresAt) {
+    }
+
+    /**
+     * Jeton d'accès OAuth2 conservé uniquement en RAM (jamais persisté en base de
+     * données).
+     */
+    private record CachedAccessToken(String token, Instant expiresAt) {
+    }
 
     private final Map<String, OAuthState> pendingStates = new ConcurrentHashMap<>();
+    private final Map<Long, CachedAccessToken> accessTokenCache = new ConcurrentHashMap<>();
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
     private final ObjectMapper objectMapper;
     private final MailAccountRepository accountRepository;
     private final MailCredentialCrypto crypto;
-
-    @Value("${mail.integration.frontend-url:http://localhost:8080}")
-    private String frontendUrl;
-
-    @Value("${mail.integration.oauth.microsoft.client-id:}")
-    private String msClientId;
-    @Value("${mail.integration.oauth.microsoft.client-secret:}")
-    private String msClientSecret;
-    @Value("${mail.integration.oauth.microsoft.tenant-id:common}")
-    private String msTenantId;
-    @Value("${mail.integration.oauth.microsoft.redirect-uri:http://localhost:8080/api/mail-integration/oauth/microsoft/callback}")
-    private String msRedirectUri;
-
-    @Value("${mail.integration.oauth.google.client-id:}")
-    private String googleClientId;
-    @Value("${mail.integration.oauth.google.client-secret:}")
-    private String googleClientSecret;
-    @Value("${mail.integration.oauth.google.redirect-uri:http://localhost:8080/api/mail-integration/oauth/google/callback}")
-    private String googleRedirectUri;
+    private final MailIntegrationConfigService configService;
 
     public MailOAuth2Service(ObjectMapper objectMapper,
-                             MailAccountRepository accountRepository,
-                             MailCredentialCrypto crypto) {
+            MailAccountRepository accountRepository,
+            MailCredentialCrypto crypto,
+            MailIntegrationConfigService configService) {
         this.objectMapper = objectMapper;
         this.accountRepository = accountRepository;
         this.crypto = crypto;
+        this.configService = configService;
     }
 
     public Map<String, Object> getProvidersConfigStatus() {
         return Map.of(
-                "microsoftConfigured", isMicrosoftConfigured(),
-                "googleConfigured", isGoogleConfigured(),
-                "microsoftRedirectUri", msRedirectUri,
-                "googleRedirectUri", googleRedirectUri,
+                "microsoftConfigured", configService.isMicrosoftConfigured(),
+                "googleConfigured", configService.isGoogleConfigured(),
+                "microsoftRedirectUri", configService.getMicrosoftRedirectUri(),
+                "googleRedirectUri", configService.getGoogleRedirectUri(),
                 "microsoftScopes", MS_SCOPES,
-                "googleScopes", GOOGLE_SCOPES
-        );
-    }
-
-    public boolean isMicrosoftConfigured() {
-        return msClientId != null && !msClientId.isBlank() && msClientSecret != null && !msClientSecret.isBlank();
-    }
-
-    public boolean isGoogleConfigured() {
-        return googleClientId != null && !googleClientId.isBlank() && googleClientSecret != null && !googleClientSecret.isBlank();
+                "googleScopes", GOOGLE_SCOPES);
     }
 
     public String getFrontendRedirectBase() {
-        return frontendUrl != null ? frontendUrl.replaceAll("/+$", "") : "http://localhost:8080";
+        String url = configService.getFrontendUrl();
+        return (url != null && !url.isBlank()) ? url.replaceAll("/+$", "") : "http://localhost:8080";
     }
 
     public String buildAuthorizeUrl(String provider, String ownerUsername) {
@@ -101,14 +87,15 @@ public class MailOAuth2Service {
         pendingStates.put(state, new OAuthState(ownerUsername, provider.toUpperCase(), Instant.now().plusSeconds(600)));
 
         if (MailAccount.PROVIDER_MICROSOFT.equalsIgnoreCase(provider)) {
-            if (!isMicrosoftConfigured()) {
-                throw new IllegalStateException("Microsoft OAuth2 non configuré (définissez MICROSOFT_OAUTH_CLIENT_ID et MICROSOFT_OAUTH_CLIENT_SECRET).");
+            if (!configService.isMicrosoftConfigured()) {
+                throw new IllegalStateException(
+                        "Microsoft OAuth2 non configuré. Renseignez Client ID & Client Secret dans Administration → Outlook / Gmail & Calendrier.");
             }
-            String tenant = (msTenantId == null || msTenantId.isBlank()) ? "common" : msTenantId;
+            String tenant = configService.getMicrosoftTenantId();
             return "https://login.microsoftonline.com/" + enc(tenant) + "/oauth2/v2.0/authorize"
-                    + "?client_id=" + enc(msClientId)
+                    + "?client_id=" + enc(configService.getMicrosoftClientId())
                     + "&response_type=code"
-                    + "&redirect_uri=" + enc(msRedirectUri)
+                    + "&redirect_uri=" + enc(configService.getMicrosoftRedirectUri())
                     + "&response_mode=query"
                     + "&scope=" + enc(MS_SCOPES)
                     + "&prompt=select_account"
@@ -116,13 +103,14 @@ public class MailOAuth2Service {
         }
 
         if (MailAccount.PROVIDER_GOOGLE.equalsIgnoreCase(provider)) {
-            if (!isGoogleConfigured()) {
-                throw new IllegalStateException("Google OAuth2 non configuré (définissez GOOGLE_OAUTH_CLIENT_ID et GOOGLE_OAUTH_CLIENT_SECRET).");
+            if (!configService.isGoogleConfigured()) {
+                throw new IllegalStateException(
+                        "Google OAuth2 non configuré. Renseignez Client ID & Client Secret dans Administration → Outlook / Gmail & Calendrier.");
             }
             return "https://accounts.google.com/o/oauth2/v2/auth"
-                    + "?client_id=" + enc(googleClientId)
+                    + "?client_id=" + enc(configService.getGoogleClientId())
                     + "&response_type=code"
-                    + "&redirect_uri=" + enc(googleRedirectUri)
+                    + "&redirect_uri=" + enc(configService.getGoogleRedirectUri())
                     + "&scope=" + enc(GOOGLE_SCOPES)
                     + "&access_type=offline"
                     + "&prompt=consent"
@@ -146,32 +134,37 @@ public class MailOAuth2Service {
         throw new IllegalArgumentException("Fournisseur OAuth2 inconnu : " + provider);
     }
 
-    /**
-     * Retourne un access_token valide, en le rafraîchissant automatiquement s'il expire dans moins de 2 minutes.
-     */
+    public void evictAccessToken(Long accountId) {
+        if (accountId != null) {
+            accessTokenCache.remove(accountId);
+        }
+    }
+
     public String getValidAccessToken(MailAccount account) {
-        if (account.getEncryptedAccessToken() != null
-                && account.getTokenExpiresAt() != null
-                && account.getTokenExpiresAt().isAfter(LocalDateTime.now().plusMinutes(2))) {
-            return crypto.decrypt(account.getEncryptedAccessToken());
+        if (account.getId() != null) {
+            CachedAccessToken cached = accessTokenCache.get(account.getId());
+            if (cached != null && cached.expiresAt().isAfter(Instant.now().plusSeconds(120))) {
+                return cached.token();
+            }
         }
         String refreshToken = crypto.decrypt(account.getEncryptedSecret());
         if (refreshToken == null || refreshToken.isBlank()) {
-            throw new IllegalStateException("Jeton de rafraîchissement manquant — veuillez reconnecter le compte " + account.getEmailAddress());
+            throw new IllegalStateException(
+                    "Jeton de rafraîchissement manquant — veuillez reconnecter le compte " + account.getEmailAddress());
         }
 
         JsonNode tokenJson;
         if (MailAccount.PROVIDER_MICROSOFT.equalsIgnoreCase(account.getProvider())) {
-            String tenant = (msTenantId == null || msTenantId.isBlank()) ? "common" : msTenantId;
-            String form = "client_id=" + enc(msClientId)
-                    + "&client_secret=" + enc(msClientSecret)
+            String tenant = configService.getMicrosoftTenantId();
+            String form = "client_id=" + enc(configService.getMicrosoftClientId())
+                    + "&client_secret=" + enc(configService.getMicrosoftClientSecret())
                     + "&grant_type=refresh_token"
                     + "&refresh_token=" + enc(refreshToken)
                     + "&scope=" + enc(MS_SCOPES);
             tokenJson = postForm("https://login.microsoftonline.com/" + enc(tenant) + "/oauth2/v2.0/token", form);
         } else if (MailAccount.PROVIDER_GOOGLE.equalsIgnoreCase(account.getProvider())) {
-            String form = "client_id=" + enc(googleClientId)
-                    + "&client_secret=" + enc(googleClientSecret)
+            String form = "client_id=" + enc(configService.getGoogleClientId())
+                    + "&client_secret=" + enc(configService.getGoogleClientSecret())
                     + "&grant_type=refresh_token"
                     + "&refresh_token=" + enc(refreshToken);
             tokenJson = postForm("https://oauth2.googleapis.com/token", form);
@@ -181,66 +174,88 @@ public class MailOAuth2Service {
 
         String accessToken = tokenJson.path("access_token").asText("");
         if (accessToken.isBlank()) {
-            throw new IllegalStateException("Impossible de rafraîchir le jeton OAuth2 : " + tokenJson.path("error_description").asText(tokenJson.toString()));
+            throw new IllegalStateException("Impossible de rafraîchir le jeton OAuth2 : "
+                    + tokenJson.path("error_description").asText(tokenJson.toString()));
         }
         int expiresIn = tokenJson.path("expires_in").asInt(3500);
-        account.setEncryptedAccessToken(crypto.encrypt(accessToken));
-        account.setTokenExpiresAt(LocalDateTime.now().plusSeconds(expiresIn));
+        if (account.getId() != null) {
+            accessTokenCache.put(account.getId(),
+                    new CachedAccessToken(accessToken, Instant.now().plusSeconds(expiresIn)));
+        }
+
+        boolean needsSave = false;
+        if (account.getEncryptedAccessToken() != null || account.getTokenExpiresAt() != null) {
+            account.setEncryptedAccessToken(null);
+            account.setTokenExpiresAt(null);
+            needsSave = true;
+        }
         if (tokenJson.hasNonNull("refresh_token")) {
             account.setEncryptedSecret(crypto.encrypt(tokenJson.get("refresh_token").asText()));
+            needsSave = true;
         }
-        account.setLastError(null);
-        accountRepository.save(account);
+        if (account.getLastError() != null) {
+            account.setLastError(null);
+            needsSave = true;
+        }
+        if (needsSave) {
+            accountRepository.save(account);
+        }
         return accessToken;
     }
 
     private MailAccount exchangeMicrosoftCode(String code, String ownerUsername) {
-        String tenant = (msTenantId == null || msTenantId.isBlank()) ? "common" : msTenantId;
-        String form = "client_id=" + enc(msClientId)
-                + "&client_secret=" + enc(msClientSecret)
+        String tenant = configService.getMicrosoftTenantId();
+        String form = "client_id=" + enc(configService.getMicrosoftClientId())
+                + "&client_secret=" + enc(configService.getMicrosoftClientSecret())
                 + "&grant_type=authorization_code"
                 + "&code=" + enc(code)
-                + "&redirect_uri=" + enc(msRedirectUri)
+                + "&redirect_uri=" + enc(configService.getMicrosoftRedirectUri())
                 + "&scope=" + enc(MS_SCOPES);
         JsonNode tokenJson = postForm("https://login.microsoftonline.com/" + enc(tenant) + "/oauth2/v2.0/token", form);
         String accessToken = tokenJson.path("access_token").asText("");
         String refreshToken = tokenJson.path("refresh_token").asText("");
         int expiresIn = tokenJson.path("expires_in").asInt(3500);
         if (accessToken.isBlank()) {
-            throw new IllegalStateException("Échec de l'échange OAuth2 Microsoft : " + tokenJson.path("error_description").asText(""));
+            throw new IllegalStateException(
+                    "Échec de l'échange OAuth2 Microsoft : " + tokenJson.path("error_description").asText(""));
         }
 
-        JsonNode me = getJson("https://graph.microsoft.com/v1.0/me?$select=displayName,mail,userPrincipalName", accessToken);
+        JsonNode me = getJson("https://graph.microsoft.com/v1.0/me?$select=displayName,mail,userPrincipalName",
+                accessToken);
         String email = me.path("mail").asText("");
-        if (email.isBlank()) email = me.path("userPrincipalName").asText("outlook-user@microsoft.com");
+        if (email.isBlank())
+            email = me.path("userPrincipalName").asText("outlook-user@microsoft.com");
         String displayName = me.path("displayName").asText(email);
 
-        return upsertOAuthAccount(ownerUsername, MailAccount.PROVIDER_MICROSOFT, email, displayName, accessToken, refreshToken, expiresIn);
+        return upsertOAuthAccount(ownerUsername, MailAccount.PROVIDER_MICROSOFT, email, displayName, accessToken,
+                refreshToken, expiresIn);
     }
 
     private MailAccount exchangeGoogleCode(String code, String ownerUsername) {
-        String form = "client_id=" + enc(googleClientId)
-                + "&client_secret=" + enc(googleClientSecret)
+        String form = "client_id=" + enc(configService.getGoogleClientId())
+                + "&client_secret=" + enc(configService.getGoogleClientSecret())
                 + "&grant_type=authorization_code"
                 + "&code=" + enc(code)
-                + "&redirect_uri=" + enc(googleRedirectUri);
+                + "&redirect_uri=" + enc(configService.getGoogleRedirectUri());
         JsonNode tokenJson = postForm("https://oauth2.googleapis.com/token", form);
         String accessToken = tokenJson.path("access_token").asText("");
         String refreshToken = tokenJson.path("refresh_token").asText("");
         int expiresIn = tokenJson.path("expires_in").asInt(3500);
         if (accessToken.isBlank()) {
-            throw new IllegalStateException("Échec de l'échange OAuth2 Google : " + tokenJson.path("error_description").asText(""));
+            throw new IllegalStateException(
+                    "Échec de l'échange OAuth2 Google : " + tokenJson.path("error_description").asText(""));
         }
 
         JsonNode me = getJson("https://www.googleapis.com/oauth2/v2/userinfo", accessToken);
         String email = me.path("email").asText("gmail-user@gmail.com");
         String displayName = me.path("name").asText(email);
 
-        return upsertOAuthAccount(ownerUsername, MailAccount.PROVIDER_GOOGLE, email, displayName, accessToken, refreshToken, expiresIn);
+        return upsertOAuthAccount(ownerUsername, MailAccount.PROVIDER_GOOGLE, email, displayName, accessToken,
+                refreshToken, expiresIn);
     }
 
     private MailAccount upsertOAuthAccount(String ownerUsername, String provider, String email, String displayName,
-                                           String accessToken, String refreshToken, int expiresIn) {
+            String accessToken, String refreshToken, int expiresIn) {
         MailAccount account = accountRepository
                 .findByOwnerUsernameAndProviderAndEmailAddressIgnoreCase(ownerUsername, provider, email)
                 .orElseGet(MailAccount::new);
@@ -248,16 +263,21 @@ public class MailOAuth2Service {
         account.setProvider(provider);
         account.setEmailAddress(email);
         account.setDisplayName(displayName);
-        account.setEncryptedAccessToken(crypto.encrypt(accessToken));
+        account.setEncryptedAccessToken(null);
+        account.setTokenExpiresAt(null);
         if (refreshToken != null && !refreshToken.isBlank()) {
             account.setEncryptedSecret(crypto.encrypt(refreshToken));
         }
-        account.setTokenExpiresAt(LocalDateTime.now().plusSeconds(expiresIn));
         account.setCalendarSyncEnabled(true);
         account.setActive(true);
         account.setLastError(null);
         account.setLastSyncAt(LocalDateTime.now());
-        return accountRepository.save(account);
+        MailAccount saved = accountRepository.save(account);
+        if (saved.getId() != null && accessToken != null && !accessToken.isBlank()) {
+            accessTokenCache.put(saved.getId(),
+                    new CachedAccessToken(accessToken, Instant.now().plusSeconds(expiresIn)));
+        }
+        return saved;
     }
 
     private JsonNode postForm(String url, String formBody) {

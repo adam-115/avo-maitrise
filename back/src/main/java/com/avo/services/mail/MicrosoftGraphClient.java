@@ -96,7 +96,71 @@ public class MicrosoftGraphClient {
         }
     }
 
-    // ==================== CALENDRIER (ÉCRITURE) ====================
+    // ==================== CALENDRIER (LECTURE & ÉCRITURE) ====================
+
+    public List<ExternalCalendarEvent> listCalendarEvents(String accessToken,
+                                                          LocalDate from,
+                                                          LocalDate to) {
+        try {
+            ZoneId zone = ZoneId.systemDefault();
+            String startUtc = URLEncoder.encode(
+                    from.atStartOfDay(zone).withZoneSameInstant(java.time.ZoneOffset.UTC)
+                            .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                    StandardCharsets.UTF_8);
+            String endUtc = URLEncoder.encode(
+                    to.plusDays(1).atStartOfDay(zone).withZoneSameInstant(java.time.ZoneOffset.UTC)
+                            .format(DateTimeFormatter.ISO_OFFSET_DATE_TIME),
+                    StandardCharsets.UTF_8);
+
+            String url = GRAPH_BASE + "/me/calendarview?startDateTime=" + startUtc
+                    + "&endDateTime=" + endUtc
+                    + "&$top=200&$select=id,subject,bodyPreview,location,start,end,isAllDay,isCancelled";
+
+            JsonNode root = sendJson("GET", url, accessToken, null, Map.of("Prefer", "outlook.timezone=\"UTC\""));
+            List<ExternalCalendarEvent> events = new ArrayList<>();
+            for (JsonNode item : root.path("value")) {
+                String id = item.path("id").asText("");
+                if (id.isBlank()) continue;
+
+                boolean cancelled = item.path("isCancelled").asBoolean(false);
+                boolean allDay = item.path("isAllDay").asBoolean(false);
+                String subject = item.path("subject").asText("(Sans titre)");
+                if (subject.isBlank()) subject = "(Sans titre)";
+                String description = item.hasNonNull("bodyPreview") ? item.get("bodyPreview").asText() : null;
+                String location = item.path("location").path("displayName").asText(null);
+                if (location != null && location.isBlank()) location = null;
+
+                String startRaw = item.path("start").path("dateTime").asText("");
+                String endRaw = item.path("end").path("dateTime").asText("");
+                if (startRaw.isBlank()) continue;
+
+                LocalDateTime startDt;
+                LocalDateTime endDt;
+                if (allDay) {
+                    LocalDate d = LocalDate.parse(startRaw.substring(0, 10));
+                    startDt = d.atTime(9, 0);
+                    endDt = d.atTime(10, 0);
+                } else {
+                    startDt = parseGraphUtcDateTime(startRaw, zone);
+                    endDt = !endRaw.isBlank() ? parseGraphUtcDateTime(endRaw, zone) : startDt.plusHours(1);
+                }
+
+                events.add(new ExternalCalendarEvent(id, subject, description, location, startDt, endDt, allDay, cancelled));
+            }
+            return events;
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lecture calendrier Outlook : " + e.getMessage(), e);
+        }
+    }
+
+    private LocalDateTime parseGraphUtcDateTime(String raw, ZoneId targetZone) {
+        String cleaned = raw.trim();
+        if (cleaned.endsWith("Z") || cleaned.matches(".*[+-]\\d{2}:\\d{2}$")) {
+            return OffsetDateTime.parse(cleaned).atZoneSameInstant(targetZone).toLocalDateTime();
+        }
+        return LocalDateTime.parse(cleaned).atZone(java.time.ZoneOffset.UTC)
+                .withZoneSameInstant(targetZone).toLocalDateTime();
+    }
 
     public String upsertCalendarEvent(String accessToken,
                                       String existingEventId,

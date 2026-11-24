@@ -4,6 +4,7 @@ import com.avo.dtos.mail.DossierEmailDTO;
 import com.avo.dtos.mail.FileEmailRequest;
 import com.avo.dtos.mail.InboxEmailDTO;
 import com.avo.dtos.mail.MailAccountDTO;
+import com.avo.dtos.mail.MailIntegrationConfigDTO;
 import com.avo.entities.MailAccount;
 import com.avo.services.mail.ExternalCalendarSyncService;
 import com.avo.services.mail.MailIntegrationConfigService;
@@ -28,7 +29,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/mail-integration")
-@CrossOrigin(origins = "*")
 @Slf4j
 public class MailIntegrationController {
 
@@ -57,6 +57,16 @@ public class MailIntegrationController {
     @PutMapping("/status")
     public ResponseEntity<Map<String, Boolean>> setStatus(@RequestParam boolean enabled) {
         return ResponseEntity.ok(Map.of("enabled", configService.setEnabled(enabled)));
+    }
+
+    @GetMapping("/config")
+    public ResponseEntity<MailIntegrationConfigDTO> getConfig() {
+        return ResponseEntity.ok(configService.getConfigDto());
+    }
+
+    @PutMapping("/config")
+    public ResponseEntity<MailIntegrationConfigDTO> saveConfig(@RequestBody MailIntegrationConfigDTO dto) {
+        return ResponseEntity.ok(configService.saveConfig(dto));
     }
 
     // ==================== CONFIGURATION & COMPTES ====================
@@ -185,7 +195,14 @@ public class MailIntegrationController {
         return ResponseEntity.noContent().build();
     }
 
-    // ==================== CALENDRIER (ÉCRITURE + EXPORT .ICS) ====================
+    // ==================== CALENDRIER (SYNC BIDIRECTIONNELLE + EXPORT .ICS) ====================
+
+    @PostMapping("/calendar/sync-all")
+    public ResponseEntity<ExternalCalendarSyncService.BidirectionalSyncResult> syncAllCalendar(
+            @RequestParam(defaultValue = "30") int daysBack,
+            @RequestParam(defaultValue = "90") int daysAhead) {
+        return ResponseEntity.ok(calendarSyncService.syncCalendarBidirectional(daysBack, daysAhead));
+    }
 
     @PostMapping("/calendar/sync/matter-event/{eventId}")
     public ResponseEntity<ExternalCalendarSyncService.SyncResult> syncMatterEvent(@PathVariable Long eventId) {

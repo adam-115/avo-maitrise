@@ -84,4 +84,74 @@ class MailIntegrationTest {
         assertTrue(ics.contains("TRIGGER:-PT30M"));
         assertTrue(ics.contains("END:VCALENDAR"));
     }
+
+    @Test
+    void syncCalendarBidirectionalImportsNewAndUpdatesExistingEvents() {
+        MailAccountRepository accountRepo = Mockito.mock(MailAccountRepository.class);
+        MailOAuth2Service oauth2 = Mockito.mock(MailOAuth2Service.class);
+        MicrosoftGraphClient msClient = Mockito.mock(MicrosoftGraphClient.class);
+        GoogleWorkspaceClient googleClient = Mockito.mock(GoogleWorkspaceClient.class);
+        MatterEventRepository matterEventRepo = Mockito.mock(MatterEventRepository.class);
+        AppointementRepository apptRepo = Mockito.mock(AppointementRepository.class);
+        DossierRepository dossierRepo = Mockito.mock(DossierRepository.class);
+        MailIntegrationConfigService configSvc = Mockito.mock(MailIntegrationConfigService.class);
+
+        com.avo.entities.MailAccount account = new com.avo.entities.MailAccount();
+        account.setId(1L);
+        account.setProvider(com.avo.entities.MailAccount.PROVIDER_GOOGLE);
+        account.setEmailAddress("adamlaftimi@gmail.com");
+        account.setActive(true);
+        account.setCalendarSyncEnabled(true);
+        account.setCalendarId("primary");
+
+        Mockito.when(configSvc.isEnabled()).thenReturn(true);
+        Mockito.when(accountRepo.findByOwnerUsernameAndActiveTrueAndCalendarSyncEnabledTrue(Mockito.anyString()))
+                .thenReturn(java.util.List.of(account));
+        Mockito.when(oauth2.getValidAccessToken(account)).thenReturn("fake-token");
+
+        LocalDate today = LocalDate.now();
+        ExternalCalendarEvent newEv = new ExternalCalendarEvent(
+                "gcal-evt-1",
+                "Rendez-vous client Moreau",
+                "Préparation audience",
+                "Cabinet",
+                today.atTime(10, 0),
+                today.atTime(11, 30),
+                false,
+                false
+        );
+        ExternalCalendarEvent cancelledEv = new ExternalCalendarEvent(
+                "gcal-evt-2",
+                "Annulé",
+                null,
+                null,
+                today.atTime(14, 0),
+                today.atTime(15, 0),
+                false,
+                true
+        );
+
+        Mockito.when(googleClient.listCalendarEvents(Mockito.eq("fake-token"), Mockito.eq("primary"), Mockito.any(), Mockito.any()))
+                .thenReturn(java.util.List.of(newEv, cancelledEv));
+        Mockito.when(matterEventRepo.existsByExternalCalendarEventId("gcal-evt-1")).thenReturn(false);
+        Mockito.when(apptRepo.findByExternalCalendarEventId("gcal-evt-1")).thenReturn(Optional.empty());
+        Mockito.when(apptRepo.findByExternalCalendarEventIdIsNull()).thenReturn(java.util.List.of());
+
+        ExternalCalendarSyncService svc = new ExternalCalendarSyncService(
+                accountRepo, oauth2, msClient, googleClient, matterEventRepo, apptRepo, dossierRepo, configSvc);
+
+        ExternalCalendarSyncService.BidirectionalSyncResult res = svc.syncCalendarBidirectional(30, 90);
+
+        assertTrue(res.synced());
+        assertEquals("GOOGLE", res.provider());
+        assertEquals(1, res.imported());
+        assertEquals(0, res.updated());
+        assertEquals(0, res.pushed());
+        Mockito.verify(apptRepo, Mockito.times(1)).save(Mockito.argThat(a ->
+                "gcal-evt-1".equals(a.getExternalCalendarEventId())
+                        && "Rendez-vous client Moreau".equals(a.getTitle())
+                        && "10:00".equals(a.getTime())
+                        && "11:30".equals(a.getEndTime())
+        ));
+    }
 }
