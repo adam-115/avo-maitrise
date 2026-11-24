@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { DeadlineRule, DeadlineService, DossierDeadline } from '../../services/deadline.service';
+import { MailIntegrationService } from '../../services/mail-integration.service';
+import { MailIntegrationStatusService } from '../../services/mail-integration-status.service';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -17,6 +19,8 @@ export class DossierDeadlinesComponent implements OnInit, OnChanges {
   @Input() users: any[] = [];
 
   private deadlineService = inject(DeadlineService);
+  private mailService = inject(MailIntegrationService);
+  public mailStatusService = inject(MailIntegrationStatusService);
   private http = inject(HttpClient);
 
   rules = signal<DeadlineRule[]>([]);
@@ -242,6 +246,31 @@ export class DossierDeadlinesComponent implements OnInit, OnChanges {
     this.deadlineService.delete(d.id).subscribe({
       next: () => this.loadDeadlines()
     });
+  }
+
+  syncToExternalCalendar(d: DossierDeadline): void {
+    if (!d.id) return;
+    this.errorMessage.set(null);
+    this.successMessage.set(null);
+    this.mailService.syncDeadlineToCalendar(d.id).subscribe({
+      next: res => {
+        if (res.synced) {
+          this.successMessage.set(res.message);
+          this.loadDeadlines();
+        } else {
+          this.errorMessage.set(res.message || 'Aucun calendrier Outlook/Google connecté. Utilisez le bouton .ics ou connectez votre compte dans Messagerie.');
+        }
+      },
+      error: err => this.errorMessage.set(err?.error?.message || 'Erreur lors de la synchronisation calendrier.')
+    });
+  }
+
+  getDeadlineIcsUrl(id?: number): string {
+    return id ? this.mailService.getDeadlineIcsUrl(id) : '#';
+  }
+
+  getDossierIcsUrl(): string {
+    return this.dossierId ? this.mailService.getDossierIcsUrl(this.dossierId) : '#';
   }
 
   countdownBadgeClass(d: DossierDeadline): string {

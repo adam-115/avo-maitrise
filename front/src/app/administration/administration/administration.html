@@ -628,6 +628,49 @@
       </div>
     </a>
 
+    <!-- Module 12: Intégration Messagerie & Calendrier (Optionnel) -->
+    <div
+      class="group relative flex flex-col justify-between rounded-2xl bg-white border-2 border-slate-300 hover:border-blue-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden">
+      <div
+        class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-blue-600 transition-all">
+      </div>
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div
+            class="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center shadow-xs">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+              </path>
+            </svg>
+          </div>
+          <button type="button" (click)="toggleMailIntegration($event)" [disabled]="togglingMailIntegration"
+            [ngClass]="(mailStatusService.isEnabled$ | async) ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-700'"
+            class="px-3 py-1.5 rounded-full text-xs font-black transition-colors cursor-pointer">
+            {{ (mailStatusService.isEnabled$ | async) ? 'Activé' : 'Désactivé' }}
+          </button>
+        </div>
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">
+            Outlook / Gmail &amp; Calendrier
+          </h3>
+          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
+            Module optionnel : lecture des e-mails (classement en 1 clic dans les dossiers) et ajout des échéances/audiences au calendrier externe. Désactivé par défaut.
+          </p>
+        </div>
+      </div>
+      <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold">
+        <button type="button" (click)="toggleMailIntegration($event)" [disabled]="togglingMailIntegration"
+          class="text-blue-700 hover:underline cursor-pointer">
+          {{ (mailStatusService.isEnabled$ | async) ? 'Désactiver le module' : 'Activer le module' }}
+        </button>
+        <button *ngIf="mailStatusService.isEnabled$ | async" type="button" (click)="navigateToMessagerie()"
+          class="text-indigo-700 hover:underline cursor-pointer">
+          Ouvrir la Messagerie →
+        </button>
+      </div>
+    </div>
+
   </div>
 
 </div>

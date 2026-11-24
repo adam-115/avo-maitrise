@@ -13,6 +13,7 @@ import com.avo.repositories.DossierRepository;
 import com.avo.repositories.EventTypeRepository;
 import com.avo.repositories.MatterEventRepository;
 import com.avo.service.ai.Pays;
+import com.avo.services.mail.ExternalCalendarSyncService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
@@ -46,6 +47,7 @@ public class DossierDeadlineService {
     private final EventTypeRepository eventTypeRepository;
     private final ProceduralDeadlineCalculator calculator;
     private final ApplicationEventPublisher eventPublisher;
+    private final ExternalCalendarSyncService externalCalendarSyncService;
 
     public DossierDeadlineService(DossierDeadlineRepository deadlineRepository,
                                   DeadlineRuleRepository ruleRepository,
@@ -53,7 +55,8 @@ public class DossierDeadlineService {
                                   MatterEventRepository matterEventRepository,
                                   EventTypeRepository eventTypeRepository,
                                   ProceduralDeadlineCalculator calculator,
-                                  ApplicationEventPublisher eventPublisher) {
+                                  ApplicationEventPublisher eventPublisher,
+                                  ExternalCalendarSyncService externalCalendarSyncService) {
         this.deadlineRepository = deadlineRepository;
         this.ruleRepository = ruleRepository;
         this.dossierRepository = dossierRepository;
@@ -61,6 +64,7 @@ public class DossierDeadlineService {
         this.eventTypeRepository = eventTypeRepository;
         this.calculator = calculator;
         this.eventPublisher = eventPublisher;
+        this.externalCalendarSyncService = externalCalendarSyncService;
     }
 
     public List<DeadlineRule> getRules(String pays) {
@@ -210,6 +214,9 @@ public class DossierDeadlineService {
         }
 
         DossierDeadline saved = deadlineRepository.save(entity);
+        if (!Boolean.FALSE.equals(req.getSyncAgenda())) {
+            externalCalendarSyncService.syncDeadline(saved, dossier);
+        }
         publishActivity(dossier.getId(), "Création", saved.getId(),
                 "Délai calculé et validé : " + saved.getTitre() + " (échéance le " + saved.getDateEcheanceFinale() + ")");
         return toDto(saved, dossier);
@@ -279,6 +286,9 @@ public class DossierDeadlineService {
         deadlineRepository.findById(id).ifPresent(entity -> {
             if (entity.getMatterEventId() != null) {
                 matterEventRepository.deleteById(entity.getMatterEventId());
+            }
+            if (entity.getExternalCalendarEventId() != null) {
+                externalCalendarSyncService.deleteExternalEvent(entity.getExternalCalendarProvider(), entity.getExternalCalendarEventId());
             }
             publishActivity(entity.getDossierId(), "Suppression", entity.getId(),
                     "Délai supprimé : " + entity.getTitre());
@@ -375,6 +385,8 @@ public class DossierDeadlineService {
         dto.setMotifModification(d.getMotifModification());
         dto.setMatterEventId(d.getMatterEventId());
         dto.setDocumentId(d.getDocumentId());
+        dto.setExternalCalendarEventId(d.getExternalCalendarEventId());
+        dto.setExternalCalendarProvider(d.getExternalCalendarProvider());
         dto.setCreatedAt(d.getCreatedAt());
         dto.setUpdatedAt(d.getUpdatedAt());
         long remaining = ChronoUnit.DAYS.between(LocalDate.now(), d.getDateEcheanceFinale());

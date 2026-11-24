@@ -9,6 +9,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { filter, Subscription } from 'rxjs';
 
 import { AiStatusService } from './../services/ai-status.service';
+import { MailIntegrationStatusService } from './../services/mail-integration-status.service';
 
 @Component({
   selector: 'app-home',
@@ -24,6 +25,7 @@ export class Home implements OnInit, OnDestroy {
   public readonly translate = inject(TranslateService);
   public readonly router = inject(Router);
   public readonly aiStatusService = inject(AiStatusService);
+  public readonly mailStatusService = inject(MailIntegrationStatusService);
 
   // Variable d'état pour le contrôle de la barre latérale
   isSidebarOpen: boolean = false;
@@ -41,8 +43,9 @@ export class Home implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Vérifier si l'IA est activée
+    // Vérifier si l'IA et l'intégration Messagerie/Calendrier sont activées
     this.aiStatusService.checkAiStatus();
+    this.mailStatusService.checkStatus();
 
     // Synchroniser activeRoute dès le chargement initial
     this.updateActiveRouteFromUrl(this.router.url);
@@ -68,6 +71,8 @@ export class Home implements OnInit, OnDestroy {
       this.activeRoute = NavigationService.CLIENT_DILIGENCE_STATUS_LIST;
     } else if (url.includes('/home/' + NavigationService.CALENDRIER)) {
       this.activeRoute = NavigationService.CALENDRIER;
+    } else if (url.includes('/home/' + NavigationService.MESSAGERIE)) {
+      this.activeRoute = NavigationService.MESSAGERIE;
     } else if (url.includes('/home/' + NavigationService.DOSSIER)) {
       this.activeRoute = NavigationService.DOSSIER;
     } else if (url.includes('/home/' + NavigationService.CRM) || url.includes('/home/' + NavigationService.CLIENT_DETAILS) || url.includes('/home/' + NavigationService.NEW_CLIENT)) {
@@ -153,6 +158,12 @@ export class Home implements OnInit, OnDestroy {
   navigateToCalendrier() {
     this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.CALENDRIER);
     this.activeRoute = NavigationService.CALENDRIER;
+    this.isSidebarOpen = false;
+  }
+
+  navigateToMessagerie() {
+    this.router.navigateByUrl(NavigationService.HOME + '/' + NavigationService.MESSAGERIE);
+    this.activeRoute = NavigationService.MESSAGERIE;
     this.isSidebarOpen = false;
   }
 

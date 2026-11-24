@@ -40,6 +40,8 @@ public class DossierDeadlineDTO {
     private String motifModification;
     private Long matterEventId;
     private Long documentId;
+    private String externalCalendarEventId;
+    private String externalCalendarProvider;
     private long joursRestants;
     private boolean enRetard;
     private LocalDateTime createdAt;

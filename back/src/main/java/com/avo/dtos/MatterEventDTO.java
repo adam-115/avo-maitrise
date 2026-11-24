@@ -21,6 +21,8 @@ public class MatterEventDTO {
     private List<String> participantsIds;
     private Integer reminderMinutesBefore;
     private String statut;
+    private String externalCalendarEventId;
+    private String externalCalendarProvider;
     private Date createdAt;
     private Date updatedAt;
 }

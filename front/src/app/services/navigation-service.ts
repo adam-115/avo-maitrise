@@ -36,6 +36,7 @@ export class NavigationService {
   static readonly FACTURATION = 'facturation';
   static readonly FACTURATION_DETAIL = 'facturation-detail';
   static readonly CALENDRIER = 'calendrier';
+  static readonly MESSAGERIE = 'messagerie';
   static readonly ADMINSTRATION = 'administration';
   static readonly UTILISATEURS = 'utilisateurs';
   static readonly PROFILE_CABINET = 'profile-cabinet';

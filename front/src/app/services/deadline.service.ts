@@ -53,6 +53,8 @@ export interface DossierDeadline {
   motifModification?: string;
   matterEventId?: number;
   documentId?: number;
+  externalCalendarEventId?: string;
+  externalCalendarProvider?: string;
   joursRestants?: number;
   enRetard?: boolean;
   customDureeValeur?: number;

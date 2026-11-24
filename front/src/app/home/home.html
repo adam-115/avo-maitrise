@@ -133,6 +133,38 @@
                     <span>{{ 'MENU.CALENDAR' | translate }}</span>
                 </a>
 
+                <!-- Messagerie (Outlook / Gmail / IMAP) — Optionnel -->
+                <a *ngIf="mailStatusService.isEnabled$ | async" (click)="navigateToMessagerie()" [class.bg-gradient-to-r]="activeRoute === paths.MESSAGERIE"
+                    [class.from-cyan-950/90]="activeRoute === paths.MESSAGERIE"
+                    [class.via-slate-800/80]="activeRoute === paths.MESSAGERIE"
+                    [class.to-slate-800/40]="activeRoute === paths.MESSAGERIE"
+                    [class.text-cyan-200]="activeRoute === paths.MESSAGERIE"
+                    [class.border-cyan-500/40]="activeRoute === paths.MESSAGERIE"
+                    [class.shadow-sm]="activeRoute === paths.MESSAGERIE"
+                    [class.shadow-cyan-950/50]="activeRoute === paths.MESSAGERIE"
+                    [class.before:absolute]="activeRoute === paths.MESSAGERIE"
+                    [class.before:inset-y-1.5]="activeRoute === paths.MESSAGERIE"
+                    [class.before:start-0]="activeRoute === paths.MESSAGERIE"
+                    [class.before:w-1.5]="activeRoute === paths.MESSAGERIE"
+                    [class.before:rounded-e-full]="activeRoute === paths.MESSAGERIE"
+                    [class.before:bg-gradient-to-b]="activeRoute === paths.MESSAGERIE"
+                    [class.before:from-cyan-400]="activeRoute === paths.MESSAGERIE"
+                    [class.before:to-blue-500]="activeRoute === paths.MESSAGERIE"
+                    [class.text-slate-300]="activeRoute !== paths.MESSAGERIE"
+                    [class.hover:bg-slate-800/60]="activeRoute !== paths.MESSAGERIE"
+                    [class.hover:text-cyan-300]="activeRoute !== paths.MESSAGERIE"
+                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
+                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
+                        [class.text-cyan-400]="activeRoute === paths.MESSAGERIE"
+                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.MESSAGERIE"
+                        [class.text-slate-400]="activeRoute !== paths.MESSAGERIE" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span>Messagerie</span>
+                </a>
+
                 <!-- Dossiers -->
                 <a (click)="navigateTODossier()" [class.bg-gradient-to-r]="activeRoute === paths.DOSSIER"
                     [class.from-cyan-950/90]="activeRoute === paths.DOSSIER"

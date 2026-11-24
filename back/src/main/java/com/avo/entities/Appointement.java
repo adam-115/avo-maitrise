@@ -44,6 +44,12 @@ public class Appointement {
     @Column(nullable = false)
     private Date date;
 
+    @Column(name = "external_calendar_event_id")
+    private String externalCalendarEventId;
+
+    @Column(name = "external_calendar_provider", length = 20)
+    private String externalCalendarProvider;
+
     public Appointement() {}
 
     public Long getId() { return id; }
@@ -75,4 +81,10 @@ public class Appointement {
 
     public Date getDate() { return date; }
     public void setDate(Date date) { this.date = date; }
+
+    public String getExternalCalendarEventId() { return externalCalendarEventId; }
+    public void setExternalCalendarEventId(String externalCalendarEventId) { this.externalCalendarEventId = externalCalendarEventId; }
+
+    public String getExternalCalendarProvider() { return externalCalendarProvider; }
+    public void setExternalCalendarProvider(String externalCalendarProvider) { this.externalCalendarProvider = externalCalendarProvider; }
 }

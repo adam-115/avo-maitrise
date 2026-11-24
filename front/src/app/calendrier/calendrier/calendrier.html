@@ -1,17 +1,19 @@
 <div class="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 font-sans min-h-full">
-  
+
   <!-- En-tête Principal avec Titre & Sélecteurs de Vue -->
   <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm relative overflow-hidden">
     <!-- Top accent gradient line -->
     <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-500 via-indigo-600 to-blue-600"></div>
 
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      
+
       <!-- Titre & Contexte -->
       <div class="flex items-center gap-3.5">
-        <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center font-bold shadow-sm flex-shrink-0">
+        <div
+          class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center font-bold shadow-sm flex-shrink-0">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
         <div>
@@ -24,31 +26,47 @@
         </div>
       </div>
 
-      <!-- Sélecteurs de vue (Jour / Semaine) -->
-      <div class="inline-flex p-1 bg-slate-100/90 rounded-2xl border border-slate-200/80 shadow-inner flex-shrink-0">
-        <button type="button" (click)="selectedView = 'day'"
-          [class]="selectedView === 'day' 
-            ? 'px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-md shadow-indigo-200 transition-all cursor-pointer' 
-            : 'px-4 py-2 rounded-xl text-slate-600 hover:text-indigo-600 hover:bg-white/60 font-semibold text-xs transition-all cursor-pointer'">
-          <div class="flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span>{{ 'CALENDAR.DAY_VIEW' | translate }}</span>
-          </div>
-        </button>
+      <!-- Sélecteurs de vue (Jour / Semaine) + Sync Outlook/Google & .ics (optionnel) -->
+      <div class="flex flex-wrap items-center gap-2.5 flex-shrink-0">
+        <ng-container *ngIf="mailStatusService.isEnabled$ | async">
+          <a routerLink="/home/messagerie"
+            class="px-3 py-2 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 font-bold text-xs transition-colors">
+            Sync Outlook / Google
+          </a>
+          <a [href]="cabinetIcsUrl"
+            class="px-3 py-2 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200 font-bold text-xs transition-colors"
+            title="Télécharger les échéances du cabinet au format iCalendar (.ics)">
+            Export .ics
+          </a>
+        </ng-container>
 
-        <button type="button" (click)="selectedView = 'week'"
-          [class]="selectedView === 'week' 
+        <div class="inline-flex p-1 bg-slate-100/90 rounded-2xl border border-slate-200/80 shadow-inner flex-shrink-0">
+          <button type="button" (click)="selectedView = 'day'"
+            [class]="selectedView === 'day' 
             ? 'px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-md shadow-indigo-200 transition-all cursor-pointer' 
             : 'px-4 py-2 rounded-xl text-slate-600 hover:text-indigo-600 hover:bg-white/60 font-semibold text-xs transition-all cursor-pointer'">
-          <div class="flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-            </svg>
-            <span>{{ 'CALENDAR.WEEK_VIEW' | translate }}</span>
-          </div>
-        </button>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{{ 'CALENDAR.DAY_VIEW' | translate }}</span>
+            </div>
+          </button>
+
+          <button type="button" (click)="selectedView = 'week'"
+            [class]="selectedView === 'week' 
+            ? 'px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-md shadow-indigo-200 transition-all cursor-pointer' 
+            : 'px-4 py-2 rounded-xl text-slate-600 hover:text-indigo-600 hover:bg-white/60 font-semibold text-xs transition-all cursor-pointer'">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+              </svg>
+              <span>{{ 'CALENDAR.WEEK_VIEW' | translate }}</span>
+            </div>
+          </button>
+        </div>
       </div>
 
     </div>
@@ -56,11 +74,11 @@
 
   <!-- Affichage conditionnel des composants -->
   @if (selectedView === 'day') {
-    <app-calendrier-jour></app-calendrier-jour>
+  <app-calendrier-jour></app-calendrier-jour>
   }
 
   @if (selectedView === 'week') {
-    <app-calendrier-semaine></app-calendrier-semaine>
+  <app-calendrier-semaine></app-calendrier-semaine>
   }
 
 </div>

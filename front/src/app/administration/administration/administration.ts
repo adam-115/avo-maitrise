@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { NavigationService } from '../../services/navigation-service';
 import { AiStatusService } from '../../services/ai-status.service';
+import { MailIntegrationStatusService } from '../../services/mail-integration-status.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 
@@ -16,6 +17,8 @@ export class Administration {
 
   navigationService = inject(NavigationService);
   aiStatusService = inject(AiStatusService);
+  mailStatusService = inject(MailIntegrationStatusService);
+  togglingMailIntegration = false;
 
   constructor(private readonly router: Router) {
   }
@@ -61,5 +64,19 @@ export class Administration {
 
   navigateToDeadlineRules(): void {
     this.router.navigate(['home', 'deadline-rules']);
+  }
+
+  navigateToMessagerie(): void {
+    this.router.navigate(['home', 'messagerie']);
+  }
+
+  toggleMailIntegration(event: Event): void {
+    event.stopPropagation();
+    if (this.togglingMailIntegration) return;
+    this.togglingMailIntegration = true;
+    this.mailStatusService.setEnabled(!this.mailStatusService.isEnabled).subscribe({
+      next: () => { this.togglingMailIntegration = false; },
+      error: () => { this.togglingMailIntegration = false; }
+    });
   }
 }

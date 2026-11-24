@@ -52,6 +52,7 @@ export const routes: Routes = [
           { path: 'audit', loadComponent: () => import('./shared/audit-timeline/audit-timeline.component').then(m => m.AuditTimelineComponent) },
           { path: 'delais', loadComponent: () => import('./dossier/dossier-deadlines/dossier-deadlines.component').then(m => m.DossierDeadlinesComponent) },
           { path: 'actes', loadComponent: () => import('./dossier/dossier-acts/dossier-acts.component').then(m => m.DossierActsComponent) },
+          { path: 'emails', loadComponent: () => import('./dossier/dossier-emails/dossier-emails.component').then(m => m.DossierEmailsComponent) },
           { path: 'strategie', loadComponent: () => import('./dossier/dossier-strategie/dossier-strategie.component').then(m => m.DossierStrategieComponent) }
         ]
       },
@@ -105,6 +106,10 @@ export const routes: Routes = [
       {
         path: NavigationService.CALENDRIER,
         loadComponent: () => import('./calendrier/calendrier/calendrier').then(m => m.Calendrier)
+      },
+      {
+        path: NavigationService.MESSAGERIE,
+        loadComponent: () => import('./messagerie/messagerie.component').then(m => m.MessagerieComponent)
       },
       {
         path: NavigationService.ADMINSTRATION,

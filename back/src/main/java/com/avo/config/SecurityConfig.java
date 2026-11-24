@@ -29,8 +29,8 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Public API endpoints
-                        .requestMatchers("/api/public/**").permitAll()
+                        // 1. Public API endpoints & OAuth2 provider callbacks (protected by signed one-time state)
+                        .requestMatchers("/api/public/**", "/api/mail-integration/oauth/*/callback").permitAll()
                         
                         // 2. Health & Info probes for reverse proxy / monitoring
                         .requestMatchers("/actuator/health", "/actuator/info").permitAll()

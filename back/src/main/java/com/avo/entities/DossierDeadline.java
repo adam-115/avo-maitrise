@@ -107,6 +107,12 @@ public class DossierDeadline {
     @Column(name = "document_id")
     private Long documentId;
 
+    @Column(name = "external_calendar_event_id")
+    private String externalCalendarEventId;
+
+    @Column(name = "external_calendar_provider", length = 20)
+    private String externalCalendarProvider;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
