@@ -7,6 +7,7 @@ import { DomaineJuridiqueService } from '../../services/domaine-juridique.servic
 import { MatterEventService } from '../../services/matter-event.service';
 import { TaskService } from '../../services/task.service';
 import { MatterActivityService } from '../../services/matter-activity.service';
+import { ConflictCheckHistoryItem, ConflictCheckResponse, ConflictCheckService } from '../../services/conflict-check.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -25,6 +26,7 @@ export class DossierVueEnsemble implements OnInit, OnChanges {
   private eventService = inject(MatterEventService);
   private taskService = inject(TaskService);
   private activityService = inject(MatterActivityService);
+  private conflictService = inject(ConflictCheckService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
@@ -34,6 +36,10 @@ export class DossierVueEnsemble implements OnInit, OnChanges {
   pendingTasks: Task[] = [];
   recentActivities: MatterActivity[] = [];
   loadingData = false;
+
+  latestConflictCheck: ConflictCheckHistoryItem | null = null;
+  liveRecheckResult: ConflictCheckResponse | null = null;
+  isRecheckingConflict = false;
 
   ngOnInit(): void {
     this.loadDomaines();
@@ -105,6 +111,43 @@ export class DossierVueEnsemble implements OnInit, OnChanges {
       },
       error: () => {
         this.recentActivities = [];
+      }
+    });
+
+    // Load latest Conflict Check history
+    this.conflictService.getDossierHistory(dossierId).subscribe({
+      next: list => {
+        this.latestConflictCheck = list && list.length > 0 ? list[0] : null;
+      },
+      error: () => {
+        this.latestConflictCheck = null;
+      }
+    });
+  }
+
+  recheckDossierConflicts(): void {
+    const dossierId = this.dossier?.id;
+    if (!dossierId || this.isRecheckingConflict) return;
+    this.isRecheckingConflict = true;
+    this.conflictService.recheckDossier(dossierId).subscribe({
+      next: res => {
+        this.liveRecheckResult = res;
+        this.isRecheckingConflict = false;
+        if (!res.requiresJustification) {
+          this.conflictService.record({
+            dossierId: Number(dossierId),
+            searchSummary: res.searchSummary,
+            riskLevel: res.riskLevel,
+            decision: 'CLEARED',
+            matches: res.matches || []
+          }).subscribe({
+            next: saved => this.latestConflictCheck = saved,
+            error: () => {}
+          });
+        }
+      },
+      error: () => {
+        this.isRecheckingConflict = false;
       }
     });
   }

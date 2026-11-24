@@ -140,19 +140,7 @@ export class PartieSelectionDialog implements OnInit {
         if (existingPartie) {
             this.hasConflict = true;
             this.conflictMessage = `Conflit direct : Ce contact est déjà ajouté comme ${existingPartie.role}.`;
-            return;
         }
-
-        // 2. Check backend conflicts
-        this.dossierService.checkConflict(Number(clientId)).subscribe({
-            next: (res) => {
-                if (res && res.hasConflict) {
-                    this.hasConflict = true;
-                    this.conflictMessage = res.message || 'Attention : Un conflit d\'intérêt a été détecté pour cette partie.';
-                }
-            },
-            error: (err) => console.error('Error checking conflict', err)
-        });
     }
 
     isSelected(clientId: string | number): boolean {

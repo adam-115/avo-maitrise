@@ -13,11 +13,12 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
 import { NavigationService } from '../../services/navigation-service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { BillingDashboardService } from '../../features/billing/services/billing-dashboard.service';
+import { ConflictSearchDialogComponent } from '../conflict-search-dialog/conflict-search-dialog.component';
 
 @Component({
   selector: 'app-dossier',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, TranslatePipe],
+  imports: [CommonModule, FormsModule, RouterModule, TranslatePipe, ConflictSearchDialogComponent],
   templateUrl: './dossier.component.html',
   styleUrl: './dossier.component.css'
 })
@@ -58,6 +59,7 @@ export class DossierComponent implements OnInit {
   // Pagination
   currentPage = 1;
   pageSize = 6;
+  showConflictSearchDialog = false;
 
   constructor() { }
 

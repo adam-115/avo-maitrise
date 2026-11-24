@@ -58,6 +58,49 @@
             </div>
 
           </div>
+
+          <!-- Conformité déontologique : Conflits d'intérêts -->
+          <div class="pt-3 border-t border-slate-100 space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-2 text-xs">
+                <span class="font-bold text-slate-600">Conflits d'intérêts :</span>
+                <span *ngIf="latestConflictCheck?.decision === 'CLEARED'"
+                  class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
+                  ✓ Vérifié (RAS) — {{ latestConflictCheck?.checkedAt | date:'dd/MM/yyyy HH:mm' }}
+                </span>
+                <span *ngIf="latestConflictCheck?.decision === 'PROCEEDED_WITH_WAIVER'"
+                  class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-bold"
+                  [title]="latestConflictCheck?.justification || ''">
+                  ⚠ Dérogation validée par {{ latestConflictCheck?.checkedBy }} ({{ latestConflictCheck?.checkedAt | date:'dd/MM/yyyy' }})
+                </span>
+                <span *ngIf="!latestConflictCheck"
+                  class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-semibold">
+                  Non encore contrôlé
+                </span>
+              </div>
+              <button type="button" (click)="recheckDossierConflicts()" [disabled]="isRecheckingConflict"
+                class="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer disabled:opacity-50">
+                {{ isRecheckingConflict ? 'Contrôle en cours...' : 'Relancer le contrôle' }}
+              </button>
+            </div>
+
+            <div *ngIf="latestConflictCheck?.decision === 'PROCEEDED_WITH_WAIVER' && latestConflictCheck?.justification"
+              class="text-xs text-amber-900 bg-amber-50/70 border border-amber-200 rounded-xl px-3 py-2">
+              <b>Motif de dérogation :</b> {{ latestConflictCheck?.justification }}
+            </div>
+
+            <div *ngIf="liveRecheckResult?.hasConflict"
+              class="rounded-xl border border-rose-200 bg-rose-50/80 p-3 space-y-1.5 text-xs">
+              <div class="font-bold text-rose-900">
+                ⚠ {{ liveRecheckResult?.matches?.length }} alerte(s) détectée(s) lors du re-contrôle ({{ liveRecheckResult?.riskLevel }}) :
+              </div>
+              <div *ngFor="let m of liveRecheckResult?.matches || []" class="text-rose-800">
+                • {{ m.explanation }}
+                <a *ngIf="m.matchedDossierId" [routerLink]="['/home/dossier-detail', m.matchedDossierId, 'vue-ensemble']"
+                  class="font-bold underline ms-1">Voir {{ m.matchedDossierReference }} ↗</a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

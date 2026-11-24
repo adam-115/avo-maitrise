@@ -1,8 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { DossierService } from '../../services/dossier.service';
 import { ClientService } from '../../services/client-service';
+import { ConflictCheckResponse, ConflictCheckService, ConflictMatch } from '../../services/conflict-check.service';
 import { StatutDossierService } from '../../services/statut-dossier.service';
 import { DossierPrioriteService } from '../../services/dossier-priorite.service';
 import { UserService } from '../../services/user.service';
@@ -24,7 +25,7 @@ import { PAYS_JURIDICTION, normalizePays } from '../../shared/ai-sources/pays';
 @Component({
   selector: 'app-dossier-form',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, UserSelectionDialog, ClientSelectionDialog, PartieSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent, TranslatePipe],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, UserSelectionDialog, ClientSelectionDialog, PartieSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent, TranslatePipe],
   templateUrl: './dossier-form.html',
   styleUrl: './dossier-form.css'
 })
@@ -40,6 +41,16 @@ export class DossierForm implements OnInit {
   private domaineService = inject(DomaineJuridiqueService);
   private alertService = inject(AlertService);
   private translate = inject(TranslateService);
+  private conflictService = inject(ConflictCheckService);
+
+  // Contrôle automatique des conflits d'intérêts
+  isCheckingConflicts = false;
+  conflictResult: ConflictCheckResponse | null = null;
+  quickConflictQuery = '';
+  showWaiverModal = false;
+  waiverJustification = '';
+  waiverError = '';
+  pendingSubmitAfterWaiver = false;
 
   dossierForm: FormGroup;
   isEditMode = false;
@@ -168,40 +179,7 @@ export class DossierForm implements OnInit {
 
   onClientSelected(client: Client): void {
     if (!client.id) return;
-
-    // We no longer block or alert via SweetAlert for local conflicts here
-    // because the user was already warned in the ClientSelectionDialog 
-    // and chose to confirm anyway.
-
-    this.continueClientSelection(client);
-  }
-
-  private continueClientSelection(client: Client): void {
-    this.loading = true;
-    this.dossierService.checkConflict(client.id!).subscribe({
-      next: (res) => {
-        this.loading = false;
-        if (res.hasConflict) {
-          let conflictDetails = res.details.map((d: any) => `- ${d.role} dans le dossier: ${d.dossierTitre} (${d.dossierReference})`).join('\n');
-          this.alertService.confirmMessage(
-            'Conflit d\'intérêts potentiel !',
-            `${res.message}\n\n${conflictDetails}\n\nVoulez-vous quand même utiliser ce contact ?`,
-            'warning'
-          ).then((confirmed) => {
-            if (confirmed) {
-              this.setClientAndClose(client);
-            }
-          });
-        } else {
-          this.setClientAndClose(client);
-        }
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Error checking conflict', err);
-        this.setClientAndClose(client);
-      }
-    });
+    this.setClientAndClose(client);
   }
 
   private setClientAndClose(client: Client): void {
@@ -210,6 +188,7 @@ export class DossierForm implements OnInit {
     this.prefillPaysJuridiction(client);
     this.checkClientStatus();
     this.closeClientDialog();
+    this.runConflictCheck();
   }
 
   /** Préremplit le pays de juridiction avec le pays du client (s'il est géré), sans écraser un choix existant. */
@@ -232,51 +211,18 @@ export class DossierForm implements OnInit {
 
   onPartieSelected(client: Client): void {
     if (!client.id) return;
-
-    // We no longer block or alert via SweetAlert for local conflicts here
-    // because the user was already warned in the PartieSelectionDialog 
-    // and chose to confirm anyway.
-
-    this.continuePartieSelection(client);
-  }
-
-  private continuePartieSelection(client: Client): void {
-    this.loading = true;
-    this.dossierService.checkConflict(client.id!).subscribe({
-      next: (res) => {
-        this.loading = false;
-        if (res.hasConflict) {
-          let conflictDetails = res.details.map((d: any) => `- ${d.role} dans le dossier: ${d.dossierTitre} (${d.dossierReference})`).join('\n');
-          this.alertService.confirmMessage(
-            'Conflit d\'intérêts potentiel !',
-            `${res.message}\n\n${conflictDetails}\n\nVoulez-vous quand même l'ajouter comme ${this.selectedPartieRole} ?`,
-            'warning'
-          ).then((confirmed) => {
-            if (confirmed) {
-              this.addPartieAndClose(client);
-            }
-          });
-        } else {
-          this.addPartieAndClose(client);
-        }
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Error checking conflict', err);
-        this.addPartieAndClose(client);
-      }
-    });
+    this.addPartieAndClose(client);
   }
 
   private addPartieAndClose(client: Client): void {
     const currentParties = this.autresParties;
-    // Eviter les doublons
     if (!currentParties.some(p => p.partie.id === client.id)) {
       this.dossierForm.patchValue({
         autresParties: [...currentParties, { partie: client, role: this.selectedPartieRole }]
       });
     }
     this.closePartieDialog();
+    this.runConflictCheck();
   }
 
   get autresParties(): any[] {
@@ -288,6 +234,92 @@ export class DossierForm implements OnInit {
     this.dossierForm.patchValue({
       autresParties: currentParties.filter((_, i) => i !== index)
     });
+    this.runConflictCheck();
+  }
+
+  // ==================== CONTRÔLE AUTOMATIQUE DES CONFLITS D'INTÉRÊTS ====================
+
+  runConflictCheck(): void {
+    const clientId = this.dossierForm.get('clientId')?.value;
+    const parties = this.autresParties.map(p => ({
+      clientId: p.partie?.id ? Number(p.partie.id) : null,
+      role: p.role || 'ADVERSAIRE',
+      name: this.getPartieName(p.partie)
+    }));
+    const freeQueries = this.quickConflictQuery
+      .split(/[,;\n]+/)
+      .map(s => s.trim())
+      .filter(s => s.length >= 2);
+
+    if (!clientId && parties.length === 0 && freeQueries.length === 0) {
+      this.conflictResult = null;
+      return;
+    }
+
+    this.isCheckingConflicts = true;
+    this.conflictService.check({
+      dossierId: this.dossierId ? Number(this.dossierId) : null,
+      clientId: clientId ? Number(clientId) : null,
+      parties,
+      freeTextQueries: freeQueries
+    }).subscribe({
+      next: res => {
+        this.conflictResult = res;
+        this.isCheckingConflicts = false;
+      },
+      error: err => {
+        console.error('Erreur vérification conflits:', err);
+        this.isCheckingConflicts = false;
+      }
+    });
+  }
+
+  labelRisk(level?: string): string {
+    switch (level) {
+      case 'CRITICAL': return 'Critique';
+      case 'HIGH': return 'Élevé';
+      case 'MEDIUM': return 'Moyen';
+      default: return 'Aucun';
+    }
+  }
+
+  labelMatchType(type: ConflictMatch['matchType']): string {
+    switch (type) {
+      case 'CLIENT_DIRECT': return 'Client direct';
+      case 'IDENTIFIANT_UNIQUE': return 'Identifiant unique';
+      case 'DIRIGEANT': return 'Dirigeant / Rep. légal';
+      case 'UBO': return 'UBO / Bénéficiaire effectif';
+      case 'PARTIE_DOSSIER': return 'Autre dossier';
+      case 'HOMONYME': return 'Homonyme / Nom proche';
+      default: return type;
+    }
+  }
+
+  confirmWaiverAndSubmit(): void {
+    if (!this.waiverJustification || this.waiverJustification.trim().length < 5) {
+      this.waiverError = 'Veuillez saisir une justification écrite d\'au moins 5 caractères.';
+      return;
+    }
+    this.waiverError = '';
+    this.showWaiverModal = false;
+    this.executeSubmit(true);
+  }
+
+  cancelWaiver(): void {
+    this.showWaiverModal = false;
+    this.waiverError = '';
+  }
+
+  private recordConflictAudit(savedDossierId: number | null, usedWaiver: boolean): void {
+    if (!this.conflictResult) return;
+    this.conflictService.record({
+      dossierId: savedDossierId,
+      searchSummary: this.conflictResult.searchSummary,
+      riskLevel: this.conflictResult.riskLevel,
+      decision: usedWaiver ? 'PROCEEDED_WITH_WAIVER' : 'CLEARED',
+      justification: usedWaiver ? this.waiverJustification.trim() : null,
+      matches: this.conflictResult.matches || []
+    }).subscribe({ error: () => {} });
   }
 
   getPartieName(client: Client): string {
@@ -457,6 +489,17 @@ export class DossierForm implements OnInit {
       return;
     }
 
+    // Option A : si conflit ÉLEVÉ ou CRITIQUE, justification écrite obligatoire avant création/modification
+    if (this.conflictResult?.requiresJustification) {
+      this.waiverError = '';
+      this.showWaiverModal = true;
+      return;
+    }
+
+    await this.executeSubmit(false);
+  }
+
+  private async executeSubmit(usedWaiver: boolean): Promise<void> {
     const dossierData: Dossier = {
       ...this.dossierForm.value,
       client: { id: this.dossierForm.value.clientId },
@@ -465,7 +508,7 @@ export class DossierForm implements OnInit {
     };
 
     if (this.isEditMode && this.dossierId) {
-      const confirmed = await this.alertService.confirmMessage(
+      const confirmed = usedWaiver || await this.alertService.confirmMessage(
         'Modifier le dossier',
         'Êtes-vous sûr de vouloir enregistrer les modifications apportées à ce dossier ?',
         'warning'
@@ -473,6 +516,7 @@ export class DossierForm implements OnInit {
       if (confirmed) {
         this.dossierService.update(dossierData).subscribe({
           next: () => {
+            this.recordConflictAudit(Number(this.dossierId), usedWaiver);
             this.alertService.success('Dossier mis à jour avec succès');
             this.router.navigate(['/home/dossier-detail', this.dossierId, 'vue-ensemble']);
           },
@@ -485,6 +529,7 @@ export class DossierForm implements OnInit {
     } else {
       this.dossierService.create(dossierData).subscribe({
         next: (created) => {
+          this.recordConflictAudit(created?.id ? Number(created.id) : null, usedWaiver);
           this.alertService.success('Dossier créé avec succès');
           if (created?.id) {
             this.router.navigate(['/home/dossier-detail', created.id, 'vue-ensemble']);

@@ -101,24 +101,12 @@ export class ClientSelectionDialog implements OnInit {
         this.hasConflict = false;
         this.conflictMessage = '';
 
-        // 1. Check local conflicts first
+        // Check local conflicts (full backend conflict check runs in dossier-form)
         const existingPartie = this.currentAutresParties.find(p => String(p.partie.id) === String(clientId));
         if (existingPartie) {
             this.hasConflict = true;
             this.conflictMessage = `Conflit direct : Ce contact est déjà ajouté comme ${existingPartie.role}.`;
-            return;
         }
-
-        // 2. Check backend conflicts
-        this.dossierService.checkConflict(Number(clientId)).subscribe({
-            next: (res) => {
-                if (res && res.hasConflict) {
-                    this.hasConflict = true;
-                    this.conflictMessage = res.message || 'Attention : Un conflit d\'intérêt a été détecté pour ce client.';
-                }
-            },
-            error: (err) => console.error('Error checking conflict', err)
-        });
     }
 
     isSelected(clientId: string | number): boolean {
