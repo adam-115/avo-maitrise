@@ -62,38 +62,50 @@ export class DossierComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.loadReferenceDataAndKpis();
     this.loadData();
+    this.loadBillingKPIs();
   }
 
+  /** Charge les référentiels (statuts, priorités, utilisateurs) et les KPIs SQL une seule fois. */
+  loadReferenceDataAndKpis(): void {
+    forkJoin({
+      kpis: this.dossierService.getKpis(),
+      statuses: this.statusService.getAll(),
+      priorities: this.priorityService.getAll(),
+      users: this.userService.getAll()
+    }).subscribe({
+      next: ({ kpis, statuses, priorities, users }) => {
+        if (kpis) {
+          this.activeDossiersCount = kpis.activeDossiersCount ?? 0;
+          this.urgentDossiersCount = kpis.urgentDossiersCount ?? 0;
+          this.createdThisMonthCount = kpis.createdThisMonthCount ?? 0;
+          this.closedThisMonthCount = kpis.closedThisMonthCount ?? 0;
+          this.closureRate = kpis.closureRate ?? 75;
+        }
+        this.statuses = (statuses as PaginatedResponse<StatutDossier>).content || [];
+        this.priorities = (priorities as PaginatedResponse<DossierPriorite>).content || [];
+        this.users = (users as PaginatedResponse<User>).content || [];
+      },
+      error: (err) => console.error('Error loading dossier KPIs / references', err)
+    });
+  }
+
+  /** Charge uniquement la page courante (6 dossiers) sans recharger 1 000 dossiers ni tous les clients. */
   loadData(): void {
     this.loading = true;
-    
+
     const tableFilters = {
       searchTerm: this.searchTerm,
       statusFilter: this.statusFilter,
       lawyerFilter: this.lawyerFilter
     };
 
-    forkJoin({
-      dossiersRes: this.dossierService.findAll(this.currentPage - 1, this.pageSize, 'dateOuverture,desc', tableFilters),
-      allDossiersRes: this.dossierService.findAll(0, 1000, 'dateOuverture,desc'),
-      clients: this.clientService.getAll(),
-      statuses: this.statusService.getAll(),
-      priorities: this.priorityService.getAll(),
-      users: this.userService.getAll()
-    }).subscribe({
-      next: ({ dossiersRes, allDossiersRes, clients, statuses, priorities, users }) => {
-        this.dossiers = (allDossiersRes as PaginatedResponse<DossierModel>).content;
-        this.filteredDossiers = (dossiersRes as PaginatedResponse<DossierModel>).content;
-        this.totalElements = (dossiersRes as PaginatedResponse<DossierModel>).totalElements;
-
-        this.clients = (clients as PaginatedResponse<Client>).content;
-        this.statuses = (statuses as PaginatedResponse<StatutDossier>).content;
-        this.priorities = (priorities as PaginatedResponse<DossierPriorite>).content;
-        this.users = (users as PaginatedResponse<User>).content;
-
-        this.calculateKPIs();
-        this.loadBillingKPIs();
+    this.dossierService.findAll(this.currentPage - 1, this.pageSize, 'dateOuverture,desc', tableFilters).subscribe({
+      next: (dossiersRes) => {
+        const page = dossiersRes as PaginatedResponse<DossierModel>;
+        this.filteredDossiers = page.content || [];
+        this.totalElements = page.totalElements || 0;
         this.loading = false;
       },
       error: (err) => {
@@ -139,7 +151,7 @@ export class DossierComponent implements OnInit {
   get pages(): number[] {
     const list: number[] = [];
     const total = this.totalPages;
-    
+
     let start = Math.max(1, this.currentPage - 2);
     let end = Math.min(total, this.currentPage + 2);
 

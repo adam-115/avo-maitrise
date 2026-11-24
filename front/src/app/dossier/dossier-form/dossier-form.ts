@@ -474,7 +474,7 @@ export class DossierForm implements OnInit {
         this.dossierService.update(dossierData).subscribe({
           next: () => {
             this.alertService.success('Dossier mis à jour avec succès');
-            this.navigateToDossier();
+            this.router.navigate(['/home/dossier-detail', this.dossierId, 'vue-ensemble']);
           },
           error: (err) => {
             const errorMsg = err?.error?.message || err?.error || 'Erreur lors de la mise à jour du dossier';
@@ -484,9 +484,13 @@ export class DossierForm implements OnInit {
       }
     } else {
       this.dossierService.create(dossierData).subscribe({
-        next: () => {
+        next: (created) => {
           this.alertService.success('Dossier créé avec succès');
-          this.navigateToDossier();
+          if (created?.id) {
+            this.router.navigate(['/home/dossier-detail', created.id, 'vue-ensemble']);
+          } else {
+            this.navigateToDossier();
+          }
         },
         error: (err) => {
           const errorMsg = err?.error?.message || err?.error || 'Erreur lors de la création du dossier';
@@ -497,7 +501,11 @@ export class DossierForm implements OnInit {
   }
 
   onCancel(): void {
-    this.navigateToDossier();
+    if (this.isEditMode && this.dossierId) {
+      this.router.navigate(['/home/dossier-detail', this.dossierId, 'vue-ensemble']);
+    } else {
+      this.navigateToDossier();
+    }
   }
 
   navigateToDossier() {

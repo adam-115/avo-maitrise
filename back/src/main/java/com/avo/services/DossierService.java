@@ -18,13 +18,19 @@ public class DossierService {
 
     private final DossierRepository repository;
     private final com.avo.repositories.ClientRepository clientRepository;
+    private final com.avo.repositories.StatutDossierRepository statutDossierRepository;
+    private final com.avo.repositories.DossierPrioriteRepository dossierPrioriteRepository;
     private final DossierMapper mapper;
     private final org.springframework.context.ApplicationEventPublisher eventPublisher;
 
     public DossierService(DossierRepository repository, com.avo.repositories.ClientRepository clientRepository,
+            com.avo.repositories.StatutDossierRepository statutDossierRepository,
+            com.avo.repositories.DossierPrioriteRepository dossierPrioriteRepository,
             DossierMapper mapper, org.springframework.context.ApplicationEventPublisher eventPublisher) {
         this.repository = repository;
         this.clientRepository = clientRepository;
+        this.statutDossierRepository = statutDossierRepository;
+        this.dossierPrioriteRepository = dossierPrioriteRepository;
         this.mapper = mapper;
         this.eventPublisher = eventPublisher;
     }
@@ -68,9 +74,99 @@ public class DossierService {
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<DossierDTO> findAllWithFilters(String searchTerm, String statusFilter, String lawyerFilter, Pageable pageable) {
         log.info("[ENTER] Executing findAllWithFilters");
-        return repository.searchWithFilters(searchTerm, statusFilter, lawyerFilter, pageable).map(mapper::toDto);
+        return repository.searchWithFilters(searchTerm, statusFilter, lawyerFilter, pageable).map(this::toListDto);
+    }
+
+    /**
+     * Projection légère pour la liste paginée (/home/dossier) :
+     * évite le problème N+1 Hibernate (ne charge ni documents, ni autresParties, ni intervenantsIds,
+     * ni les collections du client, ni les LONGTEXT aiStrategy/aiChatHistory).
+     */
+    private DossierDTO toListDto(Dossier d) {
+        DossierDTO dto = new DossierDTO();
+        dto.setId(d.getId());
+        dto.setReferenceInterne(d.getReferenceInterne());
+        dto.setTitre(d.getTitre());
+        dto.setDescription(d.getDescription());
+        dto.setResponsableId(d.getResponsableId());
+        dto.setDomaineJuridique(d.getDomaineJuridique());
+        dto.setPaysJuridiction(d.getPaysJuridiction());
+        dto.setPrioriteID(d.getPrioriteID());
+        dto.setStatutID(d.getStatutID());
+        dto.setDateOuverture(d.getDateOuverture());
+        dto.setDateCloture(d.getDateCloture());
+        dto.setUpdated_at(d.getUpdatedAt());
+
+        if (d.getClient() != null) {
+            com.avo.entities.ClientEntity c = d.getClient();
+            com.avo.dtos.ClientEntityDTO cDto = new com.avo.dtos.ClientEntityDTO();
+            cDto.setId(c.getId());
+            cDto.setType(c.getType());
+            cDto.setEmail(c.getEmail());
+            cDto.setTelephone(c.getTelephone());
+            cDto.setPays(c.getPays());
+            cDto.setClientStatus(c.getClientStatus());
+            if (c instanceof com.avo.entities.ClientPersonnePhysique pp) {
+                cDto.setNom(pp.getNom());
+                cDto.setPrenom(pp.getPrenom());
+            } else if (c instanceof com.avo.entities.ClientMoral cm) {
+                cDto.setNomCommercial(cm.getNomCommercial());
+            } else if (c instanceof com.avo.entities.Association a) {
+                cDto.setNom(a.getNom());
+            } else if (c instanceof com.avo.entities.Institution i) {
+                cDto.setNom(i.getNom());
+            }
+            dto.setClient(cDto);
+        }
+        return dto;
+    }
+
+    /** KPIs agrégés en SQL pur (remplace le chargement de 1 000 dossiers côté frontend). */
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public java.util.Map<String, Long> getKpis() {
+        List<String> closedIds = statutDossierRepository.findAll().stream()
+                .filter(s -> {
+                    String code = s.getCode() != null ? s.getCode().toUpperCase() : "";
+                    return code.equals("CLOS") || code.equals("TERMINE") || code.equals("ARCHIVE");
+                })
+                .map(s -> String.valueOf(s.getId()))
+                .collect(Collectors.toList());
+        closedIds.add("CLOS");
+        closedIds.add("TERMINE");
+        closedIds.add("ARCHIVE");
+
+        List<String> urgentIds = dossierPrioriteRepository.findAll().stream()
+                .filter(p -> {
+                    String code = p.getCode() != null ? p.getCode().toUpperCase() : "";
+                    String label = p.getLabel() != null ? p.getLabel().toUpperCase() : "";
+                    return code.contains("URGENT") || label.contains("URGENT");
+                })
+                .map(p -> String.valueOf(p.getId()))
+                .collect(Collectors.toList());
+        urgentIds.add("URGENT");
+        urgentIds.add("URGENTE");
+
+        java.time.LocalDate firstDay = java.time.LocalDate.now().withDayOfMonth(1);
+        java.util.Date start = java.util.Date.from(firstDay.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
+        java.util.Date end = java.util.Date.from(firstDay.plusMonths(1).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
+
+        long active = repository.countActiveDossiers(closedIds);
+        long urgent = repository.countByPrioriteIDIn(urgentIds);
+        long createdThisMonth = repository.countOpenedBetween(start, end);
+        long closedThisMonth = repository.countClosedBetween(start, end);
+        long totalMonth = createdThisMonth + closedThisMonth;
+        long closureRate = totalMonth > 0 ? Math.round((closedThisMonth * 100.0) / totalMonth) : 75L;
+
+        return java.util.Map.of(
+                "activeDossiersCount", active,
+                "urgentDossiersCount", urgent,
+                "createdThisMonthCount", createdThisMonth,
+                "closedThisMonthCount", closedThisMonth,
+                "closureRate", closureRate
+        );
     }
 
     public List<DossierDTO> findAll() {

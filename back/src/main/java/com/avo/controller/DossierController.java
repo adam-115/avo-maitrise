@@ -25,6 +25,11 @@ public class DossierController {
         this.service = service;
     }
 
+    @GetMapping("/kpis")
+    public ResponseEntity<java.util.Map<String, Long>> getKpis() {
+        return ResponseEntity.ok(service.getKpis());
+    }
+
     @GetMapping("/all")
     public ResponseEntity<java.util.List<DossierDTO>> findAllNoPage() {
         return ResponseEntity.ok(service.findAll());

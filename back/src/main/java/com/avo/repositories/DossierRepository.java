@@ -27,6 +27,20 @@ public interface DossierRepository extends JpaRepository<Dossier, Long>, Queryds
        @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
        long countByStatutIDNotIn(List<String> statutIds);
 
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.statutID IS NULL OR d.statutID NOT IN :closedStatutIds")
+       long countActiveDossiers(@org.springframework.data.repository.query.Param("closedStatutIds") List<String> closedStatutIds);
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.prioriteID IN :urgentPriorityIds")
+       long countByPrioriteIDIn(@org.springframework.data.repository.query.Param("urgentPriorityIds") List<String> urgentPriorityIds);
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.dateOuverture >= :start AND d.dateOuverture < :end")
+       long countOpenedBetween(@org.springframework.data.repository.query.Param("start") java.util.Date start,
+                               @org.springframework.data.repository.query.Param("end") java.util.Date end);
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.dateCloture >= :start AND d.dateCloture < :end")
+       long countClosedBetween(@org.springframework.data.repository.query.Param("start") java.util.Date start,
+                               @org.springframework.data.repository.query.Param("end") java.util.Date end);
+
        @org.springframework.data.jpa.repository.Query("SELECT d FROM Dossier d LEFT JOIN d.client c WHERE " +
                      "(:searchTerm IS NULL OR :searchTerm = '' OR " +
                      " LOWER(d.referenceInterne) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
