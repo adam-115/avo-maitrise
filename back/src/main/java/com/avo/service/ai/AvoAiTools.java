@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 /**
  * Composant central contenant les "Outils" (Tools/Functions) mis à disposition
  * de l'Intelligence Artificielle.
- * Spring AI lit les annotations @Tool de cette classe et fournit leur description
+ * Spring AI lit les annotations @Tool de cette classe et fournit leur
+ * description
  * au LLM (ChatClient.tools(avoAiTools)).
  * Le LLM peut alors décider d'appeler ces méthodes Java pour obtenir des
  * données de la base MySQL
@@ -40,6 +41,7 @@ public class AvoAiTools {
     private final RAGDocumentService ragDocumentService;
     private final AuditService auditService;
     private final SourceRegistry sourceRegistry;
+    private final com.avo.services.deadline.DossierDeadlineService dossierDeadlineService;
 
     public AvoAiTools(ClientService clientService, DossierService dossierService,
             com.avo.services.InvoiceService invoiceService,
@@ -48,7 +50,8 @@ public class AvoAiTools {
             AiDossierSummaryService aiDossierSummaryService,
             RAGDocumentService ragDocumentService,
             AuditService auditService,
-            SourceRegistry sourceRegistry) {
+            SourceRegistry sourceRegistry,
+            com.avo.services.deadline.DossierDeadlineService dossierDeadlineService) {
         this.clientService = clientService;
         this.dossierService = dossierService;
         this.invoiceService = invoiceService;
@@ -58,43 +61,77 @@ public class AvoAiTools {
         this.ragDocumentService = ragDocumentService;
         this.auditService = auditService;
         this.sourceRegistry = sourceRegistry;
+        this.dossierDeadlineService = dossierDeadlineService;
     }
 
     /**
-     * Chaque lecture de données par l'IA est tracée au nom de l'utilisateur qui a posé la question
-     * (les outils s'exécutent dans le thread de sa requête). La jurisprudence, publique, n'est pas tracée.
+     * Chaque lecture de données par l'IA est tracée au nom de l'utilisateur qui a
+     * posé la question
+     * (les outils s'exécutent dans le thread de sa requête). La jurisprudence,
+     * publique, n'est pas tracée.
      */
     private void traceIa(String resourceType, Object resourceId, String details) {
         auditService.record(AuditAction.ACCES_IA, resourceType, resourceId, AuditOutcome.SUCCES, details);
     }
 
     /**
-     * Inscrit une donnée du logiciel (fiche client, liste de dossiers...) comme source citable et la renvoie
-     * précédée de son identifiant : l'IA doit citer [S#] pour toute affirmation tirée de cette donnée.
+     * Inscrit une donnée du logiciel (fiche client, liste de dossiers...) comme
+     * source citable et la renvoie
+     * précédée de son identifiant : l'IA doit citer [S#] pour toute affirmation
+     * tirée de cette donnée.
      */
     private String asSource(String title, String link, String content) {
         String id = sourceRegistry.register(SourceRef.DONNEE, title, null, null, content, link, null, null);
         return "[" + id + "] " + title + " :\n" + content;
     }
 
-    /** Inscrit un passage de document (pièce ou jurisprudence) et le formate pour le modèle. */
+    /**
+     * Inscrit un passage de document (pièce ou jurisprudence) et le formate pour le
+     * modèle.
+     */
     private String passage(String kind, org.springframework.ai.document.Document p) {
         Map<String, Object> meta = p.getMetadata();
         String fileName = String.valueOf(meta.getOrDefault("nom_fichier", "Document"));
         Long documentId = parseLong(meta.get("document_id"));
         Integer page = parseInt(meta.get("page_number"));
         Map<String, String> details = new HashMap<>();
-        // Un texte de loi (LEGISLATION) est distingué d'une décision, et chaque source affiche son pays
+        // Un texte de loi (LEGISLATION) est distingué d'une décision, et chaque source
+        // affiche son pays
         if ("LEGISLATION".equals(String.valueOf(meta.get("type_document")))) {
             kind = SourceRef.LEGISLATION;
         }
-        for (String key : new String[]{"pays", "juridiction", "date_decision", "numero_decision", "ecli"}) {
+        for (String key : new String[] { "pays", "juridiction", "date_decision", "numero_decision", "ecli" }) {
             Object v = meta.get(key);
             if (v != null && !String.valueOf(v).isBlank()) {
                 details.put(key, String.valueOf(v));
             }
         }
         Object url = meta.get("source_url");
+        String id = sourceRegistry.register(kind, fileName, documentId, page, p.getText(), null,
+                url == null || String.valueOf(url).isBlank() ? null : String.valueOf(url), details);
+        StringBuilder header = new StringBuilder("[").append(id).append("] « ").append(fileName).append(" »");
+        if (page != null)
+            header.append(", page ").append(page);
+        if (!details.isEmpty())
+            header.append(" (").append(String.join(", ", details.values())).append(")");
+        return header.append(" :\n").append(p.getText()).toString();
+    }
+
+    private static Long parseLong(Object v) {
+        try {
+            return v == null ? null : Long.valueOf(String.valueOf(v));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private static Integer parseInt(Object v) {
+        try {
+            return v == null ? null : (int) Double.parseDouble(String.valueOf(v));
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
 
     @Tool(description = "Recherche un client par nom, prénom ou email. Retourne une liste simplifiée (ID, Nom, Email, Statut).")
     public String searchClients(String searchTerm) {
@@ -171,7 +208,8 @@ public class AvoAiTools {
             if (clientInvoices.isEmpty())
                 return "Aucune facture trouvée pour le client ID: " + clientId;
 
-            return asSource("Factures du client #" + clientId, "/home/client-details?id=" + clientId, clientInvoices.stream()
+            return asSource("Factures du client #" + clientId, "/home/client-details?id=" + clientId, clientInvoices
+                    .stream()
                     .map(i -> String.format(
                             "- Facture ID: %d, Numéro: %s, Statut: %s, Total: %s, Lien: http://localhost:4200/invoices/%d",
                             i.getId(), i.getNumeroFacture(), i.getStatus(), i.getTotalAmount(), i.getId()))
@@ -189,10 +227,11 @@ public class AvoAiTools {
             if (matches.isEmpty())
                 return "Aucune alerte AML trouvée pour le client ID: " + clientId;
 
-            return asSource("Alertes LCB-FT du client #" + clientId, "/home/client-details?id=" + clientId, matches.getContent().stream()
-                    .map(m -> String.format("- Match ID: %d, Statut de décision: %s, Identifiant Yente: %s",
-                            m.getId(), m.getStatus(), m.getYenteId()))
-                    .collect(Collectors.joining("\n")));
+            return asSource("Alertes LCB-FT du client #" + clientId, "/home/client-details?id=" + clientId,
+                    matches.getContent().stream()
+                            .map(m -> String.format("- Match ID: %d, Statut de décision: %s, Identifiant Yente: %s",
+                                    m.getId(), m.getStatus(), m.getYenteId()))
+                            .collect(Collectors.joining("\n")));
         } catch (Exception e) {
             return "Erreur technique lors de la vérification AML: " + e.getMessage();
         }
@@ -229,9 +268,38 @@ public class AvoAiTools {
         }
     }
 
+    @Tool(description = "Récupère la liste officielle des délais de procédure (appel, prescription, péremption, conclusions) calculés et enregistrés sur un dossier, avec leur date limite exacte, leur statut et le nombre de jours restants.")
+    public String getDossierDeadlines(
+            @ToolParam(description = "Identifiant numérique du dossier") Long dossierId) {
+        traceIa("DOSSIER", dossierId, "Consultation des délais de procédure");
+        try {
+            var deadlines = dossierDeadlineService.findByDossier(dossierId);
+            if (deadlines.isEmpty()) {
+                return "Aucun délai de procédure n'est encore enregistré sur le dossier " + dossierId + ".";
+            }
+            String content = deadlines.stream()
+                    .map(d -> String.format("- [%s | %s] %s : échéance le %s (%s) · Base légale : %s · Calcul : %s",
+                            d.getStatut(),
+                            d.getCategorie(),
+                            d.getTitre(),
+                            d.getDateEcheanceFinale(),
+                            d.isEnRetard() ? ("EN RETARD de " + Math.abs(d.getJoursRestants()) + " j")
+                                    : ("J-" + d.getJoursRestants()),
+                            d.getBaseLegale() != null ? d.getBaseLegale() : "N/A",
+                            d.getDetailCalcul() != null ? d.getDetailCalcul() : ""))
+                    .collect(Collectors.joining("\n"));
+            return asSource("Délais de procédure du dossier #" + dossierId,
+                    "/home/dossier-detail/" + dossierId + "/delais", content);
+        } catch (Exception e) {
+            return "Erreur lors de la récupération des délais du dossier : " + e.getMessage();
+        }
+    }
+
     /**
-     * Recherche sémantique (RAG) dans les documents d'un dossier : Qdrant renvoie les
-     * passages les plus proches de la question parmi les fichiers du dossier (filtre dossier_id).
+     * Recherche sémantique (RAG) dans les documents d'un dossier : Qdrant renvoie
+     * les
+     * passages les plus proches de la question parmi les fichiers du dossier
+     * (filtre dossier_id).
      */
     @Tool(description = "Cherche des informations spécifiques (par mots-clés ou question sémantique) UNIQUEMENT dans les documents d'un dossier donné. "
             + "Utilise cet outil pour trouver des failles, des clauses ou des faits dans les pièces du dossier (RAG).")
@@ -258,15 +326,18 @@ public class AvoAiTools {
     }
 
     /**
-     * Recherche sémantique dans la base légale du cabinet : jurisprudence et textes de loi du pays, plus
-     * l'international. Si l'avocat a imposé un droit applicable (AiJurisdiction), il remplace le pays demandé.
+     * Recherche sémantique dans la base légale du cabinet : jurisprudence et textes
+     * de loi du pays, plus
+     * l'international. Si l'avocat a imposé un droit applicable (AiJurisdiction),
+     * il remplace le pays demandé.
      */
     @Tool(description = "Cherche des textes de lois, des arrêts de cassation ou de la jurisprudence dans la base de connaissances globale du cabinet. "
             + "Utilise cet outil pour trouver les articles de loi et la base légale pour défendre ton dossier.")
     public String searchJurisprudence(
             @ToolParam(description = "Pays du droit applicable : FRANCE, LUXEMBOURG, BELGIQUE, ALLEMAGNE, SUISSE ou INTERNATIONAL") String pays,
             @ToolParam(description = "Question juridique à rechercher") String question) {
-        // Le droit choisi par l'avocat (chat) ou le pays du dossier (stratégie) prime sur celui demandé par le modèle
+        // Le droit choisi par l'avocat (chat) ou le pays du dossier (stratégie) prime
+        // sur celui demandé par le modèle
         String impose = com.avo.service.ai.sources.AiJurisdiction.get();
         String paysFiltre = Pays.normalize(impose != null ? impose : pays);
         try {
