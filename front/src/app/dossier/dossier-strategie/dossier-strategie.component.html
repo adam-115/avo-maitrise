@@ -271,7 +271,8 @@
             </div>
          </div>
          <div class="flex items-center gap-2">
-            <button *ngIf="chatHistory().length > 0" type="button" (click)="exportChatToWord()" [disabled]="isExportingChatWord()"
+            <button *ngIf="chatHistory().length > 0" type="button" (click)="exportChatToWord()"
+               [disabled]="isExportingChatWord()"
                class="text-xs font-semibold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200 transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-60"
                title="Exporter la discussion en Microsoft Word (.docx)">
                <span>{{ isExportingChatWord() ? 'Word...' : 'Word (.docx)' }}</span>
@@ -308,7 +309,7 @@
             <p>Envoyez un message pour commencer la discussion.</p>
          </div>
 
-         <div *ngFor="let msg of chatHistory()"
+         <div *ngFor="let msg of chatHistory(); let idx = index"
             [ngClass]="{'self-end': msg.role === 'user', 'self-start': msg.role === 'ai'}" class="max-w-[85%]">
 
             <!-- User Message -->
@@ -319,8 +320,15 @@
 
             <!-- AI Message -->
             <div *ngIf="msg.role === 'ai'" (click)="onStrategyClick($event)"
-               class="bg-white border border-slate-200 text-slate-700 rounded-r-2xl rounded-tl-2xl shadow-sm px-6 py-4 text-sm leading-relaxed prose prose-sm prose-indigo max-w-none"
-               [innerHTML]="formatMarkdown(msg.content)">
+               class="bg-white border border-slate-200 text-slate-700 rounded-r-2xl rounded-tl-2xl shadow-sm px-6 py-4 text-sm leading-relaxed prose prose-sm prose-indigo max-w-none">
+               <div [innerHTML]="formatMarkdown(msg.content)"></div>
+               <div *ngIf="isTtsSupported" class="mt-2 flex justify-end not-prose">
+                  <button type="button" (click)="$event.stopPropagation(); toggleSpeakChat(msg.content, idx)"
+                     class="px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-colors cursor-pointer"
+                     [ngClass]="speakingChatIdx() === idx ? 'bg-rose-50 text-rose-600 border-rose-200' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-indigo-50 hover:text-indigo-700'">
+                     {{ speakingChatIdx() === idx ? '⏹ Arrêter' : '🔊 Écouter' }}
+                  </button>
+               </div>
             </div>
          </div>
 
@@ -336,13 +344,27 @@
       </div>
 
       <!-- Chat Input -->
-      <div class="p-4 bg-white border-t border-slate-200">
-         <div class="flex items-center gap-3 relative">
+      <div class="p-4 bg-white border-t border-slate-200 space-y-2">
+         <p *ngIf="isChatDictating()" class="text-xs font-semibold text-rose-600 px-2 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-rose-600 animate-pulse"></span>
+            <span>Écoute en cours… <em *ngIf="chatDictationInterim()" class="text-slate-600">« {{ chatDictationInterim()
+                  }} »</em></span>
+         </p>
+         <div class="flex items-center gap-2 relative">
             <input type="text" [(ngModel)]="chatInput" (keyup.enter)="sendMessage()" [disabled]="isChatLoading()"
-               placeholder="Posez une question sur la stratégie..."
-               class="w-full bg-slate-50 border border-slate-200 rounded-full pl-6 pr-14 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all disabled:opacity-50">
+               placeholder="Posez une question sur la stratégie (ou dictez au micro)..."
+               class="w-full bg-slate-50 border border-slate-200 rounded-full pl-5 pr-24 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all disabled:opacity-50">
+            <button *ngIf="voiceService.isSpeechSupported" type="button" (click)="toggleChatDictation()"
+               [disabled]="isChatLoading()" class="absolute right-12 p-2 rounded-full transition-colors cursor-pointer"
+               [ngClass]="isChatDictating() ? 'bg-rose-600 text-white animate-pulse' : 'bg-slate-200/80 text-slate-700 hover:bg-indigo-100 hover:text-indigo-700'"
+               [title]="isChatDictating() ? 'Arrêter la dictée' : 'Dicter votre question'">
+               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                     d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+               </svg>
+            </button>
             <button (click)="sendMessage()" [disabled]="!chatInput() || isChatLoading()"
-               class="absolute right-2 p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors shadow-sm">
+               class="absolute right-2 p-2 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors shadow-sm cursor-pointer">
                <svg class="w-4 h-4 translate-x-px" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

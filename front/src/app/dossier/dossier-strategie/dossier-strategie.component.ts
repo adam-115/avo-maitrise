@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild, signal } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, ViewChild, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -7,6 +7,7 @@ import { environment } from '../../../environments/environment';
 import { AiSource, AiVerification } from '../../shared/ai-sources/ai-sources.model';
 import { AiSourcesPanelComponent } from '../../shared/ai-sources/ai-sources-panel.component';
 import { WordExportService } from '../../services/word-export.service';
+import { VoiceNoteService } from '../../services/voice-note.service';
 
 @Component({
     selector: 'app-dossier-strategie',
@@ -14,7 +15,12 @@ import { WordExportService } from '../../services/word-export.service';
     imports: [CommonModule, FormsModule, AiSourcesPanelComponent],
     templateUrl: './dossier-strategie.component.html'
 })
-export class DossierStrategieComponent implements OnInit {
+export class DossierStrategieComponent implements OnInit, OnDestroy {
+    public voiceService = inject(VoiceNoteService);
+    isChatDictating = signal<boolean>(false);
+    chatDictationInterim = signal<string>('');
+    speakingChatIdx = signal<number | null>(null);
+    readonly isTtsSupported = typeof window !== 'undefined' && 'speechSynthesis' in window;
     @Input() dossierId!: string;
     @Input() selectedDossier: any;
     @ViewChild('sourcesPanel') sourcesPanel?: AiSourcesPanelComponent;
@@ -74,6 +80,57 @@ export class DossierStrategieComponent implements OnInit {
         } else {
             this.generateStrategy();
         }
+    }
+
+    ngOnDestroy() {
+        this.voiceService.stopRecognition();
+        if (this.isTtsSupported) {
+            try { window.speechSynthesis.cancel(); } catch { }
+        }
+    }
+
+    toggleChatDictation() {
+        if (this.isChatDictating()) {
+            this.voiceService.stopRecognition();
+            this.isChatDictating.set(false);
+            this.chatDictationInterim.set('');
+            return;
+        }
+        const started = this.voiceService.startRecognition('fr-FR', {
+            onFinal: chunk => {
+                const cur = this.chatInput().trim();
+                this.chatInput.set(cur ? `${cur} ${chunk}` : chunk);
+                this.chatDictationInterim.set('');
+            },
+            onInterim: text => this.chatDictationInterim.set(text),
+            onError: () => {
+                this.isChatDictating.set(false);
+                this.chatDictationInterim.set('');
+            },
+            onEnd: () => {
+                this.isChatDictating.set(false);
+                this.chatDictationInterim.set('');
+            }
+        });
+        this.isChatDictating.set(started);
+    }
+
+    toggleSpeakChat(content: string, idx: number) {
+        if (!this.isTtsSupported || !content) return;
+        if (this.speakingChatIdx() === idx) {
+            try { window.speechSynthesis.cancel(); } catch { }
+            this.speakingChatIdx.set(null);
+            return;
+        }
+        try { window.speechSynthesis.cancel(); } catch { }
+        const clean = content.replace(/\[S\d+\]/g, '').replace(/[#*_`>]/g, ' ').replace(/\s+/g, ' ').trim();
+        if (!clean) return;
+        const u = new SpeechSynthesisUtterance(clean);
+        u.lang = 'fr-FR';
+        u.onend = () => this.speakingChatIdx.set(null);
+        u.onerror = () => this.speakingChatIdx.set(null);
+        this.speakingChatIdx.set(idx);
+        window.speechSynthesis.speak(u);
     }
 
     clearChat() {
