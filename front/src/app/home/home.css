@@ -1,0 +1,22 @@
+/* Mode sidebar repliée (icônes uniquement) sur desktop (lg+) */
+@media (min-width: 1024px) {
+  nav.sidebar-collapsed {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  nav.sidebar-collapsed p {
+    display: none;
+  }
+
+  nav.sidebar-collapsed a {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+    gap: 0;
+  }
+
+  nav.sidebar-collapsed a > span {
+    display: none;
+  }
+}

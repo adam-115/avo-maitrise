@@ -1,6 +1,6 @@
 import { NavigationService } from './../services/navigation-service';
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterOutlet, NavigationEnd, Event as RouterEvent } from '@angular/router';
 import { environment } from '../../environments/environment';
@@ -10,11 +10,13 @@ import { filter, Subscription } from 'rxjs';
 
 import { AiStatusService } from './../services/ai-status.service';
 import { MailIntegrationStatusService } from './../services/mail-integration-status.service';
+import { CabinetProfileService } from './../services/cabinet-profile.service';
+import { CommandPaletteComponent } from './../shared/command-palette/command-palette.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, FormsModule, CommonModule, TranslatePipe],
+  imports: [RouterOutlet, RouterLink, FormsModule, CommonModule, TranslatePipe, CommandPaletteComponent],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })
@@ -22,13 +24,19 @@ export class Home implements OnInit, OnDestroy {
 
   private readonly navigationService = inject(NavigationService);
   private readonly keycloakService = inject(KeycloakService);
+  private readonly cabinetProfileService = inject(CabinetProfileService);
   public readonly translate = inject(TranslateService);
   public readonly router = inject(Router);
   public readonly aiStatusService = inject(AiStatusService);
   public readonly mailStatusService = inject(MailIntegrationStatusService);
 
+  @ViewChild(CommandPaletteComponent) commandPalette?: CommandPaletteComponent;
+
   // Variable d'état pour le contrôle de la barre latérale
   isSidebarOpen: boolean = false;
+  isSidebarCollapsed: boolean = false;
+  cabinetName: string = 'SI-LÉGAL';
+  cabinetLogoSrc: string = '/logo-app.jpg';
   activeRoute: string = 'home';
   paths = NavigationService;
   environment = environment;
@@ -43,6 +51,26 @@ export class Home implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    try {
+      this.isSidebarCollapsed = localStorage.getItem('avo_sidebar_collapsed') === 'true';
+    } catch {}
+
+    // Charger le nom et le logo du cabinet (marque blanche)
+    this.cabinetProfileService.getProfile().subscribe({
+      next: (profile) => {
+        if (profile?.name?.trim()) {
+          this.cabinetName = profile.name.trim();
+        }
+        if (profile?.logo) {
+          const mime = profile.logoContentType || 'image/png';
+          this.cabinetLogoSrc = profile.logo.startsWith('data:')
+            ? profile.logo
+            : `data:${mime};base64,${profile.logo}`;
+        }
+      },
+      error: () => {}
+    });
+
     // Vérifier si l'IA et l'intégration Messagerie/Calendrier sont activées
     this.aiStatusService.checkAiStatus();
     this.mailStatusService.checkStatus();
@@ -123,6 +151,18 @@ export class Home implements OnInit, OnDestroy {
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  toggleSidebarCollapse() {
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    try {
+      localStorage.setItem('avo_sidebar_collapsed', String(this.isSidebarCollapsed));
+    } catch {}
+  }
+
+  openCommandPalette() {
+    this.isSidebarOpen = false;
+    this.commandPalette?.open();
   }
 
   navigateTODossier() {
