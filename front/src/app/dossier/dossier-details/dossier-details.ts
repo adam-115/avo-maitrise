@@ -20,13 +20,14 @@ import { AiStatusService } from '../../services/ai-status.service';
 import { MailIntegrationStatusService } from '../../services/mail-integration-status.service';
 import { KeycloakService } from '../../services/keycloak.service';
 import { canViewAudit } from '../../shared/audit-timeline/audit-timeline.component';
+import { ClientDocumentGeneratorDialogComponent } from '../../crm/client-document-generator-dialog/client-document-generator-dialog.component';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-dossier-details',
   standalone: true,
-  imports: [CommonModule, ClientStatusAlertComponent, RouterModule, TranslatePipe],
+  imports: [CommonModule, ClientStatusAlertComponent, RouterModule, TranslatePipe, ClientDocumentGeneratorDialogComponent],
   templateUrl: './dossier-details.html',
   styleUrl: './dossier-details.css'
 })
@@ -48,6 +49,7 @@ export class DossierDetails implements OnInit {
 
   activeChild: any;
   shwoDocumentDialog = false;
+  showDocGeneratorDialog = false;
 
   showStatusDropdown = false;
 
@@ -70,31 +72,43 @@ export class DossierDetails implements OnInit {
   // Example: You might fetch dossier details here
   dossierDetails: any;
 
-  private aiStatusService = inject(AiStatusService);
+  public aiStatusService = inject(AiStatusService);
   private mailStatusService = inject(MailIntegrationStatusService);
   private keycloakService = inject(KeycloakService);
 
+  private allTabs: Array<{ path: string; label: string; icon: string; count?: number }> = [];
+  private aiEnabled = false;
+  private mailEnabled = false;
+
   ngOnInit(): void {
-    // Journal d'audit : onglet réservé aux administrateurs (le serveur refuse de toute façon les autres)
-    if (!canViewAudit(this.keycloakService)) {
-      this.tabs = this.tabs.filter(tab => tab.path !== 'audit');
-    }
+    this.allTabs = [...this.tabs];
+    this.aiEnabled = this.aiStatusService.isAiEnabled;
+    this.mailEnabled = this.mailStatusService.isEnabled;
+    this.refreshVisibleTabs();
 
     this.aiStatusService.isAiEnabled$.subscribe(isEnabled => {
-      if (!isEnabled) {
-        this.tabs = this.tabs.filter(tab => tab.path !== 'strategie');
-      }
+      this.aiEnabled = isEnabled;
+      this.refreshVisibleTabs();
     });
 
     this.mailStatusService.isEnabled$.subscribe(isEnabled => {
-      if (!isEnabled) {
-        this.tabs = this.tabs.filter(tab => tab.path !== 'emails');
-      }
+      this.mailEnabled = isEnabled;
+      this.refreshVisibleTabs();
     });
 
     this.getDossierById();
     this.loadUsers();
     this.loadStatuses();
+  }
+
+  private refreshVisibleTabs(): void {
+    const allowAudit = canViewAudit(this.keycloakService);
+    this.tabs = this.allTabs.filter(tab => {
+      if (tab.path === 'audit' && !allowAudit) return false;
+      if (tab.path === 'strategie' && !this.aiEnabled) return false;
+      if (tab.path === 'emails' && !this.mailEnabled) return false;
+      return true;
+    });
   }
 
   loadStatuses(): void {

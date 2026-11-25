@@ -13,12 +13,14 @@ import { Client, Dossier, InvoiceEntity, ClientDiligenceStatus, ClientMoral, Cli
 
 import { TranslatePipe } from '@ngx-translate/core';
 import { KeycloakService } from '../../services/keycloak.service';
+import { AiStatusService } from '../../services/ai-status.service';
 import { AuditTimelineComponent, canViewAudit } from '../../shared/audit-timeline/audit-timeline.component';
+import { ClientDocumentGeneratorDialogComponent } from '../client-document-generator-dialog/client-document-generator-dialog.component';
 
 @Component({
   selector: 'app-client-details',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe, AuditTimelineComponent],
+  imports: [CommonModule, RouterModule, TranslatePipe, AuditTimelineComponent, ClientDocumentGeneratorDialogComponent],
   templateUrl: './client-details.component.html',
   styleUrl: './client-details.component.css'
 })
@@ -29,6 +31,7 @@ export class ClientDetailsComponent implements OnInit {
   private invoiceService = inject(InvoiceService);
   private amlStatusService = inject(ClientDiligenceStatusService);
   private keycloakService = inject(KeycloakService);
+  public aiStatusService = inject(AiStatusService);
 
   /** Le journal d'audit n'est proposé qu'aux administrateurs (le serveur refuse de toute façon les autres). */
   readonly canViewAudit = canViewAudit(this.keycloakService);
@@ -42,6 +45,7 @@ export class ClientDetailsComponent implements OnInit {
 
   isLoading = true;
   error: string | null = null;
+  showDocGeneratorDialog = false;
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {

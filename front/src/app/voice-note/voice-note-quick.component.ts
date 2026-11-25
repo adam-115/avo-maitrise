@@ -11,6 +11,7 @@ import { TaskCategoryService } from '../services/task-category.service';
 import { TaskStatusService } from '../services/task-status.service';
 import { DocumentService } from '../services/document.service';
 import { WordExportService } from '../services/word-export.service';
+import { AiStatusService } from '../services/ai-status.service';
 import { ClientSelectionDialog } from '../dossier/client-selection-dialog/client-selection-dialog';
 import { DossierSelectionDialog } from '../dossier/dossier-selection-dialog/dossier-selection-dialog';
 import { Dossier, Note, NoteCategory, Task, TaskCategory, TaskStatus } from '../appTypes';
@@ -311,7 +312,7 @@ import { environment } from '../../environments/environment';
                 </span>
               </div>
               <div class="flex items-center gap-2">
-                <button type="button" (click)="structureWithAi()" [disabled]="isStructuring() || !transcript.trim()"
+                <button *ngIf="aiStatusService.isAiEnabled$ | async" type="button" (click)="structureWithAi()" [disabled]="isStructuring() || !transcript.trim()"
                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-violet-50 text-violet-700 border border-violet-200 hover:bg-violet-100 text-xs font-bold cursor-pointer disabled:opacity-45 transition-colors">
                   <span *ngIf="isStructuring()" class="w-3 h-3 rounded-full border-2 border-violet-300 border-t-violet-700 animate-spin"></span>
                   <span>{{ isStructuring() ? 'Structuration...' : '✨ Structurer avec l\'IA' }}</span>
@@ -401,6 +402,7 @@ import { environment } from '../../environments/environment';
 })
 export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
   public voiceService = inject(VoiceNoteService);
+  public aiStatusService = inject(AiStatusService);
   private noteService = inject(NoteService);
   private categoryService = inject(NoteCategoryService);
   private taskService = inject(TaskService);
@@ -462,7 +464,7 @@ export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
         this.categories.set(list);
         if (list.length > 0) this.selectedCategoryId = list[0].id;
       },
-      error: () => {}
+      error: () => { }
     });
 
     this.taskCategoryService.getAll().subscribe({
@@ -470,7 +472,7 @@ export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
         const list: TaskCategory[] = res?.content || (Array.isArray(res) ? res : []);
         if (list.length > 0) this.defaultTaskCategory = list[0];
       },
-      error: () => {}
+      error: () => { }
     });
 
     this.taskStatusService.getAll().subscribe({
@@ -478,7 +480,7 @@ export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
         const list: TaskStatus[] = res?.content || (Array.isArray(res) ? res : []);
         this.defaultTaskStatus = list.find(s => !s.isClosingStatus) || list[0] || null;
       },
-      error: () => {}
+      error: () => { }
     });
   }
 
@@ -592,7 +594,7 @@ export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
           this.applySuggestedDossier(res.suggestion);
         }
       },
-      error: () => {}
+      error: () => { }
     });
   }
 
@@ -788,7 +790,7 @@ export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
   exportSavedToWord(): void {
     const id = this.savedNoteId();
     if (!id) return;
-    this.wordExportService.downloadNote(id, `Note_Vocale_${id}.docx`).subscribe({ error: () => {} });
+    this.wordExportService.downloadNote(id, `Note_Vocale_${id}.docx`).subscribe({ error: () => { } });
   }
 
   clearDraft(): void {

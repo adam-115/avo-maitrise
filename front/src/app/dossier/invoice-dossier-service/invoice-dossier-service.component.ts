@@ -12,6 +12,7 @@ import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dia
 import { GenerateInvoiceDialog } from '../generate-invoice-dialog/generate-invoice-dialog';
 import { InvoiceService } from '../../features/billing/services/invoice.service';
 import { PrestationAiAuditService, PrestationAuditResult, PrestationProposal } from '../../services/prestation-ai-audit.service';
+import { AiStatusService } from '../../services/ai-status.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -63,6 +64,7 @@ export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
   private keycloakService = inject(KeycloakService);
   private invoiceService = inject(InvoiceService);
   private aiAuditService = inject(PrestationAiAuditService);
+  public aiStatusService = inject(AiStatusService);
   private translate = inject(TranslateService);
 
   // Audit IA des prestations oubliées

@@ -9,9 +9,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.avo.entities.Document;
+import com.avo.entities.DocumentType;
+import java.util.List;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> , QuerydslPredicateExecutor<Document> {
+
+    List<Document> findByTypeDocument(DocumentType typeDocument);
 
     @Modifying
     @Transactional

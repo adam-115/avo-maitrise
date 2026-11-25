@@ -97,7 +97,16 @@
             </div>
             
             <!-- Right: Action Buttons -->
-            <div class="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full lg:w-auto shrink-0 justify-start lg:justify-end">
+            <div class="flex flex-wrap items-center gap-2.5 w-full lg:w-auto shrink-0 justify-start lg:justify-end">
+              <button *ngIf="aiStatusService.isAiEnabled$ | async" type="button" (click)="showDocGeneratorDialog = true"
+                      class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-sm font-semibold transition-all shadow-sm shadow-violet-200 cursor-pointer">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+                <span>Générer un document</span>
+              </button>
+
               <button [routerLink]="['/home/client-conformity']" [queryParams]="{ id: client.id }" 
                       class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-slate-200/90 text-slate-700 text-sm font-semibold hover:bg-slate-50 hover:text-indigo-600 transition-colors shadow-xs">
                 <svg class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,6 +123,13 @@
                 {{ 'CLIENT_DETAILS.CREATE_DOSSIER' | translate }}
               </button>
             </div>
+
+            <!-- Modale de génération de document client depuis la Bibliothèque de Modèles -->
+            <app-client-document-generator-dialog *ngIf="showDocGeneratorDialog && client.id && (aiStatusService.isAiEnabled$ | async)"
+              [clientId]="client.id"
+              [clientName]="getClientName()"
+              (close)="showDocGeneratorDialog = false">
+            </app-client-document-generator-dialog>
           </div>
         </div>
 

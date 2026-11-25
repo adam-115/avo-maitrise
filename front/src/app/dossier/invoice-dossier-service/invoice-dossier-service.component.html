@@ -1,4 +1,5 @@
-<div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+<div
+  class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/90 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
   <div class="flex items-center gap-3">
     <h2 class="text-xl font-bold text-slate-900">{{ 'PRESTATIONS.TITLE' | translate }}</h2>
     <span class="px-2.5 py-0.5 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-extrabold border border-indigo-100">
@@ -6,13 +7,14 @@
     </span>
   </div>
   <div class="flex flex-wrap items-center gap-2.5">
-    <button type="button" (click)="runAiAudit()" [disabled]="isAuditingAi"
+    <button *ngIf="aiStatusService.isAiEnabled$ | async" type="button" (click)="runAiAudit()" [disabled]="isAuditingAi"
       class="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 disabled:opacity-60 text-white px-4 py-2.5 rounded-xl font-bold text-xs transition flex items-center gap-2 shadow-sm cursor-pointer">
       <svg *ngIf="!isAuditingAi" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
       </svg>
-      <span *ngIf="isAuditingAi" class="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin"></span>
+      <span *ngIf="isAuditingAi"
+        class="w-4 h-4 rounded-full border-2 border-white/40 border-t-white animate-spin"></span>
       <span>{{ isAuditingAi ? 'Analyse IA en cours...' : '✨ Vérifier avec l\'IA' }}</span>
     </button>
     <a [routerLink]="['/home/billing/new']" [queryParams]="{ dossierId: dossierId }"
@@ -35,13 +37,13 @@
 </div>
 
 <!-- Panneau Audit IA des prestations oubliées -->
-<div *ngIf="showAiPanel" class="mb-6 rounded-2xl border-2 border-violet-200 bg-gradient-to-br from-violet-50/70 via-white to-indigo-50/50 shadow-sm overflow-hidden">
+<div *ngIf="showAiPanel && (aiStatusService.isAiEnabled$ | async)"
+  class="mb-6 rounded-2xl border-2 border-violet-200 bg-gradient-to-br from-violet-50/70 via-white to-indigo-50/50 shadow-sm overflow-hidden">
   <div class="px-5 py-4 border-b border-violet-200/80 flex flex-wrap items-center justify-between gap-3 bg-white/80">
     <div class="space-y-1">
       <div class="flex flex-wrap items-center gap-2">
         <span class="text-sm font-black text-violet-950">✨ Vérification IA des prestations</span>
-        <span *ngIf="aiAuditResult"
-          class="px-2 py-0.5 rounded-full text-[10px] font-bold border"
+        <span *ngIf="aiAuditResult" class="px-2 py-0.5 rounded-full text-[10px] font-bold border"
           [ngClass]="aiAuditResult.aiUsed ? 'bg-violet-100 text-violet-800 border-violet-200' : 'bg-slate-100 text-slate-700 border-slate-200'">
           {{ aiAuditResult.aiUsed ? 'Analyse IA' : 'Analyse locale' }}
         </span>
@@ -84,13 +86,15 @@
   <!-- Chargement -->
   <div *ngIf="isAuditingAi" class="p-8 flex flex-col items-center justify-center gap-3 text-center">
     <div class="w-8 h-8 rounded-full border-4 border-violet-200 border-t-violet-600 animate-spin"></div>
-    <p class="text-xs font-bold text-violet-900">Analyse des prestations existantes, notes, tâches, rendez-vous, événements et emails (si activés)...</p>
+    <p class="text-xs font-bold text-violet-900">Analyse des prestations existantes, notes, tâches, rendez-vous,
+      événements et emails (si activés)...</p>
   </div>
 
   <!-- Aucune proposition -->
   <div *ngIf="!isAuditingAi && aiAuditResult && aiProposals.length === 0" class="p-6 text-center">
     <p class="text-sm font-bold text-emerald-700">✓ Aucune prestation oubliée détectée.</p>
-    <p class="text-xs text-slate-500 mt-1">Toutes les activités analysées semblent déjà couvertes ou ont été traitées.</p>
+    <p class="text-xs text-slate-500 mt-1">Toutes les activités analysées semblent déjà couvertes ou ont été traitées.
+    </p>
   </div>
 
   <!-- Liste des propositions à valider / refuser -->
@@ -156,7 +160,8 @@
           </div>
           <div class="pb-1.5 text-right shrink-0">
             <div class="text-[10px] font-bold uppercase text-slate-400">Est. HT</div>
-            <div class="text-xs font-black text-indigo-700">{{ getProposalEstimatedAmount(prop) | number:'1.2-2' }}</div>
+            <div class="text-xs font-black text-indigo-700">{{ getProposalEstimatedAmount(prop) | number:'1.2-2' }}
+            </div>
           </div>
         </div>
       </div>
@@ -182,7 +187,8 @@
       <tr *ngFor="let p of prestations" class="hover:bg-slate-50 transition border-b border-slate-100">
         <td class="px-4 py-3">
           <div class="font-medium text-slate-800">{{ (p.serviceDate || p.creationDate) | date:'dd/MM/yyyy' }}</div>
-          <div class="text-[11px] text-slate-400" *ngIf="p.creationDate" [title]="'PRESTATIONS.CREATION_DATE' | translate">
+          <div class="text-[11px] text-slate-400" *ngIf="p.creationDate"
+            [title]="'PRESTATIONS.CREATION_DATE' | translate">
             {{ p.creationDate | date:'shortTime' }}
           </div>
         </td>
@@ -277,7 +283,8 @@
       <form [formGroup]="prestationForm" (ngSubmit)="onSubmit()" class="space-y-4">
 
         <div>
-          <label class="block text-sm font-semibold text-slate-700 mb-1">{{ 'PRESTATIONS.SERVICE_DATE_LABEL' | translate }}</label>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">{{ 'PRESTATIONS.SERVICE_DATE_LABEL' | translate
+            }}</label>
           <input type="date" formControlName="serviceDate"
             class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm" />
         </div>
