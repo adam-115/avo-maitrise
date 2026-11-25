@@ -1,6 +1,7 @@
 /* ==========================================================================
-   AVO-MAÎTRISE — CLARTÉ ROYALE & LUMIÈRE (Airy Luxury Light LegalTech)
-   Palette : Blanc Perle • Bleu Saphir Lumineux • Azur Ciel • Menthe & Corail Doux
+   AVO-MAÎTRISE — MIDNIGHT & VIBRANT EMERALD DESIGN SYSTEM
+   Inspiré par l'élégance chirurgicale : Nuit Profonde (#0d1526) • Émeraude (#10b981)
+   • Blanc Neige (#f8fafc) • Accents Bleu Ciel (#0ea5e9)
    ========================================================================== */
 @import "tailwindcss";
 
@@ -8,33 +9,33 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
 
-  /* Crisp Porcelain & Airy Slate Neutrals */
-  --color-slate-50: #f6f8fc;
-  --color-slate-100: #eef2f7;
-  --color-slate-200: #e2e8f0;
+  /* Snow White Canvas & Deep Ink Midnight Neutrals */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e5e9f0;
   --color-slate-300: #cbd5e1;
   --color-slate-400: #94a3b8;
   --color-slate-500: #64748b;
   --color-slate-600: #475569;
   --color-slate-700: #334155;
-  --color-slate-800: #1e293b;
-  --color-slate-900: #0f172a;
-  --color-slate-950: #020617;
+  --color-slate-800: #162033;
+  --color-slate-900: #0d1526;
+  --color-slate-950: #080e1a;
 
-  /* Royal Sapphire Blue (Primary Brand Action — Clair, Moderne & Confiant) */
-  --color-indigo-50: #eff6ff;
-  --color-indigo-100: #dbeafe;
-  --color-indigo-200: #bfdbfe;
-  --color-indigo-300: #93c5fd;
-  --color-indigo-400: #60a5fa;
-  --color-indigo-500: #3b82f6;
-  --color-indigo-600: #2563eb;
-  --color-indigo-700: #1d4ed8;
-  --color-indigo-800: #1e40af;
-  --color-indigo-900: #1e3a8a;
-  --color-indigo-950: #172554;
+  /* Primary Brand Action -> Vibrant Emerald Mint (Cohérence totale sur tous les écrans) */
+  --color-indigo-50: #ecfdf5;
+  --color-indigo-100: #d1fae5;
+  --color-indigo-200: #a7f3d0;
+  --color-indigo-300: #6ee7b7;
+  --color-indigo-400: #34d399;
+  --color-indigo-500: #10b981;
+  --color-indigo-600: #059669;
+  --color-indigo-700: #047857;
+  --color-indigo-800: #065f46;
+  --color-indigo-900: #064e3b;
+  --color-indigo-950: #022c22;
 
-  /* Luminous Sky Azure (Secondary Highlights & Soft Gradients) */
+  /* Secondary Action -> Crisp Sky Azure (Boutons secondaires doux type "Tester / Reconstruire") */
   --color-blue-50: #f0f9ff;
   --color-blue-100: #e0f2fe;
   --color-blue-200: #bae6fd;
@@ -42,7 +43,7 @@
   --color-blue-600: #0284c7;
   --color-blue-700: #0369a1;
 
-  /* Crisp Sky Cyan (Active Accents & Fresh Highlights) */
+  /* Sky Cyan Accents */
   --color-cyan-50: #f0f9ff;
   --color-cyan-100: #e0f2fe;
   --color-cyan-200: #bae6fd;
@@ -55,15 +56,16 @@
   --color-cyan-900: #0c4a6e;
   --color-cyan-950: #082f49;
 
-  /* Fresh Mint Emerald (Success & Finance) */
+  /* Pure Vibrant Emerald */
   --color-emerald-50: #ecfdf5;
   --color-emerald-100: #d1fae5;
   --color-emerald-200: #a7f3d0;
+  --color-emerald-400: #34d399;
   --color-emerald-500: #10b981;
   --color-emerald-600: #059669;
   --color-emerald-700: #047857;
 
-  /* Soft Coral Rose (Alerts & Urgencies) */
+  /* Crisp Coral Rose (Alertes & Badges Critiques) */
   --color-rose-50: #fff1f2;
   --color-rose-100: #ffe4e6;
   --color-rose-200: #fecdd3;
@@ -75,7 +77,7 @@
 @layer base {
   html {
     font-family: var(--font-sans);
-    background-color: #f6f8fc;
+    background-color: #f8fafc;
     color: #0f172a;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -96,48 +98,64 @@
   }
 
   table thead th {
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
   }
 
-  /* Anneau de focus doux bleu saphir */
+  /* Anneau de focus vert émeraude net */
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible,
   button:focus-visible {
-    outline: 2px solid rgba(37, 99, 235, 0.4);
+    outline: 2px solid rgba(16, 185, 129, 0.45);
     outline-offset: 1px;
   }
 }
 
-/* Signature lumineuse & boutons premium */
-.lumiere-accent-bar {
-  background: linear-gradient(90deg, #2563eb 0%, #38bdf8 55%, #6366f1 100%);
+/* Signature visuelle : Bannière Nuit Profonde -> Forêt Émeraude */
+.swift-hero {
+  background: linear-gradient(115deg, #0d1526 0%, #0f1f30 54%, #064e3b 100%);
 }
 
-.btn-primary-lumiere {
-  background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
+/* Bouton primaire Émeraude Vibrant */
+.btn-emerald {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
-  box-shadow: 0 4px 14px -3px rgba(37, 99, 235, 0.35);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px -3px rgba(16, 185, 129, 0.42);
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-primary-lumiere:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #0284c7 100%);
-  box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.45);
+.btn-emerald:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.5);
   transform: translateY(-1px);
 }
 
-.btn-primary-lumiere:active {
+.btn-emerald:active {
   transform: translateY(0) scale(0.98);
 }
 
-.surface-card {
-  background-color: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.85);
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 6px 20px -6px rgba(15, 23, 42, 0.05);
+/* Bouton secondaire Bleu Ciel doux */
+.btn-sky-soft {
+  background-color: #f0f9ff;
+  color: #0284c7;
+  border: 1px solid #bae6fd;
+  transition: all 0.18s ease;
 }
 
-/* Scrollbars ultra-discrets et clairs */
+.btn-sky-soft:hover {
+  background-color: #e0f2fe;
+  border-color: #7dd3fc;
+  color: #0369a1;
+}
+
+/* Carte blanche chirurgicale */
+.swift-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e9f0;
+  box-shadow: 0 1px 2px rgba(13, 21, 38, 0.03), 0 4px 16px -6px rgba(13, 21, 38, 0.04);
+}
+
+/* Scrollbars discrets */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -148,7 +166,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.38);
+  background: rgba(148, 163, 184, 0.35);
   border-radius: 9999px;
 }
 

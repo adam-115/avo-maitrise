@@ -1,15 +1,15 @@
-/* Airy Luxury Light Dashboard Motion & Elevation */
+/* Swift Check-Inspired Crisp Hover & Elevation */
 
 .hover-premium {
-  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.22s ease;
+  transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.18s ease;
 }
 
 .hover-premium:hover {
   transform: translateY(-2px);
-  border-color: rgba(147, 197, 253, 0.8);
-  box-shadow: 0 12px 24px -8px rgba(37, 99, 235, 0.12), 0 4px 10px -4px rgba(15, 23, 42, 0.05);
+  border-color: rgba(16, 185, 129, 0.55);
+  box-shadow: 0 10px 24px -8px rgba(13, 21, 38, 0.08), 0 4px 10px -4px rgba(16, 185, 129, 0.08);
 }
 
 .hover-scale {

@@ -1,43 +1,38 @@
 <div class="flex h-screen bg-slate-50 font-sans overflow-hidden text-slate-900">
     <!-- Backdrop Overlay for Mobile Drawer -->
     <div *ngIf="isSidebarOpen" (click)="isSidebarOpen = false"
-        class="fixed inset-0 z-40 bg-slate-900/35 backdrop-blur-xs lg:hidden transition-opacity">
+        class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-xs lg:hidden transition-opacity">
     </div>
 
-    <!-- Main Navigation Sidebar (Claire, Aérée & Structurée) -->
+    <!-- Main Navigation Sidebar (Nuit Profonde #0d1526 + Pill Active Émeraude) -->
     <aside
         [ngClass]="{
           'translate-x-0 ease-out': isSidebarOpen,
           '-translate-x-full rtl:translate-x-full ease-in': !isSidebarOpen,
           'lg:w-20': isSidebarCollapsed,
-          'lg:w-68': !isSidebarCollapsed
+          'lg:w-64': !isSidebarCollapsed
         }"
-        class="fixed inset-y-0 start-0 z-50 w-68 bg-white text-slate-700 border-e border-slate-200/85 flex flex-col shadow-xl lg:shadow-none transform transition-all duration-200 lg:!translate-x-0 lg:static lg:flex-shrink-0 select-none">
-
-        <!-- Fine Ligne Lumineuse en En-tête -->
-        <div class="h-1 lumiere-accent-bar"></div>
+        class="fixed inset-y-0 start-0 z-50 w-64 bg-[#0d1526] text-slate-200 flex flex-col shadow-2xl lg:shadow-none transform transition-all duration-200 lg:!translate-x-0 lg:static lg:flex-shrink-0 select-none border-e border-white/5">
 
         <!-- Brand & Header Container -->
-        <div class="border-b border-slate-100 flex flex-col items-center relative gap-3 transition-all"
+        <div class="border-b border-white/[0.07] flex flex-col items-center relative gap-3 transition-all"
             [ngClass]="isSidebarCollapsed ? 'p-3 lg:px-2.5 lg:py-4' : 'px-4 py-4'">
             <div class="flex items-center justify-between w-full gap-2" [class.lg:flex-col]="isSidebarCollapsed">
                 <a (click)="navigateToHome()" class="flex items-center gap-3 cursor-pointer group min-w-0"
                     [title]="cabinetName">
-                    <div class="p-0.5 rounded-xl bg-gradient-to-br from-indigo-500/20 to-cyan-400/20 ring-1 ring-indigo-100 flex-shrink-0">
-                        <img [src]="cabinetLogoSrc" [alt]="cabinetName"
-                            class="h-9 w-9 object-cover rounded-[10px] bg-white group-hover:scale-105 transition-transform duration-200">
-                    </div>
+                    <img [src]="cabinetLogoSrc" [alt]="cabinetName"
+                        class="h-9 w-9 object-cover rounded-lg bg-white p-0.5 shadow-sm flex-shrink-0 group-hover:scale-105 transition-transform duration-200">
                     <div class="flex flex-col min-w-0" [class.lg:hidden]="isSidebarCollapsed">
                         <span
-                            class="text-sm font-extrabold tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors truncate">{{ cabinetName }}</span>
-                        <span class="text-[10px] font-bold text-indigo-600/80 uppercase tracking-[0.12em] truncate">{{
+                            class="text-[15px] font-extrabold tracking-tight text-white group-hover:text-emerald-400 transition-colors truncate">{{ cabinetName }}</span>
+                        <span class="text-[10px] font-semibold text-emerald-400/80 uppercase tracking-[0.12em] truncate">{{
                             'MENU.CABINET_BADGE' | translate }}</span>
                     </div>
                 </a>
 
                 <!-- Desktop Collapse Toggle -->
                 <button type="button" (click)="toggleSidebarCollapse()"
-                    class="hidden lg:inline-flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-200 transition-colors cursor-pointer flex-shrink-0"
+                    class="hidden lg:inline-flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer flex-shrink-0"
                     [title]="isSidebarCollapsed ? 'Déplier le menu' : 'Replier le menu'">
                     <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="isSidebarCollapsed"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -48,7 +43,7 @@
 
                 <!-- Mobile Close Button -->
                 <button (click)="isSidebarOpen = false"
-                    class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                    class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
                     [attr.aria-label]="'MENU.CLOSE_MENU' | translate">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -58,25 +53,25 @@
             </div>
 
             <!-- Mobile Language Switcher -->
-            <div class="lg:hidden w-full relative flex items-center p-1 bg-slate-50 rounded-xl border border-slate-200">
+            <div class="lg:hidden w-full relative flex items-center p-1 bg-white/5 rounded-lg border border-white/10">
                 <select (change)="changeLanguage($event)" [value]="currentLang"
-                    class="w-full ps-2.5 pe-7 py-1 bg-transparent border-none text-xs text-slate-700 focus:ring-0 cursor-pointer font-bold appearance-none outline-none">
-                    <option value="fr">{{ 'LANGUAGE.FR' | translate }}</option>
-                    <option value="en">{{ 'LANGUAGE.EN' | translate }}</option>
-                    <option value="es">{{ 'LANGUAGE.ES' | translate }}</option>
-                    <option value="de">{{ 'LANGUAGE.DE' | translate }}</option>
-                    <option value="it">{{ 'LANGUAGE.IT' | translate }}</option>
-                    <option value="ar">{{ 'LANGUAGE.AR' | translate }}</option>
+                    class="w-full ps-2.5 pe-7 py-1 bg-transparent border-none text-xs text-slate-200 focus:ring-0 cursor-pointer font-semibold appearance-none outline-none">
+                    <option value="fr" class="bg-[#0d1526] text-white">{{ 'LANGUAGE.FR' | translate }}</option>
+                    <option value="en" class="bg-[#0d1526] text-white">{{ 'LANGUAGE.EN' | translate }}</option>
+                    <option value="es" class="bg-[#0d1526] text-white">{{ 'LANGUAGE.ES' | translate }}</option>
+                    <option value="de" class="bg-[#0d1526] text-white">{{ 'LANGUAGE.DE' | translate }}</option>
+                    <option value="it" class="bg-[#0d1526] text-white">{{ 'LANGUAGE.IT' | translate }}</option>
+                    <option value="ar" class="bg-[#0d1526] text-white">{{ 'LANGUAGE.AR' | translate }}</option>
                 </select>
             </div>
         </div>
 
-        <!-- Navigation Links Container — Organisée en 4 pôles ergonomiques -->
+        <!-- Navigation Links Container — 4 Pôles Épurés -->
         <nav class="flex-grow px-3 py-4 space-y-5 overflow-y-auto" [class.sidebar-collapsed]="isSidebarCollapsed">
 
             <!-- PÔLE 1 : Quotidien -->
             <div class="space-y-1">
-                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
                     {{ 'MENU.SECTION_CORE' | translate }}
                 </p>
 
@@ -84,10 +79,8 @@
                 <a (click)="navigateToHome()"
                     [ngClass]="activeRoute === 'home' ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === 'home' ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                     <span>{{ 'MENU.HOME' | translate }}</span>
@@ -97,10 +90,8 @@
                 <a (click)="navigateToCalendrier()"
                     [ngClass]="activeRoute === paths.CALENDRIER ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.CALENDRIER ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>{{ 'MENU.CALENDAR' | translate }}</span>
@@ -110,10 +101,8 @@
                 <a *ngIf="mailStatusService.isEnabled$ | async" (click)="navigateToMessagerie()"
                     [ngClass]="activeRoute === paths.MESSAGERIE ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.MESSAGERIE ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     <span>Messagerie</span>
@@ -122,7 +111,7 @@
 
             <!-- PÔLE 2 : Gestion Juridique & Documents -->
             <div class="space-y-1">
-                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
                     {{ 'MENU.SECTION_DOCUMENTS' | translate }}
                 </p>
 
@@ -130,10 +119,8 @@
                 <a (click)="navigateTODossier()"
                     [ngClass]="activeRoute === paths.DOSSIER ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.DOSSIER ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
                     <span>{{ 'MENU.DOSSIER' | translate }}</span>
@@ -143,10 +130,8 @@
                 <a (click)="navigateTOClients()"
                     [ngClass]="activeRoute === paths.CRM ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.CRM ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z" />
                     </svg>
                     <span>{{ 'MENU.CLIENTS' | translate }}</span>
@@ -156,10 +141,8 @@
                 <a (click)="navigateToModel()"
                     [ngClass]="activeRoute === paths.MODEL ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.MODEL ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                     <span>{{ 'MENU.MODEL' | translate }}</span>
@@ -169,20 +152,19 @@
                 <a *ngIf="aiStatusService.isAiEnabled$ | async" (click)="navigateToAiAssistant()"
                     [ngClass]="activeRoute === paths.AI_ASSISTANT ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.AI_ASSISTANT ? 'text-indigo-600' : 'text-cyan-500 group-hover:text-indigo-600'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
                     <span class="flex-1 truncate">Avocat Assistant</span>
-                    <span class="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-indigo-50 text-indigo-600 border border-indigo-100">IA</span>
+                    <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                        [ngClass]="activeRoute === paths.AI_ASSISTANT ? 'bg-white/20 text-white' : 'bg-emerald-500/15 text-emerald-400'">IA</span>
                 </a>
             </div>
 
             <!-- PÔLE 3 : Finances & Conformité -->
             <div class="space-y-1">
-                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
                     {{ 'MENU.SECTION_FINANCE' | translate }}
                 </p>
 
@@ -190,10 +172,8 @@
                 <a (click)="navigateToFacturation()"
                     [ngClass]="activeRoute === paths.BILLING ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.BILLING ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                     </svg>
                     <span>{{ 'MENU.BILLING' | translate }}</span>
@@ -203,10 +183,8 @@
                 <a (click)="navigateToBillingDashboard()"
                     [ngClass]="activeRoute === paths.BILLING_DASHBOARD ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.BILLING_DASHBOARD ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>{{ 'MENU.BILLING_DASHBOARD' | translate }}</span>
@@ -216,10 +194,8 @@
                 <a (click)="navigateToAmlCompliance()"
                     [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618" />
                     </svg>
                     <span>{{ 'MENU.AML' | translate }}</span>
@@ -229,10 +205,8 @@
                 <a (click)="navigateToClientDiligenceStatusList()"
                     [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                     </svg>
                     <span>{{ 'MENU.DILIGENCE_TRACKING' | translate }}</span>
@@ -241,7 +215,7 @@
 
             <!-- PÔLE 4 : Système & Cabinet -->
             <div class="space-y-1">
-                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">
                     {{ 'MENU.SECTION_SYSTEM' | translate }}
                 </p>
 
@@ -249,12 +223,10 @@
                 <a (click)="navigateToAdministration()"
                     [ngClass]="activeRoute === paths.ADMINSTRATION ? 'nav-item-active' : 'nav-item-idle'"
                     class="nav-item group">
-                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
-                        [ngClass]="activeRoute === paths.ADMINSTRATION ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
-                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    <svg class="w-[18px] h-[18px] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.85"
                             d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     <span>{{ 'MENU.ADMINISTRATION' | translate }}</span>
@@ -262,28 +234,30 @@
             </div>
         </nav>
 
-        <!-- Sidebar Footer / User Profile & Logout (Clair & Épuré) -->
-        <div class="border-t border-slate-100 bg-slate-50/60 space-y-2"
-            [ngClass]="isSidebarCollapsed ? 'p-2.5' : 'p-3.5'">
-            <div [ngClass]="isSidebarCollapsed ? 'lg:flex-col lg:p-2 lg:gap-2' : 'justify-between p-2.5'"
-                class="flex items-center gap-2.5 bg-white rounded-2xl border border-slate-200/80 shadow-2xs">
+        <!-- Sidebar Footer (Style Swift Check : Sobre, compact, badge rôle ambre) -->
+        <div class="border-t border-white/[0.07] bg-[#0a101f]"
+            [ngClass]="isSidebarCollapsed ? 'p-2.5' : 'px-3.5 py-3'">
+            <div [ngClass]="isSidebarCollapsed ? 'lg:flex-col lg:gap-2' : 'justify-between'"
+                class="flex items-center gap-2.5">
                 <div class="flex items-center gap-2.5 min-w-0">
                     <div class="relative flex-shrink-0" [title]="username">
                         <div
-                            class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-cyan-500 text-white font-extrabold text-xs flex items-center justify-center shadow-xs">
+                            class="w-8 h-8 rounded-lg bg-slate-800 border border-white/10 text-emerald-400 font-bold text-xs flex items-center justify-center">
                             {{ userInitials }}
                         </div>
                         <span
-                            class="absolute -bottom-0.5 -end-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                            class="absolute -bottom-0.5 -end-0.5 w-2 h-2 bg-emerald-500 border-[1.5px] border-[#0a101f] rounded-full"></span>
                     </div>
                     <div class="min-w-0" [class.lg:hidden]="isSidebarCollapsed">
-                        <p class="text-xs font-extrabold text-slate-900 truncate">{{ username }}</p>
-                        <p class="text-[10px] text-indigo-600 font-semibold truncate">{{ 'MENU.USER_ROLE' | translate }}</p>
+                        <p class="text-xs font-bold text-white truncate">{{ username }}</p>
+                        <span class="inline-block mt-0.5 px-1.5 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wider bg-amber-500/20 text-amber-400">
+                            {{ 'MENU.USER_ROLE' | translate }}
+                        </span>
                     </div>
                 </div>
 
                 <button (click)="logout()"
-                    class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all flex-shrink-0 cursor-pointer"
+                    class="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-white/5 transition-all flex-shrink-0 cursor-pointer"
                     [title]="'MENU.LOGOUT' | translate">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -291,21 +265,17 @@
                     </svg>
                 </button>
             </div>
-
-            <p [class.lg:hidden]="isSidebarCollapsed" class="text-center text-[10px] text-slate-400 font-medium">
-                {{ 'MENU.VERSION' | translate }}
-            </p>
         </div>
     </aside>
 
-    <!-- Main Content Area (Toile Lumineuse sans cadre sombre) -->
+    <!-- Main Content Area (Toile Neige Ultra-Propre collée directement à la sidebar) -->
     <div class="flex-1 flex flex-col overflow-hidden bg-slate-50">
-        <!-- Mobile Header Bar (Claire & Moderne) -->
+        <!-- Mobile Header Bar -->
         <header
-            class="lg:hidden bg-white/95 backdrop-blur-md text-slate-900 px-4 py-3 flex items-center justify-between border-b border-slate-200/80 shadow-2xs z-30 sticky top-0">
+            class="lg:hidden bg-white text-slate-900 px-4 py-3 flex items-center justify-between border-b border-slate-200 z-30 sticky top-0">
             <div class="flex items-center gap-3 min-w-0">
                 <button (click)="isSidebarOpen = true"
-                    class="p-2 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 focus:outline-none transition-colors"
+                    class="p-2 rounded-xl text-slate-600 hover:text-emerald-600 hover:bg-emerald-50 focus:outline-none transition-colors"
                     [attr.aria-label]="'MENU.OPEN_MENU' | translate">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -318,7 +288,7 @@
 
             <div class="flex items-center gap-2">
                 <button type="button" (click)="openCommandPalette()"
-                    class="p-2 rounded-xl bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 transition-colors"
+                    class="p-2 rounded-xl bg-slate-100 hover:bg-emerald-50 text-slate-600 hover:text-emerald-600 transition-colors"
                     title="Recherche rapide">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -326,21 +296,21 @@
                     </svg>
                 </button>
                 <a routerLink="/home/dictee-rapide"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full btn-primary-lumiere text-xs font-bold"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl btn-emerald text-xs font-bold"
                     title="Dictée vocale rapide">
                     <span>🎙️ Dictée</span>
                 </a>
             </div>
         </header>
 
-        <!-- Router Outlet Content Canvas with Luminous Sticky Topbar -->
+        <!-- Router Outlet Content Canvas with Clean Sticky Topbar -->
         <main class="flex-1 overflow-y-auto bg-slate-50 relative flex flex-col">
 
-            <!-- Desktop Topbar (Sticky, Lumineuse & Ergonomique) -->
-            <header class="hidden lg:flex items-center justify-between gap-4 px-7 py-3 bg-white/90 backdrop-blur-md border-b border-slate-200/75 sticky top-0 z-30">
+            <!-- Desktop Topbar (Blanc Pur, Ultra-Lisible) -->
+            <header class="hidden lg:flex items-center justify-between gap-4 px-7 py-3 bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30">
                 <!-- Section & Date -->
                 <div class="flex items-center gap-3 min-w-0">
-                    <span class="w-2 h-2 rounded-full bg-indigo-600 shrink-0"></span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
                     <h2 class="text-sm font-extrabold text-slate-900 tracking-tight truncate">{{ currentSectionLabel }}</h2>
                     <span class="h-3.5 w-px bg-slate-200"></span>
                     <span class="text-xs font-medium text-slate-400 capitalize truncate">{{ todayFormatted }}</span>
@@ -348,7 +318,7 @@
 
                 <!-- Center Search Bar Ctrl+K -->
                 <button type="button" (click)="openCommandPalette()"
-                    class="flex-1 max-w-md flex items-center justify-between gap-3 px-3.5 py-2 rounded-xl bg-slate-50/90 hover:bg-indigo-50/50 border border-slate-200/90 hover:border-indigo-200 text-slate-500 hover:text-slate-800 transition-all cursor-pointer">
+                    class="flex-1 max-w-md flex items-center justify-between gap-3 px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-white border border-slate-200 hover:border-emerald-400 text-slate-500 hover:text-slate-800 transition-all cursor-pointer">
                     <span class="flex items-center gap-2 text-xs font-medium truncate">
                         <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -356,7 +326,7 @@
                         </svg>
                         <span class="truncate">Rechercher un dossier, un client, une action...</span>
                     </span>
-                    <kbd class="px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-[10px] font-bold text-slate-500 shadow-2xs shrink-0">
+                    <kbd class="px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-[10px] font-bold text-slate-500 shrink-0">
                         Ctrl K
                     </kbd>
                 </button>
@@ -364,7 +334,7 @@
                 <!-- Right Utilities : Dictée Rapide + Langue -->
                 <div class="flex items-center gap-2.5 shrink-0">
                     <a routerLink="/home/dictee-rapide"
-                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl btn-primary-lumiere text-xs font-bold cursor-pointer">
+                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl btn-emerald text-xs font-bold cursor-pointer">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -374,7 +344,7 @@
 
                     <div class="relative flex items-center">
                         <select (change)="changeLanguage($event)" [value]="currentLang"
-                            class="ps-3 pe-7 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 cursor-pointer appearance-none focus:outline-none">
+                            class="ps-3 pe-7 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 cursor-pointer appearance-none focus:outline-none">
                             <option value="fr">FR</option>
                             <option value="en">EN</option>
                             <option value="es">ES</option>
@@ -395,7 +365,7 @@
 
             <!-- Bouton flottant Dictée Rapide (Mobile uniquement) -->
             <a routerLink="/home/dictee-rapide"
-                class="lg:hidden fixed bottom-5 end-5 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full btn-primary-lumiere text-xs font-extrabold shadow-lg transition-all active:scale-95"
+                class="lg:hidden fixed bottom-5 end-5 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full btn-emerald text-xs font-extrabold shadow-lg transition-all active:scale-95"
                 title="Dictée vocale / Note rapide">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
