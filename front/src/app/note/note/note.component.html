@@ -84,6 +84,12 @@
             </span>
 
             <div class="flex items-center gap-1">
+              <button type="button" (click)="exportNoteToWord(note)" [disabled]="exportingNoteId === note.id"
+                class="px-2 py-1.5 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-extrabold transition-colors shadow-2xs cursor-pointer disabled:opacity-50"
+                title="Exporter en Microsoft Word (.docx)">
+                {{ exportingNoteId === note.id ? '...' : '.docx' }}
+              </button>
+
               <button type="button" (click)="editNote(note)"
                 class="p-1.5 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-200 text-slate-600 hover:text-indigo-600 transition-colors shadow-2xs cursor-pointer"
                 [title]="'NOTE.EDIT' | translate">

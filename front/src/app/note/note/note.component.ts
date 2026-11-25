@@ -9,6 +9,7 @@ import { NoteService } from '../../services/note.service';
 import { NoteCategoryService } from '../../services/note-category.service';
 import { UserService } from '../../services/user.service';
 import { AlertService } from '../../services/alert-service';
+import { WordExportService } from '../../services/word-export.service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
@@ -24,6 +25,8 @@ export class NoteComponent implements OnInit, OnChanges {
   private noteCategoryService = inject(NoteCategoryService);
   private userService = inject(UserService);
   private route = inject(ActivatedRoute);
+  private wordExportService = inject(WordExportService);
+  exportingNoteId: string | number | null = null;
 
   @Input() dossierId!: string | number;
   @Input() dossierID!: string | number;
@@ -201,6 +204,22 @@ export class NoteComponent implements OnInit, OnChanges {
   openNoteCreationModal(): void {
     this.selectedNote = null;
     this.showNoteDialog = true;
+  }
+
+  exportNoteToWord(note: Note): void {
+    if (!note.id || this.exportingNoteId) return;
+    this.exportingNoteId = note.id;
+    const safeTitle = (note.title || `Note_${note.id}`).replace(/[^a-zA-Z0-9._-]/g, '_');
+    this.wordExportService.downloadNote(note.id, `Note_${safeTitle}.docx`).subscribe({
+      next: () => {
+        this.exportingNoteId = null;
+      },
+      error: (err) => {
+        console.error('Failed to export note to Word:', err);
+        this.exportingNoteId = null;
+        this.alertService.displayMessage('Erreur', 'Impossible d\'exporter cette note en Word (.docx).', 'error');
+      }
+    });
   }
 
   editNote(note: Note): void {

@@ -6,6 +6,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { environment } from '../../../environments/environment';
 import { AiSource, AiVerification } from '../../shared/ai-sources/ai-sources.model';
 import { AiSourcesPanelComponent } from '../../shared/ai-sources/ai-sources-panel.component';
+import { WordExportService } from '../../services/word-export.service';
 
 @Component({
     selector: 'app-dossier-strategie',
@@ -42,8 +43,10 @@ export class DossierStrategieComponent implements OnInit {
     chatHistory = signal<{ role: string, content: string }[]>([]);
     chatInput = signal<string>('');
     isChatLoading = signal<boolean>(false);
+    isExportingWord = signal<boolean>(false);
+    isExportingChatWord = signal<boolean>(false);
 
-    constructor(private http: HttpClient, private sanitizer: DomSanitizer) { }
+    constructor(private http: HttpClient, private sanitizer: DomSanitizer, private wordExportService: WordExportService) { }
 
     ngOnInit() {
         if (this.selectedDossier && this.selectedDossier.aiStrategy) {
@@ -84,6 +87,32 @@ export class DossierStrategieComponent implements OnInit {
                 }
             },
             error: (err) => console.error("Erreur suppression historique:", err)
+        });
+    }
+
+    exportStrategyToWord() {
+        if (!this.dossierId || this.isExportingWord()) return;
+        this.isExportingWord.set(true);
+        const ref = this.selectedDossier?.referenceInterne || this.dossierId;
+        this.wordExportService.downloadStrategy(this.dossierId, `Strategie_${ref}.docx`).subscribe({
+            next: () => this.isExportingWord.set(false),
+            error: (err) => {
+                console.error('Erreur export Word stratégie:', err);
+                this.isExportingWord.set(false);
+            }
+        });
+    }
+
+    exportChatToWord() {
+        if (!this.dossierId || this.isExportingChatWord()) return;
+        this.isExportingChatWord.set(true);
+        const ref = this.selectedDossier?.referenceInterne || this.dossierId;
+        this.wordExportService.downloadChat(this.dossierId, `Discussion_IA_${ref}.docx`).subscribe({
+            next: () => this.isExportingChatWord.set(false),
+            error: (err) => {
+                console.error('Erreur export Word discussion:', err);
+                this.isExportingChatWord.set(false);
+            }
         });
     }
 
