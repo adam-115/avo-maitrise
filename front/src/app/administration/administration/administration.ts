@@ -46,10 +46,6 @@ export class Administration {
     this.navigationService.navigateToJurisprudenceManagement();
   }
 
-  navigateToAiAssistant(): void {
-    this.router.navigate(['home', 'ai-test']);
-  }
-
   navigateToAiConfiguration(): void {
     this.router.navigate(['home', 'ai-configuration']);
   }

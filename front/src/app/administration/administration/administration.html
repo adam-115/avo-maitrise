@@ -410,50 +410,6 @@
       </div>
     </a>
 
-    <!-- Module 7: Assistant IA & Stratégie -->
-    <a *ngIf="aiStatusService.isAiEnabled$ | async" (click)="navigateToAiAssistant()"
-      class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-sky-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
-      <div
-        class="absolute top-0 inset-x-0 h-1 bg-transparent group-hover:bg-gradient-to-r group-hover:from-sky-500 group-hover:to-cyan-600 transition-all">
-      </div>
-
-      <div class="space-y-4">
-        <div class="flex items-center justify-between">
-          <div
-            class="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-200 text-sky-600 flex items-center justify-center shadow-xs group-hover:bg-sky-600 group-hover:text-white transition-colors duration-200">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-              </path>
-            </svg>
-          </div>
-          <span
-            class="p-2 rounded-xl bg-slate-50 group-hover:bg-sky-50 text-slate-400 group-hover:text-sky-600 transition-colors">
-            <svg class="w-5 h-5 transform group-hover:translate-x-1 transition-transform" fill="none"
-              stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </span>
-        </div>
-
-        <div>
-          <h3 class="text-lg font-bold text-slate-900 group-hover:text-sky-700 transition-colors">
-            Avocat Assistant IA
-          </h3>
-          <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">
-            Discutez avec l'IA pour analyser vos dossiers et préparer des stratégies.
-          </p>
-        </div>
-      </div>
-
-      <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-sky-700">
-        <span>Ouvrir l'assistant</span>
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-        </svg>
-      </div>
-    </a>
-
     <!-- Module 8: Configuration IA -->
     <a (click)="navigateToAiConfiguration()"
       class="group relative flex flex-col justify-between cursor-pointer rounded-2xl bg-white border-2 border-slate-300 hover:border-pink-400 hover:shadow-xl transition-all duration-300 p-6 overflow-hidden active:scale-[0.99]">
