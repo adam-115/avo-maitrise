@@ -71,9 +71,18 @@
 
         <!-- Description / Content -->
         <div>
-          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-            {{ 'NOTE_DIALOG.CONTENT_LABEL' | translate }} <span class="text-red-500">*</span>
-          </label>
+          <div class="flex items-center justify-between gap-2 mb-1.5">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+              {{ 'NOTE_DIALOG.CONTENT_LABEL' | translate }} <span class="text-red-500">*</span>
+            </label>
+            <button *ngIf="!isViewOnly && voiceService.isSpeechSupported" type="button" (click)="toggleDictation()"
+              class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer"
+              [ngClass]="isDictating ? 'bg-rose-600 text-white border-rose-600 animate-pulse' : 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'">
+              <span>{{ isDictating ? '⏹ Arrêter la dictée' : '🎙️ Dicter' }}</span>
+            </button>
+          </div>
+          <p *ngIf="dictationInterim" class="text-[11px] text-indigo-600 italic mb-1">« {{ dictationInterim }}… »</p>
+          <p *ngIf="dictationError" class="text-[11px] text-rose-600 font-semibold mb-1">{{ dictationError }}</p>
           <textarea formControlName="description" rows="6"
             [placeholder]="'NOTE_DIALOG.CONTENT_PLACEHOLDER' | translate"
             [ngClass]="{

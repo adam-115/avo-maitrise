@@ -1,7 +1,6 @@
 package com.avo.dtos;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
@@ -16,6 +15,7 @@ public class NoteDTO {
     private Long categoryId;
     private String categoryLabel;
     private String categoryColor;
+    private Long audioDocumentId;
     private Date createdAt;
     private Date updatedAt;
 }

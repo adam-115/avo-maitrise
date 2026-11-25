@@ -246,6 +246,10 @@ export const routes: Routes = [
       {
         path: 'mail-configuration',
         loadComponent: () => import('./administration/mail-configuration/mail-configuration.component').then(m => m.MailConfigurationComponent),
+      },
+      {
+        path: 'dictee-rapide',
+        loadComponent: () => import('./voice-note/voice-note-quick.component').then(m => m.VoiceNoteQuickComponent),
       }
     ]
 

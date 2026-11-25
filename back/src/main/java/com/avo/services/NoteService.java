@@ -100,6 +100,9 @@ public class NoteService {
 
         existing.setTitle(dto.getTitle());
         existing.setDescription(dto.getDescription());
+        if (dto.getAudioDocumentId() != null) {
+            existing.setAudioDocumentId(dto.getAudioDocumentId());
+        }
         attachRelatedEntities(existing, dto);
 
         Note saved = repository.save(existing);

@@ -2,7 +2,7 @@ import { NavigationService } from './../services/navigation-service';
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterOutlet, NavigationEnd, Event as RouterEvent } from '@angular/router';
+import { Router, RouterLink, RouterOutlet, NavigationEnd, Event as RouterEvent } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { KeycloakService } from './../services/keycloak.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -14,7 +14,7 @@ import { MailIntegrationStatusService } from './../services/mail-integration-sta
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterOutlet, FormsModule, CommonModule, TranslatePipe],
+  imports: [RouterOutlet, RouterLink, FormsModule, CommonModule, TranslatePipe],
   templateUrl: './home.html',
   styleUrl: './home.css'
 })

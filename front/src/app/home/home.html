@@ -547,16 +547,34 @@
                 </button>
                 <img src="/logo-app.jpg" alt="SI Legal" class="h-8 w-auto rounded shadow-sm">
             </div>
-            <span
-                class="text-xs font-bold uppercase tracking-wider text-cyan-300 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-800/60">
-                SI-LÉGAL
-            </span>
+            <div class="flex items-center gap-2">
+                <a routerLink="/home/dictee-rapide"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-sm transition-colors"
+                    title="Dictée vocale rapide">
+                    <span>🎙️ Dictée</span>
+                </a>
+                <span
+                    class="text-xs font-bold uppercase tracking-wider text-cyan-300 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-800/60">
+                    SI-LÉGAL
+                </span>
+            </div>
         </header>
 
         <!-- Router Outlet Content Canvas with subtle outer shadow and 2xl rounded corners -->
         <main
             class="flex-1 overflow-y-auto bg-slate-50 lg:rounded-2xl lg:shadow-2xl lg:border lg:border-slate-800/60 relative">
             <router-outlet></router-outlet>
+
+            <!-- Bouton flottant discret Dictée Vocale Rapide (1 tap sur mobile & desktop) -->
+            <a routerLink="/home/dictee-rapide"
+                class="fixed bottom-5 end-5 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-xl shadow-indigo-900/25 transition-all hover:scale-105 active:scale-95"
+                title="Dictée vocale / Note rapide">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+                <span class="hidden sm:inline">Dictée rapide</span>
+            </a>
         </main>
     </div>
 </div>

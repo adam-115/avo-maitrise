@@ -29,6 +29,9 @@ public class Note {
     @JoinColumn(name = "category_id")
     private NoteCategory category;
 
+    @Column(name = "audio_document_id")
+    private Long audioDocumentId;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt;
@@ -56,6 +59,9 @@ public class Note {
 
     public NoteCategory getCategory() { return category; }
     public void setCategory(NoteCategory category) { this.category = category; }
+
+    public Long getAudioDocumentId() { return audioDocumentId; }
+    public void setAudioDocumentId(Long audioDocumentId) { this.audioDocumentId = audioDocumentId; }
 
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }

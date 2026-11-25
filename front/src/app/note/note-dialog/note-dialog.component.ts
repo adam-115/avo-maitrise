@@ -1,9 +1,10 @@
-import { Component, EventEmitter, inject, Input, OnInit, OnChanges, SimpleChanges, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Note, NoteCategory } from '../../appTypes';
 import { NoteCategoryService } from '../../services/note-category.service';
+import { VoiceNoteService } from '../../services/voice-note.service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
@@ -13,8 +14,13 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
   templateUrl: './note-dialog.component.html',
   styleUrl: './note-dialog.component.css'
 })
-export class NoteDialogComponent implements OnInit, OnChanges {
+export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
   private noteCategoryService = inject(NoteCategoryService);
+  public voiceService = inject(VoiceNoteService);
+
+  isDictating = false;
+  dictationInterim = '';
+  dictationError = '';
 
   @Input() categories: NoteCategory[] = [];
   @Input() dossierId: string | number = '';
@@ -98,7 +104,42 @@ export class NoteDialogComponent implements OnInit, OnChanges {
     return !!this.noteToEdit && !!this.noteToEdit.id;
   }
 
+  ngOnDestroy(): void {
+    this.voiceService.stopRecognition();
+  }
+
+  toggleDictation(): void {
+    if (this.isDictating) {
+      this.voiceService.stopRecognition();
+      this.isDictating = false;
+      this.dictationInterim = '';
+      return;
+    }
+    this.dictationError = '';
+    const started = this.voiceService.startRecognition('fr-FR', {
+      onFinal: chunk => {
+        const current = (this.noteForm.get('description')?.value || '').trim();
+        this.noteForm.patchValue({ description: current ? `${current} ${chunk}` : chunk });
+        this.dictationInterim = '';
+      },
+      onInterim: text => {
+        this.dictationInterim = text;
+      },
+      onError: msg => {
+        this.dictationError = msg;
+        this.isDictating = false;
+        this.dictationInterim = '';
+      },
+      onEnd: () => {
+        this.isDictating = false;
+        this.dictationInterim = '';
+      }
+    });
+    this.isDictating = started;
+  }
+
   onClose(): void {
+    this.voiceService.stopRecognition();
     this.closeDialog.emit();
     this.closeModalEvent.emit();
   }

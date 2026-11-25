@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -9,6 +9,7 @@ import { NoteService } from '../../services/note.service';
 import { NoteCategoryService } from '../../services/note-category.service';
 import { UserService } from '../../services/user.service';
 import { AlertService } from '../../services/alert-service';
+import { DocumentService } from '../../services/document.service';
 import { WordExportService } from '../../services/word-export.service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
@@ -19,14 +20,17 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
   templateUrl: './note.component.html',
   styleUrl: './note.component.css'
 })
-export class NoteComponent implements OnInit, OnChanges {
+export class NoteComponent implements OnInit, OnChanges, OnDestroy {
   private alertService = inject(AlertService);
   private noteService = inject(NoteService);
   private noteCategoryService = inject(NoteCategoryService);
   private userService = inject(UserService);
   private route = inject(ActivatedRoute);
+  private documentService = inject(DocumentService);
   private wordExportService = inject(WordExportService);
   exportingNoteId: string | number | null = null;
+  loadingAudioNoteId: string | number | null = null;
+  audioUrls: Record<string, string> = {};
 
   @Input() dossierId!: string | number;
   @Input() dossierID!: string | number;
@@ -204,6 +208,37 @@ export class NoteComponent implements OnInit, OnChanges {
   openNoteCreationModal(): void {
     this.selectedNote = null;
     this.showNoteDialog = true;
+  }
+
+  ngOnDestroy(): void {
+    Object.values(this.audioUrls).forEach(u => URL.revokeObjectURL(u));
+    this.audioUrls = {};
+  }
+
+  getNoteAudioDocId(note: Note): number | null {
+    return (note as any)?.audioDocumentId ?? null;
+  }
+
+  getNoteAudioUrl(note: Note): string | null {
+    return note.id != null ? (this.audioUrls[String(note.id)] || null) : null;
+  }
+
+  loadNoteAudio(note: Note): void {
+    const docId = this.getNoteAudioDocId(note);
+    if (!docId || !note.id) return;
+    const key = String(note.id);
+    if (this.audioUrls[key]) return;
+    this.loadingAudioNoteId = note.id;
+    this.documentService.downloadDocumentFile(docId).subscribe({
+      next: blob => {
+        this.audioUrls[key] = URL.createObjectURL(blob);
+        this.loadingAudioNoteId = null;
+      },
+      error: () => {
+        this.loadingAudioNoteId = null;
+        this.alertService.displayMessage('Erreur', 'Impossible de charger l\'enregistrement audio.', 'error');
+      }
+    });
   }
 
   exportNoteToWord(note: Note): void {

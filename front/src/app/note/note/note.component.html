@@ -116,6 +116,16 @@
             <p class="text-xs text-slate-500 font-medium leading-relaxed line-clamp-4 whitespace-pre-line">
               {{ note.description }}
             </p>
+
+            <!-- Lecteur audio intégré si la note provient d'une dictée vocale -->
+            <div *ngIf="getNoteAudioDocId(note)" class="pt-2">
+              <button *ngIf="!getNoteAudioUrl(note)" type="button" (click)="loadNoteAudio(note)"
+                [disabled]="loadingAudioNoteId === note.id"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold cursor-pointer disabled:opacity-60 transition-colors">
+                <span>{{ loadingAudioNoteId === note.id ? 'Chargement audio...' : '🎧 Écouter l\'enregistrement audio' }}</span>
+              </button>
+              <audio *ngIf="getNoteAudioUrl(note)" [src]="getNoteAudioUrl(note)" controls autoplay class="w-full h-9 mt-1"></audio>
+            </div>
           </div>
         </div>
 
