@@ -1,42 +1,43 @@
-<div class="flex h-screen bg-slate-900 font-sans overflow-hidden">
+<div class="flex h-screen bg-slate-50 font-sans overflow-hidden text-slate-900">
     <!-- Backdrop Overlay for Mobile Drawer -->
     <div *ngIf="isSidebarOpen" (click)="isSidebarOpen = false"
-        class="fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-sm lg:hidden transition-opacity animate-fadeIn">
+        class="fixed inset-0 z-40 bg-slate-900/35 backdrop-blur-xs lg:hidden transition-opacity">
     </div>
 
-    <!-- Main Navigation Sidebar -->
+    <!-- Main Navigation Sidebar (Claire, Aérée & Structurée) -->
     <aside
         [ngClass]="{
           'translate-x-0 ease-out': isSidebarOpen,
           '-translate-x-full rtl:translate-x-full ease-in': !isSidebarOpen,
           'lg:w-20': isSidebarCollapsed,
-          'lg:w-72': !isSidebarCollapsed
+          'lg:w-68': !isSidebarCollapsed
         }"
-        class="fixed inset-y-0 start-0 z-50 w-72 bg-slate-900 text-white flex flex-col shadow-2xl lg:shadow-none transform transition-all duration-200 lg:!translate-x-0 lg:static lg:flex-shrink-0 select-none">
+        class="fixed inset-y-0 start-0 z-50 w-68 bg-white text-slate-700 border-e border-slate-200/85 flex flex-col shadow-xl lg:shadow-none transform transition-all duration-200 lg:!translate-x-0 lg:static lg:flex-shrink-0 select-none">
 
-        <!-- Top Accent Bar (Champagne Gold Hairline) -->
-        <div class="h-0.5 gold-accent-bar"></div>
+        <!-- Fine Ligne Lumineuse en En-tête -->
+        <div class="h-1 lumiere-accent-bar"></div>
 
         <!-- Brand & Header Container -->
-        <div class="border-b border-white/10 flex flex-col items-center bg-slate-950/50 relative gap-3 transition-all"
-            [ngClass]="isSidebarCollapsed ? 'p-3 lg:px-2.5 lg:py-4' : 'px-5 py-4'">
-            <!-- Brand Logo & Collapse Button -->
+        <div class="border-b border-slate-100 flex flex-col items-center relative gap-3 transition-all"
+            [ngClass]="isSidebarCollapsed ? 'p-3 lg:px-2.5 lg:py-4' : 'px-4 py-4'">
             <div class="flex items-center justify-between w-full gap-2" [class.lg:flex-col]="isSidebarCollapsed">
                 <a (click)="navigateToHome()" class="flex items-center gap-3 cursor-pointer group min-w-0"
                     [title]="cabinetName">
-                    <img [src]="cabinetLogoSrc" [alt]="cabinetName"
-                        class="h-10 w-10 object-cover rounded-xl shadow-md ring-1 ring-cyan-400/30 group-hover:scale-105 transition-transform duration-200 flex-shrink-0 bg-white">
+                    <div class="p-0.5 rounded-xl bg-gradient-to-br from-indigo-500/20 to-cyan-400/20 ring-1 ring-indigo-100 flex-shrink-0">
+                        <img [src]="cabinetLogoSrc" [alt]="cabinetName"
+                            class="h-9 w-9 object-cover rounded-[10px] bg-white group-hover:scale-105 transition-transform duration-200">
+                    </div>
                     <div class="flex flex-col min-w-0" [class.lg:hidden]="isSidebarCollapsed">
                         <span
-                            class="text-sm font-extrabold tracking-tight text-white group-hover:text-cyan-300 transition-colors truncate">{{ cabinetName }}</span>
-                        <span class="text-[10px] font-bold text-cyan-400/80 uppercase tracking-[0.14em] truncate">{{
+                            class="text-sm font-extrabold tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors truncate">{{ cabinetName }}</span>
+                        <span class="text-[10px] font-bold text-indigo-600/80 uppercase tracking-[0.12em] truncate">{{
                             'MENU.CABINET_BADGE' | translate }}</span>
                     </div>
                 </a>
 
                 <!-- Desktop Collapse Toggle -->
                 <button type="button" (click)="toggleSidebarCollapse()"
-                    class="hidden lg:inline-flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-white/5 border border-white/10 hover:border-cyan-400/30 transition-colors cursor-pointer flex-shrink-0"
+                    class="hidden lg:inline-flex items-center justify-center p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 border border-slate-200/80 hover:border-indigo-200 transition-colors cursor-pointer flex-shrink-0"
                     [title]="isSidebarCollapsed ? 'Déplier le menu' : 'Replier le menu'">
                     <svg class="w-4 h-4 transition-transform duration-200" [class.rotate-180]="isSidebarCollapsed"
                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,7 +48,7 @@
 
                 <!-- Mobile Close Button -->
                 <button (click)="isSidebarOpen = false"
-                    class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                    class="lg:hidden p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
                     [attr.aria-label]="'MENU.CLOSE_MENU' | translate">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -56,48 +57,36 @@
                 </button>
             </div>
 
-            <!-- Mobile Language Switcher (sur desktop il est dans la topbar) -->
-            <div class="lg:hidden w-full relative flex items-center p-1 bg-white/5 rounded-xl border border-white/10">
+            <!-- Mobile Language Switcher -->
+            <div class="lg:hidden w-full relative flex items-center p-1 bg-slate-50 rounded-xl border border-slate-200">
                 <select (change)="changeLanguage($event)" [value]="currentLang"
-                    class="w-full ps-2.5 pe-7 py-1 bg-transparent border-none text-xs text-slate-200 focus:ring-0 cursor-pointer font-bold appearance-none outline-none">
-                    <option value="fr" class="bg-slate-900 text-white">{{ 'LANGUAGE.FR' | translate }}</option>
-                    <option value="en" class="bg-slate-900 text-white">{{ 'LANGUAGE.EN' | translate }}</option>
-                    <option value="es" class="bg-slate-900 text-white">{{ 'LANGUAGE.ES' | translate }}</option>
-                    <option value="de" class="bg-slate-900 text-white">{{ 'LANGUAGE.DE' | translate }}</option>
-                    <option value="it" class="bg-slate-900 text-white">{{ 'LANGUAGE.IT' | translate }}</option>
-                    <option value="ar" class="bg-slate-900 text-white">{{ 'LANGUAGE.AR' | translate }}</option>
+                    class="w-full ps-2.5 pe-7 py-1 bg-transparent border-none text-xs text-slate-700 focus:ring-0 cursor-pointer font-bold appearance-none outline-none">
+                    <option value="fr">{{ 'LANGUAGE.FR' | translate }}</option>
+                    <option value="en">{{ 'LANGUAGE.EN' | translate }}</option>
+                    <option value="es">{{ 'LANGUAGE.ES' | translate }}</option>
+                    <option value="de">{{ 'LANGUAGE.DE' | translate }}</option>
+                    <option value="it">{{ 'LANGUAGE.IT' | translate }}</option>
+                    <option value="ar">{{ 'LANGUAGE.AR' | translate }}</option>
                 </select>
             </div>
         </div>
 
-        <!-- Navigation Links Container -->
+        <!-- Navigation Links Container — Organisée en 4 pôles ergonomiques -->
         <nav class="flex-grow px-3 py-4 space-y-5 overflow-y-auto" [class.sidebar-collapsed]="isSidebarCollapsed">
 
-            <!-- SECTION 1: Espace Principal -->
+            <!-- PÔLE 1 : Quotidien -->
             <div class="space-y-1">
-                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
                     {{ 'MENU.SECTION_CORE' | translate }}
                 </p>
 
                 <!-- Accueil -->
-                <a (click)="navigateToHome()" [class.bg-gradient-to-r]="activeRoute === 'home'"
-                    [class.from-cyan-950/90]="activeRoute === 'home'" [class.via-slate-800/80]="activeRoute === 'home'"
-                    [class.to-slate-800/40]="activeRoute === 'home'" [class.text-cyan-200]="activeRoute === 'home'"
-                    [class.border-cyan-500/40]="activeRoute === 'home'" [class.shadow-sm]="activeRoute === 'home'"
-                    [class.shadow-cyan-950/50]="activeRoute === 'home'" [class.before:absolute]="activeRoute === 'home'"
-                    [class.before:inset-y-1.5]="activeRoute === 'home'" [class.before:start-0]="activeRoute === 'home'"
-                    [class.before:w-1.5]="activeRoute === 'home'" [class.before:rounded-e-full]="activeRoute === 'home'"
-                    [class.before:bg-gradient-to-b]="activeRoute === 'home'"
-                    [class.before:from-cyan-400]="activeRoute === 'home'"
-                    [class.before:to-blue-500]="activeRoute === 'home'" [class.text-slate-300]="activeRoute !== 'home'"
-                    [class.hover:bg-slate-800/60]="activeRoute !== 'home'"
-                    [class.hover:text-cyan-300]="activeRoute !== 'home'"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === 'home'"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === 'home'"
-                        [class.text-slate-400]="activeRoute !== 'home'" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                <a (click)="navigateToHome()"
+                    [ngClass]="activeRoute === 'home' ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === 'home' ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
@@ -105,96 +94,45 @@
                 </a>
 
                 <!-- Calendrier -->
-                <a (click)="navigateToCalendrier()" [class.bg-gradient-to-r]="activeRoute === paths.CALENDRIER"
-                    [class.from-cyan-950/90]="activeRoute === paths.CALENDRIER"
-                    [class.via-slate-800/80]="activeRoute === paths.CALENDRIER"
-                    [class.to-slate-800/40]="activeRoute === paths.CALENDRIER"
-                    [class.text-cyan-200]="activeRoute === paths.CALENDRIER"
-                    [class.border-cyan-500/40]="activeRoute === paths.CALENDRIER"
-                    [class.shadow-sm]="activeRoute === paths.CALENDRIER"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.CALENDRIER"
-                    [class.before:absolute]="activeRoute === paths.CALENDRIER"
-                    [class.before:inset-y-1.5]="activeRoute === paths.CALENDRIER"
-                    [class.before:start-0]="activeRoute === paths.CALENDRIER"
-                    [class.before:w-1.5]="activeRoute === paths.CALENDRIER"
-                    [class.before:rounded-e-full]="activeRoute === paths.CALENDRIER"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.CALENDRIER"
-                    [class.before:from-cyan-400]="activeRoute === paths.CALENDRIER"
-                    [class.before:to-blue-500]="activeRoute === paths.CALENDRIER"
-                    [class.text-slate-300]="activeRoute !== paths.CALENDRIER"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.CALENDRIER"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.CALENDRIER"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.CALENDRIER"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.CALENDRIER"
-                        [class.text-slate-400]="activeRoute !== paths.CALENDRIER" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                <a (click)="navigateToCalendrier()"
+                    [ngClass]="activeRoute === paths.CALENDRIER ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.CALENDRIER ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>{{ 'MENU.CALENDAR' | translate }}</span>
                 </a>
 
-                <!-- Messagerie (Outlook / Gmail / IMAP) — Optionnel -->
+                <!-- Messagerie (Optionnel) -->
                 <a *ngIf="mailStatusService.isEnabled$ | async" (click)="navigateToMessagerie()"
-                    [class.bg-gradient-to-r]="activeRoute === paths.MESSAGERIE"
-                    [class.from-cyan-950/90]="activeRoute === paths.MESSAGERIE"
-                    [class.via-slate-800/80]="activeRoute === paths.MESSAGERIE"
-                    [class.to-slate-800/40]="activeRoute === paths.MESSAGERIE"
-                    [class.text-cyan-200]="activeRoute === paths.MESSAGERIE"
-                    [class.border-cyan-500/40]="activeRoute === paths.MESSAGERIE"
-                    [class.shadow-sm]="activeRoute === paths.MESSAGERIE"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.MESSAGERIE"
-                    [class.before:absolute]="activeRoute === paths.MESSAGERIE"
-                    [class.before:inset-y-1.5]="activeRoute === paths.MESSAGERIE"
-                    [class.before:start-0]="activeRoute === paths.MESSAGERIE"
-                    [class.before:w-1.5]="activeRoute === paths.MESSAGERIE"
-                    [class.before:rounded-e-full]="activeRoute === paths.MESSAGERIE"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.MESSAGERIE"
-                    [class.before:from-cyan-400]="activeRoute === paths.MESSAGERIE"
-                    [class.before:to-blue-500]="activeRoute === paths.MESSAGERIE"
-                    [class.text-slate-300]="activeRoute !== paths.MESSAGERIE"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.MESSAGERIE"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.MESSAGERIE"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.MESSAGERIE"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.MESSAGERIE"
-                        [class.text-slate-400]="activeRoute !== paths.MESSAGERIE" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                    [ngClass]="activeRoute === paths.MESSAGERIE ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.MESSAGERIE ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                     <span>Messagerie</span>
                 </a>
+            </div>
+
+            <!-- PÔLE 2 : Gestion Juridique & Documents -->
+            <div class="space-y-1">
+                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
+                    {{ 'MENU.SECTION_DOCUMENTS' | translate }}
+                </p>
 
                 <!-- Dossiers -->
-                <a (click)="navigateTODossier()" [class.bg-gradient-to-r]="activeRoute === paths.DOSSIER"
-                    [class.from-cyan-950/90]="activeRoute === paths.DOSSIER"
-                    [class.via-slate-800/80]="activeRoute === paths.DOSSIER"
-                    [class.to-slate-800/40]="activeRoute === paths.DOSSIER"
-                    [class.text-cyan-200]="activeRoute === paths.DOSSIER"
-                    [class.border-cyan-500/40]="activeRoute === paths.DOSSIER"
-                    [class.shadow-sm]="activeRoute === paths.DOSSIER"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.DOSSIER"
-                    [class.before:absolute]="activeRoute === paths.DOSSIER"
-                    [class.before:inset-y-1.5]="activeRoute === paths.DOSSIER"
-                    [class.before:start-0]="activeRoute === paths.DOSSIER"
-                    [class.before:w-1.5]="activeRoute === paths.DOSSIER"
-                    [class.before:rounded-e-full]="activeRoute === paths.DOSSIER"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.DOSSIER"
-                    [class.before:from-cyan-400]="activeRoute === paths.DOSSIER"
-                    [class.before:to-blue-500]="activeRoute === paths.DOSSIER"
-                    [class.text-slate-300]="activeRoute !== paths.DOSSIER"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.DOSSIER"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.DOSSIER"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.DOSSIER"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.DOSSIER"
-                        [class.text-slate-400]="activeRoute !== paths.DOSSIER" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                <a (click)="navigateTODossier()"
+                    [ngClass]="activeRoute === paths.DOSSIER ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.DOSSIER ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                     </svg>
@@ -202,178 +140,59 @@
                 </a>
 
                 <!-- Clients (CRM) -->
-                <a (click)="navigateTOClients()" [class.bg-gradient-to-r]="activeRoute === paths.CRM"
-                    [class.from-cyan-950/90]="activeRoute === paths.CRM"
-                    [class.via-slate-800/80]="activeRoute === paths.CRM"
-                    [class.to-slate-800/40]="activeRoute === paths.CRM"
-                    [class.text-cyan-200]="activeRoute === paths.CRM"
-                    [class.border-cyan-500/40]="activeRoute === paths.CRM" [class.shadow-sm]="activeRoute === paths.CRM"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.CRM"
-                    [class.before:absolute]="activeRoute === paths.CRM"
-                    [class.before:inset-y-1.5]="activeRoute === paths.CRM"
-                    [class.before:start-0]="activeRoute === paths.CRM" [class.before:w-1.5]="activeRoute === paths.CRM"
-                    [class.before:rounded-e-full]="activeRoute === paths.CRM"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.CRM"
-                    [class.before:from-cyan-400]="activeRoute === paths.CRM"
-                    [class.before:to-blue-500]="activeRoute === paths.CRM"
-                    [class.text-slate-300]="activeRoute !== paths.CRM"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.CRM"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.CRM"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.CRM"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.CRM"
-                        [class.text-slate-400]="activeRoute !== paths.CRM" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                <a (click)="navigateTOClients()"
+                    [ngClass]="activeRoute === paths.CRM ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.CRM ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20h-5v-2a3 3 0 00-5.356-1.857M9 20H4v-2a3 3 0 015-2.236M9 18V5l-2-1m-2-1h6a4 4 0 014 4v8m-10 0h10a4 4 0 004-4V5a4 4 0 00-4-4h-6a4 4 0 00-4 4v8z" />
                     </svg>
                     <span>{{ 'MENU.CLIENTS' | translate }}</span>
                 </a>
 
-                <!-- Avocat Assistant IA -->
+                <!-- Modèles & GED -->
+                <a (click)="navigateToModel()"
+                    [ngClass]="activeRoute === paths.MODEL ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.MODEL ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>{{ 'MENU.MODEL' | translate }}</span>
+                </a>
+
+                <!-- Avocat Assistant IA (Optionnel) -->
                 <a *ngIf="aiStatusService.isAiEnabled$ | async" (click)="navigateToAiAssistant()"
-                    [class.bg-gradient-to-r]="activeRoute === paths.AI_ASSISTANT"
-                    [class.from-cyan-950/90]="activeRoute === paths.AI_ASSISTANT"
-                    [class.via-slate-800/80]="activeRoute === paths.AI_ASSISTANT"
-                    [class.to-slate-800/40]="activeRoute === paths.AI_ASSISTANT"
-                    [class.text-cyan-200]="activeRoute === paths.AI_ASSISTANT"
-                    [class.border-cyan-500/40]="activeRoute === paths.AI_ASSISTANT"
-                    [class.shadow-sm]="activeRoute === paths.AI_ASSISTANT"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.AI_ASSISTANT"
-                    [class.before:absolute]="activeRoute === paths.AI_ASSISTANT"
-                    [class.before:inset-y-1.5]="activeRoute === paths.AI_ASSISTANT"
-                    [class.before:start-0]="activeRoute === paths.AI_ASSISTANT"
-                    [class.before:w-1.5]="activeRoute === paths.AI_ASSISTANT"
-                    [class.before:rounded-e-full]="activeRoute === paths.AI_ASSISTANT"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.AI_ASSISTANT"
-                    [class.before:from-cyan-400]="activeRoute === paths.AI_ASSISTANT"
-                    [class.before:to-blue-500]="activeRoute === paths.AI_ASSISTANT"
-                    [class.text-slate-300]="activeRoute !== paths.AI_ASSISTANT"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.AI_ASSISTANT"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.AI_ASSISTANT"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.AI_ASSISTANT"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.AI_ASSISTANT"
-                        [class.text-slate-400]="activeRoute !== paths.AI_ASSISTANT" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                    [ngClass]="activeRoute === paths.AI_ASSISTANT ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.AI_ASSISTANT ? 'text-indigo-600' : 'text-cyan-500 group-hover:text-indigo-600'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
-                    <span class="flex-1">Avocat Assistant</span>
-                    <span class="flex h-2 w-2">
-                        <span
-                            class="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-cyan-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                    </span>
+                    <span class="flex-1 truncate">Avocat Assistant</span>
+                    <span class="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-indigo-50 text-indigo-600 border border-indigo-100">IA</span>
                 </a>
             </div>
 
-            <!-- SECTION 2: Conformité & Vigilance (AML / KYC) -->
+            <!-- PÔLE 3 : Finances & Conformité -->
             <div class="space-y-1">
-                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                    {{ 'MENU.SECTION_COMPLIANCE' | translate }}
-                </p>
-
-                <!-- Conformité AML -->
-                <a (click)="navigateToAmlCompliance()" [class.bg-gradient-to-r]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.from-cyan-950/90]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.via-slate-800/80]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.to-slate-800/40]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.text-cyan-200]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.border-cyan-500/40]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.shadow-sm]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.before:absolute]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.before:inset-y-1.5]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.before:start-0]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.before:w-1.5]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.before:rounded-e-full]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.before:from-cyan-400]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.before:to-blue-500]="activeRoute === paths.AML_COMPLIANCE"
-                    [class.text-slate-300]="activeRoute !== paths.AML_COMPLIANCE"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.AML_COMPLIANCE"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.AML_COMPLIANCE"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.AML_COMPLIANCE"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.AML_COMPLIANCE"
-                        [class.text-slate-400]="activeRoute !== paths.AML_COMPLIANCE" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618" />
-                    </svg>
-                    <span>{{ 'MENU.AML' | translate }}</span>
-                </a>
-
-                <!-- Suivi des Diligences -->
-                <a (click)="navigateToClientDiligenceStatusList()"
-                    [class.bg-gradient-to-r]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.from-cyan-950/90]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.via-slate-800/80]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.to-slate-800/40]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.text-cyan-200]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.border-cyan-500/40]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.shadow-sm]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.before:absolute]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.before:inset-y-1.5]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.before:start-0]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.before:w-1.5]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.before:rounded-e-full]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.before:from-cyan-400]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.before:to-blue-500]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.text-slate-300]="activeRoute !== paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.CLIENT_DILIGENCE_STATUS_LIST"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST"
-                        [class.text-slate-400]="activeRoute !== paths.CLIENT_DILIGENCE_STATUS_LIST" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
-                    </svg>
-                    <span>{{ 'MENU.DILIGENCE_TRACKING' | translate }}</span>
-                </a>
-            </div>
-
-            <!-- SECTION 3: Finances & Facturation -->
-            <div class="space-y-1">
-                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
                     {{ 'MENU.SECTION_FINANCE' | translate }}
                 </p>
 
                 <!-- Facturation -->
-                <a (click)="navigateToFacturation()" [class.bg-gradient-to-r]="activeRoute === paths.BILLING"
-                    [class.from-cyan-950/90]="activeRoute === paths.BILLING"
-                    [class.via-slate-800/80]="activeRoute === paths.BILLING"
-                    [class.to-slate-800/40]="activeRoute === paths.BILLING"
-                    [class.text-cyan-200]="activeRoute === paths.BILLING"
-                    [class.border-cyan-500/40]="activeRoute === paths.BILLING"
-                    [class.shadow-sm]="activeRoute === paths.BILLING"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.BILLING"
-                    [class.before:absolute]="activeRoute === paths.BILLING"
-                    [class.before:inset-y-1.5]="activeRoute === paths.BILLING"
-                    [class.before:start-0]="activeRoute === paths.BILLING"
-                    [class.before:w-1.5]="activeRoute === paths.BILLING"
-                    [class.before:rounded-e-full]="activeRoute === paths.BILLING"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.BILLING"
-                    [class.before:from-cyan-400]="activeRoute === paths.BILLING"
-                    [class.before:to-blue-500]="activeRoute === paths.BILLING"
-                    [class.text-slate-300]="activeRoute !== paths.BILLING"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.BILLING"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.BILLING"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.BILLING"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.BILLING"
-                        [class.text-slate-400]="activeRoute !== paths.BILLING" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                <a (click)="navigateToFacturation()"
+                    [ngClass]="activeRoute === paths.BILLING ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.BILLING ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
                     </svg>
@@ -382,109 +201,57 @@
 
                 <!-- Tableau de Bord Facturation -->
                 <a (click)="navigateToBillingDashboard()"
-                    [class.bg-gradient-to-r]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.from-cyan-950/90]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.via-slate-800/80]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.to-slate-800/40]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.text-cyan-200]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.border-cyan-500/40]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.shadow-sm]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.before:absolute]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.before:inset-y-1.5]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.before:start-0]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.before:w-1.5]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.before:rounded-e-full]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.before:from-cyan-400]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.before:to-blue-500]="activeRoute === paths.BILLING_DASHBOARD"
-                    [class.text-slate-300]="activeRoute !== paths.BILLING_DASHBOARD"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.BILLING_DASHBOARD"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.BILLING_DASHBOARD"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.BILLING_DASHBOARD"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.BILLING_DASHBOARD"
-                        [class.text-slate-400]="activeRoute !== paths.BILLING_DASHBOARD" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
+                    [ngClass]="activeRoute === paths.BILLING_DASHBOARD ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.BILLING_DASHBOARD ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <span>{{ 'MENU.BILLING_DASHBOARD' | translate }}</span>
                 </a>
-            </div>
 
-            <!-- SECTION 4: Documents & GED -->
-            <div class="space-y-1">
-                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                    {{ 'MENU.SECTION_DOCUMENTS' | translate }}
-                </p>
-
-                <!-- Modèles & GED -->
-                <a (click)="navigateToModel()" [class.bg-gradient-to-r]="activeRoute === paths.MODEL"
-                    [class.from-cyan-950/90]="activeRoute === paths.MODEL"
-                    [class.via-slate-800/80]="activeRoute === paths.MODEL"
-                    [class.to-slate-800/40]="activeRoute === paths.MODEL"
-                    [class.text-cyan-200]="activeRoute === paths.MODEL"
-                    [class.border-cyan-500/40]="activeRoute === paths.MODEL"
-                    [class.shadow-sm]="activeRoute === paths.MODEL"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.MODEL"
-                    [class.before:absolute]="activeRoute === paths.MODEL"
-                    [class.before:inset-y-1.5]="activeRoute === paths.MODEL"
-                    [class.before:start-0]="activeRoute === paths.MODEL"
-                    [class.before:w-1.5]="activeRoute === paths.MODEL"
-                    [class.before:rounded-e-full]="activeRoute === paths.MODEL"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.MODEL"
-                    [class.before:from-cyan-400]="activeRoute === paths.MODEL"
-                    [class.before:to-blue-500]="activeRoute === paths.MODEL"
-                    [class.text-slate-300]="activeRoute !== paths.MODEL"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.MODEL"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.MODEL"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.MODEL"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.MODEL"
-                        [class.text-slate-400]="activeRoute !== paths.MODEL" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                <!-- Conformité AML -->
+                <a (click)="navigateToAmlCompliance()"
+                    [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.AML_COMPLIANCE ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944c-1.802 0-3.535.413-5.078 1.144M4.618 6.984C3.766 8.527 3 10.26 3 12c0 1.74.766 3.473 1.618 5.016m16.764-10.032C20.234 8.527 21 10.26 21 12c0 1.74-.766 3.473-1.618 5.016m-2.583-1.55c-.752.417-1.57.65-2.433.684M12 18c-1.74 0-3.473-.766-5.016-1.618M12 6c1.74 0 3.473.766 5.016 1.618" />
                     </svg>
-                    <span>{{ 'MENU.MODEL' | translate }}</span>
+                    <span>{{ 'MENU.AML' | translate }}</span>
+                </a>
+
+                <!-- Suivi des Diligences -->
+                <a (click)="navigateToClientDiligenceStatusList()"
+                    [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.CLIENT_DILIGENCE_STATUS_LIST ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                    </svg>
+                    <span>{{ 'MENU.DILIGENCE_TRACKING' | translate }}</span>
                 </a>
             </div>
 
-            <!-- SECTION 5: Système & Administration -->
+            <!-- PÔLE 4 : Système & Cabinet -->
             <div class="space-y-1">
-                <p class="px-3 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <p class="px-3 pb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">
                     {{ 'MENU.SECTION_SYSTEM' | translate }}
                 </p>
 
                 <!-- Administration -->
-                <a (click)="navigateToAdministration()" [class.bg-gradient-to-r]="activeRoute === paths.ADMINSTRATION"
-                    [class.from-cyan-950/90]="activeRoute === paths.ADMINSTRATION"
-                    [class.via-slate-800/80]="activeRoute === paths.ADMINSTRATION"
-                    [class.to-slate-800/40]="activeRoute === paths.ADMINSTRATION"
-                    [class.text-cyan-200]="activeRoute === paths.ADMINSTRATION"
-                    [class.border-cyan-500/40]="activeRoute === paths.ADMINSTRATION"
-                    [class.shadow-sm]="activeRoute === paths.ADMINSTRATION"
-                    [class.shadow-cyan-950/50]="activeRoute === paths.ADMINSTRATION"
-                    [class.before:absolute]="activeRoute === paths.ADMINSTRATION"
-                    [class.before:inset-y-1.5]="activeRoute === paths.ADMINSTRATION"
-                    [class.before:start-0]="activeRoute === paths.ADMINSTRATION"
-                    [class.before:w-1.5]="activeRoute === paths.ADMINSTRATION"
-                    [class.before:rounded-e-full]="activeRoute === paths.ADMINSTRATION"
-                    [class.before:bg-gradient-to-b]="activeRoute === paths.ADMINSTRATION"
-                    [class.before:from-cyan-400]="activeRoute === paths.ADMINSTRATION"
-                    [class.before:to-blue-500]="activeRoute === paths.ADMINSTRATION"
-                    [class.text-slate-300]="activeRoute !== paths.ADMINSTRATION"
-                    [class.hover:bg-slate-800/60]="activeRoute !== paths.ADMINSTRATION"
-                    [class.hover:text-cyan-300]="activeRoute !== paths.ADMINSTRATION"
-                    class="relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs sm:text-sm cursor-pointer border border-transparent transition-all duration-200 group">
-                    <svg class="w-5 h-5 flex-shrink-0 transition-transform group-hover:scale-110"
-                        [class.text-cyan-400]="activeRoute === paths.ADMINSTRATION"
-                        [class.drop-shadow-[0_0_8px_rgba(6,182,212,0.45)]]="activeRoute === paths.ADMINSTRATION"
-                        [class.text-slate-400]="activeRoute !== paths.ADMINSTRATION" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                <a (click)="navigateToAdministration()"
+                    [ngClass]="activeRoute === paths.ADMINSTRATION ? 'nav-item-active' : 'nav-item-idle'"
+                    class="nav-item group">
+                    <svg class="w-[18px] h-[18px] flex-shrink-0 transition-transform group-hover:scale-105"
+                        [ngClass]="activeRoute === paths.ADMINSTRATION ? 'text-indigo-600' : 'text-slate-400 group-hover:text-indigo-500'"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -495,66 +262,63 @@
             </div>
         </nav>
 
-        <!-- Sidebar Footer / User Profile & Logout -->
-        <div class="border-t border-slate-800/80 bg-slate-950/60 space-y-2.5"
-            [ngClass]="isSidebarCollapsed ? 'p-3 lg:px-2' : 'p-4'">
-            <!-- User Profile Glass Card -->
+        <!-- Sidebar Footer / User Profile & Logout (Clair & Épuré) -->
+        <div class="border-t border-slate-100 bg-slate-50/60 space-y-2"
+            [ngClass]="isSidebarCollapsed ? 'p-2.5' : 'p-3.5'">
             <div [ngClass]="isSidebarCollapsed ? 'lg:flex-col lg:p-2 lg:gap-2' : 'justify-between p-2.5'"
-                class="flex items-center gap-3 bg-slate-900/90 rounded-2xl border border-slate-800 shadow-sm">
-                <div class="flex items-center gap-3 min-w-0">
+                class="flex items-center gap-2.5 bg-white rounded-2xl border border-slate-200/80 shadow-2xs">
+                <div class="flex items-center gap-2.5 min-w-0">
                     <div class="relative flex-shrink-0" [title]="username">
                         <div
-                            class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-sky-600 to-cyan-600 text-white font-black text-xs flex items-center justify-center shadow-md shadow-indigo-950/40">
+                            class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-cyan-500 text-white font-extrabold text-xs flex items-center justify-center shadow-xs">
                             {{ userInitials }}
                         </div>
                         <span
-                            class="absolute -bottom-0.5 -end-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
+                            class="absolute -bottom-0.5 -end-0.5 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"></span>
                     </div>
                     <div class="min-w-0" [class.lg:hidden]="isSidebarCollapsed">
-                        <p class="text-xs font-black text-white truncate">{{ username }}</p>
-                        <p class="text-[10px] text-cyan-400 font-semibold truncate">{{ 'MENU.USER_ROLE' | translate }}
-                        </p>
+                        <p class="text-xs font-extrabold text-slate-900 truncate">{{ username }}</p>
+                        <p class="text-[10px] text-indigo-600 font-semibold truncate">{{ 'MENU.USER_ROLE' | translate }}</p>
                     </div>
                 </div>
 
-                <!-- Logout Button -->
                 <button (click)="logout()"
-                    class="p-2 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all flex-shrink-0 cursor-pointer"
+                    class="p-2 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-100 transition-all flex-shrink-0 cursor-pointer"
                     [title]="'MENU.LOGOUT' | translate">
-                    <svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
                 </button>
             </div>
 
-            <!-- Version Tag -->
-            <p [class.lg:hidden]="isSidebarCollapsed" class="text-center text-[10px] text-slate-500 font-medium">
+            <p [class.lg:hidden]="isSidebarCollapsed" class="text-center text-[10px] text-slate-400 font-medium">
                 {{ 'MENU.VERSION' | translate }}
             </p>
         </div>
     </aside>
 
-    <!-- Main Content Area with Elegant Floating Canvas Separation -->
-    <div class="flex-1 flex flex-col overflow-hidden lg:p-3 lg:ps-1.5 bg-slate-900">
-        <!-- Mobile Header Bar -->
+    <!-- Main Content Area (Toile Lumineuse sans cadre sombre) -->
+    <div class="flex-1 flex flex-col overflow-hidden bg-slate-50">
+        <!-- Mobile Header Bar (Claire & Moderne) -->
         <header
-            class="lg:hidden bg-slate-900 text-white px-4 py-3 flex items-center justify-between border-b border-slate-800 shadow-md z-30 sticky top-0">
+            class="lg:hidden bg-white/95 backdrop-blur-md text-slate-900 px-4 py-3 flex items-center justify-between border-b border-slate-200/80 shadow-2xs z-30 sticky top-0">
             <div class="flex items-center gap-3 min-w-0">
                 <button (click)="isSidebarOpen = true"
-                    class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none transition-colors"
+                    class="p-2 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 focus:outline-none transition-colors"
                     [attr.aria-label]="'MENU.OPEN_MENU' | translate">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
-                <img [src]="cabinetLogoSrc" [alt]="cabinetName" class="h-8 w-8 object-cover rounded-lg shadow-sm bg-white">
-                <span class="text-xs font-extrabold tracking-tight text-white truncate max-w-[110px]">{{ cabinetName }}</span>
+                <img [src]="cabinetLogoSrc" [alt]="cabinetName" class="h-8 w-8 object-cover rounded-lg border border-slate-200 bg-white">
+                <span class="text-xs font-extrabold tracking-tight text-slate-900 truncate max-w-[130px]">{{ cabinetName }}</span>
             </div>
+
             <div class="flex items-center gap-2">
                 <button type="button" (click)="openCommandPalette()"
-                    class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                    class="p-2 rounded-xl bg-slate-100 hover:bg-indigo-50 text-slate-600 hover:text-indigo-600 transition-colors"
                     title="Recherche rapide">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -562,21 +326,21 @@
                     </svg>
                 </button>
                 <a routerLink="/home/dictee-rapide"
-                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-sm transition-colors"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full btn-primary-lumiere text-xs font-bold"
                     title="Dictée vocale rapide">
                     <span>🎙️ Dictée</span>
                 </a>
             </div>
         </header>
 
-        <!-- Router Outlet Content Canvas with Executive Topbar -->
-        <main
-            class="flex-1 overflow-y-auto bg-slate-50 lg:rounded-2xl lg:shadow-2xl lg:border lg:border-white/10 relative flex flex-col">
+        <!-- Router Outlet Content Canvas with Luminous Sticky Topbar -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 relative flex flex-col">
 
-            <!-- Executive Desktop Topbar (Sticky) -->
-            <header class="hidden lg:flex items-center justify-between gap-4 px-6 py-3 bg-white/85 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30">
+            <!-- Desktop Topbar (Sticky, Lumineuse & Ergonomique) -->
+            <header class="hidden lg:flex items-center justify-between gap-4 px-7 py-3 bg-white/90 backdrop-blur-md border-b border-slate-200/75 sticky top-0 z-30">
                 <!-- Section & Date -->
                 <div class="flex items-center gap-3 min-w-0">
+                    <span class="w-2 h-2 rounded-full bg-indigo-600 shrink-0"></span>
                     <h2 class="text-sm font-extrabold text-slate-900 tracking-tight truncate">{{ currentSectionLabel }}</h2>
                     <span class="h-3.5 w-px bg-slate-200"></span>
                     <span class="text-xs font-medium text-slate-400 capitalize truncate">{{ todayFormatted }}</span>
@@ -584,7 +348,7 @@
 
                 <!-- Center Search Bar Ctrl+K -->
                 <button type="button" (click)="openCommandPalette()"
-                    class="flex-1 max-w-md flex items-center justify-between gap-3 px-3.5 py-2 rounded-xl bg-slate-50 hover:bg-slate-100/90 border border-slate-200/90 hover:border-indigo-300 text-slate-500 hover:text-slate-800 transition-all cursor-pointer">
+                    class="flex-1 max-w-md flex items-center justify-between gap-3 px-3.5 py-2 rounded-xl bg-slate-50/90 hover:bg-indigo-50/50 border border-slate-200/90 hover:border-indigo-200 text-slate-500 hover:text-slate-800 transition-all cursor-pointer">
                     <span class="flex items-center gap-2 text-xs font-medium truncate">
                         <svg class="w-4 h-4 text-slate-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -600,7 +364,7 @@
                 <!-- Right Utilities : Dictée Rapide + Langue -->
                 <div class="flex items-center gap-2.5 shrink-0">
                     <a routerLink="/home/dictee-rapide"
-                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition-all cursor-pointer">
+                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl btn-primary-lumiere text-xs font-bold cursor-pointer">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -629,9 +393,9 @@
                 <router-outlet></router-outlet>
             </div>
 
-            <!-- Bouton flottant Dictée Rapide (Mobile uniquement, car déjà dans la topbar sur desktop) -->
+            <!-- Bouton flottant Dictée Rapide (Mobile uniquement) -->
             <a routerLink="/home/dictee-rapide"
-                class="lg:hidden fixed bottom-5 end-5 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold shadow-xl shadow-slate-900/25 transition-all active:scale-95"
+                class="lg:hidden fixed bottom-5 end-5 z-40 inline-flex items-center gap-2 px-4 py-3 rounded-full btn-primary-lumiere text-xs font-extrabold shadow-lg transition-all active:scale-95"
                 title="Dictée vocale / Note rapide">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

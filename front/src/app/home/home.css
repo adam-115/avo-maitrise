@@ -1,3 +1,45 @@
+/* Navigation items — Airy Light Pill Design */
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item-idle {
+  color: #475569;
+}
+
+.nav-item-idle:hover {
+  background-color: #f6f8fc;
+  color: #0f172a;
+}
+
+.nav-item-active {
+  background: linear-gradient(90deg, #eff6ff 0%, #f0f9ff 100%);
+  color: #1d4ed8;
+  font-weight: 700;
+  border-color: #dbeafe;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.06);
+}
+
+.nav-item-active::before {
+  content: '';
+  position: absolute;
+  inset-block: 0.4rem;
+  inset-inline-start: 0;
+  width: 3px;
+  border-radius: 0 9999px 9999px 0;
+  background: linear-gradient(180deg, #2563eb 0%, #0ea5e9 100%);
+}
+
 /* Mode sidebar repliée (icônes uniquement) sur desktop (lg+) */
 @media (min-width: 1024px) {
   nav.sidebar-collapsed {

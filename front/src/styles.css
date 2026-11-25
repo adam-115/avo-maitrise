@@ -1,6 +1,6 @@
 /* ==========================================================================
-   AVO-MAÎTRISE — EXECUTIVE LEGALTECH DESIGN SYSTEM
-   Palette : Obsidian Midnight Navy • Warm Alabaster Ivory • Sovereign Navy • Champagne Gold
+   AVO-MAÎTRISE — CLARTÉ ROYALE & LUMIÈRE (Airy Luxury Light LegalTech)
+   Palette : Blanc Perle • Bleu Saphir Lumineux • Azur Ciel • Menthe & Corail Doux
    ========================================================================== */
 @import "tailwindcss";
 
@@ -8,75 +8,75 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
 
-  /* Warm Architectural Alabaster & Obsidian Neutrals */
-  --color-slate-50: #f8f7f4;
-  --color-slate-100: #f1efea;
-  --color-slate-200: #e5e2dc;
-  --color-slate-300: #d4cfc6;
-  --color-slate-400: #8c919b;
-  --color-slate-500: #646b77;
-  --color-slate-600: #475060;
-  --color-slate-700: #303848;
-  --color-slate-800: #1b2232;
-  --color-slate-900: #0e1525;
-  --color-slate-950: #080d18;
+  /* Crisp Porcelain & Airy Slate Neutrals */
+  --color-slate-50: #f6f8fc;
+  --color-slate-100: #eef2f7;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  --color-slate-950: #020617;
 
-  /* Sovereign Legal Navy (Primary Brand Action) */
-  --color-indigo-50: #f0f4fa;
-  --color-indigo-100: #dce6f4;
-  --color-indigo-200: #b9cde9;
-  --color-indigo-300: #87a8d8;
-  --color-indigo-400: #4a73b5;
-  --color-indigo-500: #2a4d86;
-  --color-indigo-600: #1b365d;
-  --color-indigo-700: #142947;
-  --color-indigo-800: #0e1e36;
-  --color-indigo-900: #0a1526;
-  --color-indigo-950: #060d1a;
+  /* Royal Sapphire Blue (Primary Brand Action — Clair, Moderne & Confiant) */
+  --color-indigo-50: #eff6ff;
+  --color-indigo-100: #dbeafe;
+  --color-indigo-200: #bfdbfe;
+  --color-indigo-300: #93c5fd;
+  --color-indigo-400: #60a5fa;
+  --color-indigo-500: #3b82f6;
+  --color-indigo-600: #2563eb;
+  --color-indigo-700: #1d4ed8;
+  --color-indigo-800: #1e40af;
+  --color-indigo-900: #1e3a8a;
+  --color-indigo-950: #172554;
 
-  /* Refined Slate Cobalt (Secondary Gradients & Links) */
-  --color-blue-50: #f0f5fa;
-  --color-blue-100: #dce8f5;
-  --color-blue-200: #b8d0eb;
-  --color-blue-500: #34609b;
-  --color-blue-600: #24477a;
-  --color-blue-700: #1b365d;
+  /* Luminous Sky Azure (Secondary Highlights & Soft Gradients) */
+  --color-blue-50: #f0f9ff;
+  --color-blue-100: #e0f2fe;
+  --color-blue-200: #bae6fd;
+  --color-blue-500: #0ea5e9;
+  --color-blue-600: #0284c7;
+  --color-blue-700: #0369a1;
 
-  /* Champagne Gold / Brass (Prestige Accents) */
-  --color-cyan-50: #fbf8ef;
-  --color-cyan-100: #f5edd6;
-  --color-cyan-200: #ebd9a8;
-  --color-cyan-300: #e5c98b;
-  --color-cyan-400: #d4af5a;
-  --color-cyan-500: #c49b42;
-  --color-cyan-600: #a67f2e;
-  --color-cyan-700: #876422;
-  --color-cyan-800: #664a19;
-  --color-cyan-900: #453211;
-  --color-cyan-950: #1f1a10;
+  /* Crisp Sky Cyan (Active Accents & Fresh Highlights) */
+  --color-cyan-50: #f0f9ff;
+  --color-cyan-100: #e0f2fe;
+  --color-cyan-200: #bae6fd;
+  --color-cyan-300: #7dd3fc;
+  --color-cyan-400: #38bdf8;
+  --color-cyan-500: #0ea5e9;
+  --color-cyan-600: #0284c7;
+  --color-cyan-700: #0369a1;
+  --color-cyan-800: #075985;
+  --color-cyan-900: #0c4a6e;
+  --color-cyan-950: #082f49;
 
-  /* Deep Forest Sage (Success & Finance) */
-  --color-emerald-50: #eef7f5;
-  --color-emerald-100: #d6ede8;
-  --color-emerald-200: #addbd2;
-  --color-emerald-500: #14867c;
-  --color-emerald-600: #0f766e;
-  --color-emerald-700: #115e59;
+  /* Fresh Mint Emerald (Success & Finance) */
+  --color-emerald-50: #ecfdf5;
+  --color-emerald-100: #d1fae5;
+  --color-emerald-200: #a7f3d0;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+  --color-emerald-700: #047857;
 
-  /* Deep Burgundy (Critical Alerts) */
-  --color-rose-50: #fdf2f4;
-  --color-rose-100: #fbe4e8;
-  --color-rose-200: #f6c4ce;
-  --color-rose-500: #d1284b;
-  --color-rose-600: #be123c;
-  --color-rose-700: #9f1239;
+  /* Soft Coral Rose (Alerts & Urgencies) */
+  --color-rose-50: #fff1f2;
+  --color-rose-100: #ffe4e6;
+  --color-rose-200: #fecdd3;
+  --color-rose-500: #f43f5e;
+  --color-rose-600: #e11d48;
+  --color-rose-700: #be123c;
 }
 
 @layer base {
   html {
     font-family: var(--font-sans);
-    background-color: #0e1525;
-    color: #1b2232;
+    background-color: #f6f8fc;
+    color: #0f172a;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -95,38 +95,49 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Refined table rhythm */
   table thead th {
     letter-spacing: 0.04em;
   }
 
-  /* Subtle luxury focus ring */
+  /* Anneau de focus doux bleu saphir */
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible,
   button:focus-visible {
-    outline: 2px solid rgba(196, 155, 66, 0.55);
+    outline: 2px solid rgba(37, 99, 235, 0.4);
     outline-offset: 1px;
   }
 }
 
-/* Prestige utility tokens */
-.gold-accent-bar {
-  background: linear-gradient(90deg, #a67f2e 0%, #e5c98b 50%, #c49b42 100%);
+/* Signature lumineuse & boutons premium */
+.lumiere-accent-bar {
+  background: linear-gradient(90deg, #2563eb 0%, #38bdf8 55%, #6366f1 100%);
 }
 
-.btn-gold {
-  background: linear-gradient(135deg, #c49b42 0%, #a67f2e 100%);
+.btn-primary-lumiere {
+  background: linear-gradient(135deg, #2563eb 0%, #0ea5e9 100%);
   color: #ffffff;
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px -3px rgba(37, 99, 235, 0.35);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.btn-gold:hover {
-  background: linear-gradient(135deg, #d4af5a 0%, #b58c34 100%);
-  box-shadow: 0 6px 18px -4px rgba(196, 155, 66, 0.45);
+.btn-primary-lumiere:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #0284c7 100%);
+  box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.45);
+  transform: translateY(-1px);
 }
 
-/* Scrollbars ultra-discrets */
+.btn-primary-lumiere:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.surface-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03), 0 6px 20px -6px rgba(15, 23, 42, 0.05);
+}
+
+/* Scrollbars ultra-discrets et clairs */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -137,12 +148,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(140, 145, 155, 0.35);
+  background: rgba(148, 163, 184, 0.38);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 107, 119, 0.6);
+  background: rgba(100, 116, 139, 0.6);
 }
 
 /* Ajustement proportionnel doux pour écrans laptops 14" et tablettes */
