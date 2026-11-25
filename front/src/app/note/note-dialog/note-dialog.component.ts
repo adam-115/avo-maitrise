@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, inject, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -27,13 +27,12 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
   dictationError = '';
   isSubmitting = false;
   isExportingWord = false;
+  validationSummary: string | null = null;
 
-  // Audio enregistré lors de la dictée dans le dialog
   recordedAudioBlob: Blob | null = null;
   recordedAudioMime = 'audio/webm';
   recordedAudioPreviewUrl: string | null = null;
 
-  // Audio déjà associé à la note (depuis MinIO GED)
   noteAudioUrl: string | null = null;
   isLoadingNoteAudio = false;
   noteAudioError: string | null = null;
@@ -47,13 +46,16 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output() closeDialog = new EventEmitter<void>();
   @Output() saveNote = new EventEmitter<Note>();
-
-  // Backwards compatibility event emitters
   @Output() noteCreated = new EventEmitter<Note>();
   @Output() noteUpdated = new EventEmitter<Note>();
   @Output() closeModalEvent = new EventEmitter<void>();
 
   noteForm!: FormGroup;
+
+  @HostListener('document:keydown.escape')
+  onEscapePress(): void {
+    this.onClose();
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -82,6 +84,7 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
 
   private populateForm(): void {
     if (!this.noteForm) return;
+    this.validationSummary = null;
     this.revokeAllAudioUrls();
     this.recordedAudioBlob = null;
     this.noteAudioError = null;
@@ -124,7 +127,7 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
   getSelectedCategoryColor(): string {
     const id = this.noteToEdit?.categoryId ?? this.noteForm?.get('categoryId')?.value;
     const cat = this.categories.find(c => String(c.id) === String(id));
-    return cat?.color || '#6366f1';
+    return cat?.color || '#10b981';
   }
 
   switchToEditMode(): void {
@@ -251,8 +254,20 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   async onSubmit(): Promise<void> {
+    this.validationSummary = null;
     if (this.noteForm.invalid || this.isSubmitting) {
       this.noteForm.markAllAsTouched();
+      if (this.noteForm.invalid) {
+        const labels: Record<string, string> = {
+          categoryId: 'Catégorie',
+          title: 'Titre (min. 2 caractères)',
+          description: 'Contenu de la note (min. 2 caractères)'
+        };
+        const missing = Object.keys(labels)
+          .filter(k => this.noteForm.get(k)?.invalid)
+          .map(k => labels[k]);
+        this.validationSummary = `Champs obligatoires manquants : ${missing.join(', ')}.`;
+      }
       return;
     }
 

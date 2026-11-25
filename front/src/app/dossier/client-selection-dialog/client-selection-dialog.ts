@@ -1,10 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Client } from '../../appTypes';
 import { ClientService } from '../../services/client-service';
-import { DossierService } from '../../services/dossier.service';
 
 @Component({
     selector: 'app-client-selection-dialog',
@@ -20,11 +19,11 @@ export class ClientSelectionDialog implements OnInit {
     @Output() closeDialog = new EventEmitter<void>();
 
     private readonly clientService = inject(ClientService);
-    private readonly dossierService = inject(DossierService);
 
     filteredClients: Client[] = [];
     totalElements = 0;
     selectedClientId: string | number | null = null;
+    selectedClientObj: Client | null = null;
     searchTerm: string = '';
     loading = false;
 
@@ -34,11 +33,23 @@ export class ClientSelectionDialog implements OnInit {
 
     // Pagination
     currentPage = 1;
-    pageSize = 5;
+    pageSize = 6;
+
+    @HostListener('document:keydown.escape')
+    onEscapePress(): void {
+        this.onCancel();
+    }
 
     getDisplayName(client: any): string {
         if (!client) return '';
         return `${client.nom || client.nomCommercial || ''} ${client.prenom || ''}`.trim();
+    }
+
+    getInitials(client: any): string {
+        const name = this.getDisplayName(client);
+        if (!name) return 'CL';
+        const parts = name.split(/\s+/);
+        return parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : name.slice(0, 2).toUpperCase();
     }
 
     ngOnInit(): void {
@@ -49,13 +60,13 @@ export class ClientSelectionDialog implements OnInit {
 
     loadClients(): void {
         this.loading = true;
-        const filters = {
-            searchTerm: this.searchTerm
-        };
-        this.clientService.findAll(this.currentPage - 1, this.pageSize, 'createdAt,desc', filters).subscribe({
+        this.clientService.findAll(this.currentPage - 1, this.pageSize, 'createdAt,desc', { searchTerm: this.searchTerm }).subscribe({
             next: (res) => {
                 this.filteredClients = res.content || [];
                 this.totalElements = res.totalElements;
+                if (this.selectedClientId && !this.selectedClientObj) {
+                    this.selectedClientObj = this.filteredClients.find(c => String(c.id) === String(this.selectedClientId)) || null;
+                }
                 this.loading = false;
             },
             error: (err) => {
@@ -96,17 +107,22 @@ export class ClientSelectionDialog implements OnInit {
         }
     }
 
-    selectClient(clientId: string | number): void {
-        this.selectedClientId = clientId;
+    selectClient(client: Client): void {
+        this.selectedClientId = client.id!;
+        this.selectedClientObj = client;
         this.hasConflict = false;
         this.conflictMessage = '';
 
-        // Check local conflicts (full backend conflict check runs in dossier-form)
-        const existingPartie = this.currentAutresParties.find(p => String(p.partie.id) === String(clientId));
+        const existingPartie = this.currentAutresParties.find(p => String(p.partie?.id) === String(client.id));
         if (existingPartie) {
             this.hasConflict = true;
             this.conflictMessage = `Conflit direct : Ce contact est déjà ajouté comme ${existingPartie.role}.`;
         }
+    }
+
+    selectAndConfirm(client: Client): void {
+        this.selectClient(client);
+        this.onConfirm();
     }
 
     isSelected(clientId: string | number): boolean {
@@ -115,9 +131,9 @@ export class ClientSelectionDialog implements OnInit {
 
     onConfirm(): void {
         if (this.selectedClientId) {
-            const selectedClient = this.filteredClients.find(c => String(c.id) === String(this.selectedClientId));
-            if (selectedClient) {
-                this.confirmSelection.emit(selectedClient);
+            const client = this.selectedClientObj || this.filteredClients.find(c => String(c.id) === String(this.selectedClientId));
+            if (client) {
+                this.confirmSelection.emit(client);
             }
         }
     }

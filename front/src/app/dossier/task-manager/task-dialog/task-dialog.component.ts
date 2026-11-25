@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Task, TaskCategory, TaskStatus, User, TaskLog } from '../../../appTypes';
@@ -6,7 +6,6 @@ import { UserSelectionDialog } from '../../user-selection-dialog/user-selection-
 import { TaskLogService } from '../../../services/task-log.service';
 import { VoiceNoteService } from '../../../services/voice-note.service';
 import { DocumentService } from '../../../services/document.service';
-import { PaginatedResponse } from '../../../services/genericService/abstract-crud.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -33,6 +32,7 @@ export class TaskDialogComponent implements OnInit, OnChanges, OnDestroy {
   currentTaskLogs: TaskLog[] = [];
   commentText: string = '';
   isSubmitting: boolean = false;
+  validationSummary: string | null = null;
 
   private fb = inject(FormBuilder);
   private taskLogService = inject(TaskLogService);
@@ -43,15 +43,20 @@ export class TaskDialogComponent implements OnInit, OnChanges, OnDestroy {
   dictationInterim = '';
   dictationError = '';
 
-  // Audio enregistré lors de la dictée dans le dialog
   recordedAudioBlob: Blob | null = null;
   recordedAudioMime = 'audio/webm';
   recordedAudioPreviewUrl: string | null = null;
 
-  // Audio déjà associé à la tâche (depuis MinIO GED)
   taskAudioUrl: string | null = null;
   isLoadingTaskAudio = false;
   taskAudioError: string | null = null;
+
+  @HostListener('document:keydown.escape')
+  onEscapePress(): void {
+    if (!this.showUserDialog) {
+      this.onClose();
+    }
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -80,13 +85,19 @@ export class TaskDialogComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  setPriority(priority: 'BASSE' | 'NORMALE' | 'HAUTE' | 'URGENTE'): void {
+    if (this.isViewOnly) return;
+    this.taskForm.patchValue({ priorite: priority });
+  }
+
   populateForm(): void {
+    this.validationSummary = null;
     this.revokeAllAudioUrls();
     this.recordedAudioBlob = null;
     this.taskAudioError = null;
     if (this.isEditing && this.taskToEdit) {
-      const echeance = this.taskToEdit.dateEcheance 
-        ? new Date(this.taskToEdit.dateEcheance).toISOString().split('T')[0] 
+      const echeance = this.taskToEdit.dateEcheance
+        ? new Date(this.taskToEdit.dateEcheance).toISOString().split('T')[0]
         : new Date().toISOString().split('T')[0];
 
       this.taskForm.patchValue({
@@ -255,8 +266,20 @@ export class TaskDialogComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   async onSubmit(): Promise<void> {
+    this.validationSummary = null;
     if (!this.taskForm.valid) {
       this.taskForm.markAllAsTouched();
+      const labels: Record<string, string> = {
+        titre: 'Titre (min. 2 caractères)',
+        categoryId: 'Catégorie',
+        statusId: 'Statut',
+        priorite: 'Priorité',
+        dateEcheance: 'Date d\'échéance'
+      };
+      const missing = Object.keys(labels)
+        .filter(k => this.taskForm.get(k)?.invalid)
+        .map(k => labels[k]);
+      this.validationSummary = `Champs obligatoires manquants : ${missing.join(', ')}.`;
       return;
     }
     this.isSubmitting = true;

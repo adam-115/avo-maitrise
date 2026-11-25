@@ -1,5 +1,5 @@
 import { CommonModule, formatDate } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatterEvent, User } from '../../appTypes';
 import { UserService } from '../../services/user.service';
@@ -32,6 +32,16 @@ export class EvenementDialogComponent implements OnInit, OnChanges {
   eventTypes: any[] = [];
   showUserDialog = false;
   isSubmitting = false;
+  validationSummary: string | null = null;
+
+  readonly quickLocations = ['Cabinet', 'Tribunal', 'Visioconférence'];
+
+  @HostListener('document:keydown.escape')
+  onEscapePress(): void {
+    if (!this.showUserDialog) {
+      this.onCloseModal();
+    }
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -47,14 +57,19 @@ export class EvenementDialogComponent implements OnInit, OnChanges {
     }
   }
 
+  private todayIso(): string {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  }
+
   private initForm(): void {
     this.eventForm = new FormGroup({
       titre: new FormControl('', [Validators.required, Validators.minLength(2)]),
       typeId: new FormControl('', [Validators.required]),
-      startDate: new FormControl('', [Validators.required]),
+      startDate: new FormControl(this.todayIso(), [Validators.required]),
       startTime: new FormControl('09:00'),
-      endDate: new FormControl(''),
-      endTime: new FormControl(''),
+      endDate: new FormControl(this.todayIso()),
+      endTime: new FormControl('10:00'),
       isAllDay: new FormControl(false),
       participantsIds: new FormControl([]),
       lieu: new FormControl(''),
@@ -79,14 +94,24 @@ export class EvenementDialogComponent implements OnInit, OnChanges {
     this.eventTypeService.getAll().subscribe({
       next: (data: PaginatedResponse<any>) => {
         this.eventTypes = data.content || [];
+        if (!this.eventToEdit && this.eventTypes.length > 0 && !this.eventForm.get('typeId')?.value) {
+          this.eventForm.patchValue({ typeId: this.eventTypes[0].id });
+        }
       },
       error: () => {}
     });
   }
 
   private populateForm(): void {
+    this.validationSummary = null;
     if (!this.eventToEdit) {
+      const today = this.todayIso();
       this.eventForm.reset({
+        startDate: today,
+        startTime: '09:00',
+        endDate: today,
+        endTime: '10:00',
+        typeId: this.eventTypes.length > 0 ? this.eventTypes[0].id : '',
         isAllDay: false,
         reminder: false,
         reminderMinutesBefore: 30,
@@ -110,7 +135,7 @@ export class EvenementDialogComponent implements OnInit, OnChanges {
     this.eventForm.patchValue({
       titre: this.eventToEdit.titre,
       typeId: this.eventToEdit.categorie ? this.eventToEdit.categorie.id : '',
-      startDate: this.eventToEdit.startDate ? formatDate(this.eventToEdit.startDate, 'yyyy-MM-dd', 'en-US') : '',
+      startDate: this.eventToEdit.startDate ? formatDate(this.eventToEdit.startDate, 'yyyy-MM-dd', 'en-US') : this.todayIso(),
       startTime: startTime || '09:00',
       endDate: this.eventToEdit.endDate ? formatDate(this.eventToEdit.endDate, 'yyyy-MM-dd', 'en-US') : '',
       endTime: endTime,
@@ -121,6 +146,10 @@ export class EvenementDialogComponent implements OnInit, OnChanges {
       reminder: !!this.eventToEdit.reminderMinutesBefore,
       reminderMinutesBefore: this.eventToEdit.reminderMinutesBefore || 30
     });
+  }
+
+  setQuickLocation(loc: string): void {
+    this.eventForm.patchValue({ lieu: loc });
   }
 
   onCloseModal(): void {
@@ -157,8 +186,18 @@ export class EvenementDialogComponent implements OnInit, OnChanges {
   }
 
   submitForm(): void {
+    this.validationSummary = null;
     if (this.eventForm.invalid) {
       this.eventForm.markAllAsTouched();
+      const labels: Record<string, string> = {
+        titre: 'Objet de l\'événement (min. 2 caractères)',
+        typeId: 'Catégorie',
+        startDate: 'Date de début'
+      };
+      const missing = Object.keys(labels)
+        .filter(k => this.eventForm.get(k)?.invalid)
+        .map(k => labels[k]);
+      this.validationSummary = `Champs obligatoires manquants : ${missing.join(', ')}.`;
       return;
     }
 

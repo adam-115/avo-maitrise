@@ -1,112 +1,138 @@
-<div
-  class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200">
-  
-  <div class="relative bg-white rounded-3xl shadow-2xl border-2 border-slate-300 w-full max-w-2xl overflow-hidden transform transition-all flex flex-col max-h-[90vh]">
-    <!-- Top Gradient Accent Bar -->
-    <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600"></div>
+<div (click)="onClose()"
+  class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/65 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 font-sans">
 
-    <!-- Header -->
-    <div class="px-6 sm:px-8 py-5 border-b-2 border-slate-100 flex justify-between items-center bg-slate-50/50">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-indigo-50 text-indigo-600 border border-indigo-200 rounded-2xl flex items-center justify-center shadow-2xs">
+  <div (click)="$event.stopPropagation()"
+    class="relative bg-white rounded-2xl shadow-2xl border border-slate-200/90 w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
+
+    <!-- Header (Nuit & Émeraude) -->
+    <div class="swift-hero px-6 py-5 flex justify-between items-center gap-4 relative overflow-hidden">
+      <div class="absolute -right-12 -bottom-16 w-48 h-48 bg-emerald-400/15 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="flex items-center gap-3.5 relative z-10 min-w-0">
+        <div class="w-10 h-10 bg-emerald-500/15 text-emerald-300 border border-emerald-400/30 rounded-xl flex items-center justify-center flex-shrink-0">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
           </svg>
         </div>
-        <div>
-          <h3 class="text-lg font-black text-slate-900 tracking-tight">
+        <div class="min-w-0">
+          <h3 class="text-base sm:text-lg font-extrabold text-white tracking-tight truncate">
             {{ isViewOnly ? 'Détail de la tâche' : (isEditing ? ('TASK_DIALOG.EDIT_TASK' | translate) : ('TASK_DIALOG.NEW_TASK' | translate)) }}
           </h3>
-          <p class="text-xs text-slate-500 font-medium mt-0.5">
+          <p class="text-xs text-slate-300/90 mt-0.5 truncate">
             {{ 'TASK_DIALOG.SUBTITLE' | translate }}
           </p>
         </div>
       </div>
 
-      <button (click)="onClose()"
-        class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer active:scale-95">
+      <button type="button" (click)="onClose()"
+        class="relative z-10 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
 
-    <!-- Subheader Tabs (When Editing) -->
-    <div *ngIf="isEditing" class="flex border-b-2 border-slate-200 bg-slate-50 px-6 sm:px-8">
+    <!-- Underline Tabs (When Editing) -->
+    <div *ngIf="isEditing" class="flex border-b border-slate-200 bg-white px-6 gap-2">
       <button type="button" (click)="switchTab('DETAILS')"
-        [ngClass]="activeTab === 'DETAILS' ? 'border-b-2 border-indigo-600 text-indigo-700 font-black bg-white shadow-xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
-        class="py-3 px-5 text-xs uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+        [ngClass]="activeTab === 'DETAILS' ? 'border-emerald-500 text-emerald-700 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 font-semibold'"
+        class="py-3 px-3 border-b-2 text-xs flex items-center gap-2 transition-all cursor-pointer">
         <span>{{ 'TASK_DIALOG.DETAILS' | translate }}</span>
       </button>
 
       <button type="button" (click)="switchTab('COMMENTS')"
-        [ngClass]="activeTab === 'COMMENTS' ? 'border-b-2 border-indigo-600 text-indigo-700 font-black bg-white shadow-xs' : 'text-slate-500 hover:text-slate-800 font-bold'"
-        class="py-3 px-5 text-xs uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer border-l-2 border-slate-200">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
+        [ngClass]="activeTab === 'COMMENTS' ? 'border-emerald-500 text-emerald-700 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 font-semibold'"
+        class="py-3 px-3 border-b-2 text-xs flex items-center gap-2 transition-all cursor-pointer">
         <span>{{ 'TASK_DIALOG.COMMENTS' | translate }}</span>
-        <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-indigo-100 text-indigo-700 border border-indigo-200">{{ currentTaskLogs.length }}</span>
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700">{{ currentTaskLogs.length }}</span>
       </button>
     </div>
 
     <!-- Body Container -->
-    <div class="p-6 sm:p-8 overflow-y-auto flex-1 max-h-[65vh]">
-      
+    <div class="p-6 overflow-y-auto flex-1">
+
       <!-- TAB 1: DETAILS -->
       <div [class.hidden]="activeTab !== 'DETAILS'">
+        @if (validationSummary) {
+        <div class="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-start gap-2.5">
+          <svg class="w-4 h-4 text-rose-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>{{ validationSummary }}</span>
+        </div>
+        }
+
         <form [formGroup]="taskForm" id="taskForm" (ngSubmit)="onSubmit()" class="space-y-5">
 
           <!-- Task Title -->
           <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-              {{ 'TASK_DIALOG.TITLE_LABEL' | translate }} <span class="text-red-500">*</span>
+            <label class="block text-xs font-bold mb-1.5"
+              [ngClass]="taskForm.get('titre')?.invalid && taskForm.get('titre')?.touched ? 'text-rose-600' : 'text-slate-700'">
+              {{ 'TASK_DIALOG.TITLE_LABEL' | translate }} <span class="text-rose-500">*</span>
             </label>
             <input type="text" formControlName="titre"
               [placeholder]="'TASK_DIALOG.TITLE_PLACEHOLDER' | translate"
-              [ngClass]="{
-                'border-red-400 ring-2 ring-red-100 bg-red-50/20': taskForm.get('titre')?.invalid && taskForm.get('titre')?.touched,
-                'border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600': !(taskForm.get('titre')?.invalid && taskForm.get('titre')?.touched)
-              }"
-              class="block w-full px-4 py-3 rounded-2xl bg-white text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs">
-            <p *ngIf="taskForm.get('titre')?.invalid && taskForm.get('titre')?.touched" class="text-[11px] font-bold text-red-500 mt-1.5 flex items-center gap-1">
-              <svg class="w-3.5 h-3.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-              <span>{{ 'DOSSIER_FORM.REQUIRED' | translate }}</span>
+              [ngClass]="taskForm.get('titre')?.invalid && taskForm.get('titre')?.touched ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500' : 'border-slate-200 hover:border-slate-300 focus:border-emerald-500'"
+              class="block w-full px-3.5 py-2.5 rounded-xl border bg-slate-50/70 focus:bg-white text-sm font-semibold text-slate-900 placeholder:text-slate-400 outline-none transition-all">
+            <p *ngIf="taskForm.get('titre')?.invalid && taskForm.get('titre')?.touched" class="text-xs font-semibold text-rose-600 mt-1">
+              {{ 'DOSSIER_FORM.REQUIRED' | translate }}
             </p>
           </div>
 
-          <!-- Description -->
+          <!-- Priorité en 4 Pills visuels -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">
+              {{ 'TASK_DIALOG.PRIORITY_LABEL' | translate }} <span class="text-rose-500">*</span>
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button type="button" (click)="setPriority('BASSE')" [disabled]="isViewOnly"
+                [ngClass]="taskForm.get('priorite')?.value === 'BASSE' ? 'bg-slate-100 border-slate-400 text-slate-800 font-bold' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 font-semibold'"
+                class="py-2 px-2.5 rounded-xl border text-xs transition-all cursor-pointer disabled:cursor-default">
+                {{ 'TASK_DIALOG.PRIORITY_LOW' | translate }}
+              </button>
+              <button type="button" (click)="setPriority('NORMALE')" [disabled]="isViewOnly"
+                [ngClass]="taskForm.get('priorite')?.value === 'NORMALE' ? 'bg-emerald-50 border-emerald-500 text-emerald-700 font-bold' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 font-semibold'"
+                class="py-2 px-2.5 rounded-xl border text-xs transition-all cursor-pointer disabled:cursor-default">
+                {{ 'TASK_DIALOG.PRIORITY_NORMAL' | translate }}
+              </button>
+              <button type="button" (click)="setPriority('HAUTE')" [disabled]="isViewOnly"
+                [ngClass]="taskForm.get('priorite')?.value === 'HAUTE' ? 'bg-amber-50 border-amber-500 text-amber-700 font-bold' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 font-semibold'"
+                class="py-2 px-2.5 rounded-xl border text-xs transition-all cursor-pointer disabled:cursor-default">
+                {{ 'TASK_DIALOG.PRIORITY_HIGH' | translate }}
+              </button>
+              <button type="button" (click)="setPriority('URGENTE')" [disabled]="isViewOnly"
+                [ngClass]="taskForm.get('priorite')?.value === 'URGENTE' ? 'bg-rose-50 border-rose-500 text-rose-700 font-bold' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50 font-semibold'"
+                class="py-2 px-2.5 rounded-xl border text-xs transition-all cursor-pointer disabled:cursor-default">
+                {{ 'TASK_DIALOG.PRIORITY_URGENT' | translate }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Description + Dictée vocale -->
           <div>
             <div class="flex items-center justify-between gap-2 mb-1.5">
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
-                {{ 'TASK_DIALOG.DESC_LABEL' | translate }}
-              </label>
+              <label class="text-xs font-bold text-slate-700">{{ 'TASK_DIALOG.DESC_LABEL' | translate }}</label>
               <button *ngIf="!isViewOnly && voiceService.isSpeechSupported" type="button" (click)="toggleDictation()"
                 class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer"
-                [ngClass]="isDictating ? 'bg-rose-600 text-white border-rose-600 animate-pulse' : 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'">
+                [ngClass]="isDictating ? 'bg-rose-600 text-white border-rose-600 animate-pulse' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'">
                 <span>{{ isDictating ? '⏹ Arrêter la dictée' : '🎙️ Dicter' }}</span>
               </button>
             </div>
-            <p *ngIf="dictationInterim" class="text-[11px] text-indigo-600 italic mb-1">« {{ dictationInterim }}… »</p>
+            <p *ngIf="dictationInterim" class="text-[11px] text-emerald-600 italic mb-1">« {{ dictationInterim }}… »</p>
             <p *ngIf="dictationError" class="text-[11px] text-rose-600 font-semibold mb-1">{{ dictationError }}</p>
             <textarea formControlName="description" [attr.rows]="isViewOnly ? 5 : 3"
               [placeholder]="'TASK_DIALOG.DESC_PLACEHOLDER' | translate"
-              class="block w-full px-4 py-3 rounded-2xl border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 bg-white text-sm font-medium text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none shadow-2xs"></textarea>
+              class="block w-full px-3.5 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 focus:border-emerald-500 bg-slate-50/70 focus:bg-white text-sm font-medium text-slate-800 placeholder:text-slate-400 outline-none transition-all resize-none"></textarea>
 
-            <!-- Aperçu de l'audio dicté en cours (avant sauvegarde) -->
+            <!-- Aperçu audio dicté -->
             <div *ngIf="recordedAudioPreviewUrl && !isViewOnly"
-              class="mt-3 p-3 rounded-2xl bg-indigo-50/70 border border-indigo-200 space-y-2">
+              class="mt-3 p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-2">
               <div class="flex items-center justify-between gap-2">
-                <span class="text-xs font-bold text-indigo-900">🎧 Enregistrement vocal capturé (sera archivé en GED)</span>
+                <span class="text-xs font-bold text-emerald-900">🎧 Enregistrement vocal capturé (archivé en GED)</span>
                 <button type="button" (click)="discardRecordedAudio()"
-                  class="text-[11px] font-bold text-rose-600 hover:text-rose-800 cursor-pointer">
-                  Supprimer
-                </button>
+                  class="text-[11px] font-bold text-rose-600 hover:text-rose-800 cursor-pointer">Supprimer</button>
               </div>
               <audio [src]="recordedAudioPreviewUrl" controls class="w-full h-9"></audio>
             </div>
@@ -114,46 +140,39 @@
 
           <!-- Enregistrement vocal associé (tâche existante) -->
           <div *ngIf="taskToEdit?.audioDocumentId"
-            class="p-4 rounded-2xl bg-indigo-50/80 border-2 border-indigo-200 space-y-2.5">
+            class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-2.5">
             <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="w-7 h-7 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-xs shadow-2xs">🎧</span>
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs">🎧</span>
                 <div>
-                  <div class="text-xs font-black text-indigo-950">Enregistrement vocal associé</div>
-                  <div class="text-[11px] text-indigo-700 font-medium">Archivé dans la GED du dossier</div>
+                  <div class="text-xs font-bold text-slate-900">Enregistrement vocal associé</div>
+                  <div class="text-[11px] text-emerald-700 font-medium">Archivé dans la GED du dossier</div>
                 </div>
               </div>
               <button *ngIf="!taskAudioUrl && !isLoadingTaskAudio" type="button" (click)="loadTaskAudio()"
-                class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold cursor-pointer transition-colors">
+                class="px-3 py-1.5 rounded-lg btn-emerald text-xs font-bold cursor-pointer">
                 Charger l'audio
               </button>
             </div>
-
-            <div *ngIf="isLoadingTaskAudio" class="flex items-center gap-2 text-xs font-semibold text-indigo-700 py-1">
-              <span class="w-3.5 h-3.5 rounded-full border-2 border-indigo-300 border-t-indigo-600 animate-spin"></span>
-              <span>Chargement de l'enregistrement audio...</span>
-            </div>
-
+            <div *ngIf="isLoadingTaskAudio" class="text-xs font-semibold text-emerald-700">Chargement de l'enregistrement audio...</div>
             <p *ngIf="taskAudioError" class="text-xs font-semibold text-rose-600">{{ taskAudioError }}</p>
-
             <audio *ngIf="taskAudioUrl" [src]="taskAudioUrl" controls class="w-full h-10"></audio>
           </div>
 
-          <!-- Category & Status & Priority Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            
+          <!-- Catégorie, Statut, Échéance & Temps estimé -->
+          <div class="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             <!-- Category -->
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {{ 'TASK_DIALOG.CATEGORY_LABEL' | translate }} <span class="text-red-500">*</span>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                {{ 'TASK_DIALOG.CATEGORY_LABEL' | translate }} <span class="text-rose-500">*</span>
               </label>
               <div class="relative">
                 <select formControlName="categoryId"
-                  class="block w-full px-3.5 py-3 rounded-2xl border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer shadow-2xs appearance-none">
+                  class="block w-full ps-3 pe-8 py-2 rounded-xl border border-slate-200 focus:border-emerald-500 bg-white text-xs font-semibold text-slate-800 outline-none cursor-pointer appearance-none">
                   <option value="" disabled>{{ 'TASK_DIALOG.CATEGORY_PLACEHOLDER' | translate }}</option>
                   <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</option>
                 </select>
-                <svg class="w-3.5 h-3.5 text-slate-400 absolute end-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3.5 h-3.5 text-slate-400 absolute end-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
@@ -161,50 +180,47 @@
 
             <!-- Status -->
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {{ 'TASK_DIALOG.STATUS_LABEL' | translate }} <span class="text-red-500">*</span>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                {{ 'TASK_DIALOG.STATUS_LABEL' | translate }} <span class="text-rose-500">*</span>
               </label>
               <div class="relative">
                 <select formControlName="statusId"
-                  class="block w-full px-3.5 py-3 rounded-2xl border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer shadow-2xs appearance-none">
+                  class="block w-full ps-3 pe-8 py-2 rounded-xl border border-slate-200 focus:border-emerald-500 bg-white text-xs font-semibold text-slate-800 outline-none cursor-pointer appearance-none">
                   <option value="" disabled>{{ 'TASK_DIALOG.STATUS_PLACEHOLDER' | translate }}</option>
                   <option *ngFor="let stat of statuses" [value]="stat.id">{{ stat.libelle }}</option>
                 </select>
-                <svg class="w-3.5 h-3.5 text-slate-400 absolute end-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-3.5 h-3.5 text-slate-400 absolute end-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
             </div>
 
-            <!-- Priority -->
+            <!-- Due Date -->
             <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {{ 'TASK_DIALOG.PRIORITY_LABEL' | translate }} <span class="text-red-500">*</span>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                {{ 'TASK_DIALOG.DUE_DATE_LABEL' | translate }} <span class="text-rose-500">*</span>
               </label>
-              <div class="relative">
-                <select formControlName="priorite"
-                  class="block w-full px-3.5 py-3 rounded-2xl border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all cursor-pointer shadow-2xs appearance-none">
-                  <option value="BASSE">{{ 'TASK_DIALOG.PRIORITY_LOW' | translate }}</option>
-                  <option value="NORMALE">{{ 'TASK_DIALOG.PRIORITY_NORMAL' | translate }}</option>
-                  <option value="HAUTE">{{ 'TASK_DIALOG.PRIORITY_HIGH' | translate }}</option>
-                  <option value="URGENTE">{{ 'TASK_DIALOG.PRIORITY_URGENT' | translate }}</option>
-                </select>
-                <svg class="w-3.5 h-3.5 text-slate-400 absolute end-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </div>
+              <input type="date" formControlName="dateEcheance"
+                class="block w-full px-3 py-2 rounded-xl border border-slate-200 focus:border-emerald-500 bg-white text-xs font-semibold text-slate-800 outline-none">
             </div>
 
+            <!-- Estimated Time -->
+            <div>
+              <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                {{ 'TASK_DIALOG.ESTIMATED_TIME_LABEL' | translate }}
+              </label>
+              <input type="number" formControlName="estimatedTimeMinutes"
+                [placeholder]="'TASK_DIALOG.ESTIMATED_TIME_PLACEHOLDER' | translate"
+                class="block w-full px-3 py-2 rounded-xl border border-slate-200 focus:border-emerald-500 bg-white text-xs font-semibold text-slate-800 outline-none">
+            </div>
           </div>
 
-          <!-- Assignees Section -->
+          <!-- Assignees -->
           <div>
             <div class="flex items-center justify-between mb-1.5">
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-700">
-                {{ 'TASK_DIALOG.ASSIGNEE_LABEL' | translate }}
-              </label>
+              <label class="text-xs font-bold text-slate-700">{{ 'TASK_DIALOG.ASSIGNEE_LABEL' | translate }}</label>
               <button *ngIf="!isViewOnly" type="button" (click)="openUserDialog()"
-                class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors inline-flex items-center gap-1 cursor-pointer">
+                class="text-xs font-bold text-emerald-700 hover:text-emerald-800 inline-flex items-center gap-1 cursor-pointer">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
                 </svg>
@@ -212,16 +228,15 @@
               </button>
             </div>
 
-            <div *ngIf="getSelectedAssignees().length > 0" class="flex flex-wrap gap-2 p-3 rounded-2xl bg-slate-50 border-2 border-slate-200 mb-2">
+            <div *ngIf="getSelectedAssignees().length > 0" class="flex flex-wrap gap-2 p-3 rounded-xl bg-slate-50 border border-slate-200">
               <div *ngFor="let user of getSelectedAssignees()"
-                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white border border-slate-300 shadow-2xs">
-                <div class="w-6 h-6 rounded-lg bg-indigo-600 text-white font-black text-[10px] flex items-center justify-center">
+                class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg bg-white border border-slate-200">
+                <div class="w-5 h-5 rounded-md bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center">
                   {{ getUserInitials(user) }}
                 </div>
-                <span class="text-xs font-bold text-slate-800">{{ getUserFullName(user) }}</span>
+                <span class="text-xs font-semibold text-slate-800">{{ getUserFullName(user) }}</span>
                 <button *ngIf="!isViewOnly" type="button" (click)="removeAssignee(user.id!)"
-                  class="p-0.5 text-slate-400 hover:text-rose-600 rounded-md transition-colors cursor-pointer"
-                  [title]="'TASK_DIALOG.REMOVE' | translate">
+                  class="text-slate-400 hover:text-rose-600 cursor-pointer" [title]="'TASK_DIALOG.REMOVE' | translate">
                   <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                   </svg>
@@ -229,33 +244,10 @@
               </div>
             </div>
 
-            <div *ngIf="getSelectedAssignees().length === 0"
-              (click)="openUserDialog()"
-              class="p-4 rounded-2xl border-2 border-dashed border-slate-300 hover:border-indigo-400 bg-slate-50 hover:bg-indigo-50/30 text-center cursor-pointer transition-colors shadow-2xs">
-              <p class="text-xs font-semibold text-slate-500">
-                {{ 'TASK_DIALOG.NO_ASSIGNEES' | translate }} — <span class="text-indigo-600 font-bold underline">{{ 'TASK_DIALOG.MANAGE_ASSIGNEES' | translate }}</span>
-              </p>
-            </div>
-          </div>
-
-          <!-- Due Date & Estimated Time Grid -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {{ 'TASK_DIALOG.DUE_DATE_LABEL' | translate }} <span class="text-red-500">*</span>
-              </label>
-              <input type="date" formControlName="dateEcheance"
-                class="block w-full px-3.5 py-3 rounded-2xl border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs">
-            </div>
-
-            <div>
-              <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                {{ 'TASK_DIALOG.ESTIMATED_TIME_LABEL' | translate }}
-              </label>
-              <input type="number" formControlName="estimatedTimeMinutes"
-                [placeholder]="'TASK_DIALOG.ESTIMATED_TIME_PLACEHOLDER' | translate"
-                class="block w-full px-3.5 py-3 rounded-2xl border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 bg-white text-xs font-bold text-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all shadow-2xs">
-            </div>
+            <button *ngIf="getSelectedAssignees().length === 0" type="button" (click)="openUserDialog()"
+              class="w-full p-3 rounded-xl border border-dashed border-slate-300 hover:border-emerald-400 bg-slate-50/50 hover:bg-emerald-50/30 text-center cursor-pointer transition-colors text-xs font-medium text-slate-500">
+              {{ 'TASK_DIALOG.NO_ASSIGNEES' | translate }} — <span class="text-emerald-700 font-bold">{{ 'TASK_DIALOG.MANAGE_ASSIGNEES' | translate }}</span>
+            </button>
           </div>
 
         </form>
@@ -263,70 +255,59 @@
 
       <!-- TAB 2: COMMENTS / ACTIVITY -->
       <div *ngIf="activeTab === 'COMMENTS'" class="flex flex-col space-y-4">
-        
-        <!-- Logs List -->
-        <div class="space-y-3 min-h-[220px] max-h-[360px] overflow-y-auto pe-1">
+        <div class="space-y-2.5 min-h-[200px] max-h-[340px] overflow-y-auto pe-1">
           <div *ngIf="currentTaskLogs.length === 0"
-            class="text-xs text-center text-slate-400 italic py-12 bg-slate-50 rounded-2xl border-2 border-slate-200 border-dashed">
+            class="text-xs text-center text-slate-400 py-10 bg-slate-50 rounded-xl border border-dashed border-slate-200">
             {{ 'TASK_DIALOG.NO_COMMENTS' | translate }}
           </div>
 
           <div *ngFor="let log of currentTaskLogs"
-            class="bg-slate-50 rounded-2xl p-4 border-2 border-slate-200 shadow-2xs space-y-1.5">
+            class="bg-slate-50 rounded-xl p-3.5 border border-slate-200/80 space-y-1">
             <div class="flex items-center justify-between text-xs">
               <span class="font-bold text-slate-800 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                 <span>{{ log.createdBy?.firstName ? (log.createdBy?.firstName + ' ' + (log.createdBy?.lastName || '')) : ('TASK_DIALOG.ME_LAWYER' | translate) }}</span>
               </span>
-              <span class="text-[11px] text-slate-400 font-medium">{{ log.createdAt | date:'dd/MM/yyyy à HH:mm' }}</span>
+              <span class="text-[11px] text-slate-400">{{ log.createdAt | date:'dd/MM/yyyy à HH:mm' }}</span>
             </div>
-            <p class="text-xs text-slate-700 font-medium leading-relaxed ps-4">{{ log.description }}</p>
+            <p class="text-xs text-slate-700 leading-relaxed ps-4">{{ log.description }}</p>
           </div>
         </div>
 
-        <!-- Add Comment Box -->
-        <div *ngIf="!isViewOnly" class="pt-3 border-t-2 border-slate-100 flex gap-2.5">
+        <div *ngIf="!isViewOnly" class="pt-3 border-t border-slate-100 flex gap-2">
           <textarea [(ngModel)]="commentText" rows="2"
             (keydown.enter)="$event.preventDefault(); addComment()"
             [placeholder]="'TASK_DIALOG.NEW_COMMENT_PLACEHOLDER' | translate"
-            class="flex-1 px-4 py-2.5 bg-white border-2 border-slate-300 hover:border-slate-400 focus:border-indigo-600 rounded-2xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all resize-none shadow-2xs"></textarea>
-          
+            class="flex-1 px-3.5 py-2 bg-slate-50 focus:bg-white border border-slate-200 focus:border-emerald-500 rounded-xl text-xs text-slate-800 outline-none resize-none"></textarea>
+
           <button type="button" (click)="addComment()" [disabled]="!commentText.trim()"
-            class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-2xl shadow-md hover:shadow disabled:opacity-40 disabled:cursor-not-allowed transition-all self-end flex items-center gap-1.5 cursor-pointer active:scale-95">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-            </svg>
-            <span>{{ 'TASK_DIALOG.ADD_COMMENT' | translate }}</span>
+            class="px-4 py-2 btn-emerald font-bold text-xs rounded-xl disabled:opacity-40 disabled:cursor-not-allowed self-end cursor-pointer">
+            {{ 'TASK_DIALOG.ADD_COMMENT' | translate }}
           </button>
         </div>
-
       </div>
 
     </div>
 
     <!-- Footer -->
-    <div class="px-6 sm:px-8 py-4 bg-slate-50 border-t-2 border-slate-100 flex items-center justify-end gap-3">
-      <button type="button" (click)="onClose()"
-        class="px-5 py-2.5 rounded-xl border-2 border-slate-300 bg-white text-slate-700 font-bold text-xs hover:bg-slate-100 transition-colors shadow-2xs cursor-pointer active:scale-95">
-        {{ 'TASK_DIALOG.CLOSE' | translate }}
-      </button>
+    <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between gap-3">
+      <span *ngIf="!isViewOnly" class="text-[11px] text-slate-400 font-medium hidden sm:inline">
+        <span class="text-rose-500">*</span> Champs obligatoires
+      </span>
+      <div class="flex items-center gap-2.5 ms-auto">
+        <button type="button" (click)="onClose()"
+          class="px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 font-semibold text-xs hover:bg-slate-100 transition-colors cursor-pointer">
+          {{ 'TASK_DIALOG.CLOSE' | translate }}
+        </button>
 
-      <button *ngIf="activeTab === 'DETAILS' && !isViewOnly" type="submit" form="taskForm"
-        [disabled]="taskForm.invalid || isSubmitting"
-        [ngClass]="{
-          'bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg': taskForm.valid && !isSubmitting,
-          'bg-slate-200 text-slate-400 cursor-not-allowed': taskForm.invalid || isSubmitting
-        }"
-        class="px-6 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-2 cursor-pointer active:scale-95">
-        <svg *ngIf="isSubmitting" class="animate-spin -ms-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <svg *ngIf="!isSubmitting" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-        </svg>
-        {{ isEditing ? ('TASK_DIALOG.UPDATE' | translate) : ('TASK_DIALOG.SAVE' | translate) }}
-      </button>
+        <button *ngIf="activeTab === 'DETAILS' && !isViewOnly" type="submit" form="taskForm" [disabled]="isSubmitting"
+          class="inline-flex items-center gap-2 px-5 py-2 rounded-xl btn-emerald font-bold text-xs disabled:opacity-50 cursor-pointer">
+          <svg *ngIf="!isSubmitting" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>{{ isEditing ? ('TASK_DIALOG.UPDATE' | translate) : ('TASK_DIALOG.SAVE' | translate) }}</span>
+        </button>
+      </div>
     </div>
 
   </div>
