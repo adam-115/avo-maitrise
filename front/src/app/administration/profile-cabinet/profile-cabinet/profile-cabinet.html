@@ -36,10 +36,10 @@
 
       <!-- Quick Action / Save Header Button -->
       <div class="flex items-center gap-3 self-start lg:self-center">
-        <button (click)="saveProfile()" [disabled]="profileForm.invalid || isSaving"
+        <button type="button" (click)="saveProfile()" [disabled]="isSaving"
           [ngClass]="{
-            'bg-gradient-to-r from-amber-500 via-orange-500 to-red-600 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg': profileForm.valid && !isSaving,
-            'bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200': profileForm.invalid || isSaving
+            'btn-emerald': !isSaving,
+            'bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200': isSaving
           }"
           class="px-5 py-2.5 rounded-2xl font-black text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer active:scale-95">
           <svg *ngIf="!isSaving" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -429,10 +429,10 @@
 
     <!-- Bottom Actions Bar -->
     <div class="flex items-center justify-end gap-4 pt-4">
-      <button type="submit" [disabled]="profileForm.invalid || isSaving"
+      <button type="submit" [disabled]="isSaving"
         [ngClass]="{
-          'bg-gradient-to-r from-amber-500 via-orange-500 to-red-600 hover:from-amber-600 hover:to-orange-600 text-white shadow-md hover:shadow-lg': profileForm.valid && !isSaving,
-          'bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200': profileForm.invalid || isSaving
+          'btn-emerald': !isSaving,
+          'bg-slate-200 text-slate-400 cursor-not-allowed border-2 border-slate-200': isSaving
         }"
         class="px-8 py-3.5 rounded-2xl font-black text-sm transition-all flex items-center gap-2.5 cursor-pointer active:scale-95 shadow-md">
         <svg *ngIf="!isSaving" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -58,7 +58,11 @@ export class ProfileCabinet implements OnInit {
     this.profileService.getProfile().subscribe({
       next: (profile) => {
         if (profile) {
-          this.profileForm.patchValue(profile);
+          this.profileForm.patchValue({
+            ...profile,
+            currency: profile.currency || 'EUR',
+            tvaRate: profile.tvaRate ?? 20
+          });
         }
         this.isLoading = false;
       },
