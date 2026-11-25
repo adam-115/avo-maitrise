@@ -120,6 +120,33 @@ export class Home implements OnInit, OnDestroy {
     }
   }
 
+  get currentSectionLabel(): string {
+    switch (this.activeRoute) {
+      case NavigationService.DOSSIER: return 'Dossiers';
+      case NavigationService.CRM: return 'Clients (CRM)';
+      case NavigationService.CALENDRIER: return 'Calendrier & Audiences';
+      case NavigationService.MESSAGERIE: return 'Messagerie';
+      case NavigationService.BILLING: return 'Facturation';
+      case NavigationService.BILLING_DASHBOARD: return 'Tableau de Bord Financier';
+      case NavigationService.MODEL: return 'Bibliothèque de Modèles & GED';
+      case NavigationService.AML_COMPLIANCE: return 'Conformité AML / KYC';
+      case NavigationService.CLIENT_DILIGENCE_STATUS_LIST: return 'Suivi des Diligences';
+      case NavigationService.AI_ASSISTANT: return 'Avocat Assistant IA';
+      case NavigationService.ADMINSTRATION: return 'Administration';
+      default: return 'Tableau de Bord';
+    }
+  }
+
+  get todayFormatted(): string {
+    try {
+      return new Intl.DateTimeFormat(this.currentLang || 'fr', {
+        weekday: 'long', day: 'numeric', month: 'long'
+      }).format(new Date());
+    } catch {
+      return '';
+    }
+  }
+
   get username(): string {
     return this.keycloakService.getUsername() || 'Avocat';
   }

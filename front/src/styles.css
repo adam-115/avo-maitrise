@@ -1,44 +1,148 @@
-/* Global styles & unified Design System tokens for Avo-Maîtrise */
+/* ==========================================================================
+   AVO-MAÎTRISE — EXECUTIVE LEGALTECH DESIGN SYSTEM
+   Palette : Obsidian Midnight Navy • Warm Alabaster Ivory • Sovereign Navy • Champagne Gold
+   ========================================================================== */
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-display: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* Warm Architectural Alabaster & Obsidian Neutrals */
+  --color-slate-50: #f8f7f4;
+  --color-slate-100: #f1efea;
+  --color-slate-200: #e5e2dc;
+  --color-slate-300: #d4cfc6;
+  --color-slate-400: #8c919b;
+  --color-slate-500: #646b77;
+  --color-slate-600: #475060;
+  --color-slate-700: #303848;
+  --color-slate-800: #1b2232;
+  --color-slate-900: #0e1525;
+  --color-slate-950: #080d18;
+
+  /* Sovereign Legal Navy (Primary Brand Action) */
+  --color-indigo-50: #f0f4fa;
+  --color-indigo-100: #dce6f4;
+  --color-indigo-200: #b9cde9;
+  --color-indigo-300: #87a8d8;
+  --color-indigo-400: #4a73b5;
+  --color-indigo-500: #2a4d86;
+  --color-indigo-600: #1b365d;
+  --color-indigo-700: #142947;
+  --color-indigo-800: #0e1e36;
+  --color-indigo-900: #0a1526;
+  --color-indigo-950: #060d1a;
+
+  /* Refined Slate Cobalt (Secondary Gradients & Links) */
+  --color-blue-50: #f0f5fa;
+  --color-blue-100: #dce8f5;
+  --color-blue-200: #b8d0eb;
+  --color-blue-500: #34609b;
+  --color-blue-600: #24477a;
+  --color-blue-700: #1b365d;
+
+  /* Champagne Gold / Brass (Prestige Accents) */
+  --color-cyan-50: #fbf8ef;
+  --color-cyan-100: #f5edd6;
+  --color-cyan-200: #ebd9a8;
+  --color-cyan-300: #e5c98b;
+  --color-cyan-400: #d4af5a;
+  --color-cyan-500: #c49b42;
+  --color-cyan-600: #a67f2e;
+  --color-cyan-700: #876422;
+  --color-cyan-800: #664a19;
+  --color-cyan-900: #453211;
+  --color-cyan-950: #1f1a10;
+
+  /* Deep Forest Sage (Success & Finance) */
+  --color-emerald-50: #eef7f5;
+  --color-emerald-100: #d6ede8;
+  --color-emerald-200: #addbd2;
+  --color-emerald-500: #14867c;
+  --color-emerald-600: #0f766e;
+  --color-emerald-700: #115e59;
+
+  /* Deep Burgundy (Critical Alerts) */
+  --color-rose-50: #fdf2f4;
+  --color-rose-100: #fbe4e8;
+  --color-rose-200: #f6c4ce;
+  --color-rose-500: #d1284b;
+  --color-rose-600: #be123c;
+  --color-rose-700: #9f1239;
 }
 
 @layer base {
   html {
     font-family: var(--font-sans);
+    background-color: #0e1525;
+    color: #1b2232;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
   }
 
   table td,
   table th {
     font-variant-numeric: tabular-nums;
   }
+
+  /* Refined table rhythm */
+  table thead th {
+    letter-spacing: 0.04em;
+  }
+
+  /* Subtle luxury focus ring */
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  button:focus-visible {
+    outline: 2px solid rgba(196, 155, 66, 0.55);
+    outline-offset: 1px;
+  }
 }
 
-/* Scrollbars discrets et modernes */
-::-webkit-scrollbar {
-  width: 7px;
-  height: 7px;
+/* Prestige utility tokens */
+.gold-accent-bar {
+  background: linear-gradient(90deg, #a67f2e 0%, #e5c98b 50%, #c49b42 100%);
 }
+
+.btn-gold {
+  background: linear-gradient(135deg, #c49b42 0%, #a67f2e 100%);
+  color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.btn-gold:hover {
+  background: linear-gradient(135deg, #d4af5a 0%, #b58c34 100%);
+  box-shadow: 0 6px 18px -4px rgba(196, 155, 66, 0.45);
+}
+
+/* Scrollbars ultra-discrets */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.45);
+  background: rgba(140, 145, 155, 0.35);
   border-radius: 9999px;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.7);
+  background: rgba(100, 107, 119, 0.6);
 }
 
 /* Ajustement proportionnel doux pour écrans laptops 14" et tablettes */
