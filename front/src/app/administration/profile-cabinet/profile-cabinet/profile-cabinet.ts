@@ -99,8 +99,17 @@ export class ProfileCabinet implements OnInit {
 
   saveProfile(): void {
     if (this.profileForm.invalid) {
-      this.alertService.displayMessage('Formulaire incomplet', 'Veuillez vérifier les champs obligatoires du profil.', 'warning');
       this.profileForm.markAllAsTouched();
+      const missingFields = this.getInvalidFieldLabels();
+      const detail = missingFields.length > 0
+        ? `Champs obligatoires ou invalides : ${missingFields.join(', ')}.`
+        : 'Veuillez vérifier les champs obligatoires du profil.';
+      this.alertService.displayMessage('Formulaire incomplet', detail, 'warning');
+      setTimeout(() => {
+        const firstInvalid = document.querySelector('form .ng-invalid[formControlName]') as HTMLElement | null;
+        firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstInvalid?.focus();
+      });
       return;
     }
 
@@ -126,6 +135,18 @@ export class ProfileCabinet implements OnInit {
         });
       }
     });
+  }
+
+  private getInvalidFieldLabels(): string[] {
+    const labels: Record<string, string> = {
+      name: 'Nom du cabinet (obligatoire)',
+      email: 'Email de contact (format invalide)',
+      currency: 'Devise par défaut (obligatoire)',
+      tvaRate: 'Taux de TVA (obligatoire, 0 à 100 %)'
+    };
+    return Object.keys(this.profileForm.controls)
+      .filter((key) => this.profileForm.get(key)?.invalid)
+      .map((key) => labels[key] || key);
   }
 
   get logoPreview(): string | null {
