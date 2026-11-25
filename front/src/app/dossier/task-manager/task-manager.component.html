@@ -317,14 +317,26 @@
 
           <!-- TAB 1: INFO CONTENT -->
           <div *ngIf="getTaskTab(task.id) === 'INFO'" class="space-y-3 min-h-[90px]">
-            <h4 class="text-base font-bold leading-snug group-hover:text-indigo-700 transition-colors"
-              [ngClass]="isClosed(task) ? 'line-through text-slate-400' : 'text-slate-900'">
+            <h4 (click)="openForm(task, true)"
+              class="text-base font-bold leading-snug group-hover:text-indigo-700 transition-colors cursor-pointer hover:underline"
+              [ngClass]="isClosed(task) ? 'line-through text-slate-400' : 'text-slate-900'"
+              title="Cliquer pour voir le détail de la tâche">
               {{ task.titre }}
             </h4>
 
             <p *ngIf="task.description" class="text-xs text-slate-500 leading-relaxed line-clamp-3 font-medium">
               {{ task.description }}
             </p>
+
+            <!-- Audio vocal associé -->
+            <div *ngIf="task.audioDocumentId" class="pt-1 space-y-2">
+              <button type="button" (click)="toggleTaskAudio(task)"
+                [disabled]="loadingAudioTaskIds.has(task.id!)"
+                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 shadow-2xs cursor-pointer transition-colors">
+                <span>{{ loadingAudioTaskIds.has(task.id!) ? '⏳ Chargement...' : (taskAudioUrls[task.id!] ? '⏹ Masquer l\'audio' : '🎧 Écouter l\'audio') }}</span>
+              </button>
+              <audio *ngIf="taskAudioUrls[task.id!]" [src]="taskAudioUrls[task.id!]" controls autoplay class="w-full h-9"></audio>
+            </div>
 
             <!-- Estimated Time Badge -->
             <div *ngIf="task.estimatedTimeMinutes" class="pt-1">
@@ -417,15 +429,20 @@
 
             <!-- Action Buttons -->
             <div class="flex items-center gap-1.5">
-              <button type="button" (click)="openForm(task, isClosed(task))"
-                class="p-2 rounded-xl border-2 border-slate-300 bg-white hover:bg-indigo-50 hover:border-indigo-300 text-slate-600 hover:text-indigo-600 transition-colors shadow-2xs cursor-pointer active:scale-95"
-                [title]="isClosed(task) ? ('TASK_MANAGER.VIEW' | translate) : ('TASK_MANAGER.EDIT' | translate)">
-                <svg *ngIf="!isClosed(task)" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-                <svg *ngIf="isClosed(task)" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button type="button" (click)="openForm(task, true)"
+                class="p-2 rounded-xl border-2 border-slate-300 bg-white hover:bg-sky-50 hover:border-sky-300 text-slate-600 hover:text-sky-600 transition-colors shadow-2xs cursor-pointer active:scale-95"
+                title="Voir le détail">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+
+              <button *ngIf="!isClosed(task)" type="button" (click)="openForm(task, false)"
+                class="p-2 rounded-xl border-2 border-slate-300 bg-white hover:bg-indigo-50 hover:border-indigo-300 text-slate-600 hover:text-indigo-600 transition-colors shadow-2xs cursor-pointer active:scale-95"
+                [title]="'TASK_MANAGER.EDIT' | translate">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                 </svg>
               </button>
 
@@ -472,9 +489,14 @@
               <!-- Task Title & Desc -->
               <td class="py-4 px-6">
                 <div class="space-y-1">
-                  <div class="font-bold text-slate-900 group-hover:text-indigo-700 transition-colors flex items-center gap-2"
+                  <div class="font-bold text-slate-900 group-hover:text-indigo-700 transition-colors flex items-center gap-2 flex-wrap"
                     [ngClass]="{'line-through text-slate-400': isClosed(task)}">
-                    <span>{{ task.titre }}</span>
+                    <span (click)="openForm(task, true)" class="cursor-pointer hover:underline" title="Voir le détail">{{ task.titre }}</span>
+                    <span *ngIf="task.audioDocumentId" (click)="openForm(task, true)"
+                      class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 cursor-pointer hover:bg-indigo-100"
+                      title="Audio vocal associé — cliquer pour écouter">
+                      🎧 Audio
+                    </span>
                     <span *ngIf="isOverdue(task) && !isClosed(task)"
                       class="px-2 py-0.5 rounded-md text-[9px] font-black uppercase bg-rose-50 text-rose-700 border border-rose-300 animate-pulse">
                       {{ 'TASK_MANAGER.OVERDUE' | translate }}
@@ -549,15 +571,20 @@
               <!-- Actions -->
               <td class="py-4 px-6 text-end">
                 <div class="flex items-center justify-end gap-1.5">
-                  <button type="button" (click)="openForm(task, isClosed(task))"
-                    class="p-2 rounded-xl border-2 border-slate-300 bg-white hover:bg-indigo-50 hover:border-indigo-300 text-slate-600 hover:text-indigo-600 transition-colors shadow-2xs cursor-pointer active:scale-95"
-                    [title]="isClosed(task) ? ('TASK_MANAGER.VIEW' | translate) : ('TASK_MANAGER.EDIT' | translate)">
-                    <svg *ngIf="!isClosed(task)" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                    </svg>
-                    <svg *ngIf="isClosed(task)" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <button type="button" (click)="openForm(task, true)"
+                    class="p-2 rounded-xl border-2 border-slate-300 bg-white hover:bg-sky-50 hover:border-sky-300 text-slate-600 hover:text-sky-600 transition-colors shadow-2xs cursor-pointer active:scale-95"
+                    title="Voir le détail">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </button>
+
+                  <button *ngIf="!isClosed(task)" type="button" (click)="openForm(task, false)"
+                    class="p-2 rounded-xl border-2 border-slate-300 bg-white hover:bg-indigo-50 hover:border-indigo-300 text-slate-600 hover:text-indigo-600 transition-colors shadow-2xs cursor-pointer active:scale-95"
+                    [title]="'TASK_MANAGER.EDIT' | translate">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
                   </button>
 
@@ -660,6 +687,7 @@
   [isEditing]="isEditing"
   [taskToEdit]="taskToEdit"
   [isViewOnly]="isViewOnlyMode"
+  [dossierId]="activeDossierId"
   [categories]="categories"
   [statuses]="statuses"
   [users]="users"

@@ -69,6 +69,9 @@ public class Task {
     @Column(name = "estimated_time_minutes")
     private Integer estimatedTimeMinutes;
 
+    @Column(name = "audio_document_id")
+    private Long audioDocumentId;
+
     @PrePersist
     protected void onCreate() {
         createdAt = new Date();

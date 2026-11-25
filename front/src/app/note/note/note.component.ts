@@ -44,6 +44,7 @@ export class NoteComponent implements OnInit, OnChanges, OnDestroy {
   searchTerm: string = '';
   selectedCategoryId: string = '';
   showNoteDialog = false;
+  isViewOnlyMode = false;
   selectedNote: Note | null = null;
   isLoading = false;
 
@@ -207,6 +208,7 @@ export class NoteComponent implements OnInit, OnChanges, OnDestroy {
 
   openNoteCreationModal(): void {
     this.selectedNote = null;
+    this.isViewOnlyMode = false;
     this.showNoteDialog = true;
   }
 
@@ -257,13 +259,21 @@ export class NoteComponent implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  viewNote(note: Note): void {
+    this.selectedNote = note;
+    this.isViewOnlyMode = true;
+    this.showNoteDialog = true;
+  }
+
   editNote(note: Note): void {
     this.selectedNote = note;
+    this.isViewOnlyMode = false;
     this.showNoteDialog = true;
   }
 
   closeNoteCreationModal(): void {
     this.showNoteDialog = false;
+    this.isViewOnlyMode = false;
     this.selectedNote = null;
   }
 

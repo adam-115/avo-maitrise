@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Task, TaskCategory, TaskStatus, User, TaskLog } from '../../appTypes';
@@ -8,6 +8,7 @@ import { TaskStatusService } from '../../services/task-status.service';
 import { TaskLogService } from '../../services/task-log.service';
 import { UserService } from '../../services/user.service';
 import { AlertService } from '../../services/alert-service';
+import { DocumentService } from '../../services/document.service';
 import { TaskDialogComponent } from './task-dialog/task-dialog.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -18,7 +19,7 @@ import { TranslatePipe } from '@ngx-translate/core';
   templateUrl: './task-manager.component.html',
   styleUrls: ['./task-manager.component.css']
 })
-export class TaskManagerComponent implements OnInit, OnChanges {
+export class TaskManagerComponent implements OnInit, OnChanges, OnDestroy {
   @Input() dossierId!: string | number;
   @Input() selectedDossier: any = null;
   @Input() dossier: any = null;
@@ -57,10 +58,41 @@ export class TaskManagerComponent implements OnInit, OnChanges {
   taskLogService = inject(TaskLogService);
   userService = inject(UserService);
   alertService = inject(AlertService);
+  documentService = inject(DocumentService);
   fb = inject(FormBuilder);
+
+  taskAudioUrls: Record<number, string> = {};
+  loadingAudioTaskIds = new Set<number>();
 
   ngOnInit(): void {
     this.loadData();
+  }
+
+  ngOnDestroy(): void {
+    Object.values(this.taskAudioUrls).forEach(url => URL.revokeObjectURL(url));
+  }
+
+  toggleTaskAudio(task: Task): void {
+    const taskId = Number(task.id);
+    const docId = task.audioDocumentId;
+    if (!taskId || !docId) return;
+    if (this.taskAudioUrls[taskId]) {
+      URL.revokeObjectURL(this.taskAudioUrls[taskId]);
+      delete this.taskAudioUrls[taskId];
+      return;
+    }
+    if (this.loadingAudioTaskIds.has(taskId)) return;
+    this.loadingAudioTaskIds.add(taskId);
+    this.documentService.downloadDocumentFile(docId).subscribe({
+      next: blob => {
+        this.taskAudioUrls[taskId] = URL.createObjectURL(blob);
+        this.loadingAudioTaskIds.delete(taskId);
+      },
+      error: () => {
+        this.loadingAudioTaskIds.delete(taskId);
+        this.alertService.displayMessage('Erreur', 'Impossible de charger l\'audio de la tâche.', 'error');
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -251,6 +283,7 @@ export class TaskManagerComponent implements OnInit, OnChanges {
       assignees: assignedUsers,
       dossierId: Number(this.activeDossierId),
       isCompleted: status?.isClosingStatus || false,
+      audioDocumentId: formVals.audioDocumentId ?? this.taskToEdit?.audioDocumentId ?? null,
       createdAt: this.isEditing ? this.tasks.find(t => t.id === this.selectedTaskId)?.createdAt || new Date() : new Date()
     };
 

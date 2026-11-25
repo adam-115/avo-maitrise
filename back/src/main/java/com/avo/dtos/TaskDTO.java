@@ -23,4 +23,5 @@ public class TaskDTO {
     private UserDTO createdBy;
     private String invoiceId;
     private Integer estimatedTimeMinutes;
+    private Long audioDocumentId;
 }

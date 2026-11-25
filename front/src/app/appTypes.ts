@@ -499,6 +499,7 @@ export interface Task {
   invoiceId?: string;
 
   estimatedTimeMinutes?: number;
+  audioDocumentId?: number | null;
 }
 
 export interface TaskLog {

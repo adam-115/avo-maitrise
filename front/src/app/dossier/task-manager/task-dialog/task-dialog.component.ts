@@ -1,9 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChanges, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Task, TaskCategory, TaskStatus, User, TaskLog } from '../../../appTypes';
 import { UserSelectionDialog } from '../../user-selection-dialog/user-selection-dialog';
 import { TaskLogService } from '../../../services/task-log.service';
+import { VoiceNoteService } from '../../../services/voice-note.service';
+import { DocumentService } from '../../../services/document.service';
 import { PaginatedResponse } from '../../../services/genericService/abstract-crud.service';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -13,13 +15,14 @@ import { TranslatePipe } from '@ngx-translate/core';
   imports: [CommonModule, ReactiveFormsModule, FormsModule, UserSelectionDialog, TranslatePipe],
   templateUrl: './task-dialog.component.html'
 })
-export class TaskDialogComponent implements OnInit, OnChanges {
+export class TaskDialogComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isEditing: boolean = false;
   @Input() taskToEdit?: Task;
   @Input() categories: TaskCategory[] = [];
   @Input() statuses: TaskStatus[] = [];
   @Input() users: User[] = [];
   @Input() isViewOnly: boolean = false;
+  @Input() dossierId?: string | number;
 
   @Output() closeDialog = new EventEmitter<void>();
   @Output() saveTask = new EventEmitter<any>();
@@ -33,6 +36,22 @@ export class TaskDialogComponent implements OnInit, OnChanges {
 
   private fb = inject(FormBuilder);
   private taskLogService = inject(TaskLogService);
+  private documentService = inject(DocumentService);
+  public voiceService = inject(VoiceNoteService);
+
+  isDictating = false;
+  dictationInterim = '';
+  dictationError = '';
+
+  // Audio enregistré lors de la dictée dans le dialog
+  recordedAudioBlob: Blob | null = null;
+  recordedAudioMime = 'audio/webm';
+  recordedAudioPreviewUrl: string | null = null;
+
+  // Audio déjà associé à la tâche (depuis MinIO GED)
+  taskAudioUrl: string | null = null;
+  isLoadingTaskAudio = false;
+  taskAudioError: string | null = null;
 
   ngOnInit(): void {
     this.initForm();
@@ -62,6 +81,9 @@ export class TaskDialogComponent implements OnInit, OnChanges {
   }
 
   populateForm(): void {
+    this.revokeAllAudioUrls();
+    this.recordedAudioBlob = null;
+    this.taskAudioError = null;
     if (this.isEditing && this.taskToEdit) {
       const echeance = this.taskToEdit.dateEcheance 
         ? new Date(this.taskToEdit.dateEcheance).toISOString().split('T')[0] 
@@ -78,6 +100,9 @@ export class TaskDialogComponent implements OnInit, OnChanges {
         estimatedTimeMinutes: this.taskToEdit.estimatedTimeMinutes || null
       });
       this.loadLogs();
+      if (this.taskToEdit.audioDocumentId) {
+        this.loadTaskAudio();
+      }
     } else {
       const defaultCat = this.categories.length > 0 ? this.categories[0].id : '';
       const defaultStatus = this.statuses.length > 0 ? this.statuses[0].id : '';
@@ -138,18 +163,130 @@ export class TaskDialogComponent implements OnInit, OnChanges {
     this.taskForm.patchValue({ assigneAIds: newIds });
   }
 
+  ngOnDestroy(): void {
+    this.voiceService.stopRecognition();
+    this.voiceService.stopAudioRecording();
+    this.revokeAllAudioUrls();
+  }
+
+  private revokeAllAudioUrls(): void {
+    if (this.taskAudioUrl) {
+      URL.revokeObjectURL(this.taskAudioUrl);
+      this.taskAudioUrl = null;
+    }
+    if (this.recordedAudioPreviewUrl) {
+      URL.revokeObjectURL(this.recordedAudioPreviewUrl);
+      this.recordedAudioPreviewUrl = null;
+    }
+  }
+
+  discardRecordedAudio(): void {
+    if (this.recordedAudioPreviewUrl) {
+      URL.revokeObjectURL(this.recordedAudioPreviewUrl);
+      this.recordedAudioPreviewUrl = null;
+    }
+    this.recordedAudioBlob = null;
+  }
+
+  loadTaskAudio(): void {
+    const docId = this.taskToEdit?.audioDocumentId;
+    if (!docId || this.isLoadingTaskAudio || this.taskAudioUrl) return;
+    this.isLoadingTaskAudio = true;
+    this.taskAudioError = null;
+    this.documentService.downloadDocumentFile(docId).subscribe({
+      next: blob => {
+        this.taskAudioUrl = URL.createObjectURL(blob);
+        this.isLoadingTaskAudio = false;
+      },
+      error: () => {
+        this.taskAudioError = 'Impossible de charger l\'enregistrement audio.';
+        this.isLoadingTaskAudio = false;
+      }
+    });
+  }
+
+  toggleDictation(): void {
+    if (this.isDictating) {
+      this.voiceService.stopRecognition();
+      this.voiceService.stopAudioRecording();
+      this.isDictating = false;
+      this.dictationInterim = '';
+      return;
+    }
+    this.dictationError = '';
+    this.discardRecordedAudio();
+    this.voiceService.startAudioRecording((blob, mime) => {
+      this.recordedAudioBlob = blob;
+      this.recordedAudioMime = mime;
+      this.recordedAudioPreviewUrl = URL.createObjectURL(blob);
+    });
+    const started = this.voiceService.startRecognition('fr-FR', {
+      onFinal: chunk => {
+        const current = (this.taskForm.get('description')?.value || '').trim();
+        this.taskForm.patchValue({ description: current ? `${current} ${chunk}` : chunk });
+        if (!this.taskForm.get('titre')?.value) {
+          this.taskForm.patchValue({ titre: chunk.length > 75 ? chunk.substring(0, 75) + '…' : chunk });
+        }
+        this.dictationInterim = '';
+      },
+      onInterim: text => {
+        this.dictationInterim = text;
+      },
+      onError: msg => {
+        this.dictationError = msg;
+        this.isDictating = false;
+        this.dictationInterim = '';
+        this.voiceService.stopAudioRecording();
+      },
+      onEnd: () => {
+        this.isDictating = false;
+        this.dictationInterim = '';
+        this.voiceService.stopAudioRecording();
+      }
+    });
+    this.isDictating = started;
+  }
+
   onClose(): void {
+    this.voiceService.stopRecognition();
+    this.voiceService.stopAudioRecording();
+    this.revokeAllAudioUrls();
     this.closeDialog.emit();
   }
 
-  onSubmit(): void {
-    if (this.taskForm.valid) {
-      this.isSubmitting = true;
-      this.saveTask.emit(this.taskForm.getRawValue());
-      this.isSubmitting = false;
-    } else {
+  async onSubmit(): Promise<void> {
+    if (!this.taskForm.valid) {
       this.taskForm.markAllAsTouched();
+      return;
     }
+    this.isSubmitting = true;
+    const raw = this.taskForm.getRawValue();
+    let audioDocumentId: number | null = this.taskToEdit?.audioDocumentId ?? null;
+
+    if (this.recordedAudioBlob && this.dossierId) {
+      try {
+        const b64 = await this.voiceService.blobToBase64(this.recordedAudioBlob);
+        const ext = this.recordedAudioMime.includes('mp4') ? 'm4a' : (this.recordedAudioMime.includes('ogg') ? 'ogg' : 'webm');
+        const stamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 16);
+        const docPayload: any = {
+          dossierId: Number(this.dossierId),
+          nomFichier: `Dictee_tache_${stamp}.${ext}`,
+          description: `Enregistrement vocal (tâche) : ${raw.titre || ''}`,
+          fileData: b64
+        };
+        audioDocumentId = await new Promise<number | null>(resolve => {
+          this.documentService.create(docPayload).subscribe({
+            next: (createdDoc: any) => resolve(createdDoc?.id ? Number(createdDoc.id) : audioDocumentId),
+            error: () => resolve(audioDocumentId)
+          });
+        });
+      } catch {
+        // Fallback : sauvegarder la tâche sans l'audio
+      }
+    }
+
+    this.saveTask.emit({ ...raw, audioDocumentId });
+    this.isSubmitting = false;
   }
 
   switchTab(tab: 'DETAILS' | 'COMMENTS'): void {

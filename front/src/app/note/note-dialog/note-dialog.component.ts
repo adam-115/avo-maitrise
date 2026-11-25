@@ -5,6 +5,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Note, NoteCategory } from '../../appTypes';
 import { NoteCategoryService } from '../../services/note-category.service';
 import { VoiceNoteService } from '../../services/voice-note.service';
+import { DocumentService } from '../../services/document.service';
+import { WordExportService } from '../../services/word-export.service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
 @Component({
@@ -16,17 +18,32 @@ import { PaginatedResponse } from '../../services/genericService/abstract-crud.s
 })
 export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
   private noteCategoryService = inject(NoteCategoryService);
+  private documentService = inject(DocumentService);
+  private wordExportService = inject(WordExportService);
   public voiceService = inject(VoiceNoteService);
 
   isDictating = false;
   dictationInterim = '';
   dictationError = '';
+  isSubmitting = false;
+  isExportingWord = false;
+
+  // Audio enregistré lors de la dictée dans le dialog
+  recordedAudioBlob: Blob | null = null;
+  recordedAudioMime = 'audio/webm';
+  recordedAudioPreviewUrl: string | null = null;
+
+  // Audio déjà associé à la note (depuis MinIO GED)
+  noteAudioUrl: string | null = null;
+  isLoadingNoteAudio = false;
+  noteAudioError: string | null = null;
 
   @Input() categories: NoteCategory[] = [];
   @Input() dossierId: string | number = '';
   @Input() auteurId: string | number = '';
   @Input() noteToEdit: Note | null = null;
   @Input() isViewOnly: boolean = false;
+  @Input() authorName: string = '';
 
   @Output() closeDialog = new EventEmitter<void>();
   @Output() saveNote = new EventEmitter<Note>();
@@ -49,7 +66,7 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
     if (!this.noteForm) {
       this.initForm();
     }
-    if (changes['noteToEdit']) {
+    if (changes['noteToEdit'] || changes['isViewOnly']) {
       this.populateForm();
     }
   }
@@ -65,6 +82,9 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
 
   private populateForm(): void {
     if (!this.noteForm) return;
+    this.revokeAllAudioUrls();
+    this.recordedAudioBlob = null;
+    this.noteAudioError = null;
 
     if (this.noteToEdit) {
       this.noteForm.patchValue({
@@ -72,6 +92,9 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
         description: this.noteToEdit.description || '',
         categoryId: this.noteToEdit.categoryId || ''
       });
+      if (this.getNoteAudioDocId()) {
+        this.loadNoteAudio();
+      }
     } else {
       const defaultCat = this.categories && this.categories.length > 0 ? this.categories[0].id : '';
       this.noteForm.reset({
@@ -86,6 +109,73 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
     } else {
       this.noteForm.enable();
     }
+  }
+
+  getNoteAudioDocId(): number | null {
+    return (this.noteToEdit as any)?.audioDocumentId ?? null;
+  }
+
+  getSelectedCategoryLabel(): string {
+    const id = this.noteToEdit?.categoryId ?? this.noteForm?.get('categoryId')?.value;
+    const cat = this.categories.find(c => String(c.id) === String(id));
+    return cat?.label || 'Sans catégorie';
+  }
+
+  getSelectedCategoryColor(): string {
+    const id = this.noteToEdit?.categoryId ?? this.noteForm?.get('categoryId')?.value;
+    const cat = this.categories.find(c => String(c.id) === String(id));
+    return cat?.color || '#6366f1';
+  }
+
+  switchToEditMode(): void {
+    this.isViewOnly = false;
+    this.noteForm.enable();
+  }
+
+  exportToWord(): void {
+    if (!this.noteToEdit?.id || this.isExportingWord) return;
+    this.isExportingWord = true;
+    const safeTitle = (this.noteToEdit.title || `Note_${this.noteToEdit.id}`).replace(/[^a-zA-Z0-9._-]/g, '_');
+    this.wordExportService.downloadNote(this.noteToEdit.id, `Note_${safeTitle}.docx`).subscribe({
+      next: () => { this.isExportingWord = false; },
+      error: () => { this.isExportingWord = false; }
+    });
+  }
+
+  loadNoteAudio(): void {
+    const docId = this.getNoteAudioDocId();
+    if (!docId || this.isLoadingNoteAudio || this.noteAudioUrl) return;
+    this.isLoadingNoteAudio = true;
+    this.noteAudioError = null;
+    this.documentService.downloadDocumentFile(docId).subscribe({
+      next: blob => {
+        this.noteAudioUrl = URL.createObjectURL(blob);
+        this.isLoadingNoteAudio = false;
+      },
+      error: () => {
+        this.noteAudioError = 'Impossible de charger l\'enregistrement audio.';
+        this.isLoadingNoteAudio = false;
+      }
+    });
+  }
+
+  private revokeAllAudioUrls(): void {
+    if (this.noteAudioUrl) {
+      URL.revokeObjectURL(this.noteAudioUrl);
+      this.noteAudioUrl = null;
+    }
+    if (this.recordedAudioPreviewUrl) {
+      URL.revokeObjectURL(this.recordedAudioPreviewUrl);
+      this.recordedAudioPreviewUrl = null;
+    }
+  }
+
+  discardRecordedAudio(): void {
+    if (this.recordedAudioPreviewUrl) {
+      URL.revokeObjectURL(this.recordedAudioPreviewUrl);
+      this.recordedAudioPreviewUrl = null;
+    }
+    this.recordedAudioBlob = null;
   }
 
   loadCategories(): void {
@@ -106,20 +196,32 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.voiceService.stopRecognition();
+    this.voiceService.stopAudioRecording();
+    this.revokeAllAudioUrls();
   }
 
   toggleDictation(): void {
     if (this.isDictating) {
       this.voiceService.stopRecognition();
+      this.voiceService.stopAudioRecording();
       this.isDictating = false;
       this.dictationInterim = '';
       return;
     }
     this.dictationError = '';
+    this.discardRecordedAudio();
+    this.voiceService.startAudioRecording((blob, mime) => {
+      this.recordedAudioBlob = blob;
+      this.recordedAudioMime = mime;
+      this.recordedAudioPreviewUrl = URL.createObjectURL(blob);
+    });
     const started = this.voiceService.startRecognition('fr-FR', {
       onFinal: chunk => {
         const current = (this.noteForm.get('description')?.value || '').trim();
         this.noteForm.patchValue({ description: current ? `${current} ${chunk}` : chunk });
+        if (!this.noteForm.get('title')?.value) {
+          this.noteForm.patchValue({ title: chunk.length > 75 ? chunk.substring(0, 75) + '…' : chunk });
+        }
         this.dictationInterim = '';
       },
       onInterim: text => {
@@ -129,10 +231,12 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
         this.dictationError = msg;
         this.isDictating = false;
         this.dictationInterim = '';
+        this.voiceService.stopAudioRecording();
       },
       onEnd: () => {
         this.isDictating = false;
         this.dictationInterim = '';
+        this.voiceService.stopAudioRecording();
       }
     });
     this.isDictating = started;
@@ -140,28 +244,57 @@ export class NoteDialogComponent implements OnInit, OnChanges, OnDestroy {
 
   onClose(): void {
     this.voiceService.stopRecognition();
+    this.voiceService.stopAudioRecording();
+    this.revokeAllAudioUrls();
     this.closeDialog.emit();
     this.closeModalEvent.emit();
   }
 
-  onSubmit(): void {
-    if (this.noteForm.invalid) {
+  async onSubmit(): Promise<void> {
+    if (this.noteForm.invalid || this.isSubmitting) {
       this.noteForm.markAllAsTouched();
       return;
     }
 
+    this.isSubmitting = true;
     const formVal = this.noteForm.getRawValue();
-    const noteData: Note = {
+    let audioDocumentId: number | null = this.getNoteAudioDocId();
+
+    if (this.recordedAudioBlob && this.dossierId) {
+      try {
+        const b64 = await this.voiceService.blobToBase64(this.recordedAudioBlob);
+        const ext = this.recordedAudioMime.includes('mp4') ? 'm4a' : (this.recordedAudioMime.includes('ogg') ? 'ogg' : 'webm');
+        const stamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 16);
+        const docPayload: any = {
+          dossierId: Number(this.dossierId),
+          nomFichier: `Dictee_note_${stamp}.${ext}`,
+          description: `Enregistrement vocal (note) : ${formVal.title || ''}`,
+          fileData: b64
+        };
+        audioDocumentId = await new Promise<number | null>(resolve => {
+          this.documentService.create(docPayload).subscribe({
+            next: (createdDoc: any) => resolve(createdDoc?.id ? Number(createdDoc.id) : audioDocumentId),
+            error: () => resolve(audioDocumentId)
+          });
+        });
+      } catch {
+        // Fallback : enregistrer la note sans l'audio
+      }
+    }
+
+    const noteData: any = {
       id: this.noteToEdit?.id,
       title: formVal.title,
       description: formVal.description,
       categoryId: formVal.categoryId,
       dossierId: this.dossierId,
       auteurId: this.auteurId,
+      audioDocumentId,
       createdAt: this.noteToEdit ? this.noteToEdit.createdAt : new Date(),
       updatedAt: new Date()
     };
 
+    this.isSubmitting = false;
     this.saveNote.emit(noteData);
     this.onClose();
   }

@@ -6,11 +6,14 @@ import { HttpClient } from '@angular/common/http';
 import { VoiceDossierSuggestion, VoiceNoteService } from '../services/voice-note.service';
 import { NoteService } from '../services/note.service';
 import { NoteCategoryService } from '../services/note-category.service';
+import { TaskService } from '../services/task.service';
+import { TaskCategoryService } from '../services/task-category.service';
+import { TaskStatusService } from '../services/task-status.service';
 import { DocumentService } from '../services/document.service';
 import { WordExportService } from '../services/word-export.service';
 import { ClientSelectionDialog } from '../dossier/client-selection-dialog/client-selection-dialog';
 import { DossierSelectionDialog } from '../dossier/dossier-selection-dialog/dossier-selection-dialog';
-import { Dossier, Note, NoteCategory } from '../appTypes';
+import { Dossier, Note, NoteCategory, Task, TaskCategory, TaskStatus } from '../appTypes';
 import { environment } from '../../environments/environment';
 
 @Component({
@@ -178,25 +181,54 @@ import { environment } from '../../environments/environment';
 
         <!-- Actions détectées par l'IA -->
         <div *ngIf="suggestedTasks().length > 0 || suggestedEventTitle()"
-          class="rounded-2xl border border-purple-200 bg-purple-50/60 p-4 space-y-2 text-xs text-purple-950">
-          <div class="font-extrabold">✨ Éléments détectés dans votre dictée :</div>
+          class="rounded-2xl border border-purple-200 bg-purple-50/60 p-4 space-y-2.5 text-xs text-purple-950">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="font-extrabold">✨ Éléments détectés dans votre dictée :</div>
+            <a *ngIf="selectedDossierId && createdTasksCount() > 0"
+              [routerLink]="['/home/dossier-detail', selectedDossierId, 'taches']"
+              class="text-xs font-bold text-indigo-700 hover:underline">
+              Voir les tâches du dossier ({{ createdTasksCount() }} créée(s)) ↗
+            </a>
+          </div>
           <div *ngIf="suggestedEventTitle()">
             <b>📅 Audience / RDV mentionné :</b> {{ suggestedEventTitle() }}
             <span *ngIf="suggestedEventDate()"> (le {{ suggestedEventDate() }})</span>
           </div>
-          <div *ngIf="suggestedTasks().length > 0">
-            <b>✅ Tâches détectées :</b>
-            <ul class="list-disc pl-5 mt-1 space-y-0.5">
-              <li *ngFor="let t of suggestedTasks()">{{ t }}</li>
-            </ul>
+          <div *ngIf="suggestedTasks().length > 0" class="space-y-2">
+            <b>✅ Tâches détectées (créables en 1 clic dans le dossier) :</b>
+            <div *ngFor="let t of suggestedTasks(); let i = index"
+              class="flex items-center justify-between gap-2 bg-white rounded-xl border border-purple-100 px-3 py-2">
+              <span class="font-medium text-slate-800">{{ t }}</span>
+              <button type="button" (click)="createSingleTaskFromText(t, i)"
+                [disabled]="!selectedDossierId || createdSuggestedTaskIndexes().includes(i) || creatingTaskIndex() === i"
+                class="px-3 py-1 rounded-lg text-[11px] font-bold shrink-0 cursor-pointer transition-colors"
+                [ngClass]="createdSuggestedTaskIndexes().includes(i)
+                  ? 'bg-emerald-100 text-emerald-800 cursor-default'
+                  : 'bg-indigo-600 hover:bg-indigo-700 text-white disabled:opacity-50'">
+                {{ createdSuggestedTaskIndexes().includes(i) ? '✓ Créée' : (creatingTaskIndex() === i ? '...' : '+ Créer tâche') }}
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Bouton Enregistrer -->
-        <div class="flex items-center justify-end gap-3 pt-2">
+        <!-- Message succès création tâche directe -->
+        <div *ngIf="directTaskCreated()" class="rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-900 px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs font-bold">
+          <span>✓ Tâche créée dans le dossier !</span>
+          <a *ngIf="selectedDossierId" [routerLink]="['/home/dossier-detail', selectedDossierId, 'taches']"
+            class="underline text-emerald-800 hover:text-emerald-950">
+            Ouvrir les Tâches du dossier ↗
+          </a>
+        </div>
+
+        <!-- Boutons Enregistrer (Note ou Tâche) -->
+        <div class="flex flex-wrap items-center justify-end gap-2.5 pt-2">
+          <button type="button" (click)="saveDirectAsTask()" [disabled]="isCreatingDirectTask() || !selectedDossierId || !transcript.trim()"
+            class="w-full sm:w-auto px-5 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-sm font-black shadow-sm cursor-pointer transition-all">
+            {{ isCreatingDirectTask() ? 'Création tâche...' : '✓ Créer comme Tâche' }}
+          </button>
           <button type="button" (click)="saveToDossier()" [disabled]="isSaving() || !selectedDossierId || !transcript.trim()"
             class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-sm font-black shadow-md shadow-indigo-200 cursor-pointer transition-all">
-            {{ isSaving() ? 'Enregistrement...' : 'Enregistrer la note dans le dossier' }}
+            {{ isSaving() ? 'Enregistrement...' : 'Enregistrer la Note dans le dossier' }}
           </button>
         </div>
       </div>
@@ -221,9 +253,20 @@ export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
   public voiceService = inject(VoiceNoteService);
   private noteService = inject(NoteService);
   private categoryService = inject(NoteCategoryService);
+  private taskService = inject(TaskService);
+  private taskCategoryService = inject(TaskCategoryService);
+  private taskStatusService = inject(TaskStatusService);
   private documentService = inject(DocumentService);
   private wordExportService = inject(WordExportService);
   private http = inject(HttpClient);
+
+  defaultTaskCategory: TaskCategory | null = null;
+  defaultTaskStatus: TaskStatus | null = null;
+  creatingTaskIndex = signal<number | null>(null);
+  createdSuggestedTaskIndexes = signal<number[]>([]);
+  createdTasksCount = signal(0);
+  isCreatingDirectTask = signal(false);
+  directTaskCreated = signal(false);
 
   speechLang = 'fr-FR';
   noteTitle = '';
@@ -246,6 +289,7 @@ export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
   audioMimeType = signal<string>('audio/webm');
   audioPreviewUrl = signal<string | null>(null);
   audioSizeKb = signal<number>(0);
+  private uploadedAudioDocId: number | null = null;
 
   categories = signal<NoteCategory[]>([]);
   suggestedDossier = signal<VoiceDossierSuggestion | null>(null);
@@ -267,6 +311,22 @@ export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
         const list = res?.content || (Array.isArray(res) ? res : []);
         this.categories.set(list);
         if (list.length > 0) this.selectedCategoryId = list[0].id;
+      },
+      error: () => {}
+    });
+
+    this.taskCategoryService.getAll().subscribe({
+      next: (res: any) => {
+        const list: TaskCategory[] = res?.content || (Array.isArray(res) ? res : []);
+        if (list.length > 0) this.defaultTaskCategory = list[0];
+      },
+      error: () => {}
+    });
+
+    this.taskStatusService.getAll().subscribe({
+      next: (res: any) => {
+        const list: TaskStatus[] = res?.content || (Array.isArray(res) ? res : []);
+        this.defaultTaskStatus = list.find(s => !s.isClosingStatus) || list[0] || null;
       },
       error: () => {}
     });
@@ -350,6 +410,7 @@ export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
     this.revokeAudioUrl();
     this.audioBlob.set(null);
     this.audioSizeKb.set(0);
+    this.uploadedAudioDocId = null;
   }
 
   private revokeAudioUrl(): void {
@@ -449,59 +510,124 @@ export class VoiceNoteQuickComponent implements OnInit, OnDestroy {
     this.selectedDossierLabel.set(`${dossier.referenceInterne || 'DOS-' + dossier.id} — ${dossier.titre || ''}`.trim());
   }
 
+  private async ensureAudioUploaded(title: string): Promise<number | null> {
+    if (!this.saveAudioToGed || !this.audioBlob() || !this.selectedDossierId) {
+      return null;
+    }
+    if (this.uploadedAudioDocId) {
+      return this.uploadedAudioDocId;
+    }
+    try {
+      const b64 = await this.voiceService.blobToBase64(this.audioBlob()!);
+      const ext = this.audioMimeType().includes('mp4') ? 'm4a' : (this.audioMimeType().includes('ogg') ? 'ogg' : 'webm');
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 16);
+      const docPayload: any = {
+        dossierId: this.selectedDossierId,
+        nomFichier: `Dictee_vocale_${stamp}.${ext}`,
+        description: `Enregistrement vocal : ${title}`,
+        fileData: b64
+      };
+      return await new Promise<number | null>(resolve => {
+        this.documentService.create(docPayload).subscribe({
+          next: (createdDoc: any) => {
+            const id = createdDoc?.id ? Number(createdDoc.id) : null;
+            this.uploadedAudioDocId = id;
+            resolve(id);
+          },
+          error: () => resolve(null)
+        });
+      });
+    } catch {
+      return null;
+    }
+  }
+
   async saveToDossier(): Promise<void> {
     if (!this.selectedDossierId || !this.transcript.trim() || this.isSaving()) return;
     this.isSaving.set(true);
     this.errorMessage.set(null);
 
     const title = this.noteTitle.trim() || `Compte-rendu vocal du ${new Date().toLocaleDateString('fr-FR')}`;
-    const blob = this.audioBlob();
+    const audioDocId = await this.ensureAudioUploaded(title);
 
-    const persistNote = (audioDocId: number | null) => {
-      const payload: any = {
-        title,
-        description: this.transcript.trim(),
-        dossierId: this.selectedDossierId,
-        categoryId: this.selectedCategoryId ? Number(this.selectedCategoryId) : (this.categories()[0]?.id || 1),
-        auteurId: 1,
-        audioDocumentId: audioDocId,
-        createdAt: new Date()
-      };
-      this.noteService.create(payload).subscribe({
-        next: (created: any) => {
-          this.savedAudioArchived.set(!!audioDocId);
-          this.isSaving.set(false);
-          this.savedNoteId.set(created?.id ? Number(created.id) : 1);
-        },
-        error: err => {
-          this.isSaving.set(false);
-          this.errorMessage.set(err?.error?.message || 'Impossible d\'enregistrer la note.');
-        }
-      });
+    const payload: any = {
+      title,
+      description: this.transcript.trim(),
+      dossierId: this.selectedDossierId,
+      categoryId: this.selectedCategoryId ? Number(this.selectedCategoryId) : (this.categories()[0]?.id || 1),
+      auteurId: 1,
+      audioDocumentId: audioDocId,
+      createdAt: new Date()
     };
-
-    if (this.saveAudioToGed && blob && this.selectedDossierId) {
-      try {
-        const b64 = await this.voiceService.blobToBase64(blob);
-        const ext = this.audioMimeType().includes('mp4') ? 'm4a' : (this.audioMimeType().includes('ogg') ? 'ogg' : 'webm');
-        const stamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 16);
-        const docPayload: any = {
-          dossierId: this.selectedDossierId,
-          nomFichier: `Dictee_vocale_${stamp}.${ext}`,
-          description: `Enregistrement vocal : ${title}`,
-          fileData: b64
-        };
-        this.documentService.create(docPayload).subscribe({
-          next: (createdDoc: any) => persistNote(createdDoc?.id ? Number(createdDoc.id) : null),
-          error: () => persistNote(null)
-        });
-        return;
-      } catch {
-        // Fallback : sauvegarder la note sans audio
+    this.noteService.create(payload).subscribe({
+      next: (created: any) => {
+        this.savedAudioArchived.set(!!audioDocId);
+        this.isSaving.set(false);
+        this.savedNoteId.set(created?.id ? Number(created.id) : 1);
+      },
+      error: err => {
+        this.isSaving.set(false);
+        this.errorMessage.set(err?.error?.message || 'Impossible d\'enregistrer la note.');
       }
-    }
+    });
+  }
 
-    persistNote(null);
+  async createSingleTaskFromText(taskText: string, index: number): Promise<void> {
+    if (!this.selectedDossierId || !taskText.trim()) return;
+    this.creatingTaskIndex.set(index);
+    const audioDocId = await this.ensureAudioUploaded(taskText.trim());
+    const payload = this.buildTaskPayload(taskText.trim(), `Issue de la dictée vocale : ${this.noteTitle || 'Compte-rendu'}`, audioDocId);
+    this.taskService.create(payload).subscribe({
+      next: () => {
+        this.creatingTaskIndex.set(null);
+        this.createdSuggestedTaskIndexes.update(arr => [...arr, index]);
+        this.createdTasksCount.update(c => c + 1);
+      },
+      error: err => {
+        this.creatingTaskIndex.set(null);
+        this.errorMessage.set(err?.error?.message || 'Impossible de créer la tâche.');
+      }
+    });
+  }
+
+  async saveDirectAsTask(): Promise<void> {
+    if (!this.selectedDossierId || !this.transcript.trim() || this.isCreatingDirectTask()) return;
+    this.isCreatingDirectTask.set(true);
+    this.directTaskCreated.set(false);
+    this.errorMessage.set(null);
+
+    const titre = this.noteTitle.trim()
+      || (this.transcript.trim().length > 80 ? this.transcript.trim().substring(0, 80) + '…' : this.transcript.trim());
+    const audioDocId = await this.ensureAudioUploaded(titre);
+    const payload = this.buildTaskPayload(titre, this.transcript.trim(), audioDocId);
+    this.taskService.create(payload).subscribe({
+      next: () => {
+        this.isCreatingDirectTask.set(false);
+        this.directTaskCreated.set(true);
+        this.createdTasksCount.update(c => c + 1);
+      },
+      error: err => {
+        this.isCreatingDirectTask.set(false);
+        this.errorMessage.set(err?.error?.message || 'Impossible de créer la tâche dans le dossier.');
+      }
+    });
+  }
+
+  private buildTaskPayload(titre: string, description: string, audioDocumentId: number | null = null): Task {
+    const dueDate = this.suggestedEventDate() || new Date().toISOString().split('T')[0];
+    return {
+      titre,
+      description,
+      priorite: 'NORMALE',
+      dateEcheance: dueDate,
+      category: this.defaultTaskCategory!,
+      status: this.defaultTaskStatus!,
+      assignees: [],
+      dossierId: Number(this.selectedDossierId),
+      isCompleted: false,
+      audioDocumentId,
+      createdAt: new Date()
+    } as Task;
   }
 
   exportSavedToWord(): void {
