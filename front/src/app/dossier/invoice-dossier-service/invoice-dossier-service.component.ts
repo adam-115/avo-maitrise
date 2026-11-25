@@ -11,6 +11,7 @@ import { KeycloakService } from '../../services/keycloak.service';
 import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
 import { GenerateInvoiceDialog } from '../generate-invoice-dialog/generate-invoice-dialog';
 import { InvoiceService } from '../../features/billing/services/invoice.service';
+import { PrestationAiAuditService, PrestationAuditResult, PrestationProposal } from '../../services/prestation-ai-audit.service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -61,7 +62,16 @@ export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
   private userService = inject(UserService);
   private keycloakService = inject(KeycloakService);
   private invoiceService = inject(InvoiceService);
+  private aiAuditService = inject(PrestationAiAuditService);
   private translate = inject(TranslateService);
+
+  // Audit IA des prestations oubliées
+  isAuditingAi = false;
+  showAiPanel = false;
+  aiAuditResult: PrestationAuditResult | null = null;
+  aiProposals: PrestationProposal[] = [];
+  processingSourceKey: string | null = null;
+  isAcceptingAll = false;
 
   constructor() {
     this.prestationForm = this.fb.group({
@@ -341,6 +351,155 @@ export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
         });
       }
     }
+  }
+
+  runAiAudit(): void {
+    if (!this.dossierId || this.isAuditingAi) return;
+    this.isAuditingAi = true;
+    this.showAiPanel = true;
+    this.aiAuditService.auditDossier(this.dossierId).subscribe({
+      next: (res) => {
+        this.aiAuditResult = res;
+        this.aiProposals = (res.proposals || []).map(p => ({ ...p }));
+        this.isAuditingAi = false;
+      },
+      error: (err) => {
+        console.error('Erreur audit IA prestations:', err);
+        this.isAuditingAi = false;
+        this.alertService.displayMessage('Erreur', 'Impossible d\'exécuter la vérification IA des prestations.', 'error');
+      }
+    });
+  }
+
+  closeAiPanel(): void {
+    this.showAiPanel = false;
+  }
+
+  getProposalEstimatedAmount(p: PrestationProposal): number {
+    const type = this.typesOfService.find(t => String(t.id) === String(p.invoiceTypeOfServiceId));
+    const price5 = type?.price5min ?? 0;
+    const mins = Number(p.nbrOfMinutes) || 0;
+    return Math.round(((mins / 5) * price5) * 100) / 100;
+  }
+
+  getSourceBadgeClass(sourceType: string): string {
+    switch (sourceType) {
+      case 'EMAIL': return 'bg-sky-50 text-sky-700 border-sky-200';
+      case 'APPOINTMENT': return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'EVENT': return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'TASK': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'NOTE': return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+      default: return 'bg-slate-100 text-slate-700 border-slate-200';
+    }
+  }
+
+  getSourceTypeLabel(sourceType: string): string {
+    switch (sourceType) {
+      case 'EMAIL': return '📧 Email';
+      case 'APPOINTMENT': return '📅 Rendez-vous';
+      case 'EVENT': return '⚖️ Événement';
+      case 'TASK': return '✅ Tâche';
+      case 'NOTE': return '📝 Note';
+      default: return sourceType;
+    }
+  }
+
+  acceptAiProposal(proposal: PrestationProposal): void {
+    if (!this.dossierId || this.processingSourceKey) return;
+    if (!proposal.info?.trim()) {
+      this.alertService.displayMessage('Champ requis', 'Veuillez renseigner la description de la prestation.', 'warning');
+      return;
+    }
+    this.processingSourceKey = proposal.sourceKey;
+    this.aiAuditService.acceptProposal(this.dossierId, {
+      sourceKey: proposal.sourceKey,
+      serviceDate: proposal.serviceDate,
+      info: proposal.info.trim(),
+      invoiceTypeOfServiceId: proposal.invoiceTypeOfServiceId ? Number(proposal.invoiceTypeOfServiceId) : null,
+      nbrOfMinutes: Math.max(5, Number(proposal.nbrOfMinutes) || 15),
+      doneById: this.currentUser?.id ? Number(this.currentUser.id) : null,
+      status: InvoiceDossierServiceStatusEnum.A_FACTURE
+    }).subscribe({
+      next: () => {
+        this.aiProposals = this.aiProposals.filter(p => p.sourceKey !== proposal.sourceKey);
+        this.processingSourceKey = null;
+        this.alertService.success('Prestation acceptée et ajoutée au dossier.');
+        this.loadPrestations();
+      },
+      error: (err) => {
+        console.error(err);
+        this.processingSourceKey = null;
+        this.alertService.displayMessage('Erreur', 'Impossible d\'accepter cette prestation.', 'error');
+      }
+    });
+  }
+
+  rejectAiProposal(proposal: PrestationProposal): void {
+    if (!this.dossierId || this.processingSourceKey) return;
+    this.processingSourceKey = proposal.sourceKey;
+    this.aiAuditService.rejectProposal(this.dossierId, proposal.sourceKey, proposal.info).subscribe({
+      next: () => {
+        this.aiProposals = this.aiProposals.filter(p => p.sourceKey !== proposal.sourceKey);
+        if (this.aiAuditResult) {
+          this.aiAuditResult.ignoredDecisionsCount = (this.aiAuditResult.ignoredDecisionsCount || 0) + 1;
+        }
+        this.processingSourceKey = null;
+      },
+      error: (err) => {
+        console.error(err);
+        this.processingSourceKey = null;
+        this.alertService.displayMessage('Erreur', 'Impossible de refuser cette proposition.', 'error');
+      }
+    });
+  }
+
+  async acceptAllAiProposals(): Promise<void> {
+    if (!this.dossierId || this.isAcceptingAll || this.aiProposals.length === 0) return;
+    this.isAcceptingAll = true;
+    const batch = [...this.aiProposals];
+    let accepted = 0;
+    for (const proposal of batch) {
+      try {
+        await new Promise<void>((resolve, reject) => {
+          this.aiAuditService.acceptProposal(this.dossierId, {
+            sourceKey: proposal.sourceKey,
+            serviceDate: proposal.serviceDate,
+            info: proposal.info.trim(),
+            invoiceTypeOfServiceId: proposal.invoiceTypeOfServiceId ? Number(proposal.invoiceTypeOfServiceId) : null,
+            nbrOfMinutes: Math.max(5, Number(proposal.nbrOfMinutes) || 15),
+            doneById: this.currentUser?.id ? Number(this.currentUser.id) : null,
+            status: InvoiceDossierServiceStatusEnum.A_FACTURE
+          }).subscribe({
+            next: () => {
+              this.aiProposals = this.aiProposals.filter(p => p.sourceKey !== proposal.sourceKey);
+              accepted++;
+              resolve();
+            },
+            error: reject
+          });
+        });
+      } catch {
+        // Continuer sur les autres
+      }
+    }
+    this.isAcceptingAll = false;
+    if (accepted > 0) {
+      this.alertService.success(`${accepted} prestation(s) ajoutée(s) au dossier.`);
+      this.loadPrestations();
+    }
+  }
+
+  resetRejectedAiDecisions(): void {
+    if (!this.dossierId) return;
+    this.aiAuditService.resetRejected(this.dossierId).subscribe({
+      next: () => {
+        this.alertService.success('Historique des refus réinitialisé. Relance de l\'analyse...');
+        this.runAiAudit();
+      },
+      error: () => {
+        this.alertService.displayMessage('Erreur', 'Impossible de réinitialiser les refus.', 'error');
+      }
+    });
   }
 
   deletePrestation(prestation: InvoiceDossierService): void {
