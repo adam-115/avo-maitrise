@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Suppression logique (soft delete) sur clients et clients_aud -->
+    <changeSet id="add-soft-delete-to-clients" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="clients" columnName="deleted"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="clients">
+            <column name="deleted" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(120)"/>
+        </addColumn>
+        <createIndex indexName="idx_clients_deleted" tableName="clients">
+            <column name="deleted"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add-soft-delete-to-clients-aud" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="clients_aud"/>
+                <not>
+                    <columnExists tableName="clients_aud" columnName="deleted"/>
+                </not>
+            </and>
+        </preConditions>
+        <addColumn tableName="clients_aud">
+            <column name="deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(120)"/>
+        </addColumn>
+    </changeSet>
+
+    <!-- Suppression logique (soft delete) sur dossiers et dossiers_aud -->
+    <changeSet id="add-soft-delete-to-dossiers" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="dossiers" columnName="deleted"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="dossiers">
+            <column name="deleted" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(120)"/>
+        </addColumn>
+        <createIndex indexName="idx_dossiers_deleted" tableName="dossiers">
+            <column name="deleted"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add-soft-delete-to-dossiers-aud" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="dossiers_aud"/>
+                <not>
+                    <columnExists tableName="dossiers_aud" columnName="deleted"/>
+                </not>
+            </and>
+        </preConditions>
+        <addColumn tableName="dossiers_aud">
+            <column name="deleted" type="BOOLEAN"/>
+            <column name="deleted_at" type="DATETIME"/>
+            <column name="deleted_by" type="VARCHAR(120)"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

@@ -55,6 +55,7 @@ public class ClientMoralController {
         return ResponseEntity.ok(service.update(dto));
     }
 
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'AVOCAT', 'admin', 'super_admin', 'avocat')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);

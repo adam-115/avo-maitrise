@@ -19,6 +19,9 @@ public class ClientEntityDTO {
     private List<ScreeningMatchDTO> screeningMatchDTOs;
     private Date createdAt;
     private Long version;
+    private boolean deleted;
+    private Date deletedAt;
+    private String deletedBy;
     
     private String nom;
     private String prenom;
@@ -129,4 +132,13 @@ public class ClientEntityDTO {
 
     public Long getVersion() { return version; }
     public void setVersion(Long version) { this.version = version; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
+
+    public Date getDeletedAt() { return deletedAt; }
+    public void setDeletedAt(Date deletedAt) { this.deletedAt = deletedAt; }
+
+    public String getDeletedBy() { return deletedBy; }
+    public void setDeletedBy(String deletedBy) { this.deletedBy = deletedBy; }
 }

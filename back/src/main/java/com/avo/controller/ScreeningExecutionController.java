@@ -58,6 +58,11 @@ public class ScreeningExecutionController {
     public ResponseEntity<java.util.Map<String, String>> triggerClient(@PathVariable Long clientId) {
         ClientEntity client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new RuntimeException("Client not found"));
+        if (client.isDeleted()) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST,
+                    "Impossible de lancer une vérification AML/KYC sur un client supprimé.");
+        }
         verificationJob.processAMLForClient(List.of(client));        
         // List<AmlAnalysisResult> results = yenteAmlService.checkClientStatus(client);
         return ResponseEntity.ok(java.util.Map.of("status", "OK"));

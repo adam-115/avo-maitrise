@@ -39,6 +39,20 @@ export class ClientService extends AbstractCrudService<Client> {
         return this.http.patch<Client>(`${this.apiUrl}/${id}`, { clientStatus: status });
     }
 
+    getActiveDossiersCount(id: string | number): Observable<{ count: number }> {
+        return this.http.get<{ count: number }>(`${this.apiUrl}/${id}/active-dossiers-count`);
+    }
+
+    softDelete(id: string | number, deleteDossiers: boolean = false): Observable<void> {
+        const params = new HttpParams().set('deleteDossiers', String(deleteDossiers));
+        return this.http.delete<void>(`${this.apiUrl}/${id}`, { params });
+    }
+
+    restore(id: string | number, restoreDossiers: boolean = false): Observable<Client> {
+        const params = new HttpParams().set('restoreDossiers', String(restoreDossiers));
+        return this.http.post<Client>(`${this.apiUrl}/${id}/restore`, {}, { params });
+    }
+
     generateAmlReportPdf(startDate?: string, endDate?: string): Observable<Blob> {
         let params = new HttpParams();
         if (startDate) {

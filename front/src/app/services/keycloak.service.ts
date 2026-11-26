@@ -64,6 +64,11 @@ export class KeycloakService {
     return this.keycloakInstance.realmAccess?.roles || [];
   }
 
+  hasAnyRole(allowedRoles: string[]): boolean {
+    const normalizedUserRoles = this.getUserRoles().map(r => r.replace(/^ROLE_/i, '').toUpperCase());
+    return allowedRoles.some(role => normalizedUserRoles.includes(role.replace(/^ROLE_/i, '').toUpperCase()));
+  }
+
   isLoggedIn(): boolean {
     if (!environment.keycloak.enabled) {
       return true;

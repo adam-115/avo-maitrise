@@ -52,7 +52,8 @@ public class DossierService {
     /**
      * Pays de juridiction du dossier (droit applicable utilisé par l'IA) :
      * 1. la valeur saisie, si c'est un pays géré ;
-     * 2. sinon la valeur déjà enregistrée (le front peut ne pas renvoyer le champ) ;
+     * 2. sinon la valeur déjà enregistrée (le front peut ne pas renvoyer le champ)
+     * ;
      * 3. sinon le pays du client, s'il est géré ;
      * 4. sinon null : « à définir », jamais de France par défaut en silence.
      */
@@ -75,14 +76,25 @@ public class DossierService {
     }
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
-    public Page<DossierDTO> findAllWithFilters(String searchTerm, String statusFilter, String lawyerFilter, Pageable pageable) {
-        log.info("[ENTER] Executing findAllWithFilters");
-        return repository.searchWithFilters(searchTerm, statusFilter, lawyerFilter, pageable).map(this::toListDto);
+    public Page<DossierDTO> findAllWithFilters(String searchTerm, String statusFilter, String lawyerFilter,
+            Pageable pageable) {
+        return findAllWithFilters(searchTerm, statusFilter, lawyerFilter, "ACTIVE", pageable);
+    }
+
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
+    public Page<DossierDTO> findAllWithFilters(String searchTerm, String statusFilter, String lawyerFilter,
+            String deletedFilter, Pageable pageable) {
+        log.info("[ENTER] Executing findAllWithFilters (deletedFilter={})", deletedFilter);
+        String effectiveDeletedFilter = (deletedFilter == null || deletedFilter.isBlank()) ? "ACTIVE"
+                : deletedFilter.toUpperCase();
+        return repository.searchWithFilters(searchTerm, statusFilter, lawyerFilter, effectiveDeletedFilter, pageable)
+                .map(this::toListDto);
     }
 
     /**
      * Projection légère pour la liste paginée (/home/dossier) :
-     * évite le problème N+1 Hibernate (ne charge ni documents, ni autresParties, ni intervenantsIds,
+     * évite le problème N+1 Hibernate (ne charge ni documents, ni autresParties, ni
+     * intervenantsIds,
      * ni les collections du client, ni les LONGTEXT aiStrategy/aiChatHistory).
      */
     private DossierDTO toListDto(Dossier d) {
@@ -99,6 +111,9 @@ public class DossierService {
         dto.setDateOuverture(d.getDateOuverture());
         dto.setDateCloture(d.getDateCloture());
         dto.setUpdated_at(d.getUpdatedAt());
+        dto.setDeleted(d.isDeleted());
+        dto.setDeletedAt(d.getDeletedAt());
+        dto.setDeletedBy(d.getDeletedBy());
 
         if (d.getClient() != null) {
             com.avo.entities.ClientEntity c = d.getClient();
@@ -109,6 +124,9 @@ public class DossierService {
             cDto.setTelephone(c.getTelephone());
             cDto.setPays(c.getPays());
             cDto.setClientStatus(c.getClientStatus());
+            cDto.setDeleted(c.isDeleted());
+            cDto.setDeletedAt(c.getDeletedAt());
+            cDto.setDeletedBy(c.getDeletedBy());
             if (c instanceof com.avo.entities.ClientPersonnePhysique pp) {
                 cDto.setNom(pp.getNom());
                 cDto.setPrenom(pp.getPrenom());
@@ -124,7 +142,10 @@ public class DossierService {
         return dto;
     }
 
-    /** KPIs agrégés en SQL pur (remplace le chargement de 1 000 dossiers côté frontend). */
+    /**
+     * KPIs agrégés en SQL pur (remplace le chargement de 1 000 dossiers côté
+     * frontend).
+     */
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public java.util.Map<String, Long> getKpis() {
         List<String> closedIds = statutDossierRepository.findAll().stream()
@@ -151,7 +172,8 @@ public class DossierService {
 
         java.time.LocalDate firstDay = java.time.LocalDate.now().withDayOfMonth(1);
         java.util.Date start = java.util.Date.from(firstDay.atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
-        java.util.Date end = java.util.Date.from(firstDay.plusMonths(1).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
+        java.util.Date end = java.util.Date
+                .from(firstDay.plusMonths(1).atStartOfDay(java.time.ZoneId.systemDefault()).toInstant());
 
         long active = repository.countActiveDossiers(closedIds);
         long urgent = repository.countByPrioriteIDIn(urgentIds);
@@ -165,13 +187,12 @@ public class DossierService {
                 "urgentDossiersCount", urgent,
                 "createdThisMonthCount", createdThisMonth,
                 "closedThisMonthCount", closedThisMonth,
-                "closureRate", closureRate
-        );
+                "closureRate", closureRate);
     }
 
     public List<DossierDTO> findAll() {
         log.info("[ENTER] Executing findAll");
-        return repository.findAll().stream().map(mapper::toDto).collect(Collectors.toList());
+        return repository.findByDeletedFalse().stream().map(mapper::toDto).collect(Collectors.toList());
     }
 
     public Page<DossierDTO> search(Predicate predicate, Pageable pageable) {
@@ -189,7 +210,8 @@ public class DossierService {
         if (dto.getReferenceInterne() != null && !dto.getReferenceInterne().trim().isEmpty()) {
             String ref = dto.getReferenceInterne().trim();
             if (repository.existsByReferenceInterne(ref)) {
-                throw new IllegalArgumentException("La référence interne '" + ref + "' est déjà utilisée par un autre dossier.");
+                throw new IllegalArgumentException(
+                        "La référence interne '" + ref + "' est déjà utilisée par un autre dossier.");
             }
             dto.setReferenceInterne(ref);
         }
@@ -210,13 +232,19 @@ public class DossierService {
         if (dto.getReferenceInterne() != null && !dto.getReferenceInterne().trim().isEmpty() && dto.getId() != null) {
             String ref = dto.getReferenceInterne().trim();
             if (repository.existsByReferenceInterneAndIdNot(ref, dto.getId())) {
-                throw new IllegalArgumentException("La référence interne '" + ref + "' est déjà utilisée par un autre dossier.");
+                throw new IllegalArgumentException(
+                        "La référence interne '" + ref + "' est déjà utilisée par un autre dossier.");
             }
             dto.setReferenceInterne(ref);
         }
-        String previousPays = dto.getId() == null ? null
-                : repository.findById(dto.getId()).map(Dossier::getPaysJuridiction).orElse(null);
+        Dossier existing = dto.getId() == null ? null : repository.findById(dto.getId()).orElse(null);
+        String previousPays = existing != null ? existing.getPaysJuridiction() : null;
         Dossier entity = mapper.toEntity(dto);
+        if (existing != null) {
+            entity.setDeleted(existing.isDeleted());
+            entity.setDeletedAt(existing.getDeletedAt());
+            entity.setDeletedBy(existing.getDeletedBy());
+        }
         linkDocumentsAndParties(entity);
         resolvePaysJuridiction(entity, previousPays);
         Dossier saved = repository.save(entity);
@@ -248,22 +276,53 @@ public class DossierService {
         return "Système";
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public void delete(Long id) {
-        log.info("[ENTER] Executing delete");
-        repository.deleteById(id);
+        log.info("[ENTER] Executing soft-delete for dossier id: {}", id);
+        Dossier dossier = repository.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Dossier introuvable avec l'identifiant " + id));
+        dossier.setDeleted(true);
+        dossier.setDeletedAt(new java.util.Date());
+        dossier.setDeletedBy(getCurrentUsername());
+        repository.save(dossier);
+
+        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                this, dossier.getId(), getCurrentUsername(), "Suppression", "Dossier", dossier.getId(),
+                "Dossier masqué (suppression logique) : " + dossier.getTitre()));
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public DossierDTO restore(Long id) {
+        log.info("[ENTER] Executing restore for dossier id: {}", id);
+        Dossier dossier = repository.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Dossier introuvable avec l'identifiant " + id));
+        dossier.setDeleted(false);
+        dossier.setDeletedAt(null);
+        dossier.setDeletedBy(null);
+        Dossier saved = repository.save(dossier);
+
+        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                this, saved.getId(), getCurrentUsername(), "Restauration", "Dossier", saved.getId(),
+                "Dossier restauré : " + saved.getTitre()));
+
+        return mapper.toDto(saved);
     }
 
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public String getDossierContextAsText(Long id) {
         Dossier dossier = repository.findById(id).orElse(null);
-        if (dossier == null) return "Dossier introuvable.";
-        
+        if (dossier == null)
+            return "Dossier introuvable.";
+
         StringBuilder sb = new StringBuilder();
         sb.append("=== DOSSIER #").append(dossier.getId()).append(" ===\n");
         sb.append("Titre : ").append(dossier.getTitre()).append("\n");
         sb.append("Référence : ").append(dossier.getReferenceInterne()).append("\n");
-        sb.append("Description : ").append(dossier.getDescription() != null ? dossier.getDescription() : "N/A").append("\n\n");
-        
+        sb.append("Description : ").append(dossier.getDescription() != null ? dossier.getDescription() : "N/A")
+                .append("\n\n");
+
         if (dossier.getClient() != null) {
             sb.append("=== CLIENT ===\n");
             String nom = "";
@@ -274,7 +333,7 @@ public class DossierService {
             }
             sb.append("Nom : ").append(nom).append("\n");
         }
-        
+
         return sb.toString();
     }
 }

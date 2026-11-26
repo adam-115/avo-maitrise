@@ -135,6 +135,17 @@ public class ConflictCheckService {
         }
 
         List<Match> deduped = deduplicateAndSort(matches);
+        for (Match m : deduped) {
+            if (m.getMatchedClientId() != null) {
+                ClientEntity matchedClient = clientById.get(m.getMatchedClientId());
+                if (matchedClient != null && matchedClient.isDeleted()) {
+                    m.setMatchedClientDeleted(true);
+                    if (m.getExplanation() != null && !m.getExplanation().contains("Ancien client / Supprimé")) {
+                        m.setExplanation(m.getExplanation() + " [Ancien client / Supprimé]");
+                    }
+                }
+            }
+        }
         String riskLevel = computeHighestRisk(deduped);
 
         CheckResponse resp = new CheckResponse();

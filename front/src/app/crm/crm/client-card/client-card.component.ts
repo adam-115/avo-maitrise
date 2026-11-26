@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Client, ClientStatus } from '../../../appTypes';
@@ -15,6 +15,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class ClientCardComponent {
   @Input({ required: true }) client!: Client;
+  @Input() canManageDeletion = false;
+  @Output() deleteRequested = new EventEmitter<Client>();
+  @Output() restoreRequested = new EventEmitter<Client>();
   private navigationService = inject(NavigationService);
 
   getDisplayName(): string {

@@ -14,6 +14,7 @@ import { NavigationService } from '../../services/navigation-service';
 import { TranslatePipe } from '@ngx-translate/core';
 import { BillingDashboardService } from '../../features/billing/services/billing-dashboard.service';
 import { ConflictSearchDialogComponent } from '../conflict-search-dialog/conflict-search-dialog.component';
+import { KeycloakService } from '../../services/keycloak.service';
 
 @Component({
   selector: 'app-dossier',
@@ -30,6 +31,7 @@ export class DossierComponent implements OnInit {
   private userService = inject(UserService);
   private router = inject(Router);
   private billingDashboardService = inject(BillingDashboardService);
+  private keycloakService = inject(KeycloakService);
 
   dossiers: DossierModel[] = [];
   filteredDossiers: DossierModel[] = [];
@@ -55,11 +57,20 @@ export class DossierComponent implements OnInit {
   searchTerm: string = '';
   statusFilter: string = 'Tous';
   lawyerFilter: string = 'Tous';
+  deletedFilter: 'ACTIVE' | 'DELETED' | 'ALL' = 'ACTIVE';
 
   // Pagination
   currentPage = 1;
   pageSize = 6;
   showConflictSearchDialog = false;
+
+  // Modale suppression logique dossier (ADMIN / AVOCAT)
+  deleteModalDossier: DossierModel | null = null;
+  deleteInProgress = false;
+
+  get canManageDeletion(): boolean {
+    return this.keycloakService.hasAnyRole(['ADMIN', 'SUPER_ADMIN', 'AVOCAT']);
+  }
 
   constructor() { }
 
@@ -100,7 +111,8 @@ export class DossierComponent implements OnInit {
     const tableFilters = {
       searchTerm: this.searchTerm,
       statusFilter: this.statusFilter,
-      lawyerFilter: this.lawyerFilter
+      lawyerFilter: this.lawyerFilter,
+      deletedFilter: this.deletedFilter
     };
 
     this.dossierService.findAll(this.currentPage - 1, this.pageSize, 'dateOuverture,desc', tableFilters).subscribe({
@@ -272,15 +284,55 @@ export class DossierComponent implements OnInit {
   }
 
   get isFiltered(): boolean {
-    return !!this.searchTerm || this.statusFilter !== 'Tous' || this.lawyerFilter !== 'Tous';
+    return !!this.searchTerm || this.statusFilter !== 'Tous' || this.lawyerFilter !== 'Tous' || this.deletedFilter !== 'ACTIVE';
   }
 
   resetFilters(): void {
     this.searchTerm = '';
     this.statusFilter = 'Tous';
     this.lawyerFilter = 'Tous';
+    this.deletedFilter = 'ACTIVE';
     this.currentPage = 1;
     this.loadData();
+  }
+
+  openDeleteDossierModal(dossier: DossierModel, event: Event): void {
+    event.stopPropagation();
+    if (!dossier.id || !this.canManageDeletion) return;
+    this.deleteModalDossier = dossier;
+  }
+
+  closeDeleteDossierModal(): void {
+    this.deleteModalDossier = null;
+    this.deleteInProgress = false;
+  }
+
+  confirmDeleteDossier(): void {
+    if (!this.deleteModalDossier?.id || this.deleteInProgress) return;
+    this.deleteInProgress = true;
+    this.dossierService.softDelete(this.deleteModalDossier.id).subscribe({
+      next: () => {
+        this.closeDeleteDossierModal();
+        this.loadData();
+        this.loadReferenceDataAndKpis();
+      },
+      error: (err) => {
+        console.error('Erreur lors de la suppression logique du dossier', err);
+        this.deleteInProgress = false;
+      }
+    });
+  }
+
+  restoreDossier(dossier: DossierModel, event: Event): void {
+    event.stopPropagation();
+    if (!dossier.id || !this.canManageDeletion) return;
+    this.dossierService.restore(dossier.id).subscribe({
+      next: () => {
+        this.loadData();
+        this.loadReferenceDataAndKpis();
+      },
+      error: (err) => console.error('Erreur lors de la restauration du dossier', err)
+    });
   }
 
   nviagteToDossierForm() {

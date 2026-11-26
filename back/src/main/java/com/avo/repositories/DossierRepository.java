@@ -18,30 +18,39 @@ public interface DossierRepository extends JpaRepository<Dossier, Long>, Queryds
 
        List<Dossier> findByClientId(Long clientId);
 
-       @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
+       List<Dossier> findByClientIdAndDeletedFalse(Long clientId);
+
+       List<Dossier> findByClientIdAndDeletedTrue(Long clientId);
+
+       long countByClientIdAndDeletedFalse(Long clientId);
+
+       List<Dossier> findByDeletedFalse();
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d WHERE d.deleted = false AND d.statutID NOT IN :statutIds")
        long countDistinctClientIdByStatutIDNotIn(List<String> statutIds);
 
-       @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d")
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d WHERE d.deleted = false")
        long countDistinctClientId();
 
-       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.deleted = false AND d.statutID NOT IN :statutIds")
        long countByStatutIDNotIn(List<String> statutIds);
 
-       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.statutID IS NULL OR d.statutID NOT IN :closedStatutIds")
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.deleted = false AND (d.statutID IS NULL OR d.statutID NOT IN :closedStatutIds)")
        long countActiveDossiers(@org.springframework.data.repository.query.Param("closedStatutIds") List<String> closedStatutIds);
 
-       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.prioriteID IN :urgentPriorityIds")
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.deleted = false AND d.prioriteID IN :urgentPriorityIds")
        long countByPrioriteIDIn(@org.springframework.data.repository.query.Param("urgentPriorityIds") List<String> urgentPriorityIds);
 
-       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.dateOuverture >= :start AND d.dateOuverture < :end")
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.deleted = false AND d.dateOuverture >= :start AND d.dateOuverture < :end")
        long countOpenedBetween(@org.springframework.data.repository.query.Param("start") java.util.Date start,
                                @org.springframework.data.repository.query.Param("end") java.util.Date end);
 
-       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.dateCloture >= :start AND d.dateCloture < :end")
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.deleted = false AND d.dateCloture >= :start AND d.dateCloture < :end")
        long countClosedBetween(@org.springframework.data.repository.query.Param("start") java.util.Date start,
                                @org.springframework.data.repository.query.Param("end") java.util.Date end);
 
        @org.springframework.data.jpa.repository.Query("SELECT d FROM Dossier d LEFT JOIN d.client c WHERE " +
+                     "(:deletedFilter = 'ALL' OR (:deletedFilter = 'DELETED' AND d.deleted = true) OR ((:deletedFilter IS NULL OR :deletedFilter = '' OR :deletedFilter = 'ACTIVE') AND d.deleted = false)) AND " +
                      "(:searchTerm IS NULL OR :searchTerm = '' OR " +
                      " LOWER(d.referenceInterne) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
                      " LOWER(d.titre) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
@@ -63,5 +72,6 @@ public interface DossierRepository extends JpaRepository<Dossier, Long>, Queryds
                      @org.springframework.data.repository.query.Param("searchTerm") String searchTerm,
                      @org.springframework.data.repository.query.Param("statusFilter") String statusFilter,
                      @org.springframework.data.repository.query.Param("lawyerFilter") String lawyerFilter,
+                     @org.springframework.data.repository.query.Param("deletedFilter") String deletedFilter,
                      org.springframework.data.domain.Pageable pageable);
 }

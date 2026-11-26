@@ -40,8 +40,9 @@ public class DossierController {
             @RequestParam(required = false) String searchTerm,
             @RequestParam(required = false) String statusFilter,
             @RequestParam(required = false) String lawyerFilter,
+            @RequestParam(required = false, defaultValue = "ACTIVE") String deletedFilter,
             Pageable pageable) {
-        return ResponseEntity.ok(service.findAllWithFilters(searchTerm, statusFilter, lawyerFilter, pageable));
+        return ResponseEntity.ok(service.findAllWithFilters(searchTerm, statusFilter, lawyerFilter, deletedFilter, pageable));
     }
 
     @GetMapping("/search")
@@ -68,9 +69,16 @@ public class DossierController {
         return ResponseEntity.ok(service.update(dto));
     }
 
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'AVOCAT', 'admin', 'super_admin', 'avocat')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'AVOCAT', 'admin', 'super_admin', 'avocat')")
+    @PostMapping("/{id}/restore")
+    public ResponseEntity<DossierDTO> restore(@PathVariable Long id) {
+        return ResponseEntity.ok(service.restore(id));
     }
 }

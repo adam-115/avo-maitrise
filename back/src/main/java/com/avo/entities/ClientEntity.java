@@ -60,6 +60,16 @@ public class ClientEntity {
     @Column(name = "version")
     private Long version = 1L;
 
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "deleted_at")
+    private Date deletedAt;
+
+    @Column(name = "deleted_by", length = 120)
+    private String deletedBy;
+
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
@@ -71,6 +81,15 @@ public class ClientEntity {
 
     public Long getVersion() { return version; }
     public void setVersion(Long version) { this.version = version; }
+
+    public boolean isDeleted() { return deleted; }
+    public void setDeleted(boolean deleted) { this.deleted = deleted; }
+
+    public Date getDeletedAt() { return deletedAt; }
+    public void setDeletedAt(Date deletedAt) { this.deletedAt = deletedAt; }
+
+    public String getDeletedBy() { return deletedBy; }
+    public void setDeletedBy(String deletedBy) { this.deletedBy = deletedBy; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

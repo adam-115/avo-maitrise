@@ -10,4 +10,7 @@ import com.avo.entities.UBO;
 @Repository
 public interface UBORepository extends JpaRepository<UBO, Long> , QuerydslPredicateExecutor<UBO> {
     List<UBO> findByClientMoralId(Long clientMoralId);
+
+    @org.springframework.data.jpa.repository.Query("SELECT u FROM UBO u WHERE u.clientMoral IS NOT NULL AND u.clientMoral.deleted = false")
+    org.springframework.data.domain.Page<UBO> findActiveClientUbos(org.springframework.data.domain.Pageable pageable);
 }

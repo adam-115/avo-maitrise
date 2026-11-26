@@ -54,6 +54,7 @@ public final class ConflictCheckDTOs {
         private String matchedDossierTitre;
         private String matchedRole;
         private String explanation;
+        private boolean matchedClientDeleted;
 
         public Match() {}
 
@@ -92,6 +93,8 @@ public final class ConflictCheckDTOs {
         public void setMatchedRole(String matchedRole) { this.matchedRole = matchedRole; }
         public String getExplanation() { return explanation; }
         public void setExplanation(String explanation) { this.explanation = explanation; }
+        public boolean isMatchedClientDeleted() { return matchedClientDeleted; }
+        public void setMatchedClientDeleted(boolean matchedClientDeleted) { this.matchedClientDeleted = matchedClientDeleted; }
     }
 
     public static class CheckResponse {

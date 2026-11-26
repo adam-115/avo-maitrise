@@ -94,10 +94,10 @@ public class YenteClientVerificationJob {
         int pageNumber = 0;
         Slice<ClientEntity> slice;
         
-        // Paginate through all client entities in the database
+        // Paginate through all active (non-deleted) client entities in the database
         do {
             Pageable pageable = PageRequest.of(pageNumber, batchSize);
-            slice = clientRepository.findAll(pageable);
+            slice = clientRepository.findByDeletedFalse(pageable);
             processAMLForClient(slice.getContent());
             pageNumber++;
         } while (slice.hasNext());
@@ -110,7 +110,7 @@ public class YenteClientVerificationJob {
      */
     public void processAMLForClient(List<ClientEntity> clientList) {
 
-        clientList.stream().forEach(client -> {
+        clientList.stream().filter(c -> c != null && !c.isDeleted()).forEach(client -> {
 
             JsonNode jsonNodeResult = null;
             
@@ -311,10 +311,10 @@ public class YenteClientVerificationJob {
         int pageNum = 0;
         Page<UBODTO> page;
 
-        // Paginate through all Ultimate Beneficial Owners in the database
+        // Paginate through UBOs of active (non-deleted) corporate clients only
         do {
             Pageable pageable = PageRequest.of(pageNum, batchSize);
-            page = uboService.findAll(pageable);
+            page = uboService.findActiveClientUbos(pageable);
             processAMLForUbo(page.getContent());
             pageNum++;
         } while (page.hasNext());
@@ -327,6 +327,14 @@ public class YenteClientVerificationJob {
      */
     public void processAMLForUbo(List<UBODTO> uboList) {
         uboList.stream().forEach(ubo -> {
+            if (ubo.getClientMoralId() != null) {
+                boolean parentDeleted = clientRepository.findById(ubo.getClientMoralId())
+                        .map(ClientEntity::isDeleted)
+                        .orElse(true);
+                if (parentDeleted) {
+                    return;
+                }
+            }
             JsonNode jsonNodeResult = null;
             
             // 1. Initialize audit log entry for this UBO screening execution

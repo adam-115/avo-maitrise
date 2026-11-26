@@ -91,8 +91,8 @@ public class ReportingService {
             String periodText = "Du " + startLocal.format(dtf) + " au " + endLocal.format(dtf);
             String reportDate = LocalDate.now().format(dtf);
 
-            // 2. Filtrer les clients par date
-            List<ClientEntity> allClients = clientRepository.findAll();
+            // 2. Filtrer les clients actifs (non supprimés) par date
+            List<ClientEntity> allClients = clientRepository.findByDeletedFalse();
             List<ClientEntity> clients = allClients.stream()
                 .filter(c -> {
                     Date createdAt = c.getCreatedAt();

@@ -69,6 +69,7 @@ public class ClientController {
             @RequestParam(required = false) String type,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) String risk,
+            @RequestParam(required = false, defaultValue = "ACTIVE") String deletedFilter,
             Pageable pageable) {
         com.avo.entities.ClientStatus clientStatus = null;
         if (status != null && !status.isEmpty()) {
@@ -78,7 +79,12 @@ public class ClientController {
                 // Ignore invalid status value
             }
         }
-        return ResponseEntity.ok(service.findAllWithFilters(searchTerm, type, clientStatus, risk, pageable));
+        return ResponseEntity.ok(service.findAllWithFilters(searchTerm, type, clientStatus, risk, deletedFilter, pageable));
+    }
+
+    @GetMapping("/{id}/active-dossiers-count")
+    public ResponseEntity<java.util.Map<String, Long>> countActiveDossiers(@PathVariable Long id) {
+        return ResponseEntity.ok(java.util.Map.of("count", service.countActiveDossiers(id)));
     }
 
     @GetMapping("/search")
@@ -107,10 +113,21 @@ public class ClientController {
         return ResponseEntity.ok(service.update(dto));
     }
 
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'AVOCAT', 'admin', 'super_admin', 'avocat')")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+    public ResponseEntity<Void> delete(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "false") boolean deleteDossiers) {
+        service.delete(id, deleteDossiers);
         return ResponseEntity.noContent().build();
+    }
+
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'AVOCAT', 'admin', 'super_admin', 'avocat')")
+    @PostMapping("/{id}/restore")
+    public ResponseEntity<ClientEntityDTO> restore(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "false") boolean restoreDossiers) {
+        return ResponseEntity.ok(service.restore(id, restoreDossiers));
     }
 
     @PatchMapping("/{id}")

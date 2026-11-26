@@ -68,6 +68,16 @@ public class Dossier {
     @Column(name = "updated_at")
     private Date updatedAt;
 
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted = false;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "deleted_at")
+    private Date deletedAt;
+
+    @Column(name = "deleted_by", length = 120)
+    private String deletedBy;
+
     // Contenus générés par l'IA : volumineux et réécrits à chaque échange, ils ne sont pas historisés
     // (sinon chaque message du chat dupliquerait tout l'historique dans dossiers_aud).
     @org.hibernate.envers.NotAudited
@@ -240,6 +250,30 @@ public class Dossier {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public Date getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Date deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    public String getDeletedBy() {
+        return deletedBy;
+    }
+
+    public void setDeletedBy(String deletedBy) {
+        this.deletedBy = deletedBy;
     }
 
     @PrePersist

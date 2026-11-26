@@ -8,6 +8,7 @@ import { ClientMoralService } from '../../services/client-moral.service';
 import { AssociationService } from '../../services/association.service';
 import { InstitutionService } from '../../services/institution.service';
 import { ScreeningMatchService } from '../../services/screening-match.service';
+import { KeycloakService } from '../../services/keycloak.service';
 import { forkJoin } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
@@ -50,6 +51,7 @@ export class Crm implements OnInit {
   private readonly associationService = inject(AssociationService);
   private readonly institutionService = inject(InstitutionService);
   private readonly screeningMatchService = inject(ScreeningMatchService);
+  private readonly keycloakService = inject(KeycloakService);
 
   private clientMatchesMap = new Map<number, any[]>();
 
@@ -64,15 +66,31 @@ export class Crm implements OnInit {
   searchTerm: string = '';
   selectedType: string = '';
   selectedRisk: string = '';
+  deletedFilter: 'ACTIVE' | 'DELETED' | 'ALL' = 'ACTIVE';
+
+  // Modales suppression / restauration (réservées ADMIN / AVOCAT)
+  deleteModalClient: Client | null = null;
+  deleteModalActiveDossiersCount = 0;
+  deleteAlsoDossiers = false;
+  deleteInProgress = false;
+
+  restoreModalClient: Client | null = null;
+  restoreAlsoDossiers = false;
+  restoreInProgress = false;
+
+  get canManageDeletion(): boolean {
+    return this.keycloakService.hasAnyRole(['ADMIN', 'SUPER_ADMIN', 'AVOCAT']);
+  }
 
   get isFiltered(): boolean {
-    return !!(this.searchTerm || this.selectedType || this.selectedRisk);
+    return !!(this.searchTerm || this.selectedType || this.selectedRisk || this.deletedFilter !== 'ACTIVE');
   }
 
   resetFilters() {
     this.searchTerm = '';
     this.selectedType = '';
     this.selectedRisk = '';
+    this.deletedFilter = 'ACTIVE';
     this.filterClients();
   }
 
@@ -187,7 +205,8 @@ export class Crm implements OnInit {
     const tableFilters = {
       searchTerm: this.searchTerm,
       type: this.selectedType,
-      risk: this.selectedRisk
+      risk: this.selectedRisk,
+      deletedFilter: this.deletedFilter
     };
 
     forkJoin({
@@ -309,6 +328,72 @@ export class Crm implements OnInit {
     if (client.type === 'SOCIETE') return client.numeroRegistreCommerce ? `RC: ${client.numeroRegistreCommerce}` : '';
     if (client.type === 'ASSOCIATION' || client.type === 'INSTITUTION') return client.numeroRegistreNational ? `RN: ${client.numeroRegistreNational}` : '';
     return '';
+  }
+
+  openDeleteClientModal(client: Client) {
+    if (!client.id || !this.canManageDeletion) return;
+    this.deleteModalClient = client;
+    this.deleteModalActiveDossiersCount = 0;
+    this.deleteAlsoDossiers = false;
+    this.clientService.getActiveDossiersCount(client.id).subscribe({
+      next: (res) => {
+        this.deleteModalActiveDossiersCount = res?.count || 0;
+      },
+      error: () => {
+        this.deleteModalActiveDossiersCount = 0;
+      }
+    });
+  }
+
+  closeDeleteClientModal() {
+    this.deleteModalClient = null;
+    this.deleteModalActiveDossiersCount = 0;
+    this.deleteAlsoDossiers = false;
+    this.deleteInProgress = false;
+  }
+
+  confirmDeleteClient() {
+    if (!this.deleteModalClient?.id || this.deleteInProgress) return;
+    this.deleteInProgress = true;
+    this.clientService.softDelete(this.deleteModalClient.id, this.deleteAlsoDossiers).subscribe({
+      next: () => {
+        this.closeDeleteClientModal();
+        this.loadClients();
+        this.loadCounts();
+      },
+      error: (err) => {
+        console.error('Erreur lors de la suppression logique du client', err);
+        this.deleteInProgress = false;
+      }
+    });
+  }
+
+  openRestoreClientModal(client: Client) {
+    if (!client.id || !this.canManageDeletion) return;
+    this.restoreModalClient = client;
+    this.restoreAlsoDossiers = false;
+  }
+
+  closeRestoreClientModal() {
+    this.restoreModalClient = null;
+    this.restoreAlsoDossiers = false;
+    this.restoreInProgress = false;
+  }
+
+  confirmRestoreClient() {
+    if (!this.restoreModalClient?.id || this.restoreInProgress) return;
+    this.restoreInProgress = true;
+    this.clientService.restore(this.restoreModalClient.id, this.restoreAlsoDossiers).subscribe({
+      next: () => {
+        this.closeRestoreClientModal();
+        this.loadClients();
+        this.loadCounts();
+      },
+      error: (err) => {
+        console.error('Erreur lors de la restauration du client', err);
+        this.restoreInProgress = false;
+      }
+    });
   }
 }
 

@@ -44,6 +44,9 @@ public class DossierDTO {
     private Date dateOuverture;
     private Date dateCloture;
     private Date updated_at;
+    private boolean deleted;
+    private Date deletedAt;
+    private String deletedBy;
     private String aiStrategy;
     private String aiStrategySources;
     private String aiChatHistory;

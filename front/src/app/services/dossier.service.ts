@@ -82,4 +82,12 @@ export class DossierService extends AbstractCrudService<Dossier> {
     }> {
         return this.http.get<any>(`${this.apiUrl}/kpis`);
     }
+
+    softDelete(id: string | number): Observable<void> {
+        return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    }
+
+    restore(id: string | number): Observable<Dossier> {
+        return this.http.post<Dossier>(`${this.apiUrl}/${id}/restore`, {});
+    }
 }

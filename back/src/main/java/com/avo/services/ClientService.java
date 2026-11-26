@@ -19,25 +19,37 @@ public class ClientService {
     private final ClientEntityMapper mapper;
     private final com.avo.repositories.ScreeningMatchRepository screeningMatchRepository;
     private final com.avo.repositories.ScreeningExecutionRepository screeningExecutionRepository;
+    private final com.avo.repositories.DossierRepository dossierRepository;
 
     public ClientService(ClientRepository repository, 
                          ClientEntityMapper mapper, 
                          com.avo.repositories.ScreeningMatchRepository screeningMatchRepository,
-                         com.avo.repositories.ScreeningExecutionRepository screeningExecutionRepository) {
+                         com.avo.repositories.ScreeningExecutionRepository screeningExecutionRepository,
+                         com.avo.repositories.DossierRepository dossierRepository) {
         this.repository = repository;
         this.mapper = mapper;
         this.screeningMatchRepository = screeningMatchRepository;
         this.screeningExecutionRepository = screeningExecutionRepository;
+        this.dossierRepository = dossierRepository;
     }
 
     public Page<ClientEntityDTO> findAll(Pageable pageable) {
         log.info("[ENTER] Executing findAll");
-        return repository.findAll(pageable).map(mapper::toDto);
+        return repository.findByDeletedFalse(pageable).map(mapper::toDto);
     }
 
     public Page<ClientEntityDTO> findAllWithFilters(String searchTerm, String type, com.avo.entities.ClientStatus status, String risk, Pageable pageable) {
-        log.info("[ENTER] Executing findAllWithFilters");
-        return repository.searchWithFilters(searchTerm, type, status, risk, pageable).map(mapper::toDto);
+        return findAllWithFilters(searchTerm, type, status, risk, "ACTIVE", pageable);
+    }
+
+    public Page<ClientEntityDTO> findAllWithFilters(String searchTerm, String type, com.avo.entities.ClientStatus status, String risk, String deletedFilter, Pageable pageable) {
+        log.info("[ENTER] Executing findAllWithFilters (deletedFilter={})", deletedFilter);
+        String effectiveDeletedFilter = (deletedFilter == null || deletedFilter.isBlank()) ? "ACTIVE" : deletedFilter.toUpperCase();
+        return repository.searchWithFilters(searchTerm, type, status, risk, effectiveDeletedFilter, pageable).map(mapper::toDto);
+    }
+
+    public long countActiveDossiers(Long clientId) {
+        return dossierRepository.countByClientIdAndDeletedFalse(clientId);
     }
 
     public Page<ClientEntityDTO> search(Predicate predicate, Pageable pageable) {
@@ -103,22 +115,69 @@ public class ClientService {
     
     @org.springframework.transaction.annotation.Transactional
     public void delete(Long id) {
-        log.info("[ENTER] Executing delete for client id: {}", id);
-        ClientEntity client = repository.findById(id).orElse(null);
-        if (client instanceof com.avo.entities.ClientMoral) {
-            com.avo.entities.ClientMoral cm = (com.avo.entities.ClientMoral) client;
-            if (cm.getUbos() != null) {
-                for (com.avo.entities.UBO u : cm.getUbos()) {
-                    if (u.getId() != null) {
-                        screeningMatchRepository.deleteByUboId(u.getId());
-                        screeningExecutionRepository.deleteByUboId(u.getId());
-                    }
-                }
+        delete(id, false);
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void delete(Long id, boolean deleteDossiers) {
+        log.info("[ENTER] Executing soft-delete for client id: {} (deleteDossiers={})", id, deleteDossiers);
+        ClientEntity client = repository.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Client introuvable avec l'identifiant " + id));
+        java.util.Date now = new java.util.Date();
+        String user = getCurrentUsername();
+        client.setDeleted(true);
+        client.setDeletedAt(now);
+        client.setDeletedBy(user);
+        repository.save(client);
+
+        if (deleteDossiers) {
+            java.util.List<com.avo.entities.Dossier> activeDossiers = dossierRepository.findByClientIdAndDeletedFalse(id);
+            for (com.avo.entities.Dossier d : activeDossiers) {
+                d.setDeleted(true);
+                d.setDeletedAt(now);
+                d.setDeletedBy(user);
+            }
+            if (!activeDossiers.isEmpty()) {
+                dossierRepository.saveAll(activeDossiers);
             }
         }
-        screeningMatchRepository.deleteByClientId(id);
-        screeningExecutionRepository.deleteByClientId(id);
-        repository.deleteById(id);
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public ClientEntityDTO restore(Long id, boolean restoreDossiers) {
+        log.info("[ENTER] Executing restore for client id: {} (restoreDossiers={})", id, restoreDossiers);
+        ClientEntity client = repository.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Client introuvable avec l'identifiant " + id));
+        client.setDeleted(false);
+        client.setDeletedAt(null);
+        client.setDeletedBy(null);
+        ClientEntity saved = repository.save(client);
+
+        if (restoreDossiers) {
+            java.util.List<com.avo.entities.Dossier> deletedDossiers = dossierRepository.findByClientIdAndDeletedTrue(id);
+            for (com.avo.entities.Dossier d : deletedDossiers) {
+                d.setDeleted(false);
+                d.setDeletedAt(null);
+                d.setDeletedBy(null);
+            }
+            if (!deletedDossiers.isEmpty()) {
+                dossierRepository.saveAll(deletedDossiers);
+            }
+        }
+        return mapper.toDto(saved);
+    }
+
+    private String getCurrentUsername() {
+        try {
+            org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
+                    .getContext().getAuthentication();
+            if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName())) {
+                return auth.getName();
+            }
+        } catch (Exception ignored) {}
+        return "Système";
     }
 
     public ClientEntityDTO updateStatus(Long id, com.avo.entities.ClientStatus status) {

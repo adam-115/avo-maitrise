@@ -14,10 +14,13 @@ public interface ClientRepository extends JpaRepository<ClientEntity, Long> , Qu
 
     Page<ClientEntity> findAll(Pageable pageable);
     Page<ClientEntity> findAll(Predicate predicate, Pageable pageable);
+    Page<ClientEntity> findByDeletedFalse(Pageable pageable);
+    java.util.List<ClientEntity> findByDeletedFalse();
     
     java.util.Optional<ClientEntity> findByEmail(String email);
 
     @org.springframework.data.jpa.repository.Query("SELECT c FROM ClientEntity c WHERE " +
+           "(:deletedFilter = 'ALL' OR (:deletedFilter = 'DELETED' AND c.deleted = true) OR ((:deletedFilter IS NULL OR :deletedFilter = '' OR :deletedFilter = 'ACTIVE') AND c.deleted = false)) AND " +
            "(:searchTerm IS NULL OR :searchTerm = '' OR " +
            " LOWER(c.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
            " LOWER(c.pays) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
@@ -52,6 +55,7 @@ public interface ClientRepository extends JpaRepository<ClientEntity, Long> , Qu
             @org.springframework.data.repository.query.Param("type") String type,
             @org.springframework.data.repository.query.Param("status") com.avo.entities.ClientStatus status,
             @org.springframework.data.repository.query.Param("risk") String risk,
+            @org.springframework.data.repository.query.Param("deletedFilter") String deletedFilter,
             Pageable pageable);
 
 }

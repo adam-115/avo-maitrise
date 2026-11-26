@@ -84,18 +84,19 @@ public class ClientMoralService {
     
     @Transactional
     public void delete(Long id) {
-        log.info("[ENTER] Executing delete for ClientMoral id: {}", id);
+        log.info("[ENTER] Executing soft-delete for ClientMoral id: {}", id);
         ClientMoral client = repository.findById(id).orElse(null);
-        if (client != null && client.getUbos() != null) {
-            for (UBO u : client.getUbos()) {
-                if (u.getId() != null) {
-                    screeningMatchRepository.deleteByUboId(u.getId());
-                    screeningExecutionRepository.deleteByUboId(u.getId());
-                }
+        if (client != null) {
+            client.setDeleted(true);
+            client.setDeletedAt(new java.util.Date());
+            try {
+                org.springframework.security.core.Authentication auth = org.springframework.security.core.context.SecurityContextHolder
+                        .getContext().getAuthentication();
+                client.setDeletedBy(auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getName()) ? auth.getName() : "Système");
+            } catch (Exception ignored) {
+                client.setDeletedBy("Système");
             }
+            repository.save(client);
         }
-        screeningMatchRepository.deleteByClientId(id);
-        screeningExecutionRepository.deleteByClientId(id);
-        repository.deleteById(id);
     }
 }

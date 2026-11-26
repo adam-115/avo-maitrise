@@ -87,6 +87,10 @@ import { ConflictCheckResponse, ConflictCheckService, ConflictMatch } from '../.
                   <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700">
                     {{ labelMatchType(m.matchType) }}
                   </span>
+                  <span *ngIf="m.matchedClientDeleted"
+                    class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-800 text-white">
+                    Ancien client / Supprimé
+                  </span>
                 </div>
                 <div class="flex items-center gap-2 text-xs">
                   <a *ngIf="m.matchedClientId" [routerLink]="['/home/client-details']" [queryParams]="{ id: m.matchedClientId }"

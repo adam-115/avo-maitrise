@@ -38,6 +38,11 @@ public class UBOService {
         return repository.findAll(pageable).map(mapper::toDto);
     }
 
+    public Page<UBODTO> findActiveClientUbos(Pageable pageable) {
+        log.info("[ENTER] Executing findActiveClientUbos");
+        return repository.findActiveClientUbos(pageable).map(mapper::toDto);
+    }
+
     public Page<UBODTO> search(Predicate predicate, Pageable pageable) {
         log.info("[ENTER] Executing search");
         return repository.findAll(predicate, pageable).map(mapper::toDto);

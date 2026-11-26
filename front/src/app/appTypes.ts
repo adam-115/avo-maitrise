@@ -155,6 +155,9 @@ export interface Client {
   contacts?: ContactPoint[];
   createdAt?: Date;
   version?: number;
+  deleted?: boolean;
+  deletedAt?: Date | string;
+  deletedBy?: string;
 }
 
 export interface ClientPersonnePhysique extends Client {
@@ -452,6 +455,11 @@ export interface Dossier {
 
   // Tiers & Adversaires
   autresParties?: any[];
+
+  // Suppression logique
+  deleted?: boolean;
+  deletedAt?: Date | string;
+  deletedBy?: string;
 }
 
 

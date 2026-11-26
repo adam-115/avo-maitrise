@@ -27,6 +27,7 @@ export interface ConflictMatch {
   matchedDossierTitre?: string | null;
   matchedRole?: string | null;
   explanation: string;
+  matchedClientDeleted?: boolean;
 }
 
 export interface ConflictCheckResponse {

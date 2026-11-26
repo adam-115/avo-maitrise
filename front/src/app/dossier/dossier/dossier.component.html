@@ -197,6 +197,21 @@
         </div>
       </div>
 
+      <!-- Filtre Visibilité (Actifs / Supprimés / Tous) -->
+      <div class="relative flex-1 sm:flex-initial min-w-[165px]">
+        <select [(ngModel)]="deletedFilter" (change)="filterDossiers()"
+          class="w-full ps-3.5 pe-8 py-2.5 bg-white border-2 border-slate-300 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none font-semibold text-slate-700 text-xs shadow-sm cursor-pointer appearance-none hover:border-slate-400">
+          <option value="ACTIVE">Dossiers actifs</option>
+          <option value="DELETED">Dossiers supprimés</option>
+          <option value="ALL">Tous (actifs + supprimés)</option>
+        </select>
+        <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+
       <!-- Bouton Réinitialiser (si filtre actif) -->
       @if (isFiltered) {
       <button type="button" (click)="resetFilters()" [title]="'DOSSIER.RESET_FILTERS' | translate"
@@ -232,8 +247,9 @@
 
       <div *ngFor="let dossier of paginatedDossiers"
         class="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl transition-all duration-300 group hover:-translate-y-1 overflow-hidden flex flex-col justify-between relative"
+        [ngClass]="dossier.deleted ? 'opacity-80 bg-slate-50/70' : ''"
         [style.border-top-width]="'4px'"
-        [style.border-top-color]="getPriority(dossier.prioriteID)?.color || '#6366f1'">
+        [style.border-top-color]="dossier.deleted ? '#64748b' : (getPriority(dossier.prioriteID)?.color || '#6366f1')">
 
         <!-- Corps de la carte -->
         <div class="p-5 sm:p-6">
@@ -245,6 +261,10 @@
             </span>
 
             <div class="flex items-center gap-1.5 flex-wrap justify-end">
+              <span *ngIf="dossier.deleted"
+                class="px-2.5 py-1 text-[10px] font-bold rounded-full bg-slate-800 text-white uppercase">
+                Supprimé
+              </span>
               <!-- Badge Statut -->
               <span class="px-2.5 py-1 text-xs font-bold rounded-full shadow-sm"
                 [style.background-color]="(getStatus(dossier.statutID)?.color || '#6366f1') + '18'"
@@ -267,9 +287,15 @@
             <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white flex items-center justify-center font-bold text-xs shadow-sm flex-shrink-0">
               {{ getClientInitials(dossier) }}
             </div>
-            <div class="min-w-0">
+            <div class="min-w-0 flex-1">
               <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ 'DOSSIER.CLIENT' | translate }}</p>
-              <p class="text-xs font-bold text-slate-800 truncate">{{ getDossierClientName(dossier) }}</p>
+              <div class="flex items-center gap-1.5">
+                <p class="text-xs font-bold text-slate-800 truncate">{{ getDossierClientName(dossier) }}</p>
+                <span *ngIf="dossier.client?.deleted"
+                  class="px-1.5 py-0.5 rounded bg-slate-200 text-slate-700 text-[9px] font-bold shrink-0">
+                  Client supprimé
+                </span>
+              </div>
             </div>
           </div>
 
@@ -302,15 +328,31 @@
 
         </div>
 
-        <!-- Pied de la carte : Bouton Consulter -->
-        <div class="px-5 sm:px-6 pb-5">
+        <!-- Pied de la carte : Bouton Consulter + Supprimer / Restaurer -->
+        <div class="px-5 sm:px-6 pb-5 flex items-center gap-2">
           <button type="button" (click)="navigateToDossierDetail(dossier.id!)"
-            class="w-full py-2.5 px-4 bg-indigo-50/70 hover:bg-indigo-600 text-indigo-700 hover:text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2 group/btn cursor-pointer shadow-sm">
+            class="flex-1 py-2.5 px-4 bg-indigo-50/70 hover:bg-indigo-600 text-indigo-700 hover:text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2 group/btn cursor-pointer shadow-sm">
             <span>{{ 'DOSSIER.VIEW_CARD' | translate }}</span>
             <svg class="w-3.5 h-3.5 transform group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </button>
+          @if (canManageDeletion && !dossier.deleted) {
+          <button type="button" (click)="openDeleteDossierModal(dossier, $event)"
+            class="py-2.5 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 font-bold text-xs transition-all cursor-pointer"
+            title="Masquer / Supprimer le dossier">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+          }
+          @if (canManageDeletion && dossier.deleted) {
+          <button type="button" (click)="restoreDossier(dossier, $event)"
+            class="py-2.5 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-all cursor-pointer"
+            title="Restaurer le dossier">
+            Restaurer
+          </button>
+          }
         </div>
 
       </div>
@@ -383,6 +425,36 @@
 
     </div>
 
+  </div>
+  }
+
+  <!-- Modale de confirmation de suppression logique d'un dossier -->
+  @if (deleteModalDossier) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4" (click)="closeDeleteDossierModal()">
+    <div class="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden" (click)="$event.stopPropagation()">
+      <div class="px-6 py-4 bg-rose-50 border-b border-rose-100 flex items-center justify-between">
+        <h3 class="text-sm font-extrabold text-rose-900">Masquer le dossier « {{ deleteModalDossier.titre }} »</h3>
+        <button type="button" (click)="closeDeleteDossierModal()" class="text-rose-400 hover:text-rose-700 font-bold cursor-pointer">✕</button>
+      </div>
+      <div class="p-6 space-y-3 text-xs text-slate-600 leading-relaxed">
+        <p>
+          Le dossier <b>{{ deleteModalDossier.referenceInterne }}</b> ne sera <b>pas effacé de la base de données</b>.
+        </p>
+        <p>
+          Il sera masqué de la liste active et des KPIs, mais restera consultable et restaurable à tout moment via le filtre <b>Dossiers supprimés</b>.
+        </p>
+      </div>
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-2">
+        <button type="button" (click)="closeDeleteDossierModal()" [disabled]="deleteInProgress"
+          class="px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 cursor-pointer">
+          Annuler
+        </button>
+        <button type="button" (click)="confirmDeleteDossier()" [disabled]="deleteInProgress"
+          class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold text-xs cursor-pointer">
+          {{ deleteInProgress ? 'Suppression...' : 'Confirmer la suppression' }}
+        </button>
+      </div>
+    </div>
   </div>
   }
 
