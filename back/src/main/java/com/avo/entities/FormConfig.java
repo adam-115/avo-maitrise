@@ -8,12 +8,18 @@ import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+@org.hibernate.envers.Audited
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FormConfig {
+
+    public FormConfig() {}
+
+    public static class FormConfigBuilder {
+        public FormConfigBuilder() {}
+    }
 
     @Id
     private String id;

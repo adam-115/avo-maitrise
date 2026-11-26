@@ -115,7 +115,9 @@ export interface UBO {
   nationality?: string;
   roleInCompany?: string;
   percentageOfOwnership?: number;
-  amlAnalysisStatus?: 'TODO' | 'OK' | 'SUSPECT' | 'BLOCKED';
+  amlAnalysisStatus?: string | ClientStatus | 'TODO' | 'OK' | 'SUSPECT' | 'BLOCKED';
+  amlTargetEntityName?: string;
+  clientMoralId?: number;
 
   // Compatibility fields
   nom?: string;
@@ -152,6 +154,7 @@ export interface Client {
   secteurActivite?: string;
   contacts?: ContactPoint[];
   createdAt?: Date;
+  version?: number;
 }
 
 export interface ClientPersonnePhysique extends Client {
@@ -215,6 +218,7 @@ export interface Document {
   dateUpload?: Date;
   estValide?: boolean;
   filename?: string; // For compatibility
+  pays?: string; // Jurisprudence classification
   
   // Frontend specific fields (for file upload & compatibility)
   title?: string;
@@ -227,6 +231,12 @@ export interface Document {
   fileData?: string; // Base64 content for backend BLOB
   clientId?: number;
   dossierId?: string | number;
+  // Fiche décision (jurisprudence) : présentée avec la source citée par l'IA
+  juridiction?: string;
+  dateDecision?: string; // AAAA-MM-JJ
+  numeroDecision?: string; // n° de pourvoi ou de RG
+  ecli?: string;
+  sourceUrl?: string; // lien vers le texte officiel (Judilibre, Légifrance...)
 }
 
 
@@ -257,6 +267,8 @@ export enum ScreeningMatchStatus {
   PENDING = 'PENDING',
   FALSE_POSITIVE = 'FALSE_POSITIVE',
   TRUE_POSITIVE = 'TRUE_POSITIVE',
+  TRUE_POSITIVE_SANCTION = 'TRUE_POSITIVE_SANCTION',
+  TRUE_POSITIVE_PEP = 'TRUE_POSITIVE_PEP',
   DILIGENCE_REQUIRED = 'DILIGENCE_REQUIRED',
   NO_LONGER_SANCTIONED = 'NO_LONGER_SANCTIONED'
 }
@@ -296,6 +308,7 @@ export interface ScreeningMatchDTO {
   reviewedAt?: Date | string;
   reviewedBy?: string;
   yenteLastUpdate?: string;
+  clientVersionAtReview?: number;
 }
 
 export enum FormType {
@@ -421,6 +434,7 @@ export interface Dossier {
 
   // Classification
   domaineJuridique: DomaineJuridique;    // Ex: Droit des Affaires, Droit Social, Immobilier
+  paysJuridiction?: string | null;       // Droit applicable au litige (base légale utilisée par l'IA), null = à définir
   prioriteID: DossierPriorite; // Relies on DossierPriorite
   statutID: StatutDossier; // Relies on StatutDossier
 
@@ -432,13 +446,12 @@ export interface Dossier {
   dateCloture?: Date;
   updated_at: Date;
 
-  // Données Financières (Optionnel)
-  budgetEstime?: number;
-  tauxHoraireApplique?: number;
-  methodeFacturation: 'HORAIRE' | 'FORFAIT' | 'RESULTAT';
-
   // Métadonnées
   tags?: string[];             // Pour la recherche rapide
+  aiStrategy?: string;         // Analyse stratégique générée par l'IA
+
+  // Tiers & Adversaires
+  autresParties?: any[];
 }
 
 
@@ -464,27 +477,29 @@ export interface TaskStatus {
 }
 
 export interface Task {
-  id?: number ;
+  id?: number;
   dossierId: number;
   titre: string;
   description?: string;
 
-  // Relations par objets
-  category: TaskCategory;
-  status: TaskStatus;
+  // Relations par objets ou IDs
+  category?: TaskCategory;
+  status?: TaskStatus;
+  categoryId?: number | string;
+  statusId?: number | string;
 
   priorite: 'BASSE' | 'NORMALE' | 'HAUTE' | 'URGENTE';
   assignees?: User[];
-  dateEcheance: Date;
+  dateEcheance: Date | string;
   isCompleted: boolean;
-  createdAt: Date;
+  createdAt: Date | string;
   createdBy?: User;
 
   // Facturation
   invoiceId?: string;
 
   estimatedTimeMinutes?: number;
-
+  audioDocumentId?: number | null;
 }
 
 export interface TaskLog {
@@ -510,19 +525,19 @@ export interface NoteCategory {
 export interface Note {
   id?: number;
   dossierId: number | string;  // Le dossier auquel la note est liée
-  auteurId: number | string;   // L'utilisateur (avocat/collaborateur) qui a écrit la note        // Pour l'affichage rapide (ex: "Me. Dupont")
+  auteurId: number | string;   // L'utilisateur (avocat/collaborateur) qui a écrit la note
 
   title: string;
-  description: string;             // Le corps de la note (peut supporter du Markdown)
+  description: string;         // Le corps de la note
 
   categoryId: string | number;
 
   // Temporalité
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt?: Date | string;
 
   // Pièces jointes (optionnel)
-  attachmentIds?: string[];    // Si la note est liée à des documents spécifiques
+  attachmentIds?: string[];
 }
 
 export enum ContactRole {
@@ -715,6 +730,7 @@ export interface InvoiceDossierService {
   id?: number;
   info?: string;
   creationDate?: Date;
+  serviceDate?: string | Date;
   nbrOfMinutes?: number;
   dossier?: Dossier;
   invoiceTypeOfService?: InvoiceTypeOfService;
@@ -775,4 +791,29 @@ export interface CabinetProfile {
   logoContentType?: string;
   currency?: string;
   tvaRate?: number;
+}
+
+export interface AiConfigurationDTO {
+  id?: number;
+  provider: string;
+  modelName: string;
+  apiKey: string;
+  baseUrl?: string;
+  temperature?: number;
+  timeoutMinutes?: number;
+  enableThinking?: boolean;
+  isActive: boolean;
+}
+
+export interface ConflictDetail {
+  dossierId: number;
+  dossierTitre: string;
+  dossierReference: string;
+  role: string;
+}
+
+export interface ConflictCheckResult {
+  hasConflict: boolean;
+  message: string;
+  details: ConflictDetail[];
 }

@@ -9,13 +9,19 @@ import java.time.OffsetDateTime;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+@org.hibernate.envers.Audited
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(name = "client_diligence_status")
 public class ClientDiligenceStatus {
+
+    public ClientDiligenceStatus() {}
+
+    public static class ClientDiligenceStatusBuilder {
+        public ClientDiligenceStatusBuilder() {}
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

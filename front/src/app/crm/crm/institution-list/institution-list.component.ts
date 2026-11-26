@@ -7,11 +7,12 @@ import { PaginatedResponse } from '../../../services/genericService/abstract-cru
 import { NavigationService } from '../../../services/navigation-service';
 
 import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-institution-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TranslatePipe],
   templateUrl: './institution-list.component.html',
   styleUrl: './institution-list.component.css'
 })
@@ -58,6 +59,10 @@ export class InstitutionListComponent implements OnInit {
       case ClientStatus.BLOCKED: return 'bg-red-100 text-red-800';
       default: return 'bg-gray-100 text-gray-800';
     }
+  }
+
+  navigateToConformity(client: Institution) {
+    this.navigationService.navigateToClientConformity(String(client.id));
   }
 
   navigateToDetails(client: Institution) {

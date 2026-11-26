@@ -1,5 +1,5 @@
 package com.avo.entities;
 
 public enum DocumentType {
-    DOSSIER, CLIENT, MODEL
+    DOSSIER, CLIENT, MODEL, JURISPRUDENCE, LEGISLATION
 }

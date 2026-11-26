@@ -72,4 +72,14 @@ export class DossierService extends AbstractCrudService<Dossier> {
 
         return this.http.get<PaginatedResponse<Dossier>>(`${this.apiUrl}/search`, { params });
     }
+
+    getKpis(): Observable<{
+        activeDossiersCount: number;
+        urgentDossiersCount: number;
+        createdThisMonthCount: number;
+        closedThisMonthCount: number;
+        closureRate: number;
+    }> {
+        return this.http.get<any>(`${this.apiUrl}/kpis`);
+    }
 }

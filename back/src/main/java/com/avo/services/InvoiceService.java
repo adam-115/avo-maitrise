@@ -2,6 +2,7 @@ package com.avo.services;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -118,17 +119,29 @@ public class InvoiceService {
 
         Invoice savedInvoice = repository.save(entity);
         
-        if (isDraft) {
-            if (entity.getInvoiceTimeEntries() != null) {
-                for (InvoiceTimeEntry entry : entity.getInvoiceTimeEntries()) {
+        // Synchronize prestation status according to invoice status
+        InvoiceDossierServiceStatusEnum targetPrestationStatus;
+        if (InvoiceStatusEnum.PAID.equals(savedInvoice.getStatus())
+                || InvoiceStatusEnum.ISSUED.equals(savedInvoice.getStatus())
+                || InvoiceStatusEnum.PARTIALLY_PAID.equals(savedInvoice.getStatus())
+                || InvoiceStatusEnum.OVERDUE.equals(savedInvoice.getStatus())) {
+            targetPrestationStatus = InvoiceDossierServiceStatusEnum.FACTUREE;
+        } else if (InvoiceStatusEnum.CANCELLED.equals(savedInvoice.getStatus())) {
+            targetPrestationStatus = InvoiceDossierServiceStatusEnum.A_FACTURE;
+        } else {
+            targetPrestationStatus = InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION;
+        }
+
+        List<InvoiceTimeEntry> entriesToProcess = isDraft ? entity.getInvoiceTimeEntries() : (existingInvoice != null ? existingInvoice.getInvoiceTimeEntries() : null);
+        if (entriesToProcess != null) {
+            for (InvoiceTimeEntry entry : entriesToProcess) {
+                if (isDraft) {
                     entry.setInvoice(savedInvoice);
-                    
-                    if (entry.getInvoiceDossierService() != null) {
-                        entry.getInvoiceDossierService().setStatus(InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION);
-                        dossierServiceService.saveEntity(entry.getInvoiceDossierService());
-                    }
-                    
                     timeEntryService.saveEntity(entry);
+                }
+                if (entry.getInvoiceDossierService() != null) {
+                    entry.getInvoiceDossierService().setStatus(targetPrestationStatus);
+                    dossierServiceService.saveEntity(entry.getInvoiceDossierService());
                 }
             }
         }
@@ -137,6 +150,18 @@ public class InvoiceService {
     }
 
     public void delete(Long id) {
-        // repository.deleteById(id);
+        Invoice invoice = repository.findById(id).orElse(null);
+        if (invoice != null) {
+            if (invoice.getInvoiceTimeEntries() != null) {
+                for (InvoiceTimeEntry entry : invoice.getInvoiceTimeEntries()) {
+                    if (entry.getInvoiceDossierService() != null) {
+                        entry.getInvoiceDossierService().setStatus(InvoiceDossierServiceStatusEnum.A_FACTURE);
+                        dossierServiceService.saveEntity(entry.getInvoiceDossierService());
+                    }
+                    timeEntryService.delete(entry.getId());
+                }
+            }
+            repository.deleteById(id);
+        }
     }
 }

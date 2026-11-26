@@ -1,5 +1,10 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -31,18 +36,22 @@ public class PersonnePhysiqueController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "CLIENT")
     @GetMapping("/{id}")
     public ResponseEntity<ClientPersonnePhysiqueDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ClientPersonnePhysiqueDTO> create(@RequestBody ClientPersonnePhysiqueDTO dto) {
+    public ResponseEntity<ClientPersonnePhysiqueDTO> create(@Valid @RequestBody ClientPersonnePhysiqueDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<ClientPersonnePhysiqueDTO> update(@RequestBody ClientPersonnePhysiqueDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<ClientPersonnePhysiqueDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody ClientPersonnePhysiqueDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

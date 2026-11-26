@@ -20,10 +20,11 @@ public class ScreeningMatchDTO {
     private LocalDateTime reviewedAt;
     private String reviewedBy;
     private String yenteLastUpdate;
+    private Long clientVersionAtReview;
 
     public ScreeningMatchDTO() {}
 
-    public ScreeningMatchDTO(Long id, ClientEntityDTO clientEntityDTO, UBODTO uboDTO, ScreeningExecutionDTO screeningExecutionDTO, String yenteId, Double score, String targetName, JsonNode rawResponse, LocalDateTime createdAt, String matchReason, String status, String reviewerComment, LocalDateTime reviewedAt, String reviewedBy, String yenteLastUpdate) {
+    public ScreeningMatchDTO(Long id, ClientEntityDTO clientEntityDTO, UBODTO uboDTO, ScreeningExecutionDTO screeningExecutionDTO, String yenteId, Double score, String targetName, JsonNode rawResponse, LocalDateTime createdAt, String matchReason, String status, String reviewerComment, LocalDateTime reviewedAt, String reviewedBy, String yenteLastUpdate, Long clientVersionAtReview) {
         this.id = id;
         this.clientEntityDTO = clientEntityDTO;
         this.uboDTO = uboDTO;
@@ -39,6 +40,7 @@ public class ScreeningMatchDTO {
         this.reviewedAt = reviewedAt;
         this.reviewedBy = reviewedBy;
         this.yenteLastUpdate = yenteLastUpdate;
+        this.clientVersionAtReview = clientVersionAtReview;
     }
 
     public Long getId() { return id; }
@@ -86,6 +88,9 @@ public class ScreeningMatchDTO {
     public String getYenteLastUpdate() { return yenteLastUpdate; }
     public void setYenteLastUpdate(String yenteLastUpdate) { this.yenteLastUpdate = yenteLastUpdate; }
 
+    public Long getClientVersionAtReview() { return clientVersionAtReview; }
+    public void setClientVersionAtReview(Long clientVersionAtReview) { this.clientVersionAtReview = clientVersionAtReview; }
+
     public static ScreeningMatchDTOBuilder builder() {
         return new ScreeningMatchDTOBuilder();
     }
@@ -106,6 +111,7 @@ public class ScreeningMatchDTO {
         private LocalDateTime reviewedAt;
         private String reviewedBy;
         private String yenteLastUpdate;
+        private Long clientVersionAtReview;
 
         public ScreeningMatchDTOBuilder id(Long id) { this.id = id; return this; }
         public ScreeningMatchDTOBuilder clientEntityDTO(ClientEntityDTO clientEntityDTO) { this.clientEntityDTO = clientEntityDTO; return this; }
@@ -122,9 +128,10 @@ public class ScreeningMatchDTO {
         public ScreeningMatchDTOBuilder reviewedAt(LocalDateTime reviewedAt) { this.reviewedAt = reviewedAt; return this; }
         public ScreeningMatchDTOBuilder reviewedBy(String reviewedBy) { this.reviewedBy = reviewedBy; return this; }
         public ScreeningMatchDTOBuilder yenteLastUpdate(String yenteLastUpdate) { this.yenteLastUpdate = yenteLastUpdate; return this; }
+        public ScreeningMatchDTOBuilder clientVersionAtReview(Long clientVersionAtReview) { this.clientVersionAtReview = clientVersionAtReview; return this; }
 
         public ScreeningMatchDTO build() {
-            return new ScreeningMatchDTO(id, clientEntityDTO, uboDTO, screeningExecutionDTO, yenteId, score, targetName, rawResponse, createdAt, matchReason, status, reviewerComment, reviewedAt, reviewedBy, yenteLastUpdate);
+            return new ScreeningMatchDTO(id, clientEntityDTO, uboDTO, screeningExecutionDTO, yenteId, score, targetName, rawResponse, createdAt, matchReason, status, reviewerComment, reviewedAt, reviewedBy, yenteLastUpdate, clientVersionAtReview);
         }
     }
 }

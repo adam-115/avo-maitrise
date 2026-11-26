@@ -6,8 +6,9 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 public class TaskDTO {
+    public TaskDTO() {}
+
     private Long id;
     private Long dossierId;
     private String titre;
@@ -22,4 +23,5 @@ public class TaskDTO {
     private UserDTO createdBy;
     private String invoiceId;
     private Integer estimatedTimeMinutes;
+    private Long audioDocumentId;
 }

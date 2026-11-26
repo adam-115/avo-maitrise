@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Journal déontologique des contrôles de conflits d'intérêts -->
+    <changeSet id="create-conflict-checks-table" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="conflict_checks"/>
+            </not>
+        </preConditions>
+        <createTable tableName="conflict_checks">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="dossier_id" type="BIGINT"/>
+            <column name="checked_by" type="VARCHAR(120)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="checked_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="search_summary" type="VARCHAR(1000)"/>
+            <column name="risk_level" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="matches_count" type="INT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="matches_json" type="LONGTEXT"/>
+            <column name="decision" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="justification" type="TEXT"/>
+        </createTable>
+        <createIndex tableName="conflict_checks" indexName="idx_conflict_checks_dossier">
+            <column name="dossier_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

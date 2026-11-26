@@ -7,27 +7,45 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class DossierDTO {
+    public DossierDTO() {}
+
+    public static class DossierDTOBuilder {
+        public DossierDTOBuilder() {}
+    }
+
     private Long id;
+
+    @Size(max = 50, message = "La référence interne ne doit pas dépasser 50 caractères")
     private String referenceInterne;
+
+    @NotBlank(message = "Le titre du dossier est obligatoire")
+    @Size(max = 255, message = "Le titre du dossier ne doit pas dépasser 255 caractères")
     private String titre;
+
+    @Size(max = 2000, message = "La description ne doit pas dépasser 2000 caractères")
     private String description;
+
     private ClientEntityDTO client;
     private String responsableId;
     private List<String> intervenantsIds = new ArrayList<>();
     private String domaineJuridique;
+    /** Droit applicable au litige (pays de la jurisprudence utilisée par l'IA), null = à définir. */
+    private String paysJuridiction;
     private String prioriteID;
     private String statutID;
     private List<DocumentDTO> documents = new ArrayList<>();
     private Date dateOuverture;
     private Date dateCloture;
     private Date updated_at;
-    private Double budgetEstime;
-    private Double tauxHoraireApplique;
-    private String methodeFacturation;
+    private String aiStrategy;
+    private String aiStrategySources;
+    private String aiChatHistory;
+    private List<DossierPartieDTO> autresParties = new ArrayList<>();
 }

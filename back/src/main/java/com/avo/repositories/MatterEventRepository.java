@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface MatterEventRepository extends JpaRepository<MatterEvent, Long>, QuerydslPredicateExecutor<MatterEvent> {
     List<MatterEvent> findByDossierId(Long dossierId);
+
+    boolean existsByExternalCalendarEventId(String externalCalendarEventId);
 }

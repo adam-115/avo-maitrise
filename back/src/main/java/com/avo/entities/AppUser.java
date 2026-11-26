@@ -20,8 +20,9 @@ import lombok.Setter;
 @Table(name = "app_users")
 @Getter
 @Setter
-@NoArgsConstructor
 public class AppUser {
+
+    public AppUser() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,6 +75,9 @@ public class AppUser {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", updatable = false)
     private Date createdAt;
+
+    @Column(name = "preferred_language", length = 10)
+    private String preferredLanguage = "fr";
 
     @PrePersist
     protected void onCreate() {

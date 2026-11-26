@@ -1,5 +1,10 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -23,6 +28,7 @@ public class UBOController {
         this.reportingService = reportingService;
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "UBO", idParam = "", details = "Rapport LCB-FT des bénéficiaires effectifs (PDF)")
     @GetMapping("/aml-report/pdf")
     public ResponseEntity<byte[]> generateAmlReportPdf(
             @RequestParam(required = false) String startDate,
@@ -44,18 +50,22 @@ public class UBOController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "UBO")
     @GetMapping("/{id}")
     public ResponseEntity<UBODTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<UBODTO> create(@RequestBody UBODTO dto) {
+    public ResponseEntity<UBODTO> create(@Valid @RequestBody UBODTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<UBODTO> update(@RequestBody UBODTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<UBODTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody UBODTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

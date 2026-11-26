@@ -1,0 +1,67 @@
+/* Navigation items — Style Swift Check (Pill active Vert Émeraude solide sur Nuit Profonde) */
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.62rem 0.85rem;
+  border-radius: 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.16s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item-idle {
+  color: #cbd5e1;
+}
+
+.nav-item-idle svg {
+  color: #94a3b8;
+  transition: color 0.16s ease;
+}
+
+.nav-item-idle:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.nav-item-idle:hover svg {
+  color: #34d399;
+}
+
+.nav-item-active {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  font-weight: 700;
+  border-color: rgba(110, 231, 183, 0.35);
+  box-shadow: 0 4px 16px -3px rgba(16, 185, 129, 0.45);
+}
+
+.nav-item-active svg {
+  color: #ffffff;
+}
+
+/* Mode sidebar repliée (icônes uniquement) sur desktop (lg+) */
+@media (min-width: 1024px) {
+  nav.sidebar-collapsed {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  nav.sidebar-collapsed p {
+    display: none;
+  }
+
+  nav.sidebar-collapsed a {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+    gap: 0;
+  }
+
+  nav.sidebar-collapsed a > span {
+    display: none;
+  }
+}

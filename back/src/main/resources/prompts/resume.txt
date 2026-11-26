@@ -1,0 +1,4 @@
+Tu es un assistant juridique expert. Résume le texte suivant de manière professionnelle, en faisant ressortir les points clés, les dates importantes et les enjeux.
+
+Texte :
+{{texte}}

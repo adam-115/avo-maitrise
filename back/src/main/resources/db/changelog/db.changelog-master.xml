@@ -11,4 +11,29 @@
     <include file="changes/v0.0.15/db.changelog-v0.0.15.xml" relativeToChangelogFile="true"/>
     <include file="changes/v0.0.16/db.changelog-v0.0.16.xml" relativeToChangelogFile="true"/>
     <include file="changes/v0.0.17/db.changelog-v0.0.17.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.18/db.changelog-v0.0.18.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.19/db.changelog-v0.0.19.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.20/db.changelog-v0.0.20.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.21/db.changelog-v0.0.21.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.22/db.changelog-v0.0.22.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.23/db.changelog-v0.0.23.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.24/db.changelog-v0.0.24.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.25/db.changelog-v0.0.25.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.26/db.changelog-v0.0.26.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.27/db.changelog-v0.0.27.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.28/db.changelog-v0.0.28.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.29/db.changelog-v0.0.29.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.30/db.changelog-v0.0.30.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.31/db.changelog-v0.0.31.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.32/db.changelog-v0.0.32.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.33/db.changelog-v0.0.33.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.34/db.changelog-v0.0.34.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.35/db.changelog-v0.0.35.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.36/db.changelog-v0.0.36.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.39/db.changelog-v0.0.39.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.40/db.changelog-v0.0.40.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.41/db.changelog-v0.0.41.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.42/db.changelog-v0.0.42.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.43/db.changelog-v0.0.43.xml" relativeToChangelogFile="true"/>
+    <include file="changes/v0.0.44/db.changelog-v0.0.44.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

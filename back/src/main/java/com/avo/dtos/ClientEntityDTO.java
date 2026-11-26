@@ -18,6 +18,7 @@ public class ClientEntityDTO {
     private List<ContactPointDTO> contacts;
     private List<ScreeningMatchDTO> screeningMatchDTOs;
     private Date createdAt;
+    private Long version;
     
     private String nom;
     private String prenom;
@@ -125,4 +126,7 @@ public class ClientEntityDTO {
 
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+
+    public Long getVersion() { return version; }
+    public void setVersion(Long version) { this.version = version; }
 }

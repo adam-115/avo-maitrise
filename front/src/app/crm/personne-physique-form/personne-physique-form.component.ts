@@ -1,19 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ClientStatus, ClientTypeEnum, ContactPoint, Document, SecteurActivite, UBO, ClientPersonnePhysique } from '../../appTypes';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ClientStatus, ClientTypeEnum, ContactPoint, Document, SecteurActivite } from '../../appTypes';
 import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { AlertService } from '../../services/alert-service';
 import { PersonnePhysiqueService } from '../../services/personne-physique.service';
 import { NavigationService } from '../../services/navigation-service';
 import { SecteurActiviteService } from '../../services/secteur-activite-service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-personne-physique-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, DocumentDialog],
+    imports: [CommonModule, ReactiveFormsModule, RouterLink, DocumentDialog, TranslatePipe],
     templateUrl: './personne-physique-form.component.html',
     styleUrls: ['./personne-physique-form.component.css']
 })
@@ -27,6 +28,8 @@ export class PersonnePhysiqueFormComponent implements OnInit {
     private navigationService = inject(NavigationService);
 
     isEditMode = false;
+    isSubmitting = false;
+    validationSummary: string | null = null;
     clientForm: FormGroup;
     secteurs: SecteurActivite[] = [];
     documents: Document[] = [];
@@ -51,12 +54,6 @@ export class PersonnePhysiqueFormComponent implements OnInit {
             cin: [''],
             dateNaissance: [''],
             contacts: this.fb.array([])
-        });
-
-        this.clientForm.valueChanges.subscribe(() => {
-            if (this.clientForm.dirty) {
-                this.clientForm.markAllAsTouched();
-            }
         });
     }
 
@@ -110,19 +107,44 @@ export class PersonnePhysiqueFormComponent implements OnInit {
 
     openAddDocumentDialog() { this.showAddDocumentDialog = true; }
     closeAddDocumentDialog() { this.showAddDocumentDialog = false; }
+
     onAddDocument(doc: Document) {
-        // Do not generate a fake ID here, it causes "detached entity" errors on backend
         this.documents.push(doc);
         this.closeAddDocumentDialog();
     }
-    deleteDocument(id: number | undefined) {
-        if (!id) return;
-        this.documents = this.documents.filter(d => d.id !== id);
+
+    deleteDocumentAt(index: number) {
+        this.documents.splice(index, 1);
+    }
+
+    private getInvalidFieldLabels(): string[] {
+        const labels: Record<string, string> = {
+            nom: 'Nom',
+            prenom: 'Prénom',
+            email: this.clientForm.get('email')?.errors?.['email'] ? 'Email (format invalide)' : 'Email',
+            telephone: 'Téléphone',
+            pays: 'Pays',
+            secteurActivite: 'Secteur d\'activité'
+        };
+        return Object.keys(labels)
+            .filter(key => this.clientForm.get(key)?.invalid)
+            .map(key => labels[key]);
     }
 
     async onSubmit(): Promise<void> {
+        this.validationSummary = null;
         if (this.clientForm.invalid) {
             this.clientForm.markAllAsTouched();
+            const missing = this.getInvalidFieldLabels();
+            this.validationSummary = missing.length > 0
+                ? `Champs obligatoires ou invalides : ${missing.join(', ')}.`
+                : 'Veuillez vérifier les champs obligatoires du formulaire.';
+            this.alertService.displayMessage('Formulaire incomplet', this.validationSummary, 'warning');
+            setTimeout(() => {
+                const firstInvalid = document.querySelector('form .ng-invalid[formControlName]') as HTMLElement | null;
+                firstInvalid?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid?.focus();
+            });
             return;
         }
 
@@ -137,10 +159,10 @@ export class PersonnePhysiqueFormComponent implements OnInit {
             }
         }
 
+        this.isSubmitting = true;
         const formValue = this.clientForm.getRawValue();
         formValue.clientStatus = ClientStatus.AML_REQUIRED;
 
-        // Convert files to base64 for BLOB storage if needed
         const uploadPromises = this.documents.map(async (doc) => {
             if (doc.file && !doc.fileData) {
                 doc.fileData = await this.fileToBase64(doc.file);
@@ -155,14 +177,19 @@ export class PersonnePhysiqueFormComponent implements OnInit {
 
             request$.subscribe({
                 next: (client: any) => {
+                    this.isSubmitting = false;
                     this.alertService.success(this.isEditMode ? 'Client modifié' : 'Client créé');
                     this.navigationService.navigateToClientDetails(String(client.id));
                 },
                 error: (err: any) => {
                     console.error(err);
+                    this.isSubmitting = false;
                     this.alertService.displayMessage('Erreur', 'Opération échouée', 'error');
                 }
             });
+        }).catch(() => {
+            this.isSubmitting = false;
+            this.alertService.displayMessage('Erreur', 'Impossible de traiter les documents joints', 'error');
         });
     }
 
@@ -187,4 +214,3 @@ export class PersonnePhysiqueFormComponent implements OnInit {
         return !!(control && control.invalid && control.touched);
     }
 }
-

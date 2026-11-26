@@ -1,12 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Dossier } from '../../appTypes';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-dossier-selection-dialog',
     standalone: true,
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, TranslatePipe],
     templateUrl: './dossier-selection-dialog.html',
     styleUrl: './dossier-selection-dialog.css'
 })
@@ -20,9 +21,13 @@ export class DossierSelectionDialog implements OnInit {
     selectedDossierId: string | number | null = null;
     searchTerm: string = '';
 
-    // Pagination
     currentPage = 1;
-    pageSize = 5;
+    pageSize = 6;
+
+    @HostListener('document:keydown.escape')
+    onEscapePress(): void {
+        this.onCancel();
+    }
 
     ngOnInit(): void {
         this.filteredDossiers = [...this.dossiers];
@@ -36,16 +41,16 @@ export class DossierSelectionDialog implements OnInit {
             this.filteredDossiers = [...this.dossiers];
         } else {
             const lowerTerm = this.searchTerm.toLowerCase();
-            this.filteredDossiers = this.dossiers.filter(dossier => {
-                return (dossier.titre && dossier.titre.toLowerCase().includes(lowerTerm)) ||
-                    (dossier.referenceInterne && dossier.referenceInterne.toLowerCase().includes(lowerTerm)) ||
-                    (dossier.description && dossier.description.toLowerCase().includes(lowerTerm));
-            });
+            this.filteredDossiers = this.dossiers.filter(dossier =>
+                (dossier.titre && dossier.titre.toLowerCase().includes(lowerTerm)) ||
+                (dossier.referenceInterne && dossier.referenceInterne.toLowerCase().includes(lowerTerm)) ||
+                (dossier.description && dossier.description.toLowerCase().includes(lowerTerm))
+            );
         }
     }
 
     get totalPages(): number {
-        return Math.ceil(this.filteredDossiers.length / this.pageSize);
+        return Math.ceil(this.filteredDossiers.length / this.pageSize) || 1;
     }
 
     get paginatedDossiers(): Dossier[] {
@@ -71,6 +76,11 @@ export class DossierSelectionDialog implements OnInit {
 
     selectDossier(dossierId: string | number): void {
         this.selectedDossierId = dossierId;
+    }
+
+    selectAndConfirm(dossierId: string | number): void {
+        this.selectedDossierId = dossierId;
+        this.onConfirm();
     }
 
     isSelected(dossierId: string | number): boolean {

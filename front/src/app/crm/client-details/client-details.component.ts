@@ -9,12 +9,18 @@ import { DossierService } from '../../services/dossier.service';
 import { InvoiceService } from '../../features/billing/services/invoice.service';
 import { ClientDiligenceStatusService } from '../../services/client-diligence-status-service';
 
-import { Client, Dossier, InvoiceEntity, ClientDiligenceStatus } from '../../appTypes';
+import { Client, Dossier, InvoiceEntity, ClientDiligenceStatus, ClientMoral, ClientPersonnePhysique, ClientTypeEnum } from '../../appTypes';
+
+import { TranslatePipe } from '@ngx-translate/core';
+import { KeycloakService } from '../../services/keycloak.service';
+import { AiStatusService } from '../../services/ai-status.service';
+import { AuditTimelineComponent, canViewAudit } from '../../shared/audit-timeline/audit-timeline.component';
+import { ClientDocumentGeneratorDialogComponent } from '../client-document-generator-dialog/client-document-generator-dialog.component';
 
 @Component({
   selector: 'app-client-details',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslatePipe, AuditTimelineComponent, ClientDocumentGeneratorDialogComponent],
   templateUrl: './client-details.component.html',
   styleUrl: './client-details.component.css'
 })
@@ -24,6 +30,11 @@ export class ClientDetailsComponent implements OnInit {
   private dossierService = inject(DossierService);
   private invoiceService = inject(InvoiceService);
   private amlStatusService = inject(ClientDiligenceStatusService);
+  private keycloakService = inject(KeycloakService);
+  public aiStatusService = inject(AiStatusService);
+
+  /** Le journal d'audit n'est proposé qu'aux administrateurs (le serveur refuse de toute façon les autres). */
+  readonly canViewAudit = canViewAudit(this.keycloakService);
 
   clientId: string | null = null;
   client: Client | null = null;
@@ -34,6 +45,7 @@ export class ClientDetailsComponent implements OnInit {
 
   isLoading = true;
   error: string | null = null;
+  showDocGeneratorDialog = false;
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -41,7 +53,7 @@ export class ClientDetailsComponent implements OnInit {
       if (this.clientId) {
         this.loadClientData(this.clientId);
       } else {
-        this.error = "Aucun identifiant de client fourni.";
+        this.error = "CLIENT_DETAILS.NO_ID";
         this.isLoading = false;
       }
     });
@@ -72,14 +84,14 @@ export class ClientDetailsComponent implements OnInit {
         }
 
         if (!this.client) {
-          this.error = "Impossible de charger les informations du client.";
+          this.error = "CLIENT_DETAILS.LOAD_ERROR";
         }
         
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Erreur lors du chargement des données client', err);
-        this.error = "Une erreur s'est produite lors du chargement des données.";
+        this.error = "CLIENT_DETAILS.LOAD_ERROR_GENERIC";
         this.isLoading = false;
       }
     });
@@ -142,19 +154,49 @@ export class ClientDetailsComponent implements OnInit {
   }
 
   getInvoiceStatusLabel(status: string | undefined): string {
-    if (!status) return 'Inconnu';
+    if (!status) return 'CLIENT_DETAILS.UNKNOWN';
     
     switch (status) {
-      case 'PAID': return 'Payée';
-      case 'DRAFT': return 'Brouillon';
-      case 'SENT': return 'Envoyée';
-      case 'OVERDUE': return 'En retard';
-      case 'PARTIALLY_PAID': return 'Partiel';
+      case 'PAID': return 'CLIENT_DETAILS.INVOICE_STATUS_PAID';
+      case 'DRAFT': return 'CLIENT_DETAILS.INVOICE_STATUS_DRAFT';
+      case 'SENT': return 'CLIENT_DETAILS.INVOICE_STATUS_SENT';
+      case 'OVERDUE': return 'CLIENT_DETAILS.INVOICE_STATUS_OVERDUE';
+      case 'PARTIALLY_PAID': return 'CLIENT_DETAILS.INVOICE_STATUS_PARTIAL';
       default: return status;
     }
+  }
+
+  get isMoral(): boolean {
+    return this.client?.type === ClientTypeEnum.SOCIETE || (this.client?.type as any) === 'MORAL';
+  }
+
+  get isPhysique(): boolean {
+    return this.client?.type === ClientTypeEnum.PERSONNE;
+  }
+
+  get moralClient(): ClientMoral | null {
+    return this.isMoral ? (this.client as ClientMoral) : null;
+  }
+
+  get physiqueClient(): ClientPersonnePhysique | null {
+    return this.isPhysique ? (this.client as ClientPersonnePhysique) : null;
+  }
+
+  get hasAdditionalInfo(): boolean {
+    if (!this.client) return false;
+    if (this.isMoral) {
+      const m = this.moralClient;
+      return !!(m?.formeJuridique || m?.numeroRegistreCommerce || m?.numeroIdFiscal || m?.nomRepresentantLegal || m?.adresse || m?.pays);
+    }
+    if (this.isPhysique) {
+      const p = this.physiqueClient;
+      return !!(p?.nationalite || p?.cin || p?.dateNaissance || p?.adresse || p?.pays);
+    }
+    return !!(this.client.adresse || this.client.pays);
   }
 
   getDossierStatusBadge(status: any): string {
     return 'bg-indigo-100 text-indigo-800 border border-indigo-200';
   }
 }
+

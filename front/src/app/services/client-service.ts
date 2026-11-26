@@ -60,5 +60,16 @@ export class ClientService extends AbstractCrudService<Client> {
         }
         return this.http.get(`${this.apiUrl}/${clientId}/kyc-audit-report/pdf`, { params, responseType: 'blob' });
     }
+
+    generateClientFatfAuditReportPdf(clientId: number | string, startDate?: string, endDate?: string): Observable<Blob> {
+        let params = new HttpParams();
+        if (startDate) {
+            params = params.set('startDate', startDate);
+        }
+        if (endDate) {
+            params = params.set('endDate', endDate);
+        }
+        return this.http.get(`${this.apiUrl}/${clientId}/fatf-audit-report/pdf`, { params, responseType: 'blob' });
+    }
 }
 

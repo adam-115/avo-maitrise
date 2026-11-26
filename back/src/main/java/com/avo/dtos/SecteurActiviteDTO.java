@@ -8,10 +8,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class SecteurActiviteDTO {
+    public SecteurActiviteDTO() {}
+
+    public static class SecteurActiviteDTOBuilder {
+        public SecteurActiviteDTOBuilder() {}
+    }
+
 
     private Long id;
     private String code;

@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fiabilité IA Avo-Maîtrise</title>
+<style>
+  @page { size: A4; margin: 16mm 14mm 18mm 14mm; }
+  :root { --ink:#1f2328; --muted:#5b6470; --line:#d8dde3; --accent:#3c3489; --accent-bg:#eeedfe; --teal:#0f6e56; --teal-bg:#e1f5ee; --code-bg:#f4f5f7; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.55; margin: 0; background:#fff; }
+  h1 { font-size: 22pt; margin: 0 0 4px; color: var(--accent); font-weight: 600; }
+  h2 { font-size: 15pt; margin: 0 0 8px; color: var(--accent); border-bottom: 2px solid var(--accent-bg); padding-bottom: 4px; font-weight: 600; }
+  h3 { font-size: 11.5pt; margin: 16px 0 6px; font-weight: 600; }
+  p { margin: 6px 0; }
+  .subtitle { color: var(--muted); font-size: 11pt; margin-bottom: 18px; }
+  section { page-break-before: always; }
+  section.first, section.cont { page-break-before: auto; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 9pt; background: var(--code-bg); padding: 1px 4px; border-radius: 3px; }
+  pre { font-family: Consolas, "Courier New", monospace; font-size: 8.6pt; background: var(--code-bg); padding: 8px 10px; border-radius: 6px; white-space: pre-wrap; margin: 6px 0; page-break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9.6pt; page-break-inside: auto; }
+  tr { page-break-inside: avoid; }
+  thead { display: table-header-group; }
+  th, td { border: 1px solid var(--line); padding: 5px 7px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+  .box { border-left: 4px solid var(--teal); background: var(--teal-bg); padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .box.warn { border-left-color: #a32d2d; background: #fcebeb; }
+  .toc li { margin: 2px 0; }
+  pre.tree { font-size: 8.4pt; line-height: 1.45; background: #f7f7fb; border: 1px solid var(--line); }
+  .cls { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .cls h3 { margin: 2px 0 6px; color: var(--accent); }
+  .cls p, .cls ul, .cls ol { margin: 4px 0; }
+  .cls ul, .cls ol { padding-left: 20px; }
+  .meta { color: var(--muted); font-size: 9.4pt; }
+  .meta b { color: var(--ink); }
+  .tag { display:inline-block; font-size:8pt; font-weight:600; padding:0 6px; border-radius:8px; margin-left:6px; vertical-align: 1px; }
+  .new { background:#e1f5ee; color:#0f6e56; } .mod { background:#fdf0dc; color:#8a5300; }
+  .cite { display:inline-block; background:#be185d; color:#fff; border-radius:4px; font-size:7.6pt; font-weight:700; padding:0 4px; }
+  .flag { background:#fee2e2; color:#991b1b; text-decoration: underline wavy #dc2626; padding: 0 2px; border-radius:3px; }
+</style>
+</head>
+<body>
+
+<!-- ===================================================================== 1 -->
+<section class="first">
+<h1>Fiabilité de l'IA : changements et rôle des classes</h1>
+<div class="subtitle">Avo-Maîtrise · Spring Boot 3.5.16 + Spring AI 1.1.8 · Ollama (avo-qwen) · Qdrant · Judilibre · 23/11/2026</div>
+
+<div class="box">
+<b>L'objectif :</b> « Un associé ne signera jamais une note fondée sur une jurisprudence inventée. Chaque réponse doit citer sa source, avec un lien vers le document ou l'arrêt d'origine. »<br>
+<b>Le principe retenu :</b> ce n'est pas l'IA qui fournit les sources, c'est le logiciel. L'IA rédige à partir des passages qu'on lui remet ; un contrôle en Java, indépendant de l'IA, vérifie chaque citation avant l'affichage.
+</div>
+
+<h3>Sommaire</h3>
+<ol class="toc">
+  <li>Ce qui a changé</li>
+  <li>Le rôle de chaque classe (backend)</li>
+  <li>Le rôle de chaque composant (front Angular)</li>
+  <li>Qui appelle qui, et quand</li>
+  <li>Les contrôles et les statuts</li>
+  <li>À faire au déploiement</li>
+</ol>
+
+<h2 style="margin-top:20px">1. Ce qui a changé</h2>
+<p>Le travail a été mené en trois phases. Le tableau compare l'assistant d'avant à l'état actuel.</p>
+
+<table>
+<tr><th style="width:22%">Sujet</th><th style="width:35%">Avant</th><th>Maintenant</th></tr>
+<tr><td>Sources d'une réponse</td><td>Les outils renvoyaient <code>[Doc 4 - fichier.pdf] texte…</code>, rien n'obligeait le modèle à les citer</td><td>Chaque passage lu reçoit un identifiant <span class="cite">S1</span> <span class="cite">S2</span>… <b>tenu par le logiciel</b> (<code>SourceRegistry</code>) ; le modèle doit les citer</td></tr>
+<tr><td>Contrôle de la réponse</td><td>Aucun</td><td><code>CitationVerifier</code> contrôle citations, n° de pourvoi, articles, ECLI, décisions datées, guillemets et passages non sourcés</td></tr>
+<tr><td>Recherche de jurisprudence (Avocat Assistant)</td><td>Laissée au bon vouloir du modèle, qui « oubliait » parfois d'appeler l'outil</td><td><b>Faite par le logiciel avant l'appel</b> au modèle, sur le pays détecté dans la question</td></tr>
+<tr><td>Prompt de stratégie</td><td>« cite des affaires similaires si possible » (incitait à inventer)</td><td>« uniquement à partir de la base légale fournie ; si elle est insuffisante, l'écrire »</td></tr>
+<tr><td>Indexation des PDF</td><td>Texte global (Tika), sans numéro de page</td><td><b>Page par page</b> (PDFBox) : chaque passage connaît sa page</td></tr>
+<tr><td>Fiche d'une décision</td><td>Seulement le titre et le pays</td><td>Juridiction, date, n° de pourvoi / RG, ECLI, lien officiel ; n° et ECLI détectés automatiquement dans le texte</td></tr>
+<tr><td>Vérification officielle</td><td>Aucune</td><td>Les n° de pourvoi sont recherchés dans <b>Judilibre</b> (Cour de cassation) ; les articles renvoient vers <b>Légifrance</b></td></tr>
+<tr><td>Réponse JSON de <code>/chat</code> et <code>/analyze</code></td><td><code>{"result": "..."}</code></td><td><code>{"result", "sources", "verification"}</code> (« result » conservé pour la compatibilité)</td></tr>
+<tr><td>Affichage</td><td>Texte brut</td><td>Pastilles cliquables, références à contrôler en rouge, badge de fiabilité, sources avec bouton « Ouvrir » à la bonne page</td></tr>
+<tr><td>Traçabilité</td><td>—</td><td>Chaque verdict est enregistré dans le journal d'audit (<code>REPONSE_IA</code>)</td></tr>
+</table>
+
+<table>
+<tr><th style="width:22%">Fichiers</th><th>Détail</th></tr>
+<tr><td>Ajoutés (back)</td><td>Paquet <code>service/ai/sources/</code> : <code>SourceRef</code>, <code>SourceRegistry</code>, <code>LegalReferences</code>, <code>CitationVerifier</code>, <code>VerificationReport</code>, <code>OfficialReferenceChecker</code>, <code>JudilibreClient</code>, <code>AiAnswer</code> ; prompt <code>regles-citation.txt</code> ; migration <code>v0.0.34</code> ; test <code>CitationVerifierTest</code></td></tr>
+<tr><td>Ajoutés (front)</td><td><code>shared/ai-sources/</code> : <code>ai-sources.model.ts</code>, <code>AiAnswerTextComponent</code>, <code>AiSourcesPanelComponent</code> ; clés de traduction <code>AI_SOURCES</code> (6 langues)</td></tr>
+<tr><td>Modifiés</td><td><code>AiService</code>, <code>AiController</code>, <code>AvoAiTools</code>, <code>Pays</code>, <code>RAGDocumentService</code>, <code>Document</code>, <code>DocumentDTO</code>, <code>DocumentService</code>, <code>strategie.txt</code>, <code>application.properties</code>, <code>back/pom.xml</code> ; front : <code>ai-tester</code>, <code>dossier-strategie</code>, <code>jurisprudence-management</code>, <code>appTypes.ts</code></td></tr>
+<tr><td>Inchangés</td><td>Les URL des endpoints <code>/api/ai/*</code>, les autres modes de l'assistant (résumé, rédaction), le chat de suivi de stratégie</td></tr>
+</table>
+</section>
+
+<!-- ===================================================================== 2 -->
+<section>
+<h2>2. Le rôle de chaque classe (backend)</h2>
+
+<div class="cls">
+<h3>SourceRef <span class="tag new">nouveau</span></h3>
+<p><b>Rôle :</b> décrire une source consultée par l'IA pendant une réponse. C'est un <code>record</code> Java :</p>
+<ul>
+  <li><code>id</code> (<code>S1</code>, <code>S2</code>…), <code>kind</code> : <code>DOCUMENT</code> (pièce d'un dossier), <code>JURISPRUDENCE</code> (base du cabinet) ou <code>DONNEE</code> (fiche du logiciel : client, liste de dossiers…) ;</li>
+  <li><code>title</code>, <code>documentId</code> et <code>page</code> : pour ouvrir le document à la bonne page ;</li>
+  <li><code>excerpt</code> : les 400 premiers caractères, affichés à l'avocat ; <code>text</code> : le passage complet, utilisé pour la vérification. Il est annoté <code>@JsonIgnore</code> : il n'est jamais envoyé au navigateur ;</li>
+  <li><code>link</code> (route interne, ex. <code>/home/client-details?id=12</code>), <code>officialUrl</code> (Judilibre, Légifrance) et <code>details</code> (la fiche de la décision : juridiction, date, numéro, ECLI).</li>
+</ul>
+</div>
+
+<div class="cls">
+<h3>SourceRegistry <span class="tag new">nouveau</span></h3>
+<p><b>Rôle :</b> tenir la liste des sources consultées pendant <b>une</b> réponse, et leur attribuer leurs identifiants.</p>
+<ul>
+  <li><code>open()</code> ouvre un registre vide, <code>close()</code> le ferme et renvoie les sources, <code>snapshot()</code> les lit sans fermer.</li>
+  <li><code>register(...)</code> inscrit un passage et renvoie son identifiant. Un même passage lu deux fois garde le même identifiant (clé : type + document + page + texte + titre).</li>
+  <li>Sans registre ouvert (outil appelé hors d'une réponse IA), il renvoie <code>S?</code> : le texte reste lisible mais n'est pas vérifiable.</li>
+</ul>
+<p><b>Pourquoi un <code>ThreadLocal</code> :</b> les outils Spring AI s'exécutent dans le thread de la requête, ce qui permet de rattacher chaque passage à la bonne réponse, même si plusieurs avocats interrogent l'IA en même temps.</p>
+<p class="meta"><b>Appelé par :</b> <code>AiService</code> (ouverture / fermeture) et <code>AvoAiTools</code> (inscription).</p>
+</div>
+
+<div class="cls">
+<h3>LegalReferences <span class="tag new">nouveau</span></h3>
+<p><b>Rôle :</b> repérer et normaliser les références juridiques d'un texte français, sans IA (expressions régulières).</p>
+<table>
+<tr><th style="width:20%">Type</th><th style="width:38%">Exemples reconnus</th><th>Clé normalisée</th></tr>
+<tr><td><code>POURVOI</code></td><td>n° 17-28.123, 17 - 28.123</td><td><code>17-28.123</code></td></tr>
+<tr><td><code>ARTICLE</code></td><td>article L. 145-9, art. 1240, articles R.123-4</td><td><code>L145-9</code>, <code>1240</code></td></tr>
+<tr><td><code>ECLI</code></td><td>ECLI:FR:CCASS:2019:CO00231</td><td>l'ECLI en majuscules</td></tr>
+<tr><td><code>DECISION</code></td><td>Cass. com., 12 mars 2019 · l'arrêt du 12 mars 2019 · CA Paris, 1er juin 2021</td><td>la date <code>2019-03-12</code></td></tr>
+</table>
+<ul>
+  <li><code>find(texte)</code> : les références d'une réponse, avec leur position (pour les surligner).</li>
+  <li><code>keysIn(texte)</code> : les clés présentes dans une source, y compris toutes ses dates, quel que soit leur format (« 12 mars 2019 », « 12/03/2019 », « 2019-03-12 »).</li>
+  <li><code>normalize(texte)</code> : minuscules, sans accents ni ponctuation, pour comparer les citations entre guillemets.</li>
+</ul>
+<p class="meta"><b>Appelé par :</b> <code>CitationVerifier</code> et <code>RAGDocumentService</code> (détection automatique du n° et de l'ECLI à l'indexation).</p>
+</div>
+</section>
+
+<section class="cont">
+<div class="cls">
+<h3>CitationVerifier (le contrôleur) <span class="tag new">nouveau</span></h3>
+<p><b>Rôle :</b> vérifier une réponse de l'IA contre les sources qu'elle a <b>réellement</b> consultées. Le même texte donne toujours le même verdict. <code>verify(réponse, sources)</code> applique quatre contrôles :</p>
+<ol>
+  <li><b>Citations</b> <code>[S1]</code>, <code>[S1, S3]</code> : chaque identifiant doit correspondre à une source consultée, sinon <code>CITATION_INCONNUE</code>.</li>
+  <li><b>Références juridiques</b> : chacune doit figurer dans une source consultée (texte ou fiche de la décision), de préférence une source citée.
+    <ul>
+      <li>Trouvée : <code>TROUVEE_DANS_SOURCE</code> (avec un lien Légifrance pour un article, Judilibre pour un pourvoi si la clé est configurée).</li>
+      <li>Pourvoi absent des sources : on interroge Judilibre. Existe : <code>VERIFIEE_OFFICIELLE</code> (avec un avertissement : vérifier qu'il dit bien ce que l'IA lui attribue). N'existe pas : <code>INTROUVABLE</code>.</li>
+      <li>Sinon : <code>NON_VERIFIEE</code>.</li>
+    </ul></li>
+  <li><b>Citations entre guillemets</b> (25 caractères et 5 mots au moins) : elles doivent se retrouver mot pour mot dans une source, sinon <code>CITATION_NON_RETROUVEE</code>.</li>
+  <li><b>Passages sans source</b> : un paragraphe de 160 caractères ou plus sans aucune citation est signalé <code>NON_SOURCE</code> (« à considérer comme une opinion de l'IA »).</li>
+</ol>
+<p>Les anomalies ont une gravité : <code>BLOQUANT</code> (affichée en rouge, à contrôler avant toute utilisation) ou <code>A_NOTER</code>. Le statut final est détaillé en partie 5.</p>
+<p class="meta"><b>Appelé par :</b> <code>AiService.verified()</code>. <b>Testé par :</b> <code>CitationVerifierTest</code> (9 tests).</p>
+</div>
+
+<div class="cls">
+<h3>VerificationReport et AiAnswer <span class="tag new">nouveau</span></h3>
+<p><code>VerificationReport</code> est le verdict : <code>status</code> et son libellé, les sources citées, les références contrôlées (<code>CheckedReference</code> : type, texte, statut, source, lien officiel) et les anomalies (<code>Issue</code> : type, gravité, texte exact à surligner, message).</p>
+<p><code>AiAnswer</code> regroupe la réponse, les sources et le verdict. Sa méthode <code>toBody()</code> produit le JSON renvoyé au front : <code>result</code> (conservé pour la compatibilité), <code>sources</code>, <code>verification</code>.</p>
+</div>
+
+<div class="cls">
+<h3>OfficialReferenceChecker et JudilibreClient <span class="tag new">nouveau</span></h3>
+<p><b>Rôle :</b> vérifier un numéro de pourvoi auprès de la Cour de cassation.</p>
+<ul>
+  <li><code>OfficialReferenceChecker</code> est l'interface (elle permet de simuler Judilibre dans les tests). Elle fournit aussi <code>legifranceSearchUrl()</code>, qui construit un lien de recherche Légifrance.</li>
+  <li><code>JudilibreClient</code> appelle <code>GET /search?query=17-28.123</code> sur l'API officielle (plateforme PISTE), avec l'en-tête <code>KeyId</code>, et compare le numéro aux champs <code>number</code> / <code>numbers</code> des décisions renvoyées. Décision trouvée : lien <code>courdecassation.fr/decision/{id}</code>.</li>
+  <li>Trois issues : <code>FOUND</code>, <code>NOT_FOUND</code>, <code>UNAVAILABLE</code> (pas de clé, délai de 6 s dépassé, service en panne). Dans ce dernier cas on ne conclut rien : la référence reste « non vérifiée », jamais « introuvable ».</li>
+  <li>Résultats en cache 24 h. <b>Seul le numéro de pourvoi est envoyé</b>, jamais la question ni le dossier.</li>
+</ul>
+<p class="meta"><b>Configuration :</b> <code>JUDILIBRE_KEY_ID</code> (sans clé, le service est désactivé et la vérification se limite aux documents du cabinet).</p>
+</div>
+</section>
+
+<section class="cont">
+<div class="cls">
+<h3>AvoAiTools <span class="tag mod">modifié</span></h3>
+<p><b>Changement :</b> chaque outil inscrit ce qu'il renvoie au registre, et le préfixe de son identifiant.</p>
+<ul>
+  <li><code>asSource(titre, lien, contenu)</code> : pour les données du logiciel. Exemple : <code>getClientDetails(12)</code> renvoie <code>[S3] Fiche client #12 : …</code>, avec un lien vers la fiche.</li>
+  <li><code>passage(type, passage)</code> : pour les passages de documents. Il lit les métadonnées Qdrant (fichier, <code>document_id</code>, <code>page_number</code>, fiche de la décision, <code>source_url</code>) et produit
+  <code>[S1] « arret.pdf », page 2 (Cass. com., 12/03/2019, 17-28.123) : texte…</code></li>
+</ul>
+<table>
+<tr><th style="width:32%">Outil</th><th>Source inscrite</th></tr>
+<tr><td><code>searchDocumentsInDossier</code></td><td>Un <code>DOCUMENT</code> par passage, avec sa page</td></tr>
+<tr><td><code>searchJurisprudence</code></td><td>Un <code>JURISPRUDENCE</code> par passage, avec la fiche de la décision</td></tr>
+<tr><td><code>getClientDetails</code>, <code>getInvoicesForClient</code>, <code>getClientAmlMatches</code></td><td>Une <code>DONNEE</code> avec un lien vers la fiche client</td></tr>
+<tr><td><code>summarizeDossier</code></td><td>Une <code>DONNEE</code> avec un lien vers le dossier</td></tr>
+<tr><td><code>searchClients</code>, <code>getRecentDossiers</code>, <code>getRecentDocuments</code></td><td>Une <code>DONNEE</code> (sans lien)</td></tr>
+</table>
+</div>
+
+<div class="cls">
+<h3>AiService (le chef d'orchestre) <span class="tag mod">modifié</span></h3>
+<ul>
+  <li><code>chat()</code> et <code>analyzeDossierStrategy()</code> renvoient maintenant un <code>AiAnswer</code>.</li>
+  <li><code>chatWithTools()</code> ouvre le registre, ajoute <code>regles-citation.txt</code> au prompt système, appelle le modèle, puis appelle <code>verified()</code> ; le registre est toujours fermé (<code>finally</code>).</li>
+  <li><b>Recherche préalable</b> : pour <code>analyzeDossierStrategy()</code>, le logiciel appelle lui-même <code>searchJurisprudence(Pays.detect(question), question)</code> et joint les passages à la question (« EXTRAITS DE LA BASE DE JURISPRUDENCE DU CABINET »). Pendant les tests, le modèle local n'avait pas appelé son outil : une réponse juridique ne doit pas dépendre de ce choix.</li>
+  <li><code>verified()</code> lance <code>CitationVerifier</code> et trace le verdict dans le journal d'audit : <code>ACCES_IA</code> / <code>REPONSE_IA</code>, avec le statut, le nombre de sources consultées et citées, et les références non vérifiées.</li>
+  <li><b>Streaming de la stratégie :</b> le registre est ouvert dans le thread <code>AI-Stream</code> ; les sources sont capturées avant le flux (qui se termine sur un autre thread). À la fin, l'événement SSE <code>SOURCES</code> envoie sources et verdict, juste avant <code>DONE</code>.</li>
+</ul>
+</div>
+
+<div class="cls">
+<h3>Pays <span class="tag mod">modifié</span></h3>
+<p><code>detect(question)</code> déduit le droit applicable d'une question (« luxembourg », « belg… », « suisse », « allemand », « CJUE / CEDH / européen » pour <code>INTERNATIONAL</code>), avec <code>FRANCE</code> par défaut. La valeur reste toujours une valeur connue, donc sans risque dans un filtre Qdrant.</p>
+</div>
+
+<div class="cls">
+<h3>Les prompts <span class="tag mod">modifié</span></h3>
+<ul>
+  <li><code>regles-citation.txt</code> <span class="tag new">nouveau</span> : citer <code>[S#]</code> à la fin de chaque phrase factuelle ou juridique ; ne jamais citer un arrêt, un numéro, un article ou une date absents des sources ; recopier mot pour mot les citations ; sans source, le dire ; présenter une opinion comme telle (« À mon avis… »). Il est volontairement court, pour ne pas ralentir le modèle sur CPU.</li>
+  <li><code>strategie.txt</code> : la variable <code>{{regles}}</code> injecte ces règles ; la consigne « cite des affaires similaires si possible » est remplacée par « uniquement à partir de la base légale fournie ».</li>
+</ul>
+</div>
+</section>
+
+<section class="cont">
+<div class="cls">
+<h3>RAGDocumentService <span class="tag mod">modifié</span></h3>
+<p><b>Changements dans <code>ingest()</code> :</b></p>
+<ol>
+  <li>Le fichier est lu en mémoire ; s'il commence par <code>%PDF</code>, <code>readPdfPages()</code> l'extrait <b>page par page</b> avec PDFBox (métadonnée <code>page_number</code>). Les autres formats passent toujours par Tika.</li>
+  <li><code>metadataOf()</code> ajoute la fiche de la décision : <code>juridiction</code>, <code>date_decision</code> (jj/mm/aaaa), <code>numero_decision</code>, <code>ecli</code>, <code>source_url</code>.</li>
+  <li><code>detectDecisionReferences()</code> : si le numéro ou l'ECLI ne sont pas saisis, ils sont cherchés dans les 3 premières pages avec <code>LegalReferences</code>.</li>
+  <li>Chaque page garde son numéro jusqu'aux passages découpés par <code>TokenTextSplitter</code>.</li>
+</ol>
+<p class="meta"><b>Conséquence :</b> les documents indexés avant ce changement n'ont pas de numéro de page. Il faut les réindexer (partie 6).</p>
+</div>
+
+<div class="cls">
+<h3>Document, DocumentDTO, DocumentService <span class="tag mod">modifié</span></h3>
+<ul>
+  <li><code>Document</code> et <code>DocumentDTO</code> gagnent 5 champs : <code>juridiction</code>, <code>dateDecision</code>, <code>numeroDecision</code>, <code>ecli</code>, <code>sourceUrl</code>. Le builder du DTO, utilisé par MapStruct, les reçoit aussi.</li>
+  <li>Migration <code>v0.0.34</code> : les 5 colonnes dans <code>documents</code> <b>et</b> dans <code>documents_aud</code>. Sans cette dernière, Hibernate Envers (journal d'audit) échouerait à enregistrer la moindre modification d'un document.</li>
+  <li><code>DocumentService.update()</code> réindexe le document après la validation de la transaction (<code>reindexAfterCommit</code>), pour que la fiche modifiée arrive dans Qdrant.</li>
+</ul>
+</div>
+
+<div class="cls">
+<h3>AiController <span class="tag mod">modifié</span></h3>
+<p><code>/chat</code> et <code>/analyze</code> renvoient <code>AiAnswer.toBody()</code> au lieu de <code>{"result"}</code> seul. Les autres endpoints sont inchangés. Toutes les méthodes sont maintenant documentées en Javadoc.</p>
+</div>
+
+<div class="cls">
+<h3>Configuration <span class="tag mod">modifié</span></h3>
+<ul>
+  <li><code>application.properties</code> : <code>judilibre.key-id</code> (<code>JUDILIBRE_KEY_ID</code>), <code>judilibre.base-url</code>, <code>judilibre.timeout-seconds=6</code>.</li>
+  <li><code>back/pom.xml</code> : dépendance explicite <code>pdfbox 3.0.7</code> (déjà présente via Tika), et profil <code>ide-separate-output</code> : l'IDE compile dans <code>target-ide</code> pour ne plus gêner <code>mvn</code> dans <code>target</code>.</li>
+</ul>
+</div>
+</section>
+
+<!-- ===================================================================== 3 -->
+<section>
+<h2>3. Le rôle de chaque composant (front Angular)</h2>
+
+<div class="cls">
+<h3>ai-sources.model.ts <span class="tag new">nouveau</span></h3>
+<p>Les types renvoyés par le backend (<code>AiSource</code>, <code>AiVerification</code>, <code>AiCheckedReference</code>, <code>AiIssue</code>, <code>AiAnswerPayload</code>) et la fonction <code>buildSegments(texte, verification, sources)</code>, qui découpe la réponse en morceaux :</p>
+<ul>
+  <li><code>text</code> : texte simple ;</li>
+  <li><code>cite</code> : une citation <span class="cite">S1</span> (marquée « inconnue » si l'IA n'a jamais consulté cette source) ;</li>
+  <li><code>flag</code> : un passage signalé par la vérification (référence non vérifiée, introuvable, citation non retrouvée), affiché <span class="flag">comme ceci</span>.</li>
+</ul>
+</div>
+
+<div class="cls">
+<h3>AiAnswerTextComponent <span class="tag new">nouveau</span></h3>
+<p>Affiche le texte d'une réponse à partir des segments : pastilles cliquables (extrait de la source au survol, barrées en rouge si la source est inconnue) et passages signalés en rouge (explication au survol). Un clic sur une pastille émet <code>(cite)</code>.</p>
+</div>
+
+<div class="cls">
+<h3>AiSourcesPanelComponent <span class="tag new">nouveau</span></h3>
+<p>Le panneau de fiabilité sous une réponse :</p>
+<ul>
+  <li>le badge (<i>Réponse vérifiée</i>, <i>À contrôler</i>…), le nombre de sources consultées et citées, l'indication « Vérification Cour de cassation active » ;</li>
+  <li>l'encadré rouge « À contrôler avant toute utilisation » (anomalies bloquantes) et l'encadré orange (points d'attention) ;</li>
+  <li>les références contrôlées, chacune avec son statut et son lien officiel ;</li>
+  <li>la liste des sources : fichier, page, type, fiche de la décision, extrait, et les boutons <b>Ouvrir</b> (télécharge la pièce, tracé dans le journal d'audit, et l'ouvre à <code>#page=N</code>), lien interne ou <b>Texte officiel ↗</b>.</li>
+</ul>
+<p><code>focus(id)</code> met en surbrillance et fait défiler jusqu'à la source cliquée dans le texte. En mode <code>compact</code>, le panneau est replié quand tout est vérifié, et toujours ouvert en cas d'anomalie bloquante.</p>
+</div>
+
+<div class="cls">
+<h3>Écrans modifiés <span class="tag mod">modifié</span></h3>
+<ul>
+  <li><b>Assistant IA</b> (<code>ai-tester</code>) : chaque réponse vérifiée s'affiche avec <code>app-ai-answer-text</code> et <code>app-ai-sources-panel</code>.</li>
+  <li><b>Console Stratégique</b> (<code>dossier-strategie</code>) : écoute l'événement SSE <code>SOURCES</code> ; les <code>[S#]</code> deviennent des pastilles dans les 7 blocs ; un bloc « Sources et vérification » s'affiche sous l'analyse.</li>
+  <li><b>Gestion jurisprudence</b> : saisie de la fiche de la décision à l'upload, et affichage de la fiche et du lien officiel dans la liste.</li>
+  <li><b>Traductions</b> : bloc <code>AI_SOURCES</code> dans les 6 langues (fr, en, es, de, it, ar).</li>
+</ul>
+</div>
+</section>
+
+<!-- ===================================================================== 4 -->
+<section>
+<h2>4. Qui appelle qui, et quand</h2>
+
+<h3>Question à l'Avocat Assistant (<code>/api/ai/analyze</code>)</h3>
+<pre class="tree">AiTesterComponent → AiController.analyze() → AiService.analyzeDossierStrategy()
+  └─ chatWithTools()
+        ├─ SourceRegistry.open()
+        ├─ recherche préalable : AvoAiTools.searchJurisprudence(Pays.detect(question))
+        │     └─ RAGDocumentService → Qdrant → passages inscrits : S1, S2…
+        ├─ ChatClient (prompt avocat-senior + regles-citation + question + extraits + outils)
+        │     └─ le modèle peut demander d'autres outils → nouvelles sources S3, S4…
+        ├─ verified() → CitationVerifier.verify(réponse, sources)
+        │     ├─ LegalReferences.find() / keysIn()
+        │     └─ JudilibreClient.checkPourvoi()   (pourvoi absent des sources, si clé configurée)
+        ├─ AuditService.record(ACCES_IA, REPONSE_IA, verdict)
+        └─ SourceRegistry.close()
+  → JSON {result, sources, verification}
+  → AiAnswerTextComponent (pastilles, rouge) + AiSourcesPanelComponent (badge, sources)</pre>
+
+<h3>Question dans le chat libre (<code>/api/ai/chat</code>)</h3>
+<pre class="tree">Même chemin, sans recherche préalable :
+le modèle choisit ses outils (fiche client, factures, alertes LCB-FT…), chacun inscrit sa source.</pre>
+
+<h3>Analyse stratégique en flux (<code>/api/ai/analyze-stream</code>)</h3>
+<pre class="tree">DossierStrategieComponent (EventSource) → AiController.analyzeStream()
+  └─ AiService.analyzeDossierStrategyStream()   [thread AI-Stream]
+        ├─ SourceRegistry.open()
+        ├─ searchDocumentsInDossier() + searchJurisprudence()  → S1, S2…
+        ├─ Prompts.render("strategie", …, regles)
+        ├─ sources = SourceRegistry.snapshot()   (le flux finit sur un autre thread)
+        ├─ ChatClient.stream() → chaque token → SSE
+        ├─ fin du flux → saveStrategy() → verified() → SSE « SOURCES »  → SSE « DONE »
+        └─ SourceRegistry.close()</pre>
+
+<h3>Upload ou modification d'un document</h3>
+<pre class="tree">DocumentService.create() / update() → MySQL (+ documents_aud) → après commit
+  └─ RAGDocumentService.ingest()
+        ├─ PDF ?  oui → readPdfPages() (PDFBox, page_number)   non → Tika
+        ├─ metadataOf() : fiche de la décision
+        ├─ detectDecisionReferences() : n° de pourvoi / ECLI trouvés dans le texte
+        └─ TokenTextSplitter → VectorStore.add() → Ollama (vecteurs) → Qdrant</pre>
+</section>
+
+<!-- ===================================================================== 5 -->
+<section>
+<h2>5. Les contrôles et les statuts</h2>
+
+<h3>Statut d'une réponse</h3>
+<table>
+<tr><th style="width:20%">Statut</th><th style="width:30%">Affichage</th><th>Condition</th></tr>
+<tr><td><code>A_CONTROLER</code></td><td>⚠ À contrôler (rouge)</td><td>Au moins une anomalie bloquante, ou des références sans aucune source consultée</td></tr>
+<tr><td><code>SANS_SOURCE</code></td><td>Aucune source consultée (gris)</td><td>Aucune source et aucune référence juridique (réponse générale, salutation…)</td></tr>
+<tr><td><code>NON_SOURCEE</code></td><td>Non sourcée (rouge)</td><td>Des sources ont été consultées mais la réponse n'en cite aucune</td></tr>
+<tr><td><code>PARTIELLE</code></td><td>◐ Partiellement sourcée (orange)</td><td>Citations valides, mais au moins un paragraphe sans source</td></tr>
+<tr><td><code>VERIFIEE</code></td><td>✓ Réponse vérifiée (vert)</td><td>Tout le reste : chaque affirmation est rattachée à une source réelle</td></tr>
+</table>
+<p class="meta">Les conditions sont évaluées dans cet ordre : la première qui s'applique donne le statut.</p>
+
+<h3>Anomalies</h3>
+<table>
+<tr><th style="width:30%">Type</th><th style="width:15%">Gravité</th><th>Signification</th></tr>
+<tr><td><code>CITATION_INCONNUE</code></td><td>Bloquant</td><td>L'IA cite une source <code>[S7]</code> qu'elle n'a jamais consultée</td></tr>
+<tr><td><code>REFERENCE_NON_VERIFIEE</code></td><td>Bloquant</td><td>Référence absente des documents consultés (et Judilibre indisponible ou non applicable)</td></tr>
+<tr><td><code>REFERENCE_INTROUVABLE</code></td><td>Bloquant</td><td>N° de pourvoi absent des documents <b>et</b> inconnu de Judilibre : référence probablement inventée</td></tr>
+<tr><td><code>CITATION_NON_RETROUVEE</code></td><td>Bloquant</td><td>Passage entre guillemets introuvable mot pour mot dans les sources</td></tr>
+<tr><td><code>REFERENCE_HORS_SOURCES</code></td><td>À noter</td><td>L'arrêt existe (Judilibre) mais ne figure pas dans les documents consultés</td></tr>
+<tr><td><code>NON_SOURCE</code></td><td>À noter</td><td>Paragraphe substantiel sans aucune source : opinion de l'IA</td></tr>
+</table>
+
+<h3>Résultats des tests réels (avo-qwen, base de test)</h3>
+<table>
+<tr><th style="width:42%">Question</th><th>Résultat</th></tr>
+<tr><td>« Quel préavis pour une relation commerciale de dix ans ? »</td><td>✓ <b>Réponse vérifiée</b> : <span class="cite">S1</span> = arrêt, page 2 ; <span class="cite">S2</span> = page 1 ; article L. 442-1 trouvé dans la source, lien Légifrance</td></tr>
+<tr><td>« Que dit l'arrêt n° 18-11.111 ? » (inexistant)</td><td>L'IA refuse d'inventer ; <span class="flag">18-11.111</span> est signalé <b>bloquant</b>, « non vérifiée »</td></tr>
+<tr><td><code>CitationVerifierTest</code></td><td>9 tests sur 9 : réponse sourcée, pourvoi inventé, Judilibre (trouvé / introuvable), source inconnue, guillemets, absence de citation, réponse générale, référence sans source, paragraphe non sourcé</td></tr>
+</table>
+</section>
+
+<!-- ===================================================================== 6 -->
+<section>
+<h2>6. À faire au déploiement</h2>
+<div class="box warn">
+<ol style="margin:0;padding-left:18px">
+  <li><b>Clé Judilibre (gratuite)</b> : créer une application sur <code>piste.gouv.fr</code>, l'abonner à l'API Judilibre, puis définir <code>JUDILIBRE_KEY_ID</code> dans le <code>.env</code> de l'application. Sans clé, la vérification se limite aux documents du cabinet.</li>
+  <li><b>Migration <code>v0.0.34</code></b> : appliquée automatiquement par Liquibase au démarrage (colonnes de la fiche décision dans <code>documents</code> et <code>documents_aud</code>).</li>
+  <li><b>Réindexer les documents</b> (<code>POST /api/ai/sync-all-documents</code>) : pour que les documents existants gagnent les numéros de page et la détection automatique du pourvoi et de l'ECLI.</li>
+  <li><b>Compléter les fiches</b> des décisions importantes dans « Gestion jurisprudence » : juridiction, date et surtout le lien officiel, qui devient le bouton « Texte officiel ↗ » des sources.</li>
+</ol>
+</div>
+
+<div class="box">
+<b>Limites connues</b>
+<ul style="margin:4px 0;padding-left:18px">
+  <li>Non testés en conditions réelles : la console de stratégie en flux (le code compile), le bouton « Ouvrir » sur un vrai document, l'API Judilibre réelle (testée avec une simulation).</li>
+  <li>Conversations à plusieurs messages : les sources sont renumérotées à chaque question. Si l'IA reprend un <code>[S3]</code> d'une réponse précédente, il est signalé « source inconnue » (prudent, mais un peu sévère).</li>
+  <li>Le contrôle repère les références au format usuel français. Une référence rédigée de façon inhabituelle peut lui échapper : la vérification réduit fortement le risque, elle ne remplace pas la relecture de l'avocat.</li>
+</ul>
+</div>
+<p class="meta">Le fonctionnement général du RAG et de Spring AI est décrit dans « Intégration IA : changements et rôle des classes » (<code>Explication_classes_IA_Avo-Maitrise.pdf</code>) ; la présentation commerciale de cette fonctionnalité dans <code>Avo-Maitrise_IA_Fiable_Sources_Verifiees.pdf</code>.</p>
+</section>
+
+</body>
+</html>

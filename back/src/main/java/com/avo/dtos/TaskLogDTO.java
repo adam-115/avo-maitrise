@@ -5,8 +5,9 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 public class TaskLogDTO {
+    public TaskLogDTO() {}
+
     private Long id;
     private Long taskId;
     private String action;

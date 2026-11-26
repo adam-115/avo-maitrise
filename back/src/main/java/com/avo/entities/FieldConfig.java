@@ -7,12 +7,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.util.List;
 
+@org.hibernate.envers.Audited
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FieldConfig {
+
+    public FieldConfig() {}
+
+    public static class FieldConfigBuilder {
+        public FieldConfigBuilder() {}
+    }
 
     @Id
     private String id;

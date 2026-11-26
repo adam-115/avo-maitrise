@@ -10,9 +10,10 @@ import lombok.Builder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
 @AllArgsConstructor
 public class ClientPersonnePhysiqueDTO extends ClientEntityDTO {
+    public ClientPersonnePhysiqueDTO() {}
+
 
     private String nom;
     private String prenom;

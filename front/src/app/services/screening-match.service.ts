@@ -15,7 +15,7 @@ export class ScreeningMatchService extends AbstractCrudService<ScreeningMatchDTO
         super(http);
     }
 
-    getByClientId(clientId: string | number, page: number = 0, size: number = 10, sort: string = 'createdAt,desc'): Observable<PaginatedResponse<ScreeningMatchDTO>> {
+    getByClientId(clientId: string | number, page: number = 0, size: number = 200, sort: string = 'createdAt,desc'): Observable<PaginatedResponse<ScreeningMatchDTO>> {
         const params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString())
@@ -30,6 +30,14 @@ export class ScreeningMatchService extends AbstractCrudService<ScreeningMatchDTO
             .set('comment', comment)
             .set('reviewer', reviewer);
         return this.http.post<ScreeningMatchDTO>(`${this.apiUrl}/${matchId}/process-decision`, null, { params });
+    }
+
+    processBatchDecision(matchIds: number[], decision: string, comment: string, reviewer: string): Observable<ScreeningMatchDTO[]> {
+        let params = new HttpParams()
+            .set('decision', decision)
+            .set('comment', comment)
+            .set('reviewer', reviewer);
+        return this.http.post<ScreeningMatchDTO[]>(`${this.apiUrl}/batch-decision`, matchIds, { params });
     }
 
     triggerClientScreening(): Observable<void> {

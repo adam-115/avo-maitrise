@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 public class ClientDiligenceStatusService {
@@ -23,6 +22,15 @@ public class ClientDiligenceStatusService {
     private final ClientDiligenceStatusRepository repository;
     private final ClientDiligenceStatusMapper mapper;
     private final jakarta.persistence.EntityManager entityManager;
+
+    public ClientDiligenceStatusService(
+            ClientDiligenceStatusRepository repository,
+            ClientDiligenceStatusMapper mapper,
+            jakarta.persistence.EntityManager entityManager) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.entityManager = entityManager;
+    }
 
     public Page<ClientDiligenceStatusDTO> findAll(Pageable pageable) {
         log.info("[ENTER] Executing findAll");

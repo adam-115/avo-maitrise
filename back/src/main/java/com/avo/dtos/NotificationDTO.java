@@ -6,9 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class NotificationDTO {
+    public NotificationDTO() {}
+
     private Long id;
     private String title;
     private String message;

@@ -3,11 +3,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Document } from '../../appTypes';
 import { DocumentDialog } from "../../document/document-dialog/document-dialog";
+import { TranslatePipe } from '@ngx-translate/core';
+
 
 @Component({
     selector: 'app-client-documents',
     standalone: true,
-    imports: [CommonModule, FormsModule, DocumentDialog],
+    imports: [CommonModule, FormsModule, DocumentDialog, TranslatePipe],
     templateUrl: './client-documents.html',
     styleUrl: './client-documents.css'
 })

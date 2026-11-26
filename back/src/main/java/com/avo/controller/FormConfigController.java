@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import com.avo.dtos.FormConfigDTO;
 import com.avo.entities.FormConfig;
 import com.avo.services.FormConfigService;
@@ -13,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/formConfig")
-@RequiredArgsConstructor
 public class FormConfigController {
 
     private final FormConfigService service;
+
+    public FormConfigController(FormConfigService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public ResponseEntity<Page<FormConfigDTO>> findAll(Pageable pageable) {
@@ -34,12 +39,12 @@ public class FormConfigController {
     }
 
     @PostMapping
-    public ResponseEntity<FormConfigDTO> create(@RequestBody FormConfigDTO dto) {
+    public ResponseEntity<FormConfigDTO> create(@Valid @RequestBody FormConfigDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<FormConfigDTO> update(@PathVariable String id, @RequestBody FormConfigDTO dto) {
+    public ResponseEntity<FormConfigDTO> update(@PathVariable String id, @Valid @RequestBody FormConfigDTO dto) {
         dto.setId(id);
         return ResponseEntity.ok(service.update(dto));
     }

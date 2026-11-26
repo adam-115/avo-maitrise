@@ -1,8 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
+import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { DossierService } from '../../services/dossier.service';
 import { ClientService } from '../../services/client-service';
+import { ConflictCheckResponse, ConflictCheckService, ConflictMatch } from '../../services/conflict-check.service';
 import { StatutDossierService } from '../../services/statut-dossier.service';
 import { DossierPrioriteService } from '../../services/dossier-priorite.service';
 import { UserService } from '../../services/user.service';
@@ -11,17 +12,20 @@ import { Client, StatutDossier, DossierPriorite, User, Dossier, Document, Domain
 import { CommonModule } from '@angular/common';
 import { ClientSelectionDialog } from '../client-selection-dialog/client-selection-dialog';
 import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
+import { PartieSelectionDialog } from '../partie-selection-dialog/partie-selection-dialog';
 import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { DomaineJuridiqueSelectionDialog } from '../domaine-juridique-selection-dialog/domaine-juridique-selection-dialog';
 import { ClientStatusAlertComponent } from '../../shared/components/client-status-alert/client-status-alert.component';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 import { forkJoin } from 'rxjs';
 import { AlertService } from '../../services/alert-service';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { PAYS_JURIDICTION, normalizePays } from '../../shared/ai-sources/pays';
 
 @Component({
   selector: 'app-dossier-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, UserSelectionDialog, ClientSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, UserSelectionDialog, ClientSelectionDialog, PartieSelectionDialog, DocumentDialog, DomaineJuridiqueSelectionDialog, ClientStatusAlertComponent, TranslatePipe],
   templateUrl: './dossier-form.html',
   styleUrl: './dossier-form.css'
 })
@@ -36,6 +40,17 @@ export class DossierForm implements OnInit {
   private userService = inject(UserService);
   private domaineService = inject(DomaineJuridiqueService);
   private alertService = inject(AlertService);
+  private translate = inject(TranslateService);
+  private conflictService = inject(ConflictCheckService);
+
+  // Contrôle automatique des conflits d'intérêts
+  isCheckingConflicts = false;
+  conflictResult: ConflictCheckResponse | null = null;
+  quickConflictQuery = '';
+  showWaiverModal = false;
+  waiverJustification = '';
+  waiverError = '';
+  pendingSubmitAfterWaiver = false;
 
   dossierForm: FormGroup;
   isEditMode = false;
@@ -50,9 +65,12 @@ export class DossierForm implements OnInit {
 
   showUserDialog = false;
   showClientDialog = false;
+  showPartieDialog = false;
+  selectedPartieRole = 'ADVERSAIRE'; // Default
   showResponsableDialog = false;
   showDocumentDialog = false;
   showDomaineDialog = false;
+  readonly paysJuridiction = PAYS_JURIDICTION;
 
   constructor() {
     this.dossierForm = this.fb.group({
@@ -63,14 +81,14 @@ export class DossierForm implements OnInit {
       responsableId: ['', Validators.required],
       intervenantsIds: [[]],
       domaineJuridique: ['', Validators.required],
+      // Droit applicable au litige : l'IA n'analyse le dossier qu'avec la jurisprudence de ce pays (+ international)
+      paysJuridiction: ['', Validators.required],
       prioriteID: ['', Validators.required],
       statutID: ['', Validators.required],
       dateOuverture: [new Date().toISOString().substring(0, 10), Validators.required],
-      methodeFacturation: ['HORAIRE', Validators.required],
-      budgetEstime: [0],
-      tauxHoraireApplique: [0],
       tags: [[]],
-      documents: [[]]
+      documents: [[]],
+      autresParties: [[]]
     });
 
     this.dossierForm.valueChanges.subscribe(() => {
@@ -125,6 +143,7 @@ export class DossierForm implements OnInit {
           } else if (res.client) {
              this.selectedClient = res.client;
              this.dossierForm.patchValue({ clientId: res.client.id });
+             this.prefillPaysJuridiction(res.client);
              this.checkClientStatus();
           }
           this.loading = false;
@@ -159,10 +178,153 @@ export class DossierForm implements OnInit {
   }
 
   onClientSelected(client: Client): void {
+    if (!client.id) return;
+    this.setClientAndClose(client);
+  }
+
+  private setClientAndClose(client: Client): void {
     this.selectedClient = client;
     this.dossierForm.patchValue({ clientId: client.id });
+    this.prefillPaysJuridiction(client);
     this.checkClientStatus();
     this.closeClientDialog();
+    this.runConflictCheck();
+  }
+
+  /** Préremplit le pays de juridiction avec le pays du client (s'il est géré), sans écraser un choix existant. */
+  private prefillPaysJuridiction(client: Client): void {
+    const current = this.dossierForm.get('paysJuridiction');
+    const pays = normalizePays((client as any)?.pays);
+    if (current && !current.value && pays) {
+      current.setValue(pays);
+    }
+  }
+
+  // Autres Parties Selection Dialog Methods
+  openPartieDialog(): void {
+    this.showPartieDialog = true;
+  }
+
+  closePartieDialog(): void {
+    this.showPartieDialog = false;
+  }
+
+  onPartieSelected(client: Client): void {
+    if (!client.id) return;
+    this.addPartieAndClose(client);
+  }
+
+  private addPartieAndClose(client: Client): void {
+    const currentParties = this.autresParties;
+    if (!currentParties.some(p => p.partie.id === client.id)) {
+      this.dossierForm.patchValue({
+        autresParties: [...currentParties, { partie: client, role: this.selectedPartieRole }]
+      });
+    }
+    this.closePartieDialog();
+    this.runConflictCheck();
+  }
+
+  get autresParties(): any[] {
+    return this.dossierForm.get('autresParties')?.value || [];
+  }
+
+  removePartie(index: number): void {
+    const currentParties = this.autresParties;
+    this.dossierForm.patchValue({
+      autresParties: currentParties.filter((_, i) => i !== index)
+    });
+    this.runConflictCheck();
+  }
+
+  // ==================== CONTRÔLE AUTOMATIQUE DES CONFLITS D'INTÉRÊTS ====================
+
+  runConflictCheck(): void {
+    const clientId = this.dossierForm.get('clientId')?.value;
+    const parties = this.autresParties.map(p => ({
+      clientId: p.partie?.id ? Number(p.partie.id) : null,
+      role: p.role || 'ADVERSAIRE',
+      name: this.getPartieName(p.partie)
+    }));
+    const freeQueries = this.quickConflictQuery
+      .split(/[,;\n]+/)
+      .map(s => s.trim())
+      .filter(s => s.length >= 2);
+
+    if (!clientId && parties.length === 0 && freeQueries.length === 0) {
+      this.conflictResult = null;
+      return;
+    }
+
+    this.isCheckingConflicts = true;
+    this.conflictService.check({
+      dossierId: this.dossierId ? Number(this.dossierId) : null,
+      clientId: clientId ? Number(clientId) : null,
+      parties,
+      freeTextQueries: freeQueries
+    }).subscribe({
+      next: res => {
+        this.conflictResult = res;
+        this.isCheckingConflicts = false;
+      },
+      error: err => {
+        console.error('Erreur vérification conflits:', err);
+        this.isCheckingConflicts = false;
+      }
+    });
+  }
+
+  labelRisk(level?: string): string {
+    switch (level) {
+      case 'CRITICAL': return 'Critique';
+      case 'HIGH': return 'Élevé';
+      case 'MEDIUM': return 'Moyen';
+      default: return 'Aucun';
+    }
+  }
+
+  labelMatchType(type: ConflictMatch['matchType']): string {
+    switch (type) {
+      case 'CLIENT_DIRECT': return 'Client direct';
+      case 'IDENTIFIANT_UNIQUE': return 'Identifiant unique';
+      case 'DIRIGEANT': return 'Dirigeant / Rep. légal';
+      case 'UBO': return 'UBO / Bénéficiaire effectif';
+      case 'PARTIE_DOSSIER': return 'Autre dossier';
+      case 'HOMONYME': return 'Homonyme / Nom proche';
+      default: return type;
+    }
+  }
+
+  confirmWaiverAndSubmit(): void {
+    if (!this.waiverJustification || this.waiverJustification.trim().length < 5) {
+      this.waiverError = 'Veuillez saisir une justification écrite d\'au moins 5 caractères.';
+      return;
+    }
+    this.waiverError = '';
+    this.showWaiverModal = false;
+    this.executeSubmit(true);
+  }
+
+  cancelWaiver(): void {
+    this.showWaiverModal = false;
+    this.waiverError = '';
+  }
+
+  private recordConflictAudit(savedDossierId: number | null, usedWaiver: boolean): void {
+    if (!this.conflictResult) return;
+    this.conflictService.record({
+      dossierId: savedDossierId,
+      searchSummary: this.conflictResult.searchSummary,
+      riskLevel: this.conflictResult.riskLevel,
+      decision: usedWaiver ? 'PROCEEDED_WITH_WAIVER' : 'CLEARED',
+      justification: usedWaiver ? this.waiverJustification.trim() : null,
+      matches: this.conflictResult.matches || []
+    }).subscribe({ error: () => {} });
+  }
+
+  getPartieName(client: Client): string {
+    const c = client as any;
+    return c ? `${c.nom || c.nomCommercial || ''} ${c.prenom || ''}`.trim() : '';
   }
 
   getSelectedClientName(): string {
@@ -298,11 +460,28 @@ export class DossierForm implements OnInit {
     this.closeDocumentDialog();
   }
 
-  removeDocument(index: number): void {
-    const currentDocs = this.documents;
-    this.dossierForm.patchValue({
-      documents: currentDocs.filter((_, i) => i !== index)
-    });
+  async removeDocument(index: number): Promise<void> {
+    const doc = this.documents[index];
+    const docTitle = doc?.title || doc?.name || doc?.nomFichier || '';
+
+    const title = this.translate.instant('DOSSIER_FORM.CONFIRM_REMOVE_DOC_TITLE');
+    const msg = docTitle
+      ? `${this.translate.instant('DOSSIER_FORM.CONFIRM_REMOVE_DOC_MSG')} (${docTitle})`
+      : this.translate.instant('DOSSIER_FORM.CONFIRM_REMOVE_DOC_MSG');
+
+    const confirmed = await this.alertService.confirmMessage(
+      title,
+      msg,
+      'warning'
+    );
+
+    if (confirmed) {
+      const currentDocs = this.documents;
+      this.dossierForm.patchValue({
+        documents: currentDocs.filter((_, i) => i !== index)
+      });
+      this.alertService.success(this.translate.instant('DOSSIER_FORM.DOC_REMOVED_SUCCESS'));
+    }
   }
 
   async onSubmit(): Promise<void> {
@@ -310,6 +489,17 @@ export class DossierForm implements OnInit {
       return;
     }
 
+    // Option A : si conflit ÉLEVÉ ou CRITIQUE, justification écrite obligatoire avant création/modification
+    if (this.conflictResult?.requiresJustification) {
+      this.waiverError = '';
+      this.showWaiverModal = true;
+      return;
+    }
+
+    await this.executeSubmit(false);
+  }
+
+  private async executeSubmit(usedWaiver: boolean): Promise<void> {
     const dossierData: Dossier = {
       ...this.dossierForm.value,
       client: { id: this.dossierForm.value.clientId },
@@ -318,25 +508,49 @@ export class DossierForm implements OnInit {
     };
 
     if (this.isEditMode && this.dossierId) {
-      const confirmed = await this.alertService.confirmMessage(
+      const confirmed = usedWaiver || await this.alertService.confirmMessage(
         'Modifier le dossier',
         'Êtes-vous sûr de vouloir enregistrer les modifications apportées à ce dossier ?',
         'warning'
       );
       if (confirmed) {
-        this.dossierService.update(dossierData).subscribe(() => {
-          this.navigateToDossier();
+        this.dossierService.update(dossierData).subscribe({
+          next: () => {
+            this.recordConflictAudit(Number(this.dossierId), usedWaiver);
+            this.alertService.success('Dossier mis à jour avec succès');
+            this.router.navigate(['/home/dossier-detail', this.dossierId, 'vue-ensemble']);
+          },
+          error: (err) => {
+            const errorMsg = err?.error?.message || err?.error || 'Erreur lors de la mise à jour du dossier';
+            this.alertService.displayMessage('Erreur', typeof errorMsg === 'string' ? errorMsg : 'Erreur lors de la mise à jour du dossier', 'error');
+          }
         });
       }
     } else {
-      this.dossierService.create(dossierData).subscribe(() => {
-        this.navigateToDossier();
+      this.dossierService.create(dossierData).subscribe({
+        next: (created) => {
+          this.recordConflictAudit(created?.id ? Number(created.id) : null, usedWaiver);
+          this.alertService.success('Dossier créé avec succès');
+          if (created?.id) {
+            this.router.navigate(['/home/dossier-detail', created.id, 'vue-ensemble']);
+          } else {
+            this.navigateToDossier();
+          }
+        },
+        error: (err) => {
+          const errorMsg = err?.error?.message || err?.error || 'Erreur lors de la création du dossier';
+          this.alertService.displayMessage('Erreur', typeof errorMsg === 'string' ? errorMsg : 'Erreur lors de la création du dossier', 'error');
+        }
       });
     }
   }
 
   onCancel(): void {
-    this.navigateToDossier();
+    if (this.isEditMode && this.dossierId) {
+      this.router.navigate(['/home/dossier-detail', this.dossierId, 'vue-ensemble']);
+    } else {
+      this.navigateToDossier();
+    }
   }
 
   navigateToDossier() {

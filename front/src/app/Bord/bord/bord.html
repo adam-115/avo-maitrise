@@ -1,300 +1,374 @@
-<div class="min-h-screen bg-slate-50/50 pb-16">
-    <main class="max-w-[1600px] mx-auto p-6 sm:p-8 lg:p-10 space-y-10">
-        
-        <!-- Welcome Header Banner -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-8 rounded-[32px] shadow-xl relative overflow-hidden border border-slate-800">
-            <!-- Decorative light leaks -->
-            <div class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-            <div class="absolute left-1/3 -bottom-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-            
-            <div class="space-y-2 relative z-10">
-                <div class="flex items-center gap-3">
-                    <span class="px-3.5 py-1 bg-indigo-500/20 text-indigo-300 font-extrabold text-xs uppercase tracking-widest rounded-full border border-indigo-500/30">
-                        Maître en Ligne
+<div class="min-h-screen bg-slate-50 pb-14">
+    <main class="max-w-[1520px] mx-auto p-5 sm:p-7 lg:p-8 space-y-6">
+
+        <!-- Hero Banner (Style Swift Check : Dégradé Nuit Profonde -> Forêt Émeraude) -->
+        <div
+            class="swift-hero flex flex-col md:flex-row md:items-center justify-between gap-6 p-7 sm:p-8 rounded-2xl shadow-lg relative overflow-hidden">
+            <!-- Subtil halo émeraude à droite -->
+            <div
+                class="absolute -right-20 -bottom-24 w-80 h-80 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none">
+            </div>
+
+            <div class="space-y-2.5 relative z-10">
+                <div class="flex items-center gap-2">
+                    <span
+                        class="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/15 text-emerald-300 font-semibold text-xs rounded-full border border-emerald-400/25">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+                        {{ 'BORD.ONLINE_MASTER' | translate }}
                     </span>
-                    <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping"></span>
                 </div>
-                <h1 class="text-3.5xl sm:text-4xl font-black text-white tracking-tight">
-                    Bonjour, Maître {{ username }}
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                    {{ 'BORD.GREETING' | translate:{ username: username } }}
                 </h1>
-                <p class="text-slate-400 font-bold text-sm sm:text-base">
-                    Bienvenue sur votre espace de pilotage SI-LÉGALE.
+                <p class="text-slate-300/90 font-normal text-sm max-w-2xl leading-relaxed">
+                    {{ 'BORD.WELCOME_TEXT' | translate }}
                 </p>
             </div>
-            
+
             <!-- Quick Actions Hub -->
-            <div class="flex flex-wrap items-center gap-3 relative z-10">
-                <button (click)="navigateToNewClient()"
-                    class="flex items-center gap-2 px-5 py-3 bg-white text-slate-950 font-black text-sm rounded-2xl hover:bg-slate-50 hover:scale-105 transition-all shadow-md active:scale-95">
-                    <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
-                    Nouveau Client
-                </button>
+            <div class="flex flex-wrap items-center gap-2.5 relative z-10">
                 <button (click)="navigateToNewDossier()"
-                    class="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white font-black text-sm rounded-2xl hover:bg-indigo-700 hover:scale-105 transition-all shadow-md shadow-indigo-200 active:scale-95">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 13h6m-3-3v6m-9 1V4a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
-                    Nouveau Dossier
+                    class="flex items-center gap-2 px-4 py-2.5 btn-emerald font-bold text-xs sm:text-sm rounded-xl cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4v16m8-8H4" />
+                    </svg>
+                    {{ 'BORD.NEW_DOSSIER' | translate }}
+                </button>
+                <button (click)="navigateToNewClient()"
+                    class="flex items-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/18 text-white font-semibold text-xs sm:text-sm rounded-xl border border-white/15 backdrop-blur-xs transition-all cursor-pointer active:scale-95">
+                    <svg class="w-4 h-4 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                    </svg>
+                    {{ 'BORD.NEW_CLIENT' | translate }}
                 </button>
                 <button (click)="navigateToCalendar()"
-                    class="flex items-center justify-center w-12 h-12 bg-slate-800/40 text-slate-300 hover:text-white rounded-2xl hover:bg-slate-800 border border-slate-700/50 hover:scale-105 transition-all active:scale-95"
-                    title="Agenda">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    class="flex items-center justify-center w-10 h-10 bg-white/10 hover:bg-white/18 text-slate-200 hover:text-white rounded-xl border border-white/15 transition-all cursor-pointer active:scale-95"
+                    [title]="'BORD.AGENDA' | translate">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
                 </button>
+            </div>
+        </div>
+
+        <!-- KPI Stat Cards Row (Style Swift Check : Typographie forte, ultra-propre, scannable) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Dossiers Actifs (Carte mise en avant bordure émeraude) -->
+            <div (click)="navigateToDossiers()"
+                class="bg-white p-5 rounded-2xl border border-emerald-400/80 ring-1 ring-emerald-400/20 hover-premium cursor-pointer flex flex-col justify-between gap-1">
+                <p class="text-3xl font-extrabold text-slate-900 tabular-nums tracking-tight">{{ totalDossiersCount }}</p>
+                <div>
+                    <p class="text-sm font-bold text-slate-800">{{ 'BORD.ACTIVE_DOSSIERS' | translate }}</p>
+                    <p class="text-xs text-slate-400 font-medium mt-0.5">Suivi complet des affaires en cours</p>
+                </div>
+            </div>
+
+            <!-- Clients Actifs -->
+            <div (click)="navigateToClients()"
+                class="swift-card p-5 rounded-2xl hover-premium cursor-pointer flex flex-col justify-between gap-1">
+                <p class="text-3xl font-extrabold text-emerald-600 tabular-nums tracking-tight">{{ totalClientsCount }}</p>
+                <div>
+                    <p class="text-sm font-bold text-slate-800">{{ 'BORD.ACTIVE_CLIENTS' | translate }}</p>
+                    <p class="text-xs text-slate-400 font-medium mt-0.5">Répertoire CRM vérifié & actif</p>
+                </div>
+            </div>
+
+            <!-- Agenda / Rendez-vous -->
+            <div (click)="navigateToCalendar()"
+                class="swift-card p-5 rounded-2xl hover-premium cursor-pointer flex flex-col justify-between gap-1">
+                <p class="text-3xl font-extrabold text-amber-500 tabular-nums tracking-tight">{{ totalAppointmentsCount }}</p>
+                <div>
+                    <p class="text-sm font-bold text-slate-800">{{ 'BORD.MY_AGENDA' | translate }}</p>
+                    <p class="text-xs text-slate-400 font-medium mt-0.5">Audiences & rendez-vous planifiés</p>
+                </div>
+            </div>
+
+            <!-- Alertes & Conformité -->
+            <div (click)="navigateToAmlHub()"
+                class="swift-card p-5 rounded-2xl hover-premium cursor-pointer flex flex-col justify-between gap-1">
+                <p class="text-3xl font-extrabold tabular-nums tracking-tight"
+                    [ngClass]="notifications.length > 0 ? 'text-rose-600' : 'text-slate-900'">{{ notifications.length }}</p>
+                <div>
+                    <p class="text-sm font-bold text-slate-800">{{ 'BORD.RISKS_ALERTS' | translate }}</p>
+                    <p class="text-xs text-slate-400 font-medium mt-0.5">Vigilance AML & contrôles requis</p>
+                </div>
             </div>
         </div>
 
         <!-- Alert & Compliance Zone -->
-        <div class="space-y-4">
+        <div>
             @if (notifications.length > 0) {
-                <div class="space-y-3">
-                    <h2 class="text-xs font-black uppercase tracking-widest text-rose-500 flex items-center gap-2 pl-1">
-                        <span class="w-2.5 h-2.5 bg-rose-500 rounded-full animate-pulse"></span>
-                        Alertes Urgentes & Actions Requises ({{ notifications.length }})
-                    </h2>
-                    @for (notif of notifications; track notif.id) {
-                        <div class="bg-gradient-to-r from-rose-50/70 to-red-50/20 border-l-4 border-rose-500 text-rose-950 p-5 rounded-[20px] shadow-sm border border-rose-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all hover:shadow-md pulse-glow-red">
-                            <div class="flex items-start sm:items-center gap-4">
-                                <div class="p-3 bg-rose-100/80 rounded-2xl text-rose-600">
-                                    <svg class="w-6 h-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"/></svg>
-                                </div>
-                                <div>
-                                    <h4 class="font-black text-sm uppercase tracking-tight text-rose-900">{{ notif.title }}</h4>
-                                    <p class="text-xs text-rose-700/95 font-semibold mt-0.5">{{ notif.message }}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <button (click)="markAsRead(notif)" class="px-4 py-2 hover:bg-rose-100/50 text-rose-800 text-xs font-black rounded-xl transition-all">
-                                    Ignorer
-                                </button>
-                                <button (click)="navigateToClientDetails(notif?.clientId!)" class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-black rounded-xl shadow-md shadow-rose-200 transition-all hover:scale-105">
-                                    Analyser le Client
-                                </button>
-                            </div>
-                        </div>
-                    }
-                </div>
-            } @else {
-                <!-- Standard compliance dashboard is clean -->
-                <div class="bg-gradient-to-r from-emerald-50/70 to-teal-50/20 border-l-4 border-emerald-500 text-emerald-950 p-5 rounded-[20px] shadow-sm border border-emerald-100 flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-4">
-                        <div class="p-3 bg-emerald-100/80 rounded-2xl text-emerald-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <div class="swift-card rounded-2xl border-rose-200/80 p-5 sm:p-6 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
                         </div>
                         <div>
-                            <h4 class="font-black text-sm uppercase tracking-tight text-emerald-900">Statut Conformité AML Global</h4>
-                            <p class="text-xs text-emerald-700 font-semibold mt-0.5">Tout est en règle. Aucun dossier client ou flux UBO suspect en attente de revue AML.</p>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-sm font-extrabold text-slate-900">{{ 'BORD.ALERTS_CENTER_TITLE' | translate }}</h2>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-rose-500 text-white">
+                                    {{ notifications.length }}
+                                </span>
+                            </div>
+                            <p class="text-xs text-slate-500 mt-0.5">
+                                @if (notifications.length > 3 && !showAllNotifications) {
+                                {{ 'BORD.SHOW_TOP_3' | translate:{ total: notifications.length } }}
+                                } @else {
+                                {{ 'BORD.SHOW_ALL' | translate:{ total: notifications.length } }}
+                                }
+                            </p>
                         </div>
                     </div>
+
+                    <div class="flex items-center gap-2 flex-wrap">
+                        @if (notifications.length > 3) {
+                        <button (click)="toggleShowAllNotifications()"
+                            class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 transition-all cursor-pointer">
+                            @if (showAllNotifications) {
+                            {{ 'BORD.COLLAPSE_ALERTS' | translate }}
+                            } @else {
+                            {{ 'BORD.EXPAND_ALL_ALERTS' | translate:{ count: notifications.length } }}
+                            }
+                        </button>
+                        }
+                        <button (click)="markAllNotificationsAsRead()"
+                            class="px-3 py-1.5 rounded-xl text-xs font-bold btn-sky-soft cursor-pointer">
+                            {{ 'BORD.MARK_ALL_READ' | translate }}
+                        </button>
+                        <button (click)="navigateToAmlHub()"
+                            class="px-3.5 py-1.5 rounded-xl text-xs font-bold btn-emerald cursor-pointer">
+                            {{ 'BORD.OPEN_AML_HUB' | translate }}
+                        </button>
+                    </div>
                 </div>
+
+                <div class="divide-y divide-slate-100"
+                    [ngClass]="{ 'max-h-[400px] overflow-y-auto pe-1': showAllNotifications && notifications.length > 5 }">
+                    @for (notif of displayedNotifications; track notif.id) {
+                    <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div class="flex items-start sm:items-center gap-3 min-w-0">
+                            <span class="w-2 h-2 rounded-full bg-rose-500 shrink-0 mt-1.5 sm:mt-0"></span>
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <h4 class="font-bold text-sm text-slate-900">{{ notif.title }}</h4>
+                                    @if (notif.clientId) {
+                                    <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">#{{ notif.clientId }}</span>
+                                    }
+                                </div>
+                                <p class="text-xs text-slate-500 mt-0.5 truncate max-w-2xl">{{ notif.message }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                            <button (click)="markAsRead(notif)"
+                                class="px-3 py-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 text-xs font-semibold rounded-lg transition-all cursor-pointer">
+                                {{ 'BORD.IGNORE' | translate }}
+                            </button>
+                            <button (click)="navigateToClientConformity(notif?.clientId!)"
+                                class="px-3 py-1.5 border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg transition-all cursor-pointer">
+                                {{ 'BORD.ANALYZE_CLIENT' | translate }}
+                            </button>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+            } @else {
+            <div class="swift-card px-5 py-4 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3.5">
+                    <div class="w-9 h-9 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-bold text-sm text-slate-900">{{ 'BORD.AML_STATUS_TITLE' | translate }}</h4>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">Conforme</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5">{{ 'BORD.AML_STATUS_TEXT' | translate }}</p>
+                    </div>
+                </div>
+                <button (click)="navigateToAmlHub()"
+                    class="px-3.5 py-2 rounded-xl btn-sky-soft font-bold text-xs cursor-pointer">
+                    {{ 'BORD.VIEW_ALL_AML' | translate }}
+                </button>
+            </div>
             }
         </div>
 
-        <!-- Metric KPI Cards Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Active Dossiers -->
-            <div (click)="navigateToDossiers()"
-                class="bg-white p-6 rounded-3xl glow-card-indigo border border-slate-200/60 flex items-center justify-between hover-premium cursor-pointer group">
-                <div class="space-y-1">
-                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Dossiers Actifs</p>
-                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-indigo-600 transition-colors">{{ totalDossiersCount }}</p>
-                </div>
-                <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all shadow-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2h2m4 0V7a2 2 0 012-2h2m-4 4h.01"/></svg>
-                </div>
-            </div>
+        <!-- Secondary Layout: 2-Column Clean Workspace -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-            <!-- Risk Warnings -->
-            <div class="bg-white p-6 rounded-3xl glow-card-rose border border-slate-200/60 flex items-center justify-between hover-premium cursor-pointer group">
-                <div class="space-y-1">
-                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Risques / Alertes</p>
-                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-rose-600 transition-colors">{{ notifications.length }}</p>
-                </div>
-                <div class="w-14 h-14" [ngClass]="notifications.length > 0 ? 'bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white' : 'bg-slate-50 text-slate-400'" class="rounded-2xl flex items-center justify-center transition-all shadow-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z"/></svg>
-                </div>
-            </div>
-
-            <!-- Calendar Appointments -->
-            <div (click)="navigateToCalendar()"
-                class="bg-white p-6 rounded-3xl glow-card-amber border border-slate-200/60 flex items-center justify-between hover-premium cursor-pointer group">
-                <div class="space-y-1">
-                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Mon Agenda (RDV)</p>
-                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-amber-600 transition-colors">{{ totalAppointmentsCount }}</p>
-                </div>
-                <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-all shadow-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                </div>
-            </div>
-
-            <!-- Clients registered -->
-            <div (click)="navigateToClients()"
-                class="bg-white p-6 rounded-3xl glow-card-emerald border border-slate-200/60 flex items-center justify-between hover-premium cursor-pointer group">
-                <div class="space-y-1">
-                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Clients Actifs</p>
-                    <p class="text-3.5xl font-black text-slate-900 group-hover:text-emerald-600 transition-colors">{{ totalClientsCount }}</p>
-                </div>
-                <div class="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-sm">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                </div>
-            </div>
-        </div>
-
-        <!-- Secondary Layout: Columns Split -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- Left Side: Appointments & Timeline (7 Cols) -->
-            <div class="lg:col-span-7 space-y-8">
+            <!-- Left Column (7 Cols) : Agenda & Tâches -->
+            <div class="lg:col-span-7 space-y-6">
                 <!-- Timeline Calendar Panel -->
-                <div class="bg-white p-7 rounded-[32px] border border-slate-200/60 shadow-sm space-y-6">
+                <div class="swift-card p-6 rounded-2xl space-y-5">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div class="flex items-center gap-3">
-                            <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            <div class="w-9 h-9 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                             </div>
-                            <h3 class="text-lg font-black text-slate-900">Agenda & Audiences</h3>
+                            <h3 class="text-base font-extrabold text-slate-900">{{ 'BORD.AGENDA_TITLE' | translate }}</h3>
                         </div>
-                        <button (click)="navigateToCalendar()" class="text-xs font-black text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest">
-                            Voir Tout →
+                        <button (click)="navigateToCalendar()"
+                            class="px-3 py-1.5 rounded-lg btn-sky-soft text-xs font-bold cursor-pointer">
+                            {{ 'BORD.SEE_ALL' | translate }}
                         </button>
                     </div>
 
-                    <div class="space-y-6 relative pl-6 border-l-2 border-slate-100 mt-2">
+                    <div class="space-y-3 relative pl-5 border-l-2 border-slate-100">
                         @for (app of upcomingAppointments; track app.id) {
-                            <div class="relative space-y-1.5 hover:bg-slate-50/50 p-4 rounded-2xl transition-all border border-transparent hover:border-slate-150">
-                                <!-- Bullet point -->
-                                <div class="absolute -left-[31px] top-5 w-4.5 h-4.5 rounded-full border-[3px] border-white shadow-sm flex items-center justify-center"
-                                     [ngClass]="app.status === 'Urgent' ? 'bg-rose-500' : app.status === 'Reporté' ? 'bg-amber-500' : 'bg-indigo-500'">
-                                </div>
-                                
-                                <div class="flex flex-wrap items-center justify-between gap-2">
-                                    <span class="text-xs font-black uppercase tracking-wider text-slate-400">
-                                        {{ app.date | date:'dd MMM yyyy' }} • {{ app.time }}
-                                    </span>
-                                    <span class="px-2.5 py-0.5 font-bold text-[10px] rounded-full uppercase border"
-                                        [ngClass]="app.status === 'Urgent' ? 'bg-rose-50 border-rose-200 text-rose-700' : app.status === 'Reporté' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-slate-50 border-slate-200 text-slate-600'">
-                                        {{ app.status }}
-                                    </span>
-                                </div>
-                                
-                                <h4 class="text-base font-black text-slate-800">{{ app.title }}</h4>
-                                <p class="text-xs text-slate-500 font-bold flex items-center gap-1.5">
-                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                    {{ app.location || 'Bureau' }}
-                                </p>
+                        <div class="relative p-3.5 rounded-xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-200/80">
+                            <div class="absolute -left-[27px] top-4 w-3.5 h-3.5 rounded-full border-[3px] border-white shadow-xs"
+                                [ngClass]="app.status === 'Urgent' ? 'bg-rose-500' : app.status === 'Reporté' ? 'bg-amber-500' : 'bg-emerald-500'">
                             </div>
+
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <span class="text-xs font-bold text-slate-400">
+                                    {{ app.date | date:'dd MMM yyyy' }} • {{ app.time }}
+                                </span>
+                                <span class="px-2 py-0.5 font-bold text-[10px] rounded-full uppercase"
+                                    [ngClass]="app.status === 'Urgent' ? 'bg-rose-50 text-rose-700' : app.status === 'Reporté' ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'">
+                                    {{ app.status }}
+                                </span>
+                            </div>
+
+                            <h4 class="text-sm font-bold text-slate-900 mt-1">{{ app.title }}</h4>
+                            <p class="text-xs text-slate-500 mt-0.5 flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                {{ app.location || ('BORD.OFFICE' | translate) }}
+                            </p>
+                        </div>
                         } @empty {
-                            <div class="py-8 text-center space-y-3">
-                                <div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                </div>
-                                <p class="text-sm font-bold text-slate-400">Aucun rendez-vous planifié aujourd'hui</p>
-                            </div>
+                        <div class="py-8 text-center space-y-2">
+                            <p class="text-sm font-medium text-slate-400">{{ 'BORD.NO_APPOINTMENTS' | translate }}</p>
+                        </div>
                         }
                     </div>
                 </div>
 
                 <!-- Interactive Tasks Panel -->
-                <div class="bg-white p-7 rounded-[32px] border border-slate-200/60 shadow-sm space-y-6">
+                <div class="swift-card p-6 rounded-2xl space-y-5">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div class="flex items-center gap-3">
-                            <div class="p-2 bg-slate-50 text-slate-600 rounded-xl">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                            <div class="w-9 h-9 bg-sky-50 text-sky-600 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                                </svg>
                             </div>
-                            <h3 class="text-lg font-black text-slate-900">Tâches Importantes</h3>
+                            <h3 class="text-base font-extrabold text-slate-900">{{ 'BORD.IMPORTANT_TASKS' | translate }}</h3>
                         </div>
-                        <span class="px-2.5 py-0.5 bg-slate-100 text-slate-700 font-extrabold text-[10px] uppercase tracking-widest rounded-full">
-                            {{ pendingTasks.length }} restants
+                        <span class="px-2.5 py-0.5 bg-slate-100 text-slate-600 font-bold text-xs rounded-full">
+                            {{ pendingTasks.length }} {{ 'BORD.REMAINING' | translate }}
                         </span>
                     </div>
 
-                    <div class="space-y-4">
+                    <div class="divide-y divide-slate-100">
                         @for (task of pendingTasks; track task.id) {
-                            <div class="flex items-start justify-between gap-4 p-4 border border-slate-100 rounded-2xl hover:bg-slate-50/50 transition-all group">
-                                <div class="flex items-start gap-4">
-                                    <!-- Custom interactable checkbox -->
-                                    <button (click)="completeTask(task)"
-                                        class="w-6 h-6 border-2 border-slate-200 hover:border-emerald-500 rounded-lg flex items-center justify-center bg-white transition-all text-transparent hover:text-emerald-500 active:scale-90 mt-0.5"
-                                        title="Marquer fait">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-                                    </button>
-                                    <div>
-                                        <h4 class="text-sm font-black text-slate-800 group-hover:text-slate-900 transition-colors">{{ task.titre }}</h4>
-                                        <p class="text-xs text-slate-400 font-bold mt-1">
-                                            Échéance : {{ task.dateEcheance | date:'dd MMM yyyy' }} • Priorité : 
-                                            <span class="font-extrabold"
-                                                [ngClass]="task.priorite === 'URGENTE' || task.priorite === 'HAUTE' ? 'text-red-500' : 'text-slate-500'">
-                                                {{ task.priorite }}
-                                            </span>
-                                        </p>
-                                    </div>
+                        <div class="flex items-start justify-between gap-4 py-3.5 first:pt-0 last:pb-0 group">
+                            <div class="flex items-start gap-3">
+                                <button (click)="completeTask(task)"
+                                    class="w-5 h-5 border-2 border-slate-300 hover:border-emerald-500 rounded-md flex items-center justify-center bg-white transition-all text-transparent hover:text-emerald-600 active:scale-90 mt-0.5 cursor-pointer"
+                                    [title]="'BORD.MARK_DONE' | translate">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
+                                            d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </button>
+                                <div>
+                                    <h4 class="text-sm font-bold text-slate-800 group-hover:text-slate-900">{{ task.titre }}</h4>
+                                    <p class="text-xs text-slate-500 mt-0.5">
+                                        {{ 'BORD.DUE_DATE' | translate }} : {{ task.dateEcheance | date:'dd MMM yyyy' }}
+                                        •
+                                        <span class="font-bold"
+                                            [ngClass]="task.priorite === 'URGENTE' || task.priorite === 'HAUTE' ? 'text-rose-600' : 'text-slate-500'">
+                                            {{ task.priorite }}
+                                        </span>
+                                    </p>
                                 </div>
-                                <span class="px-2.5 py-1 bg-slate-100 text-slate-600 font-black text-[10px] uppercase tracking-wider rounded-xl">
-                                    {{ task.category?.libelle || 'Dossier' }}
-                                </span>
                             </div>
+                            <span class="px-2.5 py-1 bg-slate-100 text-slate-600 font-semibold text-[11px] rounded-lg shrink-0">
+                                {{ task.category?.libelle || 'Dossier' }}
+                            </span>
+                        </div>
                         } @empty {
-                            <div class="py-8 text-center space-y-3">
-                                <div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                                </div>
-                                <p class="text-sm font-bold text-slate-400">Toutes vos tâches sont accomplies !</p>
-                            </div>
+                        <div class="py-8 text-center space-y-2">
+                            <p class="text-sm font-medium text-slate-400">{{ 'BORD.ALL_TASKS_DONE' | translate }}</p>
+                        </div>
                         }
                     </div>
                 </div>
             </div>
 
-            <!-- Right Side: Recent Cases Catalog (5 Cols) -->
-            <div class="lg:col-span-5 space-y-8">
-                <!-- Cases Panel -->
-                <div class="bg-white p-7 rounded-[32px] border border-slate-200/60 shadow-sm space-y-6">
+            <!-- Right Column (5 Cols) : Dossiers Récents -->
+            <div class="lg:col-span-5">
+                <div class="swift-card p-6 rounded-2xl space-y-5">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                         <div class="flex items-center gap-3">
-                            <div class="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
+                            <div class="w-9 h-9 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                                </svg>
                             </div>
-                            <h3 class="text-lg font-black text-slate-900">Dossiers Récents</h3>
+                            <h3 class="text-base font-extrabold text-slate-900">{{ 'BORD.RECENT_DOSSIERS' | translate }}</h3>
                         </div>
-                        <button (click)="navigateToDossiers()" class="text-xs font-black text-indigo-600 hover:text-indigo-700 transition-colors uppercase tracking-widest">
-                            Voir Tout →
+                        <button (click)="navigateToDossiers()"
+                            class="px-3 py-1.5 rounded-lg btn-sky-soft text-xs font-bold cursor-pointer">
+                            {{ 'BORD.SEE_ALL' | translate }}
                         </button>
                     </div>
 
-                    <div class="space-y-4">
+                    <div class="divide-y divide-slate-100">
                         @for (dossier of recentDossiers; track dossier.id) {
-                            <div (click)="navigateToDossierDetails(dossier.id!)"
-                                class="p-4 border border-slate-150 rounded-2xl hover:border-indigo-200 hover:bg-slate-50/50 transition-all cursor-pointer group flex flex-col gap-2.5">
-                                <div class="flex items-start justify-between gap-3">
-                                    <div class="space-y-0.5">
-                                        <h4 class="text-sm font-black text-slate-900 group-hover:text-indigo-600 transition-colors leading-snug">
-                                            {{ dossier.titre }}
-                                        </h4>
-                                        <p class="text-xs text-slate-400 font-bold">Réf: {{ dossier.referenceInterne }}</p>
-                                    </div>
-                                    <span class="px-2 py-0.5 bg-slate-100 text-slate-600 font-extrabold text-[9px] uppercase tracking-widest rounded border border-slate-200/50">
-                                        {{ dossier.statutID?.label || 'OUVERT' }}
-                                    </span>
+                        <div (click)="navigateToDossierDetails(dossier.id!)"
+                            class="py-3.5 first:pt-0 last:pb-0 hover:bg-slate-50/70 -mx-2 px-2 rounded-xl transition-all cursor-pointer group flex flex-col gap-2">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <h4 class="text-sm font-bold text-slate-900 group-hover:text-emerald-600 transition-colors truncate">
+                                        {{ dossier.titre }}
+                                    </h4>
+                                    <p class="text-xs text-slate-400 font-medium mt-0.5">{{ 'BORD.REF' | translate }}: {{ dossier.referenceInterne }}</p>
                                 </div>
-                                
-                                <div class="flex items-center justify-between border-t border-slate-100/80 pt-2.5 mt-0.5">
-                                    <span class="text-[11px] font-black uppercase text-indigo-600 bg-indigo-50/50 border border-indigo-100/50 px-2.5 py-0.5 rounded-md">
-                                        ⚖️ {{ dossier.domaineJuridique?.label || 'Droit Général' }}
-                                    </span>
-                                    <span class="text-[11px] text-slate-400 font-bold">
-                                        {{ dossier.dateOuverture | date:'dd MMM yyyy' }}
-                                    </span>
-                                </div>
+                                <span class="px-2 py-0.5 bg-slate-100 text-slate-600 font-bold text-[10px] uppercase rounded-md shrink-0">
+                                    {{ dossier.statutID.label || 'OUVERT' }}
+                                </span>
                             </div>
+
+                            <div class="flex items-center justify-between">
+                                <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-0.5 rounded-full">
+                                    ⚖️ {{ dossier.domaineJuridique.label || ('BORD.GENERAL_LAW' | translate) }}
+                                </span>
+                                <span class="text-[11px] text-slate-400 font-medium">
+                                    {{ dossier.dateOuverture | date:'dd MMM yyyy' }}
+                                </span>
+                            </div>
+                        </div>
                         } @empty {
-                            <div class="py-12 text-center space-y-4">
-                                <div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
-                                </div>
-                                <p class="text-sm font-bold text-slate-400">Aucun dossier dans le cabinet pour le moment</p>
-                                <button (click)="navigateToNewDossier()"
-                                    class="px-5 py-2.5 bg-indigo-600 text-white text-xs font-black rounded-xl hover:bg-indigo-700 hover:scale-105 transition-all">
-                                    Créer le Premier Dossier
-                                </button>
-                            </div>
+                        <div class="py-10 text-center space-y-3">
+                            <p class="text-sm font-medium text-slate-400">{{ 'BORD.NO_DOSSIERS' | translate }}</p>
+                            <button (click)="navigateToNewDossier()"
+                                class="px-4 py-2 btn-emerald text-xs font-bold rounded-xl cursor-pointer">
+                                {{ 'BORD.CREATE_FIRST_DOSSIER' | translate }}
+                            </button>
+                        </div>
                         }
                     </div>
                 </div>

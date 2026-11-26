@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="add-service-date-to-invoice-dossier-services" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="invoice_dossier_services" columnName="service_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="invoice_dossier_services">
+            <column name="service_date" type="DATE"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="populate-service-date-from-creation-date" author="antigravity">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="invoice_dossier_services" columnName="service_date"/>
+        </preConditions>
+        <sql>
+            UPDATE invoice_dossier_services SET service_date = DATE(creation_date) WHERE service_date IS NULL;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

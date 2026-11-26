@@ -10,12 +10,18 @@ import org.hibernate.annotations.NotFoundAction;
 import java.time.OffsetDateTime;
 import java.util.List;
 
+@org.hibernate.envers.Audited
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class DiligenceFormResult {
+
+    public DiligenceFormResult() {}
+
+    public static class DiligenceFormResultBuilder {
+        public DiligenceFormResultBuilder() {}
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

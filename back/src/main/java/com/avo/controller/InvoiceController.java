@@ -1,5 +1,10 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -35,6 +40,7 @@ public class InvoiceController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "FACTURE")
     @GetMapping("/{id}")
     public ResponseEntity<InvoiceDTO> getById(@PathVariable Long id) {
         InvoiceDTO result = service.findById(id);
@@ -45,12 +51,15 @@ public class InvoiceController {
     }
 
     @PostMapping
-    public ResponseEntity<InvoiceDTO> create(@RequestBody InvoiceDTO dto) {
+    public ResponseEntity<InvoiceDTO> create(@Valid @RequestBody InvoiceDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<InvoiceDTO> update(@RequestBody InvoiceDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<InvoiceDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody InvoiceDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 
@@ -60,6 +69,7 @@ public class InvoiceController {
         return ResponseEntity.ok().build();
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "FACTURE", details = "Facture (PDF)")
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> generatePdf(@PathVariable Long id) {
         byte[] pdfBytes = reportingService.generateInvoicePdf(id);
@@ -69,6 +79,7 @@ public class InvoiceController {
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "FACTURE", idParam = "ids", details = "Export groupé de factures (PDF)")
     @GetMapping("/bulk-pdf")
     public ResponseEntity<byte[]> generateBulkPdf(@RequestParam java.util.List<Long> ids) {
         byte[] pdfBytes = reportingService.generateBulkInvoicePdf(ids);

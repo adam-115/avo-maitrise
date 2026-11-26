@@ -7,10 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class DossierPrioriteDTO {
+    public DossierPrioriteDTO() {}
+
+    public static class DossierPrioriteDTOBuilder {
+        public DossierPrioriteDTOBuilder() {}
+    }
+
     private Long id;
     private String code;
     private String label;

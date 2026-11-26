@@ -10,8 +10,9 @@ import java.util.Date;
 @Table(name = "task_statuses")
 @Getter
 @Setter
-@NoArgsConstructor
 public class TaskStatus {
+
+    public TaskStatus() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

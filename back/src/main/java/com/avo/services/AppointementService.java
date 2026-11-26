@@ -9,6 +9,7 @@ import com.avo.dtos.AppointementDTO;
 import com.avo.entities.Appointement;
 import com.avo.mappers.AppointementMapper;
 import com.avo.repositories.AppointementRepository;
+import com.avo.services.mail.ExternalCalendarSyncService;
 import com.querydsl.core.types.Predicate;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -25,14 +26,19 @@ public class AppointementService {
     private final AppointementRepository repository;
     private final AppointementMapper mapper;
     private final org.springframework.context.ApplicationEventPublisher eventPublisher;
+    private final ExternalCalendarSyncService externalCalendarSyncService;
 
     @PersistenceContext
     private EntityManager entityManager;
 
-    public AppointementService(AppointementRepository repository, AppointementMapper mapper, org.springframework.context.ApplicationEventPublisher eventPublisher) {
+    public AppointementService(AppointementRepository repository,
+                               AppointementMapper mapper,
+                               org.springframework.context.ApplicationEventPublisher eventPublisher,
+                               ExternalCalendarSyncService externalCalendarSyncService) {
         this.repository = repository;
         this.mapper = mapper;
         this.eventPublisher = eventPublisher;
+        this.externalCalendarSyncService = externalCalendarSyncService;
     }
 
     public Page<AppointementDTO> findAll(Pageable pageable) {
@@ -55,6 +61,7 @@ public class AppointementService {
         Appointement entity = mapper.toEntity(dto);
         attachRelatedEntities(entity, dto);
         Appointement saved = repository.save(entity);
+        externalCalendarSyncService.syncAppointement(saved);
         
         if (saved.getDossier() != null) {
             String author = getCurrentUsername();
@@ -82,6 +89,7 @@ public class AppointementService {
         attachRelatedEntities(existing, dto);
 
         Appointement saved = repository.save(existing);
+        externalCalendarSyncService.syncAppointement(saved);
         
         if (saved.getDossier() != null) {
             String author = getCurrentUsername();
@@ -96,6 +104,9 @@ public class AppointementService {
     public void delete(Long id) {
         log.info("[ENTER] Executing delete");
         repository.findById(id).ifPresent(entity -> {
+            if (entity.getExternalCalendarEventId() != null) {
+                externalCalendarSyncService.deleteExternalEvent(entity.getExternalCalendarProvider(), entity.getExternalCalendarEventId());
+            }
             if (entity.getDossier() != null) {
                 String author = getCurrentUsername();
                 eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(

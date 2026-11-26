@@ -1,0 +1,35 @@
+{
+    # Configuration globale
+    email {$EMAIL}
+}
+
+{$DOMAIN_NAME} {
+    # ---------------------------------------------------------
+    # ROUTAGE DE L'APPLICATION BACKEND (Spring Boot)
+    # On redirige les requêtes commençant par /api vers le backend
+    # ---------------------------------------------------------
+    handle /api/* {
+        reverse_proxy avo-back-app:8080
+    }
+
+    # ---------------------------------------------------------
+    # ROUTAGE PAR DEFAUT (Sera utile pour le Frontend plus tard)
+    # ---------------------------------------------------------
+    # handle /* {
+    #     reverse_proxy avo-front-app:80
+    # }
+
+    # Pour le moment, si la requête ne correspond pas à /api, on la renvoie quand même au backend
+    # (A modifier une fois que le frontend sera dockerisé)
+    handle /* {
+        reverse_proxy avo-back-app:8080
+    }
+}
+
+# ---------------------------------------------------------
+# ROUTAGE DE PORTAINER (Monitoring)
+# ---------------------------------------------------------
+{$PORTAINER_DOMAIN} {
+    reverse_proxy portainer:9000
+}
+

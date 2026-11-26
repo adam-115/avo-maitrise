@@ -10,10 +10,12 @@ import { NavigationService } from '../../services/navigation-service';
 import { SecteurActiviteService } from '../../services/secteur-activite-service';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
     selector: 'app-institution-form',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, DocumentDialog],
+    imports: [CommonModule, ReactiveFormsModule, DocumentDialog, TranslatePipe],
     templateUrl: './institution-form.component.html',
     styleUrls: ['./institution-form.component.css']
 })
@@ -170,6 +172,11 @@ export class InstitutionFormComponent implements OnInit {
 
     cancel(): void {
         this.router.navigate(['/home/crm']);
+    }
+
+    isFieldInvalid(fieldName: string): boolean {
+        const control = this.clientForm.get(fieldName);
+        return !!(control && control.invalid && (control.touched || control.dirty));
     }
 }
 

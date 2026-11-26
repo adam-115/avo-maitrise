@@ -1,5 +1,10 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -20,6 +25,16 @@ public class DossierController {
         this.service = service;
     }
 
+    @GetMapping("/kpis")
+    public ResponseEntity<java.util.Map<String, Long>> getKpis() {
+        return ResponseEntity.ok(service.getKpis());
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<java.util.List<DossierDTO>> findAllNoPage() {
+        return ResponseEntity.ok(service.findAll());
+    }
+
     @GetMapping
     public ResponseEntity<Page<DossierDTO>> findAll(
             @RequestParam(required = false) String searchTerm,
@@ -34,18 +49,22 @@ public class DossierController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "DOSSIER")
     @GetMapping("/{id}")
     public ResponseEntity<DossierDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<DossierDTO> create(@RequestBody DossierDTO dto) {
+    public ResponseEntity<DossierDTO> create(@Valid @RequestBody DossierDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<DossierDTO> update(@RequestBody DossierDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<DossierDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody DossierDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

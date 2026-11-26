@@ -11,9 +11,10 @@ import lombok.Builder;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
 @AllArgsConstructor
 public class ClientMoralDTO extends ClientEntityDTO {
+    public ClientMoralDTO() {}
+
 
     private String nomCommercial;
     private String formeJuridique;

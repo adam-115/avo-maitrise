@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Comptes de messagerie / calendrier connectés (Microsoft 365, Google Workspace, IMAP) -->
+    <changeSet id="create-mail-accounts-table" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="mail_accounts" />
+            </not>
+        </preConditions>
+        <createTable tableName="mail_accounts">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="owner_username" type="VARCHAR(120)">
+                <constraints nullable="false" />
+            </column>
+            <column name="provider" type="VARCHAR(20)">
+                <constraints nullable="false" />
+            </column>
+            <column name="email_address" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="display_name" type="VARCHAR(255)" />
+            <column name="imap_host" type="VARCHAR(255)" />
+            <column name="imap_port" type="INT" defaultValueNumeric="993" />
+            <column name="imap_ssl" type="BOOLEAN" defaultValueBoolean="true" />
+            <column name="imap_username" type="VARCHAR(255)" />
+            <column name="encrypted_secret" type="TEXT" />
+            <column name="encrypted_access_token" type="TEXT" />
+            <column name="token_expires_at" type="TIMESTAMP" />
+            <column name="calendar_id" type="VARCHAR(255)" defaultValue="primary" />
+            <column name="calendar_sync_enabled" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+            <column name="active" type="BOOLEAN" defaultValueBoolean="true">
+                <constraints nullable="false" />
+            </column>
+            <column name="last_sync_at" type="TIMESTAMP" />
+            <column name="last_error" type="VARCHAR(500)" />
+            <column name="created_at" type="TIMESTAMP" />
+            <column name="updated_at" type="TIMESTAMP" />
+        </createTable>
+        <createIndex tableName="mail_accounts" indexName="idx_mail_accounts_owner">
+            <column name="owner_username" />
+        </createIndex>
+    </changeSet>
+
+    <!-- E-mails classés dans les dossiers (lecture seule + pièces jointes GED) -->
+    <changeSet id="create-dossier-emails-table" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="dossier_emails" />
+            </not>
+        </preConditions>
+        <createTable tableName="dossier_emails">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="dossier_id" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="mail_account_id" type="BIGINT" />
+            <column name="provider" type="VARCHAR(20)" />
+            <column name="external_message_id" type="VARCHAR(255)" />
+            <column name="thread_id" type="VARCHAR(255)" />
+            <column name="from_name" type="VARCHAR(255)" />
+            <column name="from_email" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="to_emails" type="TEXT" />
+            <column name="cc_emails" type="TEXT" />
+            <column name="subject" type="VARCHAR(500)" />
+            <column name="snippet" type="VARCHAR(1000)" />
+            <column name="body_text" type="LONGTEXT" />
+            <column name="body_html" type="LONGTEXT" />
+            <column name="sent_at" type="TIMESTAMP" />
+            <column name="filed_at" type="TIMESTAMP">
+                <constraints nullable="false" />
+            </column>
+            <column name="filed_by" type="VARCHAR(120)" />
+            <column name="direction" type="VARCHAR(20)" defaultValue="INBOUND" />
+            <column name="attachments_json" type="TEXT" />
+            <column name="has_attachments" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createIndex tableName="dossier_emails" indexName="idx_dossier_emails_dossier">
+            <column name="dossier_id" />
+        </createIndex>
+        <createIndex tableName="dossier_emails" indexName="idx_dossier_emails_ext_msg">
+            <column name="external_message_id" />
+        </createIndex>
+    </changeSet>
+
+    <!-- Table d'audit Hibernate Envers pour dossier_emails -->
+    <changeSet id="create-dossier-emails-aud-table" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="dossier_emails_aud" />
+            </not>
+        </preConditions>
+        <createTable tableName="dossier_emails_aud">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" />
+            </column>
+            <column name="rev" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="revtype" type="TINYINT" />
+            <column name="dossier_id" type="BIGINT" />
+            <column name="mail_account_id" type="BIGINT" />
+            <column name="provider" type="VARCHAR(20)" />
+            <column name="external_message_id" type="VARCHAR(255)" />
+            <column name="thread_id" type="VARCHAR(255)" />
+            <column name="from_name" type="VARCHAR(255)" />
+            <column name="from_email" type="VARCHAR(255)" />
+            <column name="to_emails" type="TEXT" />
+            <column name="cc_emails" type="TEXT" />
+            <column name="subject" type="VARCHAR(500)" />
+            <column name="snippet" type="VARCHAR(1000)" />
+            <column name="body_text" type="LONGTEXT" />
+            <column name="body_html" type="LONGTEXT" />
+            <column name="sent_at" type="TIMESTAMP" />
+            <column name="filed_at" type="TIMESTAMP" />
+            <column name="filed_by" type="VARCHAR(120)" />
+            <column name="direction" type="VARCHAR(20)" />
+            <column name="attachments_json" type="TEXT" />
+            <column name="has_attachments" type="BOOLEAN" />
+        </createTable>
+        <addPrimaryKey tableName="dossier_emails_aud" columnNames="id, rev"
+            constraintName="pk_dossier_emails_aud" />
+    </changeSet>
+
+    <!-- Identifiants d'événements de calendrier externe (Outlook / Google Calendar) -->
+    <changeSet id="add-external-calendar-columns-matter-events" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="matter_events" columnName="external_calendar_event_id" />
+            </not>
+        </preConditions>
+        <addColumn tableName="matter_events">
+            <column name="external_calendar_event_id" type="VARCHAR(255)" />
+            <column name="external_calendar_provider" type="VARCHAR(20)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-external-calendar-columns-appointements" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="appointements" columnName="external_calendar_event_id" />
+            </not>
+        </preConditions>
+        <addColumn tableName="appointements">
+            <column name="external_calendar_event_id" type="VARCHAR(255)" />
+            <column name="external_calendar_provider" type="VARCHAR(20)" />
+        </addColumn>
+    </changeSet>
+
+    <!-- Activation optionnelle du module Messagerie & Calendrier (désactivé par défaut) -->
+    <changeSet id="create-mail-integration-config-table" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="mail_integration_config" />
+            </not>
+        </preConditions>
+        <createTable tableName="mail_integration_config">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="enabled" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false" />
+            </column>
+            <column name="updated_at" type="TIMESTAMP" />
+        </createTable>
+        <insert tableName="mail_integration_config">
+            <column name="id" valueNumeric="1" />
+            <column name="enabled" valueBoolean="false" />
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

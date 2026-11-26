@@ -1,0 +1,109 @@
+<div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs">
+  <!-- En-tête -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
+    <div>
+      <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+        <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+        </svg>
+        {{ 'AUDIT.TIMELINE_TITLE' | translate }}
+      </h3>
+      <p class="text-xs text-slate-500 mt-0.5">{{ 'AUDIT.TIMELINE_SUBTITLE' | translate }}</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button *ngIf="!loaded" (click)="load()" [disabled]="loading"
+        class="px-3.5 py-2 rounded-xl bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold disabled:opacity-50">
+        {{ (loading ? 'AUDIT.LOADING' : 'AUDIT.SHOW') | translate }}
+      </button>
+      <button *ngIf="loaded" (click)="reload()" [disabled]="loading"
+        class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold disabled:opacity-50">
+        {{ 'AUDIT.REFRESH' | translate }}
+      </button>
+      <button (click)="exportPdf()" [disabled]="exporting || !resourceId"
+        class="px-3.5 py-2 rounded-xl border border-pink-200 bg-pink-50 hover:bg-pink-100 text-pink-700 text-xs font-bold flex items-center gap-1.5 disabled:opacity-50">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M6 20h12a2 2 0 002-2V8l-6-6H6a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+        </svg>
+        {{ (exporting ? 'AUDIT.EXPORTING' : 'AUDIT.EXPORT_PDF') | translate }}
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="mx-5 mt-4 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700">
+    {{ error | translate }}
+  </div>
+
+  <div *ngIf="loading && !loaded" class="p-10 flex justify-center">
+    <div class="w-8 h-8 border-4 border-pink-200 border-t-pink-600 rounded-full animate-spin"></div>
+  </div>
+
+  <ng-container *ngIf="loaded">
+    <!-- Filtres -->
+    <div class="flex flex-col sm:flex-row gap-3 px-5 py-3 bg-slate-50/70 border-b border-slate-100">
+      <div class="inline-flex rounded-xl bg-white border border-slate-200 p-0.5 text-xs font-bold">
+        <button (click)="filter = 'ALL'" [class.bg-pink-600]="filter === 'ALL'" [class.text-white]="filter === 'ALL'"
+          class="px-3 py-1.5 rounded-lg text-slate-600">{{ 'AUDIT.FILTER_ALL' | translate }} ({{ entries.length }})</button>
+        <button (click)="filter = 'MODIFICATION'" [class.bg-pink-600]="filter === 'MODIFICATION'" [class.text-white]="filter === 'MODIFICATION'"
+          class="px-3 py-1.5 rounded-lg text-slate-600">{{ 'AUDIT.FILTER_CHANGES' | translate }} ({{ modificationCount }})</button>
+        <button (click)="filter = 'ACCES'" [class.bg-pink-600]="filter === 'ACCES'" [class.text-white]="filter === 'ACCES'"
+          class="px-3 py-1.5 rounded-lg text-slate-600">{{ 'AUDIT.FILTER_ACCESS' | translate }} ({{ accessCount }})</button>
+      </div>
+      <input type="search" [(ngModel)]="search" [placeholder]="'AUDIT.SEARCH_PLACEHOLDER' | translate"
+        class="flex-1 px-3 py-2 text-sm rounded-xl border border-slate-200 focus:ring-2 focus:ring-pink-500 outline-none">
+    </div>
+
+    <div *ngIf="filtered.length === 0" class="p-10 text-center text-sm text-slate-500">
+      {{ 'AUDIT.EMPTY' | translate }}
+    </div>
+
+    <!-- Chronologie -->
+    <ol class="px-5 py-4 space-y-3 max-h-[720px] overflow-y-auto">
+      <li *ngFor="let e of filtered; let i = index" class="relative pl-6">
+        <span class="absolute left-0 top-2 w-2.5 h-2.5 rounded-full" [ngClass]="dotClass(e)"></span>
+        <div class="rounded-xl border border-slate-200/80 hover:border-slate-300 bg-white p-3">
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <span class="font-mono text-slate-500">{{ e.time | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+            <span class="px-2 py-0.5 rounded-full border font-bold" [ngClass]="badgeClass(e)">
+              {{ ('AUDIT.ACTION.' + e.action) | translate }}
+            </span>
+            <span *ngIf="e.outcome && e.outcome !== 'SUCCES'" class="px-2 py-0.5 rounded-full bg-red-600 text-white font-bold">
+              {{ ('AUDIT.OUTCOME.' + e.outcome) | translate }}
+            </span>
+            <span class="font-semibold text-slate-800">{{ e.resourceLabel }}</span>
+          </div>
+          <div class="mt-1.5 text-sm text-slate-700">{{ e.summary }}</div>
+          <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
+            <span class="flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              {{ e.user || '—' }}
+            </span>
+            <span *ngIf="e.ipAddress" class="font-mono">IP {{ e.ipAddress }}</span>
+            <span *ngIf="e.origin === 'SYSTEME'" class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">{{ 'AUDIT.SYSTEM' | translate }}</span>
+            <span class="font-mono text-slate-400">{{ e.category === 'MODIFICATION' ? 'rév.' : 'log' }} #{{ e.reference }}</span>
+            <button *ngIf="e.changes.length > 0" (click)="toggle(i)" class="ml-auto text-pink-700 font-bold hover:underline">
+              {{ (expanded.has(i) ? 'AUDIT.HIDE_DETAILS' : 'AUDIT.SHOW_DETAILS') | translate }} ({{ e.changes.length }})
+            </button>
+          </div>
+
+          <!-- Détail avant / après -->
+          <table *ngIf="expanded.has(i)" class="mt-3 w-full text-xs border border-slate-100 rounded-lg overflow-hidden">
+            <thead class="bg-slate-50 text-slate-500">
+              <tr>
+                <th class="text-left px-2.5 py-1.5 font-bold">{{ 'AUDIT.FIELD' | translate }}</th>
+                <th class="text-left px-2.5 py-1.5 font-bold">{{ 'AUDIT.BEFORE' | translate }}</th>
+                <th class="text-left px-2.5 py-1.5 font-bold">{{ 'AUDIT.AFTER' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let c of e.changes" class="border-t border-slate-100 align-top">
+                <td class="px-2.5 py-1.5 font-semibold text-slate-700">{{ c.label }}</td>
+                <td class="px-2.5 py-1.5 text-red-700 line-through decoration-red-300 break-all">{{ c.before ?? '—' }}</td>
+                <td class="px-2.5 py-1.5 text-emerald-700 break-all">{{ c.after ?? '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </li>
+    </ol>
+  </ng-container>
+</div>

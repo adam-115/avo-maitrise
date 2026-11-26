@@ -6,10 +6,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FieldResultDTO {
+    public FieldResultDTO() {}
+
+    public static class FieldResultDTOBuilder {
+        public FieldResultDTOBuilder() {}
+    }
+
     private Long id;
     private String fieldConfigId;
     private String fieldOptionId;

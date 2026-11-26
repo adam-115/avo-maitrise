@@ -7,9 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class PasswordResetRequest {
+    public PasswordResetRequest() {}
+
  @NotBlank
     private String userId;
     

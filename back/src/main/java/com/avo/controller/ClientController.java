@@ -1,5 +1,10 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -25,6 +30,7 @@ public class ClientController {
         this.reportingService = reportingService;
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "CLIENT", idParam = "", details = "Rapport LCB-FT global (PDF)")
     @GetMapping("/aml-report/pdf")
     public ResponseEntity<byte[]> generateAmlReport(
             @RequestParam(required = false) String startDate,
@@ -36,12 +42,23 @@ public class ClientController {
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 
+    @AuditAccess(action = AuditAction.EXPORT, resource = "CLIENT", details = "Rapport d'audit KYC (PDF)")
     @GetMapping("/{id}/kyc-audit-report/pdf")
     public ResponseEntity<byte[]> generateClientKycAuditReport(@PathVariable Long id) {
         byte[] pdfBytes = reportingService.generateClientKycAuditReport(id);
         org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
         headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
         headers.setContentDispositionFormData("inline", "Fiche_Vigilance_KYC_Client_" + id + ".pdf");
+        return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
+    }
+
+    @AuditAccess(action = AuditAction.EXPORT, resource = "CLIENT", details = "Rapport d'audit GAFI (PDF)")
+    @GetMapping("/{id}/fatf-audit-report/pdf")
+    public ResponseEntity<byte[]> generateClientFatfAuditReport(@PathVariable Long id) {
+        byte[] pdfBytes = reportingService.generateClientFatfAuditReport(id);
+        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+        headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("inline", "Rapport_Conformite_GAFI_Client_" + id + ".pdf");
         return new ResponseEntity<>(pdfBytes, headers, org.springframework.http.HttpStatus.OK);
     }
 
@@ -69,20 +86,24 @@ public class ClientController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "CLIENT")
     @GetMapping("/{id}")
     public ResponseEntity<ClientEntityDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<ClientEntityDTO> create(@RequestBody ClientEntityDTO dto) {
+    public ResponseEntity<ClientEntityDTO> create(@Valid @RequestBody ClientEntityDTO dto) {
         // default AML status creation 
         dto.setClientStatus(ClientStatus.AML_REQUIRED);
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<ClientEntityDTO> update(@RequestBody ClientEntityDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<ClientEntityDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody ClientEntityDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 
@@ -93,7 +114,7 @@ public class ClientController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ClientEntityDTO> updateStatus(@PathVariable Long id, @RequestBody java.util.Map<String, String> updates) {
+    public ResponseEntity<ClientEntityDTO> updateStatus(@PathVariable Long id, @Valid @RequestBody java.util.Map<String, String> updates) {
         String statusStr = updates.get("clientStatus");
         com.avo.entities.ClientStatus status = com.avo.entities.ClientStatus.valueOf(statusStr);
         return ResponseEntity.ok(service.updateStatus(id, status));

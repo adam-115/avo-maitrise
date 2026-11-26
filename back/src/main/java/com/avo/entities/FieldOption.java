@@ -6,12 +6,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@org.hibernate.envers.Audited
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FieldOption {
+
+    public FieldOption() {}
+
+    public static class FieldOptionBuilder {
+        public FieldOptionBuilder() {}
+    }
 
     @Id
     private String id;

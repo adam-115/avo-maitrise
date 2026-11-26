@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blueprint de Déploiement</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; padding: 2em; max-width: 1000px; margin: 0 auto; color: #333; }
+        h1, h2, h3 { color: #2c3e50; }
+        pre { background: #f4f4f4; padding: 1em; border-radius: 5px; overflow-x: auto; }
+        code { font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; background: #f4f4f4; padding: 0.2em 0.4em; border-radius: 3px; }
+        .mermaid { margin: 2em 0; text-align: center; }
+    </style>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</head>
+<body>
+    <h1>Blueprint & Guide de Déploiement (Fat JAR + VPS IA + Minio)</h1>
+    <p>Puisque votre application est un <strong>Fat JAR</strong>, et que vous souhaitez déporter <strong>Ollama (LLM + nomic-embed-text)</strong> sur un serveur séparé (très bonne pratique pour les performances GPU/CPU), nous avons 3 VPS spécialisés.</p>
+    <p><em>Note : Le stockage de fichiers S3 (Minio) a été ajouté au VPS Client pour garantir une totale isolation des documents de chaque client.</em></p>
+
+    <h2>1. Schéma de Communication des VPS</h2>
+    
+    <div class="mermaid">
+    graph TD
+        User((Utilisateur)) --> CaddySSO[Caddy auth.domaine.com]
+        User --> CaddyApp[Caddy app.client1.domaine.com]
+
+        subgraph VPS_SSO [VPS 1 - Authentification SSO]
+            CaddySSO --> Keycloak
+            Keycloak --> PostgreSQL[(PostgreSQL)]
+        end
+
+        subgraph VPS_App [VPS 2 - Serveur Client]
+            CaddyApp --> SpringBoot[Spring Boot Fat JAR]
+            SpringBoot --> MySQL[(MySQL)]
+            SpringBoot --> Qdrant[(Qdrant)]
+            SpringBoot --> Minio[(Minio Storage S3)]
+        end
+
+        subgraph VPS_IA [VPS 3 - Serveur IA]
+            SpringBoot --> Ollama[API Ollama]
+            Ollama --> Nomic[nomic-embed-text]
+            Ollama --> LLM[Modele LLM]
+        end
+
+        SpringBoot -.-> Keycloak
+    </div>
+
+    <h3>Explication du flux (Workflow) :</h3>
+    <ul>
+        <li>L'<strong>Utilisateur</strong> accède à l'URL du client (ex: <code>app.client1.domaine.com</code>).</li>
+        <li>Si l'utilisateur n'est pas connecté, Spring Boot (qui sert le front Angular) le redirige vers <code>auth.domaine.com</code> (VPS 1).</li>
+        <li>Les données relationnelles et vectorielles sont stockées sur le <strong>VPS 2</strong> (MySQL + Qdrant).</li>
+        <li>Les fichiers physiques (PDF, Word, images) sont stockés de manière isolée dans le <strong>Minio</strong> du VPS 2.</li>
+        <li>Lorsque l'application a besoin de générer du texte ou vectoriser des documents (RAG), Spring Boot envoie une requête API au <strong>VPS 3</strong> qui gère <code>nomic-embed-text</code> et le LLM via Ollama.</li>
+    </ul>
+
+    <hr>
+
+    <h2>2. Guide d'Installation (Docker Compose)</h2>
+
+    <h3>VPS 1 : SSO Centralisé (Keycloak)</h3>
+    <pre><code class="language-yaml">version: '3.8'
+services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:ci-alpine
+    ports: ["80:80", "443:443"]
+    environment:
+      - CADDY_INGRESS_NETWORKS=keycloak_net
+    networks:
+      - keycloak_net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - caddy_data:/data
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password_fort
+    networks:
+      - keycloak_net
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.2
+    command: start --proxy-headers xforwarded
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password_fort
+      KC_HOSTNAME: auth.votre-domaine.com
+      KC_HTTP_ENABLED: "true"
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin_password_fort
+    labels:
+      caddy: auth.votre-domaine.com
+      caddy.reverse_proxy: "{{upstreams 8080}}"
+    networks:
+      - keycloak_net
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  keycloak_net:
+
+volumes:
+  postgres_data:
+  caddy_data:</code></pre>
+
+    <h3>VPS 2 : Serveur Client (Spring Boot + MySQL + Qdrant + Minio)</h3>
+    <pre><code class="language-yaml">version: '3.8'
+services:
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy:ci-alpine
+    ports: ["80:80", "443:443"]
+    environment:
+      - CADDY_INGRESS_NETWORKS=client_net
+    networks:
+      - client_net
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - caddy_data:/data
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: si-legale
+      MYSQL_USER: avo_user
+      MYSQL_PASSWORD: avo_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - client_net
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - client_net
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin_password
+    volumes:
+      - minio_data:/data
+    networks:
+      - client_net
+    restart: unless-stopped
+
+  backend:
+    image: votre-repo/avo-fatjar:latest 
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/si-legale?serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=avo_user
+      - SPRING_DATASOURCE_PASSWORD=avo_password
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6334
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin_password
+      - MINIO_BUCKET=avo-documents
+      - OLLAMA_BASE_URL=http://IP_PUBLIQUE_OU_PRIVEE_VPS3:11434
+      - KEYCLOAK_URL=https://auth.votre-domaine.com
+    labels:
+      caddy: app.client1.votre-domaine.com
+      caddy.reverse_proxy: "{{upstreams 8080}}"
+    depends_on:
+      - mysql
+      - qdrant
+      - minio
+    networks:
+      - client_net
+    restart: unless-stopped
+
+networks:
+  client_net:
+
+volumes:
+  caddy_data:
+  mysql_data:
+  qdrant_data:
+  minio_data:</code></pre>
+
+    <h3>VPS 3 : Serveur IA (Ollama)</h3>
+    <pre><code class="language-yaml">version: '3.8'
+services:
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434" # Attention: Securisez ce port via UFW (Firewall) !
+    # deploy:
+    #   resources: { reservations: { devices: [{ driver: nvidia, count: all, capabilities: [gpu] }] } }
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  ollama_data:</code></pre>
+
+  <p><strong>Remarque Sécurité :</strong> Le port 11434 du VPS 3 ne doit pas être ouvert au public entier. Configurez le firewall (ex: <code>ufw allow from IP_VPS_2 to any port 11434</code>) pour protéger votre serveur IA.</p>
+
+</body>
+</html>

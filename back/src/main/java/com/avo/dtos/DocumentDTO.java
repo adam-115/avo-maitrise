@@ -17,13 +17,20 @@ public class DocumentDTO {
     private String description;
     private String tags;
     private String filename;
+    private String pays;
     private Long clientId;
     private Long dossierId;
-    private byte[] fileData;
+    private String minioObjectId;
+    private String fileData; // Transient base64 data for frontend uploads
+    private String juridiction;
+    private java.time.LocalDate dateDecision;
+    private String numeroDecision;
+    private String ecli;
+    private String sourceUrl;
 
     public DocumentDTO() {}
 
-    public DocumentDTO(Long id, String nomFichier, DocumentType typeDocument, String urlStockage, LocalDateTime dateUpload, boolean estValide, String title, String name, String label, String description, String tags, String filename, Long clientId, Long dossierId, byte[] fileData) {
+    public DocumentDTO(Long id, String nomFichier, DocumentType typeDocument, String urlStockage, LocalDateTime dateUpload, boolean estValide, String title, String name, String label, String description, String tags, String filename, String pays, Long clientId, Long dossierId, String minioObjectId, String fileData) {
         this.id = id;
         this.nomFichier = nomFichier;
         this.typeDocument = typeDocument;
@@ -36,8 +43,10 @@ public class DocumentDTO {
         this.description = description;
         this.tags = tags;
         this.filename = filename;
+        this.pays = pays;
         this.clientId = clientId;
         this.dossierId = dossierId;
+        this.minioObjectId = minioObjectId;
         this.fileData = fileData;
     }
 
@@ -77,14 +86,30 @@ public class DocumentDTO {
     public String getFilename() { return filename; }
     public void setFilename(String filename) { this.filename = filename; }
 
+    public String getPays() { return pays; }
+    public void setPays(String pays) { this.pays = pays; }
+
     public Long getClientId() { return clientId; }
     public void setClientId(Long clientId) { this.clientId = clientId; }
 
     public Long getDossierId() { return dossierId; }
     public void setDossierId(Long dossierId) { this.dossierId = dossierId; }
 
-    public byte[] getFileData() { return fileData; }
-    public void setFileData(byte[] fileData) { this.fileData = fileData; }
+    public String getMinioObjectId() { return minioObjectId; }
+    public void setMinioObjectId(String minioObjectId) { this.minioObjectId = minioObjectId; }
+
+    public String getFileData() { return fileData; }
+    public void setFileData(String fileData) { this.fileData = fileData; }
+    public String getJuridiction() { return juridiction; }
+    public void setJuridiction(String juridiction) { this.juridiction = juridiction; }
+    public java.time.LocalDate getDateDecision() { return dateDecision; }
+    public void setDateDecision(java.time.LocalDate dateDecision) { this.dateDecision = dateDecision; }
+    public String getNumeroDecision() { return numeroDecision; }
+    public void setNumeroDecision(String numeroDecision) { this.numeroDecision = numeroDecision; }
+    public String getEcli() { return ecli; }
+    public void setEcli(String ecli) { this.ecli = ecli; }
+    public String getSourceUrl() { return sourceUrl; }
+    public void setSourceUrl(String sourceUrl) { this.sourceUrl = sourceUrl; }
 
     public static DocumentDTOBuilder builder() {
         return new DocumentDTOBuilder();
@@ -103,9 +128,16 @@ public class DocumentDTO {
         private String description;
         private String tags;
         private String filename;
+        private String pays;
         private Long clientId;
         private Long dossierId;
-        private byte[] fileData;
+        private String minioObjectId;
+        private String fileData;
+        private String juridiction;
+        private java.time.LocalDate dateDecision;
+        private String numeroDecision;
+        private String ecli;
+        private String sourceUrl;
 
         public DocumentDTOBuilder id(Long id) { this.id = id; return this; }
         public DocumentDTOBuilder nomFichier(String nomFichier) { this.nomFichier = nomFichier; return this; }
@@ -119,12 +151,25 @@ public class DocumentDTO {
         public DocumentDTOBuilder description(String description) { this.description = description; return this; }
         public DocumentDTOBuilder tags(String tags) { this.tags = tags; return this; }
         public DocumentDTOBuilder filename(String filename) { this.filename = filename; return this; }
+        public DocumentDTOBuilder pays(String pays) { this.pays = pays; return this; }
         public DocumentDTOBuilder clientId(Long clientId) { this.clientId = clientId; return this; }
         public DocumentDTOBuilder dossierId(Long dossierId) { this.dossierId = dossierId; return this; }
-        public DocumentDTOBuilder fileData(byte[] fileData) { this.fileData = fileData; return this; }
+        public DocumentDTOBuilder minioObjectId(String minioObjectId) { this.minioObjectId = minioObjectId; return this; }
+        public DocumentDTOBuilder fileData(String fileData) { this.fileData = fileData; return this; }
+        public DocumentDTOBuilder juridiction(String juridiction) { this.juridiction = juridiction; return this; }
+        public DocumentDTOBuilder dateDecision(java.time.LocalDate dateDecision) { this.dateDecision = dateDecision; return this; }
+        public DocumentDTOBuilder numeroDecision(String numeroDecision) { this.numeroDecision = numeroDecision; return this; }
+        public DocumentDTOBuilder ecli(String ecli) { this.ecli = ecli; return this; }
+        public DocumentDTOBuilder sourceUrl(String sourceUrl) { this.sourceUrl = sourceUrl; return this; }
 
         public DocumentDTO build() {
-            return new DocumentDTO(id, nomFichier, typeDocument, urlStockage, dateUpload, estValide, title, name, label, description, tags, filename, clientId, dossierId, fileData);
+            DocumentDTO dto = new DocumentDTO(id, nomFichier, typeDocument, urlStockage, dateUpload, estValide, title, name, label, description, tags, filename, pays, clientId, dossierId, minioObjectId, fileData);
+            dto.setJuridiction(juridiction);
+            dto.setDateDecision(dateDecision);
+            dto.setNumeroDecision(numeroDecision);
+            dto.setEcli(ecli);
+            dto.setSourceUrl(sourceUrl);
+            return dto;
         }
     }
 }

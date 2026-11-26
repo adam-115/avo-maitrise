@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Rapport d'Audit de Sécurité - Avo-Maîtrise</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 14mm 16mm 14mm 16mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #1e293b;
+      background-color: #ffffff;
+      line-height: 1.5;
+      font-size: 13px;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Cover / Header Section */
+    .header-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 24px 28px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+    }
+
+    .header-banner h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .header-banner p {
+      margin: 0 0 16px 0;
+      color: #93c5fd;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    .meta-item strong {
+      display: block;
+      color: #cbd5e1;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .meta-item span {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Section Headings */
+    h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-top: 24px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+
+    /* Cards */
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      page-break-inside: avoid;
+    }
+
+    .card.critical {
+      border-left: 4px solid #ef4444;
+      background: #fff5f5;
+    }
+
+    .card.high {
+      border-left: 4px solid #f97316;
+      background: #fffaf0;
+    }
+
+    .card.medium {
+      border-left: 4px solid #eab308;
+      background: #fefce8;
+    }
+
+    .card.low {
+      border-left: 4px solid #3b82f6;
+      background: #eff6ff;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .badge-critical { background-color: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .badge-high { background-color: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+    .badge-medium { background-color: #fef9c3; color: #854d0e; border: 1px solid #fef08a; }
+    .badge-low { background-color: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .badge-success { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 12px;
+      page-break-inside: avoid;
+    }
+
+    th, td {
+      padding: 8px 12px;
+      text-align: left;
+      border: 1px solid #cbd5e1;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    /* Code Blocks */
+    pre, code {
+      font-family: 'Consolas', 'Courier New', Courier, monospace;
+      font-size: 11.5px;
+    }
+
+    pre {
+      background-color: #0f172a;
+      color: #f8fafc;
+      padding: 10px 14px;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 8px 0;
+      line-height: 1.45;
+    }
+
+    code.inline {
+      background-color: #e2e8f0;
+      color: #0f172a;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .code-comment { color: #64748b; }
+    .code-keyword { color: #f43f5e; font-weight: bold; }
+    .code-string { color: #10b981; }
+    .code-func { color: #38bdf8; }
+
+    /* Vulnerability Header inside Card */
+    .vuln-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .vuln-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .vuln-meta {
+      font-size: 11.5px;
+      color: #64748b;
+      margin-bottom: 8px;
+    }
+
+    /* Grid for Action Plan */
+    .priority-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .priority-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      background: #f8fafc;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .priority-item strong {
+      min-width: 80px;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      text-align: center;
+      font-size: 11px;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER / BANNER -->
+  <div class="header-banner">
+    <h1>🛡️ Rapport d'Audit & Plan de Sécurisation</h1>
+    <p>Application Avo-Maîtrise (SI-Légal) — Plateforme Avocats & Gestion de Cabinet</p>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <strong>Date du Rapport</strong>
+        <span>9 Septembre 2026</span>
+      </div>
+      <div class="meta-item">
+        <strong>Périmètre</strong>
+        <span>Backend Spring Boot & Frontend Angular</span>
+      </div>
+      <div class="meta-item">
+        <strong>Niveau de Risque Global</strong>
+        <span>🔴 Élevé (Actions P0 requises)</span>
+      </div>
+      <div class="meta-item">
+        <strong>Statut</strong>
+        <span>Recommandations Prêtes</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <h2>1. Synthèse Exécutive</h2>
+  <p>
+    Une analyse approfondie du code source, de la configuration de sécurité (Spring Security, Keycloak, JWT), des contrôleurs REST, de la gestion des données sensibles et de l'architecture frontend Angular a été réalisée.
+    Bien que l'architecture technique repose sur des socles solides (OAuth2/OIDC avec Keycloak, Liquibase, Hibernate), <strong>plusieurs vulnérabilités critiques et majeures ont été identifiées</strong> et requièrent une correction immédiate pour garantir la confidentialité des données des clients et la conformité légale (Secret professionnel, RGPD, KYC/AML).
+  </p>
+
+  <!-- RISK MATRIX TABLE -->
+  <h2>2. Matrice des Risques & Vulnérabilités Identifiées</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 12%;">Sévérité</th>
+        <th style="width: 28%;">Vulnérabilité</th>
+        <th style="width: 32%;">Impact Métier / Technique</th>
+        <th style="width: 28%;">Fichiers Concernés</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-critical">Critique</span></td>
+        <td><strong>Profil Dev par défaut</strong><br>(Bypass d'authentification)</td>
+        <td>Désactive toute authentification si l'app est déployée sans configuration de profil explicite (accès public complet).</td>
+        <td><code>application.properties</code><br><code>DevSecurityConfig.java</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-critical">Critique</span></td>
+        <td><strong>Absence de RBAC & Risque IDOR</strong></td>
+        <td>N'importe quel utilisateur connecté peut réinitialiser le mot de passe d'un admin, désactiver des comptes ou altérer des factures.</td>
+        <td><code>UserController.java</code><br><code>CabinetProfileController.java</code><br><code>DocumentController.java</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-critical">Critique</span></td>
+        <td><strong>Fuite de Stack Traces</strong><br>(Information Disclosure)</td>
+        <td>Les réponses HTTP 500 renvoient la trace interne complète (tables SQL, chemins OS, librairies).</td>
+        <td><code>GlobalExceptionHandler.java</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-high">Élevée</span></td>
+        <td><strong>Exposition Actuator Totale</strong></td>
+        <td>Exposition non restreinte de <code>/actuator/env</code>, <code>/heapdump</code>, <code>/mappings</code> avec dump des variables d'environnement.</td>
+        <td><code>application.properties</code><br><code>SecurityConfig.java</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-high">Élevée</span></td>
+        <td><strong>CORS Permissif & Dangereux</strong></td>
+        <td><code>allowedOriginPatterns("*")</code> combiné avec <code>allowCredentials(true)</code> autorise des attaques cross-origin.</td>
+        <td><code>CorsConfig.java</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-high">Élevée</span></td>
+        <td><strong>Secrets codés en dur</strong></td>
+        <td>Clés API Yente, secret client Keycloak et mot de passe par défaut <code>"AvoMaitrise@123"</code> présents en clair.</td>
+        <td><code>application.properties</code><br><code>UserService.java</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-medium">Moyenne</span></td>
+        <td><strong>Absence de Route Guards Front</strong></td>
+        <td>L'interface Angular permet d'accéder aux vues d'administration sans vérification de rôle locale.</td>
+        <td><code>app.routes.ts</code></td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-medium">Moyenne</span></td>
+        <td><strong>Absence de validation @Valid</strong></td>
+        <td>Entrées utilisateur non assainies sur les requêtes POST/PUT (risques de corruption ou DoS).</td>
+        <td>Contrôleurs & DTOs</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-low">Faible</span></td>
+        <td><strong>Manque d'En-têtes de Sécurité</strong></td>
+        <td>Absence de configuration explicite CSP, HSTS, X-Frame-Options, X-Content-Type-Options.</td>
+        <td><code>SecurityConfig.java</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- DETAILED VULNERABILITIES SECTION -->
+  <h2>3. Analyse Technique Détaillée des Vulnérabilités</h2>
+
+  <!-- VULN 1 -->
+  <div class="card critical">
+    <div class="vuln-header">
+      <div class="vuln-title">
+        <span class="badge badge-critical">Critique</span>
+        1. Profil « Dev » par défaut désactivant toute sécurité
+      </div>
+      <span class="vuln-meta">CWE-306 : Missing Authentication</span>
+    </div>
+    <p>
+      Dans <code>application.properties</code>, la propriété par défaut est <code>spring.profiles.active=dev</code>. La classe <code>DevSecurityConfig.java</code> associée applique :
+    </p>
+    <pre><code><span class="code-keyword">http</span>.authorizeHttpRequests(auth -> auth.<span class="code-func">anyRequest</span>().<span class="code-func">permitAll</span>());</code></pre>
+    <p>
+      <strong>Impact :</strong> Si le conteneur ou le serveur démarre sans variable d'environnement <code>SPRING_PROFILES_ACTIVE=prod</code>, l'intégralité des endpoints de l'API (dossiers, clients, documents, factures, utilisateurs) est accessible anonymement sans aucun token JWT.
+    </p>
+    <p><strong>Remédiation :</strong> Remplacer le profil par défaut par un profil sécurisé et restreindre <code>DevSecurityConfig</code> uniquement aux tests unitaires mockés.</p>
+  </div>
+
+  <!-- VULN 2 -->
+  <div class="card critical">
+    <div class="vuln-header">
+      <div class="vuln-title">
+        <span class="badge badge-critical">Critique</span>
+        2. Absence d'autorisations RBAC sur les contrôleurs REST & Risque IDOR
+      </div>
+      <span class="vuln-meta">CWE-285 : Improper Authorization / CWE-639 : IDOR</span>
+    </div>
+    <p>
+      Bien que <code>@EnableMethodSecurity(prePostEnabled = true)</code> soit activé dans <code>SecurityConfig.java</code>, <strong>aucun contrôleur REST n'utilise d'annotation <code>@PreAuthorize</code></strong>.
+    </p>
+    <p>
+      <strong>Impact :</strong> N'importe quel utilisateur disposant d'un compte simple (ex: stagiaire ou secrétaire) peut appeler :
+    </p>
+    <ul>
+      <li><code>POST /api/users/{id}/reset-password</code> : Réinitialiser le mot de passe de l'administrateur du cabinet.</li>
+      <li><code>PUT /api/users/{id}/disable</code> : Désactiver des comptes utilisateurs.</li>
+      <li><code>PUT /api/cabinet-profile</code> : Modifier les coordonnées bancaires, taux de TVA et paramètres légaux.</li>
+      <li><code>DELETE /api/invoices/{id}</code> ou <code>DELETE /api/clients/{id}</code> : Supprimer n'importe quel enregistrement sans vérification de droits ni d'appartenance.</li>
+    </ul>
+    <p><strong>Remédiation :</strong> Ajouter des vérifications d'autorité systématiques sur tous les contrôleurs :</p>
+    <pre><code><span class="code-keyword">@PreAuthorize</span>(<span class="code-string">"hasRole('ADMIN')"</span>)
+<span class="code-keyword">@PostMapping</span>(<span class="code-string">"/{id}/reset-password"</span>)
+<span class="code-keyword">public</span> ResponseEntity&lt;String&gt; <span class="code-func">resetPassword</span>(<span class="code-keyword">@PathVariable</span> Long id) { ... }</code></pre>
+  </div>
+
+  <!-- VULN 3 -->
+  <div class="card critical">
+    <div class="vuln-header">
+      <div class="vuln-title">
+        <span class="badge badge-critical">Critique</span>
+        3. Divulgation de Stack Traces internes (Information Disclosure)
+      </div>
+      <span class="vuln-meta">CWE-209 : Information Exposure Through Error Message</span>
+    </div>
+    <p>
+      Dans <code>GlobalExceptionHandler.java</code> (lignes 63-66), les exceptions de type <code>Throwable</code> capturent la stack trace complète et la renvoient en texte brut dans le corps de la réponse HTTP 500 :
+    </p>
+    <pre><code>java.io.StringWriter sw = <span class="code-keyword">new</span> java.io.StringWriter();
+ex.<span class="code-func">printStackTrace</span>(<span class="code-keyword">new</span> java.io.PrintWriter(sw));
+<span class="code-keyword">return</span> ResponseEntity.<span class="code-func">status</span>(HttpStatus.INTERNAL_SERVER_ERROR).<span class="code-func">body</span>(sw.toString());</code></pre>
+    <p>
+      <strong>Impact :</strong> Fuite critique d'informations sur l'infrastructure (schéma de la base de données, requêtes Hibernate en échec, versions de librairies, chemins système absolus Windows/Linux).
+    </p>
+    <p><strong>Remédiation :</strong> Renvoyer un objet JSON d'erreur standardisé <code>{"error": "Erreur interne", "timestamp": ...}</code> et journaliser la stack trace uniquement dans les logs sécurisés du serveur.</p>
+  </div>
+
+  <!-- PAGE BREAK -->
+  <div class="page-break"></div>
+
+  <!-- VULN 4 & 5 -->
+  <div class="card high">
+    <div class="vuln-header">
+      <div class="vuln-title">
+        <span class="badge badge-high">Élevée</span>
+        4. Endpoints Actuator exposés publiquement sans restriction
+      </div>
+      <span class="vuln-meta">CWE-200 : Exposure of Sensitive Information</span>
+    </div>
+    <p>
+      Dans <code>application.properties</code> : <code>management.endpoints.web.exposure.include=*</code> expose tous les endpoints Actuator. Dans <code>SecurityConfig.java</code>, la règle <code>// .requestMatchers("/actuator/**").hasAnyRole("super_admin", "admin")</code> est désactivée.
+    </p>
+    <p>
+      <strong>Impact :</strong> Un attaquant accédant à <code>/actuator/env</code> ou <code>/actuator/heapdump</code> peut récupérer l'ensemble des clés secrètes en mémoire, les sessions utilisateurs et la configuration.
+    </p>
+    <p><strong>Remédiation :</strong> Restreindre l'exposition à <code>health,info</code> et exiger <code>ROLE_ADMIN</code> pour tout accès Actuator.</p>
+  </div>
+
+  <div class="card high">
+    <div class="vuln-header">
+      <div class="vuln-title">
+        <span class="badge badge-high">Élevée</span>
+        5. Configuration CORS trop permissive
+      </div>
+      <span class="vuln-meta">CWE-942 : Permissive Cross-Origin Resource Sharing</span>
+    </div>
+    <p>
+      Dans <code>CorsConfig.java</code>, <code>allowedOriginPatterns("*")</code> est configuré avec <code>allowCredentials(true)</code>.
+    </p>
+    <p>
+      <strong>Impact :</strong> N'importe quel domaine malveillant ouvert dans le navigateur d'un avocat peut envoyer des requêtes authentifiées à l'API et lire les réponses.
+    </p>
+    <p><strong>Remédiation :</strong> Restreindre explicitement les origines autorisées aux domaines du cabinet (ex: <code>https://si-legal.duckdns.org</code>, <code>http://localhost:4200</code>).</p>
+  </div>
+
+  <div class="card high">
+    <div class="vuln-header">
+      <div class="vuln-title">
+        <span class="badge badge-high">Élevée</span>
+        6. Mots de passe et secrets codés en dur dans le code source
+      </div>
+      <span class="vuln-meta">CWE-798 : Use of Hard-coded Credentials</span>
+    </div>
+    <p>
+      Le fichier <code>application.properties</code> contient en clair le secret administrateur Keycloak, la clé API Yente et le mot de passe SMTP. Dans <code>UserService.java:L61</code>, le mot de passe temporaire par défaut est statique : <code>"AvoMaitrise@123"</code>.
+    </p>
+    <p><strong>Remédiation :</strong> Injecter tous les secrets via des variables d'environnement et générer un mot de passe aléatoire cryptographique fort pour chaque nouvel utilisateur créé.</p>
+  </div>
+
+  <!-- VULN 7 & 8 -->
+  <div class="card medium">
+    <div class="vuln-header">
+      <div class="vuln-title">
+        <span class="badge badge-medium">Moyenne</span>
+        7. Absence d'Angular Route Guards côté Frontend
+      </div>
+      <span class="vuln-meta">Frontend Access Control</span>
+    </div>
+    <p>
+      Dans <code>app.routes.ts</code>, aucune route ne déclare <code>canActivate: [authGuard]</code> ou <code>canActivate: [roleGuard]</code>. Un utilisateur peut afficher les écrans de configuration et d'administration.
+    </p>
+    <p><strong>Remédiation :</strong> Implémenter un <code>AuthGuard</code> et un <code>RoleGuard</code> s'appuyant sur <code>KeycloakService.getUserRoles()</code>.</p>
+  </div>
+
+  <!-- ACTION PLAN SECTION -->
+  <h2>4. Plan d'Action & Feuille de Route de Remédiation</h2>
+  <ul class="priority-list">
+    <li class="priority-item">
+      <strong style="color: #991b1b;">🔴 Priorité 0<br>(Immédiat)</strong>
+      <div>
+        <strong>Correction de la fuite de Stack Traces & Sécurisation Globale</strong><br>
+        1. Nettoyer <code>GlobalExceptionHandler.java</code> pour renvoyer des réponses JSON d'erreur génériques sans stack trace.<br>
+        2. Configurer <code>SecurityConfig.java</code> pour verrouiller <code>/actuator/**</code> et ajouter les en-têtes HTTP de sécurité (CSP, HSTS, X-Frame-Options).<br>
+        3. Restreindre <code>CorsConfig.java</code> aux domaines stricts autorisés.
+      </div>
+    </li>
+    <li class="priority-item">
+      <strong style="color: #9a3412;">🟠 Priorité 1<br>(Sous 48h)</strong>
+      <div>
+        <strong>Mise en place du Contrôle d'Accès RBAC & Protection DTO</strong><br>
+        1. Ajouter les annotations <code>@PreAuthorize</code> sur <code>UserController</code>, <code>CabinetProfileController</code>, etc.<br>
+        2. Sécuriser <code>UserDTO.java</code> avec <code>@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)</code> sur <code>tempPassword</code>.<br>
+        3. Externaliser les secrets de <code>application.properties</code> vers des variables d'environnement.
+      </div>
+    </li>
+    <li class="priority-item">
+      <strong style="color: #854d0e;">🟡 Priorité 2<br>(Sous 1 semaine)</strong>
+      <div>
+        <strong>Angular Guards & Validation des Données</strong><br>
+        1. Créer <code>AuthGuard</code> et <code>RoleGuard</code> dans Angular et protéger les routes dans <code>app.routes.ts</code>.<br>
+        2. Ajouter les annotations Jakarta Bean Validation (<code>@Valid</code>, <code>@NotBlank</code>, <code>@Size</code>, <code>@PositiveOrZero</code>) sur tous les DTOs backend.
+      </div>
+    </li>
+  </ul>
+
+  <div class="footer-note">
+    Rapport d'Audit de Sécurité — Plateforme Avo-Maîtrise (SI-Légal) — Confidentiel & Réservé à l'équipe technique
+  </div>
+
+</body>
+</html>

@@ -17,10 +17,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "invoice")
 @Data
 public class Invoice {
+
+    public Invoice() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +38,7 @@ public class Invoice {
     @Column(name = "due_date", nullable = false)
     private LocalDate dueDate;
 
+    @org.hibernate.envers.NotAudited
     @OneToMany(mappedBy = "invoice")
     private List<InvoiceTimeEntry> invoiceTimeEntries;
 

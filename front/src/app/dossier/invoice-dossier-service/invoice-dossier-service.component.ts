@@ -1,6 +1,7 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { InvoiceDossierServiceService } from '../../services/invoice-dossier-service.service';
 import { InvoiceTypeOfServiceService } from '../../services/invoice-type-of-service.service';
 import { InvoiceDossierService, InvoiceTypeOfService, User, InvoiceTimeEntry, InvoiceDossierServiceStatusEnum } from '../../appTypes';
@@ -10,22 +11,38 @@ import { KeycloakService } from '../../services/keycloak.service';
 import { UserSelectionDialog } from '../user-selection-dialog/user-selection-dialog';
 import { GenerateInvoiceDialog } from '../generate-invoice-dialog/generate-invoice-dialog';
 import { InvoiceService } from '../../features/billing/services/invoice.service';
+import { PrestationAiAuditService, PrestationAuditResult, PrestationProposal } from '../../services/prestation-ai-audit.service';
+import { AiStatusService } from '../../services/ai-status.service';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-invoice-dossier-service',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, UserSelectionDialog, GenerateInvoiceDialog],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, UserSelectionDialog, GenerateInvoiceDialog, TranslatePipe],
   templateUrl: './invoice-dossier-service.component.html',
   styleUrls: []
 })
-export class InvoiceDossierServiceComponent implements OnInit {
+export class InvoiceDossierServiceComponent implements OnInit, OnChanges {
   @Input() dossierId!: string | number;
 
   prestations: InvoiceDossierService[] = [];
   typesOfService: InvoiceTypeOfService[] = [];
   users: User[] = [];
   
-  statusOptions = Object.values(InvoiceDossierServiceStatusEnum);
+  createStatusOptions = [
+    InvoiceDossierServiceStatusEnum.A_FACTURE,
+    InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE
+  ];
+
+  editStatusOptions = [
+    InvoiceDossierServiceStatusEnum.A_FACTURE,
+    InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE,
+    InvoiceDossierServiceStatusEnum.ANNULEE
+  ];
+
+  get currentStatusOptions(): InvoiceDossierServiceStatusEnum[] {
+    return this.editingPrestationId ? this.editStatusOptions : this.createStatusOptions;
+  }
   
   currentUser: User | null = null;
   selectedDoneByUser: User | null = null;
@@ -37,6 +54,8 @@ export class InvoiceDossierServiceComponent implements OnInit {
   editingPrestationId: number | null = null;
   prestationForm: FormGroup;
   
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private prestationService = inject(InvoiceDossierServiceService);
   private typeOfService = inject(InvoiceTypeOfServiceService);
   private fb = inject(FormBuilder);
@@ -44,9 +63,21 @@ export class InvoiceDossierServiceComponent implements OnInit {
   private userService = inject(UserService);
   private keycloakService = inject(KeycloakService);
   private invoiceService = inject(InvoiceService);
+  private aiAuditService = inject(PrestationAiAuditService);
+  public aiStatusService = inject(AiStatusService);
+  private translate = inject(TranslateService);
+
+  // Audit IA des prestations oubliées
+  isAuditingAi = false;
+  showAiPanel = false;
+  aiAuditResult: PrestationAuditResult | null = null;
+  aiProposals: PrestationProposal[] = [];
+  processingSourceKey: string | null = null;
+  isAcceptingAll = false;
 
   constructor() {
     this.prestationForm = this.fb.group({
+      serviceDate: [this.getTodayDateString(), Validators.required],
       info: ['', Validators.required],
       nbrOfMinutes: [5, [Validators.required, Validators.min(5)]],
       invoiceTypeOfServiceId: [null, Validators.required],
@@ -54,10 +85,59 @@ export class InvoiceDossierServiceComponent implements OnInit {
     });
   }
 
+  getTodayDateString(): string {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  }
+
+  isStatusLocked(status?: InvoiceDossierServiceStatusEnum): boolean {
+    return status === InvoiceDossierServiceStatusEnum.FACTUREE || status === InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION;
+  }
+
+  getStatusBadgeClass(status?: InvoiceDossierServiceStatusEnum): string {
+    switch (status) {
+      case InvoiceDossierServiceStatusEnum.A_FACTURE:
+        return 'bg-blue-50 text-blue-700 border-blue-200';
+      case InvoiceDossierServiceStatusEnum.EN_COURS_DE_FACTURATION:
+        return 'bg-amber-50 text-amber-700 border-amber-200';
+      case InvoiceDossierServiceStatusEnum.FACTUREE:
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case InvoiceDossierServiceStatusEnum.ANNULEE:
+        return 'bg-rose-50 text-rose-700 border-rose-200';
+      case InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE:
+        return 'bg-slate-100 text-slate-600 border-slate-300';
+      default:
+        return 'bg-slate-50 text-slate-600 border-slate-200';
+    }
+  }
+
+  getStatusI18nKey(status?: InvoiceDossierServiceStatusEnum): string {
+    if (!status) return '-';
+    return `PRESTATIONS.STATUS_${status}`;
+  }
+
   ngOnInit(): void {
+    if (!this.dossierId) {
+      const idFromRoute = this.route.snapshot.paramMap.get('id') || this.route.parent?.snapshot.paramMap.get('id');
+      if (idFromRoute) {
+        this.dossierId = idFromRoute;
+      }
+    }
     this.loadPrestations();
     this.loadTypesOfService();
     this.loadUsers();
+
+    this.route.queryParams.subscribe(params => {
+      if (params['openAdd'] === 'true' || params['action'] === 'new') {
+        setTimeout(() => this.openAddModal(), 300);
+      }
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['dossierId'] && !changes['dossierId'].isFirstChange()) {
+      this.loadPrestations();
+    }
   }
 
   loadUsers(): void {
@@ -101,6 +181,7 @@ export class InvoiceDossierServiceComponent implements OnInit {
   openAddModal(): void {
     this.editingPrestationId = null;
     this.prestationForm.reset({ 
+      serviceDate: this.getTodayDateString(),
       nbrOfMinutes: 5,
       status: InvoiceDossierServiceStatusEnum.A_FACTURE
     });
@@ -119,8 +200,20 @@ export class InvoiceDossierServiceComponent implements OnInit {
       return;
     }
 
+    let sDate = this.getTodayDateString();
+    if (prestation.serviceDate) {
+      sDate = typeof prestation.serviceDate === 'string' 
+        ? prestation.serviceDate.substring(0, 10) 
+        : new Date(prestation.serviceDate).toISOString().split('T')[0];
+    } else if (prestation.creationDate) {
+      sDate = typeof prestation.creationDate === 'string'
+        ? (prestation.creationDate as string).substring(0, 10)
+        : new Date(prestation.creationDate).toISOString().split('T')[0];
+    }
+
     this.editingPrestationId = prestation.id || null;
     this.prestationForm.patchValue({
+      serviceDate: sDate,
       info: prestation.info,
       nbrOfMinutes: prestation.nbrOfMinutes,
       invoiceTypeOfServiceId: prestation.invoiceTypeOfService?.id,
@@ -225,6 +318,7 @@ export class InvoiceDossierServiceComponent implements OnInit {
       const type = this.typesOfService.find(t => String(t.id) === String(formValue.invoiceTypeOfServiceId));
       const newPrestation: InvoiceDossierService = {
         id: this.editingPrestationId || undefined,
+        serviceDate: formValue.serviceDate,
         info: formValue.info,
         nbrOfMinutes: formValue.nbrOfMinutes,
         dossier: { id: Number(this.dossierId) } as any,
@@ -261,17 +355,207 @@ export class InvoiceDossierServiceComponent implements OnInit {
     }
   }
 
-  deletePrestation(id: number | undefined): void {
-    if (!id) return;
-    this.alertService.confirmMessage('Supprimer', 'Voulez-vous vraiment supprimer cette prestation ?', 'warning').then(confirmed => {
+  runAiAudit(): void {
+    if (!this.dossierId || this.isAuditingAi) return;
+    this.isAuditingAi = true;
+    this.showAiPanel = true;
+    this.aiAuditService.auditDossier(this.dossierId).subscribe({
+      next: (res) => {
+        this.aiAuditResult = res;
+        this.aiProposals = (res.proposals || []).map(p => ({ ...p }));
+        this.isAuditingAi = false;
+      },
+      error: (err) => {
+        console.error('Erreur audit IA prestations:', err);
+        this.isAuditingAi = false;
+        this.alertService.displayMessage('Erreur', 'Impossible d\'exécuter la vérification IA des prestations.', 'error');
+      }
+    });
+  }
+
+  closeAiPanel(): void {
+    this.showAiPanel = false;
+  }
+
+  getProposalEstimatedAmount(p: PrestationProposal): number {
+    const type = this.typesOfService.find(t => String(t.id) === String(p.invoiceTypeOfServiceId));
+    const price5 = type?.price5min ?? 0;
+    const mins = Number(p.nbrOfMinutes) || 0;
+    return Math.round(((mins / 5) * price5) * 100) / 100;
+  }
+
+  getSourceBadgeClass(sourceType: string): string {
+    switch (sourceType) {
+      case 'EMAIL': return 'bg-sky-50 text-sky-700 border-sky-200';
+      case 'APPOINTMENT': return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'EVENT': return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'TASK': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'NOTE': return 'bg-indigo-50 text-indigo-700 border-indigo-200';
+      default: return 'bg-slate-100 text-slate-700 border-slate-200';
+    }
+  }
+
+  getSourceTypeLabel(sourceType: string): string {
+    switch (sourceType) {
+      case 'EMAIL': return '📧 Email';
+      case 'APPOINTMENT': return '📅 Rendez-vous';
+      case 'EVENT': return '⚖️ Événement';
+      case 'TASK': return '✅ Tâche';
+      case 'NOTE': return '📝 Note';
+      default: return sourceType;
+    }
+  }
+
+  acceptAiProposal(proposal: PrestationProposal): void {
+    if (!this.dossierId || this.processingSourceKey) return;
+    if (!proposal.info?.trim()) {
+      this.alertService.displayMessage('Champ requis', 'Veuillez renseigner la description de la prestation.', 'warning');
+      return;
+    }
+    this.processingSourceKey = proposal.sourceKey;
+    this.aiAuditService.acceptProposal(this.dossierId, {
+      sourceKey: proposal.sourceKey,
+      serviceDate: proposal.serviceDate,
+      info: proposal.info.trim(),
+      invoiceTypeOfServiceId: proposal.invoiceTypeOfServiceId ? Number(proposal.invoiceTypeOfServiceId) : null,
+      nbrOfMinutes: Math.max(5, Number(proposal.nbrOfMinutes) || 15),
+      doneById: this.currentUser?.id ? Number(this.currentUser.id) : null,
+      status: InvoiceDossierServiceStatusEnum.A_FACTURE
+    }).subscribe({
+      next: () => {
+        this.aiProposals = this.aiProposals.filter(p => p.sourceKey !== proposal.sourceKey);
+        this.processingSourceKey = null;
+        this.alertService.success('Prestation acceptée et ajoutée au dossier.');
+        this.loadPrestations();
+      },
+      error: (err) => {
+        console.error(err);
+        this.processingSourceKey = null;
+        this.alertService.displayMessage('Erreur', 'Impossible d\'accepter cette prestation.', 'error');
+      }
+    });
+  }
+
+  rejectAiProposal(proposal: PrestationProposal): void {
+    if (!this.dossierId || this.processingSourceKey) return;
+    this.processingSourceKey = proposal.sourceKey;
+    this.aiAuditService.rejectProposal(this.dossierId, proposal.sourceKey, proposal.info).subscribe({
+      next: () => {
+        this.aiProposals = this.aiProposals.filter(p => p.sourceKey !== proposal.sourceKey);
+        if (this.aiAuditResult) {
+          this.aiAuditResult.ignoredDecisionsCount = (this.aiAuditResult.ignoredDecisionsCount || 0) + 1;
+        }
+        this.processingSourceKey = null;
+      },
+      error: (err) => {
+        console.error(err);
+        this.processingSourceKey = null;
+        this.alertService.displayMessage('Erreur', 'Impossible de refuser cette proposition.', 'error');
+      }
+    });
+  }
+
+  async acceptAllAiProposals(): Promise<void> {
+    if (!this.dossierId || this.isAcceptingAll || this.aiProposals.length === 0) return;
+    this.isAcceptingAll = true;
+    const batch = [...this.aiProposals];
+    let accepted = 0;
+    for (const proposal of batch) {
+      try {
+        await new Promise<void>((resolve, reject) => {
+          this.aiAuditService.acceptProposal(this.dossierId, {
+            sourceKey: proposal.sourceKey,
+            serviceDate: proposal.serviceDate,
+            info: proposal.info.trim(),
+            invoiceTypeOfServiceId: proposal.invoiceTypeOfServiceId ? Number(proposal.invoiceTypeOfServiceId) : null,
+            nbrOfMinutes: Math.max(5, Number(proposal.nbrOfMinutes) || 15),
+            doneById: this.currentUser?.id ? Number(this.currentUser.id) : null,
+            status: InvoiceDossierServiceStatusEnum.A_FACTURE
+          }).subscribe({
+            next: () => {
+              this.aiProposals = this.aiProposals.filter(p => p.sourceKey !== proposal.sourceKey);
+              accepted++;
+              resolve();
+            },
+            error: reject
+          });
+        });
+      } catch {
+        // Continuer sur les autres
+      }
+    }
+    this.isAcceptingAll = false;
+    if (accepted > 0) {
+      this.alertService.success(`${accepted} prestation(s) ajoutée(s) au dossier.`);
+      this.loadPrestations();
+    }
+  }
+
+  resetRejectedAiDecisions(): void {
+    if (!this.dossierId) return;
+    this.aiAuditService.resetRejected(this.dossierId).subscribe({
+      next: () => {
+        this.alertService.success('Historique des refus réinitialisé. Relance de l\'analyse...');
+        this.runAiAudit();
+      },
+      error: () => {
+        this.alertService.displayMessage('Erreur', 'Impossible de réinitialiser les refus.', 'error');
+      }
+    });
+  }
+
+  deletePrestation(prestation: InvoiceDossierService): void {
+    if (!prestation?.id) return;
+    if (!this.canEditPrestation(prestation)) {
+      this.alertService.displayMessage(
+        this.translate.instant('PRESTATIONS.ACTION_UNAUTHORIZED') || 'Action non autorisée',
+        this.translate.instant('PRESTATIONS.CANNOT_DELETE_BILLED') || 'Impossible de supprimer une prestation déjà facturée ou en cours de facturation.',
+        'warning'
+      );
+      return;
+    }
+
+    const title = this.translate.instant('PRESTATIONS.DELETE_CONFIRM_TITLE') || 'Supprimer la prestation';
+    const msg = this.translate.instant('PRESTATIONS.DELETE_CONFIRM_MSG') || 'Voulez-vous vraiment supprimer cette prestation ?';
+
+    this.alertService.confirmMessage(title, msg, 'warning').then(confirmed => {
       if (confirmed) {
-        this.prestationService.delete(id).subscribe({
+        this.prestationService.delete(prestation.id).subscribe({
           next: () => {
-            this.alertService.success('Prestation supprimée');
+            this.alertService.success(this.translate.instant('PRESTATIONS.DELETE_SUCCESS') || 'Prestation supprimée avec succès');
             this.loadPrestations();
           },
-          error: (err) => console.error(err)
+          error: (err) => {
+            console.error(err);
+            this.alertService.displayMessage(
+              this.translate.instant('ALERT.ERROR_TITLE') || 'Erreur',
+              this.translate.instant('PRESTATIONS.DELETE_ERROR') || 'Impossible de supprimer la prestation',
+              'error'
+            );
+          }
         });
+      }
+    });
+  }
+
+  toggleNonFacturable(prestation: InvoiceDossierService): void {
+    if (!this.canEditPrestation(prestation) || !prestation.id) return;
+    
+    const targetStatus = prestation.status === InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE 
+      ? InvoiceDossierServiceStatusEnum.A_FACTURE 
+      : InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE;
+
+    const updated = { ...prestation, status: targetStatus };
+    this.prestationService.update(updated).subscribe({
+      next: () => {
+        this.alertService.success(targetStatus === InvoiceDossierServiceStatusEnum.PAS_PRISE_EN_CHARGE 
+          ? 'Prestation marquée comme non facturable' 
+          : 'Prestation marquée à facturer');
+        this.loadPrestations();
+      },
+      error: (err) => {
+        console.error(err);
+        this.alertService.displayMessage('Erreur', 'Impossible de modifier le statut de la prestation', 'error');
       }
     });
   }

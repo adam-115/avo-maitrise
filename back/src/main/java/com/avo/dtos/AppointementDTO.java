@@ -13,6 +13,8 @@ public class AppointementDTO {
     private String location;
     private String status;
     private Date date;
+    private String externalCalendarEventId;
+    private String externalCalendarProvider;
 
     public AppointementDTO() {}
 
@@ -45,4 +47,10 @@ public class AppointementDTO {
 
     public Date getDate() { return date; }
     public void setDate(Date date) { this.date = date; }
+
+    public String getExternalCalendarEventId() { return externalCalendarEventId; }
+    public void setExternalCalendarEventId(String externalCalendarEventId) { this.externalCalendarEventId = externalCalendarEventId; }
+
+    public String getExternalCalendarProvider() { return externalCalendarProvider; }
+    public void setExternalCalendarProvider(String externalCalendarProvider) { this.externalCalendarProvider = externalCalendarProvider; }
 }

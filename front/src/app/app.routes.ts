@@ -48,7 +48,10 @@ export const routes: Routes = [
           { path: 'notes', loadComponent: () => import('./note/note/note.component').then(m => m.NoteComponent) },
           { path: 'contacts', loadComponent: () => import('./contact/contact/contact.component').then(m => m.ContactComponent) },
           { path: 'prestations', loadComponent: () => import('./dossier/invoice-dossier-service/invoice-dossier-service.component').then(m => m.InvoiceDossierServiceComponent) },
-          { path: 'journal', loadComponent: () => import('./dossier/matter-activity/matter-activity').then(m => m.MatterActivityComponent) }
+          { path: 'journal', loadComponent: () => import('./dossier/matter-activity/matter-activity').then(m => m.MatterActivityComponent) },
+          { path: 'audit', loadComponent: () => import('./shared/audit-timeline/audit-timeline.component').then(m => m.AuditTimelineComponent) },
+          { path: 'emails', loadComponent: () => import('./dossier/dossier-emails/dossier-emails.component').then(m => m.DossierEmailsComponent) },
+          { path: 'strategie', loadComponent: () => import('./dossier/dossier-strategie/dossier-strategie.component').then(m => m.DossierStrategieComponent) }
         ]
       },
       {
@@ -79,22 +82,7 @@ export const routes: Routes = [
         path: NavigationService.CLIENT_EDIT,
         loadComponent: () => import('./crm/client-form/client-form.component').then(m => m.ClientFormComponent),
       },
-      // {
-      //   path: NavigationService.PERSONNE_EDIT,
-      //   loadComponent: () => import('./crm/personne-physique-form/personne-physique-form.component').then(m => m.PersonnePhysiqueFormComponent),
-      // },
-      // {
-      //   path: NavigationService.SOCIETE_EDIT,
-      //   loadComponent: () => import('./crm/client-moral-form/client-moral-form.component').then(m => m.ClientMoralFormComponent),
-      // },
-      // {
-      //   path: NavigationService.ASSOCIATION_EDIT,
-      //   loadComponent: () => import('./crm/association-form/association-form.component').then(m => m.AssociationFormComponent),
-      // },
-      // {
-      //   path: NavigationService.INSTITUTION_EDIT,
-      //   loadComponent: () => import('./crm/institution-form/institution-form.component').then(m => m.InstitutionFormComponent),
-      // },
+
       {
         path: NavigationService.CLIENT_CONFORMITY,
         loadComponent: () => import('./crm/client-conformity/client-conformity').then(m => m.ClientConformity)
@@ -116,6 +104,10 @@ export const routes: Routes = [
       {
         path: NavigationService.CALENDRIER,
         loadComponent: () => import('./calendrier/calendrier/calendrier').then(m => m.Calendrier)
+      },
+      {
+        path: NavigationService.MESSAGERIE,
+        loadComponent: () => import('./messagerie/messagerie.component').then(m => m.MessagerieComponent)
       },
       {
         path: NavigationService.ADMINSTRATION,
@@ -204,6 +196,10 @@ export const routes: Routes = [
         path: NavigationService.INVOICE_TYPE_OF_SERVICE_FORM,
         loadComponent: () => import('./administration/invoice-type-of-service-form/invoice-type-of-service-form.component').then(m => m.InvoiceTypeOfServiceFormComponent)
       },
+      {
+        path: NavigationService.JURISPRUDENCE_MANAGEMENT,
+        loadComponent: () => import('./administration/jurisprudence-management/jurisprudence-management').then(m => m.JurisprudenceManagement)
+      },
 
 
       // Routes      // Nouvelle Facturation
@@ -234,6 +230,26 @@ export const routes: Routes = [
       {
         path: 'test',
         loadComponent: () => import('./test/test').then(m => m.Test),
+      },
+      {
+        path: NavigationService.AI_ASSISTANT,
+        loadComponent: () => import('./features/ai-tester/ai-tester.component').then(m => m.AiTesterComponent),
+      },
+      {
+        path: 'ai-configuration',
+        loadComponent: () => import('./administration/ai-configuration/ai-configuration').then(m => m.AiConfiguration),
+      },
+      {
+        path: 'audit-journal',
+        loadComponent: () => import('./administration/audit-journal/audit-journal').then(m => m.AuditJournal),
+      },
+      {
+        path: 'mail-configuration',
+        loadComponent: () => import('./administration/mail-configuration/mail-configuration.component').then(m => m.MailConfigurationComponent),
+      },
+      {
+        path: 'dictee-rapide',
+        loadComponent: () => import('./voice-note/voice-note-quick.component').then(m => m.VoiceNoteQuickComponent),
       }
     ]
 

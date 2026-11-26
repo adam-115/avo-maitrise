@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -42,12 +44,15 @@ public class NoteController {
     }
 
     @PostMapping
-    public ResponseEntity<NoteDTO> create(@RequestBody NoteDTO dto) {
+    public ResponseEntity<NoteDTO> create(@Valid @RequestBody NoteDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<NoteDTO> update(@RequestBody NoteDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<NoteDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody NoteDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

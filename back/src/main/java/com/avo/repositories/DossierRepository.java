@@ -10,32 +10,58 @@ import java.util.List;
 @Repository
 public interface DossierRepository extends JpaRepository<Dossier, Long>, QuerydslPredicateExecutor<Dossier> {
 
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
-    long countDistinctClientIdByStatutIDNotIn(List<String> statutIds);
+       boolean existsByReferenceInterne(String referenceInterne);
 
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d")
-    long countDistinctClientId();
+       boolean existsByReferenceInterneAndIdNot(String referenceInterne, Long id);
 
-    @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
-    long countByStatutIDNotIn(List<String> statutIds);
+       java.util.Optional<Dossier> findByReferenceInterne(String referenceInterne);
 
-    @org.springframework.data.jpa.repository.Query("SELECT d FROM Dossier d WHERE " +
-           "(:searchTerm IS NULL OR :searchTerm = '' OR " +
-           " LOWER(d.referenceInterne) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           " LOWER(d.titre) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           " EXISTS (SELECT c FROM ClientEntity c WHERE c.id = d.client.id AND (" +
-           "    LOWER(c.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
-           "    (TYPE(c) = ClientPersonnePhysique AND (LOWER(TREAT(c AS ClientPersonnePhysique).nom) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(TREAT(c AS ClientPersonnePhysique).prenom) LIKE LOWER(CONCAT('%', :searchTerm, '%')))) OR " +
-           "    (TYPE(c) = ClientMoral AND LOWER(TREAT(c AS ClientMoral).nomCommercial) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
-           "    (TYPE(c) = Association AND LOWER(TREAT(c AS Association).nom) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR " +
-           "    (TYPE(c) = Institution AND LOWER(TREAT(c AS Institution).nom) LIKE LOWER(CONCAT('%', :searchTerm, '%')))" +
-           " ))" +
-           ") AND " +
-           "(:statusFilter IS NULL OR :statusFilter = '' OR :statusFilter = 'Tous' OR d.statutID = :statusFilter) AND " +
-           "(:lawyerFilter IS NULL OR :lawyerFilter = '' OR :lawyerFilter = 'Tous' OR d.responsableId = :lawyerFilter)")
-    org.springframework.data.domain.Page<Dossier> searchWithFilters(
-            @org.springframework.data.repository.query.Param("searchTerm") String searchTerm,
-            @org.springframework.data.repository.query.Param("statusFilter") String statusFilter,
-            @org.springframework.data.repository.query.Param("lawyerFilter") String lawyerFilter,
-            org.springframework.data.domain.Pageable pageable);
+       List<Dossier> findByClientId(Long clientId);
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
+       long countDistinctClientIdByStatutIDNotIn(List<String> statutIds);
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT d.client.id) FROM Dossier d")
+       long countDistinctClientId();
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.statutID NOT IN :statutIds")
+       long countByStatutIDNotIn(List<String> statutIds);
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.statutID IS NULL OR d.statutID NOT IN :closedStatutIds")
+       long countActiveDossiers(@org.springframework.data.repository.query.Param("closedStatutIds") List<String> closedStatutIds);
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.prioriteID IN :urgentPriorityIds")
+       long countByPrioriteIDIn(@org.springframework.data.repository.query.Param("urgentPriorityIds") List<String> urgentPriorityIds);
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.dateOuverture >= :start AND d.dateOuverture < :end")
+       long countOpenedBetween(@org.springframework.data.repository.query.Param("start") java.util.Date start,
+                               @org.springframework.data.repository.query.Param("end") java.util.Date end);
+
+       @org.springframework.data.jpa.repository.Query("SELECT COUNT(d) FROM Dossier d WHERE d.dateCloture >= :start AND d.dateCloture < :end")
+       long countClosedBetween(@org.springframework.data.repository.query.Param("start") java.util.Date start,
+                               @org.springframework.data.repository.query.Param("end") java.util.Date end);
+
+       @org.springframework.data.jpa.repository.Query("SELECT d FROM Dossier d LEFT JOIN d.client c WHERE " +
+                     "(:searchTerm IS NULL OR :searchTerm = '' OR " +
+                     " LOWER(d.referenceInterne) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+                     " LOWER(d.titre) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+                     " (c IS NOT NULL AND (" +
+                     "    LOWER(c.email) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR " +
+                     "    (TYPE(c) = ClientPersonnePhysique AND (LOWER(TREAT(c AS ClientPersonnePhysique).nom) LIKE LOWER(CONCAT('%', :searchTerm, '%')) OR LOWER(TREAT(c AS ClientPersonnePhysique).prenom) LIKE LOWER(CONCAT('%', :searchTerm, '%')))) OR "
+                     +
+                     "    (TYPE(c) = ClientMoral AND LOWER(TREAT(c AS ClientMoral).nomCommercial) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR "
+                     +
+                     "    (TYPE(c) = Association AND LOWER(TREAT(c AS Association).nom) LIKE LOWER(CONCAT('%', :searchTerm, '%'))) OR "
+                     +
+                     "    (TYPE(c) = Institution AND LOWER(TREAT(c AS Institution).nom) LIKE LOWER(CONCAT('%', :searchTerm, '%')))"
+                     +
+                     " ))) AND " +
+                     "(:statusFilter IS NULL OR :statusFilter = '' OR :statusFilter = 'Tous' OR d.statutID = :statusFilter) AND "
+                     +
+                     "(:lawyerFilter IS NULL OR :lawyerFilter = '' OR :lawyerFilter = 'Tous' OR d.responsableId = :lawyerFilter)")
+       org.springframework.data.domain.Page<Dossier> searchWithFilters(
+                     @org.springframework.data.repository.query.Param("searchTerm") String searchTerm,
+                     @org.springframework.data.repository.query.Param("statusFilter") String statusFilter,
+                     @org.springframework.data.repository.query.Param("lawyerFilter") String lawyerFilter,
+                     org.springframework.data.domain.Pageable pageable);
 }

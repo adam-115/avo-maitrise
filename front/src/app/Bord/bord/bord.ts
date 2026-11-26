@@ -9,11 +9,12 @@ import { TaskService } from '../../services/task.service';
 import { NavigationService } from '../../services/navigation-service';
 import { Notification, Client, Dossier, Appointement, Task } from '../../appTypes';
 import { KeycloakService } from '../../services/keycloak.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-bord',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslatePipe],
   templateUrl: './bord.html',
   styleUrl: './bord.css'
 })
@@ -41,6 +42,38 @@ export class Bord implements OnInit {
   totalAppointmentsCount = 0;
 
   isLoading = true;
+  showAllNotifications = false;
+
+  get displayedNotifications(): Notification[] {
+    if (this.showAllNotifications || this.notifications.length <= 3) {
+      return this.notifications;
+    }
+    return this.notifications.slice(0, 3);
+  }
+
+  toggleShowAllNotifications(): void {
+    this.showAllNotifications = !this.showAllNotifications;
+  }
+
+  markAllNotificationsAsRead(): void {
+    if (this.notifications.length === 0) return;
+    this.notificationService.markAllAsRead().subscribe({
+      next: () => {
+        this.notifications = [];
+      },
+      error: (err) => {
+        console.error('Error marking all notifications as read', err);
+        // Fallback: sequentially mark
+        const ids = this.notifications.map(n => n.id).filter((id): id is number => typeof id === 'number');
+        ids.forEach(id => this.notificationService.markAsRead(id).subscribe());
+        this.notifications = [];
+      }
+    });
+  }
+
+  navigateToAmlHub(): void {
+    this.router.navigate(['/home/aml-compliance']);
+  }
 
   ngOnInit(): void {
     this.username = this.keycloakService.getUsername() || '';
@@ -128,6 +161,12 @@ export class Bord implements OnInit {
   // Navigation Helpers
   navigateToClientDetails(id: string | number): void {
     this.navigationService.navigateToClientDetails(id.toString());
+  }
+
+  navigateToClientConformity(id: string | number): void {
+    if (id) {
+      this.navigationService.navigateToClientConformity(id.toString());
+    }
   }
 
   navigateToDossierDetails(id: string | number): void {

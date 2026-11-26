@@ -1,5 +1,10 @@
 package com.avo.controller;
 
+import com.avo.audit.AuditAccess;
+import com.avo.audit.AuditAction;
+
+import jakarta.validation.Valid;
+
 import com.avo.dtos.DiligenceFormResultDTO;
 import com.avo.entities.DiligenceFormResult;
 import com.avo.services.DiligenceFormResultService;
@@ -14,10 +19,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/diligenceFormResult")
-@RequiredArgsConstructor
 public class DiligenceFormResultController {
 
     private final DiligenceFormResultService service;
+    private final com.avo.services.ReportingService reportingService;
+
+    public DiligenceFormResultController(DiligenceFormResultService service, com.avo.services.ReportingService reportingService) {
+        this.service = service;
+        this.reportingService = reportingService;
+    }
 
     @GetMapping
     public ResponseEntity<Page<DiligenceFormResultDTO>> findAll(Pageable pageable) {
@@ -29,23 +39,25 @@ public class DiligenceFormResultController {
         return ResponseEntity.ok(service.search(predicate, pageable));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "CLIENT", idParam = "clientId", details = "Résultats de diligence du client")
     @GetMapping("/client/{clientId}")
     public ResponseEntity<List<DiligenceFormResultDTO>> findByClientId(@PathVariable Long clientId) {
         return ResponseEntity.ok(service.findByClientId(clientId));
     }
 
+    @AuditAccess(action = AuditAction.CONSULTATION, resource = "DILIGENCE")
     @GetMapping("/{id}")
     public ResponseEntity<DiligenceFormResultDTO> findById(@PathVariable String id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PostMapping
-    public ResponseEntity<DiligenceFormResultDTO> create(@RequestBody DiligenceFormResultDTO dto) {
+    public ResponseEntity<DiligenceFormResultDTO> create(@Valid @RequestBody DiligenceFormResultDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DiligenceFormResultDTO> update(@PathVariable String id, @RequestBody DiligenceFormResultDTO dto) {
+    public ResponseEntity<DiligenceFormResultDTO> update(@PathVariable String id, @Valid @RequestBody DiligenceFormResultDTO dto) {
         dto.setId(id);
         return ResponseEntity.ok(service.update(dto));
     }
@@ -56,8 +68,7 @@ public class DiligenceFormResultController {
         return ResponseEntity.noContent().build();
     }
 
-    private final com.avo.services.ReportingService reportingService;
-
+    @AuditAccess(action = AuditAction.EXPORT, resource = "DILIGENCE", details = "Formulaire de diligence (PDF)")
     @GetMapping("/{id}/pdf")
     public ResponseEntity<byte[]> generatePdf(@PathVariable String id) {
         byte[] pdfBytes = reportingService.generateDiligenceFormResultReport(id);

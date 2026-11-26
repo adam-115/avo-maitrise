@@ -6,8 +6,9 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 public class MatterEventDTO {
+    public MatterEventDTO() {}
+
     private Long id;
     private Long dossierId;
     private String titre;
@@ -20,6 +21,8 @@ public class MatterEventDTO {
     private List<String> participantsIds;
     private Integer reminderMinutesBefore;
     private String statut;
+    private String externalCalendarEventId;
+    private String externalCalendarProvider;
     private Date createdAt;
     private Date updatedAt;
 }

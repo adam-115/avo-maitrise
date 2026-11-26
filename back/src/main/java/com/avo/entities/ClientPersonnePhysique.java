@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "personnes_physiques")
 public class ClientPersonnePhysique extends ClientEntity {

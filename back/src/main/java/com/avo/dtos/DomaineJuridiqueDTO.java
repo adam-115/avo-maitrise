@@ -7,10 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class DomaineJuridiqueDTO {
+    public DomaineJuridiqueDTO() {}
+
+    public static class DomaineJuridiqueDTOBuilder {
+        public DomaineJuridiqueDTOBuilder() {}
+    }
+
     private Long id;
     private String code;
     private String label;

@@ -27,4 +27,14 @@ public interface ScreeningExecutionRepository extends JpaRepository<ScreeningExe
 
     java.util.Optional<com.avo.entities.ScreeningExecution> findFirstByClientIdOrderByCreatedAtDesc(Long clientId);
     java.util.Optional<com.avo.entities.ScreeningExecution> findFirstByUboIdOrderByCreatedAtDesc(Long uboId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Query("delete from ScreeningExecution e where e.ubo.id = :uboId")
+    void deleteByUboId(@org.springframework.data.repository.query.Param("uboId") Long uboId);
+
+    @org.springframework.data.jpa.repository.Modifying
+    @org.springframework.transaction.annotation.Transactional
+    @org.springframework.data.jpa.repository.Query("delete from ScreeningExecution e where e.client.id = :clientId")
+    void deleteByClientId(@org.springframework.data.repository.query.Param("clientId") Long clientId);
 }

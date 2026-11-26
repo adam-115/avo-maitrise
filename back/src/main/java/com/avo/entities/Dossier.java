@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "dossiers")
 public class Dossier {
@@ -35,20 +36,27 @@ public class Dossier {
     private List<String> intervenantsIds = new ArrayList<>();
 
     private String domaineJuridique;
-    
+
+    /**
+     * Droit applicable au litige (FRANCE, LUXEMBOURG, BELGIQUE, ALLEMAGNE, SUISSE, INTERNATIONAL) : l'analyse
+     * stratégique de l'IA s'appuie uniquement sur la jurisprudence et la législation de ce pays (+ international).
+     * Null = « à définir » : l'IA refuse alors d'analyser plutôt que de deviner le droit applicable.
+     */
+    @Column(name = "pays_juridiction", length = 30)
+    private String paysJuridiction;
+
     @Column(name = "priorite_id")
     private String prioriteID;
-    
+
     @Column(name = "statut_id")
     private String statutID;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(
-        name = "dossier_documents",
-        joinColumns = @JoinColumn(name = "dossier_id"),
-        inverseJoinColumns = @JoinColumn(name = "document_id")
-    )
+    @JoinTable(name = "dossier_documents", joinColumns = @JoinColumn(name = "dossier_id"), inverseJoinColumns = @JoinColumn(name = "document_id"))
     private List<Document> documents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "dossier", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DossierPartie> autresParties = new ArrayList<>();
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOuverture;
@@ -60,63 +68,179 @@ public class Dossier {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    private Double budgetEstime;
-    private Double tauxHoraireApplique;
+    // Contenus générés par l'IA : volumineux et réécrits à chaque échange, ils ne sont pas historisés
+    // (sinon chaque message du chat dupliquerait tout l'historique dans dossiers_aud).
+    @org.hibernate.envers.NotAudited
+    @Column(name = "ai_strategy", columnDefinition = "LONGTEXT")
+    private String aiStrategy;
 
-    private String methodeFacturation;
+    /**
+     * Sources consultées, périmètre juridique et rapport de vérification (JSON) associés à {@link #aiStrategy}.
+     * Permet de réafficher les liens cliquables [S1], [S2]... et le panneau « Sources et vérification »
+     * après rechargement de la page.
+     */
+    @org.hibernate.envers.NotAudited
+    @Column(name = "ai_strategy_sources", columnDefinition = "LONGTEXT")
+    private String aiStrategySources;
 
-    public Dossier() {}
+    @org.hibernate.envers.NotAudited
+    @Column(name = "ai_chat_history", columnDefinition = "LONGTEXT")
+    private String aiChatHistory;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Dossier() {
+    }
 
-    public String getReferenceInterne() { return referenceInterne; }
-    public void setReferenceInterne(String referenceInterne) { this.referenceInterne = referenceInterne; }
+    public String getAiStrategy() {
+        return aiStrategy;
+    }
 
-    public String getTitre() { return titre; }
-    public void setTitre(String titre) { this.titre = titre; }
+    public void setAiStrategy(String aiStrategy) {
+        this.aiStrategy = aiStrategy;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getAiStrategySources() {
+        return aiStrategySources;
+    }
 
-    public ClientEntity getClient() { return client; }
-    public void setClient(ClientEntity client) { this.client = client; }
+    public void setAiStrategySources(String aiStrategySources) {
+        this.aiStrategySources = aiStrategySources;
+    }
 
-    public String getResponsableId() { return responsableId; }
-    public void setResponsableId(String responsableId) { this.responsableId = responsableId; }
+    public String getAiChatHistory() {
+        return aiChatHistory;
+    }
 
-    public List<String> getIntervenantsIds() { return intervenantsIds; }
-    public void setIntervenantsIds(List<String> intervenantsIds) { this.intervenantsIds = intervenantsIds; }
+    public void setAiChatHistory(String aiChatHistory) {
+        this.aiChatHistory = aiChatHistory;
+    }
 
-    public String getDomaineJuridique() { return domaineJuridique; }
-    public void setDomaineJuridique(String domaineJuridique) { this.domaineJuridique = domaineJuridique; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getPrioriteID() { return prioriteID; }
-    public void setPrioriteID(String prioriteID) { this.prioriteID = prioriteID; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getStatutID() { return statutID; }
-    public void setStatutID(String statutID) { this.statutID = statutID; }
+    public String getReferenceInterne() {
+        return referenceInterne;
+    }
 
-    public List<Document> getDocuments() { return documents; }
-    public void setDocuments(List<Document> documents) { this.documents = documents; }
+    public void setReferenceInterne(String referenceInterne) {
+        this.referenceInterne = referenceInterne;
+    }
 
-    public Date getDateOuverture() { return dateOuverture; }
-    public void setDateOuverture(Date dateOuverture) { this.dateOuverture = dateOuverture; }
+    public String getTitre() {
+        return titre;
+    }
 
-    public Date getDateCloture() { return dateCloture; }
-    public void setDateCloture(Date dateCloture) { this.dateCloture = dateCloture; }
+    public void setTitre(String titre) {
+        this.titre = titre;
+    }
 
-    public Date getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
+    public String getDescription() {
+        return description;
+    }
 
-    public Double getBudgetEstime() { return budgetEstime; }
-    public void setBudgetEstime(Double budgetEstime) { this.budgetEstime = budgetEstime; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public Double getTauxHoraireApplique() { return tauxHoraireApplique; }
-    public void setTauxHoraireApplique(Double tauxHoraireApplique) { this.tauxHoraireApplique = tauxHoraireApplique; }
+    public ClientEntity getClient() {
+        return client;
+    }
 
-    public String getMethodeFacturation() { return methodeFacturation; }
-    public void setMethodeFacturation(String methodeFacturation) { this.methodeFacturation = methodeFacturation; }
+    public void setClient(ClientEntity client) {
+        this.client = client;
+    }
+
+    public String getResponsableId() {
+        return responsableId;
+    }
+
+    public void setResponsableId(String responsableId) {
+        this.responsableId = responsableId;
+    }
+
+    public List<String> getIntervenantsIds() {
+        return intervenantsIds;
+    }
+
+    public void setIntervenantsIds(List<String> intervenantsIds) {
+        this.intervenantsIds = intervenantsIds;
+    }
+
+    public String getDomaineJuridique() {
+        return domaineJuridique;
+    }
+
+    public void setDomaineJuridique(String domaineJuridique) {
+        this.domaineJuridique = domaineJuridique;
+    }
+
+    public String getPaysJuridiction() {
+        return paysJuridiction;
+    }
+
+    public void setPaysJuridiction(String paysJuridiction) {
+        this.paysJuridiction = paysJuridiction;
+    }
+
+    public String getPrioriteID() {
+        return prioriteID;
+    }
+
+    public void setPrioriteID(String prioriteID) {
+        this.prioriteID = prioriteID;
+    }
+
+    public String getStatutID() {
+        return statutID;
+    }
+
+    public void setStatutID(String statutID) {
+        this.statutID = statutID;
+    }
+
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
+
+    public List<DossierPartie> getAutresParties() {
+        return autresParties;
+    }
+
+    public void setAutresParties(List<DossierPartie> autresParties) {
+        this.autresParties = autresParties;
+    }
+
+    public Date getDateOuverture() {
+        return dateOuverture;
+    }
+
+    public void setDateOuverture(Date dateOuverture) {
+        this.dateOuverture = dateOuverture;
+    }
+
+    public Date getDateCloture() {
+        return dateCloture;
+    }
+
+    public void setDateCloture(Date dateCloture) {
+        this.dateCloture = dateCloture;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     @PrePersist
     protected void onCreate() {

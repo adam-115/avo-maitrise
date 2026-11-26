@@ -5,9 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserRoleRequest {
+    public UserRoleRequest() {}
+
     @NotBlank
     private String userId;
     

@@ -36,6 +36,7 @@ export class NavigationService {
   static readonly FACTURATION = 'facturation';
   static readonly FACTURATION_DETAIL = 'facturation-detail';
   static readonly CALENDRIER = 'calendrier';
+  static readonly MESSAGERIE = 'messagerie';
   static readonly ADMINSTRATION = 'administration';
   static readonly UTILISATEURS = 'utilisateurs';
   static readonly PROFILE_CABINET = 'profile-cabinet';
@@ -76,6 +77,8 @@ export class NavigationService {
   public static readonly NOTE_CATEGORY = "note-category";
   public static readonly EVENT_TYPE = "event-type";
   public  static readonly INVOICE_TYPE_OF_SERVICE_FORM = "administration/invoice-type-of-service";
+  public static readonly JURISPRUDENCE_MANAGEMENT = "administration/jurisprudence-management";
+  public static readonly AI_ASSISTANT = "ai-tester";
 
   
 
@@ -199,6 +202,14 @@ export class NavigationService {
   navigateToDossierDetails(id: string) {
     let targetUrl = NavigationService.DOSSIER_DETAIL.replace(":id", id);
     this.router.navigate(['/home/', ...targetUrl.split("/")]);
+  }
+
+  navigateToJurisprudenceManagement() {
+    this.router.navigate(['/' + NavigationService.HOME, ...NavigationService.JURISPRUDENCE_MANAGEMENT.split('/')]);
+  }
+
+  navigateToAiAssistant() {
+    this.router.navigate([NavigationService.HOME, NavigationService.AI_ASSISTANT]);
   }
 
 }

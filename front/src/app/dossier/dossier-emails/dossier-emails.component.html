@@ -1,0 +1,91 @@
+<div class="space-y-6">
+
+  <!-- En-tête actions -->
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <h3 class="text-lg font-bold text-slate-900">E-mails classés dans le dossier ({{ emails().length }})</h3>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Correspondances importées depuis Outlook, Gmail, IMAP ou fichier .eml (les pièces jointes sont automatiquement archivées en GED &amp; indexées pour l'IA).
+      </p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <a routerLink="/home/messagerie"
+        class="px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 shadow-sm">
+        Ouvrir la Messagerie
+      </a>
+      <label class="px-3.5 py-2 rounded-xl bg-slate-100 text-slate-800 border border-slate-200 text-xs font-bold hover:bg-slate-200 cursor-pointer">
+        <input type="file" accept=".eml,message/rfc822" (change)="onEmlUpload($event)" class="hidden" />
+        {{ isUploading() ? 'Import...' : '+ Importer .eml' }}
+      </label>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage()" class="bg-red-50 border border-red-200 text-red-800 text-sm px-4 py-3 rounded-xl">
+    {{ errorMessage() }}
+  </div>
+  <div *ngIf="successMessage()" class="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm px-4 py-3 rounded-xl">
+    {{ successMessage() }}
+  </div>
+
+  <!-- Liste des e-mails -->
+  <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+    <div *ngIf="isLoading()" class="p-8 text-center text-sm text-slate-400">Chargement des e-mails...</div>
+
+    <div *ngIf="!isLoading() && emails().length === 0" class="p-10 text-center space-y-2">
+      <p class="text-sm text-slate-500 font-semibold">Aucun e-mail classé dans ce dossier.</p>
+      <p class="text-xs text-slate-400">Connectez Outlook, Gmail ou IMAP depuis la Messagerie ou importez un fichier .eml.</p>
+    </div>
+
+    <div *ngIf="!isLoading() && emails().length > 0" class="divide-y divide-slate-100">
+      <div *ngFor="let e of emails()" class="p-5 hover:bg-slate-50/60 transition-colors">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-3 cursor-pointer" (click)="toggleExpand(e.id)">
+          <div class="space-y-1 min-w-0">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-slate-100 text-slate-700">{{ e.provider || 'MAIL' }}</span>
+              <h4 class="font-bold text-slate-900 text-sm">{{ e.subject || '(Sans objet)' }}</h4>
+              <span *ngIf="e.hasAttachments" class="text-xs text-indigo-600 font-bold">📎 {{ e.attachments.length }} PJ</span>
+            </div>
+            <div class="text-xs text-slate-600">
+              <b>De :</b> {{ e.fromName || e.fromEmail }} &lt;{{ e.fromEmail }}&gt;
+              <span *ngIf="e.sentAt"> · {{ e.sentAt | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="text-xs text-slate-500 line-clamp-2" *ngIf="expandedId() !== e.id">
+              {{ e.snippet || e.bodyText }}
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0">
+            <span class="text-[11px] text-slate-400">Classé par {{ e.filedBy }}</span>
+            <button type="button" (click)="$event.stopPropagation(); deleteEmail(e)"
+              class="px-2.5 py-1 rounded-lg text-xs font-semibold text-red-600 hover:bg-red-50">
+              Retirer
+            </button>
+          </div>
+        </div>
+
+        <!-- Contenu complet déplié -->
+        <div *ngIf="expandedId() === e.id" class="mt-4 pt-4 border-t border-slate-100 space-y-3">
+          <div *ngIf="e.toEmails" class="text-xs text-slate-500"><b>À :</b> {{ e.toEmails }}</div>
+          <div *ngIf="e.ccEmails" class="text-xs text-slate-500"><b>Cc :</b> {{ e.ccEmails }}</div>
+
+          <div *ngIf="e.attachments?.length" class="flex flex-wrap gap-2">
+            <ng-container *ngFor="let att of e.attachments">
+              <a *ngIf="att.documentId" [href]="apiBase + 'documents/' + att.documentId + '/download'" target="_blank"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-bold hover:bg-indigo-100">
+                📎 {{ att.filename }} (GED)
+              </a>
+              <span *ngIf="!att.documentId" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-xs">
+                📎 {{ att.filename }}
+              </span>
+            </ng-container>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-4 text-xs text-slate-800 whitespace-pre-wrap leading-relaxed max-h-96 overflow-y-auto">
+            {{ e.bodyText || e.snippet || '(Contenu vide)' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

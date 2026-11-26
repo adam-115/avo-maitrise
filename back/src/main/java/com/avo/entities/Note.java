@@ -11,11 +11,11 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "dossier_id", nullable = false)
     private Dossier dossier;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "auteur_id", nullable = true)
     private AppUser auteur;
 
@@ -28,6 +28,9 @@ public class Note {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
     private NoteCategory category;
+
+    @Column(name = "audio_document_id")
+    private Long audioDocumentId;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
@@ -56,6 +59,9 @@ public class Note {
 
     public NoteCategory getCategory() { return category; }
     public void setCategory(NoteCategory category) { this.category = category; }
+
+    public Long getAudioDocumentId() { return audioDocumentId; }
+    public void setAudioDocumentId(Long audioDocumentId) { this.audioDocumentId = audioDocumentId; }
 
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }

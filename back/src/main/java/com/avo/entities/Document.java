@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "documents")
 public class Document {
@@ -36,15 +37,32 @@ public class Document {
     private String filename;
 
     private String urlStockage;
+    
+    private String pays; // For Jurisprudence classification
+
+    // --- Fiche décision (jurisprudence) : affichée avec la source citée par l'IA, et lien vers le texte officiel
+    @Column(name = "juridiction", length = 255)
+    private String juridiction;
+
+    @Column(name = "date_decision")
+    private java.time.LocalDate dateDecision;
+
+    @Column(name = "numero_decision", length = 100)
+    private String numeroDecision;
+
+    @Column(name = "ecli", length = 120)
+    private String ecli;
+
+    @Column(name = "source_url", length = 1000)
+    private String sourceUrl;
+
 
     private LocalDateTime dateUpload = LocalDateTime.now();
 
     private boolean estValide = true;
 
-    @jakarta.persistence.Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(name = "file_data", columnDefinition = "LONGBLOB")
-    private byte[] fileData;
+    @Column(name = "minio_object_id")
+    private String minioObjectId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
@@ -86,6 +104,19 @@ public class Document {
 
     public String getUrlStockage() { return urlStockage; }
     public void setUrlStockage(String urlStockage) { this.urlStockage = urlStockage; }
+    
+    public String getPays() { return pays; }
+    public void setPays(String pays) { this.pays = pays; }
+    public String getJuridiction() { return juridiction; }
+    public void setJuridiction(String juridiction) { this.juridiction = juridiction; }
+    public java.time.LocalDate getDateDecision() { return dateDecision; }
+    public void setDateDecision(java.time.LocalDate dateDecision) { this.dateDecision = dateDecision; }
+    public String getNumeroDecision() { return numeroDecision; }
+    public void setNumeroDecision(String numeroDecision) { this.numeroDecision = numeroDecision; }
+    public String getEcli() { return ecli; }
+    public void setEcli(String ecli) { this.ecli = ecli; }
+    public String getSourceUrl() { return sourceUrl; }
+    public void setSourceUrl(String sourceUrl) { this.sourceUrl = sourceUrl; }
 
     public LocalDateTime getDateUpload() { return dateUpload; }
     public void setDateUpload(LocalDateTime dateUpload) { this.dateUpload = dateUpload; }
@@ -93,8 +124,8 @@ public class Document {
     public boolean isEstValide() { return estValide; }
     public void setEstValide(boolean estValide) { this.estValide = estValide; }
 
-    public byte[] getFileData() { return fileData; }
-    public void setFileData(byte[] fileData) { this.fileData = fileData; }
+    public String getMinioObjectId() { return minioObjectId; }
+    public void setMinioObjectId(String minioObjectId) { this.minioObjectId = minioObjectId; }
 
     public ClientEntity getClient() { return client; }
     public void setClient(ClientEntity client) { this.client = client; }

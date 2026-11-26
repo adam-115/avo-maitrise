@@ -7,10 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class StatutDossierDTO {
+    public StatutDossierDTO() {}
+
+    public static class StatutDossierDTOBuilder {
+        public StatutDossierDTOBuilder() {}
+    }
+
     private Long id;
     private String code;
     private String label;

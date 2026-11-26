@@ -3,11 +3,13 @@ import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UtilsService } from '../../services/utils-service';
 import { FieldConfig, FieldOption } from '../../appTypes';
+import { TranslatePipe } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-new-diligence-field',
-  imports: [CommonModule, ReactiveFormsModule],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, TranslatePipe],
   templateUrl: './new-diligence-field.html',
   styleUrl: './new-diligence-field.css'
 })

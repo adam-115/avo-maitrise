@@ -1,0 +1,5 @@
+services:
+  keycloak:
+    volumes:
+      - /home/adam/apps/keycloak-server/themes/avo-theme:/opt/keycloak/themes/avo-theme:ro
+      - /home/adam/apps/keycloak-server/themes/swiftcheck:/opt/keycloak/themes/swiftcheck:ro

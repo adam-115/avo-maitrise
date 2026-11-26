@@ -5,9 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class UnbilledDossierSummaryDTO {
+    public UnbilledDossierSummaryDTO() {}
+
     private Long dossierId;
     private String dossierTitre;
     private String referenceInterne;

@@ -1,95 +1,224 @@
-<div id="note-creation-modal"
-  class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 flex items-center justify-center">
+<div (click)="onClose()"
+  class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/65 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 font-sans">
 
-  <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 my-8 transform transition-all scale-100 opacity-100"
-    role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div (click)="$event.stopPropagation()"
+    class="bg-white rounded-2xl shadow-2xl border border-slate-200/90 w-full max-w-xl overflow-hidden flex flex-col max-h-[90vh]">
 
-    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center bg-cyan-50 rounded-t-xl">
-      <h3 id="modal-title" class="text-xl font-semibold text-slate-800">
-        {{ noteToEdit ? 'Modifier la Note' : 'Créer une Nouvelle Note' }}
-      </h3>
-      <button type="button" (click)="closeNoteDialog()" class="text-gray-400 hover:text-gray-600 transition">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+    <!-- Modal Header (Nuit & Émeraude) -->
+    <div class="swift-hero px-6 py-5 flex justify-between items-center gap-4 relative overflow-hidden">
+      <div class="absolute -right-12 -bottom-16 w-44 h-44 bg-emerald-400/15 rounded-full blur-2xl pointer-events-none"></div>
+
+      <div class="flex items-center gap-3.5 relative z-10 min-w-0">
+        <div class="w-10 h-10 bg-emerald-500/15 text-emerald-300 border border-emerald-400/30 rounded-xl flex items-center justify-center flex-shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <h3 class="text-base sm:text-lg font-extrabold text-white tracking-tight truncate">
+            {{ isViewOnly ? 'Détail de la note' : (isEditing ? ('NOTE_DIALOG.EDIT_NOTE' | translate) : ('NOTE_DIALOG.NEW_NOTE' | translate)) }}
+          </h3>
+          <p class="text-xs text-slate-300/90 mt-0.5 truncate">
+            <ng-container *ngIf="isViewOnly && noteToEdit; else defaultSubtitle">
+              {{ authorName || 'Avocat' }} • {{ noteToEdit.createdAt | date:'dd/MM/yyyy à HH:mm' }}
+            </ng-container>
+            <ng-template #defaultSubtitle>
+              {{ 'NOTE_DIALOG.SUBTITLE' | translate }}
+            </ng-template>
+          </p>
+        </div>
+      </div>
+
+      <button type="button" (click)="onClose()"
+        class="relative z-10 p-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </div>
 
-    <div class="p-6">
-      <form id="note-form" [formGroup]="noteForm" (ngSubmit)="submitForm()" class="space-y-5">
+    <!-- Modal Body -->
+    <div class="p-6 overflow-y-auto flex-1">
 
-        <div>
-          <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-1">Catégorie <span
-              class="text-red-500">*</span></label>
-          <select id="categoryId" formControlName="categoryId"
-            class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-            <option value="" disabled selected>Sélectionner une catégorie</option>
-            @for (category of noteCategories; track category.id) {
-            <option [value]="category.id">{{ category.label }}</option>
-            }
-          </select>
-          @if(noteForm.get('categoryId')?.invalid && noteForm.get('categoryId')?.touched) {
-          <span class="text-red-500 text-xs mt-1 block">La catégorie est requise.</span>
-          }
+      <!-- MODE LECTURE (DÉTAIL DE LA NOTE) -->
+      <div *ngIf="isViewOnly && noteToEdit" class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span [style.color]="getSelectedCategoryColor()"
+            [style.backgroundColor]="getSelectedCategoryColor() + '15'"
+            [style.borderColor]="getSelectedCategoryColor() + '35'"
+            class="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider inline-flex items-center border">
+            {{ getSelectedCategoryLabel() }}
+          </span>
+          <span class="text-xs font-medium text-slate-400">
+            {{ noteToEdit.createdAt | date:'dd/MM/yyyy à HH:mm' }}
+          </span>
         </div>
 
-        <div>
-          <label for="titre" class="block text-sm font-medium text-gray-700 mb-1">Titre de la Note <span
-              class="text-red-500">*</span></label>
-          <input type="text" formControlName="titre" id="titre" required
-            placeholder="Ex: Mémorandum, Réunion stratégie 04/10"
-            class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-          @if(noteForm.get('titre')?.invalid && noteForm.get('titre')?.touched) {
-          <span class="text-red-500 text-xs mt-1 block">Le titre est requis (min 3 caractères).</span>
-          }
+        <h4 class="text-lg font-extrabold text-slate-900 leading-snug">{{ noteToEdit.title }}</h4>
+
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-sm text-slate-800 leading-relaxed whitespace-pre-line">
+          {{ noteToEdit.description }}
         </div>
 
-        <div>
-          <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Contenu de la Note <span
-              class="text-red-500">*</span></label>
-          <textarea id="description" formControlName="description" rows="6" required
-            placeholder="Saisissez ici les points de discussion, les idées, ou le résumé d'une conversation..."
-            class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
-          @if(noteForm.get('description')?.invalid && noteForm.get('description')?.touched) {
-          <span class="text-red-500 text-xs mt-1 block">La description est requise (min 3 caractères).</span>
-          }
+        <!-- Lecteur audio associé -->
+        <div *ngIf="getNoteAudioDocId()" class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs">🎧</span>
+              <div>
+                <div class="text-xs font-bold text-slate-900">Enregistrement vocal associé</div>
+                <div class="text-[11px] text-emerald-700 font-medium">Archivé dans la GED du dossier</div>
+              </div>
+            </div>
+            <button *ngIf="!noteAudioUrl && !isLoadingNoteAudio" type="button" (click)="loadNoteAudio()"
+              class="px-3 py-1.5 rounded-lg btn-emerald text-xs font-bold cursor-pointer">
+              Charger l'audio
+            </button>
+          </div>
+          <div *ngIf="isLoadingNoteAudio" class="text-xs font-semibold text-emerald-700">Chargement de l'enregistrement audio...</div>
+          <p *ngIf="noteAudioError" class="text-xs font-semibold text-rose-600">{{ noteAudioError }}</p>
+          <audio *ngIf="noteAudioUrl" [src]="noteAudioUrl" controls class="w-full h-10"></audio>
         </div>
+      </div>
 
-        <div class="grid grid-cols-2 gap-4">
-          <!-- Priority ID (Since priorityId exists in noteForm, we need an input for it, or hardcode/hide it if not needed visually) -->
-          <!-- You have priorityId in your ts form block, so let's add a simple priority selector so the form can become valid 
-               Or a hidden input if it's not meant to be changed here. I will add a visible generic selector for completeness 
-               so that `this.noteForm.valid` evaluates to true! -->
-          <!-- <div>
-            <label for="priorityId" class="block text-sm font-medium text-gray-700 mb-1">Niveau de Priorité <span
-                class="text-red-500">*</span></label>
-            <select id="priorityId" formControlName="priorityId"
-              class="mt-1 block w-full rounded-lg shadow-sm focus:border-cyan-500 focus:ring-cyan-500 p-2.5 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-              <option value="" disabled selected>Sélectionner une priorité</option>
-              <option value="1">Basse</option>
-              <option value="2">Normale</option>
-              <option value="3">Haute</option>
-              <option value="4">Urgente</option>
-            </select>
-            @if(noteForm.get('priorityId')?.invalid && noteForm.get('priorityId')?.touched) {
-            <span class="text-red-500 text-xs mt-1 block">La priorité est requise.</span>
-            }
-          </div> -->
+      <!-- MODE CRÉATION / ÉDITION -->
+      <div *ngIf="!isViewOnly">
+        @if (validationSummary) {
+        <div class="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-start gap-2.5">
+          <svg class="w-4 h-4 text-rose-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.382 17c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>{{ validationSummary }}</span>
         </div>
+        }
 
-      </form>
+        <form [formGroup]="noteForm" id="noteForm" (ngSubmit)="onSubmit()" class="space-y-4">
+
+          <!-- Titre & Catégorie -->
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-3.5">
+            <div class="sm:col-span-7">
+              <label class="block text-xs font-bold mb-1.5"
+                [ngClass]="noteForm.get('title')?.invalid && noteForm.get('title')?.touched ? 'text-rose-600' : 'text-slate-700'">
+                {{ 'NOTE_DIALOG.TITLE_LABEL' | translate }} <span class="text-rose-500">*</span>
+              </label>
+              <input type="text" formControlName="title"
+                [placeholder]="'NOTE_DIALOG.TITLE_PLACEHOLDER' | translate"
+                [ngClass]="noteForm.get('title')?.invalid && noteForm.get('title')?.touched ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500' : 'border-slate-200 hover:border-slate-300 focus:border-emerald-500'"
+                class="block w-full px-3.5 py-2.5 rounded-xl border bg-slate-50/70 focus:bg-white text-sm font-semibold text-slate-900 placeholder:text-slate-400 outline-none transition-all">
+              <p *ngIf="noteForm.get('title')?.invalid && noteForm.get('title')?.touched" class="text-xs font-semibold text-rose-600 mt-1">
+                {{ 'DOSSIER_FORM.REQUIRED' | translate }}
+              </p>
+            </div>
+
+            <div class="sm:col-span-5">
+              <label class="block text-xs font-bold mb-1.5"
+                [ngClass]="noteForm.get('categoryId')?.invalid && noteForm.get('categoryId')?.touched ? 'text-rose-600' : 'text-slate-700'">
+                {{ 'NOTE_DIALOG.CATEGORY_LABEL' | translate }} <span class="text-rose-500">*</span>
+              </label>
+              <div class="relative">
+                <select formControlName="categoryId"
+                  [ngClass]="noteForm.get('categoryId')?.invalid && noteForm.get('categoryId')?.touched ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500' : 'border-slate-200 hover:border-slate-300 focus:border-emerald-500'"
+                  class="block w-full ps-3.5 pe-9 py-2.5 rounded-xl border bg-slate-50/70 focus:bg-white text-sm font-semibold text-slate-800 outline-none transition-all cursor-pointer appearance-none">
+                  <option value="" disabled>{{ 'NOTE_DIALOG.CATEGORY_PLACEHOLDER' | translate }}</option>
+                  <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.label }}</option>
+                </select>
+                <svg class="w-4 h-4 text-slate-400 absolute end-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+              <p *ngIf="noteForm.get('categoryId')?.invalid && noteForm.get('categoryId')?.touched" class="text-xs font-semibold text-rose-600 mt-1">
+                {{ 'DOSSIER_FORM.REQUIRED' | translate }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Contenu + Dictée -->
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-1.5">
+              <label class="text-xs font-bold"
+                [ngClass]="noteForm.get('description')?.invalid && noteForm.get('description')?.touched ? 'text-rose-600' : 'text-slate-700'">
+                {{ 'NOTE_DIALOG.CONTENT_LABEL' | translate }} <span class="text-rose-500">*</span>
+              </label>
+              <button *ngIf="voiceService.isSpeechSupported" type="button" (click)="toggleDictation()"
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer"
+                [ngClass]="isDictating ? 'bg-rose-600 text-white border-rose-600 animate-pulse' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'">
+                <span>{{ isDictating ? '⏹ Arrêter la dictée' : '🎙️ Dicter' }}</span>
+              </button>
+            </div>
+            <p *ngIf="dictationInterim" class="text-[11px] text-emerald-600 italic mb-1">« {{ dictationInterim }}… »</p>
+            <p *ngIf="dictationError" class="text-[11px] text-rose-600 font-semibold mb-1">{{ dictationError }}</p>
+            <textarea formControlName="description" rows="6"
+              [placeholder]="'NOTE_DIALOG.CONTENT_PLACEHOLDER' | translate"
+              [ngClass]="noteForm.get('description')?.invalid && noteForm.get('description')?.touched ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500' : 'border-slate-200 hover:border-slate-300 focus:border-emerald-500'"
+              class="block w-full px-3.5 py-2.5 rounded-xl border bg-slate-50/70 focus:bg-white text-sm font-medium text-slate-800 placeholder:text-slate-400 outline-none transition-all resize-none leading-relaxed"></textarea>
+            <p *ngIf="noteForm.get('description')?.invalid && noteForm.get('description')?.touched" class="text-xs font-semibold text-rose-600 mt-1">
+              {{ 'DOSSIER_FORM.REQUIRED' | translate }}
+            </p>
+
+            <!-- Aperçu audio dicté -->
+            <div *ngIf="recordedAudioPreviewUrl"
+              class="mt-3 p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-2">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-emerald-900">🎧 Enregistrement vocal capturé (archivé en GED)</span>
+                <button type="button" (click)="discardRecordedAudio()"
+                  class="text-[11px] font-bold text-rose-600 hover:text-rose-800 cursor-pointer">Supprimer</button>
+              </div>
+              <audio [src]="recordedAudioPreviewUrl" controls class="w-full h-9"></audio>
+            </div>
+          </div>
+
+          <!-- Audio déjà associé (mode édition) -->
+          <div *ngIf="getNoteAudioDocId()" class="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs">🎧</span>
+                <div class="text-xs font-bold text-slate-900">Enregistrement vocal associé</div>
+              </div>
+              <button *ngIf="!noteAudioUrl && !isLoadingNoteAudio" type="button" (click)="loadNoteAudio()"
+                class="px-3 py-1.5 rounded-lg btn-emerald text-xs font-bold cursor-pointer">
+                Charger l'audio
+              </button>
+            </div>
+            <div *ngIf="isLoadingNoteAudio" class="text-xs font-semibold text-emerald-700">Chargement de l'audio...</div>
+            <audio *ngIf="noteAudioUrl" [src]="noteAudioUrl" controls class="w-full h-10"></audio>
+          </div>
+
+        </form>
+      </div>
     </div>
 
-    <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3 rounded-b-xl">
-      <button type="button" (click)="closeNoteDialog()"
-        class="px-5 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-100 transition duration-150">
-        Annuler
-      </button>
-      <button type="button" (click)="submitForm()" [disabled]="!noteForm.valid"
-        class="px-5 py-2 border border-transparent rounded-lg text-sm font-medium text-white shadow-md transition duration-150"
-        [ngClass]="noteForm.valid ? 'bg-cyan-600 hover:bg-cyan-700 cursor-pointer' : 'bg-gray-400 cursor-not-allowed'">
-        {{ noteToEdit ? 'Mettre à jour la Note' : 'Enregistrer la Note' }}
-      </button>
+    <!-- Modal Footer -->
+    <div class="px-6 py-4 bg-slate-50 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-2.5">
+      <span *ngIf="!isViewOnly" class="text-[11px] text-slate-400 font-medium hidden sm:inline">
+        <span class="text-rose-500">*</span> Champs obligatoires
+      </span>
+
+      <div class="flex flex-wrap items-center gap-2 ms-auto">
+        <button *ngIf="isViewOnly && noteToEdit?.id" type="button" (click)="exportToWord()" [disabled]="isExportingWord"
+          class="px-3.5 py-2 rounded-xl btn-sky-soft text-xs font-bold cursor-pointer disabled:opacity-50">
+          {{ isExportingWord ? 'Export...' : '📄 Exporter .docx' }}
+        </button>
+
+        <button *ngIf="isViewOnly" type="button" (click)="switchToEditMode()"
+          class="px-4 py-2 rounded-xl btn-emerald text-xs font-bold cursor-pointer">
+          ✏️ {{ 'NOTE.EDIT' | translate }}
+        </button>
+
+        <button type="button" (click)="onClose()"
+          class="px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 text-xs font-semibold transition-all cursor-pointer">
+          {{ isViewOnly ? 'Fermer' : ('NOTE_DIALOG.CANCEL' | translate) }}
+        </button>
+
+        <button *ngIf="!isViewOnly" type="button" (click)="onSubmit()" [disabled]="isSubmitting"
+          class="inline-flex items-center gap-2 px-5 py-2 rounded-xl btn-emerald text-xs font-bold disabled:opacity-50 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span>{{ isSubmitting ? 'Enregistrement...' : (isEditing ? ('NOTE_DIALOG.UPDATE' | translate) : ('NOTE_DIALOG.SAVE' | translate)) }}</span>
+        </button>
+      </div>
     </div>
 
   </div>

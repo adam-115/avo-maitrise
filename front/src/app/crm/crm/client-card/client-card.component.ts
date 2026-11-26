@@ -4,10 +4,12 @@ import { Router } from '@angular/router';
 import { Client, ClientStatus } from '../../../appTypes';
 import { NavigationService } from '../../../services/navigation-service';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-client-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslatePipe],
   templateUrl: './client-card.component.html',
   styleUrl: './client-card.component.css'
 })

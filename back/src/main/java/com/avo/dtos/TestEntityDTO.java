@@ -6,10 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class TestEntityDTO {
+    public TestEntityDTO() {}
+
+    public static class TestEntityDTOBuilder {
+        public TestEntityDTOBuilder() {}
+    }
+
 
     private Long id;
     private String message;

@@ -10,8 +10,9 @@ import java.util.Date;
 @Table(name = "dossier_contacts")
 @Getter
 @Setter
-@NoArgsConstructor
 public class DossierContact {
+
+    public DossierContact() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

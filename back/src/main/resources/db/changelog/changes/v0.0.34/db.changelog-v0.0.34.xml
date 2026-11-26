@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!--
+        Fiabilité de l'IA, phase 2 : « fiche décision » d'un document de jurisprudence
+        (juridiction, date, n° de pourvoi / RG, ECLI, lien vers le texte officiel).
+        Les mêmes colonnes sont ajoutées à documents_aud : la table Document est historisée par Envers,
+        qui échouerait à enregistrer une modification si l'historique n'avait pas les nouvelles colonnes.
+    -->
+    <changeSet id="add-decision-fields-to-documents" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="documents" columnName="numero_decision"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="documents">
+            <column name="juridiction" type="VARCHAR(255)"/>
+            <column name="date_decision" type="DATE"/>
+            <column name="numero_decision" type="VARCHAR(100)"/>
+            <column name="ecli" type="VARCHAR(120)"/>
+            <column name="source_url" type="VARCHAR(1000)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-decision-fields-to-documents-aud" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="documents_aud"/>
+                <not>
+                    <columnExists tableName="documents_aud" columnName="numero_decision"/>
+                </not>
+            </and>
+        </preConditions>
+        <addColumn tableName="documents_aud">
+            <column name="juridiction" type="VARCHAR(255)"/>
+            <column name="date_decision" type="DATE"/>
+            <column name="numero_decision" type="VARCHAR(100)"/>
+            <column name="ecli" type="VARCHAR(120)"/>
+            <column name="source_url" type="VARCHAR(1000)"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

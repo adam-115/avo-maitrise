@@ -5,8 +5,9 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 public class DossierContactDTO {
+    public DossierContactDTO() {}
+
     private Long id;
     private Long dossierId;
     private String civilite;

@@ -1,0 +1,9 @@
+# Qwen3.6-35B-A3B (MoE, 3B actifs) quantifié UD-Q3_K_XL (~16 Go) — adapté à un VPS CPU 8 vCores / 24 Go.
+# Pour plus de qualité si la RAM le permet : UD-Q4_K_XL (~21 Go) avec num_ctx 8192.
+FROM hf.co/unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q3_K_XL
+
+PARAMETER num_ctx 16384
+PARAMETER num_thread 8
+PARAMETER temperature 0.6
+PARAMETER top_p 0.95
+PARAMETER top_k 20

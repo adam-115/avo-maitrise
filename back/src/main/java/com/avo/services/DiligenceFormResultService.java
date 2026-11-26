@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class DiligenceFormResultService {
 
@@ -24,6 +23,17 @@ public class DiligenceFormResultService {
     private final DiligenceFormResultMapper mapper;
     private final ClientDiligenceStatusRepository statusRepository;
     private final jakarta.persistence.EntityManager entityManager;
+
+    public DiligenceFormResultService(
+            DiligenceFormResultRepository repository,
+            DiligenceFormResultMapper mapper,
+            ClientDiligenceStatusRepository statusRepository,
+            jakarta.persistence.EntityManager entityManager) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.statusRepository = statusRepository;
+        this.entityManager = entityManager;
+    }
 
     public Page<DiligenceFormResultDTO> findAll(Pageable pageable) {
         log.info("[ENTER] Executing findAll");

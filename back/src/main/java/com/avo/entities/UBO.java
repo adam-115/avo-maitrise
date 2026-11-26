@@ -16,12 +16,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "ubos")
 @Getter
 @Setter
-@NoArgsConstructor
 public class UBO {
+
+    public UBO() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

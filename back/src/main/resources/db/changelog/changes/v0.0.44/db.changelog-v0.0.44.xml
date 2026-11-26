@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <!-- Historique des décisions avocat (ACCEPTED / REJECTED) sur les prestations proposées par l'IA -->
+    <changeSet id="create-prestation-ai-decisions-table" author="adam">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="prestation_ai_decisions"/>
+            </not>
+        </preConditions>
+        <createTable tableName="prestation_ai_decisions">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="dossier_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="source_key" type="VARCHAR(150)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="decision" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="suggested_info" type="VARCHAR(500)"/>
+            <column name="created_prestation_id" type="BIGINT"/>
+            <column name="decided_by" type="VARCHAR(120)"/>
+            <column name="decided_at" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex indexName="idx_prestation_ai_decisions_dossier" tableName="prestation_ai_decisions">
+            <column name="dossier_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

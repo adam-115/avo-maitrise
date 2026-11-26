@@ -63,6 +63,11 @@ public class TaskService {
 
     public TaskDTO update(TaskDTO dto) {
         log.info("[ENTER] Executing update");
+        if (dto.getAudioDocumentId() == null && dto.getId() != null) {
+            repository.findById(dto.getId())
+                    .map(Task::getAudioDocumentId)
+                    .ifPresent(dto::setAudioDocumentId);
+        }
         Task entity = mapper.toEntity(dto);
         Task saved = repository.save(entity);
         

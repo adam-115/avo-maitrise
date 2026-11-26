@@ -6,6 +6,12 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AvoApplication",
+            "request": "launch",
+            "mainClass": "com.avo.AvoApplication"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

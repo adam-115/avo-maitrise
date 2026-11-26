@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -36,12 +38,15 @@ public class AppointementController {
     }
 
     @PostMapping
-    public ResponseEntity<AppointementDTO> create(@RequestBody AppointementDTO dto) {
+    public ResponseEntity<AppointementDTO> create(@Valid @RequestBody AppointementDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 
-    @PutMapping
-    public ResponseEntity<AppointementDTO> update(@RequestBody AppointementDTO dto) {
+    @PutMapping(value = {"", "/{id}"})
+    public ResponseEntity<AppointementDTO> update(@PathVariable(required = false) Long id, @Valid @RequestBody AppointementDTO dto) {
+        if (id != null && dto.getId() == null) {
+            dto.setId(id);
+        }
         return ResponseEntity.ok(service.update(dto));
     }
 

@@ -48,6 +48,12 @@ public class MatterEvent {
     @Column(nullable = false)
     private String statut; // CONFIRME, ANNULE, REPORTE, TERMINE
 
+    @Column(name = "external_calendar_event_id")
+    private String externalCalendarEventId;
+
+    @Column(name = "external_calendar_provider", length = 20)
+    private String externalCalendarProvider;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
@@ -91,6 +97,12 @@ public class MatterEvent {
 
     public String getStatut() { return statut; }
     public void setStatut(String statut) { this.statut = statut; }
+
+    public String getExternalCalendarEventId() { return externalCalendarEventId; }
+    public void setExternalCalendarEventId(String externalCalendarEventId) { this.externalCalendarEventId = externalCalendarEventId; }
+
+    public String getExternalCalendarProvider() { return externalCalendarProvider; }
+    public void setExternalCalendarProvider(String externalCalendarProvider) { this.externalCalendarProvider = externalCalendarProvider; }
 
     public Date getCreatedAt() { return createdAt; }
     public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }

@@ -1,5 +1,7 @@
 package com.avo.controller;
 
+import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
@@ -42,7 +44,7 @@ public class TaskLogController {
     }
 
     @PostMapping
-    public ResponseEntity<TaskLogDTO> create(@RequestBody TaskLogDTO dto) {
+    public ResponseEntity<TaskLogDTO> create(@Valid @RequestBody TaskLogDTO dto) {
         return ResponseEntity.ok(service.create(dto));
     }
 

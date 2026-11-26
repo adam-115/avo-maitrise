@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Classes IA Avo-Maîtrise</title>
+<style>
+  @page { size: A4; margin: 16mm 14mm 18mm 14mm; }
+  :root { --ink:#1f2328; --muted:#5b6470; --line:#d8dde3; --accent:#3c3489; --accent-bg:#eeedfe; --teal:#0f6e56; --teal-bg:#e1f5ee; --code-bg:#f4f5f7; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.55; margin: 0; background:#fff; }
+  h1 { font-size: 22pt; margin: 0 0 4px; color: var(--accent); font-weight: 600; }
+  h2 { font-size: 15pt; margin: 0 0 8px; color: var(--accent); border-bottom: 2px solid var(--accent-bg); padding-bottom: 4px; font-weight: 600; }
+  h3 { font-size: 11.5pt; margin: 16px 0 6px; font-weight: 600; }
+  p { margin: 6px 0; }
+  .subtitle { color: var(--muted); font-size: 11pt; margin-bottom: 18px; }
+  section { page-break-before: always; }
+  section.first { page-break-before: auto; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 9pt; background: var(--code-bg); padding: 1px 4px; border-radius: 3px; }
+  pre { font-family: Consolas, "Courier New", monospace; font-size: 8.6pt; background: var(--code-bg); padding: 8px 10px; border-radius: 6px; white-space: pre-wrap; margin: 6px 0; page-break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 9.6pt; page-break-inside: avoid; }
+  th, td { border: 1px solid var(--line); padding: 5px 7px; text-align: left; vertical-align: top; }
+  th { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+  .diagram { border: 1px solid var(--line); border-radius: 8px; padding: 10px; margin: 10px 0; text-align: center; page-break-inside: avoid; }
+  .diagram .mermaid { display: flex; justify-content: center; }
+  .diagram svg { max-width: 100% !important; max-height: 205mm; height: auto; }
+  .caption { color: var(--muted); font-size: 9pt; margin-top: 4px; }
+  .box { border-left: 4px solid var(--teal); background: var(--teal-bg); padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .box.warn { border-left-color: #a32d2d; background: #fcebeb; }
+  ol.steps { padding-left: 20px; margin: 6px 0; }
+  ol.steps li { margin: 3px 0; }
+  .toc li { margin: 2px 0; }
+  .legend span { display:inline-block; margin-right:14px; font-size:9pt; color:var(--muted); }
+  .sw { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:4px; vertical-align:middle; }
+</style>
+</head>
+<body>
+
+<style>
+  pre.tree { font-size: 8.4pt; line-height: 1.45; background: #f7f7fb; border: 1px solid var(--line); }
+  .cls { border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; margin: 10px 0; page-break-inside: avoid; }
+  .cls h3 { margin: 2px 0 6px; color: var(--accent); }
+  .cls p, .cls ul, .cls ol { margin: 4px 0; }
+  .cls ul, .cls ol { padding-left: 20px; }
+  .meta { color: var(--muted); font-size: 9.4pt; }
+  .meta b { color: var(--ink); }
+</style>
+
+<section class="first">
+<h1>Intégration IA : changements et rôle des classes</h1>
+<div class="subtitle">Avo-Maîtrise · Spring Boot 3.5.16 + Spring AI 1.1.8 · Ollama · Qdrant · 22/11/2026</div>
+
+<h3>Sommaire</h3>
+<ol class="toc">
+  <li>Ce qui a changé</li>
+  <li>Le rôle de chaque classe</li>
+  <li>Qui appelle qui, et quand</li>
+  <li>À faire au déploiement</li>
+</ol>
+
+<h2 style="margin-top:20px">1. Ce qui a changé</h2>
+<p>Il y a eu deux étapes : d'abord des corrections de bugs dans la version LangChain4j, puis une migration complète vers <b>Spring AI</b>, qui a remplacé une partie de ces corrections. Le tableau compare le code de départ à l'état final.</p>
+
+<table>
+<tr><th style="width:22%">Sujet</th><th style="width:38%">Avant (LangChain4j)</th><th>Maintenant (Spring AI)</th></tr>
+<tr><td>Spring Boot</td><td>3.2.4</td><td><b>3.5.16</b> (<code>pom.xml</code> racine)</td></tr>
+<tr><td>Bibliothèque IA</td><td>6 dépendances LangChain4j</td><td><b>4 dépendances Spring AI 1.1.8</b> (<code>back/pom.xml</code>)</td></tr>
+<tr><td>Accès à Qdrant</td><td>gRPC pour écrire et REST écrit à la main pour chercher, avec <code>localhost:6333</code> en dur (aurait cassé sur le VPS)</td><td>Un seul <code>VectorStore</code> Spring AI, configuré par <code>QDRANT_HOST</code></td></tr>
+<tr><td>Doublons dans Qdrant</td><td>Réindexer dupliquait les passages</td><td>L'ancienne version est supprimée avant chaque indexation</td></tr>
+<tr><td>Document supprimé</td><td>Ses passages restaient dans Qdrant</td><td>Ils sont retirés de Qdrant</td></tr>
+<tr><td>Mémoire du chat</td><td>Ne marchait pas (recréée à chaque message)</td><td>Fonctionne : 20 messages, 500 conversations, clé <code>utilisateur:session</code></td></tr>
+<tr><td>Prompts</td><td>Chaînes dispersées dans le Java</td><td>Fichiers texte <code>resources/prompts/*.txt</code></td></tr>
+<tr><td>Pays de la jurisprudence</td><td>Toujours « FRANCE » en dur</td><td>Déduit du pays du client du dossier</td></tr>
+<tr><td>Streaming</td><td><code>new Thread()</code> + callbacks</td><td>Pool de threads + <code>Flux</code> Spring AI</td></tr>
+<tr><td>Infrastructure</td><td>Beans écrits à la main dans <code>RAGConfig</code></td><td>Créée par les starters à partir de <code>application.properties</code></td></tr>
+</table>
+
+<table>
+<tr><th style="width:22%">Fichiers</th><th>Détail</th></tr>
+<tr><td>Supprimés</td><td><code>LegalAssistant.java</code> (interface de LangChain4j), <code>QdrantRestClient.java</code> (client REST écrit à la main)</td></tr>
+<tr><td>Ajoutés</td><td><code>Prompts.java</code>, <code>Pays.java</code>, les 6 fichiers de <code>resources/prompts/</code>, le test <code>SpringAiLocalSmokeTest</code></td></tr>
+<tr><td>Modifiés</td><td><code>pom.xml</code>, <code>back/pom.xml</code>, <code>application.properties</code>, <code>RAGConfig</code>, <code>AiConfigurationService</code>, <code>AiService</code>, <code>AvoAiTools</code>, <code>RAGDocumentService</code>, <code>DocumentService</code></td></tr>
+<tr><td>Inchangés</td><td>Tout le front Angular et les endpoints <code>/api/ai/*</code></td></tr>
+</table>
+</section>
+
+<section>
+<h2>2. Le rôle de chaque classe</h2>
+
+<div class="cls">
+<h3>La configuration (sans code Java)</h3>
+<p><b><code>application.properties</code></b> (section Spring AI) dit à Spring AI :</p>
+<ul>
+  <li>de <b>ne pas</b> créer de modèle de chat automatiquement (<code>spring.ai.model.chat=none</code>), parce que ce modèle vient de la base ;</li>
+  <li>d'utiliser Ollama pour les <b>embeddings</b> (<code>nomic-embed-text</code>) ;</li>
+  <li>où trouver Qdrant (hôte, port 6334, collection <code>avo_documents</code>) et de créer la collection si elle n'existe pas.</li>
+</ul>
+<p><b>Les starters Spring AI</b> lisent ces propriétés au démarrage et créent deux objets utilisés par le reste du code :</p>
+<ul>
+  <li><code>EmbeddingModel</code> : transforme un texte en vecteur via Ollama ;</li>
+  <li><code>VectorStore</code> : la porte d'entrée vers Qdrant. Il sait ajouter des passages (en calculant lui-même leurs vecteurs), chercher les plus proches avec un filtre, et supprimer selon un filtre.</li>
+</ul>
+</div>
+
+<div class="cls">
+<h3>RAGConfig</h3>
+<p><b>Rôle :</b> créer les deux pools de threads réservés à l'IA.</p>
+<ul>
+  <li><code>aiIngestionExecutor</code> (1 à 2 threads) : indexer les documents en arrière-plan. Il est limité pour ne pas saturer Ollama quand on uploade beaucoup de fichiers d'un coup ; les autres attendent dans une file.</li>
+  <li><code>aiStreamingExecutor</code> (2 à 4 threads) : préparer les analyses stratégiques sans bloquer le thread de la requête HTTP.</li>
+</ul>
+<p class="meta"><b>Quand :</b> au démarrage. <b>Utilisé par :</b> <code>RAGDocumentService</code> (indexation) et <code>AiService</code> (streaming).</p>
+</div>
+
+<div class="cls">
+<h3>AiConfigurationService</h3>
+<p><b>Rôle :</b> fabriquer le <b>modèle de chat</b> à partir de la ligne active de la table <code>ai_configuration</code>.</p>
+<ul>
+  <li><code>isAiEnabled()</code> : y a-t-il une configuration active ? Sinon, l'IA est considérée comme désactivée.</li>
+  <li><code>buildChatModel()</code> : lit la configuration et construit un <code>ChatModel</code> Spring AI :
+    <ul>
+      <li><code>OLLAMA</code> donne un <code>OllamaChatModel</code> (URL et modèle saisis dans l'écran admin) ;</li>
+      <li><code>OPENAI</code> donne un <code>OpenAiChatModel</code> ;</li>
+      <li><code>GEMINI</code> donne aussi un <code>OpenAiChatModel</code>, pointé sur l'API de Google compatible OpenAI.</li>
+    </ul>
+    Le délai de lecture HTTP suit <code>timeoutMinutes</code>, et la température suit <code>temperature</code>.</li>
+</ul>
+<p><b>Pourquoi reconstruire à chaque appel :</b> si l'admin passe d'Ollama à OpenAI, c'est pris en compte immédiatement, sans redémarrage.</p>
+<p class="meta"><b>Appelé par :</b> <code>AiService</code> (à chaque usage de l'IA) et <code>RAGDocumentService</code> (vérifie <code>isAiEnabled()</code> avant d'indexer).</p>
+</div>
+
+<div class="cls">
+<h3>Prompts</h3>
+<p><b>Rôle :</b> lire un fichier <code>prompts/xxx.txt</code> et remplacer les variables <code>{{nom}}</code>. Exemple : <code>render("strategie", "pays", "FRANCE", "documents", ...)</code> renvoie le texte complet prêt à envoyer.</p>
+<p><b>Pourquoi un simple chercher-remplacer :</b> les documents juridiques peuvent contenir des accolades <code>{}</code>, qui casseraient un moteur de templates. Le fichier est mis en cache après la première lecture.</p>
+<p class="meta"><b>Appelé par :</b> <code>AiService</code>.</p>
+</div>
+
+<div class="cls">
+<h3>Pays</h3>
+<p><b>Rôle :</b> transformer un pays saisi librement (« France », « FR », « belgique ») en une valeur connue (<code>FRANCE</code>, <code>BELGIQUE</code>…), avec <code>FRANCE</code> par défaut.</p>
+<p><b>Pourquoi :</b></p>
+<ol>
+  <li>Les documents de jurisprudence sont classés avec ces valeurs exactes : il faut la même orthographe pour que le filtre trouve quelque chose.</li>
+  <li><b>La sécurité</b> : ce texte est inséré dans un filtre Qdrant. En n'acceptant que des valeurs connues, une valeur bizarre (envoyée par le modèle, par exemple) ne peut pas détourner le filtre.</li>
+</ol>
+<p class="meta"><b>Appelé par :</b> <code>AiService</code> (pays du client du dossier) et <code>AvoAiTools</code> (pays demandé par le modèle).</p>
+</div>
+</section>
+
+<section>
+<div class="cls">
+<h3>RAGDocumentService (le cœur du RAG)</h3>
+<p><b>Rôle :</b> tout ce qui touche à Qdrant.</p>
+
+<p><b>Indexer un document.</b> <code>ingestDocumentIntoQdrant(id)</code> en arrière-plan (<code>@Async</code>), <code>ingestDocumentIntoQdrantSync(id)</code> en mode bloquant. Étapes de <code>ingest()</code> :</p>
+<ol>
+  <li>Si l'IA est désactivée, s'arrêter.</li>
+  <li>Charger le <code>Document</code> depuis MySQL.</li>
+  <li>Lire le fichier dans MinIO (<code>MinioService.getFileStream</code>).</li>
+  <li>Extraire le texte avec <code>TikaDocumentReader</code> (PDF, Word…).</li>
+  <li>Ajouter les métadonnées : <code>document_id</code>, <code>dossier_id</code>, <code>type_document</code>, <code>pays</code>, <code>client_id</code>, <code>nom_fichier</code>…</li>
+  <li>Supprimer l'ancienne version du document dans Qdrant, pour éviter les doublons.</li>
+  <li>Découper en <b>passages</b> d'environ 150 tokens (<code>TokenTextSplitter</code>).</li>
+  <li><code>vectorStore.add(passages)</code> : Spring AI calcule le vecteur de chaque passage via Ollama, puis écrit dans Qdrant.</li>
+</ol>
+<p class="meta"><b>Quand :</b> après chaque upload, et lors d'une resynchronisation complète.</p>
+
+<p><b>Retirer un document.</b> <code>removeDocumentFromQdrant(id)</code> appelle <code>vectorStore.delete("document_id == 'id'")</code>, avant une réindexation et à la suppression d'un document. Une erreur Qdrant est journalisée sans bloquer : on ne veut pas empêcher la suppression d'un document parce que Qdrant est momentanément indisponible.</p>
+
+<p><b>Chercher.</b></p>
+<ul>
+  <li><code>searchInDossier(dossierId, question)</code> : les 5 passages les plus proches, uniquement dans ce dossier, avec un score minimum de 0,5.</li>
+  <li><code>searchJurisprudence(pays, question)</code> : les 4 passages les plus proches parmi la jurisprudence du pays.</li>
+</ul>
+<p class="meta"><b>Appelé par :</b> <code>DocumentService</code> (indexation et retrait), <code>AiController</code> (resynchronisation), <code>AvoAiTools</code> (recherches).</p>
+</div>
+
+<div class="cls">
+<h3>AvoAiTools</h3>
+<p><b>Rôle :</b> la « boîte à outils » que le modèle peut utiliser. Chaque méthode annotée <code>@Tool(description = ...)</code> est décrite au modèle, qui peut <b>décider</b> de l'appeler. <code>@ToolParam</code> décrit chaque paramètre (« Identifiant numérique du dossier »…) pour qu'il les remplisse correctement.</p>
+<table>
+<tr><th style="width:28%">Outil</th><th>Ce qu'il fait</th><th style="width:28%">S'appuie sur</th></tr>
+<tr><td><code>searchClients</code></td><td>Cherche un client par nom ou email</td><td><code>ClientService</code></td></tr>
+<tr><td><code>getClientDetails</code></td><td>Détail d'un client</td><td><code>ClientService</code></td></tr>
+<tr><td><code>getRecentDossiers</code></td><td>Derniers dossiers</td><td><code>DossierService</code></td></tr>
+<tr><td><code>getInvoicesForClient</code></td><td>Factures d'un client</td><td><code>InvoiceService</code></td></tr>
+<tr><td><code>getClientAmlMatches</code></td><td>Alertes AML</td><td><code>ScreeningMatchService</code></td></tr>
+<tr><td><code>getRecentDocuments</code></td><td>Derniers documents</td><td><code>DocumentService</code></td></tr>
+<tr><td><code>summarizeDossier</code></td><td>Résumé complet d'un dossier</td><td><code>AiDossierSummaryService</code></td></tr>
+<tr><td><code>searchDocumentsInDossier</code></td><td>Passages d'un dossier, mis en forme <code>[Doc 4 - fichier.pdf] texte…</code></td><td><code>RAGDocumentService</code></td></tr>
+<tr><td><code>searchJurisprudence</code></td><td>Passages de jurisprudence, mis en forme <code>[Source: …] texte…</code></td><td><code>RAGDocumentService</code> + <code>Pays</code></td></tr>
+</table>
+<p class="meta"><b>Appelé de deux façons :</b> par le modèle dans le chat général (Spring AI exécute l'outil demandé), ou directement par <code>AiService</code> dans l'analyse stratégique, qui appelle les deux méthodes de recherche comme du Java normal.</p>
+</div>
+</section>
+
+<section>
+<div class="cls">
+<h3>AiService (le chef d'orchestre)</h3>
+<p><b>Rôle :</b> tous les usages de l'IA. Le principe est toujours le même : charger le prompt, ajouter le contexte, appeler le modèle via <b><code>ChatClient</code></b>. <code>ChatClient</code> est l'API de Spring AI pour parler au modèle : <code>.prompt().system(...).user(...).call()</code> répond d'un bloc, <code>.stream()</code> répond en flux.</p>
+<table>
+<tr><th style="width:27%">Méthode</th><th style="width:16%">Endpoint</th><th>Fonctionnement</th></tr>
+<tr><td><code>summarizeText</code></td><td><code>/summarize</code></td><td>Prompt <code>resume.txt</code>, puis <code>call()</code></td></tr>
+<tr><td><code>draftDocument</code></td><td><code>/draft</code></td><td>Prompt <code>redaction.txt</code>, puis <code>call()</code></td></tr>
+<tr><td><code>chat</code></td><td><code>/chat</code></td><td>Prompt <code>assistant-system.txt</code>, outils <code>AvoAiTools</code> et mémoire</td></tr>
+<tr><td><code>analyzeDossierStrategy</code></td><td><code>/analyze</code></td><td>Pareil, avec le prompt <code>avocat-senior-system.txt</code></td></tr>
+<tr><td><code>chatDossierStrategy</code></td><td><code>/chat-dossier</code></td><td>Stratégie sauvegardée en message système, historique du front, <code>ChatModel.call()</code>, puis sauvegarde de l'historique en JSON dans le dossier</td></tr>
+<tr><td><code>analyzeDossierStrategyStream</code></td><td><code>/analyze-stream</code></td><td>Le flux principal, détaillé ci-dessous</td></tr>
+</table>
+
+<p><b>Le streaming, étape par étape :</b></p>
+<ol>
+  <li>La tâche part sur <code>aiStreamingExecutor</code>. La requête HTTP rend la main tout de suite, le flux SSE est ouvert.</li>
+  <li>On cherche le pays du client (<code>Pays.normalize</code>).</li>
+  <li>On appelle <code>searchDocumentsInDossier</code> et <code>searchJurisprudence</code>.</li>
+  <li>On remplit <code>strategie.txt</code> avec ces passages.</li>
+  <li><code>chatClient().prompt().user(prompt).stream().content()</code> produit un <code>Flux&lt;String&gt;</code> : un morceau de texte à la fois.</li>
+  <li>Pour chaque morceau : on l'ajoute au texte complet et on l'envoie au front en SSE (<code>{"token": "..."}</code>).</li>
+  <li>À la fin du flux : on sauvegarde la stratégie dans <code>Dossier.aiStrategy</code>, puis on envoie l'événement <code>DONE</code>.</li>
+  <li>En cas d'erreur : on la journalise et on ferme le flux en erreur.</li>
+</ol>
+
+<p><b>La mémoire du chat :</b></p>
+<ul>
+  <li><code>MessageChatMemoryAdvisor</code> (fourni par Spring AI) ajoute automatiquement l'historique avant d'appeler le modèle, et enregistre la question et la réponse après.</li>
+  <li>La clé est <code>utilisateur:sessionId</code>, pour que deux utilisateurs ne voient jamais l'historique l'un de l'autre.</li>
+  <li><code>BoundedChatMemoryRepository</code> stocke ces historiques en RAM, avec 500 conversations au maximum (les plus anciennes sont oubliées). Ils sont perdus au redémarrage ; on pourra le remplacer par une version JDBC pour les garder en base.</li>
+</ul>
+</div>
+
+<div class="cls">
+<h3>Les classes inchangées qui jouent un rôle</h3>
+<ul>
+  <li><b><code>AiController</code></b> : reçoit les requêtes <code>/api/ai/*</code>, vérifie les paramètres et délègue à <code>AiService</code>. Pour le streaming, il crée le <code>SseEmitter</code> (15 minutes maximum). Pour <code>/sync-all-documents</code>, il boucle sur tous les documents et appelle <code>RAGDocumentService</code>.</li>
+  <li><b><code>AiConfigurationController</code></b> : CRUD de la table <code>ai_configuration</code> pour l'écran admin.</li>
+  <li><b><code>DocumentService</code></b> : après l'enregistrement d'un upload, il programme l'indexation <b>après le commit</b> de la transaction, pour que le thread d'indexation trouve bien le document en base. À la suppression, il appelle <code>removeDocumentFromQdrant</code>.</li>
+  <li><b><code>AiDossierSummaryService</code></b> : construit un résumé texte d'un dossier (tâches, activités, notes, rendez-vous, facturation) pour l'outil <code>summarizeDossier</code>.</li>
+</ul>
+</div>
+
+<div class="cls">
+<h3>SpringAiLocalSmokeTest</h3>
+<p><b>Rôle :</b> vérifier toute la chaîne contre Ollama et Qdrant en local : indexation, absence de doublons, filtre, suppression, streaming, outils et mémoire. Il travaille dans une collection de test, supprimée à la fin.</p>
+<p>Désactivé par défaut, pour ne pas faire échouer les builds sur une machine sans Ollama. Pour le lancer :</p>
+<pre>$env:AI_SMOKE_TEST="true"; mvn test -Dtest=SpringAiLocalSmokeTest</pre>
+</div>
+</section>
+
+<section>
+<h2>3. Qui appelle qui, et quand</h2>
+
+<h3>Au démarrage</h3>
+<pre class="tree">Spring Boot
+ ├─ starter Ollama  → crée EmbeddingModel (nomic-embed-text)
+ ├─ starter Qdrant  → crée la collection avo_documents si absente → crée VectorStore
+ └─ RAGConfig       → crée aiIngestionExecutor, aiStreamingExecutor</pre>
+
+<h3>À l'upload d'un document</h3>
+<pre class="tree">Front → DocumentController → DocumentService.create()
+          ├─ MinioService.uploadFile()
+          ├─ save en MySQL → réponse immédiate au front
+          └─ après commit → RAGDocumentService.ingestDocumentIntoQdrant()   [thread AI-Ingest]
+                ├─ AiConfigurationService.isAiEnabled()
+                ├─ MinioService.getFileStream() → TikaDocumentReader
+                ├─ VectorStore.delete(ancienne version)
+                └─ TokenTextSplitter → VectorStore.add() → Ollama (vecteurs) → Qdrant</pre>
+
+<h3>Au clic sur « Analyser la stratégie »</h3>
+<pre class="tree">DossierStrategieComponent (EventSource) → AiController.analyzeStream()
+  └─ AiService.analyzeDossierStrategyStream()   [thread AI-Stream]
+        ├─ DossierRepository → pays du client → Pays.normalize()
+        ├─ AvoAiTools.searchDocumentsInDossier() → RAGDocumentService → VectorStore → Qdrant
+        ├─ AvoAiTools.searchJurisprudence()      → RAGDocumentService → VectorStore → Qdrant
+        ├─ Prompts.render("strategie")
+        ├─ AiConfigurationService.buildChatModel() → ChatClient.stream()
+        │     └─ chaque token → SSE vers le front
+        └─ fin → DossierRepository.save(aiStrategy) → événement DONE</pre>
+
+<h3>Pour une question dans le chat général</h3>
+<pre class="tree">AiTesterComponent → AiController.chat() → AiService.chat()
+  └─ ChatClient (system + message + outils + mémoire)
+        ├─ le modèle demande un outil → AvoAiTools.searchClients() → ClientService → MySQL
+        ├─ le résultat est renvoyé au modèle → réponse finale
+        └─ la mémoire enregistre l'échange</pre>
+
+<h3>Pour une question de suivi sur la stratégie</h3>
+<pre class="tree">DossierStrategieComponent → AiController.chatDossier() → AiService.chatDossierStrategy()
+  ├─ DossierRepository → stratégie sauvegardée → SystemMessage
+  ├─ historique du front → UserMessage / AssistantMessage
+  ├─ AiConfigurationService.buildChatModel() → ChatModel.call()
+  └─ DossierRepository.save(aiChatHistory)</pre>
+
+<h3>À la suppression d'un document</h3>
+<pre class="tree">DocumentController → DocumentService.delete() → MinIO + MySQL
+  └─ RAGDocumentService.removeDocumentFromQdrant() → VectorStore.delete()</pre>
+
+<h2 style="margin-top:20px">4. À faire au déploiement</h2>
+<div class="box warn">
+<ol style="margin:0;padding-left:18px">
+  <li><b>Réindexer les documents</b> : Spring AI n'utilise pas le même format que LangChain4j dans Qdrant, donc la nouvelle collection <code>avo_documents</code> est vide. Lancer <code>POST /api/ai/sync-all-documents</code>, puis supprimer l'ancienne collection <code>avo_docs_collection</code>.</li>
+  <li><b>Ollama doit rester joignable</b> pour les embeddings, même si le chat passe par OpenAI ou Gemini : installer <code>nomic-embed-text</code> (<code>ollama pull nomic-embed-text</code>), et le modèle de chat configuré en base si le provider est OLLAMA.</li>
+  <li><b>Variables d'environnement</b> : <code>OLLAMA_BASE_URL</code>, <code>AI_EMBEDDING_MODEL</code>, <code>QDRANT_HOST</code>, <code>QDRANT_GRPC_PORT</code>, <code>QDRANT_COLLECTION</code> (valeurs par défaut dans <code>application.properties</code>).</li>
+</ol>
+</div>
+<p class="meta">Les diagrammes de séquence détaillés de chaque flux sont dans le document « Intégration de l'IA dans Avo-Maîtrise » (<code>Integration_IA_Avo-Maitrise.pdf</code>).</p>
+</section>
+</body>
+</html>

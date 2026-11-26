@@ -7,10 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class TaskCategoryDTO {
+    public TaskCategoryDTO() {}
+
+    public static class TaskCategoryDTOBuilder {
+        public TaskCategoryDTOBuilder() {}
+    }
+
     private Long id;
     private String code;
     private String libelle;

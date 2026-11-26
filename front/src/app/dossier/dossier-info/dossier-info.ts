@@ -10,11 +10,12 @@ import { DomaineJuridiqueService } from '../../services/domaine-juridique.servic
 import { MatterActivityService } from '../../services/matter-activity.service';
 import { forkJoin } from 'rxjs';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-dossier-info',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, TranslatePipe],
     templateUrl: './dossier-info.html',
     styleUrl: './dossier-info.css'
 })
@@ -155,12 +156,6 @@ export class DossierInfo implements OnInit, OnChanges {
         const last = client.nom ? client.nom.charAt(0) : '';
         const initials = (first + last).toUpperCase();
         return initials || '?';
-    }
-
-    getBillingInfo(dossier: Dossier): string {
-        const method = dossier.methodeFacturation || 'Non défini';
-        const rate = dossier.tauxHoraireApplique ? ` (${dossier.tauxHoraireApplique} €/h)` : '';
-        return `${method}${rate}`;
     }
 
     getActivityColor(type: string): string {

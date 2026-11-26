@@ -18,12 +18,12 @@
                         Détails de la tâche
                     </h3>
                     <div class="mt-4 text-left space-y-3">
-                        <div><strong class="text-gray-700">Titre :</strong> <span class="text-gray-600">{{ task.titre
+                        <div><strong class="text-gray-700">{{ 'TASK_DETAILS.TASK_TITLE' | translate }}</strong> <span class="text-gray-600">{{ task.titre
                                 }}</span></div>
                         <div *ngIf="task.category"><strong class="text-gray-700">Catégorie :</strong> <span
                                 class="text-gray-600">{{ categoryLabel }}</span></div>
                         <div class="flex items-center gap-3">
-                            <strong class="text-gray-700">Statut :</strong>
+                            <strong class="text-gray-700">{{ 'TASK_DETAILS.STATUS' | translate }}</strong>
                             <span
                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border shadow-sm"
                                 [ngClass]="{
@@ -42,9 +42,9 @@
                             <span class="text-gray-600">{{ formatMinutesToHours(task.estimatedTimeMinutes) }}</span>
                         </div>
                         <div>
-                            <strong class="text-gray-700">Description :</strong>
+                            <strong class="text-gray-700">{{ 'TASK_DETAILS.DESCRIPTION' | translate }}</strong>
                             <p class="text-gray-600 mt-1 whitespace-pre-wrap text-sm border p-2 rounded bg-gray-50">{{
-                                task.description || 'Aucune description disponible.' }}</p>
+                                task.description || ('TASK_DETAILS.NO_DESCRIPTION' | translate) }}</p>
                         </div>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
             <div class="mt-5 sm:mt-6">
                 <button type="button" (click)="onClose()"
                     class="inline-flex justify-center w-full rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
-                    Fermer
+                    {{ 'TASK_DETAILS.CLOSE' | translate }}
                 </button>
             </div>
         </div>

@@ -7,10 +7,15 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class FieldConfigDTO {
+    public FieldConfigDTO() {}
+
+    public static class FieldConfigDTOBuilder {
+        public FieldConfigDTOBuilder() {}
+    }
+
     private String id;
     private String name;
     private String type;

@@ -10,8 +10,9 @@ import java.util.Date;
 @Table(name = "task_logs")
 @Getter
 @Setter
-@NoArgsConstructor
 public class TaskLog {
+
+    public TaskLog() {}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,177 +1,443 @@
-<div class="p-6 sm:p-10 bg-slate-50 min-h-screen">
-    <!-- Header Section -->
-    <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div class="space-y-1">
-            <nav class="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400 mb-2">
-                <span class="hover:text-cyan-600 cursor-pointer">Tableau de Bord</span>
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                <span class="text-slate-900">Gestion des Clients</span>
-            </nav>
-            <h1 class="text-4xl font-black text-slate-900 tracking-tight">
-                Annuaire <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-blue-600">Clients & Contacts</span>
-            </h1>
-            <p class="text-slate-500 font-medium max-w-2xl">
-                Gérez votre base de données clients avec une surveillance AML en temps réel et un suivi rigoureux de la conformité KYC.
-            </p>
+<div class="p-5 sm:p-7 lg:p-8 max-w-[1520px] mx-auto space-y-6 font-sans min-h-full">
+
+  <!-- En-tête Principal (Style Swift Check : Épuré, Clair & Structuré) -->
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div class="flex items-start sm:items-center gap-3.5">
+      <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </div>
+      <div>
+        <div class="flex items-center gap-2.5 flex-wrap">
+          <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
+            {{ 'CRM.DIRECTORY' | translate }} {{ 'CRM.CLIENTS_CONTACTS' | translate }}
+          </h1>
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 border border-emerald-200/80">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+            {{ 'CRM.ACTIVE_CRM' | translate }}
+          </span>
         </div>
-        <div class="flex items-center gap-4">
-            <div *ngIf="alertCount > 0" 
-                class="hidden lg:flex items-center gap-4 bg-red-50 px-6 py-3 rounded-2xl border-2 border-red-500 shadow-lg animate-blink-red">
-                <div class="flex flex-col items-end">
-                    <span class="text-xs uppercase font-black text-red-600 leading-none tracking-tighter">Alertes AML Critiques</span>
-                    <span class="text-2xl font-black text-red-700 leading-none mt-1">{{ alertCount }}</span>
-                </div>
-                <div class="w-12 h-12 rounded-xl bg-red-600 flex items-center justify-center text-white shadow-inner">
-                    <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                </div>
-            </div>
-            
-            <div *ngIf="alertCount === 0" 
-                class="hidden lg:flex items-center gap-3 bg-white px-5 py-3 rounded-2xl border border-slate-200 shadow-sm opacity-60">
-                <div class="flex flex-col items-end">
-                    <span class="text-xs uppercase font-black text-slate-400 leading-none">Aucune Alerte AML</span>
-                    <span class="text-lg font-black text-slate-300 leading-none mt-1">0</span>
-                </div>
-                <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-            </div>
-            <button (click)="navigateToNewClient()"
-                class="group relative inline-flex items-center justify-center px-8 py-4 font-black text-lg text-white bg-slate-900 rounded-2xl overflow-hidden shadow-lg transition-all hover:scale-105 active:scale-95">
-                <div class="absolute inset-0 w-3 bg-gradient-to-r from-white/0 via-white/20 to-white/0 animate-[shimmer_2s_infinite] -skew-x-12"></div>
-                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Nouveau Client
-            </button>
-        </div>
+        <p class="text-xs sm:text-sm text-slate-500 mt-0.5 max-w-2xl">
+          {{ 'CRM.SUBTITLE' | translate }}
+        </p>
+      </div>
     </div>
 
-    <!-- Tabbed Navigation -->
-    <div class="mb-8 border-b border-slate-200 overflow-x-auto scrollbar-none">
-        <nav class="flex space-x-8 min-w-max" aria-label="Tabs">
-            <button (click)="activeTab = 'ALL'"
-                [ngClass]="activeTab === 'ALL' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
-                Tous les Clients
-            </button>
-            <button (click)="activeTab = 'PERSONNE'"
-                [ngClass]="activeTab === 'PERSONNE' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
-                Personnes Physiques
-            </button>
-            <button (click)="activeTab = 'SOCIETE'"
-                [ngClass]="activeTab === 'SOCIETE' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
-                Sociétés
-            </button>
-            <button (click)="activeTab = 'ASSOCIATION'"
-                [ngClass]="activeTab === 'ASSOCIATION' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
-                Associations
-            </button>
-            <button (click)="activeTab = 'INSTITUTION'"
-                [ngClass]="activeTab === 'INSTITUTION' ? 'border-cyan-600 text-cyan-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
-                class="whitespace-nowrap py-4 px-1 border-b-2 font-black text-base uppercase tracking-widest transition-all">
-                Institutions
-            </button>
-        </nav>
+    <!-- Actions & Alertes -->
+    <div class="flex flex-wrap items-center gap-2.5">
+      @if (alertCount > 0) {
+      <div class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-700">
+        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+        <span class="text-xs font-bold">{{ alertCount }} {{ 'CRM.ALERTS_CRITICAL' | translate }}</span>
+      </div>
+      } @else {
+      <div class="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs font-semibold">
+        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>{{ 'CRM.NO_ALERTS' | translate }}</span>
+      </div>
+      }
+
+      <button type="button" (click)="navigateToNewClient()"
+        class="inline-flex items-center justify-center gap-2 px-4 py-2.5 btn-emerald font-bold text-xs sm:text-sm rounded-xl cursor-pointer flex-shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4" />
+        </svg>
+        <span>{{ 'CRM.NEW_CLIENT' | translate }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation par Onglets Soulignés (Style Swift Check) -->
+  <div class="border-b border-slate-200 flex items-center gap-1 overflow-x-auto">
+    <button type="button" (click)="activeTab = 'ALL'"
+      [ngClass]="activeTab === 'ALL' ? 'border-emerald-500 text-emerald-700 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 font-semibold'"
+      class="px-3.5 py-2.5 border-b-2 text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap">
+      <span>{{ 'CRM.TAB_ALL' | translate }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[11px] font-bold"
+        [ngClass]="activeTab === 'ALL' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'">
+        {{ totalElements }}
+      </span>
+    </button>
+
+    <button type="button" (click)="activeTab = 'PERSONNE'"
+      [ngClass]="activeTab === 'PERSONNE' ? 'border-emerald-500 text-emerald-700 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 font-semibold'"
+      class="px-3.5 py-2.5 border-b-2 text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap">
+      <span>{{ 'CRM.TAB_PERSONNE' | translate }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[11px] font-bold"
+        [ngClass]="activeTab === 'PERSONNE' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'">
+        {{ personneCount }}
+      </span>
+    </button>
+
+    <button type="button" (click)="activeTab = 'SOCIETE'"
+      [ngClass]="activeTab === 'SOCIETE' ? 'border-emerald-500 text-emerald-700 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 font-semibold'"
+      class="px-3.5 py-2.5 border-b-2 text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap">
+      <span>{{ 'CRM.TAB_SOCIETE' | translate }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[11px] font-bold"
+        [ngClass]="activeTab === 'SOCIETE' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'">
+        {{ societeCount }}
+      </span>
+    </button>
+
+    <button type="button" (click)="activeTab = 'ASSOCIATION'"
+      [ngClass]="activeTab === 'ASSOCIATION' ? 'border-emerald-500 text-emerald-700 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 font-semibold'"
+      class="px-3.5 py-2.5 border-b-2 text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap">
+      <span>{{ 'CRM.TAB_ASSOCIATION' | translate }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[11px] font-bold"
+        [ngClass]="activeTab === 'ASSOCIATION' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'">
+        {{ associationCount }}
+      </span>
+    </button>
+
+    <button type="button" (click)="activeTab = 'INSTITUTION'"
+      [ngClass]="activeTab === 'INSTITUTION' ? 'border-emerald-500 text-emerald-700 font-bold' : 'border-transparent text-slate-500 hover:text-slate-800 font-semibold'"
+      class="px-3.5 py-2.5 border-b-2 text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer whitespace-nowrap">
+      <span>{{ 'CRM.TAB_INSTITUTION' | translate }}</span>
+      <span class="px-2 py-0.5 rounded-full text-[11px] font-bold"
+        [ngClass]="activeTab === 'INSTITUTION' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'">
+        {{ institutionCount }}
+      </span>
+    </button>
+  </div>
+
+  <!-- 4 Cartes KPI Typographiques (Style Swift Check) -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- KPI 1 : Total Répertoire -->
+    <div (click)="activeTab = 'ALL'"
+      class="bg-white rounded-2xl p-5 border border-emerald-400/80 ring-1 ring-emerald-400/20 hover:shadow-md transition-all cursor-pointer">
+      <p class="text-3xl font-extrabold text-slate-900 tabular-nums">{{ totalElements }}</p>
+      <p class="text-sm font-bold text-slate-800 mt-1">{{ 'CRM.TOTAL_CLIENTS' | translate }}</p>
+      <p class="text-xs text-slate-400 mt-0.5">Base active vérifiée</p>
     </div>
 
-    <!-- Filters & Search Bar (Visible only on ALL tab) -->
-    <div *ngIf="activeTab === 'ALL'" class="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-10">
-        <div class="lg:col-span-6 relative">
-            <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-            </div>
-            <input [(ngModel)]="searchTerm" (input)="filterClients()"
-                class="w-full pl-12 pr-4 py-4 bg-white rounded-3xl border-2 border-transparent shadow-sm focus:border-cyan-500 focus:ring-0 outline-none transition-all placeholder:text-slate-400 font-bold text-lg text-slate-700"
-                placeholder="Rechercher par nom, RC, CIN ou pays..." type="search">
-        </div>
-        <div class="lg:col-span-3">
-            <select [(ngModel)]="selectedType" (change)="filterClients()"
-                class="w-full px-4 py-4 bg-white rounded-3xl border-2 border-transparent shadow-sm focus:border-cyan-500 outline-none font-bold text-lg text-slate-600 cursor-pointer appearance-none">
-                <option value="">Tous les Types</option>
-                <option value="PERSONNE">Personne Physique</option>
-                <option value="SOCIETE">Société / Entité</option>
-                <option value="ASSOCIATION">Association</option>
-                <option value="INSTITUTION">Institution</option>
-            </select>
-        </div>
-        <div class="lg:col-span-3">
-            <select [(ngModel)]="selectedRisk" (change)="filterClients()"
-                class="w-full px-4 py-4 bg-white rounded-3xl border-2 border-transparent shadow-sm focus:border-cyan-500 outline-none font-bold text-lg text-slate-600 cursor-pointer appearance-none">
-                <option value="">Risque AML (Tous)</option>
-                <option value="ELEVEE">Risque Élevé</option>
-                <option value="MOYEN">Risque Moyen</option>
-                <option value="FAIBLE">Risque Faible</option>
-            </select>
-        </div>
+    <!-- KPI 2 : Personnes Physiques -->
+    <div (click)="activeTab = 'PERSONNE'"
+      class="swift-card rounded-2xl p-5 hover:border-emerald-300 transition-all cursor-pointer">
+      <p class="text-3xl font-extrabold text-emerald-600 tabular-nums">{{ personneCount }}</p>
+      <p class="text-sm font-bold text-slate-800 mt-1">{{ 'CRM.PERSONS' | translate }}</p>
+      <p class="text-xs text-slate-400 mt-0.5">Particuliers</p>
     </div>
 
-    <!-- Loading State -->
-    <div *ngIf="loading" class="flex flex-col items-center justify-center py-20 bg-white rounded-[40px] border border-slate-200 shadow-sm">
-        <div class="w-12 h-12 border-4 border-cyan-600 border-t-transparent rounded-full animate-spin"></div>
-        <p class="text-slate-500 font-bold mt-4">Chargement de l'annuaire des clients...</p>
+    <!-- KPI 3 : Sociétés -->
+    <div (click)="activeTab = 'SOCIETE'"
+      class="swift-card rounded-2xl p-5 hover:border-emerald-300 transition-all cursor-pointer">
+      <p class="text-3xl font-extrabold text-sky-600 tabular-nums">{{ societeCount }}</p>
+      <p class="text-sm font-bold text-slate-800 mt-1">{{ 'CRM.COMPANIES' | translate }}</p>
+      <p class="text-xs text-slate-400 mt-0.5">Personnes morales</p>
     </div>
 
-    <!-- Content Sections -->
-    <div *ngIf="!loading" [ngSwitch]="activeTab">
-        <!-- ALL TAB -->
-        <div *ngSwitchCase="'ALL'">
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                @for (client of paginatedClients; track client.id) {
-                    <app-client-card [client]="client"></app-client-card>
-                } @empty {
-                    <div class="col-span-full py-20 flex flex-col items-center justify-center text-center bg-white rounded-[40px] shadow-sm border-2 border-dashed border-slate-200">
-                        <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center text-slate-300 mb-6">
-                            <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-                        </div>
-                        <h3 class="text-2xl font-black text-slate-900 mb-2">Aucun client trouvé</h3>
-                        <p class="text-slate-500 font-medium mb-8">Commencez par ajouter votre premier client à l'annuaire.</p>
-                        <button (click)="navigateToNewClient()"
-                            class="px-8 py-3 bg-slate-900 text-white font-black rounded-2xl hover:scale-105 transition-transform">
-                            Créer un Client
-                        </button>
-                    </div>
-                }
-            </div>
+    <!-- KPI 4 : Associations & Institutions -->
+    <div (click)="activeTab = 'ASSOCIATION'"
+      class="swift-card rounded-2xl p-5 hover:border-emerald-300 transition-all cursor-pointer">
+      <p class="text-3xl font-extrabold text-amber-500 tabular-nums">{{ associationCount + institutionCount }}</p>
+      <p class="text-sm font-bold text-slate-800 mt-1">{{ 'CRM.ORGANIZATIONS' | translate }}</p>
+      <p class="text-xs text-slate-400 mt-0.5">Associations & institutions</p>
+    </div>
+  </div>
 
-            <!-- Pagination Toolbar -->
-            <div *ngIf="totalPages > 1" class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white px-8 py-5 rounded-[25px] border border-slate-200 shadow-sm transition-all hover:shadow-md">
-                <span class="text-slate-500 font-bold text-base">
-                    Affichage de <span class="text-slate-900 font-black">{{ (currentPage - 1) * pageSize + 1 }}</span> à 
-                    <span class="text-slate-900 font-black">{{ currentEndIndex }}</span> sur 
-                    <span class="text-slate-900 font-black">{{ totalElements }}</span> clients
-                </span>
-                <div class="flex items-center gap-2">
-                    <button (click)="prevPage()" [disabled]="currentPage === 1"
-                        class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-                    </button>
-                    
-                    <button *ngFor="let page of pages" (click)="goToPage(page)"
-                        [ngClass]="currentPage === page ? 'bg-cyan-600 border-cyan-600 text-white shadow-md shadow-cyan-100 scale-105' : 'border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'"
-                        class="flex items-center justify-center w-12 h-12 rounded-2xl font-black text-base transition-all active:scale-95 cursor-pointer">
-                        {{ page }}
-                    </button>
+  <!-- Barre de Recherche & Filtres (Visible uniquement sur l'onglet ALL) -->
+  @if (activeTab === 'ALL') {
+  <div class="swift-card p-3.5 sm:p-4 rounded-2xl flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3">
 
-                    <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                        class="flex items-center justify-center w-12 h-12 rounded-2xl border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:border-slate-200 disabled:cursor-not-allowed transition-all cursor-pointer">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </button>
+    <!-- Champ Recherche -->
+    <div class="relative flex-grow min-w-0">
+      <div class="absolute inset-y-0 start-3.5 flex items-center pointer-events-none text-slate-400">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+      <input [(ngModel)]="searchTerm" (input)="filterClients()" type="search"
+        [placeholder]="'CRM.SEARCH_PLACEHOLDER' | translate"
+        class="w-full ps-10 pe-4 py-2 bg-slate-50 focus:bg-white border border-slate-200 rounded-xl focus:border-emerald-500 transition-all outline-none font-medium placeholder:text-slate-400 text-slate-800 text-sm">
+    </div>
+
+    <!-- Filtres Dropdowns & Reset -->
+    <div class="flex flex-wrap sm:flex-nowrap items-center gap-2">
+
+      <!-- Filtre Type -->
+      <div class="relative flex-1 sm:flex-initial min-w-[145px]">
+        <select [(ngModel)]="selectedType" (change)="filterClients()"
+          class="w-full ps-3 pe-8 py-2 bg-white border border-slate-200 rounded-xl focus:border-emerald-500 transition-all outline-none font-semibold text-slate-700 text-xs cursor-pointer appearance-none hover:border-slate-300">
+          <option value="">{{ 'CRM.FILTER_ALL_TYPES' | translate }}</option>
+          <option value="PERSONNE">{{ 'CRM.FILTER_PERSON' | translate }}</option>
+          <option value="SOCIETE">{{ 'CRM.FILTER_COMPANY' | translate }}</option>
+          <option value="ASSOCIATION">{{ 'CRM.FILTER_ASSOCIATION' | translate }}</option>
+          <option value="INSTITUTION">{{ 'CRM.FILTER_INSTITUTION' | translate }}</option>
+        </select>
+        <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Filtre Niveau de Risque AML -->
+      <div class="relative flex-1 sm:flex-initial min-w-[145px]">
+        <select [(ngModel)]="selectedRisk" (change)="filterClients()"
+          class="w-full ps-3 pe-8 py-2 bg-white border border-slate-200 rounded-xl focus:border-emerald-500 transition-all outline-none font-semibold text-slate-700 text-xs cursor-pointer appearance-none hover:border-slate-300">
+          <option value="">{{ 'CRM.FILTER_ALL_RISKS' | translate }}</option>
+          <option value="ELEVEE">{{ 'CRM.RISK_HIGH' | translate }}</option>
+          <option value="MOYEN">{{ 'CRM.RISK_MEDIUM' | translate }}</option>
+          <option value="FAIBLE">{{ 'CRM.RISK_LOW' | translate }}</option>
+        </select>
+        <div class="absolute inset-y-0 end-2.5 flex items-center pointer-events-none text-slate-400">
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Bouton Réinitialiser les Filtres -->
+      @if (isFiltered) {
+      <button type="button" (click)="resetFilters()"
+        class="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors cursor-pointer">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span>{{ 'DOSSIER.RESET_FILTERS' | translate }}</span>
+      </button>
+      }
+
+      <!-- Toggle Mode Vue (Cartes vs Tableau) -->
+      <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200/80">
+        <button type="button" (click)="viewMode = 'grid'"
+          [ngClass]="viewMode === 'grid' ? 'bg-white text-emerald-700 shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-800 font-semibold'"
+          class="px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1" title="Vue Grille">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+          <span class="hidden md:inline">{{ 'CRM.VIEW_GRID' | translate }}</span>
+        </button>
+        <button type="button" (click)="viewMode = 'table'"
+          [ngClass]="viewMode === 'table' ? 'bg-white text-emerald-700 shadow-2xs font-bold' : 'text-slate-500 hover:text-slate-800 font-semibold'"
+          class="px-2.5 py-1.5 rounded-lg text-xs transition-all cursor-pointer flex items-center gap-1" title="Vue Tableau">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+          </svg>
+          <span class="hidden md:inline">{{ 'CRM.VIEW_TABLE' | translate }}</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+  }
+
+  <!-- État de Chargement -->
+  @if (loading) {
+  <div class="py-20 flex flex-col items-center justify-center text-center swift-card rounded-2xl">
+    <div class="w-10 h-10 border-[3px] border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+    <p class="text-slate-700 font-bold mt-4 text-sm">{{ 'CRM.LOADING' | translate }}</p>
+    <p class="text-slate-400 text-xs mt-0.5">Récupération des fiches clients en cours...</p>
+  </div>
+  }
+
+  <!-- Contenu Principal -->
+  @if (!loading) {
+  <div>
+    @switch (activeTab) {
+
+      <!-- ONGLET TOUS LES CLIENTS (Cartes ou Tableau) -->
+      @case ('ALL') {
+        <div>
+
+          <!-- Mode Grille Cartes -->
+          @if (viewMode === 'grid') {
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              @for (client of paginatedClients; track client.id) {
+                <app-client-card [client]="client"></app-client-card>
+              } @empty {
+                <div class="col-span-full py-16 flex flex-col items-center justify-center text-center swift-card rounded-2xl">
+                  <div class="w-12 h-12 bg-slate-100 rounded-xl flex items-center justify-center text-slate-400 mb-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <h3 class="text-base font-bold text-slate-900 mb-1">{{ 'CRM.NO_CLIENT_FOUND' | translate }}</h3>
+                  <p class="text-xs text-slate-500 mb-4">{{ 'CRM.NO_CLIENT_DESC' | translate }}</p>
+                  <button type="button" (click)="navigateToNewClient()"
+                    class="px-4 py-2 btn-emerald font-bold text-xs rounded-xl cursor-pointer">
+                    {{ 'CRM.CREATE_CLIENT' | translate }}
+                  </button>
                 </div>
+              }
             </div>
+          }
+
+          <!-- Mode Tableau Détaillé (Style Swift Check : Lignes fines & Actions nettes) -->
+          @if (viewMode === 'table') {
+            <div class="swift-card rounded-2xl overflow-hidden">
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="bg-slate-50/80 border-b border-slate-200 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                      <th class="px-5 py-3.5">{{ 'CRM.CLIENT' | translate }}</th>
+                      <th class="px-5 py-3.5">Type</th>
+                      <th class="px-5 py-3.5">{{ 'CRM.CONTACT' | translate }}</th>
+                      <th class="px-5 py-3.5">{{ 'CRM.IDENTIFIER' | translate }}</th>
+                      <th class="px-5 py-3.5">{{ 'CRM.STATUS_AML' | translate }}</th>
+                      <th class="px-5 py-3.5 text-right">{{ 'CRM.ACTIONS' | translate }}</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100 text-xs">
+                    @for (client of paginatedClients; track client.id) {
+                      <tr class="hover:bg-emerald-50/30 transition-colors group cursor-pointer" (click)="navigateToClientDetails(client)">
+
+                        <!-- Client Name + Avatar -->
+                        <td class="px-5 py-3.5">
+                          <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-xs flex-shrink-0"
+                              [ngClass]="{
+                                'bg-emerald-50 text-emerald-700 border border-emerald-100': client.type === 'PERSONNE',
+                                'bg-sky-50 text-sky-700 border border-sky-100': client.type === 'SOCIETE',
+                                'bg-amber-50 text-amber-700 border border-amber-100': client.type === 'ASSOCIATION',
+                                'bg-slate-100 text-slate-700 border border-slate-200': client.type === 'INSTITUTION'
+                              }">
+                              {{ getDisplayName(client).charAt(0) }}
+                            </div>
+                            <div>
+                              <span class="block font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">{{ getDisplayName(client) }}</span>
+                              <span class="block text-[10px] font-mono text-slate-400">#{{ client.id }}</span>
+                            </div>
+                          </div>
+                        </td>
+
+                        <!-- Type Badge -->
+                        <td class="px-5 py-3.5">
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border"
+                            [ngClass]="{
+                              'bg-emerald-50 text-emerald-700 border-emerald-200/80': client.type === 'PERSONNE',
+                              'bg-sky-50 text-sky-700 border-sky-200/80': client.type === 'SOCIETE',
+                              'bg-amber-50 text-amber-700 border-amber-200/80': client.type === 'ASSOCIATION',
+                              'bg-slate-100 text-slate-700 border-slate-200': client.type === 'INSTITUTION'
+                            }">
+                            {{ client.type }}
+                          </span>
+                        </td>
+
+                        <!-- Contact -->
+                        <td class="px-5 py-3.5">
+                          <span class="block font-semibold text-slate-700">{{ client.email || '---' }}</span>
+                          <span class="block text-[11px] text-slate-400">{{ client.telephone || '---' }}</span>
+                        </td>
+
+                        <!-- Specific Info / ID / RC -->
+                        <td class="px-5 py-3.5">
+                          <span class="block font-mono font-semibold text-slate-800">{{ getClientSpecificInfo(client) || '---' }}</span>
+                          <span class="block text-[10px] text-slate-400 uppercase">{{ client.pays || 'International' }}</span>
+                        </td>
+
+                        <!-- Status AML -->
+                        <td class="px-5 py-3.5">
+                          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border inline-block"
+                            [ngClass]="{
+                              'bg-rose-50 text-rose-700 border-rose-200': client.clientStatus === 'AML_REQUIRED' || client.clientStatus === 'BLOCKED',
+                              'bg-amber-50 text-amber-700 border-amber-200': client.clientStatus === 'VERIFICATION_AML_REQUIRED',
+                              'bg-emerald-50 text-emerald-700 border-emerald-200': client.clientStatus === 'VALIDATED' || client.clientStatus === 'AML_VALIDATED',
+                              'bg-sky-50 text-sky-700 border-sky-200': client.clientStatus === 'INDULGENCE_REQUIRED',
+                              'bg-slate-50 text-slate-600 border-slate-200': !client.clientStatus
+                            }">
+                            {{ client.clientStatus ? client.clientStatus.replace('_', ' ') : 'INCONNU' }}
+                          </span>
+                        </td>
+
+                        <!-- Actions (Style Swift Check : Pills fines Émeraude & Bleu Ciel) -->
+                        <td class="px-5 py-3.5 text-right" (click)="$event.stopPropagation()">
+                          <div class="flex items-center justify-end gap-1.5">
+                            <button type="button" (click)="navigateToConformity(client)"
+                              class="px-2.5 py-1.5 rounded-lg bg-white border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-900 font-semibold transition-all cursor-pointer"
+                              title="Conformité">
+                              AML
+                            </button>
+                            <button type="button" (click)="navigateToEdit(client)"
+                              class="px-2.5 py-1.5 rounded-lg btn-sky-soft font-semibold cursor-pointer"
+                              title="Modifier">
+                              {{ 'CRM.EDIT' | translate }}
+                            </button>
+                            <button type="button" (click)="navigateToClientDiligenceResults(client.id!)"
+                              class="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold transition-all cursor-pointer"
+                              title="Due Diligence">
+                              {{ 'CRM.DILIGENCE' | translate }}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="6" class="px-6 py-16 text-center">
+                          <span class="text-slate-400 font-semibold text-sm">{{ 'CRM.NO_CLIENT_FOUND' | translate }}</span>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          }
+
+          <!-- Pagination Toolbar -->
+          @if (totalPages > 1 || totalElements > 0) {
+          <div class="mt-5 flex flex-col sm:flex-row items-center justify-between gap-4 swift-card px-5 py-3.5 rounded-2xl">
+            <span class="text-slate-500 font-medium text-xs">
+              {{ 'CRM.DISPLAYING' | translate }} <b class="text-slate-900 font-bold">{{ (currentPage - 1) * pageSize + 1 }}</b> {{ 'CRM.TO' | translate }}
+              <b class="text-slate-900 font-bold">{{ currentEndIndex }}</b> {{ 'CRM.OF' | translate }}
+              <b class="text-slate-900 font-bold">{{ totalElements }}</b> {{ 'CRM.CLIENTS_COUNT' | translate }}
+            </span>
+
+            @if (totalPages > 1) {
+            <div class="flex items-center gap-1.5">
+              <button type="button" (click)="prevPage()" [disabled]="currentPage === 1"
+                class="flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              @for (page of pages; track page) {
+              <button type="button" (click)="goToPage(page)"
+                [ngClass]="currentPage === page ? 'btn-emerald font-bold' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-semibold'"
+                class="flex items-center justify-center w-8 h-8 rounded-lg text-xs transition-all cursor-pointer">
+                {{ page }}
+              </button>
+              }
+
+              <button type="button" (click)="nextPage()" [disabled]="currentPage === totalPages"
+                class="flex items-center justify-center w-8 h-8 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+            }
+          </div>
+          }
         </div>
+      }
 
-        <!-- PERSONNE TAB -->
-        <app-client-physique-list *ngSwitchCase="'PERSONNE'"></app-client-physique-list>
+      <!-- PERSONNES PHYSIQUES -->
+      @case ('PERSONNE') {
+        <app-client-physique-list></app-client-physique-list>
+      }
 
-        <!-- SOCIETE TAB -->
-        <app-client-moral-list *ngSwitchCase="'SOCIETE'"></app-client-moral-list>
+      <!-- SOCIETES -->
+      @case ('SOCIETE') {
+        <app-client-moral-list></app-client-moral-list>
+      }
 
-        <!-- ASSOCIATION TAB -->
-        <app-association-list *ngSwitchCase="'ASSOCIATION'"></app-association-list>
+      <!-- ASSOCIATIONS -->
+      @case ('ASSOCIATION') {
+        <app-association-list></app-association-list>
+      }
 
-        <!-- INSTITUTION TAB -->
-        <app-institution-list *ngSwitchCase="'INSTITUTION'"></app-institution-list>
-    </div>
+      <!-- INSTITUTIONS -->
+      @case ('INSTITUTION') {
+        <app-institution-list></app-institution-list>
+      }
+    }
+  </div>
+  }
+
 </div>

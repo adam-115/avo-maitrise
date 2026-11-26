@@ -1,0 +1,125 @@
+<div class="ai-assistant-wrapper">
+  <div class="ai-sidebar">
+    <div class="sidebar-header">
+      <i class="fa fa-robot"></i>
+      <h2>Assistant IA</h2>
+    </div>
+
+    <div class="mode-selector">
+      <button [class.active]="activeMode() === 'avocat-assistant'" (click)="setMode('avocat-assistant')">
+        <i class="fa fa-gavel"></i> Avocat Assistant (Stratégie)
+      </button>
+      <button [class.active]="activeMode() === 'chat'" (click)="setMode('chat')">
+        <i class="fa fa-comments"></i> Chat Libre
+      </button>
+      <button [class.active]="activeMode() === 'summarize'" (click)="setMode('summarize')">
+        <i class="fa fa-compress-alt"></i> Résumer un texte
+      </button>
+      <button [class.active]="activeMode() === 'draft'" (click)="setMode('draft')">
+        <i class="fa fa-pen-nib"></i> Rédiger un brouillon
+      </button>
+    </div>
+
+    <div class="sidebar-info">
+      <p><small>L'assistant a accès à vos dossiers, clients, et à la jurisprudence (selon le pays demandé).</small></p>
+    </div>
+  </div>
+
+  <div class="ai-chat-area">
+    <div class="chat-history" #chatContainer>
+      <div *ngFor="let msg of messages(); let idx = index" class="message-wrapper" [ngClass]="msg.role">
+        <div class="message-avatar">
+          <i *ngIf="msg.role === 'assistant'" class="fa fa-robot"></i>
+          <i *ngIf="msg.role === 'user'" class="fa fa-user"></i>
+        </div>
+        <div class="message-content">
+          <!-- Si isLoading est true et qu'il n'y a pas de texte -->
+          <div *ngIf="msg.isLoading" class="typing-indicator">
+            <span></span><span></span><span></span>
+          </div>
+          <!-- Sinon on affiche le texte -->
+          <pre *ngIf="!msg.isLoading && !msg.verification">{{ msg.text }}</pre>
+          <!-- Réponse vérifiée : citations cliquables, références à contrôler en rouge, sources consultées -->
+          <ng-container *ngIf="!msg.isLoading && msg.verification">
+            <app-ai-answer-text [text]="msg.text" [sources]="msg.sources || []" [verification]="msg.verification"
+              (cite)="panel.focus($event)"></app-ai-answer-text>
+            <app-ai-sources-panel #panel [sources]="msg.sources || []" [verification]="msg.verification"
+              [perimetre]="msg.perimetre || []" [compact]="true"></app-ai-sources-panel>
+          </ng-container>
+
+          <!-- Bouton lecture vocale de la réponse IA -->
+          <div *ngIf="msg.role === 'assistant' && !msg.isLoading && msg.text && isTtsSupported"
+            class="msg-voice-actions">
+            <button type="button" (click)="toggleSpeakMessage(msg, idx)" class="btn-speak"
+              [class.speaking]="speakingMsgIndex() === idx"
+              [title]="speakingMsgIndex() === idx ? 'Arrêter la lecture' : 'Écouter la réponse'">
+              <span>{{ speakingMsgIndex() === idx ? '⏹ Arrêter' : '🔊 Écouter' }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bandeau d'état de la dictée vocale -->
+    <div *ngIf="isListening() || voiceError()" class="voice-status-bar" [class.voice-error]="!!voiceError()">
+      <ng-container *ngIf="isListening()">
+        <span class="voice-dot"></span>
+        <span class="voice-label">
+          Écoute en cours ({{ speechLang() === 'fr-FR' ? 'FR' : (speechLang() === 'ar-MA' ? 'AR' : 'EN') }})…
+          <em *ngIf="interimTranscript()"> « {{ interimTranscript() }} »</em>
+        </span>
+        <button type="button" class="voice-stop-link" (click)="toggleVoiceInput()">Arrêter</button>
+      </ng-container>
+      <span *ngIf="!isListening() && voiceError()">{{ voiceError() }}</span>
+    </div>
+
+    <div class="chat-input-area">
+      <!-- Zone d'input spéciale pour le draft -->
+      <div *ngIf="activeMode() === 'draft'" class="draft-inputs">
+        <input type="text" [(ngModel)]="draftType" placeholder="Type (ex: Mise en demeure)" />
+        <textarea [(ngModel)]="draftContext" rows="3"
+          placeholder="Contexte... (ex: retard de paiement) — ou cliquez sur le micro"></textarea>
+      </div>
+
+      <!-- Droit applicable : l'IA ne cherche la jurisprudence que dans ce pays (+ international) -->
+      <div *ngIf="activeMode() === 'chat' || activeMode() === 'avocat-assistant'" class="pays-select">
+        <label for="ai-pays">{{ 'AI_SOURCES.COUNTRY_LABEL' | translate }}</label>
+        <select id="ai-pays" [ngModel]="pays()" (ngModelChange)="setPays($event)">
+          <option *ngFor="let p of paysOptions" [value]="p">{{ ('AI_SOURCES.COUNTRY.' + p) | translate }}</option>
+        </select>
+      </div>
+
+      <!-- Zone d'input normale (pour chat, avocat, summarize) -->
+      <div *ngIf="activeMode() !== 'draft'" class="normal-input">
+        <textarea [(ngModel)]="promptText" rows="2"
+          placeholder="Posez votre question à l'assistant (ou cliquez sur le micro 🎙️)..."
+          (keydown)="onKeydown($event)">
+        </textarea>
+      </div>
+
+      <!-- Contrôles vocaux (Langue + Micro) -->
+      <div *ngIf="voiceService.isSpeechSupported" class="voice-controls">
+        <select class="voice-lang-select" [ngModel]="speechLang()" (ngModelChange)="speechLang.set($event)"
+          [disabled]="isListening()" title="Langue de dictée vocale">
+          <option value="fr-FR">FR</option>
+          <option value="ar-MA">AR</option>
+          <option value="en-US">EN</option>
+        </select>
+        <button type="button" class="btn-mic" [class.recording]="isListening()" (click)="toggleVoiceInput()"
+          [disabled]="isLoading()"
+          [title]="isListening() ? 'Arrêter la dictée vocale' : 'Parler à l\'assistant (transcription vocale)'">
+          <svg class="mic-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path *ngIf="!isListening()" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            <rect *ngIf="isListening()" x="6" y="6" width="12" height="12" rx="2" fill="currentColor" />
+          </svg>
+        </button>
+      </div>
+
+      <button class="btn-send" (click)="submit()"
+        [disabled]="isLoading() || (activeMode() !== 'draft' && !promptText().trim()) || (activeMode() === 'draft' && !draftContext().trim())">
+        <i class="fa fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>

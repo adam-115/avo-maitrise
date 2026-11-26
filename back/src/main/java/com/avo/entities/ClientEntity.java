@@ -17,6 +17,7 @@ import jakarta.persistence.TemporalType;
 import jakarta.persistence.PrePersist;
 import java.util.Date;
 
+@org.hibernate.envers.Audited
 @Entity
 @Table(name = "clients")
 @Inheritance(strategy = InheritanceType.JOINED)
@@ -45,6 +46,7 @@ public class ClientEntity {
     @OneToMany(mappedBy = "client", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Document> documents;
 
+    @org.hibernate.envers.NotAudited
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ContactPoint> contacts;
 
@@ -55,6 +57,9 @@ public class ClientEntity {
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
+    @Column(name = "version")
+    private Long version = 1L;
+
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
@@ -63,6 +68,9 @@ public class ClientEntity {
     }
 
     public ClientEntity() {}
+
+    public Long getVersion() { return version; }
+    public void setVersion(Long version) { this.version = version; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

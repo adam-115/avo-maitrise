@@ -8,12 +8,12 @@ import { ClientTypeEnum, FieldConfig, FormConfig, FormType } from '../../appType
 import { AlertService } from '../../services/alert-service';
 import { NavigationService } from '../../services/navigation-service';
 import { FormConfigService } from '../../services/form-config-service';
-
-
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-diligence-form-builder-component',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, NewDiligenceField],
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, NewDiligenceField, TranslatePipe],
   templateUrl: './diligence-form-builder-component.html',
   styleUrl: './diligence-form-builder-component.css',
 })
