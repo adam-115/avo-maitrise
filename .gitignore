@@ -63,3 +63,5 @@ front/node/
 
 # Compilation de l IDE (profil ide-separate-output de back/pom.xml)
 back/target-ide/
+# Sauvegardes OVH S3 (scripts locaux et clés ovh-backup.env)
+avo-maitrise-docker/ovh-s3-backup/
