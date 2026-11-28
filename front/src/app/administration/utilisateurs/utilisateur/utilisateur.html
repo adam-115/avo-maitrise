@@ -277,18 +277,42 @@
               </span>
             </td>
 
-            <!-- Statut -->
+            <!-- Statut + Synchro Keycloak -->
             <td class="py-4 px-4">
-              <span [class]="user.isActive !== false ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'"
-                class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-bold rounded-full border">
-                <span [class]="user.isActive !== false ? 'bg-emerald-500' : 'bg-rose-500'" class="w-1.5 h-1.5 rounded-full"></span>
-                <span>{{ (user.isActive !== false ? 'USER_MANAGEMENT.STATUS_ACTIVE' : 'USER_MANAGEMENT.STATUS_INACTIVE') | translate }}</span>
-              </span>
+              <div class="flex flex-col items-start gap-1">
+                <span [class]="user.isActive !== false ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'"
+                  class="inline-flex items-center gap-1.5 px-2.5 py-0.5 text-xs font-bold rounded-full border">
+                  <span [class]="user.isActive !== false ? 'bg-emerald-500' : 'bg-rose-500'" class="w-1.5 h-1.5 rounded-full"></span>
+                  <span>{{ (user.isActive !== false ? 'USER_MANAGEMENT.STATUS_ACTIVE' : 'USER_MANAGEMENT.STATUS_INACTIVE') | translate }}</span>
+                </span>
+                <span *ngIf="user.keycloakId"
+                  [title]="'Keycloak ID : ' + user.keycloakId"
+                  class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+                  Keycloak OK
+                </span>
+                <span *ngIf="!user.keycloakId"
+                  class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-50 text-amber-800 border border-amber-300">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                  Non synchronisé Keycloak
+                </span>
+              </div>
             </td>
 
             <!-- Actions -->
             <td class="py-4 px-4 sm:px-6 text-right whitespace-nowrap">
               <div class="flex items-center justify-end gap-1.5">
+                <!-- Synchroniser avec Keycloak -->
+                <button (click)="syncWithKeycloak(user)"
+                  [disabled]="syncingUserId === user.id"
+                  [ngClass]="user.keycloakId ? 'text-sky-700 bg-sky-50 hover:bg-sky-100 border-sky-200' : 'text-amber-800 bg-amber-50 hover:bg-amber-100 border-amber-300'"
+                  class="p-2 rounded-xl border transition-colors shadow-2xs active:scale-95 disabled:opacity-50 cursor-pointer"
+                  [title]="user.keycloakId ? 'Resynchroniser profil et rôle dans Keycloak' : 'Créer / Lier dans Keycloak'">
+                  <svg class="w-4 h-4" [class.animate-spin]="syncingUserId === user.id" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                  </svg>
+                </button>
+
                 <!-- Modifier -->
                 <button (click)="editUser(user)" 
                   class="p-2 rounded-xl text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors shadow-2xs active:scale-95" 
@@ -349,10 +373,21 @@
             <span>{{ user.role }}</span>
           </span>
 
-          <span [class]="user.isActive !== false ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'"
-            class="px-2.5 py-0.5 text-[11px] font-bold rounded-full border">
-            {{ (user.isActive !== false ? 'USER_MANAGEMENT.STATUS_ACTIVE' : 'USER_MANAGEMENT.STATUS_INACTIVE') | translate }}
-          </span>
+          <div class="flex items-center gap-1.5 flex-wrap justify-end">
+            <span *ngIf="user.keycloakId"
+              [title]="'Keycloak ID : ' + user.keycloakId"
+              class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+              Keycloak OK
+            </span>
+            <span *ngIf="!user.keycloakId"
+              class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-50 text-amber-800 border border-amber-300">
+              Non synchronisé
+            </span>
+            <span [class]="user.isActive !== false ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'"
+              class="px-2.5 py-0.5 text-[11px] font-bold rounded-full border">
+              {{ (user.isActive !== false ? 'USER_MANAGEMENT.STATUS_ACTIVE' : 'USER_MANAGEMENT.STATUS_INACTIVE') | translate }}
+            </span>
+          </div>
         </div>
 
         <!-- Avatar & Name -->
@@ -389,6 +424,16 @@
           <span>{{ 'USER_MANAGEMENT.TOOLTIP_EDIT' | translate }}</span>
         </button>
 
+        <button (click)="syncWithKeycloak(user)"
+          [disabled]="syncingUserId === user.id"
+          [ngClass]="user.keycloakId ? 'text-sky-700 bg-white hover:bg-sky-50 border-sky-200' : 'text-amber-800 bg-amber-50 hover:bg-amber-100 border-amber-300'"
+          class="p-1.5 rounded-xl border transition-colors shadow-2xs active:scale-95 disabled:opacity-50 cursor-pointer"
+          [title]="user.keycloakId ? 'Resynchroniser profil et rôle dans Keycloak' : 'Créer / Lier dans Keycloak'">
+          <svg class="w-4 h-4" [class.animate-spin]="syncingUserId === user.id" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+        </button>
+
         <button (click)="resetPassword(user)" 
           class="p-1.5 rounded-xl text-blue-700 bg-white hover:bg-blue-50 border border-blue-200 transition-colors shadow-2xs active:scale-95" 
           [title]="'USER_MANAGEMENT.TOOLTIP_RESET_PWD' | translate">
@@ -419,4 +464,4 @@
 </div>
 
 <!-- User Form Modal Dialog -->
-<app-utilisateurs-form-dialog></app-utilisateurs-form-dialog>
+<app-utilisateurs-form-dialog (userSaved)="loadUsers()"></app-utilisateurs-form-dialog>

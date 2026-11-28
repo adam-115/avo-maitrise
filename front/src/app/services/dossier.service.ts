@@ -90,4 +90,11 @@ export class DossierService extends AbstractCrudService<Dossier> {
     restore(id: string | number): Observable<Dossier> {
         return this.http.post<Dossier>(`${this.apiUrl}/${id}/restore`, {});
     }
+
+    updateDescription(id: string | number, description: string, descriptionAudioDocumentId: number | null): Observable<Dossier> {
+        return this.http.patch<Dossier>(`${this.apiUrl}/${id}/description`, {
+            description,
+            descriptionAudioDocumentId
+        });
+    }
 }

@@ -24,7 +24,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
         return http
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
@@ -49,7 +49,7 @@ public class SecurityConfig {
                                 "/", "/index.html", "/favicon.ico",
                                 "/*.js", "/*.css", "/*.map",
                                 "/*.jpg", "/*.jpeg", "/*.png", "/*.gif", "/*.webp", "/*.svg", "/*.ico", "/*.mp4",
-                                "/*.woff", "/*.woff2", "/*.ttf", "/*.json",
+                                "/*.woff", "/*.woff2", "/*.ttf", "/*.json", "/*.webmanifest",
                                 "/assets/**",
                                 "/error",
                                 "/home/**", "/test/**",
@@ -58,22 +58,71 @@ public class SecurityConfig {
                         
                         // 6. Any other request requires authentication
                         .anyRequest().authenticated())
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))
                 .build();
     }
 
     @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter() {
+    @SuppressWarnings("unchecked")
+    public JwtAuthenticationConverter jwtAuthenticationConverter(com.avo.services.UserService userService) {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            java.util.Set<org.springframework.security.core.GrantedAuthority> authorities = new java.util.LinkedHashSet<>();
+            String detectedAppRole = null;
+            java.util.Set<String> knownAppRoles = java.util.Set.of(
+                    "ADMIN", "SUPER_ADMIN", "ASSOCIE", "AVOCAT", "COLLABORATEUR",
+                    "SECRETARIAT", "COMPLIANCE_OFFICER", "STANDARD", "CONSULTANT"
+            );
+
+            // 1. Rôles Realm Keycloak (realm_access.roles)
             Map<String, Object> realmAccess = jwt.getClaim("realm_access");
-            if (realmAccess == null || !realmAccess.containsKey("roles")) {
-                return Collections.emptyList();
+            if (realmAccess != null && realmAccess.get("roles") instanceof Collection<?> roles) {
+                for (Object r : roles) {
+                    if (r != null) {
+                        String roleStr = r.toString();
+                        authorities.add(new SimpleGrantedAuthority("ROLE_" + roleStr));
+                        if (detectedAppRole == null && knownAppRoles.contains(roleStr.toUpperCase())) {
+                            detectedAppRole = roleStr.toUpperCase();
+                        }
+                    }
+                }
             }
-            Collection<String> roles = (Collection<String>) realmAccess.get("roles");
-            return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
-                    .collect(Collectors.toList());
+
+            // 2. Rôles Client Keycloak (resource_access.<client>.roles)
+            Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
+            if (resourceAccess != null) {
+                for (Object clientEntry : resourceAccess.values()) {
+                    if (clientEntry instanceof Map<?, ?> clientMap && clientMap.get("roles") instanceof Collection<?> clientRoles) {
+                        for (Object r : clientRoles) {
+                            if (r != null) {
+                                String roleStr = r.toString();
+                                authorities.add(new SimpleGrantedAuthority("ROLE_" + roleStr));
+                                if (detectedAppRole == null && knownAppRoles.contains(roleStr.toUpperCase())) {
+                                    detectedAppRole = roleStr.toUpperCase();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 3. Liaison automatique & JIT provisioning sur app_users (synchronise keycloak_id + injecte le rôle DB)
+            try {
+                userService.linkOrProvisionFromJwt(
+                        jwt.getSubject(),
+                        jwt.getClaimAsString("preferred_username"),
+                        jwt.getClaimAsString("email"),
+                        jwt.getClaimAsString("given_name"),
+                        jwt.getClaimAsString("family_name"),
+                        detectedAppRole
+                ).map(com.avo.entities.AppUser::getRole)
+                 .filter(role -> role != null && !role.isBlank())
+                 .ifPresent(role -> authorities.add(new SimpleGrantedAuthority("ROLE_" + role.trim().toUpperCase())));
+            } catch (Exception ignored) {
+                // Ne jamais bloquer l'authentification si la lookup/JIT DB échoue
+            }
+
+            return authorities;
         });
         return converter;
     }

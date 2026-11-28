@@ -25,5 +25,9 @@ export class UserService extends AbstractCrudService<User> {
     reconfigureOtp(id: number | string) {
         return this.http.post(`${this.apiUrl}/${id}/reconfigure-otp`, {});
     }
+
+    syncWithKeycloak(id: number | string) {
+        return this.http.post<User>(`${this.apiUrl}/${id}/sync-keycloak`, {});
+    }
 }
 

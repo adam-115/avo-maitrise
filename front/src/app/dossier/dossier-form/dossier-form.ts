@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { DossierService } from '../../services/dossier.service';
@@ -17,10 +17,12 @@ import { DocumentDialog } from '../../document/document-dialog/document-dialog';
 import { DomaineJuridiqueSelectionDialog } from '../domaine-juridique-selection-dialog/domaine-juridique-selection-dialog';
 import { ClientStatusAlertComponent } from '../../shared/components/client-status-alert/client-status-alert.component';
 import { PaginatedResponse } from '../../services/genericService/abstract-crud.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, firstValueFrom } from 'rxjs';
 import { AlertService } from '../../services/alert-service';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { PAYS_JURIDICTION, normalizePays } from '../../shared/ai-sources/pays';
+import { VoiceNoteService } from '../../services/voice-note.service';
+import { DocumentService } from '../../services/document.service';
 
 @Component({
   selector: 'app-dossier-form',
@@ -29,7 +31,7 @@ import { PAYS_JURIDICTION, normalizePays } from '../../shared/ai-sources/pays';
   templateUrl: './dossier-form.html',
   styleUrl: './dossier-form.css'
 })
-export class DossierForm implements OnInit {
+export class DossierForm implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -42,6 +44,18 @@ export class DossierForm implements OnInit {
   private alertService = inject(AlertService);
   private translate = inject(TranslateService);
   private conflictService = inject(ConflictCheckService);
+  private voiceNoteService = inject(VoiceNoteService);
+  private documentService = inject(DocumentService);
+
+  // Dictée vocale + enregistrement audio de la description
+  isRecordingDescription = false;
+  interimTranscript = '';
+  voiceError = '';
+  recordedAudioBlob: Blob | null = null;
+  recordedAudioMime = 'audio/webm';
+  audioPreviewUrl: string | null = null;
+  descriptionAudioDocumentId: number | null = null;
+  isStructuringDescription = false;
 
   // Contrôle automatique des conflits d'intérêts
   isCheckingConflicts = false;
@@ -132,6 +146,10 @@ export class DossierForm implements OnInit {
               ...dossier,
               dateOuverture: dossier.dateOuverture ? new Date(dossier.dateOuverture).toISOString().substring(0, 10) : '',
             });
+            if (dossier.descriptionAudioDocumentId) {
+              this.descriptionAudioDocumentId = dossier.descriptionAudioDocumentId;
+              this.loadExistingDescriptionAudio(dossier.descriptionAudioDocumentId);
+            }
             if (dossier.client?.id || dossier.clientId) {
               const cid = dossier.client?.id || dossier.clientId;
               this.clientService.findById(cid).subscribe(client => {
@@ -500,8 +518,25 @@ export class DossierForm implements OnInit {
   }
 
   private async executeSubmit(usedWaiver: boolean): Promise<void> {
+    if (this.isRecordingDescription) {
+      this.stopDescriptionDictation();
+    }
+
+    let finalAudioDocId = this.descriptionAudioDocumentId;
+    if (this.recordedAudioBlob) {
+      try {
+        finalAudioDocId = await this.uploadRecordedAudio(this.recordedAudioBlob, this.recordedAudioMime);
+        this.descriptionAudioDocumentId = finalAudioDocId;
+      } catch (err) {
+        console.error('Erreur upload audio description', err);
+        this.alertService.displayMessage('Erreur audio', 'Impossible d\'enregistrer le fichier audio. La transcription texte reste disponible.', 'error');
+        return;
+      }
+    }
+
     const dossierData: Dossier = {
       ...this.dossierForm.value,
+      descriptionAudioDocumentId: finalAudioDocId,
       client: { id: this.dossierForm.value.clientId },
       id: this.dossierId,
       updated_at: new Date()
@@ -560,5 +595,124 @@ export class DossierForm implements OnInit {
   isFieldInvalid(fieldName: string): boolean {
     const control = this.dossierForm.get(fieldName);
     return !!(control && control.invalid && control.touched);
+  }
+
+  ngOnDestroy(): void {
+    this.stopDescriptionDictation();
+    this.revokeAudioUrl();
+  }
+
+  private revokeAudioUrl(): void {
+    if (this.audioPreviewUrl) {
+      URL.revokeObjectURL(this.audioPreviewUrl);
+      this.audioPreviewUrl = null;
+    }
+  }
+
+  private loadExistingDescriptionAudio(docId: number): void {
+    this.documentService.downloadDocumentFile(docId).subscribe({
+      next: (blob) => {
+        this.revokeAudioUrl();
+        this.audioPreviewUrl = URL.createObjectURL(blob);
+      },
+      error: () => {
+        // Audio indisponible
+      }
+    });
+  }
+
+  async toggleDescriptionDictation(): Promise<void> {
+    if (this.isRecordingDescription) {
+      this.stopDescriptionDictation();
+      return;
+    }
+
+    this.voiceError = '';
+    this.interimTranscript = '';
+    const currentLang = this.translate.getCurrentLang();
+    const lang = currentLang === 'en' ? 'en-US' : (currentLang === 'ar' ? 'ar-MA' : 'fr-FR');
+
+    const audioStarted = await this.voiceNoteService.startAudioRecording((blob, mimeType) => {
+      this.recordedAudioBlob = blob;
+      this.recordedAudioMime = mimeType;
+      this.revokeAudioUrl();
+      this.audioPreviewUrl = URL.createObjectURL(blob);
+    });
+
+    const speechStarted = this.voiceNoteService.startRecognition(lang, {
+      onFinal: (chunk) => {
+        const current = (this.dossierForm.get('description')?.value || '').trim();
+        const nextVal = current ? `${current} ${chunk}` : chunk;
+        this.dossierForm.patchValue({ description: nextVal });
+      },
+      onInterim: (text) => {
+        this.interimTranscript = text;
+      },
+      onError: (msg) => {
+        this.voiceError = msg;
+      },
+      onEnd: () => {
+        this.interimTranscript = '';
+        if (this.isRecordingDescription) {
+          this.isRecordingDescription = false;
+          this.voiceNoteService.stopAudioRecording();
+        }
+      }
+    });
+
+    if (audioStarted || speechStarted) {
+      this.isRecordingDescription = true;
+    } else if (!this.voiceError) {
+      this.voiceError = 'Impossible d\'accéder au microphone (vérifiez les permissions navigateur / HTTPS).';
+    }
+  }
+
+  stopDescriptionDictation(): void {
+    this.isRecordingDescription = false;
+    this.interimTranscript = '';
+    this.voiceNoteService.stopRecognition();
+    this.voiceNoteService.stopAudioRecording();
+  }
+
+  removeDescriptionAudio(): void {
+    this.recordedAudioBlob = null;
+    this.descriptionAudioDocumentId = null;
+    this.revokeAudioUrl();
+  }
+
+  polishDescriptionWithAi(): void {
+    const raw = (this.dossierForm.get('description')?.value || '').trim();
+    if (!raw || this.isStructuringDescription) return;
+    this.isStructuringDescription = true;
+    const idNum = this.dossierId ? Number(this.dossierId) : null;
+    this.voiceNoteService.structureTranscript(raw, idNum).subscribe({
+      next: (res) => {
+        if (res?.structuredContent) {
+          this.dossierForm.patchValue({ description: res.structuredContent });
+        }
+        this.isStructuringDescription = false;
+      },
+      error: () => {
+        this.isStructuringDescription = false;
+        this.alertService.displayMessage('IA indisponible', 'Impossible de reformuler la description pour le moment.', 'warning');
+      }
+    });
+  }
+
+  private async uploadRecordedAudio(blob: Blob, mimeType: string): Promise<number> {
+    const base64 = await this.voiceNoteService.blobToBase64(blob);
+    const ext = mimeType.includes('mp4') ? 'm4a' : (mimeType.includes('ogg') ? 'ogg' : 'webm');
+    const docPayload: any = {
+      nomFichier: `description-dossier-${Date.now()}.${ext}`,
+      filename: `description-dossier-${Date.now()}.${ext}`,
+      title: 'Audio de la description du dossier',
+      tags: 'AUDIO_DESCRIPTION',
+      typeDocument: 'DOSSIER',
+      fileData: base64,
+      clientId: this.dossierForm.value.clientId ? Number(this.dossierForm.value.clientId) : undefined,
+      dossierId: this.dossierId ? Number(this.dossierId) : undefined
+    };
+    const saved: any = await firstValueFrom(this.documentService.create(docPayload));
+    return Number(saved.id);
   }
 }

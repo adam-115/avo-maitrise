@@ -69,6 +69,18 @@ public class DossierController {
         return ResponseEntity.ok(service.update(dto));
     }
 
+    @PatchMapping("/{id}/description")
+    public ResponseEntity<DossierDTO> updateDescription(
+            @PathVariable Long id,
+            @RequestBody java.util.Map<String, Object> body) {
+        String description = body.get("description") != null ? String.valueOf(body.get("description")) : null;
+        Long audioDocId = null;
+        if (body.get("descriptionAudioDocumentId") != null && !String.valueOf(body.get("descriptionAudioDocumentId")).isBlank()) {
+            audioDocId = Long.valueOf(String.valueOf(body.get("descriptionAudioDocumentId")));
+        }
+        return ResponseEntity.ok(service.updateDescription(id, description, audioDocId));
+    }
+
     @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'AVOCAT', 'admin', 'super_admin', 'avocat')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {

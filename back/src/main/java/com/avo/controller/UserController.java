@@ -22,6 +22,22 @@ public class UserController {
         this.service = service;
     }
 
+    @GetMapping("/me/roles")
+    public ResponseEntity<java.util.Map<String, Object>> getCurrentUserRoles() {
+        org.springframework.security.core.Authentication auth =
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        java.util.List<String> roles = (auth == null || auth.getAuthorities() == null)
+                ? java.util.List.of()
+                : auth.getAuthorities().stream()
+                        .map(org.springframework.security.core.GrantedAuthority::getAuthority)
+                        .distinct()
+                        .toList();
+        return ResponseEntity.ok(java.util.Map.of(
+                "username", auth != null ? auth.getName() : "",
+                "roles", roles
+        ));
+    }
+
     @GetMapping
     public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable) {
         return ResponseEntity.ok(service.findAll(pageable));
@@ -66,6 +82,12 @@ public class UserController {
     public ResponseEntity<String> resetPassword(@PathVariable Long id) {
         service.resetPassword(id);
         return ResponseEntity.ok("Mot de passe reinitialisé avec succes");
+    }
+
+    @org.springframework.security.access.prepost.PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN', 'admin', 'super_admin')")
+    @PostMapping("/{id}/sync-keycloak")
+    public ResponseEntity<UserDTO> syncKeycloak(@PathVariable Long id) {
+        return ResponseEntity.ok(service.syncWithKeycloak(id));
     }
 
     @PostMapping("/{id}/reconfigure-otp")

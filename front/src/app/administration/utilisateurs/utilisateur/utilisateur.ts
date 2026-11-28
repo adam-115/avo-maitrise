@@ -29,6 +29,7 @@ export class Utilisateur implements OnInit {
   searchTerm: string = '';
   selectedRole: string = '';
   viewMode: 'table' | 'grid' = 'table';
+  syncingUserId: string | number | null = null;
 
   get activeUsersCount(): number {
     return this.users.filter(u => u.isActive !== false).length;
@@ -185,6 +186,34 @@ export class Utilisateur implements OnInit {
         },
         error: () => {
           this.alertService.displayMessage('Erreur', 'Impossible de forcer la reconfiguration OTP', 'error');
+        }
+      });
+    }
+  }
+
+  async syncWithKeycloak(user: User) {
+    if (!user.id || this.syncingUserId !== null) return;
+    const isAlreadySynced = !!user.keycloakId;
+    const confirmed = await this.alertService.confirmMessage(
+      isAlreadySynced ? 'Resynchroniser avec Keycloak' : 'Synchroniser avec Keycloak',
+      isAlreadySynced
+        ? `Mettre à jour le profil et le rôle (${user.role}) de ${user.firstName} ${user.lastName} dans Keycloak ?`
+        : `Créer ou lier ${user.firstName} ${user.lastName} dans Keycloak avec le rôle ${user.role} ?`,
+      'question'
+    );
+
+    if (confirmed) {
+      this.syncingUserId = user.id;
+      this.userService.syncWithKeycloak(user.id).subscribe({
+        next: (updated) => {
+          this.syncingUserId = null;
+          this.alertService.success(`Synchronisé avec Keycloak (ID : ${updated?.keycloakId || 'OK'})`);
+          this.loadUsers();
+        },
+        error: (err) => {
+          this.syncingUserId = null;
+          const detail = err?.error?.message || err?.message || 'Erreur de communication avec Keycloak';
+          this.alertService.displayMessage('Échec synchronisation Keycloak', detail, 'error');
         }
       });
     }

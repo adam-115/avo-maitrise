@@ -22,17 +22,35 @@ export class AlertService {
     });
   }
 
-  // Alerte de succès rapide
+  // Affichage d'un message : les erreurs restent ouvertes jusqu'à fermeture manuelle
   displayMessage(title: string, message: string, icon: IconType) {
+    if (icon === 'error') {
+      Swal.fire({
+        title: title,
+        text: message,
+        icon: 'error',
+        position: 'center',
+        showConfirmButton: true,
+        confirmButtonText: 'Fermer',
+        confirmButtonColor: '#dc2626',
+        showCloseButton: true,
+        allowOutsideClick: false,
+        allowEscapeKey: true,
+        heightAuto: false,
+      });
+      return;
+    }
+
     Swal.fire({
       titleText: title,
-      position: "top-end",
+      position: 'top-end',
       text: message,
       icon: icon,
       title: title,
       showConfirmButton: false,
       timer: 1800,
       showCloseButton: true,
+      heightAuto: false,
     });
   }
 

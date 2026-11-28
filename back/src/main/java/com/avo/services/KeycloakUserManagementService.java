@@ -89,17 +89,22 @@ public class KeycloakUserManagementService {
             }
             log.info("Utilisateur créé dans Keycloak avec l'ID: {}", userId);
             
-            // Send email
-            if (request.getEmail() != null) {
-                String emailText = "Bonjour " + request.getFirstName() + ",\n\n"
-                    + "Votre compte a été créé avec succès.\n"
-                    + "Votre nom d'utilisateur est : " + request.getUsername() + "\n";
-                if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-                    emailText += "Votre mot de passe temporaire est : " + request.getPassword() + "\n"
-                              + "Veuillez le modifier lors de votre première connexion.\n";
+            // Send email (non bloquant : un échec SMTP ne doit jamais annuler la synchro Keycloak)
+            if (request.getEmail() != null && !request.getEmail().isBlank()) {
+                try {
+                    String emailText = "Bonjour " + request.getFirstName() + ",\n\n"
+                        + "Votre compte a été créé avec succès.\n"
+                        + "Votre nom d'utilisateur est : " + request.getUsername() + "\n";
+                    if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+                        emailText += "Votre mot de passe temporaire est : " + request.getPassword() + "\n"
+                                  + "Veuillez le modifier lors de votre première connexion.\n";
+                    }
+                    emailText += "\nCordialement,\nL'équipe Avo-Maitrise.";
+                    emailService.sendSimpleEmail(request.getEmail(), "Création de votre compte", emailText);
+                } catch (Exception mailEx) {
+                    log.warn("Utilisateur '{}' créé dans Keycloak (id={}), mais échec d'envoi d'e-mail SMTP : {}",
+                            request.getUsername(), userId, mailEx.getMessage());
                 }
-                emailText += "\nCordialement,\nL'équipe Avo-Maitrise.";
-                emailService.sendSimpleEmail(request.getEmail(), "Création de votre compte", emailText);
             }
             
             return userId;
@@ -115,8 +120,13 @@ public class KeycloakUserManagementService {
         }
     }
 
+    private static final List<String> APP_ROLES = List.of(
+            "ADMIN", "SUPER_ADMIN", "ASSOCIE", "AVOCAT", "COLLABORATEUR",
+            "SECRETARIAT", "COMPLIANCE_OFFICER", "STANDARD", "CONSULTANT"
+    );
+
     /**
-     * Met à jour les informations de base d'un utilisateur existant.
+     * Met à jour les informations de base et les rôles d'un utilisateur existant.
      */
     public void updateUser(String userId, CreateUserRequest request) {
         UserResource userResource = realmResource.users().get(userId);
@@ -126,7 +136,45 @@ public class KeycloakUserManagementService {
         user.setEmail(request.getEmail());
         user.setEnabled(request.isEnabled());
         userResource.update(user);
+
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            syncAppRoles(userId, request.getRoles());
+        }
         log.info("Utilisateur mis à jour dans Keycloak: {}", userId);
+    }
+
+    /**
+     * Synchronise les rôles applicatifs Keycloak d'un utilisateur (retire les anciens rôles métier et applique les nouveaux).
+     */
+    public void syncAppRoles(String userId, List<String> desiredRoles) {
+        UserResource userResource = realmResource.users().get(userId);
+        List<RoleRepresentation> currentRoles = userResource.roles().realmLevel().listAll();
+        List<RoleRepresentation> toRemove = new ArrayList<>();
+        if (currentRoles != null) {
+            for (RoleRepresentation r : currentRoles) {
+                if (r.getName() != null && APP_ROLES.contains(r.getName().toUpperCase())
+                        && desiredRoles.stream().noneMatch(d -> d.equalsIgnoreCase(r.getName()))) {
+                    toRemove.add(r);
+                }
+            }
+        }
+        if (!toRemove.isEmpty()) {
+            userResource.roles().realmLevel().remove(toRemove);
+        }
+        assignRoles(userId, desiredRoles);
+    }
+
+    private RoleRepresentation ensureRealmRoleExists(String roleName) {
+        try {
+            return realmResource.roles().get(roleName).toRepresentation();
+        } catch (Exception notFound) {
+            RoleRepresentation created = new RoleRepresentation();
+            created.setName(roleName);
+            created.setDescription("Rôle applicatif Avo-Maîtrise : " + roleName);
+            realmResource.roles().create(created);
+            log.info("Rôle Realm '{}' créé automatiquement dans Keycloak", roleName);
+            return realmResource.roles().get(roleName).toRepresentation();
+        }
     }
 
     /**
@@ -142,7 +190,7 @@ public class KeycloakUserManagementService {
 
     public void assignRole(String userId, String roleName) {
         UserResource userResource = realmResource.users().get(userId);
-        RoleRepresentation role = realmResource.roles().get(roleName).toRepresentation();
+        RoleRepresentation role = ensureRealmRoleExists(roleName);
         userResource.roles().realmLevel().add(Collections.singletonList(role));
         log.info("Rôle '{}' assigné à l'utilisateur: {}", roleName, userId);
     }
@@ -151,10 +199,13 @@ public class KeycloakUserManagementService {
         UserResource userResource = realmResource.users().get(userId);
         List<RoleRepresentation> roles = new ArrayList<>();
         for (String roleName : roleNames) {
-            RoleRepresentation role = realmResource.roles().get(roleName).toRepresentation();
-            roles.add(role);
+            if (roleName != null && !roleName.isBlank()) {
+                roles.add(ensureRealmRoleExists(roleName.trim()));
+            }
         }
-        userResource.roles().realmLevel().add(roles);
+        if (!roles.isEmpty()) {
+            userResource.roles().realmLevel().add(roles);
+        }
     }
 
     public void removeRole(String userId, String roleName) {
@@ -212,18 +263,23 @@ public class KeycloakUserManagementService {
             userResource.update(user);
             log.info("Action requise '{}' ajoutée pour l'utilisateur: {}", action, userId);
 
-            if (user.getEmail() != null) {
-                String actionName = action;
-                if ("CONFIGURE_TOTP".equals(action)) {
-                    actionName = "la configuration de l'Authentification à Double Facteur (2FA)";
-                } else if ("UPDATE_PASSWORD".equals(action)) {
-                    actionName = "la mise à jour de votre mot de passe";
+            if (user.getEmail() != null && !user.getEmail().isBlank()) {
+                try {
+                    String actionName = action;
+                    if ("CONFIGURE_TOTP".equals(action)) {
+                        actionName = "la configuration de l'Authentification à Double Facteur (2FA)";
+                    } else if ("UPDATE_PASSWORD".equals(action)) {
+                        actionName = "la mise à jour de votre mot de passe";
+                    }
+                    
+                    String emailText = "Bonjour " + user.getFirstName() + ",\n\n"
+                        + "Une action est requise sur votre compte. Vous devez effectuer " + actionName + " lors de votre prochaine connexion.\n\n"
+                        + "Cordialement,\nL'équipe Avo-Maitrise.";
+                    emailService.sendSimpleEmail(user.getEmail(), "Action requise sur votre compte", emailText);
+                } catch (Exception mailEx) {
+                    log.warn("Action '{}' configurée dans Keycloak pour {}, mais échec d'envoi d'e-mail SMTP : {}",
+                            action, userId, mailEx.getMessage());
                 }
-                
-                String emailText = "Bonjour " + user.getFirstName() + ",\n\n"
-                    + "Une action est requise sur votre compte. Vous devez effectuer " + actionName + " lors de votre prochaine connexion.\n\n"
-                    + "Cordialement,\nL'équipe Avo-Maitrise.";
-                emailService.sendSimpleEmail(user.getEmail(), "Action requise sur votre compte", emailText);
             }
         }
     }

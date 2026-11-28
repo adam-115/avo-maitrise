@@ -103,6 +103,7 @@ public class DossierService {
         dto.setReferenceInterne(d.getReferenceInterne());
         dto.setTitre(d.getTitre());
         dto.setDescription(d.getDescription());
+        dto.setDescriptionAudioDocumentId(d.getDescriptionAudioDocumentId());
         dto.setResponsableId(d.getResponsableId());
         dto.setDomaineJuridique(d.getDomaineJuridique());
         dto.setPaysJuridiction(d.getPaysJuridiction());
@@ -274,6 +275,25 @@ public class DossierService {
         } catch (Exception e) {
         }
         return "Système";
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public DossierDTO updateDescription(Long id, String description, Long descriptionAudioDocumentId) {
+        log.info("[ENTER] Executing updateDescription for dossier id: {}", id);
+        Dossier dossier = repository.findById(id)
+                .orElseThrow(() -> new org.springframework.web.server.ResponseStatusException(
+                        org.springframework.http.HttpStatus.NOT_FOUND, "Dossier introuvable avec l'identifiant " + id));
+        dossier.setDescription(description);
+        dossier.setDescriptionAudioDocumentId(descriptionAudioDocumentId);
+        Dossier saved = repository.save(dossier);
+
+        eventPublisher.publishEvent(new com.avo.events.MatterActionEvent(
+                this, saved.getId(), getCurrentUsername(), "Mise à jour", "Dossier", saved.getId(),
+                descriptionAudioDocumentId != null
+                        ? "Description audio et transcription mises à jour"
+                        : "Description du dossier mise à jour"));
+
+        return mapper.toDto(saved);
     }
 
     @org.springframework.transaction.annotation.Transactional

@@ -7,10 +7,11 @@ import { environment } from '../../environments/environment';
 })
 export class KeycloakService {
   private keycloakInstance!: Keycloak;
+  private backendRoles: string[] = [];
 
-  init(): Promise<boolean> {
+  async init(): Promise<boolean> {
     if (!environment.keycloak.enabled) {
-      return Promise.resolve(true);
+      return true;
     }
     this.keycloakInstance = new Keycloak({
       url: environment.keycloak.url,
@@ -18,10 +19,31 @@ export class KeycloakService {
       clientId: environment.keycloak.clientId
     });
 
-    return this.keycloakInstance.init({
+    const authenticated = await this.keycloakInstance.init({
       onLoad: 'login-required',
       checkLoginIframe: false
     });
+
+    if (authenticated && this.keycloakInstance.token) {
+      await this.loadBackendRoles();
+    }
+    return authenticated;
+  }
+
+  private async loadBackendRoles(): Promise<void> {
+    try {
+      const response = await fetch(`${environment.apiUrl}users/me/roles`, {
+        headers: { Authorization: `Bearer ${this.keycloakInstance.token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data?.roles)) {
+          this.backendRoles = data.roles;
+        }
+      }
+    } catch {
+      // Fallback silencieux sur les rôles présents dans le JWT Keycloak
+    }
   }
 
   login(): Promise<void> {
@@ -61,7 +83,15 @@ export class KeycloakService {
     if (!environment.keycloak.enabled) {
       return ['ROLE_USER', 'ROLE_ADMIN'];
     }
-    return this.keycloakInstance.realmAccess?.roles || [];
+    const roles = new Set<string>(this.backendRoles);
+    (this.keycloakInstance?.realmAccess?.roles || []).forEach(r => roles.add(r));
+    const resourceAccess = this.keycloakInstance?.resourceAccess || {};
+    Object.values(resourceAccess).forEach((entry: any) => {
+      if (Array.isArray(entry?.roles)) {
+        entry.roles.forEach((r: string) => roles.add(r));
+      }
+    });
+    return Array.from(roles);
   }
 
   hasAnyRole(allowedRoles: string[]): boolean {

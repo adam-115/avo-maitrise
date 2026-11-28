@@ -428,6 +428,7 @@ export interface Dossier {
   referenceInterne: string;    // Ex: 2026-0045 (Généré automatiquement)
   titre: string;               // Nom du dossier (ex: Litige Commercial Dupont vs Durand)
   description?: string;
+  descriptionAudioDocumentId?: number | null;
 
   // Relations
   client?: Client;   // Client rattaché (remplace clientId)

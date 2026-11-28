@@ -23,6 +23,9 @@ public class Dossier {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "description_audio_document_id")
+    private Long descriptionAudioDocumentId;
+
     @ManyToOne(fetch = jakarta.persistence.FetchType.EAGER)
     @JoinColumn(name = "client_id")
     private ClientEntity client;
@@ -154,6 +157,14 @@ public class Dossier {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getDescriptionAudioDocumentId() {
+        return descriptionAudioDocumentId;
+    }
+
+    public void setDescriptionAudioDocumentId(Long descriptionAudioDocumentId) {
+        this.descriptionAudioDocumentId = descriptionAudioDocumentId;
     }
 
     public ClientEntity getClient() {

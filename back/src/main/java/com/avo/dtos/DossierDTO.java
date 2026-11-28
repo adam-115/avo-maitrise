@@ -32,6 +32,8 @@ public class DossierDTO {
     @Size(max = 2000, message = "La description ne doit pas dépasser 2000 caractères")
     private String description;
 
+    private Long descriptionAudioDocumentId;
+
     private ClientEntityDTO client;
     private String responsableId;
     private List<String> intervenantsIds = new ArrayList<>();

@@ -1,170 +1,292 @@
 @if (showDialog) {
-<div id="user-modal-detailed"
-    class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/40 backdrop-blur-sm transition-opacity duration-300">
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4"
+  (click)="closeUserForm()">
 
-    <div class="flex items-center justify-center min-h-screen p-4">
+  <div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]"
+    role="dialog" aria-modal="true" aria-labelledby="modal-title-detailed"
+    (click)="$event.stopPropagation()">
 
-        <div class="w-full max-w-3xl bg-white rounded-xl shadow-2xl transform transition-all duration-300" role="dialog"
-            aria-modal="true" aria-labelledby="modal-title-detailed">
+    <!-- En-tête Midnight & Emerald (Style Swift Check) -->
+    <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between gap-4 shrink-0">
+      <div class="flex items-center gap-3.5 min-w-0">
+        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 flex items-center justify-center shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h3 class="text-base sm:text-lg font-extrabold tracking-tight truncate" id="modal-title-detailed">
+              {{ isEditMode ? 'Fiche Détaillée de l\'Utilisateur' : 'Nouvel Utilisateur du Cabinet' }}
+            </h3>
+            @if (isEditMode && currentKeycloakId) {
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30"
+              [title]="'Keycloak ID : ' + currentKeycloakId">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+              Keycloak OK
+            </span>
+            }
+            @if (isEditMode && !currentKeycloakId) {
+            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-400/30">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+              Non synchronisé
+            </span>
+            }
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">
+            {{ isEditMode ? 'Modifiez le profil, les coordonnées et les accès (synchronisés avec Keycloak).' : 'Crée le compte dans l\'application et dans Keycloak avec le rôle sélectionné.' }}
+          </p>
+        </div>
+      </div>
 
-            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                <h3 class="text-2xl font-bold text-slate-800" id="modal-title-detailed">
-                    Fiche Détaillée de l'Utilisateur
-                </h3>
-                <button type="button" (click)="closeUserForm()" class="text-gray-400 hover:text-gray-600 transition"
-                    title="Fermer la modale"
-                    onclick="document.getElementById('user-modal-detailed').style.display='none'">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
-                    </svg>
+      <button type="button" (click)="closeUserForm()" [disabled]="saving"
+        class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+        title="Fermer">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Corps scrollable -->
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="flex flex-col flex-1 min-h-0">
+      <div class="p-6 overflow-y-auto flex-1 space-y-6 bg-slate-50/50">
+
+        <!-- Résumé explicite des champs obligatoires manquants -->
+        @if (invalidFieldsSummary.length > 0) {
+        <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5">
+          <svg class="w-4 h-4 text-rose-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <p class="font-bold">Veuillez compléter ou corriger les champs obligatoires suivants :</p>
+            <p class="mt-0.5 text-rose-700">{{ invalidFieldsSummary.join(', ') }}</p>
+          </div>
+        </div>
+        }
+
+        <!-- Section 1 : Identité & Photo -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs space-y-4">
+          <div class="flex items-center gap-2 pb-2.5 border-b border-slate-100">
+            <span class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-xs font-extrabold">1</span>
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Identité & Profil</h4>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <!-- Avatar / Photo -->
+            <div class="flex flex-col items-center gap-2.5 shrink-0">
+              <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 text-emerald-400 flex items-center justify-center text-2xl font-black overflow-hidden border-2 border-emerald-400/40 shadow-sm">
+                <img *ngIf="photoPreviewUrl" [src]="photoPreviewUrl" alt="Photo utilisateur" class="w-full h-full object-cover">
+                <span *ngIf="!photoPreviewUrl">{{ initials }}</span>
+              </div>
+              <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" class="hidden">
+              <div class="flex items-center gap-1.5">
+                <button type="button" (click)="fileInput.click()"
+                  class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition-colors cursor-pointer">
+                  {{ photoPreviewUrl ? 'Changer' : 'Photo' }}
                 </button>
+                @if (photoPreviewUrl) {
+                <button type="button" (click)="removePhoto()"
+                  class="px-2 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 text-[11px] font-bold transition-colors cursor-pointer"
+                  title="Retirer la photo">
+                  ✕
+                </button>
+                }
+              </div>
             </div>
 
-            <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="p-6 space-y-8">
+            <!-- Champs identité -->
+            <div class="flex-1 w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="firstName" class="block text-xs font-bold text-slate-700 mb-1">
+                  Prénom <span class="text-rose-500">*</span>
+                </label>
+                <input type="text" id="firstName" formControlName="firstName" placeholder="Ex. Nadia"
+                  [ngClass]="isFieldInvalid('firstName') ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500' : 'border-slate-200 focus:border-emerald-500'"
+                  class="w-full px-3.5 py-2 rounded-xl border bg-slate-50/50 focus:bg-white text-sm text-slate-800 outline-none transition-all">
+                @if (isFieldInvalid('firstName')) {
+                <span class="text-[11px] font-semibold text-rose-600 mt-1 block">Le prénom est obligatoire.</span>
+                }
+              </div>
 
-                <div class="border-b border-gray-200 pb-6">
-                    <h4 class="text-lg font-semibold text-red-600 mb-4">Détails Personnels</h4>
+              <div>
+                <label for="lastName" class="block text-xs font-bold text-slate-700 mb-1">
+                  Nom <span class="text-rose-500">*</span>
+                </label>
+                <input type="text" id="lastName" formControlName="lastName" placeholder="Ex. Benali"
+                  [ngClass]="isFieldInvalid('lastName') ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500' : 'border-slate-200 focus:border-emerald-500'"
+                  class="w-full px-3.5 py-2 rounded-xl border bg-slate-50/50 focus:bg-white text-sm text-slate-800 outline-none transition-all">
+                @if (isFieldInvalid('lastName')) {
+                <span class="text-[11px] font-semibold text-rose-600 mt-1 block">Le nom est obligatoire.</span>
+                }
+              </div>
 
-                    <div class="flex space-x-6">
-                        <!-- Photo Upload Section -->
-                        <div class="flex flex-col items-center space-y-3 flex-shrink-0 w-32">
-                            <div
-                                class="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-4xl font-bold text-gray-500 overflow-hidden border-4 border-red-200 shadow-inner">
-                                <img *ngIf="photoPreviewUrl" [src]="photoPreviewUrl" alt="User Photo"
-                                    class="w-full h-full object-cover">
-                                <span *ngIf="!photoPreviewUrl" class="text-base">Photo</span>
-                            </div>
-                            <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*"
-                                class="hidden">
-                            <button type="button" (click)="fileInput.click()"
-                                class="text-xs text-indigo-600 hover:text-indigo-800 font-medium bg-indigo-50 px-2 py-1 rounded-full transition">
-                                Changer la photo
-                            </button>
-                        </div>
+              <div>
+                <label for="username" class="block text-xs font-bold text-slate-700 mb-1">
+                  Nom d'utilisateur <span class="text-rose-500">*</span>
+                </label>
+                <input type="text" id="username" formControlName="username" placeholder="Ex. n.benali"
+                  [readonly]="isEditMode"
+                  [ngClass]="isEditMode ? 'bg-slate-100 text-slate-500 cursor-not-allowed border-slate-200' : (isFieldInvalid('username') ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500' : 'border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500')"
+                  class="w-full px-3.5 py-2 rounded-xl border text-sm text-slate-800 outline-none transition-all">
+                @if (isFieldInvalid('username')) {
+                <span class="text-[11px] font-semibold text-rose-600 mt-1 block">Obligatoire (3 caractères minimum).</span>
+                }
+              </div>
 
-                        <div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label for="firstName"
-                                    class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-                                <input type="text" id="firstName" formControlName="firstName"
-                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                            </div>
-                            <div>
-                                <label for="lastName" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-                                <input type="text" id="lastName" formControlName="lastName"
-                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                            </div>
-                            <div>
-                                <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Nom d'utilisateur</label>
-                                <input type="text" id="username" formControlName="username"
-                                    [readonly]="isEditMode"
-                                    [ngClass]="isEditMode ? 'bg-gray-100 cursor-not-allowed text-gray-500' : 'bg-white'"
-                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 transition-colors">
-                            </div>
-                            <div>
-                                <label for="barreauId" class="block text-sm font-medium text-gray-700 mb-1">Barreau
-                                    ID</label>
-                                <input type="text" id="barreauId" formControlName="barreauId"
-                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="border-b border-gray-200 pb-6">
-                    <h4 class="text-lg font-semibold text-red-600 mb-4">Coordonnées</h4>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-                            <input type="text" id="phoneNumber" formControlName="phoneNumber"
-                                class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                        </div>
-                        <div>
-                            <label for="gsm" class="block text-sm font-medium text-gray-700 mb-1">GSM</label>
-                            <input type="text" id="gsm" formControlName="gsm"
-                                class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                        </div>
-                        <div class="sm:col-span-2">
-                            <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Adresse</label>
-                            <textarea id="address" formControlName="address" rows="2"
-                                class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="border-b border-gray-200 pb-6">
-                    <h4 class="text-lg font-semibold text-red-600 mb-4">Accès et Authentification</h4>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="sm:col-span-2">
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Adresse Email</label>
-                            <input type="email" id="email" formControlName="email"
-                                class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                        </div>
-                        
-                        <div class="sm:col-span-2">
-                            <label for="tempPassword" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe temporaire <span *ngIf="isEditMode" class="text-gray-500 font-normal text-xs ms-1">(Laisser vide pour ne pas modifier)</span></label>
-                            <div class="flex space-x-2">
-                                <input type="text" id="tempPassword" formControlName="tempPassword"
-                                    class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 border-2 border-slate-300 hover:border-slate-400 transition-colors"
-                                    placeholder="Généré automatiquement ou saisissez-le">
-                                <button type="button" (click)="generatePassword()"
-                                    class="px-4 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-300 rounded-lg transition-colors font-medium whitespace-nowrap">
-                                    Générer
-                                </button>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">S'il est défini, l'utilisateur devra obligatoirement le modifier à la première connexion.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <h4 class="text-lg font-semibold text-red-600 mb-4">Rôles et Statuts</h4>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label for="role" class="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
-                            <select id="role" formControlName="role"
-                                class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 bg-white border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                                <option *ngFor="let role of userRoles" [value]="role">{{ role }}</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Statut du
-                                Compte</label>
-                            <select id="status" formControlName="isActive"
-                                class="w-full px-3 py-2 rounded-lg focus:ring-red-500 focus:border-red-500 bg-white border-2 border-slate-300 hover:border-slate-400 transition-colors">
-                                <option [ngValue]="true">Actif</option>
-                                <option [ngValue]="false">Inactif</option>
-                            </select>
-                        </div>
-
-                        <div class="flex items-center mt-6">
-                            <input id="isPartner" type="checkbox" formControlName="isPartner"
-                                class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded">
-                            <label for="isPartner" class="ms-2 block text-sm text-gray-900">
-                                Est Associé
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
-                    <button type="button" (click)="closeUserForm()"
-                        class="px-5 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition duration-150">
-                        Annuler
-                    </button>
-
-                    <button type="submit" [disabled]="userForm.invalid"
-                        class="px-5 py-2 text-sm font-medium rounded-lg text-white bg-red-600 hover:bg-red-700 transition duration-150 shadow-md disabled:opacity-50">
-                        {{ isEditMode ? 'Mettre à jour' : 'Créer l\'utilisateur' }}
-                    </button>
-                </div>
-            </form>
-
+              <div>
+                <label for="barreauId" class="block text-xs font-bold text-slate-700 mb-1">
+                  Numéro de toque / Barreau
+                </label>
+                <input type="text" id="barreauId" formControlName="barreauId" placeholder="Ex. BAR-2024-089"
+                  class="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500 text-sm text-slate-800 outline-none transition-all">
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
+
+        <!-- Section 2 : Rôle, Accès & Authentification -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs space-y-4">
+          <div class="flex items-center gap-2 pb-2.5 border-b border-slate-100">
+            <span class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-xs font-extrabold">2</span>
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Rôle, Accès & Keycloak</h4>
+          </div>
+
+          <!-- Sélection visuelle du Rôle -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-2">
+              Rôle applicatif (synchronisé avec Keycloak) <span class="text-rose-500">*</span>
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              @for (opt of roleOptions; track opt.value) {
+              <button type="button" (click)="selectRole(opt.value)"
+                [ngClass]="userForm.get('role')?.value === opt.value
+                  ? 'border-emerald-500 bg-emerald-50/70 ring-1 ring-emerald-500/30 text-emerald-900'
+                  : 'border-slate-200 bg-white hover:border-slate-300 text-slate-700'"
+                class="p-2.5 rounded-xl border text-left transition-all cursor-pointer">
+                <div class="flex items-center justify-between gap-1">
+                  <span class="text-xs font-extrabold">{{ opt.label }}</span>
+                  @if (userForm.get('role')?.value === opt.value) {
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                  }
+                </div>
+                <p class="text-[10px] text-slate-500 mt-0.5 leading-snug">{{ opt.desc }}</p>
+              </button>
+              }
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+            <!-- Email -->
+            <div class="sm:col-span-2">
+              <label for="email" class="block text-xs font-bold text-slate-700 mb-1">
+                Adresse Email <span class="text-rose-500">*</span>
+              </label>
+              <input type="email" id="email" formControlName="email" placeholder="prenom.nom@cabinet.fr"
+                [ngClass]="isFieldInvalid('email') ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500' : 'border-slate-200 focus:border-emerald-500'"
+                class="w-full px-3.5 py-2 rounded-xl border bg-slate-50/50 focus:bg-white text-sm text-slate-800 outline-none transition-all">
+              @if (isFieldInvalid('email')) {
+              <span class="text-[11px] font-semibold text-rose-600 mt-1 block">Une adresse email valide est obligatoire.</span>
+              }
+            </div>
+
+            <!-- Mot de passe temporaire (uniquement en création) -->
+            @if (!isEditMode) {
+            <div class="sm:col-span-2">
+              <label for="tempPassword" class="block text-xs font-bold text-slate-700 mb-1">
+                Mot de passe temporaire <span class="text-slate-400 font-normal">(optionnel : généré automatiquement si vide)</span>
+              </label>
+              <div class="flex items-center gap-2">
+                <input type="text" id="tempPassword" formControlName="tempPassword"
+                  placeholder="Laisser vide pour génération sécurisée automatique"
+                  class="flex-1 px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500 text-sm font-mono text-slate-800 outline-none transition-all">
+                <button type="button" (click)="generatePassword()"
+                  class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold transition-colors cursor-pointer shrink-0">
+                  Générer
+                </button>
+                @if (userForm.get('tempPassword')?.value) {
+                <button type="button" (click)="copyPassword()"
+                  class="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold transition-colors cursor-pointer shrink-0">
+                  {{ copiedPassword ? 'Copié ✓' : 'Copier' }}
+                </button>
+                }
+              </div>
+              <p class="text-[11px] text-slate-400 mt-1">
+                L'utilisateur devra définir son mot de passe personnel et configurer sa 2FA lors de la première connexion.
+              </p>
+            </div>
+            }
+
+            <!-- Statut & Associé -->
+            <div>
+              <label for="status" class="block text-xs font-bold text-slate-700 mb-1">Statut du compte</label>
+              <select id="status" formControlName="isActive"
+                class="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500 text-sm font-semibold text-slate-800 outline-none cursor-pointer">
+                <option [ngValue]="true">Actif</option>
+                <option [ngValue]="false">Inactif (bloqué dans Keycloak)</option>
+              </select>
+            </div>
+
+            <div class="flex items-end pb-1">
+              <label for="isPartner"
+                class="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-100/70 cursor-pointer transition-colors">
+                <input id="isPartner" type="checkbox" formControlName="isPartner"
+                  class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
+                <span class="text-xs font-bold text-slate-700">Associé du cabinet</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3 : Coordonnées -->
+        <div class="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-2xs space-y-4">
+          <div class="flex items-center gap-2 pb-2.5 border-b border-slate-100">
+            <span class="w-6 h-6 rounded-lg bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center text-xs font-extrabold">3</span>
+            <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-700">Coordonnées</h4>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="phoneNumber" class="block text-xs font-bold text-slate-700 mb-1">Téléphone fixe</label>
+              <input type="text" id="phoneNumber" formControlName="phoneNumber" placeholder="+33 1 ..."
+                class="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500 text-sm text-slate-800 outline-none transition-all">
+            </div>
+            <div>
+              <label for="gsm" class="block text-xs font-bold text-slate-700 mb-1">Téléphone mobile (GSM)</label>
+              <input type="text" id="gsm" formControlName="gsm" placeholder="+33 6 ..."
+                class="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500 text-sm text-slate-800 outline-none transition-all">
+            </div>
+            <div class="sm:col-span-2">
+              <label for="address" class="block text-xs font-bold text-slate-700 mb-1">Adresse professionnelle</label>
+              <textarea id="address" formControlName="address" rows="2" placeholder="Adresse du bureau / cabinet..."
+                class="w-full px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500 text-sm text-slate-800 outline-none transition-all resize-none"></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Pied de modale fixe -->
+      <div class="px-6 py-4 bg-white border-t border-slate-200 flex items-center justify-end gap-2.5 shrink-0">
+        <button type="button" (click)="closeUserForm()" [disabled]="saving"
+          class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-colors cursor-pointer disabled:opacity-50">
+          Annuler
+        </button>
+
+        <button type="submit" [disabled]="saving"
+          class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl btn-emerald text-xs font-bold cursor-pointer disabled:opacity-50">
+          @if (saving) {
+          <span class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+          <span>Synchronisation...</span>
+          } @else {
+          <span>{{ isEditMode ? 'Enregistrer les modifications' : 'Créer l\'utilisateur' }}</span>
+          }
+        </button>
+      </div>
+    </form>
+
+  </div>
 </div>
 }
